@@ -1,0 +1,5 @@
+hanfu-user-center/target/*
+hanfu-product-center/target/*
+hanfu-user-center/.settings/*
+hanfu-product-center/.settings/*
+hanfu-user-center/logs/king-words.log
