@@ -33,4 +33,3 @@ logging:
   file: ./logs/king-words.log  
   
 mybatis:  mapper-locations: mappers/*.xml
-  type-aliases-package: com.hanfu.user.center.model
