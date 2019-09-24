@@ -7,7 +7,9 @@
 		<artifactId>hanfu-system</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
+	<groupId>com.hanfu.common</groupId>
 	<artifactId>hanfu-common</artifactId>
+	<version>0.0.1</version>
 	<dependencies>
 
 		<dependency>

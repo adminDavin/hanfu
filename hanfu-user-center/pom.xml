@@ -54,7 +54,11 @@
 		</plugins>
 	</build>
 	<dependencies>
-
+		<dependency>
+			<groupId>com.hanfu.common</groupId>
+			<artifactId>hanfu-common</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
