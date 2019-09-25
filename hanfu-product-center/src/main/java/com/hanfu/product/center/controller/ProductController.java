@@ -43,14 +43,14 @@ public class ProductController {
 	@Autowired
 	private ProductMapper productMapper;
 	
-	@ApiOperation(value = "获取全部品牌列表")
-    @RequestMapping(value = "/product", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<JSONObject> getList() throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody("hello world"));
-    }
-	
+//	@ApiOperation(value = "获取全部品牌列表")
+//    @RequestMapping(value = "/product", method = RequestMethod.GET)
+//    @ResponseBody
+//    public ResponseEntity<JSONObject> getList() throws JSONException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		return builder.body(ResponseUtils.getResponseBody("hello world"));
+//    }
+//	
 	@ApiOperation(value = "获取类目列表")
     @RequestMapping(value = "/category", method = RequestMethod.GET)
     @ResponseBody
@@ -83,16 +83,16 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
     }
 	
-	@ApiOperation(value = "添加商品")
-    @RequestMapping(value = "/byUserId", method = RequestMethod.POST)
-    @ResponseBody
-    @ApiParam(name = "商家Id", required = true, type="Integer")
-    public ResponseEntity<JSONObject> AddProduct(@RequestParam(name = "bossId") Integer bossId) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ProductExample example = new ProductExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
-		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
-    }
+//	@ApiOperation(value = "添加商品")
+//    @RequestMapping(value = "/byUserId", method = RequestMethod.POST)
+//    @ResponseBody
+//    @ApiParam(name = "商家Id", required = true, type="Integer")
+//    public ResponseEntity<JSONObject> AddProduct(@RequestParam(name = "bossId") Integer bossId) throws JSONException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        ProductExample example = new ProductExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
+//    }
 	
 	
 	

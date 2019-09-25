@@ -28,7 +28,7 @@ create table  hf_user
 drop table if exists hf_auth;
 create table  hf_auth
 (
-       id 				 integer NOT NULL AUTO_INCREMENT,
+       id 				 integer NOT NULL AUTO_INCREMENT, 
        user_id           integer NOT NULL COMMENT '用户名',
        auth_type         varchar(20)  COMMENT '认证类型',
        auth_key          VARCHAR(100) 	/*认证key*/,
