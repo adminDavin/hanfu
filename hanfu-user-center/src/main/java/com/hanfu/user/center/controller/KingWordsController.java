@@ -1,5 +1,7 @@
 package com.hanfu.user.center.controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +14,13 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping; 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.UsersMapper;
 import com.hanfu.user.center.model.Users;
 import com.hanfu.user.center.model.UsersExample;
@@ -63,6 +68,28 @@ public class KingWordsController {
 		UsersExample example = new UsersExample();
 		return builder.body(ResponseUtils.getResponseBody(usersMapper.selectByExample(example)));
 	}
-
 	
+	@RequestMapping("/upload_avatar")
+	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam("file") MultipartFile file,
+			String userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		FileMangeService fileManageService = new FileMangeService();
+		FileInputStream fis = null;
+		try {
+			fis = (FileInputStream) file.getInputStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] fileid = fileManageService.uploadFile(fis, userId);
+		return builder.body(ResponseUtils.getResponseBody(fileid));
+	}
+	@RequestMapping("/download_avatar")
+	public ResponseEntity<JSONObject> downloadAvatar(String group_name,
+			String remoteFilename) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		FileMangeService fileManageService = new FileMangeService();
+		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
+		return builder.body(ResponseUtils.getResponseBody(fileid));
+	}
 }
