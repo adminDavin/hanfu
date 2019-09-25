@@ -2,7 +2,7 @@ package com.hanfu.user.center.request;
 
 import java.io.Serializable;
 
-public class LoginReuqest implements Serializable {
+public class RegisterReuqest implements Serializable {
 	private String username;
 	private String password;
 	private String sourceType;
@@ -30,6 +30,11 @@ public class LoginReuqest implements Serializable {
 	}
 	public void setAuthKey(String authKey) {
 		this.authKey = authKey;
+	}
+	@Override
+	public String toString() {
+		return "RegisterReuqest [username=" + username + ", password=" + password + ", sourceType=" + sourceType
+				+ ", authKey=" + authKey + "]";
 	}
 	
 }

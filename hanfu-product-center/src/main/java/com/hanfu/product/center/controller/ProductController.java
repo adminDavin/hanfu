@@ -18,12 +18,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.ProductMapper;
-import com.hanfu.product.center.model.CategorySpecExample;
+import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.request.CategoryRequest;
+import com.hanfu.product.center.request.FileRequest;
+import com.hanfu.product.center.request.PriceRequest;
 import com.hanfu.product.center.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
@@ -42,7 +47,10 @@ public class ProductController {
 	
 	@Autowired
 	private ProductMapper productMapper;
-	
+	@Autowired
+	private GoodsSpecMapper goodsSpecMapper;
+	@Autowired
+	private FileDescMapper fileDescMapper;
 //	@ApiOperation(value = "获取全部品牌列表")
 //    @RequestMapping(value = "/product", method = RequestMethod.GET)
 //    @ResponseBody
@@ -93,9 +101,46 @@ public class ProductController {
 //		example.createCriteria().andBossIdEqualTo(bossId);
 //		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
 //    }
-	
-	
-	
+	@ApiOperation(value = "获取商品实体定价单元规格")
+    @RequestMapping(value = "/price", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiParam(name = "实体定价Id", required = true, type="Integer")
+	 public ResponseEntity<JSONObject> listPric(@RequestParam(name = "price") Integer priceId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(null)));
+    }
+	@ApiOperation(value = "添加商品实体定价单元规格")
+    @RequestMapping(value = "/price", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<JSONObject> AddPrice(@RequestBody PriceRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        GoodsSpec goodsSpec = new GoodsSpec();
+        goodsSpec.setInstanceId(request.getInstanceId());
+        goodsSpec.setHfSpec(request.getHfSpec());
+        goodsSpec.setSpecValue(request.getSpecValue());
+        goodsSpec.setSpecDesc(request.getSpecDesc());
+        return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(goodsSpec)));
+    }
+	@ApiOperation(value = "获取文件描述")
+    @RequestMapping(value = "/file", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiParam(name = "文件Id", required = true, type="Integer")
+	 public ResponseEntity<JSONObject> listFile(@RequestParam(name = "fileId") Integer priceId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(fileDescMapper.selectByExample(null)));
+    }
+	@ApiOperation(value = "添加文件描述")
+    @RequestMapping(value = "/file", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<JSONObject> AddFile(@RequestBody FileRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        FileDesc fileDesc = new FileDesc();
+        fileDesc.setFileName(request.getFileName());
+        fileDesc.setUserId(request.getUserId());
+        fileDesc.setGroupName(request.getGroupName());
+        fileDesc.setRemoteFilename(request.getRemoteFileName());
+        return builder.body(ResponseUtils.getResponseBody(fileDescMapper.insert(fileDesc)));
+    }
 	
 	
 }
