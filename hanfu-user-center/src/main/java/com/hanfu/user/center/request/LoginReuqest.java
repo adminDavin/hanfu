@@ -7,4 +7,5 @@ public class LoginReuqest implements Serializable {
 	private String password;
 	private String sourceType;
 	private String authKey;
+	
 }
