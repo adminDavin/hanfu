@@ -6903,3 +6903,51 @@ java.lang.NumberFormatException: For input string: ""
 2019-09-26 08:17:54.535  INFO 7088 --- [http-nio-8080-exec-7] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources/configuration/ui{}
 2019-09-26 08:17:54.709  INFO 7088 --- [http-nio-8080-exec-8] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources/configuration/security{}
 2019-09-26 08:17:54.725  INFO 7088 --- [http-nio-8080-exec-9] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources{}
+2019-09-26 09:45:57.724  INFO 8260 --- [main] o.a.dubbo.common.logger.LoggerFactory    : using logger: org.apache.dubbo.common.logger.slf4j.Slf4jLoggerAdapter
+2019-09-26 09:45:57.738  INFO 8260 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-09-26 09:45:57.743  INFO 8260 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.qos-enable=false, dubbo.application.registry=N/A, dubbo.config.multiple=true, dubbo.provider.server=true}
+2019-09-26 09:45:57.978  INFO 8260 --- [main] com.hanfu.product.center.Application     : Starting Application on zhangdw with PID 8260 (C:\zhangdw\project\hanfu\hanfu-product-center\target\classes started by administor in C:\zhangdw\project\hanfu\hanfu-product-center)
+2019-09-26 09:45:57.979  INFO 8260 --- [main] com.hanfu.product.center.Application     : No active profile set, falling back to default profiles: default
+2019-09-26 09:45:59.352  INFO 8260 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-09-26 09:45:59.362  INFO 8260 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-09-26 09:45:59.363  INFO 8260 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-09-26 09:45:59.370  INFO 8260 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-09-26 09:45:59.796  INFO 8260 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$a186b57d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 09:45:59.909  INFO 8260 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$73928c17] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 09:45:59.962  INFO 8260 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$3240da4d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 09:45:59.973  INFO 8260 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 09:45:59.982  INFO 8260 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 09:46:00.673  INFO 8260 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-09-26 09:46:00.722  INFO 8260 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-09-26 09:46:00.730  INFO 8260 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-09-26 09:46:00.911  INFO 8260 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-09-26 09:46:00.911  INFO 8260 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2867 ms
+2019-09-26 09:46:02.473  INFO 8260 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-09-26 09:46:02.755  INFO 8260 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-09-26 09:46:02.961  INFO 8260 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-09-26 09:46:02.985  INFO 8260 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-09-26 09:46:03.505  INFO 8260 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-09-26 09:46:03.539  INFO 8260 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-09-26 09:46:03.592  INFO 8260 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-09-26 09:46:03.946  INFO 8260 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-09-26 09:46:03.952  INFO 8260 --- [main] com.hanfu.product.center.Application     : Started Application in 6.863 seconds (JVM running for 7.557)
+2019-09-26 09:46:16.709  INFO 8260 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-09-26 09:46:16.718  INFO 8260 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-09-26 09:46:16.762  INFO 8260 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 37 ms
+2019-09-26 09:46:16.795  INFO 8260 --- [http-nio-8080-exec-1] c.h.p.c.i.AuthorityInterceptor           : /{}
+2019-09-26 09:46:20.750  INFO 8260 --- [http-nio-8080-exec-2] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources/configuration/ui{}
+2019-09-26 09:46:20.866  INFO 8260 --- [http-nio-8080-exec-3] c.h.p.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/favicon-16x16.png{"v":["2.8.0-SNAPSHOT"]}
+2019-09-26 09:46:20.874  INFO 8260 --- [http-nio-8080-exec-4] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources/configuration/security{}
+2019-09-26 09:46:20.899  INFO 8260 --- [http-nio-8080-exec-5] c.h.p.c.i.AuthorityInterceptor           : /swagger-resources{}
+2019-09-26 09:46:42.162  INFO 8260 --- [http-nio-8080-exec-8] c.h.p.c.i.AuthorityInterceptor           : /product/byBossId{"bossId":["1"]}
+2019-09-26 09:46:42.304  WARN 8260 --- [http-nio-8080-exec-8] com.zaxxer.hikari.HikariConfig           : dataSource - idleTimeout is close to or more than maxLifetime, disabling it.
+2019-09-26 09:46:42.312  INFO 8260 --- [http-nio-8080-exec-8] com.zaxxer.hikari.HikariDataSource       : dataSource - Starting...
+2019-09-26 09:46:42.924  INFO 8260 --- [http-nio-8080-exec-8] com.zaxxer.hikari.HikariDataSource       : dataSource - Start completed.
+2019-09-26 09:52:58.061  INFO 8260 --- [http-nio-8080-exec-4] c.h.p.c.i.AuthorityInterceptor           : /product/byBossId{"bossId":["1"]}
+2019-09-26 09:53:05.224  INFO 8260 --- [http-nio-8080-exec-5] c.h.p.c.i.AuthorityInterceptor           : /product/category{}
+2019-09-26 09:53:06.912  INFO 8260 --- [http-nio-8080-exec-6] c.h.p.c.i.AuthorityInterceptor           : /product/category{}

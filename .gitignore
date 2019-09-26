@@ -11,4 +11,5 @@ hanfu-common/.project
 hanfu-common/.settings/*
 hanfu-common/target/*
 hanfu-product-center/.classpath
+hanfu-product-center/logs/*
 hanfu-product-center/logs/king-words.log
