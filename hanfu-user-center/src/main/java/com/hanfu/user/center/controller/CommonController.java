@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
@@ -31,13 +32,7 @@ public class CommonController extends BasicErrorController {
 		super(errorAttributes, errorProperties);
 	}
 
-	@RequestMapping(value = "/index")
-	public ResponseEntity<JSONObject> index(HttpServletRequest request) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody("hello world"));
-	}
-
-	@RequestMapping("/error")
+	@RequestMapping(path = "/error", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(getStatus(request));
 		Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));

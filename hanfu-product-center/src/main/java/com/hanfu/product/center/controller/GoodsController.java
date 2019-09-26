@@ -53,7 +53,7 @@ public class GoodsController {
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "instanceId", value = "商品实体id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> listProduct(@RequestParam(name = "instanceId") Integer instanceId)
+	public ResponseEntity<JSONObject> listProduct(@RequestParam Integer instanceId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsExample example = new HfGoodsExample();

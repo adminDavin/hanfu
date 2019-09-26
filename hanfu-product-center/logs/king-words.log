@@ -3,7 +3,7 @@
 
  :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
  :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
- :: Discuss group : dev@dubbo.apache.org
+ :: Discuss group : dev@dubbo.apache.orgd dsafadsfas 
 
 2019-09-25 07:09:06.821  INFO 11208 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.qos-enable=false, dubbo.application.registry=N/A, dubbo.config.multiple=true, dubbo.provider.server=true}
 2019-09-25 07:09:07.163  INFO 11208 --- [main] com.hanfu.product.center.Application     : Starting Application on zhangdw with PID 11208 (C:\zhangdw\project\hanfu-system\hanfu-product-center\target\classes started by administor in C:\zhangdw\project\hanfu-system\hanfu-product-center)
