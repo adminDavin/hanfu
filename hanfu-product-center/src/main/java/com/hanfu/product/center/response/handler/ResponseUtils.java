@@ -3,10 +3,9 @@ package com.hanfu.product.center.response.handler;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
 
 public class ResponseUtils {
 	public static final String DATA = "data";

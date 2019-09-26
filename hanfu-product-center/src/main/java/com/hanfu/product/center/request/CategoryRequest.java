@@ -1,14 +1,18 @@
 package com.hanfu.product.center.request;
 
-import io.swagger.annotations.ApiParam;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+
+@SuppressWarnings("serial")
+@ApiModel
 public class CategoryRequest extends CommonRequest {
-	
-	@ApiParam(name = "类目名称", required = true, type = "String")
-	private String category;
-	@ApiParam(name = "商品类目上级ID", required = true, type="Integer")
+	@ApiModelProperty(required = true, value = "类目名称")
+    private String category;
+	@ApiModelProperty(required = true, value = "上级类目id, 如果顶级类目, 上级类目ID, 设置为-1", example = "-1")
 	private Integer parentCategoryId;
-	@ApiParam(name = "类目级别", required = true, type="Integer", allowableValues = "0,1,2,3")
+	@ApiModelProperty(required = true, value = "类目级别, 是指当前类目至顶层类目的间隔,  顶层类目的类目级别是0, 紧跟顶层类目的类目级别是1, 以此类推", example = "0")
 	private Integer levelId;
 	public String getCategory() {
 		return category;

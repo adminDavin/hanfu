@@ -2,6 +2,7 @@ package com.hanfu.product.center.request;
 
 import io.swagger.annotations.ApiParam;
 
+@SuppressWarnings("serial")
 public class ProductRequest extends CommonRequest {
 	@ApiParam(name = "商品名称", required = true, type="String")
 	private String produtName;

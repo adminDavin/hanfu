@@ -11,12 +11,12 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hanfu.product.center.response.handler.ResponseEntity;
+import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.product.center.response.handler.ResponseUtils;
  
 @RestController
