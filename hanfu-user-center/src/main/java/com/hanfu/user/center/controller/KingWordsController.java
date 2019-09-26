@@ -56,6 +56,7 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> loginUser(@RequestBody LoginReuqest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<String, String> list = commonService.loginUser(request);
+		
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
