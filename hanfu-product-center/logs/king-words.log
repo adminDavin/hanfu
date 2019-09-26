@@ -117,3 +117,36 @@
 2019-09-25 10:31:29.787  INFO 19236 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
 2019-09-25 10:31:30.031  INFO 19236 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
 2019-09-25 10:31:30.035  INFO 19236 --- [main] com.hanfu.product.center.Application     : Started Application in 4.245 seconds (JVM running for 4.647)
+2019-09-25 16:37:36.701  INFO 18076 --- [main] o.a.dubbo.common.logger.LoggerFactory    : using logger: org.apache.dubbo.common.logger.slf4j.Slf4jLoggerAdapter
+2019-09-25 16:37:36.706  INFO 18076 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-09-25 16:37:36.709  INFO 18076 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.qos-enable=false, dubbo.application.registry=N/A, dubbo.config.multiple=true, dubbo.provider.server=true}
+2019-09-25 16:37:36.793  INFO 18076 --- [main] com.hanfu.product.center.Application     : Starting Application on DESKTOP-G6H91B5 with PID 18076 (E:\workspace\hanfu\hanfu-product-center\target\classes started by 123 in E:\workspace\hanfu\hanfu-product-center)
+2019-09-25 16:37:36.793  INFO 18076 --- [main] com.hanfu.product.center.Application     : No active profile set, falling back to default profiles: default
+2019-09-25 16:37:37.544  INFO 18076 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-09-25 16:37:37.545  INFO 18076 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-09-25 16:37:37.546  INFO 18076 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-09-25 16:37:37.546  INFO 18076 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-09-25 16:37:37.832  INFO 18076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$d0b3b1a0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-25 16:37:37.892  INFO 18076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$a2bf883a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-25 16:37:37.929  INFO 18076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$616dd670] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-25 16:37:37.935  INFO 18076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-25 16:37:37.939  INFO 18076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-25 16:37:38.686  INFO 18076 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-09-25 16:37:38.708  INFO 18076 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-09-25 16:37:38.709  INFO 18076 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-09-25 16:37:38.821  INFO 18076 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-09-25 16:37:38.821  INFO 18076 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1989 ms
+2019-09-25 16:37:39.712  INFO 18076 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-09-25 16:37:39.855  INFO 18076 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-09-25 16:37:39.961  INFO 18076 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-09-25 16:37:39.976  INFO 18076 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-09-25 16:37:40.245  INFO 18076 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-09-25 16:37:40.259  INFO 18076 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-09-25 16:37:40.279  INFO 18076 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-09-25 16:37:40.493  INFO 18076 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-09-25 16:37:40.498  INFO 18076 --- [main] com.hanfu.product.center.Application     : Started Application in 4.236 seconds (JVM running for 4.612)
