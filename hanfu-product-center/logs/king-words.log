@@ -6951,3 +6951,38 @@ java.lang.NumberFormatException: For input string: ""
 2019-09-26 09:52:58.061  INFO 8260 --- [http-nio-8080-exec-4] c.h.p.c.i.AuthorityInterceptor           : /product/byBossId{"bossId":["1"]}
 2019-09-26 09:53:05.224  INFO 8260 --- [http-nio-8080-exec-5] c.h.p.c.i.AuthorityInterceptor           : /product/category{}
 2019-09-26 09:53:06.912  INFO 8260 --- [http-nio-8080-exec-6] c.h.p.c.i.AuthorityInterceptor           : /product/category{}
+2019-09-26 17:32:37.720  INFO 9000 --- [main] o.a.dubbo.common.logger.LoggerFactory    : using logger: org.apache.dubbo.common.logger.slf4j.Slf4jLoggerAdapter
+2019-09-26 17:32:37.727  INFO 9000 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-09-26 17:32:37.730  INFO 9000 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.qos-enable=false, dubbo.application.registry=N/A, dubbo.config.multiple=true, dubbo.provider.server=true}
+2019-09-26 17:32:37.961  INFO 9000 --- [main] com.hanfu.product.center.Application     : Starting Application on DESKTOP-G6H91B5 with PID 9000 (E:\workspace\hanfu\hanfu-product-center\target\classes started by 123 in E:\workspace\hanfu\hanfu-product-center)
+2019-09-26 17:32:37.962  INFO 9000 --- [main] com.hanfu.product.center.Application     : No active profile set, falling back to default profiles: default
+2019-09-26 17:32:39.110  INFO 9000 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-09-26 17:32:39.110  INFO 9000 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-09-26 17:32:39.111  INFO 9000 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-09-26 17:32:39.111  INFO 9000 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-09-26 17:32:39.491  INFO 9000 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$601eef22] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 17:32:39.560  INFO 9000 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$322ac5bc] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 17:32:39.595  INFO 9000 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$f0d913f2] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 17:32:39.602  INFO 9000 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 17:32:39.606  INFO 9000 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-09-26 17:32:40.249  INFO 9000 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2019-09-26 17:32:40.290  INFO 9000 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-09-26 17:32:40.291  INFO 9000 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-09-26 17:32:40.433  INFO 9000 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-09-26 17:32:40.433  INFO 9000 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2437 ms
+2019-09-26 17:32:41.649  INFO 9000 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-09-26 17:32:41.823  INFO 9000 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-09-26 17:32:41.953  INFO 9000 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-09-26 17:32:41.974  INFO 9000 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-09-26 17:32:42.333  INFO 9000 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-09-26 17:32:42.350  INFO 9000 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-09-26 17:32:42.382  INFO 9000 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-09-26 17:32:42.568  INFO 9000 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: listProductUsingGET_1
+2019-09-26 17:32:42.572  INFO 9000 --- [main] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addProductInfoUsingPOST_1
+2019-09-26 17:32:42.679  INFO 9000 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2019-09-26 17:32:42.683  INFO 9000 --- [main] com.hanfu.product.center.Application     : Started Application in 5.643 seconds (JVM running for 6.295)

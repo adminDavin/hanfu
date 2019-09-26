@@ -124,6 +124,18 @@
     from hf_goods_spec
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectAllByInstanceId" resultType="com.hanfu.product.center.model.GoodsSpec">
+  	select id,instance_id,hf_spec,spec_desc,spec_value,
+  	create_time,modify_time,last_modifier,is_deleted
+  	from goods_spec where instance_id in
+			<foreach collection="array"
+				item="cid" separator=","
+				open="(" close=")">
+				#{instanceId}
+			</foreach>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbg.generated

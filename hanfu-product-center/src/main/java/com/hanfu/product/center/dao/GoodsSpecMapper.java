@@ -2,6 +2,8 @@ package com.hanfu.product.center.dao;
 
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
+import com.hanfu.product.center.model.HfGoods;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -93,4 +95,6 @@ public interface GoodsSpecMapper {
      * @mbg.generated Wed Sep 25 09:59:02 CST 2019
      */
     int updateByPrimaryKey(GoodsSpec record);
+    
+    List<HfGoods> selectAllByInstanceId(Integer[] instanceId);
 }

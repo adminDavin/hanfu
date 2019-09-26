@@ -93,4 +93,11 @@ public interface HfGoodsMapper {
      * @mbg.generated Wed Sep 25 09:59:01 CST 2019
      */
     int updateByPrimaryKey(HfGoods record);
+    
+    /**
+     * 关联查询商品实体表和商品实体定价单元表得到该店铺所有商品实体定价单元id
+     * @param Id 商铺id
+     * @return
+     */
+    Integer[] selectAllByStoreId(Integer storeId);
 }

@@ -93,4 +93,6 @@ public interface HfStoneMapper {
      * @mbg.generated Wed Sep 25 09:59:01 CST 2019
      */
     int updateByPrimaryKey(HfStone record);
+    
+    HfStone selectByProductId(Integer productId);
 }

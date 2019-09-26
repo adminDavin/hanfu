@@ -1,5 +1,7 @@
 package com.hanfu.product.center.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.model.HfCategory;
+import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
 import com.hanfu.product.center.model.ProductInfoExample;
@@ -31,6 +35,8 @@ import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.product.center.response.handler.ResponseEntity;
 import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.product.center.response.handler.ResponseUtils;
+import com.hanfu.product.center.service.GoodsService;
+import com.hanfu.product.center.service.StoreService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,6 +64,12 @@ public class ProductController {
 	
 	@Autowired
 	private ProductInstanceMapper productInstanceMapper;
+	
+	@Autowired
+	private GoodsService goodsService;
+	
+	@Autowired
+	private StoreService storeService;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
@@ -146,10 +158,11 @@ public class ProductController {
 		ProductSpecExample example = new ProductSpecExample();
 		example.createCriteria().andProductIdEqualTo(productId);
 //		todo 查看商品所在的店铺信息
+		HfStone hfStone = storeService.findByProductId(productId);
 		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.selectByExample(example)));
 	}
 	
-	@ApiOperation(value = "获取店铺所有商品", notes = "根據商鋪id獲取商鋪的所有商品")
+	@ApiOperation(value = "获取店铺所有商品", notes = "根据商铺id获取商铺的所有商品")
 	@RequestMapping(value = "/byStoneId", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
@@ -158,6 +171,8 @@ public class ProductController {
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andStoneIdEqualTo(stoneId);
 //		todo 获取店铺内所有商品的详情
+		Integer[] instanceId = goodsService.findAllByStoreId(stoneId);
+		List<HfGoods> result = goodsService.findAllByInstanceId(instanceId);
 		return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.selectByExample(example)));
 	}
 	

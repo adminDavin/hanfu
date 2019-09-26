@@ -31,6 +31,7 @@
 					<overwrite>true</overwrite>
 				</configuration>
                 <dependencies>
+    	           
                     <dependency>
                         <groupId>org.mybatis.generator</groupId>
                         <artifactId>mybatis-generator-core</artifactId>
@@ -63,6 +64,11 @@
 	</build>
 
 	<dependencies>
+	 	<dependency>
+    	     <groupId>com.hanfu.common</groupId>
+			 <artifactId>hanfu-common</artifactId>
+			 <version>0.0.1</version>
+    	     </dependency>
 		<dependency>
 		    <groupId>org.apache.dubbo</groupId>
 		    <artifactId>dubbo-spring-boot-starter</artifactId>

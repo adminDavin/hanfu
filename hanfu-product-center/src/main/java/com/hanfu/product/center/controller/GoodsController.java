@@ -1,5 +1,10 @@
 package com.hanfu.product.center.controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.logging.log4j.core.appender.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -114,7 +120,7 @@ public class GoodsController {
 	
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
 	@RequestMapping(value = "/addPicture", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue item = new HfGoodsPictrue();
 		item.setHfName(request.getPictureName());
@@ -122,10 +128,15 @@ public class GoodsController {
 		item.setLastModifier(request.getUsername());
 		item.setSpecDesc(request.getPrictureDesc());
 //		上传文件到fastdfs
+		FileMangeService fileMangeService = new FileMangeService();
+		String userId = String.valueOf(request.getUserId());
+		InputStream file = request.getFileInfo().getInputStream();
+		String[] str = fileMangeService.uploadFile(file.readAllBytes(), userId);
+		
 		FileDesc fileDesc = new FileDesc();
-//		fileDesc.setFileName(fileName);
-//		fileDesc.setGroupName(groupName);
-//		fileDesc.setRemoteFilename(remoteFilename);
+		fileDesc.setFileName(request.getFileInfo().getName());
+		fileDesc.setGroupName(str[0]);
+		fileDesc.setRemoteFilename(str[1]);
 		fileDesc.setUserId(request.getUserId());
 		int fileId = fileDescMapper.insert(fileDesc);
 		item.setFileId(fileId);
