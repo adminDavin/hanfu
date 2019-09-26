@@ -45,11 +45,10 @@ public class KingWordsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/users")
+	@RequestMapping("/")
 	public ResponseEntity<JSONObject> listUsers(HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		List<Users> list = commonService.getUserList();
-		return builder.body(ResponseUtils.getResponseBody(list));
+		return builder.body(ResponseUtils.getResponseBody(usersMapper.selectByExample(null)));
 	}
 	
 	@RequestMapping("/login")

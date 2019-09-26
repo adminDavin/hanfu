@@ -1,22 +1,24 @@
 package com.hanfu.product.center.request;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class ProductRequest extends CommonRequest {
-	@ApiParam(name = "商品名称", required = true, type="String")
-	private String produtName;
-	@ApiParam(name="商品类目Id", required = true, type="Integer")
+	@ApiModelProperty(required = true, value = "商品名称")
+	private String hfName;
+	@ApiModelProperty(required = true, value = "商品所属的类目id")
 	private Integer categoryId;
-	@ApiParam(name="商品描述", required = true, type="String")
+	@ApiModelProperty(required = true, value = "商品描述")
 	private String productDesc;
-	@ApiParam(name = "商家Id", required = true, type="Integer")
+	@ApiModelProperty(required = true, name = "userId", value = "商家id")
 	private Integer bossId;
-	public String getProdutName() {
-		return produtName;
+	@ApiModelProperty(name = "username", required = true, value = "商家名称")
+	private String lastModifier;
+	public String getHfName() {
+		return hfName;
 	}
-	public void setProdutName(String produtName) {
-		this.produtName = produtName;
+	public void setHfName(String hfName) {
+		this.hfName = hfName;
 	}
 	public Integer getCategoryId() {
 		return categoryId;
@@ -36,7 +38,11 @@ public class ProductRequest extends CommonRequest {
 	public void setBossId(Integer bossId) {
 		this.bossId = bossId;
 	}
-	
-	
-	
+	public String getLastModifier() {
+		return lastModifier;
+	}
+	public void setLastModifier(String lastModifier) {
+		this.lastModifier = lastModifier;
+	}
+	 
 }
