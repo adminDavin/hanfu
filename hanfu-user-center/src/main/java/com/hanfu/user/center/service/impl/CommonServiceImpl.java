@@ -26,12 +26,4 @@ public class CommonServiceImpl implements CommonService {
 		return usersMapper.selectByExample(example);
 	}
 
-
-	@Override
-	public Map<String, String> loginUser(LoginReuqest request) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 }
