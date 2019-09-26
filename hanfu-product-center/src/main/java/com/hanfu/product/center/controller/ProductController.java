@@ -159,7 +159,7 @@ public class ProductController {
 		example.createCriteria().andProductIdEqualTo(productId);
 //		todo 查看商品所在的店铺信息
 		HfStone hfStone = storeService.findByProductId(productId);
-		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.selectByExample(example)));
+		return builder.body(ResponseUtils.getResponseBody(hfStone));
 	}
 	
 	@ApiOperation(value = "获取店铺所有商品", notes = "根据商铺id获取商铺的所有商品")
@@ -173,7 +173,7 @@ public class ProductController {
 //		todo 获取店铺内所有商品的详情
 		Integer[] instanceId = goodsService.findAllByStoreId(stoneId);
 		List<HfGoods> result = goodsService.findAllByInstanceId(instanceId);
-		return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.selectByExample(example)));
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	
