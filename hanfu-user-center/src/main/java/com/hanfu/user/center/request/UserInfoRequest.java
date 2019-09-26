@@ -25,4 +25,60 @@ public class UserInfoRequest extends CommonRequest {
 	private String address;
 	@ApiParam(required = false, value = "所在地区")
 	private String region;
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public String getRealName() {
+		return realName;
+	}
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getBirthDay() {
+		return birthDay;
+	}
+	public void setBirthDay(String birthDay) {
+		this.birthDay = birthDay;
+	}
+	public MultipartFile getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(MultipartFile fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getRegion() {
+		return region;
+	}
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	
+	
 }

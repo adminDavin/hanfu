@@ -14,8 +14,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.util.StringUtils; 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,45 +25,30 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.UsersMapper;
 import com.hanfu.user.center.model.Users;
-import com.hanfu.user.center.model.UsersExample;
-import com.hanfu.user.center.request.LoginReuqest;
+import com.hanfu.user.center.model.UsersExample; 
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.ResponseUtils;
-import com.hanfu.user.center.service.CommonService;
 
+
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@Api
 @RequestMapping("/user")
 public class KingWordsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	private CommonService commonService;
+	
 	@Autowired
 	private UsersMapper usersMapper;
-
 
 	@Resource
     private RedisTemplate<String, String> redisTemplate;
 	
-	/**
-	 * 展示所有用户
-	 * 
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/")
-	public ResponseEntity<JSONObject> listUsers(HttpServletRequest request) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        String user1 = redisTemplate.opsForValue().get("user");
-		return builder.body(ResponseUtils.getResponseBody(usersMapper.selectByExample(null)));
-	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@ApiImplicitParams({
@@ -112,7 +96,7 @@ public class KingWordsController {
 
 	
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -124,15 +108,7 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
-	
-	@RequestMapping("/")
-	public ResponseEntity<JSONObject> list() throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		UsersExample example = new UsersExample();
-		return builder.body(ResponseUtils.getResponseBody(usersMapper.selectByExample(example)));
-	}
-	
-	@RequestMapping("/upload_avatar")
+	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam("file") MultipartFile file,
 			String userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -147,7 +123,7 @@ public class KingWordsController {
 		String[] fileid = fileManageService.uploadFile(fis, userId);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
-	@RequestMapping("/download_avatar")
+	@RequestMapping(path = "/download_avatar",  method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> downloadAvatar(String group_name,
 			String remoteFilename) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
