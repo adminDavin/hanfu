@@ -20,7 +20,7 @@ drop table if exists hf_goods;
 
 drop table if exists hf_goods_pictrue;
 
-drop table if exists hf_resp_info;
+drop table if exists hf_warehouse;
 
 drop table if exists hf_goods_spec;
 
@@ -170,15 +170,15 @@ create table hf_goods_pictrue
 alter table hf_goods_pictrue comment '商品实体定价单图片描述';
 
 /*==============================================================*/
-/* Table: hf_resp_info                                     */
+/* Table: hf_warehouse                                     */
 /*==============================================================*/
-create table hf_resp_info
+create table hf_warehouse
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
-   instance_id          int comment '商品实体定价单元ID',
-   price                varchar(63) comment '商品实体价格',
-   discount             varchar(127) comment '优惠比例',
-   picture_address      char(10) comment '商品定价模型ID',
+   hf_name          	varchar(63)  comment '仓库名称',
+   hf_region            varchar(63) comment '所属区域',
+   hf_desc              varchar(127) comment '仓库描述',
+   bossId               int comment '商家id',
    create_time          timestamp default now() comment '添加时间',
    modify_time          timestamp default now() comment '修改时间',
    last_modifier        varchar(15) comment '最后一次修改人',
@@ -186,7 +186,7 @@ create table hf_resp_info
    primary key (id)
 );
 
-alter table hf_resp_info comment '仓库描述';
+alter table hf_warehouse comment '仓库描述';
 
 /*==============================================================*/
 /* Table: hf_goods_spec                                         */
