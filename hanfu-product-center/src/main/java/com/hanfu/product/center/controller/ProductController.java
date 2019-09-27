@@ -128,7 +128,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品规格", notes = "根据商品id获取商品的规格描述")
 	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商家ID", required = true, type = "Integer") })
+			@ApiImplicitParam(paramType = "query", name = "productId", value = "商家ID", required = true, type = "Integer", example = "0") })
 	public ResponseEntity<JSONObject> getProductSpec(@RequestParam(name = "productId") Integer productId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpecExample example = new ProductSpecExample();

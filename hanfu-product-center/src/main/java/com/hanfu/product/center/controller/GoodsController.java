@@ -1,3 +1,4 @@
+
 package com.hanfu.product.center.controller;
 
 import java.io.FileInputStream;
@@ -127,7 +128,6 @@ public class GoodsController {
 		item.setInstanceId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
 		item.setSpecDesc(request.getPrictureDesc());
-//		上传文件到fastdfs
 		FileMangeService fileMangeService = new FileMangeService();
 		String userId = String.valueOf(request.getUserId());
 		InputStream file = request.getFileInfo().getInputStream();

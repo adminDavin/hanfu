@@ -125,7 +125,7 @@
   </select>
   
   <select id="selectByProductId" resultMap="BaseResultMap">
-  	select  id,hf_name,boss_id,user_id,hf_desc,create_time,expire_time,hf_status,is_deleted
+  	select  h.id,hf_name,boss_id,user_id,hf_desc,h.create_time,h.expire_time,h.hf_status,h.is_deleted
   	from  hf_stone h left join product_instance p on h.id = p.stone_id where product_id = #{productId} 
   </select>
   

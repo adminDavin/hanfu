@@ -46,4 +46,5 @@ logging:
   file: ./logs/king-words.log  
   
 mybatis:
-  mapper-locations: mappers/*.xml
+  mapper-locations: -mappers/*.xml
+					-manual-mappers/*.xml

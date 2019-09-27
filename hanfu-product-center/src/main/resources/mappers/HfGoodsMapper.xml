@@ -122,8 +122,8 @@
     from hf_goods
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="selectAllStoreId" resultType="java.lang.Integer">
-  		select id from hf_goods h left join product_instance p on h.instance_id = p.id
+  <select id="selectAllByStoreId" resultType="java.lang.Integer">
+  		select p.id from hf_goods h left join product_instance p on h.instance_id = p.id
   		where stone_id = #{stoneId}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
