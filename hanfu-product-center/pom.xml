@@ -62,12 +62,7 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.hanfu.common</groupId>
-			<artifactId>hanfu-common</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+	<dependencies> 
 		<dependency>
 		    <groupId>org.apache.dubbo</groupId>
 		    <artifactId>dubbo-spring-boot-starter</artifactId>
