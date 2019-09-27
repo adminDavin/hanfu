@@ -43,6 +43,10 @@
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
+<table schema="user_center" tableName="file_desc" domainObjectName="FileDesc" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
 <table schema="user_center" tableName="hf_boss" domainObjectName="HfBoss" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
@@ -59,11 +63,27 @@
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
-<table schema="user_center" tableName="hf_goods_info" domainObjectName="hfGoodsInfo" >
+<table schema="user_center" tableName="hf_goods_pictrue" domainObjectName="HfGoodsPictrue" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
-<table schema="user_center" tableName="hf_goods_pictrue" domainObjectName="HfGoodsPictrue" >
+<table schema="user_center" tableName="hf_warehouse" domainObjectName="HfWareHouse" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+<table schema="user_center" tableName="hf_goods_spec" domainObjectName="GoodsSpec" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+<table schema="user_center" tableName="hf_price" domainObjectName="HfPrice" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+<table schema="user_center" tableName="hf_price_mode" domainObjectName="HfPriceMode" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+<table schema="user_center" tableName="hf_resp" domainObjectName="HfResp" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
@@ -83,27 +103,22 @@
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
-<table schema="user_center" tableName="product_source" domainObjectName="ProductSource" >
+<table schema="user_center" tableName="product_spec" domainObjectName="ProductSpec" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
-<table schema="user_center" tableName="product_spec" domainObjectName="ProductSpec" >
+<!-- 图片上的表17张已经与上面的table一一对应，<table schema="user_center" tableName="hf_goods_info" domainObjectName="hfGoodsInfo" >
+      <property name="useActualColumnNames" value="false"/>
+      <generatedKey column="id" sqlStatement="mysql" identity="true" />
+    </table>
+<table schema="user_center" tableName="product_source" domainObjectName="ProductSource" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
 <table schema="user_center" tableName="stone_info" domainObjectName="StoneInfo" >
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
-    </table>
-   
-<table schema="user_center" tableName="file_desc" domainObjectName="FileDesc" >
-      <property name="useActualColumnNames" value="false"/>
-      <generatedKey column="id" sqlStatement="mysql" identity="true" />
-    </table>
-<table schema="user_center" tableName="hf_goods_spec" domainObjectName="GoodsSpec" >
-      <property name="useActualColumnNames" value="false"/>
-      <generatedKey column="id" sqlStatement="mysql" identity="true" />
-    </table>
+    </table> -->
    
   </context>
 </generatorConfiguration>
