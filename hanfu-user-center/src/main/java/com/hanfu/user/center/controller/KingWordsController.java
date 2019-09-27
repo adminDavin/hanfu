@@ -27,13 +27,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
-import com.hanfu.user.center.dao.UsersMapper;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.HfUserExample;
-import com.hanfu.user.center.model.Users;
-import com.hanfu.user.center.model.UsersExample; 
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
@@ -48,7 +45,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api
+@Api 
 @RequestMapping("/user")
 public class KingWordsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -80,13 +77,7 @@ public class KingWordsController {
 			if (StringUtils.isEmpty(authType)) {
 				throw new ParamInvalidException("authType is invalid");
 			}
-//			todo 发送手机号验证
 			GetMessageCode.getCode(authKey);
-//		} else {  暂时只考虑手机登录的情况
-//			UsersExample example = new UsersExample();
-//			example.createCriteria().andIdEqualTo(1);
-//			
-//			todo 用户名密码验证
 		}
 //		todo 记得返回 token 和userId 
 		return builder.body(ResponseUtils.getResponseBody(list));
@@ -117,11 +108,10 @@ public class KingWordsController {
 		auth.setAuthType(authType);
 		auth.setUserId(userId);
 		hfAuthMapper.insert(auth);
-//		to do  生成token 
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("userId", String.valueOf(userId));
+		map.put(token, String.valueOf(userId));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}

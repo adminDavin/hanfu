@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.UsersMapper;
+import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.Users;
 import com.hanfu.user.center.model.UsersExample;
 import com.hanfu.user.center.request.UserInfoRequest;
@@ -21,7 +23,7 @@ public class UserCenterServiceImpl implements UserCenterService{
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;
 	@Autowired
-	private UsersMapper usersMapper;
+	private HfUserMapper hfUsersMapper;
 	@Override
 	public Map<String, Integer> login() {	
 		Map<String , Integer> list = new HashMap<>();
@@ -32,25 +34,13 @@ public class UserCenterServiceImpl implements UserCenterService{
 		String key ="_token";
 		redisTemplate.opsForValue().set(key, token, 
 			Constants.STATE_MANAGER, TimeUnit.HOURS);
-		usersMapper.selectByPrimaryKey(1);
+		hfUsersMapper.selectByPrimaryKey(1);
 		list.put(token, 1);
 		return list;
 	}
 	@Override
 	public Map<String, Integer> register() {
-		Map<String , Integer> list = new HashMap<>();
-		//生成token
-		UUID uuid = UUID.randomUUID();
-		String token ="_"+uuid.toString().replaceAll("-", "");
-		//将token存入redis
-		String key ="_token";
-		redisTemplate.opsForValue().set(key, token, 
-			Constants.STATE_MANAGER, TimeUnit.HOURS);
-		UsersExample example = new UsersExample();
-		example.createCriteria().andIdEqualTo(1);
-		Users user = new Users();
-		list.put(token, 1);
-		return list;
+		return null;
 	}
 	public boolean checkToken(String token){
 		//解析出userId和uuid
@@ -75,14 +65,5 @@ public class UserCenterServiceImpl implements UserCenterService{
 				Constants.STATE_MANAGER, TimeUnit.HOURS);
 		return true;
 	}
-	@Override
-	public List<Users> update(UserInfoRequest request) {
-		List<Users> list = new ArrayList<>();
-		int id = request.getUserId();
-		Users user = usersMapper.selectByPrimaryKey(id);
-		list.add(user);
-		return list;
-	}
-
 
 }
