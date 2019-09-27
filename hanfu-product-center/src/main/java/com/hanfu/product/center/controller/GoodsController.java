@@ -67,9 +67,7 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods item = new HfGoods();
 		item.setInstanceId(request.getInstanceId());
-		item.setPriceId(request.getPriceId());
-		item.setQuantity(request.getQuantity());
-		item.setSpecDesc(request.getGoodDesc());
+		item.setRespId(request.getRespId());
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(item)));
 	}
 	
@@ -81,7 +79,7 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		GoodsSpecExample example = new GoodsSpecExample();
-		example.createCriteria().andInstanceIdEqualTo(goodsId);
+		example.createCriteria().andGoodsIdEqualTo(goodsId);
 		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(example)));
 	}
 	
@@ -91,11 +89,11 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		GoodsSpec item = new GoodsSpec();
-		item.setHfSpec(request.getSpecName());
-		item.setInstanceId(request.getGoodsId());
+//		item.setHfSpecId(hfSpecId);(request.getSpecName());
+		item.setGoodsId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
-		item.setSpecDesc(request.getSpecDesc());
-		item.setSpecValue(request.getSpecValue());
+//		item.set(request.getSpecDesc());
+		item.setHfValue(request.getSpecValue());
 		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(item)));
 	}
 
@@ -107,7 +105,7 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> getGoodsPicture(@RequestParam(name = "goodsId") Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		GoodsSpecExample example = new GoodsSpecExample();
-		example.createCriteria().andInstanceIdEqualTo(goodsId);
+		example.createCriteria().andGoodsIdEqualTo(goodsId);
 		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(example)));
 	}
 	
@@ -118,7 +116,7 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue item = new HfGoodsPictrue();
 		item.setHfName(request.getPictureName());
-		item.setInstanceId(request.getGoodsId());
+		item.setGoodsId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
 		item.setSpecDesc(request.getPrictureDesc());
 //		上传文件到fastdfs

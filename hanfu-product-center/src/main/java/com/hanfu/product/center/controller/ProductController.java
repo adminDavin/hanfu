@@ -109,7 +109,6 @@ public class ProductController {
 		item.setHfValue(request.getInfoValue());
 		item.setLastModifier(request.getLastModifier());
 		item.setProductId(request.getProductId());
-		item.setValueUnit(request.getInfoDesc());
 		return builder.body(ResponseUtils.getResponseBody(productInfoMapper.insert(item)));
 	}
 	

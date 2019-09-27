@@ -6,8 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 public class HfGoodsRequest extends CommonRequest {
 	@ApiModelProperty(required = true, value = "商品实体id, 即具体到到店铺的商品")
 	private Integer instanceId;
-	@ApiModelProperty(required = true, value = "物品数量")
-	private Integer quantity;
+	@ApiModelProperty(required = true, value = "仓库地址")
+	private Integer respId;
 	@ApiModelProperty(required = true, value = "物品描述")
 	private String goodDesc;
 	@ApiModelProperty(required = true, value = "物品价格,单位: 分", example = "0")
@@ -18,11 +18,11 @@ public class HfGoodsRequest extends CommonRequest {
 	public void setInstanceId(Integer instanceId) {
 		this.instanceId = instanceId;
 	}
-	public Integer getQuantity() {
-		return quantity;
+	public Integer getRespId() {
+		return respId;
 	}
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+	public void setRespId(Integer respId) {
+		this.respId = respId;
 	}
 	public String getGoodDesc() {
 		return goodDesc;
@@ -35,7 +35,9 @@ public class HfGoodsRequest extends CommonRequest {
 	}
 	public void setPriceId(Integer priceId) {
 		this.priceId = priceId;
-	}
+	} 
+	
+	
 	
 	
 	
