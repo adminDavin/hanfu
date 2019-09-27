@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
 	public void loginExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("login failed:", e);
 	}
+	
+	@ExceptionHandler(value = UserNotExistException.class)
+    @ResponseStatus(value=HttpStatus.FORBIDDEN, reason="user is invalid")
+	public void userNotExistExceptionHandler(HttpServletRequest req, Exception e) {
+		logger.error("user is invalid:", e);
+	}
 }

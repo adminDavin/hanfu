@@ -9,5 +9,4 @@ import com.hanfu.user.center.request.LoginReuqest;
 public interface CommonService {
 	public List<Users> getUserList();
 
-	public Map<String, String> loginUser(LoginReuqest request);
 }
