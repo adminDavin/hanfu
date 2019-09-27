@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
+	<select id="selectProductByStone" parameterType="integer" resultType="integer">
+	select   count(1)
+		from hf_goods a join hf_resp b on a.id = b.googs_id join hf_price c on a.id=c.googs_id where a.id=#{goodsId};
+	</select>
+
+</mapper>

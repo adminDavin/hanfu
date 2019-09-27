@@ -31,6 +31,7 @@ import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.product.center.response.handler.ResponseEntity;
 import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.product.center.response.handler.ResponseUtils;
+import com.hanfu.product.center.service.ProductService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,6 +59,9 @@ public class ProductController {
 	
 	@Autowired
 	private ProductInstanceMapper productInstanceMapper;
+	
+	@Autowired
+	private ProductService productService;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
@@ -154,9 +158,11 @@ public class ProductController {
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getStoneProduct(@RequestParam(name = "stoneId") Integer stoneId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		productService.getProductByStone(stoneId);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andStoneIdEqualTo(stoneId);
 //		todo 获取店铺内所有商品的详情
+		
 		return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.selectByExample(example)));
 	}
 	
