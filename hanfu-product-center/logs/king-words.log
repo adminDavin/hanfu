@@ -1042,3 +1042,4 @@ java.lang.NumberFormatException: For input string: ""
 2019-09-27 11:01:42.213  INFO 24624 --- [http-nio-8080-exec-8] c.h.p.c.i.AuthorityInterceptor           : /goods/addSpecify{"goodsId":["1"],"requestId":["1"],"specDesc":["1"],"specName":["1"],"specValue":["1"],"timestamp":["1"],"token":["1"],"userId":["1"],"username":["1"]}
 2019-09-27 11:01:43.994  INFO 24624 --- [http-nio-8080-exec-10] c.h.p.c.i.AuthorityInterceptor           : /goods/addSpecify{"goodsId":["1"],"requestId":["1"],"specDesc":["1"],"specName":["1"],"specValue":["1"],"timestamp":["1"],"token":["1"],"userId":["1"],"username":["1"]}
 2019-09-27 11:01:53.248  INFO 24624 --- [http-nio-8080-exec-4] c.h.p.c.i.AuthorityInterceptor           : /goods/byInstanceId{"instanceId":["1"]}
+2019-09-27 11:02:01.298  INFO 24624 --- [http-nio-8080-exec-3] c.h.p.c.i.AuthorityInterceptor           : /goods/pictures{"goodsId":["1"]}
