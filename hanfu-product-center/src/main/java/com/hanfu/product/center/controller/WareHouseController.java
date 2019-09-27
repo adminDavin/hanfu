@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.request.HfRespRequest;
 import com.hanfu.product.center.request.WareHouseRequest;
 import com.hanfu.product.center.response.handler.ResponseEntity;
