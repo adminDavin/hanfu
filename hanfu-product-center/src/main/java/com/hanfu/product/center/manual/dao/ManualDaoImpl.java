@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
 
 
@@ -28,5 +29,11 @@ public class ManualDaoImpl implements ManualDao {
 		System.out.println(result);
 		
 	}
+
+    @Override
+    public List<Categories> selectCategories() {
+        List<Categories> result = sqlSessionTemplate.selectList("selectCategories");
+        return result;
+    }
 
 }

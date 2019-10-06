@@ -116,7 +116,7 @@ alter table hf_brand comment '商品品牌';
 create table hf_category
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
-   hf_name              char(1) comment '类目名称',
+   hf_name              varchar(31) comment '类目名称',
    parent_category_id          int comment '所属类目',
    level_id             int comment '所属级别',
    create_time          timestamp default now() comment '添加时间',
