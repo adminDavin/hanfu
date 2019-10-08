@@ -13,6 +13,7 @@
 		<finalName>hanfu-user-center</finalName>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
+		  
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -63,7 +64,7 @@
 
 	<dependencies>   
         <dependency>
-		  <artifactId>hanfu-utils</artifactId>
+		  <artifactId>hanfu-web-utils</artifactId>
 		  <groupId>com.hanfu.utils</groupId>
 		  <version>0.0.1</version>
         </dependency>
