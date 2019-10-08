@@ -11,6 +11,10 @@
 		<module>hanfu-user-center</module>
 		<module>hanfu-product-center</module>
 		<module>hanfu-common</module>
+		<module>hanfu-product-client</module>
+		<module>hanfu-utils</module>
+		<module>hanfu-order-center</module>
+		<module>hanfu-order-client</module>
 	</modules>
 	<profiles>
 		<profile>

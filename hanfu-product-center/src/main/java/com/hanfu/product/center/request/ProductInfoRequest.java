@@ -10,8 +10,6 @@ public class ProductInfoRequest extends CommonRequest {
 	private Integer productId;
 	@ApiModelProperty(required = true, value = "属性值")
 	private String infoValue;
-	@ApiModelProperty(required = true, value = "属性描述")
-	private String infoDesc;
 	@ApiModelProperty(name = "username", required = true, value = "商家名称")
 	private String lastModifier;
 	@ApiModelProperty(name = "hfRemark", required = false, value = "备注")
@@ -33,12 +31,6 @@ public class ProductInfoRequest extends CommonRequest {
 	}
 	public void setInfoValue(String infoValue) {
 		this.infoValue = infoValue;
-	}
-	public String getInfoDesc() {
-		return infoDesc;
-	}
-	public void setInfoDesc(String infoDesc) {
-		this.infoDesc = infoDesc;
 	}
 	public String getLastModifier() {
 		return lastModifier;

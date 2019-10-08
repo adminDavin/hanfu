@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hanfu.product.center.response.handler.ResponseEntity;
-import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
-import com.hanfu.product.center.response.handler.ResponseUtils;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseUtils;
+
  
 @RestController
 @RequestMapping("/")

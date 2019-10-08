@@ -15,9 +15,9 @@ import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample; 
 import com.hanfu.product.center.request.HfStoneRequest; 
-import com.hanfu.product.center.response.handler.ResponseEntity;
-import com.hanfu.product.center.response.handler.ResponseUtils;
-import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
