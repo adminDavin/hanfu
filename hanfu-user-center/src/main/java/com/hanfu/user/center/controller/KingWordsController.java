@@ -2,8 +2,8 @@ package com.hanfu.user.center.controller;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,7 +59,7 @@ public class KingWordsController {
 	@Autowired HfAuthMapper hfAuthMapper;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
+	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
@@ -69,23 +69,14 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> login(@RequestParam String authType, @RequestParam String authKey, @RequestParam String passwd, @RequestParam String token) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<String,Integer> list = userCenterService.login();
-		String json = JSON.toJSONString(list);//map转String
-		JSONObject jsonObject = JSON.parseObject(json);//String转json
 		if (StringUtils.isEmpty(token)) {
 			userCenterService.checkToken(token);
 		} else if(! "1".equals(authType)) {
 			if (StringUtils.isEmpty(authType)) {
 				throw new ParamInvalidException("authType is invalid");
 			}
-//			todo 发送手机号验证
 			GetMessageCode.getCode(authKey);
-//		} else {  暂时只考虑手机登录的情况
-//			UsersExample example = new UsersExample();
-//			example.createCriteria().andIdEqualTo(1);
-//			
-//			todo 用户名密码验证
 		}
-//		todo 记得返回 token 和userId 
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
@@ -108,17 +99,17 @@ public class KingWordsController {
 		user.setPhone(authKey);
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
+		user.setBirthDay(LocalDateTime.now());
 		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
 		auth.setUserId(userId);
 		hfAuthMapper.insert(auth);
-//		to do  生成token 
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("userId", String.valueOf(userId));
+		map.put(token, String.valueOf(userId));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
