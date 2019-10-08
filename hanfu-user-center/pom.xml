@@ -13,14 +13,7 @@
 		<finalName>hanfu-user-center</finalName>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
-		    <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.hanfu.user.center.Application</mainClass>
-                </configuration>
-            </plugin>
-            
+		    
 			<plugin>
 				<groupId>org.mybatis.generator</groupId>
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -51,6 +44,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			   <configuration>
+                    <mainClass>com.hanfu.user.center.Application</mainClass>
+               </configuration> 
 				<executions>
 					<execution>
 						<goals>

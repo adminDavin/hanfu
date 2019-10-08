@@ -20,9 +20,9 @@ public class KingWordsControllerTest {
     @Autowired
 	private MockMvc mvc;
     
-    @Test
-    public void home() throws Exception {
-		this.mvc.perform(get("/kw/users").accept(MediaType.TEXT_PLAIN)).andExpect(status().isOk());
-	}
+//    @Test
+//    public void home() throws Exception {
+//		this.mvc.perform(get("/kw/users").accept(MediaType.TEXT_PLAIN)).andExpect(status().isOk());
+//	}
 
 }

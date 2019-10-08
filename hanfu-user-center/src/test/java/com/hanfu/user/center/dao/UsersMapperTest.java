@@ -15,9 +15,9 @@ public class UsersMapperTest {
 	@Autowired
 	private UsersMapper usersMapper;
 	
-	@Test
-    void runTest() {
-		long count = usersMapper.countByExample(new UsersExample());
-		System.out.println(count);
-    }
+//	@Test
+//    void runTest() {
+//		long count = usersMapper.countByExample(new UsersExample());
+//		System.out.println(count);
+//    }
 }

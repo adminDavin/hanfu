@@ -14,8 +14,8 @@ public class UserServiceTest {
 	@Autowired
 	private ManualDao dbDao;
 	
-	@Test
-	public void getSimpleUserInfo() {
-		System.out.println(JSON.toJSON(dbDao.getSimpleUserInfo()));
-	}
+//	@Test
+//	public void getSimpleUserInfo() {
+//		System.out.println(JSON.toJSON(dbDao.getSimpleUserInfo()));
+//	}
 }
