@@ -81,7 +81,7 @@ public class IpAddress {
         // 读取数据库内容
         try {
             reader = new DatabaseReader.Builder(database).build();
-        } catch (IOException e) {
+        } catch (IOException e) {	
             e.printStackTrace();
         } finally {
             lock.unlock();
