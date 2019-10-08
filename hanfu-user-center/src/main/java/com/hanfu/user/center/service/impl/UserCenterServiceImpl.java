@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.Constants;
 @Component
@@ -27,14 +28,9 @@ public class UserCenterServiceImpl implements UserCenterService{
 		String key ="_token";
 		redisTemplate.opsForValue().set(key, token, 
 			Constants.STATE_MANAGER, TimeUnit.HOURS);
-		hfUsersMapper.selectByPrimaryKey(1);
-		list.put(token, 1);
+        HfUser hfUser = new HfUser();
+		list.put(token, hfUser.getId());
 		return list;
-	}
-	@Override
-	public Map<String, Integer> register() {
-
-		return null;
 	}
 	public boolean checkToken(String token){
 		//解析出userId和uuid

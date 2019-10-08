@@ -2,6 +2,7 @@ package com.hanfu.user.center.controller;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -74,7 +75,6 @@ public class KingWordsController {
 			}
 			GetMessageCode.getCode(authKey);
 		}
-//		todo 记得返回 token 和userId 
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
@@ -97,6 +97,7 @@ public class KingWordsController {
 		user.setPhone(authKey);
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
+		user.setBirthDay(LocalDateTime.now());
 		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);

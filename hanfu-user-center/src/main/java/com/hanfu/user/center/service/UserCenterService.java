@@ -9,7 +9,6 @@ public interface UserCenterService {
 
 	Map<String, Integer> login();
 
-	Map<String, Integer> register();
 
 
 
