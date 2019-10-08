@@ -14,5 +14,5 @@ hanfu-product-center/.classpath
 hanfu-product-center/logs/*
 hanfu-product-center/logs
 hanfu-product-client/target/*
-hanfu-orders-center/target/*
-hanfu-orders-client/target/*
+hanfu-order-center/target/*
+hanfu-order-client/target/*
