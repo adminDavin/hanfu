@@ -1,11 +1,11 @@
-package com.hanfu.product.center.response.handler;
+package com.hanfu.utils.response.handler;
 
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
 public class ResponseUtils {
 	public static final String DATA = "data";

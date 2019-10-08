@@ -30,9 +30,9 @@ import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
-import com.hanfu.product.center.response.handler.ResponseEntity;
-import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
-import com.hanfu.product.center.response.handler.ResponseUtils;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.product.center.service.ProductService;
 
 import io.swagger.annotations.Api;

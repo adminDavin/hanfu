@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.request.HfRespRequest;
 import com.hanfu.product.center.request.WareHouseRequest;
-import com.hanfu.product.center.response.handler.ResponseEntity;
-import com.hanfu.product.center.response.handler.ResponseUtils;
-import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.utils.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,7 +37,7 @@ public class WareHouseController {
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	
-	@ApiOperation(value = "添加库存", notes = "为某一个物品添加库存")
+	@ApiOperation(value = "添加倉庫", notes = "為商家創建一個倉庫")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addWareHouse(WareHouseRequest instanceId)
 			throws JSONException {

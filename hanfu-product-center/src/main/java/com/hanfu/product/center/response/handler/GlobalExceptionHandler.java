@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler  extends com.hanfu.utils.response.handler.GlobalExceptionHandler {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@ExceptionHandler(value = Exception.class)

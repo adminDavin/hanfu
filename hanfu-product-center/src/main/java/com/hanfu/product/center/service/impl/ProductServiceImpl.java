@@ -9,6 +9,7 @@ import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.service.ProductService;
 
 @Service("productService")
+@org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ManualDao manualDao;
@@ -16,7 +17,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void getProductByStone(Integer stoneId) {
 		manualDao.selectProductByStone(stoneId);
-		
+		System.out.println("hello word");
 	}
 
 

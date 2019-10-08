@@ -1,4 +1,4 @@
-package com.hanfu.product.center.response.handler;
+package com.hanfu.utils.response.handler;
 
 import java.net.URI;
 import java.time.Instant;
