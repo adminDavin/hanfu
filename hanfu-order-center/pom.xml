@@ -6,4 +6,14 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>hanfu-order-center</artifactId>
+  
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+            </plugin>
+        </plugins>
+    </build>
+    
 </project>

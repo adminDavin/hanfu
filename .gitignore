@@ -16,3 +16,4 @@ hanfu-product-center/logs
 hanfu-product-client/target/*
 hanfu-order-center/target/*
 hanfu-order-client/target/*
+hanfu-web-utils/target/*

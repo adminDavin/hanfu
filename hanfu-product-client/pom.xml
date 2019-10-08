@@ -12,7 +12,7 @@
 
 	<dependencies>
 		<dependency>
-			<artifactId>hanfu-utils</artifactId>
+			<artifactId>hanfu-web-utils</artifactId>
 			<groupId>com.hanfu.utils</groupId>
 			<version>0.0.1</version>
 		</dependency>

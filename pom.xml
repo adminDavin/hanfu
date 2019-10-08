@@ -7,12 +7,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>client-base</module>
 		<module>hanfu-user-center</module>
 		<module>hanfu-product-center</module>
 		<module>hanfu-common</module>
 		<module>hanfu-product-client</module>
-		<module>hanfu-utils</module>
+		<module>hanfu-web-utils</module>
 		<module>hanfu-order-center</module>
 		<module>hanfu-order-client</module>
 	</modules>
@@ -45,7 +44,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.alibaba</groupId>
