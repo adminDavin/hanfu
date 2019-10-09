@@ -19,6 +19,7 @@ import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
 import com.hanfu.product.center.model.ProductInfoExample;
@@ -29,6 +30,7 @@ import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
+import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.product.center.response.handler.ResponseEntity;
 import com.hanfu.product.center.response.handler.ResponseEntity.BodyBuilder;
@@ -111,6 +113,20 @@ public class ProductController {
         ProductExample example = new ProductExample();
         example.createCriteria().andBossIdEqualTo(bossId);
         return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
+    }
+    
+    @ApiOperation(value = "添加商品列表", notes = "根据商家录入的商品")
+    @RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Product product = new Product();
+        product.setBossId(request.getBossId());
+        product.setBrandId(request.getBrandId());
+        product.setCategoryId(request.getCategoryId());
+        product.setHfName(request.getHfName());
+        product.setLastModifier(request.getLastModifier());
+        product.setProductDesc(request.getProductDesc());
+        return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
     }
 
     @ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")

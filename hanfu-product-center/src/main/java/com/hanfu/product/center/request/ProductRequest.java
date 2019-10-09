@@ -8,12 +8,22 @@ public class ProductRequest extends CommonRequest {
 	private String hfName;
 	@ApiModelProperty(required = true, value = "商品所属的类目id")
 	private Integer categoryId;
+	@ApiModelProperty(required = true, value = "品牌id")
+	private Integer brandId;
 	@ApiModelProperty(required = true, value = "商品描述")
 	private String productDesc;
 	@ApiModelProperty(required = true, name = "userId", value = "商家id")
 	private Integer bossId;
 	@ApiModelProperty(name = "username", required = true, value = "商家名称")
 	private String lastModifier;
+	
+	
+	public Integer getBrandId() {
+		return brandId;
+	}
+	public void setBrandId(Integer brandId) {
+		this.brandId = brandId;
+	}
 	public String getHfName() {
 		return hfName;
 	}
