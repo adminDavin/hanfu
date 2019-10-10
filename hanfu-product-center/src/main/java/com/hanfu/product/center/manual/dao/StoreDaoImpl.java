@@ -9,18 +9,19 @@ import org.springframework.stereotype.Repository;
 
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
+import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product;
 
 
 @Repository
-public class ProductDaoImpl implements ProductDao {
+public class StoreDaoImpl implements StoreDao {
 
 	@Autowired
     SqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public List<Product> selectProductById(Integer storeId) {
-		List<Product> result = sqlSessionTemplate.selectList("selectProductById", storeId);
+	public List<HfStone> selectStoreById(Integer productId) {
+		List<HfStone> result = sqlSessionTemplate.selectList("selectStoreById", productId);
 		return result;
 	}
 

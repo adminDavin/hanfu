@@ -7,6 +7,6 @@ import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product;
 
-public interface ProductDao {
-	public List<Product> selectProductById(Integer storeId);
+public interface StoreDao {
+	public List<HfStone> selectStoreById(Integer productId);
 }

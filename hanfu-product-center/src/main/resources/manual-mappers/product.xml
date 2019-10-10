@@ -14,17 +14,18 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
-  <select id="selectById" resultMap="BaseResultMap">
+  <select id="selectProductById" resultMap="BaseResultMap">
   		SELECT 
-  			id, hf_name,
-  			category_id, brand_id,
-  			product_desc, boss_id,
-  			create_time, last_modifier, 
-    		modify_time, is_deleted
+  			distinct p1.id, p1.hf_name,
+            p1.category_id, p1.brand_id,
+            p1.product_desc, p1.boss_id,
+            p1.create_time, p1.last_modifier,
+            p1.modify_time, p1.is_deleted
     	    FROM
-    	    	 product
+    	    	 product p1
     	    LEFT JOIN 
-    	    	 product_instance 
-    	    WHERE id = #{productId}
+    	    	 product_instance p2
+    	    ON  p1.id = p2.product_id
+    	    WHERE p2.stone_id = #{storeId}
   </select>
 </mapper>

@@ -18,6 +18,7 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
+import com.hanfu.product.center.manual.dao.StoreDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.Product;
@@ -58,6 +59,9 @@ public class ProductController {
     
     @Autowired
     private ProductDao productDao;
+    
+    @Autowired
+    private StoreDao storeDao;
     
     @Autowired
     private ProductInfoMapper productInfoMapper;
@@ -194,8 +198,7 @@ public class ProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductSpecExample example = new ProductSpecExample();
         example.createCriteria().andProductIdEqualTo(productId);
-        // todo 查看商品所在的店铺信息
-        return builder.body(ResponseUtils.getResponseBody(productSpecMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(storeDao.selectStoreById(productId)));
     }
 
     @ApiOperation(value = "获取店铺所有商品", notes = "根據商鋪id獲取商鋪的所有商品")
@@ -208,9 +211,7 @@ public class ProductController {
         productService.getProductByStone(stoneId);
         ProductInstanceExample example = new ProductInstanceExample();
         example.createCriteria().andStoneIdEqualTo(stoneId);
-        // todo 获取店铺内所有商品的详情
-
-        return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductById(stoneId)));
     }
 
     @ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")

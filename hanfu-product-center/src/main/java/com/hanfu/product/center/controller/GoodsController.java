@@ -71,6 +71,12 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(item)));
 	}
 	
+	@ApiOperation(value = "删除商品", notes = "删除商品")
+	@RequestMapping(value = "/deletegood", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteGood(HfGoodsRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(request.getInstanceId())));
+	}
 	
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
 	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
