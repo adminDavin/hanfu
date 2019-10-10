@@ -61,6 +61,7 @@ public class WareHouseController {
 	public ResponseEntity<JSONObject> addResp(HfRespRequest instanceId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println();
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	 
