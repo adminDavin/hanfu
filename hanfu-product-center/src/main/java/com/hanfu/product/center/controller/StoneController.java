@@ -51,7 +51,7 @@ public class StoneController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStone item = new HfStone();
 		item.setHfName(request.getHfName());
-		item.setBossId(request.getBossId());
+		item.setBossId(request.getStoneManagerId());
 		item.setUserId(request.getUserId());
 		item.setHfDesc(request.getStoneDesc());
 		item.setHfStatus(request.getStoneStatus());

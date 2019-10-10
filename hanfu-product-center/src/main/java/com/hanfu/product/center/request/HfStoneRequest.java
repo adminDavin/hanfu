@@ -3,9 +3,9 @@ package com.hanfu.product.center.request;
 import io.swagger.annotations.ApiModelProperty;
 
 public class HfStoneRequest {
-	@ApiModelProperty(required = true, name = "userId", value = "商家id")
-	private Integer bossId;
-	@ApiModelProperty(required = true, name = "stoneManagerId", value = "店铺管理者")
+	@ApiModelProperty(required = true, name = "stoneManagerId", value = "商家id")
+	private Integer stoneManagerId;
+	@ApiModelProperty(required = true, name = "userId", value = "店铺管理者")
 	private Integer userId;
 	@ApiModelProperty(required = true, value = "店铺名称")
 	private String hfName;
@@ -13,11 +13,12 @@ public class HfStoneRequest {
 	private String stoneDesc;
 	@ApiModelProperty(required = true, value = "店铺状态")
 	private Integer stoneStatus;
-	public Integer getBossId() {
-		return bossId;
+	
+	public Integer getStoneManagerId() {
+		return stoneManagerId;
 	}
-	public void setBossId(Integer bossId) {
-		this.bossId = bossId;
+	public void setStoneManagerId(Integer stoneManagerId) {
+		this.stoneManagerId = stoneManagerId;
 	}
 	public Integer getUserId() {
 		return userId;
