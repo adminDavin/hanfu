@@ -17,8 +17,10 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
 import com.hanfu.product.center.model.ProductInfoExample;
@@ -29,6 +31,7 @@ import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
+import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -52,7 +55,10 @@ public class ProductController {
 
     @Autowired
     private ProductMapper productMapper;
-
+    
+    @Autowired
+    private ProductDao productDao;
+    
     @Autowired
     private ProductInfoMapper productInfoMapper;
 
@@ -90,7 +96,7 @@ public class ProductController {
         }
         return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
     }
-
+    
     @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
     @RequestMapping(value = "/category", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> AddCategory(CategoryRequest request) throws JSONException {
@@ -101,6 +107,8 @@ public class ProductController {
         category.setParentCategoryId(request.getParentCategoryId());
         return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
     }
+    
+    
 
     @ApiOperation(value = "获取商品列表", notes = "根据商家获取商家录入的商品列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
@@ -111,6 +119,20 @@ public class ProductController {
         ProductExample example = new ProductExample();
         example.createCriteria().andBossIdEqualTo(bossId);
         return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
+    }
+    
+    @ApiOperation(value = "添加商品列表", notes = "根据商家录入的商品")
+    @RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Product product = new Product();
+        product.setBossId(request.getBossId());
+        product.setBrandId(request.getBrandId());
+        product.setCategoryId(request.getCategoryId());
+        product.setHfName(request.getHfName());
+        product.setLastModifier(request.getLastModifier());
+        product.setProductDesc(request.getProductDesc());
+        return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
     }
 
     @ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")
@@ -192,7 +214,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
-    @RequestMapping(value = "/addToStone", method = RequestMethod.GET)
+    @RequestMapping(value = "/addToStone", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductInstance item = new ProductInstance();
