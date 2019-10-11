@@ -24,4 +24,15 @@ public class ProductDaoImpl implements ProductDao {
 		return result;
 	}
 
+	@Override
+	public List<Product> selectProductBycategoryId(Integer categoryId) {
+		List<Product> result = sqlSessionTemplate.selectList("selectProductBycategoryId", categoryId);
+		return result;
+	}
+	
+	@Override
+	public Integer deleteSelectProduct(Integer[] productId) {
+		Integer row = sqlSessionTemplate.delete("deleteSelectProduct", productId);
+		return row;
+	}
 }

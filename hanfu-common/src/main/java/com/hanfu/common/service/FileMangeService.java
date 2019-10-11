@@ -21,6 +21,17 @@ public class FileMangeService {
 		}
 		return fileid;
 	}
+	public String[] uploadFile(byte[] fis,String userId) {
+		String[] fileid = null;
+		try {
+			fileid = FdfsClient.uploadFile(fis, userId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (MyException e) {
+			e.printStackTrace();
+		}
+		return fileid;
+	}
 	public byte[] downloadFile(String group_name, String remoteFilename) {
 		byte[] fileid = null;
 		try {

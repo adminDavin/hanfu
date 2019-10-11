@@ -1,5 +1,7 @@
 package com.hanfu.product.center.controller;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -131,24 +134,27 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		GoodsSpecExample example = new GoodsSpecExample();
 		example.createCriteria().andGoodsIdEqualTo(goodsId);
-		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(example)));
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(goodsId);
+		FileMangeService fileMangeService = new FileMangeService();
+		return builder.body(ResponseUtils.getResponseBody(fileMangeService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename())));
 	}
 	
 	
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
 	@RequestMapping(value = "/addPicture", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue item = new HfGoodsPictrue();
 		item.setHfName(request.getPictureName());
 		item.setGoodsId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
 		item.setSpecDesc(request.getPrictureDesc());
-//		上传文件到fastdfs
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[] = fileMangeService.uploadFile(request.getFileInfo().getBytes(), String.valueOf(request.getUserId()));
 		FileDesc fileDesc = new FileDesc();
-//		fileDesc.setFileName(fileName);
-//		fileDesc.setGroupName(groupName);
-//		fileDesc.setRemoteFilename(remoteFilename);
+		fileDesc.setFileName(request.getPictureName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
 		fileDesc.setUserId(request.getUserId());
 		int fileId = fileDescMapper.insert(fileDesc);
 		item.setFileId(fileId);

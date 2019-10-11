@@ -9,4 +9,8 @@ import com.hanfu.product.center.model.Product;
 
 public interface ProductDao {
 	public List<Product> selectProductById(Integer storeId);
+	
+	public List<Product> selectProductBycategoryId(Integer categoryId);
+	
+	public Integer deleteSelectProduct(Integer[] productId);
 }

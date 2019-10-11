@@ -59,6 +59,9 @@ public class FdfsClient {
 	public static String[] uploadFile(FileInputStream fis, String userId) throws IOException, MyException {
 		return client.upload_file(FdfsClient.streamToByte(fis), userId, null);
 	}
+	public static String[] uploadFile(byte[] fis, String userId) throws IOException, MyException {
+		return client.upload_file(fis, userId, null);
+	}
 	public static byte[] downloadFile(String group_name, String remoteFilename) throws IOException, MyException {
 		return client.download_file(group_name, remoteFilename);
 	}

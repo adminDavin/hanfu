@@ -28,4 +28,31 @@
     	    ON  p1.id = p2.product_id
     	    WHERE p2.stone_id = #{storeId}
   </select>
+  
+  <select id="selectProductBycategoryId" resultMap="BaseResultMap">
+  		SELECT 
+  			distinct p.id, p.hf_name,
+            p.category_id, p.brand_id,
+            p.product_desc, p.boss_id,
+            p.create_time, p.last_modifier,
+            p.modify_time, p.is_deleted
+    	    FROM
+    	    	 product p
+    	    LEFT JOIN 
+    	    	 hf_category h
+    	    ON  p.category_id = h.id
+    	    WHERE h.id = #{categoryId}
+  </select>
+  
+  <delete id="deleteSelectProduct">
+  		DELETE FROM
+  			product
+  		WHERE
+  			id in
+  			<foreach collection="array" 
+  			open="(" close=")" separator=","
+  			item="productId">
+  				#{productId}
+  			</foreach>
+  </delete>
 </mapper>
