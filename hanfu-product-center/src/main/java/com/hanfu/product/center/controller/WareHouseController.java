@@ -58,6 +58,18 @@ public class WareHouseController {
 		warehouse.setHfRegion(request.getHfRegion());
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.insert(warehouse)));
 	}
+	//TODO
+//	@ApiOperation(value = "删除仓库", notes = "商家删除自己的仓库")
+//	@RequestMapping(value = "/deleteWareHouse", method = RequestMethod.POST)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> listWareHouse(@RequestParam Integer bossId)
+//			throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		WarehouseExample example = new WarehouseExample();
+//		example.createCriteria().andBossidEqualTo(bossId);
+//		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
+//	}
 	
 	@ApiOperation(value = "修改仓库", notes = "商家修改仓库")
 	@RequestMapping(value = "/updateWareHouse", method = RequestMethod.POST)
@@ -68,6 +80,8 @@ public class WareHouseController {
 		example.createCriteria().andIdEqualTo(warehouse.getId());
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.updateByExample(warehouse,example)));
 	}
+	
+	
 	
 	@ApiOperation(value = "查询库存", notes = "某个仓库物品库存")
 	@RequestMapping(value = "/resp", method = RequestMethod.GET)

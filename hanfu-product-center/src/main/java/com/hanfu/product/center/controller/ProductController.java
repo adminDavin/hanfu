@@ -20,6 +20,7 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
+import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.dao.StoreDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
@@ -73,7 +74,10 @@ public class ProductController {
 
     @Autowired
     private ProductInstanceMapper productInstanceMapper;
-
+    
+    @Autowired
+    private ProductInstanceDao productInstanceDao;
+    
     @Autowired
     private ProductService productService;
 
@@ -170,6 +174,7 @@ public class ProductController {
         ProductExample example = new ProductExample();
         return builder.body(ResponseUtils.getResponseBody(productDao.deleteSelectProduct(productId)));
     }
+  
     
     @ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")
     @RequestMapping(value = "/attributes", method = RequestMethod.GET)
@@ -255,6 +260,13 @@ public class ProductController {
         item.setStoneId(request.getStoneId());
         item.setLastModifier(request.getLastModifier());
         return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.insert(item)));
+    }
+    
+    @ApiOperation(value = "删除店铺内的商品", notes = "将店铺内的一个商品删除")
+    @RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> deleteStone(ProductInstanceRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(productInstanceDao.deleteProductInstance(request.getProductId(), request.getStoneId())));
     }
 
 }

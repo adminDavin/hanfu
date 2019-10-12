@@ -35,4 +35,5 @@ public class ProductDaoImpl implements ProductDao {
 		Integer row = sqlSessionTemplate.delete("deleteSelectProduct", productId);
 		return row;
 	}
+
 }
