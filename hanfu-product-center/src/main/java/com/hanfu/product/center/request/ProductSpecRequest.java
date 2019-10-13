@@ -8,6 +8,8 @@ public class ProductSpecRequest extends CommonRequest {
 	private String hfName;
 	@ApiModelProperty(required = true, value = "商品id")
 	private Integer productId;
+	@ApiModelProperty(required = true, value = "类目规格id")
+	private Integer categorySpecId;
 	@ApiModelProperty(required = true, value = "规格类型")
 	private String specType;
 	@ApiModelProperty(required = true, value = "规格单元")
@@ -25,6 +27,12 @@ public class ProductSpecRequest extends CommonRequest {
 	}
 	public void setProductId(Integer productId) {
 		this.productId = productId;
+	}
+	public Integer getCategorySpecId() {
+		return categorySpecId;
+	}
+	public void setCategorySpecId(Integer categorySpecId) {
+		this.categorySpecId = categorySpecId;
 	}
 	public String getSpecType() {
 		return specType;

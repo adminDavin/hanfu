@@ -25,4 +25,10 @@ public class GlobalExceptionHandler  extends com.hanfu.utils.response.handler.Gl
 	public void loginExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("login failed:", e);
 	}
+	
+	@ExceptionHandler(value = GoodsNotExistException.class)
+    @ResponseStatus(value=HttpStatus.FORBIDDEN, reason="goods is invalid")
+	public void goodsNotExistExceptionHandler(HttpServletRequest req, Exception e) {
+		logger.error("goods is invalid:", e);
+	}
 }

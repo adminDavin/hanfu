@@ -1,5 +1,7 @@
 package com.hanfu.product.center.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,12 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.dao.ProductDao;
+import com.hanfu.product.center.manual.dao.ProductInstanceDao;
+import com.hanfu.product.center.manual.dao.StoreDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
 import com.hanfu.product.center.model.ProductInfoExample;
@@ -29,6 +35,7 @@ import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
+import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -52,7 +59,13 @@ public class ProductController {
 
     @Autowired
     private ProductMapper productMapper;
-
+    
+    @Autowired
+    private ProductDao productDao;
+    
+    @Autowired
+    private StoreDao storeDao;
+    
     @Autowired
     private ProductInfoMapper productInfoMapper;
 
@@ -61,7 +74,10 @@ public class ProductController {
 
     @Autowired
     private ProductInstanceMapper productInstanceMapper;
-
+    
+    @Autowired
+    private ProductInstanceDao productInstanceDao;
+    
     @Autowired
     private ProductService productService;
 
@@ -90,9 +106,9 @@ public class ProductController {
         }
         return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
     }
-
+    
     @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
-    @RequestMapping(value = "/category", method = RequestMethod.POST)
+    @RequestMapping(value = "/addCategory", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> AddCategory(CategoryRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfCategory category = new HfCategory();
@@ -100,6 +116,18 @@ public class ProductController {
         category.setHfName(request.getCategory());
         category.setParentCategoryId(request.getParentCategoryId());
         return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
+    }
+    
+    
+    @ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
+    @RequestMapping(value = "/categoryId", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目ID", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> listProductBycategoryId(@RequestParam(name = "categoryId") Integer categoryId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        ProductInstanceExample example = new ProductInstanceExample();
+        example.createCriteria().andCategoryIdEqualTo(categoryId);
+        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductBycategoryId(categoryId)));
     }
 
     @ApiOperation(value = "获取商品列表", notes = "根据商家获取商家录入的商品列表")
@@ -112,7 +140,42 @@ public class ProductController {
         example.createCriteria().andBossIdEqualTo(bossId);
         return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
     }
-
+    
+    @ApiOperation(value = "添加商品列表", notes = "根据商家录入的商品")
+    @RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Product product = new Product();
+        product.setBossId(request.getBossId());
+        product.setBrandId(request.getBrandId());
+        product.setCategoryId(request.getCategoryId());
+        product.setHfName(request.getHfName());
+        product.setLastModifier(request.getLastModifier());
+        product.setProductDesc(request.getProductDesc());
+        return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
+    }
+    
+    @ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
+    @RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> deleteProduct(@RequestParam(name = "productId") Integer productId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        ProductExample example = new ProductExample();
+        return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
+    }
+    
+    @ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
+    @RequestMapping(value = "/deleteSelectProductId", method = RequestMethod.POST)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> deleteAllProduct(@RequestParam(name = "productId") Integer[] productId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        ProductExample example = new ProductExample();
+        return builder.body(ResponseUtils.getResponseBody(productDao.deleteSelectProduct(productId)));
+    }
+  
+    
     @ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")
     @RequestMapping(value = "/attributes", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商家ID", required = true,
@@ -140,7 +203,7 @@ public class ProductController {
 
     @ApiOperation(value = "获取商品规格", notes = "根据商品id获取商品的规格描述")
     @RequestMapping(value = "/specifies", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商家ID", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true,
             type = "Integer") })
     public ResponseEntity<JSONObject> getProductSpec(@RequestParam(name = "productId") Integer productId)
             throws JSONException {
@@ -151,7 +214,7 @@ public class ProductController {
     }
 
     @ApiOperation(value = "添加商品规格", notes = "为某一个商品添加规格")
-    @RequestMapping(value = "/addSpecify", method = RequestMethod.GET)
+    @RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addProductSpec(ProductSpecRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductSpec item = new ProductSpec();
@@ -159,7 +222,8 @@ public class ProductController {
         item.setHfName(request.getHfName());
         item.setSpecType(request.getSpecType());
         item.setSpecUnit(request.getSpecUnit());
-        item.setSpecValue(request.getSpecUnit());
+        item.setSpecValue(request.getSpecValue());
+        item.setCategorySpecId(request.getCategorySpecId());
         return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
     }
 
@@ -172,8 +236,7 @@ public class ProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductSpecExample example = new ProductSpecExample();
         example.createCriteria().andProductIdEqualTo(productId);
-        // todo 查看商品所在的店铺信息
-        return builder.body(ResponseUtils.getResponseBody(productSpecMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(storeDao.selectStoreById(productId)));
     }
 
     @ApiOperation(value = "获取店铺所有商品", notes = "根據商鋪id獲取商鋪的所有商品")
@@ -183,16 +246,13 @@ public class ProductController {
     public ResponseEntity<JSONObject> getStoneProduct(@RequestParam(name = "stoneId") Integer stoneId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        productService.getProductByStone(stoneId);
         ProductInstanceExample example = new ProductInstanceExample();
         example.createCriteria().andStoneIdEqualTo(stoneId);
-        // todo 获取店铺内所有商品的详情
-
-        return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductById(stoneId)));
     }
 
     @ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
-    @RequestMapping(value = "/addToStone", method = RequestMethod.GET)
+    @RequestMapping(value = "/addToStone", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductInstance item = new ProductInstance();
@@ -200,6 +260,13 @@ public class ProductController {
         item.setStoneId(request.getStoneId());
         item.setLastModifier(request.getLastModifier());
         return builder.body(ResponseUtils.getResponseBody(productInstanceMapper.insert(item)));
+    }
+    
+    @ApiOperation(value = "删除店铺内的商品", notes = "将店铺内的一个商品删除")
+    @RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> deleteStone(ProductInstanceRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(productInstanceDao.deleteProductInstance(request.getProductId(), request.getStoneId())));
     }
 
 }

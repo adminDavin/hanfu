@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.ProductInstanceDao">
+  
+  <delete id="deleteProductInstance">
+  		DELETE FROM
+  			product_instance
+  		WHERE
+  			product_id = #{productId}
+  		AND
+  			stone_id = #{stoneId}
+  </delete>
+</mapper>
