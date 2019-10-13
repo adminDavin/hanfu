@@ -7,7 +7,7 @@ public class WareHouseRequest extends CommonRequest {
 	@ApiModelProperty(required = true, value = "仓库名称")
 	private String hfName;
 	@ApiModelProperty(required = true, value = "所属区域")
-	private Integer hfRegion;
+	private String hfRegion;
 	@ApiModelProperty(required = true, value = "仓库描述")
 	private String hfDesc;
 	@ApiModelProperty(required = true, value = "商家id")
@@ -18,10 +18,11 @@ public class WareHouseRequest extends CommonRequest {
 	public void setHfName(String hfName) {
 		this.hfName = hfName;
 	}
-	public Integer getHfRegion() {
+	
+	public String getHfRegion() {
 		return hfRegion;
 	}
-	public void setHfRegion(Integer hfRegion) {
+	public void setHfRegion(String hfRegion) {
 		this.hfRegion = hfRegion;
 	}
 	public String getHfDesc() {
