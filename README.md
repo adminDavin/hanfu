@@ -29,3 +29,8 @@
     ·代码结构清晰， 设计合理，对公共部分进行了抽取·
 
 ### 新项目接入接入模板 davin-king-words
+
+
+##### 项目导入后 进入到 hanfu-common  执行 mvn package
+##### 项目导入后 进入到 hanfu-web-utils  执行 mvn package
+

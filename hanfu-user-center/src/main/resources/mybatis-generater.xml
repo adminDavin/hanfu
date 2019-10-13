@@ -47,5 +47,18 @@
       <property name="useActualColumnNames" value="false"/>
       <generatedKey column="id" sqlStatement="mysql" identity="true" />
     </table>
+      <table schema="user_center" tableName="hf_user_address"
+      domainObjectName="HfUserAddresse">
+      <property name="useActualColumnNames" value="false" />
+      <generatedKey column="id" sqlStatement="mysql"
+          identity="true" />
+  </table>
+  <table schema="user_center" tableName="hf_user_balance"
+      domainObjectName="HUserBalance">
+      <property name="useActualColumnNames" value="false" />
+      <generatedKey column="id" sqlStatement="mysql"
+          identity="true" />
+  </table>
+
   </context>
 </generatorConfiguration>

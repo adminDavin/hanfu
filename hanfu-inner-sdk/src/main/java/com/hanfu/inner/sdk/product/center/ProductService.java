@@ -1,4 +1,4 @@
-package com.hanfu.product.client.service;
+package com.hanfu.inner.sdk.product.center;
 
 public interface ProductService {
 

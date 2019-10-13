@@ -38,3 +38,61 @@ create table  hf_auth
 	   id_deleted   	 int1 default 0 COMMENT '是否删除',
        PRIMARY KEY (`id`)
 );
+
+drop table if exists hf_user_address;
+
+drop table if exists hf_user_balance;
+
+
+
+/*==============================================================*/
+/* Table: hf_user_address                                       */
+/*==============================================================*/
+create table hf_user_address
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   is_fault_address     int comment '是否为默认地址',
+   hf_province          int comment '省',
+   hf_city              int comment '市',
+   hf_conty             varchar(127) comment '县/区',
+   hf_address_detail    varchar(127) comment '详情地址',
+   contact              varchar(127) comment '联系人',
+   phone_number         varchar(127) comment '联系电话',
+   hf_desc              varchar(127) comment '备注',
+   create_time          timestamp default now() comment  '添加时间',
+   modify_time          timestamp default now() comment  '修改时间',
+   last_modifier        varchar(15) comment '最后一次修改人',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table hf_user_address comment '用户地址管理';
+
+/*==============================================================*/
+/* Table: hf_user_balance                                       */
+/*==============================================================*/
+create table hf_user_balance
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   balance_type         varchar(15) comment '余额类型',
+   hf_balance           int comment '用户余额(单位分)',
+   pay_method_type      varchar(31) comment '最近一次充值方式',
+   hf_remark            varchar(127) comment '备注',
+   create_time          timestamp default now() comment  '添加时间',
+   modify_time          timestamp default now() comment  '修改时间',
+   last_modifier        varchar(15) comment '最后一次修改人',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table hf_user_balance comment '用户余额表';
+
+
+alter table hf_user_address add constraint FK_Reference_30 foreign key (user_id)
+      references hf_user (id) on delete restrict on update restrict;
+
+alter table hf_user_balance add constraint FK_Reference_31 foreign key (user_id)
+      references hf_user (id) on delete restrict on update restrict;
+
