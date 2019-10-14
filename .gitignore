@@ -25,4 +25,4 @@ hanfu-inner-sdk/target/**
 hanfu-product-client/target/**
 hanfu-inner-sdk/target/classes/META-INF/maven/com.hanfu.inner.sdk/hanfu-inner-sdk/pom.properties
 hanfu-order-client/target/classes/META-INF/MANIFEST.MF
-hanfu-order-client/target/classes/META-INF/maven/com.hanfu.base/hanfu-order-client/pom.properties
+hanfu-order-client/target/*
