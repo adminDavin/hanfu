@@ -81,6 +81,16 @@ public class WareHouseController {
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.updateByExample(warehouse,example)));
 	}
 	
+	@ApiOperation(value = "删除仓库", notes = "删除仓库")
+	@RequestMapping(value = "/deleteWareHouse", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteWareHouse(Integer wareHouseId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		WarehouseExample example = new WarehouseExample();
+		example.createCriteria().andIdEqualTo(wareHouseId);
+		
+		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.deleteByPrimaryKey(wareHouseId)));
+	}
 	
 	
 	@ApiOperation(value = "查询库存", notes = "某个仓库物品库存")

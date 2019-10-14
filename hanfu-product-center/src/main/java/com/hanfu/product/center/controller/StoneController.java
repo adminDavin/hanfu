@@ -58,4 +58,19 @@ public class StoneController {
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
 	}
 	
+	@ApiOperation(value = "删除商铺", notes = "删除商铺")
+	@RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteStone(Integer stoneId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.deleteByPrimaryKey(stoneId)));
+	}
+	
+	@ApiOperation(value = "修改商铺", notes = "修改商铺")
+	@RequestMapping(value = "/updateStone", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateStone(HfStone hfStone) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneExample example = new HfStoneExample();
+		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByExample(hfStone, example)));
+	}
+	
 }

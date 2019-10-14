@@ -9,10 +9,11 @@ import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductInstance;
 
 @Repository
 public interface ProductInstanceDao {
 	
-	public Integer deleteProductInstance(@Param("productId") Integer productId,@Param("stoneId") Integer stoneId);
+	public Integer deleteProductInstance(ProductInstance productInstance);
 	
 }

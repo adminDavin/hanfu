@@ -14,6 +14,13 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
+  
+  <resultMap id="EntityProductDispaly" type="com.hanfu.product.center.manual.model.ProductDispaly">
+    <result column="productName" jdbcType="VARCHAR" property="productName" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
+  </resultMap>
+  
   <select id="selectProductById" resultMap="BaseResultMap">
   		SELECT 
   			distinct p1.id, p1.hf_name,
@@ -42,6 +49,20 @@
     	    	 hf_category h
     	    ON  p.category_id = h.id
     	    WHERE h.id = #{categoryId}
+  </select>
+  
+  <select id="selectProductDisplay" resultMap="EntityProductDispaly">
+  		SELECT 
+  			p.hf_name productName,product_desc,
+  			h.hf_name productCategoryName
+  		FROM 
+  			product p
+  		LEFT JOIN
+  			hf_category h
+  		ON
+  			p.category_id = h.id
+  		WHERE
+  			boss_id = #{bossId}
   </select>
   
   <delete id="deleteSelectProduct">
