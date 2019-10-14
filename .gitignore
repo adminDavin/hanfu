@@ -17,3 +17,7 @@ hanfu-product-client/target/*
 hanfu-order-center/target/*
 hanfu-order-client/target/*
 hanfu-web-utils/target/*
+hanfu-inner-sdk/.classpath  
+hanfu-inner-sdk/.gitignore  
+hanfu-inner-sdk/.settings/*
+hanfu-inner-sdk/target/*

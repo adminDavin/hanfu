@@ -14,6 +14,16 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
+  <resultMap id="EntityProductDispaly" type="com.hanfu.product.center.manual.model.ProductDispaly">
+    <result column="productName" jdbcType="VARCHAR" property="productName" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="productId" jdbcType="INTEGER" property="id" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="brand_id" jdbcType="TIMESTAMP" property="brandId" />
+    <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
+  </resultMap>
+  
   <select id="selectProductById" resultMap="BaseResultMap">
   		SELECT 
   			distinct p1.id, p1.hf_name,
@@ -42,6 +52,23 @@
     	    	 hf_category h
     	    ON  p.category_id = h.id
     	    WHERE h.id = #{categoryId}
+    	    AND h.boss_id = #{bossId}
+  </select>
+  
+   <select id="selectProductDisplay" resultMap="EntityProductDispaly">
+  		SELECT 
+  			p.hf_name productName,product_desc,
+  			h.hf_name productCategoryName,p.category_id,
+  		    p.brand_id,p.last_modifier,
+  		    p.id productId
+  		FROM 
+  			product p
+  		LEFT JOIN
+  			hf_category h
+  		ON
+  			p.category_id = h.id
+  		WHERE
+  			boss_id = #{bossId}
   </select>
   
   <delete id="deleteSelectProduct">
@@ -55,4 +82,14 @@
   				#{productId}
   			</foreach>
   </delete>
+  
+  <update id="updateProduct">
+  		UPDATE
+  			product
+  		SET 
+  			hf_name = #{productName},product_desc = #{productDesc},
+  			category_id = #{categoryId}
+  		WHERE
+  			id = #{id}
+  </update>
 </mapper>

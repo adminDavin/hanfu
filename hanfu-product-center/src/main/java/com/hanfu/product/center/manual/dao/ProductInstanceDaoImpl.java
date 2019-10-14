@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductInstance;
 
 
 @Repository
@@ -19,8 +20,8 @@ public class ProductInstanceDaoImpl implements ProductInstanceDao {
     SqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public Integer deleteProductInstance(Integer productId, Integer stoneId) {
-		Integer row = sqlSessionTemplate.delete("deleteProductInstance", productId);
+	public Integer deleteProductInstance(ProductInstance example) {
+		Integer row = sqlSessionTemplate.delete("deleteProductInstance", example);
 		return row;
 	}
 

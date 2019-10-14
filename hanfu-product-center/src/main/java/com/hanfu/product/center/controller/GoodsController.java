@@ -79,29 +79,18 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(item)));
 	}
 	
-//	@ApiOperation(value = "删除物品", notes = "删除商品")
-//	@RequestMapping(value = "/deletegood", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> deleteGood(HfGoodsRequest request) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
-//		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(request.getInstanceId())));
-//	}
-	
-//	@ApiOperation(value = "编辑物品", notes = "编辑物品")
-//	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> updateGood(HfGoodsRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
-//		HfGoods record = hfGoodsMapper.selectByPrimaryKey(request.getInstanceId());
-//		if(record == null) {
-//			throw new GoodsNotExistException(String.valueOf(request.getInstanceId()));
-//		}
-//		if(!StringUtils.isEmpty(request.getGoodDesc())) {
-//			record.setGoodsDesc(request.getGoodDesc());
-//		}
-//		if(StringUtils.isEmpty(request.getPriceId())) {
-//			record.setPriceId(request.getPriceId());
-//		}
-//		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKeySelective(record)));
-//	}
+	@ApiOperation(value = "编辑物品", notes = "编辑物品")
+	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateGood(HfGoods hfGoods) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
+		HfGoods record = new HfGoods();
+		HfGoodsExample example = new HfGoodsExample();
+		record.setPriceId(hfGoods.getPriceId());
+		record.setGoodsDesc(hfGoods.getGoodsDesc());
+		record.setRespId(hfGoods.getRespId());
+		
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(record, example)));
+	}
 	
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
 	@RequestMapping(value = "/specifies", method = RequestMethod.GET)

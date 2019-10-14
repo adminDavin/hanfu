@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hanfu.product.center.manual.model.Categories;
+import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.Product;
 
@@ -25,8 +26,14 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public List<Product> selectProductBycategoryId(Integer categoryId) {
-		List<Product> result = sqlSessionTemplate.selectList("selectProductBycategoryId", categoryId);
+	public List<Product> selectProductBycategoryId(Product product) {
+		List<Product> result = sqlSessionTemplate.selectList("selectProductBycategoryId", product);
+		return result;
+	}
+	
+	@Override
+	public List<ProductDispaly> selectProductDisplay(Integer bossId) {
+		List<ProductDispaly> result = sqlSessionTemplate.selectList("selectProductDisplay", bossId);
 		return result;
 	}
 	
@@ -35,5 +42,10 @@ public class ProductDaoImpl implements ProductDao {
 		Integer row = sqlSessionTemplate.delete("deleteSelectProduct", productId);
 		return row;
 	}
-
+	
+	@Override
+	public Integer updateProduct(ProductDispaly productDispaly) {
+		Integer row = sqlSessionTemplate.update("updateProduct", productDispaly);
+		return row;
+	}
 }

@@ -58,19 +58,16 @@ public class WareHouseController {
 		warehouse.setHfRegion(request.getHfRegion());
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.insert(warehouse)));
 	}
-	//TODO
-//	@ApiOperation(value = "删除仓库", notes = "商家删除自己的仓库")
-//	@RequestMapping(value = "/deleteWareHouse", method = RequestMethod.POST)
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> listWareHouse(@RequestParam Integer bossId)
-//			throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		WarehouseExample example = new WarehouseExample();
-//		example.createCriteria().andBossidEqualTo(bossId);
-//		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
-//	}
-	
+	@ApiOperation(value = "删除仓库", notes = "删除仓库")
+	@RequestMapping(value = "/deleteWareHouse", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteWareHouse(Integer wareHouseId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		WarehouseExample example = new WarehouseExample();
+		example.createCriteria().andIdEqualTo(wareHouseId);
+
+		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.deleteByPrimaryKey(wareHouseId)));
+	}
 	@ApiOperation(value = "修改仓库", notes = "商家修改仓库")
 	@RequestMapping(value = "/updateWareHouse", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateWareHouse(Warehouse warehouse)
