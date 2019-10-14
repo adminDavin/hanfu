@@ -10,8 +10,8 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="is_fault_address" jdbcType="INTEGER" property="isFaultAddress" />
-    <result column="hf_province" jdbcType="INTEGER" property="hfProvince" />
-    <result column="hf_city" jdbcType="INTEGER" property="hfCity" />
+    <result column="hf_province" jdbcType="VARCHAR" property="hfProvince" />
+    <result column="hf_city" jdbcType="VARCHAR" property="hfCity" />
     <result column="hf_conty" jdbcType="VARCHAR" property="hfConty" />
     <result column="hf_address_detail" jdbcType="VARCHAR" property="hfAddressDetail" />
     <result column="contact" jdbcType="VARCHAR" property="contact" />
@@ -163,8 +163,8 @@
       contact, phone_number, hf_desc, 
       create_time, modify_time, last_modifier, 
       is_deleted)
-    values (#{userId,jdbcType=INTEGER}, #{isFaultAddress,jdbcType=INTEGER}, #{hfProvince,jdbcType=INTEGER}, 
-      #{hfCity,jdbcType=INTEGER}, #{hfConty,jdbcType=VARCHAR}, #{hfAddressDetail,jdbcType=VARCHAR}, 
+    values (#{userId,jdbcType=INTEGER}, #{isFaultAddress,jdbcType=INTEGER}, #{hfProvince,jdbcType=VARCHAR}, 
+      #{hfCity,jdbcType=VARCHAR}, #{hfConty,jdbcType=VARCHAR}, #{hfAddressDetail,jdbcType=VARCHAR}, 
       #{contact,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{hfDesc,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{lastModifier,jdbcType=VARCHAR}, 
       #{isDeleted,jdbcType=SMALLINT})
@@ -228,10 +228,10 @@
         #{isFaultAddress,jdbcType=INTEGER},
       </if>
       <if test="hfProvince != null">
-        #{hfProvince,jdbcType=INTEGER},
+        #{hfProvince,jdbcType=VARCHAR},
       </if>
       <if test="hfCity != null">
-        #{hfCity,jdbcType=INTEGER},
+        #{hfCity,jdbcType=VARCHAR},
       </if>
       <if test="hfConty != null">
         #{hfConty,jdbcType=VARCHAR},
@@ -291,10 +291,10 @@
         is_fault_address = #{record.isFaultAddress,jdbcType=INTEGER},
       </if>
       <if test="record.hfProvince != null">
-        hf_province = #{record.hfProvince,jdbcType=INTEGER},
+        hf_province = #{record.hfProvince,jdbcType=VARCHAR},
       </if>
       <if test="record.hfCity != null">
-        hf_city = #{record.hfCity,jdbcType=INTEGER},
+        hf_city = #{record.hfCity,jdbcType=VARCHAR},
       </if>
       <if test="record.hfConty != null">
         hf_conty = #{record.hfConty,jdbcType=VARCHAR},
@@ -338,8 +338,8 @@
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
       is_fault_address = #{record.isFaultAddress,jdbcType=INTEGER},
-      hf_province = #{record.hfProvince,jdbcType=INTEGER},
-      hf_city = #{record.hfCity,jdbcType=INTEGER},
+      hf_province = #{record.hfProvince,jdbcType=VARCHAR},
+      hf_city = #{record.hfCity,jdbcType=VARCHAR},
       hf_conty = #{record.hfConty,jdbcType=VARCHAR},
       hf_address_detail = #{record.hfAddressDetail,jdbcType=VARCHAR},
       contact = #{record.contact,jdbcType=VARCHAR},
@@ -368,10 +368,10 @@
         is_fault_address = #{isFaultAddress,jdbcType=INTEGER},
       </if>
       <if test="hfProvince != null">
-        hf_province = #{hfProvince,jdbcType=INTEGER},
+        hf_province = #{hfProvince,jdbcType=VARCHAR},
       </if>
       <if test="hfCity != null">
-        hf_city = #{hfCity,jdbcType=INTEGER},
+        hf_city = #{hfCity,jdbcType=VARCHAR},
       </if>
       <if test="hfConty != null">
         hf_conty = #{hfConty,jdbcType=VARCHAR},
@@ -412,8 +412,8 @@
     update hf_user_address
     set user_id = #{userId,jdbcType=INTEGER},
       is_fault_address = #{isFaultAddress,jdbcType=INTEGER},
-      hf_province = #{hfProvince,jdbcType=INTEGER},
-      hf_city = #{hfCity,jdbcType=INTEGER},
+      hf_province = #{hfProvince,jdbcType=VARCHAR},
+      hf_city = #{hfCity,jdbcType=VARCHAR},
       hf_conty = #{hfConty,jdbcType=VARCHAR},
       hf_address_detail = #{hfAddressDetail,jdbcType=VARCHAR},
       contact = #{contact,jdbcType=VARCHAR},

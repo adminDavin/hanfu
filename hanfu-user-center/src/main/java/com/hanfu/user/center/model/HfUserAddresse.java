@@ -38,7 +38,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    private Integer hfProvince;
+    private String hfProvince;
 
     /**
      *
@@ -47,7 +47,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    private Integer hfCity;
+    private String hfCity;
 
     /**
      *
@@ -218,7 +218,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    public Integer getHfProvince() {
+    public String getHfProvince() {
         return hfProvince;
     }
 
@@ -230,7 +230,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    public void setHfProvince(Integer hfProvince) {
+    public void setHfProvince(String hfProvince) {
         this.hfProvince = hfProvince;
     }
 
@@ -242,7 +242,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    public Integer getHfCity() {
+    public String getHfCity() {
         return hfCity;
     }
 
@@ -254,7 +254,7 @@ public class HfUserAddresse implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:52:54 CST 2019
      */
-    public void setHfCity(Integer hfCity) {
+    public void setHfCity(String hfCity) {
         this.hfCity = hfCity;
     }
 
