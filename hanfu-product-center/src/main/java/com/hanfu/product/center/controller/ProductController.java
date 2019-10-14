@@ -20,6 +20,8 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.dao.ProductDao;
+import com.hanfu.product.center.manual.dao.StoreDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.HfGoodsExample;
@@ -76,6 +78,12 @@ public class ProductController {
     
     @Autowired
     private HfGoodsMapper hfGoodsMapper;
+    
+    @Autowired
+    private StoreDao storeDao;
+    
+    @Autowired
+    private ProductDao productDao;
 
     
     @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
@@ -230,9 +238,7 @@ public class ProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductSpecExample example = new ProductSpecExample();
         example.createCriteria().andProductIdEqualTo(productId);
-//        TODO @sun 店鋪裏的商品列別哦 在manuldao裏頂一個方法 然後使用 一個複雜sql實現該功能
-//        return builder.body(ResponseUtils.getResponseBody(storeDao.selectStoreById(productId)));
-        return null;
+        return builder.body(ResponseUtils.getResponseBody(storeDao.selectStoreById(productId)));
     }
 
     @ApiOperation(value = "获取店铺所有商品", notes = "根據商鋪id獲取商鋪的所有商品")
@@ -244,9 +250,7 @@ public class ProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductInstanceExample example = new ProductInstanceExample();
         example.createCriteria().andStoneIdEqualTo(stoneId);
-//        TODO @sun 這個之前給你説過的啊  在manuldao中寫一個複雜sql實現功能
-//        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductById(stoneId)));
-        return null;
+        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductById(stoneId)));
     }
 
     @ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
