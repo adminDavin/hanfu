@@ -26,3 +26,10 @@ hanfu-product-client/target/**
 hanfu-inner-sdk/target/classes/META-INF/maven/com.hanfu.inner.sdk/hanfu-inner-sdk/pom.properties
 hanfu-order-client/target/classes/META-INF/MANIFEST.MF
 hanfu-order-client/target/*
+hanfu-order-center/.classpath
+hanfu-order-center/.classpath
+hanfu-order-client/.classpath
+hanfu-order-client/target/classes/META-INF/maven/com.hanfu.base/hanfu-order-client/pom.properties
+hanfu-product-client/.classpath
+hanfu-product-client/target/classes/META-INF/maven/com.hanfu.product.client/hanfu-product-client/pom.properties
+hanfu-web-utils/.classpath
