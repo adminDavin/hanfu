@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hanfu.payment.center.manual.dao.ManualDao;
-import com.hanfu.payment.center.service.ProductService;
+import com.hanfu.payment.center.service.WeChatService;
 
-@Service("productService")
+@Service("weChatService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
-public class ProductServiceImpl implements ProductService {
+public class WeChatServiceImpl implements WeChatService {
 	@Autowired
 	private ManualDao manualDao;
 
