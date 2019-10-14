@@ -1,6 +1,5 @@
 package com.hanfu.common.utils;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -12,7 +11,6 @@ import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerGroup;
 import org.csource.fastdfs.TrackerServer;
 
-import com.alibaba.fastjson.JSON;
 
 public class FdfsClient {
 	

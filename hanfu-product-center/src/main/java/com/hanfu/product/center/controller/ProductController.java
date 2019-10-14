@@ -27,7 +27,6 @@ import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.HfGoods;
-import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
