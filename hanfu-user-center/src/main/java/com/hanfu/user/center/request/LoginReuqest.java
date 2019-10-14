@@ -2,6 +2,7 @@ package com.hanfu.user.center.request;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class LoginReuqest implements Serializable {
 	private String username;
 	private String password;
