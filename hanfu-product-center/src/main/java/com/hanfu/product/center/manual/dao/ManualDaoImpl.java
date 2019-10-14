@@ -36,4 +36,5 @@ public class ManualDaoImpl implements ManualDao {
         return result;
     }
 
+
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsSpecRequest;
 import com.hanfu.product.center.request.HfGoodsRequest;
+import com.hanfu.product.center.response.handler.GoodsNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -70,8 +72,28 @@ public class GoodsController {
 		item.setRespId(request.getRespId());
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(item)));
 	}
-	
-	
+	@ApiOperation(value = "删除商品", notes = "删除商品")
+	@RequestMapping(value = "/deletegood", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteGood(HfGoodsRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(request.getInstanceId())));
+	}
+	@ApiOperation(value = "编辑商品", notes = "编辑商品")
+	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateGood(HfGoodsRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
+		HfGoods record = hfGoodsMapper.selectByPrimaryKey(request.getInstanceId());
+		if(record == null) {
+			throw new GoodsNotExistException(String.valueOf(request.getInstanceId()));
+		}
+		if(!StringUtils.isEmpty(request.getGoodDesc())) {
+			record.setGoodsDesc(request.getGoodDesc());
+		}
+		if(StringUtils.isEmpty(request.getPriceId())) {
+			record.setPriceId(request.getPriceId());
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKeySelective(record)));
+	}
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
 	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
 	@ApiImplicitParams({

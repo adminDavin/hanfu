@@ -16,7 +16,6 @@ import com.hanfu.product.center.dao.ProductInfoMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
-import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.ProductExample;
@@ -65,8 +64,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ManualDao manualDao;
     
     @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
     @ApiImplicitParams({
@@ -88,7 +85,7 @@ public class ProductController {
             example.clear();
             example.createCriteria().andIdEqualTo(categoryId);
         }
-        return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
     }
 
     @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
