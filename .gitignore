@@ -35,10 +35,8 @@ hanfu-product-client/target/classes/META-INF/maven/com.hanfu.product.client/hanf
 hanfu-web-utils/.classpath
 hanfu-inner-sdk/.classpath
 hanfu-inner-sdk/.classpath
-hanfu-order-center/pom.xml
 hanfu-payment-center/.project
 hanfu-payment-center/.classpath
-hanfu-payment-center/pom.xml
 hanfu-payment-center/.settings/org.eclipse.jdt.core.prefs
 hanfu-payment-center/.settings/org.eclipse.m2e.core.prefs
 hanfu-payment-center/.settings/org.springframework.ide.eclipse.prefs
@@ -49,3 +47,5 @@ hanfu-payment-client/.classpath
 hanfu-payment-client/.project
 hanfu-payment-client/.settings/*
 hanfu-order-client/target/classes/META-INF/maven/com.hanfu.base/hanfu-order-client/pom.properties
+hanfu-product-center/bin/.settings/*
+hanfu-product-center/bin/*
