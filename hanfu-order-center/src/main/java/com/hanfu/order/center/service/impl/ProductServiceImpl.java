@@ -13,7 +13,7 @@ import com.hanfu.order.center.service.ProductService;
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ManualDao manualDao;
-
+	
 	@Override
 	public void getProductByStone(Integer stoneId) {
 		manualDao.selectProductByStone(stoneId);
