@@ -85,6 +85,7 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
 		HfGoods record = new HfGoods();
 		HfGoodsExample example = new HfGoodsExample();
+		example.createCriteria().andBrandIdEqualTo(hfGoods.getId());
 		record.setPriceId(hfGoods.getPriceId());
 		record.setGoodsDesc(hfGoods.getGoodsDesc());
 		record.setRespId(hfGoods.getRespId());

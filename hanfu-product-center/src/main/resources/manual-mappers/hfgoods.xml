@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
+
+	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
+    <result column="productName" jdbcType="VARCHAR" property="productName" />
+    <result column="product_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="categoryId" jdbcType="VARCHAR" property="categoryId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+   </resultMap>
+   
+	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
+			SELECT
+				p.product_desc,h.id,
+				p.hf_name productName,h1.hf_name productCategoryName,
+				h1.id categoryId
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id 
+		    WHERE
+		        h.stone_id=#{stoneId}
+	</select>
+</mapper>

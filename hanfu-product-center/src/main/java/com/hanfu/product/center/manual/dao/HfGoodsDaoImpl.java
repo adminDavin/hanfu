@@ -8,21 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hanfu.product.center.manual.model.Categories;
+import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.UserInfo;
-import com.hanfu.product.center.model.Product;
-import com.hanfu.product.center.model.ProductInstance;
 
 
 @Repository
-public class ProductInstanceDaoImpl implements ProductInstanceDao {
+public class HfGoodsDaoImpl implements HfGoodsDao {
 
 	@Autowired
     SqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public Integer deleteProductInstance(ProductInstance example) {
-		Integer row = sqlSessionTemplate.delete("deleteProductInstance", example);
-		return row;
+	public List<HfGoodsDisplay> selectAllGoods(Integer stoneId) {
+		List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoods", stoneId);
+		return result;
 	}
-	
 }

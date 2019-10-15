@@ -19,6 +19,7 @@ import com.hanfu.product.center.dao.ProductInfoMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
@@ -81,6 +82,9 @@ public class ProductController {
 
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
+	
+	@Autowired
+	private HfGoodsDao hfGoodsDao;
 
 	@Autowired
 	private StoreDao storeDao;
@@ -263,8 +267,7 @@ public class ProductController {
 		example.createCriteria().andProductIdEqualTo(productId);
 		return builder.body(ResponseUtils.getResponseBody(storeDao.selectStoreById(productId)));
 	}
-
-	@ApiOperation(value = "获取店铺所有商品", notes = "根據商鋪id獲取商鋪的所有商品")
+	@ApiOperation(value = "获取店铺所有物品", notes = "根據商鋪id獲取商鋪的所有物品")
 	@RequestMapping(value = "/byStoneId", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
@@ -273,7 +276,7 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andStoneIdEqualTo(stoneId);
-		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductById(stoneId)));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(stoneId)));
 	}
 
 	@ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
@@ -284,15 +287,16 @@ public class ProductController {
 		item.setProductId(request.getProductId());
 		item.setStoneId(request.getStoneId());
 		item.setLastModifier(request.getLastModifier());
-		Integer instanceId = productInstanceMapper.insert(item);
+		productInstanceMapper.insert(item);
 		Product product = productMapper.selectByPrimaryKey(request.getProductId());
 		HfGoods record = new HfGoods();
-		record.setInstanceId(instanceId);
+		record.setInstanceId(item.getId());
 		record.setProductId(request.getProductId());
 		record.setStoneId(request.getStoneId());
 		record.setBossId(product.getBossId());
 		record.setBrandId(product.getBrandId());
 		record.setCategoryId(product.getCategoryId());
+		
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(record)));
 	}
 
@@ -306,13 +310,13 @@ public class ProductController {
 //        return builder.body(ResponseUtils.getResponseBody(productInstanceDao.deleteProductInstance(example)));
 //    }
 
-	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个商品删除")
+	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")
 	@RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteStone(Integer hfGoodId) throws JSONException {
+	public ResponseEntity<JSONObject> deleteStone(Integer hfGoodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodId);
+		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsId);
 		productInstanceMapper.deleteByPrimaryKey(hfGoods.getInstanceId());
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodId)));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodsId)));
 	}
 
 }
