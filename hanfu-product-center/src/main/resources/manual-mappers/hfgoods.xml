@@ -3,18 +3,42 @@
 <mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
 
 	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
-    <result column="productName" jdbcType="VARCHAR" property="productName" />
-    <result column="product_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
     <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
-    <result column="categoryId" jdbcType="VARCHAR" property="categoryId" />
+    <result column="categoryId" jdbcType="INTEGER" property="categoryId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
     <result column="id" jdbcType="INTEGER" property="id" />
    </resultMap>
    
+   <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="stone_id" jdbcType="INTEGER" property="stoneId" />
+    <result column="boss_id" jdbcType="INTEGER" property="bossId" />
+    <result column="brand_id" jdbcType="INTEGER" property="brandId" />
+    <result column="resp_id" jdbcType="INTEGER" property="respId" />
+    <result column="price_id" jdbcType="INTEGER" property="priceId" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
+  </resultMap>
+   
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 			SELECT
-				p.product_desc,h.id,
-				p.hf_name productName,h1.hf_name productCategoryName,
+				h.goods_desc,h.id,
+				h.good_name,h1.hf_name productCategoryName,
 				h1.id categoryId
+				<if test="respId != null and respId != ''">
+				h2.quantity
+				</if>
+				<if test="priceId != null and priceId != ''">
+				,h3.sell_price
+				</if>
 			FROM 
 				hf_goods h 
 			JOIN 
@@ -24,8 +48,35 @@
 		    JOIN 
 		    	hf_category h1 
 		    ON 
-		    	h.category_id = h1.id 
+		    	h.category_id = h1.id
+		    <if test="respId != null and respId != ''">
+		    JOIN
+		    	hf_resp h2
+		    ON
+		    	h.resp_id = h2.id
+		    </if>
+		    <if test="priceId != null and priceId != ''">
+		    JOIN
+		    	hf_price h3
+		    ON
+		    	h.price_id = h3.id
+		    </if>
 		    WHERE
 		        h.stone_id=#{stoneId}
+	</select>
+	
+	<select id="selectByStoneId" resultMap="BaseResultMap">
+			SELECT 
+				distinct id, instance_id,
+			    product_id, category_id,
+			    stone_id, boss_id,
+			    brand_id, resp_id,
+			    price_id, goods_desc,
+			    create_time, modify_time,
+			    is_deleted
+			FROM
+				hf_goods
+			WHERE
+				stone_id = #{stoneId}
 	</select>
 </mapper>

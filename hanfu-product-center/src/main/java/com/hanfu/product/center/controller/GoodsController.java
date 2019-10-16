@@ -22,16 +22,22 @@ import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
+import com.hanfu.product.center.dao.HfPriceMapper;
+import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
+import com.hanfu.product.center.model.HfPrice;
+import com.hanfu.product.center.model.HfResp;
+import com.hanfu.product.center.model.ProductSpec;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsSpecRequest;
 import com.hanfu.product.center.request.HfGoodsRequest;
-import com.hanfu.product.center.response.handler.GoodsNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -49,13 +55,21 @@ public class GoodsController {
 
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
+	
 	@Autowired
 	private GoodsSpecMapper goodsSpecMapper;
+	
 	@Autowired
 	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
 	
 	@Autowired
 	private FileDescMapper fileDescMapper;
+	
+	@Autowired
+	private HfPriceMapper hfPriceMapper;
+	
+	@Autowired
+	private HfRespMapper hfRespMapper;
 	
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -68,29 +82,32 @@ public class GoodsController {
 		example.createCriteria().andInstanceIdEqualTo(instanceId);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
 	}
-
-	@ApiOperation(value = "添加物品", notes = "添加物品")
-	@RequestMapping(value = "/addgood", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addGood(HfGoodsRequest request) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoods item = new HfGoods();
-		item.setInstanceId(request.getInstanceId());
-		item.setRespId(request.getRespId());
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(item)));
-	}
 	
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")
 	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateGood(HfGoods hfGoods) throws Exception {
+	public ResponseEntity<JSONObject> updateGood(HfGoodsDisplay hfGoodsDisplay) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
-		HfGoods record = new HfGoods();
+		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
 		HfGoodsExample example = new HfGoodsExample();
-		example.createCriteria().andBrandIdEqualTo(hfGoods.getId());
-		record.setPriceId(hfGoods.getPriceId());
-		record.setGoodsDesc(hfGoods.getGoodsDesc());
-		record.setRespId(hfGoods.getRespId());
+		example.createCriteria().andBrandIdEqualTo(hfGoodsDisplay.getId());
+		HfPrice hfPrice = new HfPrice();
+		HfResp hfResp = new HfResp();
+		GoodsSpec goodsSpec = new GoodsSpec();
+		hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+		hfPrice.setGoogsId(hfGoodsDisplay.getId());
+		hfPriceMapper.insert(hfPrice);
+		hfResp.setQuantity(String.valueOf(hfGoodsDisplay.getQuantity()));
+		hfResp.setGoogsId(hfGoodsDisplay.getId());
+		hfRespMapper.insert(hfResp);
+		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
+		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
+		goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
+		goodsSpecMapper.insert(goodsSpec);
+		hfGoods.setPriceId(hfPrice.getId());
+		hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
+		hfGoods.setRespId(hfResp.getId());
 		
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(record, example)));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(hfGoods, example)));
 	}
 	
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")

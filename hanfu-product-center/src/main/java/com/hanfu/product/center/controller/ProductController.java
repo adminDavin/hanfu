@@ -42,6 +42,7 @@ import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
+import com.hanfu.product.center.response.handler.ProductNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -129,12 +130,11 @@ public class ProductController {
 
 	 @ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	    @RequestMapping(value = "/categoryId", method = RequestMethod.GET)
-	    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目ID", required = true,
+	    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目ID", required = false,
 	            type = "Integer") })
 	    public ResponseEntity<JSONObject> listProductBycategoryId(Product product) throws JSONException {
 	        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 	        ProductInstanceExample example = new ProductInstanceExample();
-	        example.createCriteria().andCategoryIdEqualTo(product.getCategoryId());
 	        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductBycategoryId(product)));
 	    }
 
@@ -255,6 +255,23 @@ public class ProductController {
 		item.setCategorySpecId(request.getCategorySpecId());
 		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
 	}
+	
+	@ApiOperation(value = "删除商品规格", notes = "根据规格id删除商品的规格描述")
+	@RequestMapping(value = "/deleteSpecifies", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteSpecifies(@RequestParam(name = "productSpecId") Integer productSpecId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.deleteByPrimaryKey(productSpecId)));
+	}
+	
+	@ApiOperation(value = "修改商品规格", notes = "根据规格id修改商品的规格描述")
+	@RequestMapping(value = "/updateSpecifies", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateSpecifies(ProductSpec productSpec)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductSpecExample example = new ProductSpecExample();
+		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.updateByExample(productSpec, example)));
+	}
 
 	@ApiOperation(value = "获取商品所在店铺的信息", notes = "根据商品获取商品所在的店铺信息")
 	@RequestMapping(value = "/stones", method = RequestMethod.GET)
@@ -276,19 +293,23 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andStoneIdEqualTo(stoneId);
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(stoneId)));
+		List<HfGoods> hfGoods = hfGoodsDao.selectByStoneId(stoneId);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(hfGoods.get(0))));
 	}
 
 	@ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
 	@RequestMapping(value = "/addToStone", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Product product = productMapper.selectByPrimaryKey(request.getProductId());
+		if(product==null) {
+			throw new ProductNotExistException("product is invalid");
+		}
 		ProductInstance item = new ProductInstance();
 		item.setProductId(request.getProductId());
 		item.setStoneId(request.getStoneId());
 		item.setLastModifier(request.getLastModifier());
 		productInstanceMapper.insert(item);
-		Product product = productMapper.selectByPrimaryKey(request.getProductId());
 		HfGoods record = new HfGoods();
 		record.setInstanceId(item.getId());
 		record.setProductId(request.getProductId());
@@ -299,16 +320,6 @@ public class ProductController {
 		
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(record)));
 	}
-
-//    @ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个商品删除")
-//    @RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
-//    public ResponseEntity<JSONObject> deleteStone(ProductInstanceRequest request) throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        ProductInstance example = new ProductInstance();
-//        example.setProductId(request.getProductId());
-//        example.setStoneId(request.getStoneId());
-//        return builder.body(ResponseUtils.getResponseBody(productInstanceDao.deleteProductInstance(example)));
-//    }
 
 	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")
 	@RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
