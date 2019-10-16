@@ -49,3 +49,4 @@ hanfu-payment-client/.settings/*
 hanfu-order-client/target/classes/META-INF/maven/com.hanfu.base/hanfu-order-client/pom.properties
 hanfu-product-center/bin/.settings/*
 hanfu-product-center/bin/*
+hanfu-common/bin/*
