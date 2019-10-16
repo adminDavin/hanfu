@@ -1,10 +1,10 @@
 package com.hanfu.user.center.controller;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,10 +15,7 @@ import com.hanfu.user.center.dao.HfUserAddresseMapper;
 import com.hanfu.user.center.model.HfUserAddresse;
 import com.hanfu.user.center.model.HfUserAddresseExample;
 import com.hanfu.user.center.request.UserAddressRequest;
-import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserAddressNotException;
-import com.hanfu.user.center.response.handler.UserNotExistException;
-import com.hanfu.user.center.utils.GetMessageCode;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -31,6 +28,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api
 @RequestMapping("/user/address")
+@CrossOrigin
 public class HfUserAddressManager {
 
 	@Autowired
@@ -48,6 +46,7 @@ public class HfUserAddressManager {
 		e.createCriteria().andUserIdEqualTo(userId);
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(e)));
 	}
+	@CrossOrigin
 	@RequestMapping(value = "/addAddress", method = RequestMethod.GET)
 	@ApiOperation(value = "添加用戶地址", notes = "添加用戶地址")
 	public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {

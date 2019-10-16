@@ -10,7 +10,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="orders_id" jdbcType="INTEGER" property="ordersId" />
     <result column="order_detail_id" jdbcType="INTEGER" property="orderDetailId" />
-    <result column="uuser_id" jdbcType="INTEGER" property="userId" />
+    <result column="uuser_id" jdbcType="INTEGER" property="uuserId" />
     <result column="user_address_id" jdbcType="INTEGER" property="userAddressId" />
     <result column="googs_id" jdbcType="INTEGER" property="googsId" />
     <result column="logistics_order_name" jdbcType="VARCHAR" property="logisticsOrderName" />
@@ -165,7 +165,7 @@
       resp_id, logistics_orders_id, logistics_company, 
       hf_desc, create_time, modify_time, 
       last_modifier, is_deleted)
-    values (#{ordersId,jdbcType=INTEGER}, #{orderDetailId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+    values (#{ordersId,jdbcType=INTEGER}, #{orderDetailId,jdbcType=INTEGER}, #{uuserId,jdbcType=INTEGER}, 
       #{userAddressId,jdbcType=INTEGER}, #{googsId,jdbcType=INTEGER}, #{logisticsOrderName,jdbcType=VARCHAR}, 
       #{respId,jdbcType=INTEGER}, #{logisticsOrdersId,jdbcType=VARCHAR}, #{logisticsCompany,jdbcType=VARCHAR}, 
       #{hfDesc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
@@ -188,7 +188,7 @@
       <if test="orderDetailId != null">
         order_detail_id,
       </if>
-      <if test="userId != null">
+      <if test="uuserId != null">
         uuser_id,
       </if>
       <if test="userAddressId != null">
@@ -232,8 +232,8 @@
       <if test="orderDetailId != null">
         #{orderDetailId,jdbcType=INTEGER},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+      <if test="uuserId != null">
+        #{uuserId,jdbcType=INTEGER},
       </if>
       <if test="userAddressId != null">
         #{userAddressId,jdbcType=INTEGER},
@@ -298,8 +298,8 @@
       <if test="record.orderDetailId != null">
         order_detail_id = #{record.orderDetailId,jdbcType=INTEGER},
       </if>
-      <if test="record.userId != null">
-        uuser_id = #{record.userId,jdbcType=INTEGER},
+      <if test="record.uuserId != null">
+        uuser_id = #{record.uuserId,jdbcType=INTEGER},
       </if>
       <if test="record.userAddressId != null">
         user_address_id = #{record.userAddressId,jdbcType=INTEGER},
@@ -349,7 +349,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       orders_id = #{record.ordersId,jdbcType=INTEGER},
       order_detail_id = #{record.orderDetailId,jdbcType=INTEGER},
-      uuser_id = #{record.userId,jdbcType=INTEGER},
+      uuser_id = #{record.uuserId,jdbcType=INTEGER},
       user_address_id = #{record.userAddressId,jdbcType=INTEGER},
       googs_id = #{record.googsId,jdbcType=INTEGER},
       logistics_order_name = #{record.logisticsOrderName,jdbcType=VARCHAR},
@@ -379,8 +379,8 @@
       <if test="orderDetailId != null">
         order_detail_id = #{orderDetailId,jdbcType=INTEGER},
       </if>
-      <if test="userId != null">
-        uuser_id = #{userId,jdbcType=INTEGER},
+      <if test="uuserId != null">
+        uuser_id = #{uuserId,jdbcType=INTEGER},
       </if>
       <if test="userAddressId != null">
         user_address_id = #{userAddressId,jdbcType=INTEGER},
@@ -427,7 +427,7 @@
     update hf_order_logistics
     set orders_id = #{ordersId,jdbcType=INTEGER},
       order_detail_id = #{orderDetailId,jdbcType=INTEGER},
-      uuser_id = #{userId,jdbcType=INTEGER},
+      uuser_id = #{uuserId,jdbcType=INTEGER},
       user_address_id = #{userAddressId,jdbcType=INTEGER},
       googs_id = #{googsId,jdbcType=INTEGER},
       logistics_order_name = #{logisticsOrderName,jdbcType=VARCHAR},
