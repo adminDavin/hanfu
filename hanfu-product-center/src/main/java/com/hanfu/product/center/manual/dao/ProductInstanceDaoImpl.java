@@ -24,5 +24,5 @@ public class ProductInstanceDaoImpl implements ProductInstanceDao {
 		Integer row = sqlSessionTemplate.delete("deleteProductInstance", example);
 		return row;
 	}
-
+	
 }
