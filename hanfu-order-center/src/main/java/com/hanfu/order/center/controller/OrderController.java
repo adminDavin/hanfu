@@ -16,8 +16,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
+import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.model.HfOrdersDetail;
-import com.hanfu.order.center.model.HfOrdersDetailExample;
+import com.hanfu.order.center.request.HfOrderLogisticsRequest;
+import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
 import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -43,23 +45,23 @@ public class OrderController {
 	HfOrdersMapper hfOrdersMapper;
 	@Autowired
 	HfOrdersService hfOrdersService;
+	@Autowired
+	OrderDao orderDao;
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "id", value = "物流id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> query(@RequestParam Integer id)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfOrdersDetailExample example = new HfOrdersDetailExample();
-		example.createCriteria().andIdEqualTo(id);
-		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.selectByExample(example)));
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList(id)));
 	}
 	@ApiOperation(value = "创建订单", notes = "创建订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> creatOrder(HfOrdersRequest request)
+	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List list = hfOrdersService.creatOrder(request);	
+		List  list = hfOrdersService.creatOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	@ApiOperation(value = "删除订单", notes = "删除订单")
@@ -78,10 +80,10 @@ public class OrderController {
 	}
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> updateOrder(HfOrdersRequest request)
+	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		
-		return builder.body(ResponseUtils.getResponseBody(""));
+		List list = hfOrdersService.updateOrder(request,hfOrder,hfOrderLogistics);
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 }

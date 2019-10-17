@@ -52,7 +52,7 @@ public class HfUserAddressManager {
 	public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfUserAddresse hfUserAddress = new HfUserAddresse();
-		//hfUserAddress.setUserId(request.getUserId());
+		hfUserAddress.setUserId(request.getUserId());
 		hfUserAddress.setContact(request.getContact());
 		hfUserAddress.setHfConty(request.getHfConty());
 		hfUserAddress.setCreateTime(LocalDateTime.now());

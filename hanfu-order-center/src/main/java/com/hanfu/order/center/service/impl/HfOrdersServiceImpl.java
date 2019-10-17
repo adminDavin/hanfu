@@ -7,15 +7,20 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
+import com.hanfu.order.center.manual.dao.ManualDao;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
+import com.hanfu.order.center.request.HfOrderLogisticsRequest;
+import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
 import com.hanfu.order.center.service.HfOrdersService;
+import com.hanfu.order.center.service.ProductService;
 @Service("hfOrdersDetailService")
 public class HfOrdersServiceImpl implements HfOrdersService {
 	@Autowired
@@ -24,54 +29,72 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	HfOrderLogisticsMapper hfOrderLogisticsMapper;
 	@Autowired
 	HfOrdersMapper hfOrdersMapper;
-	
+	@Autowired
+	ProductService productService;
 	@Override
-	public List creatOrder(HfOrdersRequest request) {
-		Integer orderId =UUID.randomUUID().clockSequence() ;
+	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
+			HfOrderLogisticsRequest hfOrderLogistics)  {
+		Integer ordersId = UUID.randomUUID().clockSequence();
+		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-		hfOrdersDetail.setOrdersId(orderId);
-		hfOrdersDetail.setCreateTime(LocalDateTime.now());
-		hfOrdersDetail.setDistribution(request.getDistribution());
 		hfOrdersDetail.setGoogsId(request.getGoogsId());
 		hfOrdersDetail.setHfDesc(request.getHfDesc());
 		hfOrdersDetail.setHfTax(request.getHfTax());
-		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
+		hfOrdersDetail.setDistribution(request.getDistribution());
+		hfOrdersDetail.setRespId(request.getRespId());
 		hfOrdersDetail.setPurchasePrice(request.getPurchasePrice());
 		hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
-		hfOrdersDetail.setRespId(request.getRespId());	
+		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
+		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
-		HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
-		hfOrderLogistics.setUserId(request.getUserId());
-		hfOrderLogistics.setGoogsId(request.getGoogsId());
-		hfOrderLogistics.setUserAddressId(request.getUserAddressId());
-		hfOrderLogistics.setRespId(request.getRespId());
-		hfOrderLogistics.setOrderDetailId(request.getId());
-		hfOrderLogistics.setLogisticsCompany(request.getLogisticsCompany());
-		hfOrderLogistics.setLogisticsOrderName(request.getLogisticsOrderName());
-		hfOrderLogistics.setLogisticsOrdersId(request.getLogisticsOrdersId());
-		hfOrderLogistics.setCreateTime(LocalDateTime.now());
-		hfOrderLogistics.setHfDesc(request.getHfDesc());
-		hfOrderLogisticsMapper.insert(hfOrderLogistics);
-		HfOrders hfOrders = new HfOrders();
-		hfOrders.setAmount(request.getAmount());
-		hfOrders.setHfMemo(request.getHfMemo());
-		hfOrders.setHfRemark(request.getHfRemark());
-		hfOrders.setOrderType(request.getOrderType());
-		hfOrders.setPayMethodName(request.getPayMethodName());
-		hfOrders.setPayMethodType(request.getPayMethodType());
-		hfOrders.setPayStatus(request.getPayStatus());
-		hfOrders.setUserId(request.getUserId());
+		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(ordersId);
+		hfOrders.setUserId(hfOrder.getUserId());
+		Integer price = request.getPurchasePrice();
+		Integer quantity = request.getPurchaseQuantity();
+		Integer amount = price*quantity;
+		hfOrders.setAmount(amount);
+		hfOrders.setHfMemo(hfOrder.getHfMemo());
+		hfOrders.setHfRemark(hfOrder.getHfRemark());
+		hfOrders.setId(ordersId);
+		hfOrders.setPayMethodName(hfOrder.getPayMethodName());
+		hfOrders.setPayMethodType(hfOrder.getPayMethodType());
+		hfOrders.setPayStatus(hfOrder.getPayStatus());
 		hfOrders.setCreateTime(LocalDateTime.now());
-		hfOrders.setId(orderId);
+		hfOrders.setOrderType(hfOrder.getOrderType());
 		hfOrdersMapper.insert(hfOrders);
+		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
+		hfOrderLogistic.setGoogsId(request.getGoogsId());
+		hfOrderLogistic.setCreateTime(LocalDateTime.now());
+		hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
+		hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
+		hfOrderLogistic.setLogisticsOrdersId(logisticsOrdersId);
+		hfOrderLogistic.setOrderDetailId(request.getId());
+		hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
+		hfOrderLogistic.setUserId(hfOrder.getUserId());
+		hfOrderLogistic.setOrdersId(ordersId);
+		hfOrderLogistic.setRespId(request.getRespId());
+		hfOrderLogistic.setGoogsId(request.getGoogsId());
+		hfOrderLogisticsMapper.insert(hfOrderLogistic);
 		List list = new ArrayList<>();
 		list.add(hfOrdersDetail);
-		list.add(hfOrderLogistics);
+		list.add(hfOrderLogistic);
 		list.add(hfOrders);
 		return list;
 	}
-
-
-
+	@Override
+	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
+			HfOrderLogisticsRequest hfOrderLogistics) {
+		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
+		HfOrders hfOrders = new HfOrders();
+		hfOrdersMapper.updateByPrimaryKey(hfOrders);
+		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
+		hfOrderLogisticsMapper.updateByPrimaryKey(hfOrderLogistic);
+		List list = new ArrayList<>();
+		list.add(hfOrdersDetail);
+		list.add(hfOrderLogistic);
+		list.add(hfOrders);
+		return list;
+	}
 
 }
