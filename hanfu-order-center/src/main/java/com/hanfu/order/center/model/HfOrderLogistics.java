@@ -38,7 +38,7 @@ public class HfOrderLogistics implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:55:35 CST 2019
      */
-    private Integer uuserId;
+    private Integer userId;
 
     /**
      *
@@ -227,8 +227,8 @@ public class HfOrderLogistics implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:55:35 CST 2019
      */
-    public Integer getUuserId() {
-        return uuserId;
+    public Integer getUserId() {
+        return userId;
     }
 
     /**
@@ -239,8 +239,8 @@ public class HfOrderLogistics implements Serializable {
      *
      * @mbg.generated Mon Oct 14 06:55:35 CST 2019
      */
-    public void setUuserId(Integer uuserId) {
-        this.uuserId = uuserId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     /**
@@ -522,7 +522,7 @@ public class HfOrderLogistics implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", ordersId=").append(ordersId);
         sb.append(", orderDetailId=").append(orderDetailId);
-        sb.append(", uuserId=").append(uuserId);
+        sb.append(", userId=").append(userId);
         sb.append(", userAddressId=").append(userAddressId);
         sb.append(", googsId=").append(googsId);
         sb.append(", logisticsOrderName=").append(logisticsOrderName);

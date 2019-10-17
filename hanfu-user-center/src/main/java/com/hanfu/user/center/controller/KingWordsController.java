@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.GetMessageCode;
+import com.hanfu.user.center.utils.IpAddress;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -86,7 +88,7 @@ public class KingWordsController {
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String")
 			})
-	public ResponseEntity<JSONObject> register(@RequestParam String authType, @RequestParam String authKey, @RequestParam String passwd) throws Exception {
+	public ResponseEntity<JSONObject> register(@RequestParam String authType, @RequestParam String authKey, @RequestParam String passwd,HttpServletRequest request) throws Exception {
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		long authCount = hfAuthMapper.countByExample(example);
@@ -99,6 +101,7 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
+		user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
 		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);

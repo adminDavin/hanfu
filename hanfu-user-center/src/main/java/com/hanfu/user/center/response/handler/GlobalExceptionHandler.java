@@ -31,4 +31,9 @@ public class GlobalExceptionHandler {
 	public void userNotExistExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("user is invalid:", e);
 	}
+	@ExceptionHandler(value = OrdersNotExistException.class)
+    @ResponseStatus(value=HttpStatus.FORBIDDEN, reason="user is invalid")
+	public void ordersNotExistExceptionHandler(HttpServletRequest req, Exception e) {
+		logger.error("order is invalid:", e);
+	}
 }

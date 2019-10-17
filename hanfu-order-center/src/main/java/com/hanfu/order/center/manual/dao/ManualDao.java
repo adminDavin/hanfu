@@ -11,4 +11,6 @@ public interface ManualDao {
 	public void selectProductByStone(Integer stoneId);
 
 	public List<Categories> selectCategories();
+
+	
 }
