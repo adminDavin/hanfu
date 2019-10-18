@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
+import com.hanfu.product.center.dao.HfPriceMapper;
+import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.ProductInfoMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
@@ -28,6 +30,8 @@ import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.HfPrice;
+import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInfo;
@@ -41,6 +45,7 @@ import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
+import com.hanfu.product.center.response.handler.GoodsNotExistException;
 import com.hanfu.product.center.response.handler.ProductNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -94,7 +99,13 @@ public class ProductController {
 
 	@Autowired
 	private ProductInstanceDao productInstanceDao;
-
+	
+	@Autowired
+	private HfPriceMapper hfPriceMapper;
+	
+	@Autowired
+	private HfRespMapper hfRespMapper;
+	
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
@@ -288,12 +299,11 @@ public class ProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getStoneProduct(@RequestParam(name = "stoneId") Integer stoneId)
-			throws JSONException {
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andStoneIdEqualTo(stoneId);
-		List<HfGoods> hfGoods = hfGoodsDao.selectByStoneId(stoneId);
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(hfGoods.get(0))));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(stoneId)));
 	}
 
 	@ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
@@ -302,12 +312,14 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(request.getProductId());
 		if(product==null) {
-			throw new ProductNotExistException("product is invalid");
+			return builder.body(ResponseUtils.getResponseBody(new ProductNotExistException("product is invalid")));
 		}
 		ProductInstance item = new ProductInstance();
 		item.setProductId(request.getProductId());
 		item.setStoneId(request.getStoneId());
 		item.setLastModifier(request.getLastModifier());
+		HfPrice hfPrice = new HfPrice();
+		HfResp hfResp = new HfResp();
 		productInstanceMapper.insert(item);
 		HfGoods record = new HfGoods();
 		record.setInstanceId(item.getId());
@@ -316,8 +328,15 @@ public class ProductController {
 		record.setBossId(product.getBossId());
 		record.setBrandId(product.getBrandId());
 		record.setCategoryId(product.getCategoryId());
-		
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.insert(record)));
+		hfGoodsMapper.insert(record);
+		hfPrice.setGoogsId(record.getId());
+		hfResp.setGoogsId(record.getId());
+		hfPriceMapper.insert(hfPrice);
+		hfRespMapper.insert(hfResp);
+		record.setPriceId(hfPrice.getId());
+		record.setRespId(hfPrice.getId());
+		hfGoodsMapper.updateByPrimaryKey(record);
+		return builder.body(ResponseUtils.getResponseBody("product insert success"));
 	}
 
 	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")

@@ -25,6 +25,7 @@ import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
@@ -55,6 +56,9 @@ public class GoodsController {
 
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
+	
+	@Autowired
+	private HfGoodsDao hfGoodsDao;
 	
 	@Autowired
 	private GoodsSpecMapper goodsSpecMapper;
@@ -88,26 +92,23 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> updateGood(HfGoodsDisplay hfGoodsDisplay) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
+		HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
+		HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoodsDisplay.getRespId());
+		hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+		hfResp.setQuantity(String.valueOf(hfGoodsDisplay.getQuantity()));
+		hfPriceMapper.updateByPrimaryKey(hfPrice);
+		hfRespMapper.updateByPrimaryKey(hfResp);
 		HfGoodsExample example = new HfGoodsExample();
 		example.createCriteria().andBrandIdEqualTo(hfGoodsDisplay.getId());
-		HfPrice hfPrice = new HfPrice();
-		HfResp hfResp = new HfResp();
 		GoodsSpec goodsSpec = new GoodsSpec();
-		hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-		hfPrice.setGoogsId(hfGoodsDisplay.getId());
-		hfPriceMapper.insert(hfPrice);
-		hfResp.setQuantity(String.valueOf(hfGoodsDisplay.getQuantity()));
-		hfResp.setGoogsId(hfGoodsDisplay.getId());
-		hfRespMapper.insert(hfResp);
+		goodsSpec.setSpecPrice(hfGoodsDisplay.getPriceId());
 		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
 		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
 		goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
 		goodsSpecMapper.insert(goodsSpec);
-		hfGoods.setPriceId(hfPrice.getId());
 		hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
-		hfGoods.setRespId(hfResp.getId());
-		
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(hfGoods, example)));
+		hfGoods.setGoodName(hfGoodsDisplay.getGoodName());
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
 	
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
@@ -151,22 +152,16 @@ public class GoodsController {
 	
 	
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
-	@RequestMapping(value = "/addPicture", method = RequestMethod.GET)
+	@RequestMapping(value = "/addPicture", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
- 		HfGoodsPictrue item = new HfGoodsPictrue();
+		HfGoodsPictrue item = new HfGoodsPictrue();
 		item.setHfName(request.getPictureName());
 		item.setGoodsId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
 		item.setSpecDesc(request.getPrictureDesc());
-		System.out.println("===============================");
-		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
-		System.out.println("-------------------------------");
-		FileInputStream fis = new  FileInputStream(file);
 		FileMangeService fileMangeService = new FileMangeService();
-		System.out.println("++++++++++++++++++++++++++++++++");
-		String arr[] = fileMangeService.uploadFile(FdfsClient.streamToByte(fis), String.valueOf(request.getUserId()));
-		fis.close();
+		String arr[] = fileMangeService.uploadFile(request.getFileInfo().getBytes(), String.valueOf(request.getUserId()));
 		FileDesc fileDesc = new FileDesc();
 		fileDesc.setFileName(request.getPictureName());
 		fileDesc.setGroupName(arr[0]);

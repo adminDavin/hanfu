@@ -27,13 +27,13 @@ public class GlobalExceptionHandler  extends com.hanfu.utils.response.handler.Gl
 	}
 	
 	@ExceptionHandler(value = GoodsNotExistException.class)
-    @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="goods is invalid")
+    @ResponseStatus(value=HttpStatus.PRECONDITION_FAILED, reason="goods is invalid")
 	public void goodsNotExistExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("goods is invalid:", e);
 	}
 	
 	@ExceptionHandler(value = ProductNotExistException.class)
-    @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="product is invalid")
+    @ResponseStatus(value=HttpStatus.PRECONDITION_FAILED, reason="product is invalid")
 	public void productNotExistExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("product is invalid:", e);
 	}
