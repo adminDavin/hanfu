@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrdersRequest implements Serializable{
-	@ApiModelProperty(required = true, value = "订单详情id")
+	@ApiModelProperty(required = true, value = "用户id")
 	private Integer userId;
 	@ApiModelProperty(required = true, value = "支付状态")
 	private Integer payStatus ;

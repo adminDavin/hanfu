@@ -7,12 +7,10 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
-import com.hanfu.order.center.manual.dao.ManualDao;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
@@ -34,7 +32,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
-		Integer ordersId = UUID.randomUUID().clockSequence();
+		Integer ordersId = UUID.randomUUID().version();
 		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
 		hfOrdersDetail.setGoogsId(request.getGoogsId());
@@ -47,7 +45,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
-		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(ordersId);
+		HfOrders hfOrders = new HfOrders();
 		hfOrders.setUserId(hfOrder.getUserId());
 		Integer price = request.getPurchasePrice();
 		Integer quantity = request.getPurchaseQuantity();
@@ -85,7 +83,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics) {
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
+		hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail);
 		HfOrders hfOrders = new HfOrders();
 		hfOrdersMapper.updateByPrimaryKey(hfOrders);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();

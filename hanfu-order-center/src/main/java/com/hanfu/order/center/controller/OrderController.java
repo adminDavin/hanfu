@@ -65,7 +65,7 @@ public class OrderController {
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	@ApiOperation(value = "删除订单", notes = "删除订单")
-	@RequestMapping(value = "/creat", method = RequestMethod.GET)
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer id)
@@ -79,7 +79,7 @@ public class OrderController {
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	@ApiOperation(value = "修改订单", notes = "修改订单")
-	@RequestMapping(value = "/creat", method = RequestMethod.GET)
+	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

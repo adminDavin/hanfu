@@ -14,8 +14,8 @@ public class OrderDaoImpl implements OrderDao{
 	@Autowired
     SqlSessionTemplate sqlSessionTemplate;
 	@Override
-	public List<HfOrdersDetail> selectOrderList(Integer ordersId) {
-		List<HfOrdersDetail> result = sqlSessionTemplate.selectList("selectProductById", ordersId);
+	public List<HfOrdersDetail> selectOrderList(Integer id) {
+		List<HfOrdersDetail> result = sqlSessionTemplate.selectList("selectOrderList", id);
 		return result;
 	}
 
