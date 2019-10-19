@@ -11,7 +11,8 @@ public class HfGoodsInfo extends CommonRequest {
     private String hfName;
     @ApiModelProperty(required = true, value = "物品描述")
     private String hfDesc;
-    
+    @ApiModelProperty(required = true, value = "商铺id")
+    private Integer hfStoreId;
     @ApiModelProperty(required = true, value = "商家id")
     private Integer bossId;
     @ApiModelProperty(required = false, value = "品牌id")
@@ -46,6 +47,13 @@ public class HfGoodsInfo extends CommonRequest {
     public void setBrandId(Integer brandId) {
         this.brandId = brandId;
     }
+    public Integer getHfStoreId() {
+        return hfStoreId;
+    }
+    public void setHfStoreId(Integer hfStoreId) {
+        this.hfStoreId = hfStoreId;
+    }
+  
 
     
 

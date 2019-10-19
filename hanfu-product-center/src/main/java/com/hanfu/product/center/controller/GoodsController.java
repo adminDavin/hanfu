@@ -3,7 +3,9 @@ package com.hanfu.product.center.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.common.utils.FdfsClient;
 import com.hanfu.product.center.dao.FileDescMapper;
@@ -25,6 +28,8 @@ import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
@@ -38,7 +43,11 @@ import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfResp;
+import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductInfoExample;
+import com.hanfu.product.center.model.ProductInstance;
+import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.ProductSpec;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
@@ -84,6 +93,11 @@ public class GoodsController {
     @Autowired
     private ProductSpecMapper productSpecMapper;
     
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
+
+    @Autowired
+    private ProductInstanceMapper productInstanceMapper;
 
     @ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
     @RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -103,8 +117,17 @@ public class GoodsController {
         Product product = productMapper.selectByPrimaryKey(hfGoodsInfo.getProductId());
         if (product == null) {
             throw new Exception("商品不存在");
-        } 
+        }
+        HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsInfo.getHfStoreId());
+        if (hfStone == null) {
+            throw new Exception("商铺不存在");
+        }
+        ProductInstance item = new ProductInstance();
+        item.setProductId(product.getId());
+        item.setStoneId(hfStone.getId());
+        productInstanceMapper.insert(item);
         HfGoods record = new HfGoods();
+        record.setInstanceId(item.getId());
         record.setBossId(hfGoodsInfo.getBossId());
         record.setCategoryId(product.getCategoryId());
         record.setProductId(product.getId());
@@ -135,9 +158,7 @@ public class GoodsController {
         goodsSpec.setGoodsId(hfGoodsDisplay.getId());
         goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
         goodsSpecMapper.insert(goodsSpec);
-        hfGoods.setPriceId(hfPrice.getId());
-        hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
-        hfGoods.setRespId(hfResp.getId());
+        hfGoods.setRespId(goodsSpec.getId());
 
         return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(hfGoods, example)));
     }
@@ -166,10 +187,7 @@ public class GoodsController {
         price.setGoogsId(request.getHfGoodsId());
         price.setSellPrice(request.getHfPrice());
         Integer priceInsId = hfPriceMapper.insert(price);
-        HfPriceExample example = new HfPriceExample();
-        example.createCriteria().andGoogsIdEqualTo(goods.getId());
-        List<HfPrice> p = hfPriceMapper.selectByExample(example);
-        goods.setPriceId(p.get(0).getId());
+        goods.setPriceId(price.getId());
         return builder.body(ResponseUtils.getResponseBody(priceInsId));
     }
     
@@ -203,25 +221,50 @@ public class GoodsController {
     }
 
     @ApiOperation(value = "添加物品图片", notes = "添加物品图片")
-    @RequestMapping(value = "/addPicture", method = RequestMethod.GET)
+    @RequestMapping(value = "/addPicture", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
         if (goods == null) {}
-        HfGoodsPictrue item = new HfGoodsPictrue();
-        item.setHfName(request.getPictureName());
-        item.setGoodsId(request.getGoodsId());
-        item.setLastModifier(request.getUsername());
-        item.setSpecDesc(request.getPrictureDesc());
-        FileMangeService fileMangeService = new FileMangeService();
-        String arr[] = fileMangeService.uploadFile(request.getFileInfo().getBytes(), String.valueOf(request.getUserId()));
-        FileDesc fileDesc = new FileDesc();
-        fileDesc.setFileName(request.getPictureName());
-        fileDesc.setGroupName(arr[0]);
-        fileDesc.setRemoteFilename(arr[1]);
-        fileDesc.setUserId(request.getUserId());
-        int fileId = fileDescMapper.insert(fileDesc);
-        return builder.body(ResponseUtils.getResponseBody(fileId));
+        List<HfGoodsPictrue> pictures = Lists.newArrayList();
+        Arrays.asList(request.getFileInfo()).stream().forEach(fileInfo -> {
+            try {
+                FileMangeService fileMangeService = new FileMangeService();
+                String arr[];
+                arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+                FileDesc fileDesc = new FileDesc();
+                fileDesc.setFileName(fileInfo.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setUserId(request.getUserId());
+                fileDescMapper.insert(fileDesc);
+                HfGoodsPictrue picture = new HfGoodsPictrue();
+                picture.setFileId(fileDesc.getId());
+                picture.setGoodsId(goods.getId());
+                picture.setHfName(fileInfo.getName());
+                picture.setSpecDesc(request.getPrictureDesc());
+                hfGoodsPictrueMapper.insert(picture);
+                pictures.add(picture);
+            } catch (IOException e) {
+                logger.error("add picture failed", e);
+            }
+        });
+        return builder.body(ResponseUtils.getResponseBody(pictures));
     }
 
+    @ApiOperation(value = "获取图片", notes = "获取图片")
+    @RequestMapping(value = "/getFile", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "fileId", value = "物品id", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> getFile(@RequestParam(name = "fileId") Integer fileId)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        if (fileDesc == null) {
+            throw new Exception("file not exists");
+        }
+        FileMangeService fileManageService = new FileMangeService();
+        return builder.body(ResponseUtils.getResponseBody(fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename())));
+    }
+    
 }

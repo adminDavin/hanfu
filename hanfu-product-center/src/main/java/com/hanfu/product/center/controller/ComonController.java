@@ -13,10 +13,16 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 import com.hanfu.utils.response.handler.ResponseUtils;
 
  
@@ -36,4 +42,6 @@ public class ComonController extends BasicErrorController {
 		Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
 		return builder.body(body);
 	}
+
+	
 }
