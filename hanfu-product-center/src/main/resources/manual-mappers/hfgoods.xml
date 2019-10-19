@@ -9,11 +9,15 @@
     <result column="categoryId" jdbcType="INTEGER" property="categoryId" />
     <result column="quantity" jdbcType="INTEGER" property="quantity" />
     <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
+    <result column="resp_id" jdbcType="INTEGER" property="respId" />
+    <result column="price_id" jdbcType="INTEGER" property="priceId" />
+    <result column="productId" jdbcType="INTEGER" property="productId" />
     <result column="id" jdbcType="INTEGER" property="id" />
    </resultMap>
    
    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="good_name" jdbcType="INTEGER" property="goodName" />
     <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
@@ -31,14 +35,10 @@
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 			SELECT
 				h.goods_desc,h.id,
-				h.good_name,h1.hf_name productCategoryName,
-				h1.id categoryId
-				<if test="respId != null and respId != ''">
-				h2.quantity
-				</if>
-				<if test="priceId != null and priceId != ''">
-				,h3.sell_price
-				</if>
+				h.good_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h2.quantity,h3.sell_price
 			FROM 
 				hf_goods h 
 			JOIN 
@@ -49,18 +49,14 @@
 		    	hf_category h1 
 		    ON 
 		    	h.category_id = h1.id
-		    <if test="respId != null and respId != ''">
 		    JOIN
 		    	hf_resp h2
 		    ON
 		    	h.resp_id = h2.id
-		    </if>
-		    <if test="priceId != null and priceId != ''">
 		    JOIN
 		    	hf_price h3
 		    ON
 		    	h.price_id = h3.id
-		    </if>
 		    WHERE
 		        h.stone_id=#{stoneId}
 	</select>
@@ -79,4 +75,14 @@
 			WHERE
 				stone_id = #{stoneId}
 	</select>
+	
+	<update id="updateGoods">
+			UPDATE 
+				hf_goods
+			SET 
+				good_name = #{goodName},price_id = #{priceId},
+				resp_id = #{respId},goods_desc = #{goodsDesc}
+			WHERE
+				id = #{id}
+	</update>
 </mapper>

@@ -27,6 +27,7 @@ import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
