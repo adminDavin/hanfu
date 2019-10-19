@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hanfu.order.center.manual.dao.OrderDaoImpl">
-<resultMap type="com.hanfu.order.center.model.HfOrderLogistics" id="BaseResultMap">
+<resultMap type="com.hanfu.order.center.model.HfOrderLogistics" id="ResultMap">
      <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="orders_id" jdbcType="INTEGER" property="orders_id" />
+    <result column="orders_id" jdbcType="INTEGER" property="ordersId" />
     <result column="order_detail_id" jdbcType="INTEGER" property="order_detail_id" />
     <result column="uuser_id" jdbcType="INTEGER" property="uuser_id" />
     <result column="user_address_id" jdbcType="INTEGER" property="user_address_id" />
@@ -19,9 +19,9 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="is_deleted" />
 </resultMap>
 
-<select id="selectOrderList" resultMap= "BaseResultMap">
+<select id="selectOrderList" resultMap= "ResultMap">
      SELECT 
-        h.id,h.orders_id,h.resp_id,h.uuser_id,
+        h.id,h.ordersId,h.resp_id,h.uuser_id,
         h.order_detail_id,h.googs_id,h.user_address_id,
         h.logistics_order_name, 
         h.logistics_orders_id,h.logistics_company,
@@ -31,7 +31,7 @@
         hf_order_logistics h
      LEFT JOIN
         hf_orders h2
-     ON h.orders_id = h2.id
+     ON h.ordersId = h2.id
      LEFT JOIN
         hf_orders_detail  h3
      ON   h.order_detail_id = h3.id

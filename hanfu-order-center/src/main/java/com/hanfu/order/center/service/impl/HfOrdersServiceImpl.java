@@ -44,6 +44,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
 		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
+		//hfOrdersDetail.setId(ordersId);
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
 		HfOrders hfOrders = new HfOrders();
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -62,7 +63,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersMapper.insert(hfOrders);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
-		hfOrderLogistic.setCreateTime(LocalDateTime.now());
+		//hfOrderLogistic.setCreateTime(LocalDateTime.now());
 		hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
 		hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
 		hfOrderLogistic.setLogisticsOrdersId(logisticsOrdersId);

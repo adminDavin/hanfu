@@ -23,8 +23,8 @@ public class HfOrdersRequest implements Serializable{
 	private String hfRemark;
 	@ApiModelProperty(required = true, value = "支付方式名称")
 	private String payMethodName;
-	@ApiModelProperty(required = true, value = "创建时间")
-	private LocalDateTime createTime ;
+//	@ApiModelProperty(required = true, value = "创建时间")
+//	private LocalDateTime createTime ;
 	
 	public Integer getUserId() {
 		return userId;
@@ -74,12 +74,12 @@ public class HfOrdersRequest implements Serializable{
 	public void setPayMethodName(String payMethodName) {
 		this.payMethodName = payMethodName;
 	}
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
+//	public LocalDateTime getCreateTime() {
+//		return createTime;
+//	}
+//	public void setCreateTime(LocalDateTime createTime) {
+//		this.createTime = createTime;
+//	}
 	
 	
 }

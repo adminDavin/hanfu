@@ -30,8 +30,8 @@ public class HfOrdersDetailRequest implements Serializable {
 	private String distribution;
 	@ApiModelProperty(required = true, value = "订单描述")
 	private String hfDesc;
-	@ApiModelProperty(required = true, value = "创建时间")
-	private LocalDateTime createTime;
+//	@ApiModelProperty(required = true, value = "创建时间")
+//	private LocalDateTime createTime;
 	
 	public Integer getId() {
 		return id;
@@ -93,10 +93,10 @@ public class HfOrdersDetailRequest implements Serializable {
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
+//	public LocalDateTime getCreateTime() {
+//		return createTime;
+//	}
+//	public void setCreateTime(LocalDateTime createTime) {
+//		this.createTime = createTime;
+//	}
 }	

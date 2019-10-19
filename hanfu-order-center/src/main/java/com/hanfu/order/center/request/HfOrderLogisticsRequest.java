@@ -11,8 +11,6 @@ public class HfOrderLogisticsRequest implements Serializable{
 	private Integer ordersId;
 	@ApiModelProperty(required = true, value = "订单详情id")
 	private Integer orderDetailId ;
-	@ApiModelProperty(required = true, value = "用户id")
-	private Integer uuserId ;
 	@ApiModelProperty(required = true, value = "用户地址id")
 	private Integer userAddressId;
 	@ApiModelProperty(required = true, value = "物品id")
@@ -27,8 +25,8 @@ public class HfOrderLogisticsRequest implements Serializable{
 	private String logisticsCompany;
 	@ApiModelProperty(required = true, value = "物流描述")
 	private String hfDesc;
-	@ApiModelProperty(required = true, value = "添加时间")
-	private LocalDateTime createTime;
+//	@ApiModelProperty(required = true, value = "添加时间")
+//	private LocalDateTime createTime;
 	public Integer getOrdersId() {
 		return ordersId;
 	}
@@ -40,12 +38,6 @@ public class HfOrderLogisticsRequest implements Serializable{
 	}
 	public void setOrderDetailId(Integer orderDetailId) {
 		this.orderDetailId = orderDetailId;
-	}
-	public Integer getUuserId() {
-		return uuserId;
-	}
-	public void setUuserId(Integer uuserId) {
-		this.uuserId = uuserId;
 	}
 	public Integer getUserAddressId() {
 		return userAddressId;
@@ -89,11 +81,11 @@ public class HfOrderLogisticsRequest implements Serializable{
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
+//	public LocalDateTime getCreateTime() {
+//		return createTime;
+//	}
+//	public void setCreateTime(LocalDateTime createTime) {
+//		this.createTime = createTime;
+//	}
 
 }
