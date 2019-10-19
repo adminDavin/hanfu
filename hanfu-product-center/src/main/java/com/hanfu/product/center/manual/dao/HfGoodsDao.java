@@ -9,7 +9,9 @@ import com.hanfu.product.center.model.HfGoods;
 
 public interface HfGoodsDao {
 	
-	public List<HfGoodsDisplay> selectAllGoods(HfGoods hfGoods);
+	public List<HfGoodsDisplay> selectAllGoods(Integer stoneId);
 	
 	public List<HfGoods> selectByStoneId(Integer stoneId);
+	
+	public Integer updateGoods(HfGoods hfGoods);
 }

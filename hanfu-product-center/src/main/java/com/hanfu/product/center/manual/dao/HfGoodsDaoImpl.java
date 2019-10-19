@@ -20,8 +20,8 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
     SqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public List<HfGoodsDisplay> selectAllGoods(HfGoods hfGoods) {
-		List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoods", hfGoods);
+	public List<HfGoodsDisplay> selectAllGoods(Integer stoneId) {
+		List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoods", stoneId);
 		return result;
 	}
 	
@@ -29,5 +29,11 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 	public List<HfGoods> selectByStoneId(Integer stoneId) {
 		List<HfGoods> result = sqlSessionTemplate.selectList("selectByStoneId", stoneId);
 		return result;
+	}
+	
+	@Override
+	public Integer updateGoods(HfGoods hfGoods) {
+		Integer row = sqlSessionTemplate.update("updateGoods", hfGoods);
+		return row;
 	}
 }

@@ -17,6 +17,9 @@ public class HfGoodsDisplay implements Serializable{
 	private Integer sellPrice;
 	private String specValue;
 	private Integer productSpecId;
+	private Integer priceId;
+	private Integer respId;
+	private Integer productId;
 	public Integer getId() {
 		return id;
 	}
@@ -71,5 +74,24 @@ public class HfGoodsDisplay implements Serializable{
 	public void setProductSpecId(Integer productSpecId) {
 		this.productSpecId = productSpecId;
 	}
+	public Integer getPriceId() {
+		return priceId;
+	}
+	public void setPriceId(Integer priceId) {
+		this.priceId = priceId;
+	}
+	public Integer getRespId() {
+		return respId;
+	}
+	public void setRespId(Integer respId) {
+		this.respId = respId;
+	}
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+	
 	
 }
