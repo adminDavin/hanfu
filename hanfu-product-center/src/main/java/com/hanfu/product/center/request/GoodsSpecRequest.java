@@ -4,15 +4,17 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class GoodsSpecRequest extends CommonRequest {
-	@ApiModelProperty(required = true, value = "物品id, 即对应到商铺商品的某一种种类")
+	@ApiModelProperty(required = true, value = "物品id")
 	private Integer goodsId;
-	@ApiModelProperty(required = true, value = "规格名称")
-	private String specName;
-	@ApiModelProperty(required = true, value = "规格描述")
+    @ApiModelProperty(required = false, value = "规格名称")
+    private String specName;
+    @ApiModelProperty(required = false, value = "商品规格id")
+    private Integer productSpecId;
+	@ApiModelProperty(required = false, value = "规格描述")
 	private String specDesc;
 	@ApiModelProperty(required = true, value = "规格值")
 	private String specValue;
-	@ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+	@ApiModelProperty(required = false, value = "店家名称, 登录修改的用户名称")
 	private String username;
 	public Integer getGoodsId() {
 		return goodsId;
@@ -44,6 +46,13 @@ public class GoodsSpecRequest extends CommonRequest {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+    public Integer getProductSpecId() {
+        return productSpecId;
+    }
+    public void setProductSpecId(Integer productSpecId) {
+        this.productSpecId = productSpecId;
+    }
+   
 	
 	
 }

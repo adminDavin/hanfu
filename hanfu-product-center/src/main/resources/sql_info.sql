@@ -133,12 +133,13 @@ alter table hf_category comment '商品类目表';
 create table hf_goods
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
+   hf_name              varchar(63) comment '物品名称',
    instance_id          int comment '商品实体id',
    product_id           int comment '商品id',
    category_id          int comment '所属类目',
    stone_id             int comment '商铺id',
    boss_id              int comment '所属商家',
-   brand_id				int comment '品牌id',
+   brand_id             int comment '品牌id',
    resp_id              int comment '库存id',
    price_id              int comment '价格id',
    goods_desc           varchar(127) comment '物品描述',
@@ -175,7 +176,7 @@ alter table hf_goods_pictrue comment '商品实体定价单图片描述';
 create table hf_warehouse
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
-   hf_name          	varchar(63)  comment '仓库名称',
+   hf_name              varchar(63)  comment '仓库名称',
    hf_region            varchar(63) comment '所属区域',
    hf_desc              varchar(127) comment '仓库描述',
    bossId               int comment '商家id',
@@ -335,7 +336,7 @@ create table product_instance
    category_id          int comment '所属类目',
    stone_id             int comment '商铺id',
    boss_id              int comment '所属商家',
-   brand_id				int comment '品牌id',
+   brand_id             int comment '品牌id',
    create_time          timestamp default now() comment '添加时间',
    modify_time          timestamp default now() comment '修改时间',
    last_modifier        varchar(15) comment '最后一次修改人',
@@ -351,7 +352,7 @@ alter table product_instance comment '商品实体';
 create table product_spec
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
-   hf_name              char(1) comment '规格名称',
+   hf_name              varchar(63) comment '规格名称',
    category_spec_id     int comment '类目规格id',
    product_id           int comment '商品ID',
    spec_type            varchar(63) comment '规格类型',
@@ -364,3 +365,5 @@ create table product_spec
 );
 
 alter table product_spec comment '商品规格';
+
+
