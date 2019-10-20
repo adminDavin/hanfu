@@ -36,4 +36,10 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		Integer row = sqlSessionTemplate.update("updateGoods", hfGoods);
 		return row;
 	}
+	
+	@Override
+	public HfGoodsDisplay selectGoodsInfo(Integer goodsId) {
+		HfGoodsDisplay hfGoodsDisplay = sqlSessionTemplate.selectOne("selectGoodsInfo", goodsId);
+		return hfGoodsDisplay;
+	}
 }

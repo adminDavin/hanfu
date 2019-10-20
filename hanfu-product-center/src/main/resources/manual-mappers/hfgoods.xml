@@ -76,6 +76,31 @@
 				stone_id = #{stoneId}
 	</select>
 	
+	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
+		SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h3.sell_price
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+		    JOIN
+		    	hf_price h3
+		    ON
+		    	h.price_id = h3.id
+		    WHERE
+		        h.id=#{goodsId}
+	</select>
+	
 	<update id="updateGoods">
 			UPDATE 
 				hf_goods

@@ -16,7 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.http.HttpStatus; 
+import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +50,8 @@ import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product; 
-import com.hanfu.product.center.model.ProductInstance; 
+import com.hanfu.product.center.model.ProductInstance;
+import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.ProductSpec;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
@@ -76,7 +78,10 @@ public class GoodsController {
 
     @Autowired
     private HfGoodsMapper hfGoodsMapper;
-
+    
+    @Autowired
+    private HfGoodsDao hfGoodsDao;
+    
     @Autowired
     private GoodsSpecMapper goodsSpecMapper;
 
@@ -109,7 +114,7 @@ public class GoodsController {
     
     @Autowired
     private WarehouseMapper warehouseMapper;
-
+    
     @ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
     @RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "instanceId", value = "商品实体id", required = true,
@@ -119,6 +124,15 @@ public class GoodsController {
         HfGoodsExample example = new HfGoodsExample();
         example.createCriteria().andInstanceIdEqualTo(instanceId);
         return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
+    }
+    
+    @ApiOperation(value = "根据物品id获取物品详情", notes = "即某物品的详细信息")
+    @RequestMapping(value = "/byGoodsId", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsInfo(goodsId)));
     }
 
     @ApiOperation(value = "添加物品", notes = "添加物品")
@@ -160,7 +174,7 @@ public class GoodsController {
     }
     
     
-
+    //TODO
     @ApiOperation(value = "编辑物品", notes = "编辑物品")
     @RequestMapping(value = "/updategood", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> updateGood(HfGoodsDisplay hfGoodsDisplay) throws Exception {
@@ -177,8 +191,20 @@ public class GoodsController {
         if(!StringUtils.isEmpty(hfGoodsDisplay.getGoodsDesc())) {
         	hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());;
         }
-        hfGoodsMapper.up
-        HfPrice hfPrice = new HfPrice();
+        hfGoodsMapper.updateByPrimaryKey(hfGoods);
+        if(hfGoods.getPriceId()==null) {
+        	HfPrice hfPrice = new HfPrice();
+        	hfPrice.setGoogsId(hfGoods.getId());
+        	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+        	hfPriceMapper.insert(hfPrice);
+        	hfGoods.setPriceId(hfPrice.getId());
+        	hfGoodsMapper.updateByPrimaryKey(hfGoods);
+        }
+        HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
+        if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
+        	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+        }
+        hfPriceMapper.updateByPrimaryKey(hfPrice);
         
         HfResp hfResp = new HfResp();
         GoodsSpec goodsSpec = new GoodsSpec();
@@ -212,15 +238,29 @@ public class GoodsController {
     @ApiOperation(value = "设置物品价格", notes = "设置物品价格")
     @RequestMapping(value = "/setPrice", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> setGoodsPrice(GoodsPriceInfo request)
-            throws JSONException {
+            throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getHfGoodsId());
-        HfPrice price = new HfPrice();
+        if (goods==null) {
+        	throw new Exception("物品不存在");
+        }
+        HfPrice price = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
         price.setGoogsId(request.getHfGoodsId());
         price.setSellPrice(request.getHfPrice());
-        hfPriceMapper.insert(price);
-        goods.setPriceId(price.getId());
-        hfGoodsMapper.updateByPrimaryKey(goods);
+        if(goods.getPriceId() == null) {
+        	hfPriceMapper.insert(price);
+            goods.setPriceId(price.getId());
+            goods.setCreateTime(LocalDateTime.now());
+            goods.setModifyTime(LocalDateTime.now());
+            goods.setIsDeleted((short) 0);
+            hfGoodsMapper.updateByPrimaryKey(goods);
+        }else {
+        	price.setCreateTime(LocalDateTime.now());
+        	price.setModifyTime(LocalDateTime.now());
+        	price.setLastModifier(request.getUsername());
+        	price.setIsDeleted((short) 0);
+        	hfPriceMapper.updateByPrimaryKey(price);
+        }
         return builder.body(ResponseUtils.getResponseBody(price.getId()));
     }
     
@@ -230,17 +270,37 @@ public class GoodsController {
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getHfGoodsId());
-        HfResp item = new HfResp();
-        item.setGoogsId(request.getHfGoodsId());
-        item.setHfStatus(1);
-        item.setQuantity(String.valueOf(request.getQuantity()));
-        Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
-        if(warehouse == null) {
-        	throw new Exception("仓库不存在");
+        if (goods==null) {
+        	throw new Exception("物品不存在");
         }
-        item.setWarehouseId(request.getWareHouseId());
-        Integer priceInsId = hfRespMapper.insert(item);
-        return builder.body(ResponseUtils.getResponseBody(priceInsId));
+        HfResp item = hfRespMapper.selectByPrimaryKey(goods.getId());
+        Integer respId = null;
+        if(item == null) {
+        	item.setGoogsId(request.getHfGoodsId());
+            item.setHfStatus(1);
+            item.setQuantity(String.valueOf(request.getQuantity()));
+            Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
+            if(warehouse == null) {
+            	throw new Exception("仓库不存在");
+            }
+            item.setWarehouseId(request.getWareHouseId());
+            item.setCreateTime(LocalDateTime.now());
+            item.setModifyTime(LocalDateTime.now());
+            item.setLastModifier(request.getUsername());
+            item.setIsDeleted((short) 0);
+            hfRespMapper.insert(item);
+            respId = item.getId();
+        }else {
+        	item.setQuantity(String.valueOf(request.getQuantity()));
+        	Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
+            if(warehouse == null) {
+            	throw new Exception("仓库不存在");
+            }
+            item.setWarehouseId(request.getWareHouseId());
+            hfRespMapper.updateByPrimaryKey(item);
+            respId = item.getId();
+        }
+        return builder.body(ResponseUtils.getResponseBody(respId));
     }
     
     @ApiOperation(value = "添加物品规格", notes = "添加物品规格")
