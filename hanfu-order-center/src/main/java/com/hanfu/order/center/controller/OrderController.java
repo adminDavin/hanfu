@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
+import com.hanfu.order.center.response.handler.OrderIsExistException;
 import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -51,7 +53,7 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "物流id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> query(@RequestParam Integer id)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -70,14 +72,17 @@ public class OrderController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer id)
-			throws JSONException {
+			throws JSONException, Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrdersDetail hfOrdersDetail1 = new HfOrdersDetail();
 		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(id);
-		hfOrdersMapper.deleteByPrimaryKey(hfOrdersDetail.getOrdersId());
-		hfOrdersMapper.selectByPrimaryKey(hfOrdersDetail.getOrdersId());
-		hfOrderLogisticsMapper.deleteByPrimaryKey(hfOrdersDetail.getOrdersId());
-		hfOrdersDetailMapper.deleteByPrimaryKey(id);		
-		return builder.body(ResponseUtils.getResponseBody(""));
+		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
+			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));
+		}
+		if(!StringUtils.isEmpty(hfOrdersDetail.getOrderDetailStatus())) {
+			hfOrdersDetail1.setOrderDetailStatus(hfOrdersDetail.getOrderDetailStatus());
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail1)));
 	}
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.GET)

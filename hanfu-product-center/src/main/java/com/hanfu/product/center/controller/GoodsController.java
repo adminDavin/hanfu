@@ -105,8 +105,7 @@ public class GoodsController {
 		goodsSpecMapper.insert(goodsSpec);
 		hfGoods.setPriceId(hfPrice.getId());
 		hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
-		hfGoods.setRespId(hfResp.getId());
-		
+		hfGoods.setRespId(hfResp.getId());		
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(hfGoods, example)));
 	}
 	
