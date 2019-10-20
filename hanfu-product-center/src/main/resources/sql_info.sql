@@ -134,6 +134,7 @@ create table hf_goods
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
    instance_id          int comment '商品实体id',
+   good_name 			varchar(63) comment '物品名称',
    product_id           int comment '商品id',
    category_id          int comment '所属类目',
    stone_id             int comment '商铺id',

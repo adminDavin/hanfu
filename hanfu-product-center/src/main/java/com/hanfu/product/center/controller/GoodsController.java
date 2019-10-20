@@ -87,8 +87,8 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
 	}
 	
-	@ApiOperation(value = "编辑物品", notes = "编辑物品")
-	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
+	@ApiOperation(value = "添加物品", notes = "添加物品")
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateGood(HfGoodsDisplay hfGoodsDisplay) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);		
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
@@ -108,7 +108,7 @@ public class GoodsController {
 		goodsSpecMapper.insert(goodsSpec);
 		hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
 		hfGoods.setGoodName(hfGoodsDisplay.getGoodName());
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.updateGoods(hfGoods)));
 	}
 	
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
