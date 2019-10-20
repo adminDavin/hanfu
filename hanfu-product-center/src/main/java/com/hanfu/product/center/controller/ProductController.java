@@ -171,7 +171,7 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(bossId)));
 	}
 
-	@ApiOperation(value = "添加商品列表", notes = "根据商家录入的商品")
+	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

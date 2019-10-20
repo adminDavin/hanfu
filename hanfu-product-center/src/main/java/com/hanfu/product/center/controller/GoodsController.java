@@ -1,18 +1,22 @@
 package com.hanfu.product.center.controller;
-
-import java.io.File;
-import java.io.FileInputStream;
+ 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
+import org.springframework.http.HttpStatus; 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.hanfu.common.service.FileMangeService;
-import com.hanfu.common.utils.FdfsClient;
+import com.hanfu.common.service.FileMangeService; 
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -42,14 +45,11 @@ import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
-import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfPriceExample;
+import com.hanfu.product.center.model.HfPrice; 
 import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfStone;
-import com.hanfu.product.center.model.Product;
-import com.hanfu.product.center.model.ProductInfoExample;
-import com.hanfu.product.center.model.ProductInstance;
-import com.hanfu.product.center.model.ProductInstanceExample;
+import com.hanfu.product.center.model.Product; 
+import com.hanfu.product.center.model.ProductInstance; 
 import com.hanfu.product.center.model.ProductSpec;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
@@ -254,6 +254,10 @@ public class GoodsController {
         item.setHfSpecId(String.valueOf(productSpec.getId()));
         item.setHfValue(request.getSpecValue());
         item.setCategorySpecId(request.getCatrgorySpecId());
+        item.setCreateTime(LocalDateTime.now());
+        item.setModifyTime(LocalDateTime.now());
+        item.setLastModifier(request.getUsername());
+        item.setIsDeleted((short) 0);
         return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(item)));
     }
 
@@ -295,6 +299,10 @@ public class GoodsController {
                 picture.setGoodsId(goods.getId());
                 picture.setHfName(fileInfo.getName());
                 picture.setSpecDesc(request.getPrictureDesc());
+                picture.setCreateTime(LocalDateTime.now());
+                picture.setModifyTime(LocalDateTime.now());
+                picture.setLastModifier(request.getUsername());
+                picture.setIsDeleted((short) 0);
                 hfGoodsPictrueMapper.insert(picture);
                 pictures.add(picture);
             } catch (IOException e) {
@@ -306,17 +314,18 @@ public class GoodsController {
 
     @ApiOperation(value = "获取图片", notes = "获取图片")
     @RequestMapping(value = "/getFile", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "fileId", value = "物品id", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true,
             type = "Integer") })
-    public ResponseEntity<JSONObject> getFile(@RequestParam(name = "fileId") Integer fileId)
+    public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response)
             throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
         if (fileDesc == null) {
             throw new Exception("file not exists");
         }
         FileMangeService fileManageService = new FileMangeService();
-        return builder.body(ResponseUtils.getResponseBody(fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename())));
+        byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+        BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
+        ImageIO.write(readImg,"png",response.getOutputStream());
     }
     
 }
