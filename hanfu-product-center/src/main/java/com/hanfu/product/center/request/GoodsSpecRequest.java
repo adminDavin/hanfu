@@ -8,7 +8,7 @@ public class GoodsSpecRequest extends CommonRequest {
 	private Integer goodsId;
     @ApiModelProperty(required = false, value = "规格名称")
     private String specName;
-    @ApiModelProperty(required = false, value = "商品规格id")
+    @ApiModelProperty(required = true, value = "商品规格id")
     private Integer productSpecId;
 	@ApiModelProperty(required = false, value = "规格描述")
 	private String specDesc;
