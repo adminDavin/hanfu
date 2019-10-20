@@ -10,9 +10,9 @@ public class HfRespRequest extends CommonRequest {
 	private Integer wareHouseId;
 	@ApiModelProperty(required = true, value = "物品数量")
 	private String quatity;
-	@ApiModelProperty(required = true, value = "库存状态")
+	@ApiModelProperty(required = false, value = "库存状态")
 	private String hfStatus;
-	@ApiModelProperty(required = true, value = "库存描述")
+	@ApiModelProperty(required = false, value = "库存描述")
 	private String hfDesc;
 	public Integer getGoodsId() {
 		return goodsId;
