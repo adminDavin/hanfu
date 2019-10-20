@@ -84,9 +84,9 @@ create table hf_boss
    id                   int not null AUTO_INCREMENT comment '序列号',
    name                 varchar(63) comment '商家名称',
    amount               int comment '账户余额',
-   create_time          datetime comment '创建时间',
-   modify_time          datetime comment '修改时间',
-   expire_time          datetime comment '失效时间',
+   create_time          datetime  default now()  comment '创建时间',
+   modify_time          datetime  default now()  comment '修改时间',
+   expire_time          datetime  default now()  comment '失效时间',
    is_deleted           smallint default false comment '是否失效',
    primary key (id)
 );

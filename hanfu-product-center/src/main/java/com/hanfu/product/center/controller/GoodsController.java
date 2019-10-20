@@ -1,8 +1,16 @@
 package com.hanfu.product.center.controller;
  
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List; 
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -192,6 +200,10 @@ public class GoodsController {
         item.setLastModifier(request.getUsername());
         item.setHfSpecId(String.valueOf(productSpec.getId()));
         item.setHfValue(request.getSpecValue());
+        item.setCreateTime(LocalDateTime.now());
+        item.setModifyTime(LocalDateTime.now());
+        item.setLastModifier(request.getUsername());
+        item.setIsDeleted((short) 0);
         return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(item)));
     }
 
@@ -233,6 +245,10 @@ public class GoodsController {
                 picture.setGoodsId(goods.getId());
                 picture.setHfName(fileInfo.getName());
                 picture.setSpecDesc(request.getPrictureDesc());
+                picture.setCreateTime(LocalDateTime.now());
+                picture.setModifyTime(LocalDateTime.now());
+                picture.setLastModifier(request.getUsername());
+                picture.setIsDeleted((short) 0);
                 hfGoodsPictrueMapper.insert(picture);
                 pictures.add(picture);
             } catch (IOException e) {
@@ -244,17 +260,18 @@ public class GoodsController {
 
     @ApiOperation(value = "获取图片", notes = "获取图片")
     @RequestMapping(value = "/getFile", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "fileId", value = "物品id", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true,
             type = "Integer") })
-    public ResponseEntity<JSONObject> getFile(@RequestParam(name = "fileId") Integer fileId)
+    public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response)
             throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
         if (fileDesc == null) {
             throw new Exception("file not exists");
         }
         FileMangeService fileManageService = new FileMangeService();
-        return builder.body(ResponseUtils.getResponseBody(fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename())));
+        byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+        BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
+        ImageIO.write(readImg,"png",response.getOutputStream());
     }
     
 }
