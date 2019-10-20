@@ -14,6 +14,8 @@ public class HfRespRequest extends CommonRequest {
 	private String hfStatus;
 	@ApiModelProperty(required = false, value = "库存描述")
 	private String hfDesc;
+	@ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+	private String username;
 	public Integer getGoodsId() {
 		return goodsId;
 	}
@@ -43,9 +45,13 @@ public class HfRespRequest extends CommonRequest {
 	}
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	} 
-	
-	
 	
 	
 }

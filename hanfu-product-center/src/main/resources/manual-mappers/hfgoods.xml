@@ -3,7 +3,7 @@
 <mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
 
 	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
-    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="hf_name" jdbcType="VARCHAR" property="goodName" />
     <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
     <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="categoryId" jdbcType="INTEGER" property="categoryId" />
@@ -17,7 +17,7 @@
    
    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="good_name" jdbcType="INTEGER" property="goodName" />
+    <result column="hf_name" jdbcType="INTEGER" property="goodName" />
     <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
@@ -35,10 +35,10 @@
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 			SELECT
 				h.goods_desc,h.id,
-				h.good_name,h.resp_id,
+				h.hf_name,h.resp_id,
 				h.price_id,h1.hf_name productCategoryName,
 				h1.id categoryId,p.id productId,
-				h2.quantity,h3.sell_price
+				h3.sell_price
 			FROM 
 				hf_goods h 
 			JOIN 
@@ -49,10 +49,6 @@
 		    	hf_category h1 
 		    ON 
 		    	h.category_id = h1.id
-		    JOIN
-		    	hf_resp h2
-		    ON
-		    	h.resp_id = h2.id
 		    JOIN
 		    	hf_price h3
 		    ON
@@ -74,6 +70,31 @@
 				hf_goods
 			WHERE
 				stone_id = #{stoneId}
+	</select>
+	
+	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
+		SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h3.sell_price
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+		    JOIN
+		    	hf_price h3
+		    ON
+		    	h.price_id = h3.id
+		    WHERE
+		        h.id=#{goodsId}
 	</select>
 	
 	<update id="updateGoods">

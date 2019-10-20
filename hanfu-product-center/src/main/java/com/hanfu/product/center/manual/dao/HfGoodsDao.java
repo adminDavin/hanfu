@@ -13,5 +13,8 @@ public interface HfGoodsDao {
 	
 	public List<HfGoods> selectByStoneId(Integer stoneId);
 	
+	public HfGoodsDisplay selectGoodsInfo(Integer goodsId);
+	
 	public Integer updateGoods(HfGoods hfGoods);
+	
 }

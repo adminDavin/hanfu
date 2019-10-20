@@ -6,12 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class GoodsSpecRequest extends CommonRequest {
 	@ApiModelProperty(required = true, value = "物品id")
 	private Integer goodsId;
-    @ApiModelProperty(required = false, value = "规格名称")
-    private String specName;
-    @ApiModelProperty(required = true, value = "商品规格id")
+    @ApiModelProperty(required = false, value = "类目规格id")
+    private Integer catrgorySpecId;
+    @ApiModelProperty(required = false, value = "商品规格id")
     private Integer productSpecId;
-	@ApiModelProperty(required = false, value = "规格描述")
-	private String specDesc;
 	@ApiModelProperty(required = true, value = "规格值")
 	private String specValue;
 	@ApiModelProperty(required = false, value = "店家名称, 登录修改的用户名称")
@@ -22,17 +20,11 @@ public class GoodsSpecRequest extends CommonRequest {
 	public void setGoodsId(Integer goodsId) {
 		this.goodsId = goodsId;
 	}
-	public String getSpecName() {
-		return specName;
+	public Integer getCatrgorySpecId() {
+		return catrgorySpecId;
 	}
-	public void setSpecName(String specName) {
-		this.specName = specName;
-	}
-	public String getSpecDesc() {
-		return specDesc;
-	}
-	public void setSpecDesc(String specDesc) {
-		this.specDesc = specDesc;
+	public void setCatrgorySpecId(Integer catrgorySpecId) {
+		this.catrgorySpecId = catrgorySpecId;
 	}
 	public String getSpecValue() {
 		return specValue;
@@ -52,7 +44,5 @@ public class GoodsSpecRequest extends CommonRequest {
     public void setProductSpecId(Integer productSpecId) {
         this.productSpecId = productSpecId;
     }
-   
-	
 	
 }
