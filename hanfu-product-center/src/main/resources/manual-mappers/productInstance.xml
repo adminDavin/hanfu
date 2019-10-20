@@ -15,6 +15,20 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
+  <select id="selectProductInstance" resultMap="BaseResultMap">
+  		SELECT 
+  			product_id, category_id,
+  		    stone_id, boss_id, brand_id,
+  			create_time, modify_time,
+  		    last_modifier, is_deleted
+  		FROM
+  			product_instance
+  		WHERE
+  			product_id = #{productId}
+  		AND
+  			stone_id = #{stoneId}
+  </select>
+  
   <delete id="deleteProductInstance">
   		DELETE FROM
   			product_instance
@@ -23,4 +37,5 @@
   		AND
   			stone_id = #{stoneId}
   </delete>
+  
 </mapper>

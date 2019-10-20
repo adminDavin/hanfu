@@ -11,6 +11,8 @@ import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductInstance;
+import com.hanfu.product.center.request.ProductInfoRequest;
+import com.hanfu.product.center.request.ProductInstanceRequest;
 
 
 @Repository
@@ -25,4 +27,9 @@ public class ProductInstanceDaoImpl implements ProductInstanceDao {
 		return row;
 	}
 	
+	@Override
+	public ProductInstance selectProductInstance(ProductInstanceRequest productInstanceRequest) {
+		ProductInstance instances = sqlSessionTemplate.selectOne("selectProductInstance", productInstanceRequest);
+		return instances;
+	}
 }

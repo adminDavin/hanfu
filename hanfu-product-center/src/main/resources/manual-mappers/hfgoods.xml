@@ -3,7 +3,7 @@
 <mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
 
 	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
-    <result column="good_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="hf_name" jdbcType="VARCHAR" property="goodName" />
     <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
     <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="categoryId" jdbcType="INTEGER" property="categoryId" />
@@ -17,7 +17,7 @@
    
    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="good_name" jdbcType="INTEGER" property="goodName" />
+    <result column="hf_name" jdbcType="INTEGER" property="goodName" />
     <result column="instance_id" jdbcType="INTEGER" property="instanceId" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
@@ -35,7 +35,7 @@
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 			SELECT
 				h.goods_desc,h.id,
-				h.good_name,h.resp_id,
+				h.hf_name,h.resp_id,
 				h.price_id,h1.hf_name productCategoryName,
 				h1.id categoryId,p.id productId,
 				h2.quantity,h3.sell_price

@@ -218,7 +218,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")
 	@RequestMapping(value = "/attributes", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商家ID", required = true, type = "Integer") })
+			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getProductInfo(@RequestParam(name = "productId") Integer productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -340,7 +340,7 @@ public class ProductController {
 	}
 
 	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")
-	@RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteGood", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteStone(Integer hfGoodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsId);

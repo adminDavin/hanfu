@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 public class HfGoodsInfo extends CommonRequest {
     @ApiModelProperty(required = true, value = "商品id")
     private Integer productId;
-
     @ApiModelProperty(required = true, value = "物品名称")
     private String hfName;
     @ApiModelProperty(required = true, value = "物品描述")
@@ -47,14 +46,12 @@ public class HfGoodsInfo extends CommonRequest {
     public void setBrandId(Integer brandId) {
         this.brandId = brandId;
     }
-    public Integer getHfStoreId() {
-        return hfStoreId;
-    }
-    public void setHfStoreId(Integer hfStoreId) {
-        this.hfStoreId = hfStoreId;
-    }
+	public Integer getHfStoreId() {
+		return hfStoreId;
+	}
+	public void setHfStoreId(Integer hfStoreId) {
+		this.hfStoreId = hfStoreId;
+	}
   
-
     
-
 }

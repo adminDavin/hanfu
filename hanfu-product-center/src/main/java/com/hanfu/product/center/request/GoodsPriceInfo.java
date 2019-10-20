@@ -2,7 +2,7 @@ package com.hanfu.product.center.request;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class GoodsPriceInfo {
+public class GoodsPriceInfo extends CommonRequest{
     @ApiModelProperty(required = true, value = "物品id")
     private Integer HfGoodsId;
     @ApiModelProperty(required = true, value = "物品价格")
