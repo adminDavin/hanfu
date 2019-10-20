@@ -38,7 +38,7 @@
 				h.hf_name,h.resp_id,
 				h.price_id,h1.hf_name productCategoryName,
 				h1.id categoryId,p.id productId,
-				h2.quantity,h3.sell_price
+				h3.sell_price
 			FROM 
 				hf_goods h 
 			JOIN 
@@ -49,10 +49,6 @@
 		    	hf_category h1 
 		    ON 
 		    	h.category_id = h1.id
-		    JOIN
-		    	hf_resp h2
-		    ON
-		    	h.resp_id = h2.id
 		    JOIN
 		    	hf_price h3
 		    ON

@@ -1,10 +1,13 @@
 package com.hanfu.product.center.controller;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,9 +55,11 @@ public class StoneController {
 		HfStone item = new HfStone();
 		item.setHfName(request.getHfName());
 		item.setBossId(request.getStoneManagerId());
-		item.setUserId(request.getUserId());
 		item.setHfDesc(request.getStoneDesc());
 		item.setHfStatus(request.getStoneStatus());
+		item.setCreateTime(LocalDateTime.now());
+		item.set失效时间(LocalDateTime.now());
+		item.set是否失效((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
 	}
 	
@@ -67,10 +72,22 @@ public class StoneController {
 
 	@ApiOperation(value = "修改商铺", notes = "修改商铺")
 	@RequestMapping(value = "/updateStone", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateStone(HfStone hfStone) throws JSONException {
+	public ResponseEntity<JSONObject> updateStone(HfStoneRequest request) throws Exception {
+		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(request.getStoneId());
+		if(hfStone == null) {
+			throw new Exception("店铺不存在");
+		}
+		if(!StringUtils.isEmpty(request.getStoneDesc())) {
+			hfStone.setHfDesc(request.getStoneDesc());
+		}
+		if(!StringUtils.isEmpty(request.getStoneStatus())) {
+			hfStone.setHfStatus((request.getStoneStatus()));
+		}
+		hfStone.setCreateTime(LocalDateTime.now());
+		hfStone.set失效时间(LocalDateTime.now());
+		hfStone.set是否失效((short) 0);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfStoneExample example = new HfStoneExample();
-		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByExample(hfStone, example)));
+		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByPrimaryKey(hfStone)));
 	}
 
 	

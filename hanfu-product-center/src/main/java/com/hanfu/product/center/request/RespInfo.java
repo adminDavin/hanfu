@@ -10,6 +10,8 @@ public class RespInfo extends CommonRequest {
     private Integer quantity;
     @ApiModelProperty(required = true, value = "仓库id")
     private Integer wareHouseId;
+    @ApiModelProperty(required = true, value = "库存描述")
+    private String respDesc;
     @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
 	private String username;
 	public Integer getHfGoodsId() {
@@ -36,5 +38,10 @@ public class RespInfo extends CommonRequest {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-    
+	public String getRespDesc() {
+		return respDesc;
+	}
+	public void setRespDesc(String respDesc) {
+		this.respDesc = respDesc;
+	}
 }

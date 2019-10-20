@@ -55,12 +55,14 @@ import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductInstance;
 import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.ProductSpec;
+import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
 import com.hanfu.product.center.request.HfGoodsInfo;
 import com.hanfu.product.center.request.HfGoodsRequest;
+import com.hanfu.product.center.request.HfRespRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.RespInfo;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -134,7 +136,12 @@ public class GoodsController {
             type = "Integer") })
     public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsInfo(goodsId)));
+        HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsInfo(goodsId);
+        HfRespExample example = new HfRespExample();
+        example.createCriteria().andGoogsIdEqualTo(goodsId);
+        List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+        hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
+        return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplay));
     }
 
     @ApiOperation(value = "添加物品", notes = "添加物品")
@@ -195,32 +202,24 @@ public class GoodsController {
         }
         hfGoodsMapper.updateByPrimaryKey(hfGoods);
         if(hfGoods.getPriceId()==null) {
-        	HfPrice hfPrice = new HfPrice();
-        	hfPrice.setGoogsId(hfGoods.getId());
-        	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-        	hfPriceMapper.insert(hfPrice);
-        	hfGoods.setPriceId(hfPrice.getId());
-        	hfGoodsMapper.updateByPrimaryKey(hfGoods);
+        	GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
+        	goodsPriceInfo.setHfGoodsId(hfGoods.getId());
+        	goodsPriceInfo.setHfPrice(hfGoodsDisplay.getSellPrice());
+        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
+        	setGoodsPrice(goodsPriceInfo);
+        }else {
+        	 HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
+             if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
+             	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+             }
+             hfPriceMapper.updateByPrimaryKey(hfPrice);
         }
-        HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-        if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
-        	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-        }
-        hfPriceMapper.updateByPrimaryKey(hfPrice);
-        
+       
         HfResp hfResp = new HfResp();
         GoodsSpec goodsSpec = new GoodsSpec();
-//        hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-//        hfPrice.setGoogsId(hfGoodsDisplay.getId());
-//        hfPriceMapper.insert(hfPrice);
-//        hfResp.setQuantity(String.valueOf(hfGoodsDisplay.getQuantity()));
-//        hfResp.setGoogsId(hfGoodsDisplay.getId());
-//        hfRespMapper.insert(hfResp);
         goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
         goodsSpec.setGoodsId(hfGoodsDisplay.getId());
         goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
-//        goodsSpecMapper.insert(goodsSpec);
-//        hfGoods.setRespId(goodsSpec.getId());
 
         return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByExample(hfGoods, example)));
     }
@@ -249,7 +248,7 @@ public class GoodsController {
 
     @ApiOperation(value = "更新物品规格", notes = "更新物品规格")
     @RequestMapping(value = "/spec/update", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         GoodsSpecExample example = new GoodsSpecExample();
         example.createCriteria().andGoodsIdEqualTo(request.getGoodsId())
@@ -305,6 +304,9 @@ public class GoodsController {
         if (items.isEmpty()) {
             HfResp record = new HfResp();
             record.setCreateTime(LocalDateTime.now());
+            record.setModifyTime(LocalDateTime.now());
+            record.setLastModifier(request.getUsername());
+            record.setIsDeleted((short) 0);
             record.setGoogsId(request.getGoodsId());
             record.setQuantity(request.getQuatity());
             record.setWarehouseId(record.getWarehouseId());
@@ -330,6 +332,10 @@ public class GoodsController {
         HfPrice price = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
         price.setGoogsId(request.getHfGoodsId());
         price.setSellPrice(request.getHfPrice());
+        price.setCreateTime(LocalDateTime.now());
+    	price.setModifyTime(LocalDateTime.now());
+    	price.setLastModifier(request.getUsername());
+    	price.setIsDeleted((short) 0);
         if(goods.getPriceId() == null) {
         	hfPriceMapper.insert(price);
             goods.setPriceId(price.getId());
@@ -338,10 +344,6 @@ public class GoodsController {
             goods.setIsDeleted((short) 0);
             hfGoodsMapper.updateByPrimaryKey(goods);
         }else {
-        	price.setCreateTime(LocalDateTime.now());
-        	price.setModifyTime(LocalDateTime.now());
-        	price.setLastModifier(request.getUsername());
-        	price.setIsDeleted((short) 0);
         	hfPriceMapper.updateByPrimaryKey(price);
         }
         return builder.body(ResponseUtils.getResponseBody(price.getId()));
@@ -356,40 +358,54 @@ public class GoodsController {
         if (goods==null) {
         	throw new Exception("物品不存在");
         }
-        HfResp item = hfRespMapper.selectByPrimaryKey(goods.getId());
+        HfRespExample example = new HfRespExample();
+        example.createCriteria().andGoogsIdEqualTo(goods.getId());
+		List<HfResp> item = hfRespMapper.selectByExample(example);
+		HfResp resp = new HfResp();
         Integer respId = null;
-        if(item == null) {
-        	item.setGoogsId(request.getHfGoodsId());
-            item.setHfStatus(1);
-            item.setQuantity(String.valueOf(request.getQuantity()));
+        if(item.isEmpty()) {
+        	resp.setGoogsId(goods.getId());
+        	resp.setHfStatus(1);
+        	resp.setQuantity(String.valueOf(request.getQuantity()));
+        	resp.setHfDesc(request.getRespDesc());
             Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
             if(warehouse == null) {
             	throw new Exception("仓库不存在");
             }
-            item.setWarehouseId(request.getWareHouseId());
-            item.setCreateTime(LocalDateTime.now());
-            item.setModifyTime(LocalDateTime.now());
-            item.setLastModifier(request.getUsername());
-            item.setIsDeleted((short) 0);
-            hfRespMapper.insert(item);
-            respId = item.getId();
+            resp.setWarehouseId(request.getWareHouseId());
+            resp.setCreateTime(LocalDateTime.now());
+            resp.setModifyTime(LocalDateTime.now());
+            resp.setLastModifier(request.getUsername());
+            resp.setIsDeleted((short) 0);
+            hfRespMapper.insert(resp);
+            respId = resp.getId();
         }else {
-        	item.setQuantity(String.valueOf(request.getQuantity()));
+        	resp = item.get(0);
+        	resp.setQuantity(String.valueOf(request.getQuantity()));
+        	resp.setHfDesc(request.getRespDesc());
         	Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
             if(warehouse == null) {
             	throw new Exception("仓库不存在");
             }
-            item.setWarehouseId(request.getWareHouseId());
-            hfRespMapper.updateByPrimaryKey(item);
-            respId = item.getId();
+            resp.setWarehouseId(request.getWareHouseId());
+            resp.setCreateTime(LocalDateTime.now());
+            resp.setModifyTime(LocalDateTime.now());
+            resp.setLastModifier(request.getUsername());
+            resp.setIsDeleted((short) 0);
+            hfRespMapper.updateByPrimaryKey(resp);
+            respId = resp.getId();
         }
-        return builder.body(ResponseUtils.getResponseBody(respId));
+        return builder.body(ResponseUtils.getResponseBody(resp.getQuantity()));
     }
     
 
     @ApiOperation(value = "添加物品规格", notes = "添加物品规格")
     @RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws Exception {
+    	HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
+    	if(hfGoods == null) {
+    		throw new Exception("物品不存在");
+    	}
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(request.getProductSpecId());
         GoodsSpec item = new GoodsSpec();

@@ -21,7 +21,7 @@ public class HfGoodsDisplay implements Serializable{
 	@ApiModelProperty(required = false, value = "类目id")
 	private Integer categoryId;
 	@ApiModelProperty(required = false, value = "数量")
-	private Integer quantity;
+	private String quantity;
 	@ApiModelProperty(required = false, value = "销售价格")
 	private Integer sellPrice;
 	@ApiModelProperty(required = false, value = "规格值")
@@ -34,6 +34,8 @@ public class HfGoodsDisplay implements Serializable{
 	private Integer respId;
 	@ApiModelProperty(required = false, value = "商品id")
 	private Integer productId;
+	@ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+	private String username;
 	public Integer getId() {
 		return id;
 	}
@@ -64,10 +66,11 @@ public class HfGoodsDisplay implements Serializable{
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
-	public Integer getQuantity() {
+	
+	public String getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
 	public Integer getSellPrice() {
@@ -106,6 +109,11 @@ public class HfGoodsDisplay implements Serializable{
 	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
-	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
 }
