@@ -1,5 +1,6 @@
 package com.hanfu.user.center.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,8 +28,11 @@ import com.hanfu.utils.response.handler.ResponseUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.common.utils.FdfsClient;
+import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
@@ -50,7 +54,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 public class KingWordsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	@Autowired
+	FileDescMapper fileDescMapper;
 	@Autowired
 	private HfUserMapper hfUserMapper;
 	@Autowired
@@ -101,7 +106,10 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
-		user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
+		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
+		user.setLastAuthTime(LocalDateTime.now());
+		user.setCreateDate(LocalDateTime.now());
+		user.setModifyDate(LocalDateTime.now());
 		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
@@ -146,6 +154,20 @@ public class KingWordsController {
 		if(!StringUtils.isEmpty(request.getSex())) {
 			user.setSex(request.getSex());
 		}
+		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
+		System.out.println("-------------------------------");
+		FileInputStream fis = new  FileInputStream(file);
+		FileMangeService fileMangeService = new FileMangeService();
+		System.out.println("++++++++++++++++++++++++++++++++");
+		String arr[] = fileMangeService.uploadFile(FdfsClient.streamToByte(fis), String.valueOf(request.getUserId()));
+		fis.close();
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(request.getPictureName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(request.getUserId());
+		int fileId = fileDescMapper.insert(fileDesc);
+		user.setFileId(fileId);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}

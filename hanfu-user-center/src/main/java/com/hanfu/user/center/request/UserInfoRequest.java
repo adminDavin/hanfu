@@ -27,6 +27,15 @@ public class UserInfoRequest extends CommonRequest {
 	private String address;
 	@ApiParam(required = false, value = "所在地区")
 	private String region;
+	@ApiParam(required = false, value = "图片名称")
+	private String PictureName;
+	
+	public String getPictureName() {
+		return PictureName;
+	}
+	public void setPictureName(String pictureName) {
+		PictureName = pictureName;
+	}
 	public String getUsername() {
 		return username;
 	}
