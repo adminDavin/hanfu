@@ -25,4 +25,9 @@ public class GlobalExceptionHandler  extends com.hanfu.utils.response.handler.Gl
 	public void loginExceptionHandler(HttpServletRequest req, Exception e) {
 		logger.error("login failed:", e);
 	}
+	@ExceptionHandler(value = OrderIsExistException.class)
+    @ResponseStatus(value=HttpStatus.FORBIDDEN, reason="login failed")
+	public void orderExceptionHandler(HttpServletRequest req, Exception e) {
+		logger.error("order update failed:", e);
+	}
 }

@@ -2,10 +2,10 @@ package com.hanfu.order.center.manual.dao;
 
 import java.util.List;
 
-import com.hanfu.order.center.model.HfOrdersDetail;
+import com.hanfu.order.center.model.HfOrderLogistics;
 
 public interface OrderDao {
 
-	List<HfOrdersDetail> selectOrderList(Integer ordersId);
+	List<HfOrderLogistics> selectOrderList(Integer ordersId);
 
 }
