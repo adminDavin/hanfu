@@ -85,7 +85,7 @@ public class OrderController {
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
-			throws JSONException {
+			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List list = hfOrdersService.updateOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
