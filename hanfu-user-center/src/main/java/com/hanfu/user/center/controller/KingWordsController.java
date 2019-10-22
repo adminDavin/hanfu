@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,6 @@ import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.GetMessageCode;
-import com.hanfu.user.center.utils.IpAddress;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -72,7 +70,7 @@ public class KingWordsController {
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "token", value = "token", required = false, type = "String")
 			})
-	public ResponseEntity<JSONObject> login(@RequestParam String authType, @RequestParam String authKey, @RequestParam String passwd, @RequestParam String token) throws Exception {
+	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd, @RequestParam(name = "token") String token) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<String,Integer> list = userCenterService.login();
 		if (StringUtils.isEmpty(token)) {
@@ -93,7 +91,7 @@ public class KingWordsController {
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String")
 			})
-	public ResponseEntity<JSONObject> register(@RequestParam String authType, @RequestParam String authKey, @RequestParam String passwd,HttpServletRequest request) throws Exception {
+	public ResponseEntity<JSONObject> register(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam("passwd") String passwd) throws Exception {
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		long authCount = hfAuthMapper.countByExample(example);
@@ -110,11 +108,15 @@ public class KingWordsController {
 		user.setLastAuthTime(LocalDateTime.now());
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
+		user.setIdDeleted((byte) 0);
 		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
 		auth.setUserId(userId);
+		auth.setAuthStatus((byte) 0);
+		auth.setIdDeleted((byte) 0);
+		auth.setEncodeType("0");
 		hfAuthMapper.insert(auth);
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
@@ -154,6 +156,7 @@ public class KingWordsController {
 		if(!StringUtils.isEmpty(request.getSex())) {
 			user.setSex(request.getSex());
 		}
+		user.setModifyDate(LocalDateTime.now());
 		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
 		System.out.println("-------------------------------");
 		FileInputStream fis = new  FileInputStream(file);

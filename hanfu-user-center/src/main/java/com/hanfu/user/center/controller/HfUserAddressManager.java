@@ -61,6 +61,8 @@ public class HfUserAddressManager {
 		hfUserAddress.setHfDesc(request.getHfDesc());
 		hfUserAddress.setHfProvince(request.getHfProvince());
 		hfUserAddress.setIsFaultAddress(request.getIsFaultAddress());
+		hfUserAddress.setModifyTime(LocalDateTime.now());
+		hfUserAddress.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.insert(hfUserAddress)));
 	}
 	@RequestMapping(value = "/deleteAddress", method = RequestMethod.GET)
@@ -69,7 +71,7 @@ public class HfUserAddressManager {
 		@ApiImplicitParam(paramType = "query", name = "id", value = "地址id", required = true, type = "Integer")})
 	public ResponseEntity<JSONObject> delete(@RequestParam(name = "id") Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfUserAddresseExample example = new HfUserAddresseExample();
+		HfUserAddresseExample example = new HfUserAddresseExample(); 
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.deleteByExample(example)));
 	}
 	@RequestMapping(value = "/updateAddress", method = RequestMethod.GET)

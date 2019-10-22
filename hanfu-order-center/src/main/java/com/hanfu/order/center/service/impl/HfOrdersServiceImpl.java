@@ -19,6 +19,7 @@ import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
+import com.hanfu.order.center.response.handler.OrderIsExistException;
 import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.order.center.service.ProductService;
 @Service("hfOrdersDetailService")
@@ -46,6 +47,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
 		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
+		hfOrdersDetail.setModifyTime(LocalDateTime.now());
+		hfOrdersDetail.setIsDeleted((short) 0);
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
 		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(ordersId);
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -61,6 +64,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setPayStatus(hfOrder.getPayStatus());
 		hfOrders.setCreateTime(LocalDateTime.now());
 		hfOrders.setOrderType(hfOrder.getOrderType());
+		hfOrders.setModifyTime(LocalDateTime.now());
+		hfOrders.setIsDeleted((short) 0);
 		hfOrdersMapper.insert(hfOrders);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
@@ -74,6 +79,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrderLogistic.setOrdersId(ordersId);
 		hfOrderLogistic.setRespId(request.getRespId());
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
+		hfOrderLogistic.setModifyTime(LocalDateTime.now());
+		hfOrderLogistic.setIsDeleted((short) 0);
 		hfOrderLogisticsMapper.insert(hfOrderLogistic);
 		List list = new ArrayList<>();
 		list.add(hfOrdersDetail);
@@ -81,14 +88,108 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrders);
 		return list;
 	}
+	@SuppressWarnings("unused")
 	@Override
 	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
-			HfOrderLogisticsRequest hfOrderLogistics) {
+			HfOrderLogisticsRequest hfOrderLogistics) throws Exception {
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+		if(hfOrdersDetail == null) {
+			throw new OrderIsExistException(String.valueOf(request.getId()));
+		}
+		if(!StringUtils.isEmpty(request.getRespId())) {
+			hfOrdersDetail.setRespId(request.getRespId());
+		}
+		if(!StringUtils.isEmpty(request.getPurchaseQuantity())) {
+			hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
+		}
+		if(!StringUtils.isEmpty(request.getPurchasePrice())) {
+			hfOrdersDetail.setPurchasePrice(request.getPurchasePrice());
+		}	
+		if(!StringUtils.isEmpty(request.getOrderDetailStatus())) {
+			hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
+		}
+		if(!StringUtils.isEmpty(request.getHfTax())) {
+			hfOrdersDetail.setHfTax(request.getHfTax());
+		}
+		if(!StringUtils.isEmpty(request.getHfDesc())) {
+			hfOrdersDetail.setHfDesc(request.getHfDesc());
+		}
+		if(!StringUtils.isEmpty(request.getGoogsId())) {
+			hfOrdersDetail.setGoogsId(request.getGoogsId());
+		}
+		if(!StringUtils.isEmpty(request.getDistribution())) {
+			hfOrdersDetail.setDistribution(request.getDistribution());
+		}
+		hfOrdersDetail.setModifyTime(LocalDateTime.now());
+		hfOrdersDetail.setIsDeleted((short) 0);
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
 		HfOrders hfOrders = new HfOrders();
+		if(hfOrders == null) {
+			throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
+		}
+		if(!StringUtils.isEmpty(hfOrder.getUserId())) {
+			hfOrders.setUserId(hfOrder.getUserId());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getPayStatus())) {
+			hfOrders.setPayStatus(hfOrder.getPayStatus());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getPayMethodType())) {
+			hfOrders.setPayMethodType(hfOrder.getPayMethodType());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getPayMethodName())) {
+			hfOrders.setPayMethodName(hfOrder.getPayMethodName());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getOrderType())) {
+			hfOrders.setOrderType(hfOrder.getOrderType());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getHfRemark())) {
+			hfOrders.setHfRemark(hfOrder.getHfRemark());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getHfMemo())) {
+			hfOrders.setHfMemo(hfOrder.getHfMemo());
+		}
+		if(!StringUtils.isEmpty(hfOrder.getAmount())) {
+			hfOrders.setAmount(hfOrder.getAmount());
+		}
+		hfOrders.setModifyTime(LocalDateTime.now());
+		hfOrders.setIsDeleted((short) 0);
 		hfOrdersMapper.updateByPrimaryKey(hfOrders);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
+		if(hfOrderLogistic == null) {
+			throw new OrderIsExistException(String.valueOf(hfOrderLogistics.getId()));
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getUuserId())) {
+			hfOrderLogistic.setUserId(hfOrderLogistics.getUuserId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getUserAddressId())) {
+			hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getRespId())) {
+			hfOrderLogistic.setRespId(hfOrderLogistics.getRespId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getOrdersId())) {
+			hfOrderLogistic.setOrdersId(hfOrderLogistics.getOrdersId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getOrderDetailId())) {
+			hfOrderLogistic.setOrderDetailId(hfOrderLogistics.getOrderDetailId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrdersId())) {
+			hfOrderLogistic.setLogisticsOrdersId(hfOrderLogistics.getLogisticsOrdersId());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrderName())) {
+			hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getLogisticsCompany())) {
+			hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getHfDesc())) {
+			hfOrderLogistic.setHfDesc(hfOrderLogistics.getHfDesc());
+		}
+		if(!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
+			hfOrderLogistic.setGoogsId(hfOrderLogistics.getGoogsId());
+		}
+		hfOrderLogistic.setModifyTime(LocalDateTime.now());
+		hfOrderLogistic.setIsDeleted((short) 0);
 		hfOrderLogisticsMapper.updateByPrimaryKey(hfOrderLogistic);
 		List list = new ArrayList<>();
 		list.add(hfOrdersDetail);
