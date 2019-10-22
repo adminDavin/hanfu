@@ -57,6 +57,7 @@ public class StoneController {
 		item.setBossId(request.getStoneManagerId());
 		item.setHfDesc(request.getStoneDesc());
 		item.setHfStatus(request.getStoneStatus());
+		item.setUserId(request.getUserId());
 		item.setCreateTime(LocalDateTime.now());
 		item.set失效时间(LocalDateTime.now());
 		item.set是否失效((short) 0);

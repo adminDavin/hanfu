@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class WareHouseRequest extends CommonRequest {
+	@ApiModelProperty(required = true, value = "仓库id")
+	private Integer id;
 	@ApiModelProperty(required = true, value = "仓库名称")
 	private String hfName;
 	@ApiModelProperty(required = true, value = "所属区域")
@@ -12,6 +14,16 @@ public class WareHouseRequest extends CommonRequest {
 	private String hfDesc;
 	@ApiModelProperty(required = true, value = "商家id")
 	private Integer bossId;
+	@ApiModelProperty(name = "username", required = true, value = "商家名称")
+	private String username;
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getHfName() {
 		return hfName;
 	}
@@ -36,8 +48,11 @@ public class WareHouseRequest extends CommonRequest {
 	}
 	public void setBossId(Integer bossId) {
 		this.bossId = bossId;
-	} 
-	
-	
-	
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }

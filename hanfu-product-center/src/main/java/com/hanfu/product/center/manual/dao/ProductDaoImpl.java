@@ -24,8 +24,8 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public List<Product> selectProductBycategoryId(Product product) {
-		List<Product> result = sqlSessionTemplate.selectList("selectProductBycategoryId", product);
+	public List<Product> selectProductBycategoryId(ProductDispaly productDispaly) {
+		List<Product> result = sqlSessionTemplate.selectList("selectProductBycategoryId", productDispaly);
 		return result;
 	}
 	
