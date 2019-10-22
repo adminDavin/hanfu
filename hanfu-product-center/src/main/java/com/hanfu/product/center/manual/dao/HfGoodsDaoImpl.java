@@ -26,9 +26,27 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 	}
 	
 	@Override
+	public List<HfGoodsDisplay> selectAllGoodsPartInfo(Integer stoneId) {
+		List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoodsPartInfo", stoneId);
+		return result;
+	}
+	
+	@Override
 	public List<HfGoods> selectByStoneId(Integer stoneId) {
 		List<HfGoods> result = sqlSessionTemplate.selectList("selectByStoneId", stoneId);
 		return result;
+	}
+	
+	@Override
+	public HfGoodsDisplay selectGoodsInfo(Integer goodsId) {
+		HfGoodsDisplay hfGoodsDisplay = sqlSessionTemplate.selectOne("selectGoodsInfo", goodsId);
+		return hfGoodsDisplay;
+	}
+	
+	@Override
+	public HfGoodsDisplay selectGoodsPartInfo(Integer goodsId) {
+		HfGoodsDisplay hfGoodsDisplay = sqlSessionTemplate.selectOne("selectGoodsPartInfo", goodsId);
+		return hfGoodsDisplay;
 	}
 	
 	@Override
@@ -37,9 +55,4 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		return row;
 	}
 	
-	@Override
-	public HfGoodsDisplay selectGoodsInfo(Integer goodsId) {
-		HfGoodsDisplay hfGoodsDisplay = sqlSessionTemplate.selectOne("selectGoodsInfo", goodsId);
-		return hfGoodsDisplay;
-	}
 }

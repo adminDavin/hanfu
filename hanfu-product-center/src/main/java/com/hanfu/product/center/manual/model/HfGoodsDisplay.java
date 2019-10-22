@@ -1,14 +1,13 @@
 package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import com.hanfu.product.center.request.CommonRequest;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class HfGoodsDisplay implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5934450949730812779L;
+public class HfGoodsDisplay extends CommonRequest{
 	
 	@ApiModelProperty(required = true, value = "物品id")
 	private Integer id;
@@ -36,6 +35,9 @@ public class HfGoodsDisplay implements Serializable{
 	private Integer productId;
 	@ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
 	private String username;
+	private LocalDateTime createTime;
+	private LocalDateTime modifyTime;
+	private short isDeleted;
 	public Integer getId() {
 		return id;
 	}
@@ -115,5 +117,22 @@ public class HfGoodsDisplay implements Serializable{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+	public LocalDateTime getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(LocalDateTime modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public short getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(short isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 }
