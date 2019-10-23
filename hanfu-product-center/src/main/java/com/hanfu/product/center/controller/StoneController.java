@@ -59,8 +59,10 @@ public class StoneController {
 		item.setHfStatus(request.getStoneStatus());
 		item.setUserId(request.getUserId());
 		item.setCreateTime(LocalDateTime.now());
-		item.set失效时间(LocalDateTime.now());
-		item.set是否失效((short) 0);
+		LocalDateTime expireTime = LocalDateTime.now();
+		expireTime.plusYears(10);
+		item.setExpireTime(expireTime);
+		item.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
 	}
 	
@@ -84,9 +86,6 @@ public class StoneController {
 		if(!StringUtils.isEmpty(request.getStoneStatus())) {
 			hfStone.setHfStatus((request.getStoneStatus()));
 		}
-		hfStone.setCreateTime(LocalDateTime.now());
-		hfStone.set失效时间(LocalDateTime.now());
-		hfStone.set是否失效((short) 0);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByPrimaryKey(hfStone)));
 	}

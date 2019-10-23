@@ -278,9 +278,9 @@ create table hf_stone
    hf_desc              varchar(255) comment '商铺描述',
    boss_id              int comment '所属商家',
    create_time          datetime comment '注册时间',
-   失效时间                 datetime comment '失效时间',
+   expire_time                 datetime comment '失效时间',
    hf_status            int comment '商铺状态',
-   是否失效                 smallint default false comment '是否失效',
+   is_deleted                 smallint default false comment '是否失效',
    primary key (id)
 );
 
