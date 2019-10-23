@@ -6,7 +6,7 @@ public class GoodsPriceInfo extends CommonRequest{
     @ApiModelProperty(required = true, value = "物品id")
     private Integer HfGoodsId;
     @ApiModelProperty(required = true, value = "物品价格")
-    private Integer HfPrice;
+    private Integer sellPrice;
     @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
 	private String username;
     public Integer getHfGoodsId() {
@@ -15,12 +15,12 @@ public class GoodsPriceInfo extends CommonRequest{
     public void setHfGoodsId(Integer hfGoodsId) {
         HfGoodsId = hfGoodsId;
     }
-    public Integer getHfPrice() {
-        return HfPrice;
-    }
-    public void setHfPrice(Integer hfPrice) {
-        HfPrice = hfPrice;
-    }
+	public Integer getSellPrice() {
+		return sellPrice;
+	}
+	public void setSellPrice(Integer sellPrice) {
+		this.sellPrice = sellPrice;
+	}
 	public String getUsername() {
 		return username;
 	}

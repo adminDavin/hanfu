@@ -13,6 +13,8 @@ public class HfGoodsDisplay extends CommonRequest{
 	private Integer id;
 	@ApiModelProperty(required = false, value = "物品名称")
 	private String goodName;
+	@ApiModelProperty(required = false, value = "仓库名称")
+	private String warehouseName;
 	@ApiModelProperty(required = false, value = "商品类目名称")
 	private String productCategoryName;
 	@ApiModelProperty(required = false, value = "物品描述")
@@ -68,7 +70,6 @@ public class HfGoodsDisplay extends CommonRequest{
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
-	
 	public String getQuantity() {
 		return quantity;
 	}
@@ -135,4 +136,11 @@ public class HfGoodsDisplay extends CommonRequest{
 	public void setIsDeleted(short isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
+	}
+	
 }

@@ -118,13 +118,13 @@ public class ProductController {
 
 	@Autowired
 	private HfRespMapper hfRespMapper;
-	
+
 	@Autowired
 	private GoodsSpecMapper goodsSpecMapper;
-	
+
 	@Autowired
 	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
-	
+
 	@Autowired
 	private FileDescMapper fileDescMapper;
 
@@ -233,7 +233,7 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpecExample example = new ProductSpecExample();
 		ProductInfoExample example2 = new ProductInfoExample();
-		for(int i=0;i<productId.length;i++) {
+		for (int i = 0; i < productId.length; i++) {
 			example.createCriteria().andProductIdEqualTo(productId[i]);
 			example2.createCriteria().andProductIdEqualTo(productId[i]);
 			productSpecMapper.deleteByExample(example);
@@ -246,13 +246,13 @@ public class ProductController {
 	public ResponseEntity<JSONObject> updateProductId(ProductRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(request.getId());
-		if(product == null) {
+		if (product == null) {
 			throw new Exception("商品不存在");
 		}
-		if(!StringUtils.isEmpty(request.getProductDesc())) {
+		if (!StringUtils.isEmpty(request.getProductDesc())) {
 			product.setProductDesc(request.getProductDesc());
 		}
-		if(!StringUtils.isEmpty(request.getLastModifier())) {
+		if (!StringUtils.isEmpty(request.getLastModifier())) {
 			product.setLastModifier((request.getLastModifier()));
 		}
 		product.setModifyTime(LocalDateTime.now());
@@ -287,7 +287,7 @@ public class ProductController {
 		item.setProductId(request.getProductId());
 		return builder.body(ResponseUtils.getResponseBody(productInfoMapper.insert(item)));
 	}
-	
+
 	@ApiOperation(value = "删除商品属性", notes = "根据商品属性id删除商品属性")
 	@RequestMapping(value = "/deleteattributes", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -347,11 +347,10 @@ public class ProductController {
 	@RequestMapping(value = "/stones", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getStones(@RequestParam(name = "goodsId") Integer goodsId)
-			throws Exception {
+	public ResponseEntity<JSONObject> getStones(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-		if(hfGoods == null) {
+		if (hfGoods == null) {
 			throw new Exception("物品不存在");
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByPrimaryKey(hfGoods.getStoneId())));
@@ -364,13 +363,18 @@ public class ProductController {
 	public ResponseEntity<JSONObject> getStoneProduct(@RequestParam(name = "stoneId") Integer stoneId)
 			throws Exception {
 		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
-		if(hfStone == null) {
+		if (hfStone == null) {
 			throw new Exception("店铺不存在");
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoods(stoneId);
-		if(list.isEmpty()) {
-			list = hfGoodsDao.selectAllGoodsPartInfo(stoneId);
+		List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoodsPartInfo(stoneId);
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getPriceId() != null) {
+					HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
+					list.get(i).setSellPrice(hfPrice.getSellPrice());
+				}
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
@@ -422,8 +426,8 @@ public class ProductController {
 		HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
 		example2.createCriteria().andGoodsIdEqualTo(hfGoodsId);
 		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);
-		if(!list.isEmpty()) {
-			for(int i=0;i<list.size();i++) {
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
 				fileDescMapper.deleteByPrimaryKey(list.get(i).getFileId());
 			}
 		}
@@ -434,7 +438,7 @@ public class ProductController {
 		HfPriceExample example4 = new HfPriceExample();
 		example4.createCriteria().andGoogsIdEqualTo(hfGoodsId);
 		hfPriceMapper.deleteByExample(example4);
-		
+
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodsId)));
 	}
 
