@@ -1,6 +1,7 @@
 package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample; 
 import com.hanfu.product.center.request.HfStoneRequest; 
@@ -35,6 +39,9 @@ public class StoneController {
 
 	@Autowired
 	private HfStoneMapper hfStoneMapper;
+	
+	@Autowired
+	private HfGoodsMapper hfGoodsMapper;
 
 	@ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
 	@RequestMapping(value = "/byBossId", method = RequestMethod.GET)
@@ -54,8 +61,8 @@ public class StoneController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStone item = new HfStone();
 		item.setHfName(request.getHfName());
-		item.setBossId(request.getStoneManagerId());
-		item.setHfDesc(request.getStoneDesc());
+		item.setBossId(request.getBossId());
+		item.setHfDesc(request.getHfDesc());
 		item.setHfStatus(request.getStoneStatus());
 		item.setUserId(request.getUserId());
 		item.setCreateTime(LocalDateTime.now());
@@ -70,6 +77,12 @@ public class StoneController {
 	@RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteStone(Integer stoneId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsExample hfGoodsExample = new HfGoodsExample();
+		hfGoodsExample.createCriteria().andStoneIdEqualTo(stoneId);
+		List<HfGoods> hfGoods = hfGoodsMapper.selectByExample(hfGoodsExample);
+		for(int i=0;i<hfGoods.size();i++) {
+			deleteStone(hfGoods.get(i).getId());
+		}
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.deleteByPrimaryKey(stoneId)));
 	}
 
@@ -80,8 +93,8 @@ public class StoneController {
 		if(hfStone == null) {
 			throw new Exception("店铺不存在");
 		}
-		if(!StringUtils.isEmpty(request.getStoneDesc())) {
-			hfStone.setHfDesc(request.getStoneDesc());
+		if(!StringUtils.isEmpty(request.getHfDesc())) {
+			hfStone.setHfDesc(request.getHfDesc());
 		}
 		if(!StringUtils.isEmpty(request.getStoneStatus())) {
 			hfStone.setHfStatus((request.getStoneStatus()));

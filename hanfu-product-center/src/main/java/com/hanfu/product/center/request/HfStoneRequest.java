@@ -5,14 +5,14 @@ import io.swagger.annotations.ApiModelProperty;
 public class HfStoneRequest {
 	@ApiModelProperty(required = true, name = "stoneId", value = "店铺id")
 	private Integer stoneId;
-	@ApiModelProperty(required = true, name = "stoneManagerId", value = "商家id")
-	private Integer stoneManagerId;
+	@ApiModelProperty(required = true, name = "bossId", value = "商家id")
+	private Integer bossId;
 	@ApiModelProperty(required = true, name = "userId", value = "用户id")
 	private Integer userId;
 	@ApiModelProperty(required = true, value = "店铺名称")
 	private String hfName;
 	@ApiModelProperty(required = true, value = "店铺描述")
-	private String stoneDesc;
+	private String hfDesc;
 	@ApiModelProperty(required = true, value = "店铺状态")
 	private Integer stoneStatus;
 	public Integer getStoneId() {
@@ -21,11 +21,11 @@ public class HfStoneRequest {
 	public void setStoneId(Integer stoneId) {
 		this.stoneId = stoneId;
 	}
-	public Integer getStoneManagerId() {
-		return stoneManagerId;
+	public Integer getBossId() {
+		return bossId;
 	}
-	public void setStoneManagerId(Integer stoneManagerId) {
-		this.stoneManagerId = stoneManagerId;
+	public void setBossId(Integer bossId) {
+		this.bossId = bossId;
 	}
 	public Integer getUserId() {
 		return userId;
@@ -39,11 +39,11 @@ public class HfStoneRequest {
 	public void setHfName(String hfName) {
 		this.hfName = hfName;
 	}
-	public String getStoneDesc() {
-		return stoneDesc;
+	public String getHfDesc() {
+		return hfDesc;
 	}
-	public void setStoneDesc(String stoneDesc) {
-		this.stoneDesc = stoneDesc;
+	public void setHfDesc(String hfDesc) {
+		this.hfDesc = hfDesc;
 	}
 	public Integer getStoneStatus() {
 		return stoneStatus;
