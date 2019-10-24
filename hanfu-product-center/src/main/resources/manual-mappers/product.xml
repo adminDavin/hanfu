@@ -48,7 +48,8 @@
   			p.hf_name productName,product_desc,
   			h.hf_name productCategoryName,p.category_id,
   		    p.brand_id,p.last_modifier,
-  		    p.id productId
+  		    p.id productId,p.create_time,
+  		    p.modify_time, p.is_deleted
     	    FROM
     	    	 product p
     	    LEFT JOIN 
