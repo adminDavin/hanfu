@@ -68,19 +68,20 @@ public class OrderController {
 	@ApiOperation(value = "删除订单", notes = "删除订单")
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer id)
+		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = true, type = "String")
+		})
+	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer id,  @RequestParam String orderDetailStatus )
 			throws JSONException, Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfOrdersDetail hfOrdersDetail1 = new HfOrdersDetail();
 		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(id);
-		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
-			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));
-		}
+//		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
+//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));
+//		}
 		if(!StringUtils.isEmpty(hfOrdersDetail.getOrderDetailStatus())) {
-			hfOrdersDetail1.setOrderDetailStatus(hfOrdersDetail.getOrderDetailStatus());
+			hfOrdersDetail.setOrderDetailStatus(orderDetailStatus);
 		}
-		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail1)));
+		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail)));
 	}
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.GET)

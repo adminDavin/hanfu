@@ -18,13 +18,13 @@
     <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
 </resultMap>
-<select id="BaseResultMap">
+<select id="selectOrderList" resultMap="BaseResultMap">
      SELECT 
         h1.id,h1.orders_id,h1.resp_id,
         h1.order_detail_id,h1.googs_id,h1.user_address_id,
-        h1.logistics_order_name,h.uuser_id
+        h1.logistics_order_name,h1.uuser_id,
         h1.logistics_orders_id,h1.logistics_company,
-        h1.hfDesc,h1.create_time
+        h1.hf_desc,h1.create_time,
         h1.modify_time,h1.last_modifier,h1.is_deleted
      FROM 
         hf_order_logistics h1
@@ -46,6 +46,6 @@
      LEFT JOIN
         hf_user_address h7
      ON h1.user_address_id =h7.id    
-     WHERE h1.id = {id}
+     WHERE h1.id = #{id}
 </select>
 </mapper>
