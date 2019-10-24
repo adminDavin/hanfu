@@ -241,6 +241,28 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
 
+	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
+	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+		ProductSpecExample pExample = new ProductSpecExample();
+		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
+		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
+		productSpecs.stream().forEach(spec -> {
+			GoodsSpecExample example = new GoodsSpecExample();
+			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
+			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
+			if (!items.isEmpty()) {
+				spec.setSpecValue(items.get(0).getHfValue());
+			}
+		});
+		return builder.body(ResponseUtils.getResponseBody(productSpecs));
+	}
+	
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")
 	@RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws Exception {
@@ -263,28 +285,6 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(item)));
 	}
 
-	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
-	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-		ProductSpecExample pExample = new ProductSpecExample();
-		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
-		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
-		productSpecs.stream().forEach(spec -> {
-			GoodsSpecExample example = new GoodsSpecExample();
-			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
-			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
-			if (!items.isEmpty()) {
-				spec.setSpecValue(items.get(0).getHfValue());
-			}
-		});
-		return builder.body(ResponseUtils.getResponseBody(productSpecs));
-	}
-
 	@ApiOperation(value = "更新物品规格", notes = "更新物品规格")
 	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws Exception {
@@ -305,16 +305,16 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(example)));
 	}
 
-	@ApiOperation(value = "获取物品图片", notes = "获取物品图片")
-	@RequestMapping(value = "/resp/list", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> listResp(@RequestParam(name = "goodsId") Integer goodsId) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfRespExample example = new HfRespExample();
-		example.createCriteria().andGoogsIdEqualTo(goodsId);
-		return builder.body(ResponseUtils.getResponseBody(hfRespMapper.selectByExample(example)));
-	}
+//	@ApiOperation(value = "获取物品图片", notes = "获取物品图片")
+//	@RequestMapping(value = "/resp/list", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> listResp(@RequestParam(name = "goodsId") Integer goodsId) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfRespExample example = new HfRespExample();
+//		example.createCriteria().andGoogsIdEqualTo(goodsId);
+//		return builder.body(ResponseUtils.getResponseBody(hfRespMapper.selectByExample(example)));
+//	}
 
 //    @ApiOperation(value = "更新物品存储", notes = "更新物品存储")
 //    @RequestMapping(value = "/resp/update", method = RequestMethod.POST)

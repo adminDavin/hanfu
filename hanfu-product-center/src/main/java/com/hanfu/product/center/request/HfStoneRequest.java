@@ -14,7 +14,7 @@ public class HfStoneRequest {
 	@ApiModelProperty(required = true, value = "店铺描述")
 	private String hfDesc;
 	@ApiModelProperty(required = true, value = "店铺状态")
-	private Integer stoneStatus;
+	private Integer hfStatus;
 	public Integer getStoneId() {
 		return stoneId;
 	}
@@ -45,10 +45,10 @@ public class HfStoneRequest {
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
-	public Integer getStoneStatus() {
-		return stoneStatus;
+	public Integer getHfStatus() {
+		return hfStatus;
 	}
-	public void setStoneStatus(Integer stoneStatus) {
-		this.stoneStatus = stoneStatus;
+	public void setHfStatus(Integer hfStatus) {
+		this.hfStatus = hfStatus;
 	}
 }

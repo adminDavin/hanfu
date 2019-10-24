@@ -414,32 +414,5 @@ public class ProductController {
 //		return builder.body(ResponseUtils.getResponseBody("product insert success"));
 //	}
 
-	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")
-	@RequestMapping(value = "/deleteGood", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteStone(Integer hfGoodsId) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsId);
-		productInstanceMapper.deleteByPrimaryKey(hfGoods.getInstanceId());
-		GoodsSpecExample example = new GoodsSpecExample();
-		example.createCriteria().andGoodsIdEqualTo(hfGoodsId);
-		goodsSpecMapper.deleteByExample(example);
-		HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
-		example2.createCriteria().andGoodsIdEqualTo(hfGoodsId);
-		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);
-		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				fileDescMapper.deleteByPrimaryKey(list.get(i).getFileId());
-			}
-		}
-		hfGoodsPictrueMapper.deleteByExample(example2);
-		HfRespExample example3 = new HfRespExample();
-		example3.createCriteria().andGoogsIdEqualTo(hfGoodsId);
-		hfRespMapper.deleteByExample(example3);
-		HfPriceExample example4 = new HfPriceExample();
-		example4.createCriteria().andGoogsIdEqualTo(hfGoodsId);
-		hfPriceMapper.deleteByExample(example4);
-
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodsId)));
-	}
-
+	
 }

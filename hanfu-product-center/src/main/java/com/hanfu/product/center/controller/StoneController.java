@@ -15,10 +15,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
+import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
+import com.hanfu.product.center.dao.HfPriceMapper;
+import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.ProductInstanceMapper;
+import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
+import com.hanfu.product.center.model.HfGoodsPictrue;
+import com.hanfu.product.center.model.HfGoodsPictrueExample;
+import com.hanfu.product.center.model.HfPriceExample;
+import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample; 
 import com.hanfu.product.center.request.HfStoneRequest; 
@@ -42,6 +53,24 @@ public class StoneController {
 	
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
+	
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
+	
+	@Autowired
+	private GoodsSpecMapper goodsSpecMapper;
+	
+	@Autowired
+	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
+	
+	@Autowired
+	private FileDescMapper fileDescMapper;
+	
+	@Autowired
+	private HfRespMapper hfRespMapper;
+	
+	@Autowired
+	private HfPriceMapper hfPriceMapper;
 
 	@ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
 	@RequestMapping(value = "/byBossId", method = RequestMethod.GET)
@@ -63,7 +92,7 @@ public class StoneController {
 		item.setHfName(request.getHfName());
 		item.setBossId(request.getBossId());
 		item.setHfDesc(request.getHfDesc());
-		item.setHfStatus(request.getStoneStatus());
+		item.setHfStatus(request.getHfStatus());
 		item.setUserId(request.getUserId());
 		item.setCreateTime(LocalDateTime.now());
 		LocalDateTime expireTime = LocalDateTime.now();
@@ -81,10 +110,39 @@ public class StoneController {
 		hfGoodsExample.createCriteria().andStoneIdEqualTo(stoneId);
 		List<HfGoods> hfGoods = hfGoodsMapper.selectByExample(hfGoodsExample);
 		for(int i=0;i<hfGoods.size();i++) {
-			deleteStone(hfGoods.get(i).getId());
+			deleteStoneGoods(hfGoods.get(i).getId());
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.deleteByPrimaryKey(stoneId)));
 	}
+	
+	@ApiOperation(value = "删除店铺内的物品", notes = "将店铺内的一个物品删除")
+	@RequestMapping(value = "/deleteGood", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteStoneGoods(Integer hfGoodsId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsId);
+		productInstanceMapper.deleteByPrimaryKey(hfGoods.getInstanceId());
+		GoodsSpecExample example = new GoodsSpecExample();
+		example.createCriteria().andGoodsIdEqualTo(hfGoodsId);
+		goodsSpecMapper.deleteByExample(example);
+		HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
+		example2.createCriteria().andGoodsIdEqualTo(hfGoodsId);
+		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				fileDescMapper.deleteByPrimaryKey(list.get(i).getFileId());
+			}
+		}
+		hfGoodsPictrueMapper.deleteByExample(example2);
+		HfRespExample example3 = new HfRespExample();
+		example3.createCriteria().andGoogsIdEqualTo(hfGoodsId);
+		hfRespMapper.deleteByExample(example3);
+		HfPriceExample example4 = new HfPriceExample();
+		example4.createCriteria().andGoogsIdEqualTo(hfGoodsId);
+		hfPriceMapper.deleteByExample(example4);
+
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodsId)));
+	}
+
 
 	@ApiOperation(value = "修改商铺", notes = "修改商铺")
 	@RequestMapping(value = "/updateStone", method = RequestMethod.POST)
@@ -96,8 +154,8 @@ public class StoneController {
 		if(!StringUtils.isEmpty(request.getHfDesc())) {
 			hfStone.setHfDesc(request.getHfDesc());
 		}
-		if(!StringUtils.isEmpty(request.getStoneStatus())) {
-			hfStone.setHfStatus((request.getStoneStatus()));
+		if(!StringUtils.isEmpty(request.getHfStatus())) {
+			hfStone.setHfStatus((request.getHfStatus()));
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByPrimaryKey(hfStone)));
