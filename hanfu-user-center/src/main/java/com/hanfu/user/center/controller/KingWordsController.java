@@ -73,7 +73,7 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd, @RequestParam(name = "token") String token) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<String,Integer> list = userCenterService.login();
-		if (StringUtils.isEmpty(token)) {
+		if (StringUtils.isEmpty(token)) { 
 			userCenterService.checkToken(token);
 		} else if(! "1".equals(authType)) {
 			if (StringUtils.isEmpty(authType)) {
@@ -117,6 +117,9 @@ public class KingWordsController {
 		auth.setAuthStatus((byte) 0);
 		auth.setIdDeleted((byte) 0);
 		auth.setEncodeType("0");
+		auth.setCreateDate(LocalDateTime.now());
+		auth.setModifyDate(LocalDateTime.now());
+		auth.setIdDeleted((byte) 0);
 		hfAuthMapper.insert(auth);
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
@@ -165,7 +168,6 @@ public class KingWordsController {
 		String arr[] = fileMangeService.uploadFile(FdfsClient.streamToByte(fis), String.valueOf(request.getUserId()));
 		fis.close();
 		FileDesc fileDesc = new FileDesc();
-		fileDesc.setFileName(request.getPictureName());
 		fileDesc.setGroupName(arr[0]);
 		fileDesc.setRemoteFilename(arr[1]);
 		fileDesc.setUserId(request.getUserId());

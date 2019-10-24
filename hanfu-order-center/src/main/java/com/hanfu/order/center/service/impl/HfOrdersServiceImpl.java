@@ -35,10 +35,10 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
-		Integer ordersId = UUID.randomUUID().clockSequence();
+		Integer ordersId = UUID.randomUUID().version();
 		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-		hfOrdersDetail.setGoogsId(request.getGoogsId());
+		hfOrdersDetail.setGoogsId(request.getGoogsId()); 
 		hfOrdersDetail.setHfDesc(request.getHfDesc());
 		hfOrdersDetail.setHfTax(request.getHfTax());
 		hfOrdersDetail.setDistribution(request.getDistribution());
@@ -75,7 +75,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrderLogistic.setLogisticsOrdersId(logisticsOrdersId);
 		hfOrderLogistic.setOrderDetailId(request.getId());
 		hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
-		hfOrderLogistic.setUserId(hfOrder.getUserId());
+		hfOrderLogistic.setUserId(hfOrderLogistic.getUserId());
 		hfOrderLogistic.setOrdersId(ordersId);
 		hfOrderLogistic.setRespId(request.getRespId());
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
@@ -158,8 +158,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		if(hfOrderLogistic == null) {
 			throw new OrderIsExistException(String.valueOf(hfOrderLogistics.getId()));
 		}
-		if(!StringUtils.isEmpty(hfOrderLogistics.getUuserId())) {
-			hfOrderLogistic.setUserId(hfOrderLogistics.getUuserId());
+		if(!StringUtils.isEmpty(hfOrder.getUserId())) {
+			hfOrderLogistic.setUserId(hfOrder.getUserId());
 		}
 		if(!StringUtils.isEmpty(hfOrderLogistics.getUserAddressId())) {
 			hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
