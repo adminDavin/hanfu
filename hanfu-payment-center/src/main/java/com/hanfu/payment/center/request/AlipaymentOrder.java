@@ -10,9 +10,9 @@ public class AlipaymentOrder {
 	@ApiModelProperty(required = true, value = "交易状态")
     private Byte Status;
 	@ApiModelProperty(required = true, value = "订单金额")
-    private Double Amount;
+    private Integer Amount;
 	@ApiModelProperty(required = true, value = "退款金额")
-    private Double RefundFee;
+    private Integer RefundFee;
 	public String getClubOrderId() {
 		return ClubOrderId;
 	}
@@ -31,21 +31,16 @@ public class AlipaymentOrder {
 	public void setStatus(Byte status) {
 		Status = status;
 	}
-	public Double getAmount() {
+	public Integer getAmount() {
 		return Amount;
 	}
-	public void setAmount(Double amount) {
+	public void setAmount(Integer amount) {
 		Amount = amount;
 	}
-	public Double getRefundFee() {
+	public Integer getRefundFee() {
 		return RefundFee;
 	}
-	public void setRefundFee(Double refundFee) {
+	public void setRefundFee(Integer refundFee) {
 		RefundFee = refundFee;
 	}
-	
-	
-	
-	
-	
 }

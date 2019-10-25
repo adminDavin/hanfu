@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hanfu.order.center.manual.dao.OrderDao">
-<resultMap type="com.hanfu.order.center.model.HfOrderLogistics" id="BaseResultMap">
+<resultMap type="com.hanfu.order.center.manual.model.OrderInfo" id="BaseResultMap">
      <id column="id" jdbcType="INTEGER" property="id" />
     <result column="orders_id" jdbcType="INTEGER" property="ordersId" />
     <result column="order_detail_id" jdbcType="INTEGER" property="orderDetailId" />
@@ -15,17 +15,25 @@
     <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />   
+    <result column="hf_name" jdbcType="VARCHAR" property="hfName" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="purchase_price" jdbcType="VARCHAR" property="purchasePrice" />
+    <result column="pay_method_name" jdbcType="VARCHAR" property="payMethodName" />
+    <result column="pay_method_type" jdbcType="VARCHAR" property="payMethodType" />
+    <result column="order_detail_status" jdbcType="VARCHAR" property="orderDetailStatus" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity" />
     <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
-    <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
 </resultMap>
 <select id="selectOrderList" resultMap="BaseResultMap">
      SELECT 
-        h1.id,h1.orders_id,h1.resp_id,
+        h1.id,h1.orders_id,h1.resp_id,h5.hf_name,h4.address,
         h1.order_detail_id,h1.googs_id,h1.user_address_id,
-        h1.logistics_order_name,h1.uuser_id,
+        h1.logistics_order_name,h1.uuser_id,h2.pay_method_name,h2.pay_method_type,
         h1.logistics_orders_id,h1.logistics_company,
-        h1.hf_desc,h1.create_time,
-        h1.modify_time,h1.last_modifier,h1.is_deleted
+        h1.hf_desc,h1.create_time,h2.amount,h3.order_detail_status,h3.purchase_quantity,
+        h1.modify_time,h1.last_modifier,h3.purchase_price
      FROM 
         hf_order_logistics h1
      LEFT JOIN	
