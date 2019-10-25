@@ -28,7 +28,7 @@
         h1.modify_time,h1.last_modifier,h1.is_deleted
      FROM 
         hf_order_logistics h1
-     LEFT JOIN
+     LEFT JOIN	
         hf_orders h2
      ON h1.orders_id = h2.id
      LEFT JOIN
