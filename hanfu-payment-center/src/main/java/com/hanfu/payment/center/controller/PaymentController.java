@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation; 
-
+@CrossOrigin
 @RestController
 @RequestMapping("/payment")
 @Api
@@ -46,14 +47,14 @@ public class PaymentController {
 	private WeChatService weChatService;
 
 	@ApiOperation(value = "支付流程", notes = "支付流程")
-	@RequestMapping(value = "/pay", method = RequestMethod.POST)
+	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> payment(@RequestParam Integer bossId)
+	public ResponseEntity<JSONObject> payment(@RequestParam Integer bossId,Integer  orderId, Integer amount)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		String pay = alipayService.getAliPayOrderStr();
-		return builder.body(ResponseUtils.getResponseBody(pay));
+		String pay = alipayService.getAliPayOrderStr(bossId,orderId,amount);
+		return builder.body(ResponseUtils.getResponseBody(pay));	
 	}
 
 	@ApiOperation(value = "退款流程", notes = "退款流程")

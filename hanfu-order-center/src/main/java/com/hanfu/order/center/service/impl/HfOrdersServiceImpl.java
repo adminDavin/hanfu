@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
-import com.hanfu.order.center.manual.dao.ManualDao;
+import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
@@ -32,6 +32,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	HfOrdersMapper hfOrdersMapper;
 	@Autowired
 	ProductService productService;
+	@Autowired
+	OrderDao orderDao;
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
@@ -49,6 +51,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetail.setModifyTime(LocalDateTime.now());
 		hfOrdersDetail.setIsDeleted((short) 0);
+		hfOrdersDetail.setOrdersId(ordersId);
+		hfOrdersDetail.setLastModifier("1");
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
 		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(ordersId);
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -81,6 +85,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
 		hfOrderLogistic.setIsDeleted((short) 0);
+		hfOrderLogistic.setLastModifier("1");
+		hfOrderLogistic.setHfDesc(hfOrderLogistics.getHfDesc());
 		hfOrderLogisticsMapper.insert(hfOrderLogistic);
 		List list = new ArrayList<>();
 		list.add(hfOrdersDetail);
@@ -196,6 +202,14 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrderLogistic);
 		list.add(hfOrders);
 		return list;
+	}
+	@Override
+	public List updateOrder(Integer id) {
+		List list = orderDao.selectOrderList(id);
+		for (Object object : list) {
+			
+		}
+		return null;
 	}
 
 }

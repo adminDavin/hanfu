@@ -1,5 +1,5 @@
 server:
-  port: 9097
+  port: 9096
 
 dubbo:
   registry:
