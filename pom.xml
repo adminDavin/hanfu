@@ -14,7 +14,7 @@
 		<module>hanfu-web-utils</module>
 		<module>hanfu-order-center</module>
 		<module>hanfu-order-client</module>
-		<module>hanfu--inner-sdk</module>
+		<module>hanfu-inner-sdk</module>
 		<module>hanfu-payment-center</module>
 		<module>hanfu-payment-client</module>
 	</modules>

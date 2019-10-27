@@ -13,7 +13,13 @@
 		<finalName>hanfu-user-center</finalName>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
-		    
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.hanfu.user.center.Application</mainClass>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.mybatis.generator</groupId>
 				<artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -44,9 +50,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			   <configuration>
-                    <mainClass>com.hanfu.user.center.Application</mainClass>
-               </configuration> 
+				<configuration>
+					<mainClass>com.hanfu.user.center.Application</mainClass>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -58,11 +64,11 @@
 		</plugins>
 	</build>
 	<dependencies>
-	       <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
@@ -73,9 +79,9 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
-		    <artifactId>hanfu-web-utils</artifactId>
-		    <groupId>com.hanfu.utils</groupId>
-		    <version>0.0.1</version>
+			<artifactId>hanfu-web-utils</artifactId>
+			<groupId>com.hanfu.utils</groupId>
+			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
