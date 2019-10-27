@@ -18,7 +18,9 @@ import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
+import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
+import com.hanfu.order.center.model.HfOrdersExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -51,11 +53,19 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "物流id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> query(@RequestParam Integer id)
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer") })
+	public ResponseEntity<JSONObject> query(@RequestParam Integer userId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList(id)));
+		List<HfOrders> result = null;
+		if (userId == null) {
+		    result = hfOrdersMapper.selectByExample(null);
+		} else {
+		  HfOrdersExample example = new HfOrdersExample();
+		  example.createCriteria().andUserIdEqualTo(userId);
+		  result = hfOrdersMapper.selectByExample(example);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	@ApiOperation(value = "创建订单", notes = "创建订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.POST)

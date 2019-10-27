@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
-
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.common.utils.FdfsClient;
@@ -72,16 +72,21 @@ public class KingWordsController {
 			})
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd, @RequestParam(name = "token") String token) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Map<String,Integer> list = userCenterService.login();
-		if (StringUtils.isEmpty(token)) { 
-			userCenterService.checkToken(token);
-		} else if(! "1".equals(authType)) {
-			if (StringUtils.isEmpty(authType)) {
-				throw new ParamInvalidException("authType is invalid");
-			}
-			GetMessageCode.getCode(authKey);
-		}
-		return builder.body(ResponseUtils.getResponseBody(list));
+//		Map<String,Integer> list = userCenterService.login();
+//		if (StringUtils.isEmpty(token)) { 
+//			userCenterService.checkToken(token);
+//		} else if(! "1".equals(authType)) {
+//			if (StringUtils.isEmpty(authType)) {
+//				throw new ParamInvalidException("authType is invalid");
+//			}
+//			GetMessageCode.getCode(authKey);
+//		}
+//		Todo
+		HashMap<String, Object> result = new HashMap<>();
+		result.put("token", "ss");
+		result.put("userId", 5);
+		result.put("userInfo", new HfUser());
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
