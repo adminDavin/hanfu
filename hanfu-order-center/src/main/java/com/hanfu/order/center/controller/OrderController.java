@@ -53,22 +53,14 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer") })
-	public ResponseEntity<JSONObject> query(@RequestParam Integer userId)
+		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> query()
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<HfOrders> result = null;
-		if (userId == null) {
-		    result = hfOrdersMapper.selectByExample(null);
-		} else {
-		  HfOrdersExample example = new HfOrdersExample();
-		  example.createCriteria().andUserIdEqualTo(userId);
-		  result = hfOrdersMapper.selectByExample(example);
-		}
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
 	}
 	@ApiOperation(value = "创建订单", notes = "创建订单")
-	@RequestMapping(value = "/creat", method = RequestMethod.POST)
+	@RequestMapping(value = "/creat", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -86,7 +78,7 @@ public class OrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(id);
 //		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
-//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));
+//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));	
 //		}
 		if(!StringUtils.isEmpty(hfOrdersDetail.getOrderDetailStatus())) {
 			hfOrdersDetail.setOrderDetailStatus(orderDetailStatus);
@@ -97,10 +89,10 @@ public class OrderController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> updateOrder(@RequestParam Integer id)
+	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics)
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List list = hfOrdersService.updateOrder(id);
+		List list = hfOrdersService.updateOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 }

@@ -7,7 +7,7 @@ public interface UserCenterService {
 
 	boolean checkToken(String token);
 
-	Map<String, Integer> login();
+	Map<String, Integer> login(String authType, String authKey, String passwd, String token) throws Exception;
 
 
 

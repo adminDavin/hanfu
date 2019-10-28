@@ -58,7 +58,7 @@ public class PaymentController {
 	}
 
 	@ApiOperation(value = "退款流程", notes = "退款流程")
-	@RequestMapping(value = "/refund", method = RequestMethod.POST)
+	@RequestMapping(value = "/refund", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> refund(@RequestParam Integer bossId)

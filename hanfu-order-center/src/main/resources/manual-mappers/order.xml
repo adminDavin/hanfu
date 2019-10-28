@@ -20,18 +20,19 @@
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="purchase_price" jdbcType="VARCHAR" property="purchasePrice" />
     <result column="pay_method_name" jdbcType="VARCHAR" property="payMethodName" />
-    <result column="pay_method_type" jdbcType="VARCHAR" property="payMethodType" />
+    <result column="pay_method_type" jdbcType="INTEGER" property="payMethodType" />
     <result column="order_detail_status" jdbcType="VARCHAR" property="orderDetailStatus" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity" />
     <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
 </resultMap>
 <select id="selectOrderList" resultMap="BaseResultMap">
      SELECT 
         h1.id,h1.orders_id,h1.resp_id,h5.hf_name,h4.address,
         h1.order_detail_id,h1.googs_id,h1.user_address_id,
         h1.logistics_order_name,h1.uuser_id,h2.pay_method_name,h2.pay_method_type,
-        h1.logistics_orders_id,h1.logistics_company,
+        h1.logistics_orders_id,h1.logistics_company,h2.order_type,
         h1.hf_desc,h1.create_time,h2.amount,h3.order_detail_status,h3.purchase_quantity,
         h1.modify_time,h1.last_modifier,h3.purchase_price
      FROM 
@@ -54,6 +55,5 @@
      LEFT JOIN
         hf_user_address h7
      ON h1.user_address_id =h7.id    
-     WHERE h1.id = #{id}
 </select>
 </mapper>

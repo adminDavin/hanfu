@@ -34,7 +34,7 @@ public class OrderInfo implements Serializable{
 	@ApiModelProperty(required = true, value = "支付方式")
 	private String payMethodName;
 	@ApiModelProperty(required = true, value = "支付类型")
-	private String payMethodType;
+	private Integer payMethodType;
 	@ApiModelProperty(required = true, value = "订单状态")
 	private String orderDetailStatus;
 	@ApiModelProperty(required = true, value = "地址")
@@ -51,7 +51,15 @@ public class OrderInfo implements Serializable{
 	private String lastModifier;
 	@ApiModelProperty(required = true, value = "用户id")
 	private Integer userId;
+	@ApiModelProperty(required = true, value = "订单类型")
+	private String orderType;
 	
+	public String getOrderType() {
+		return orderType;
+	}
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
@@ -136,10 +144,10 @@ public class OrderInfo implements Serializable{
 	public void setPayMethodName(String payMethodName) {
 		this.payMethodName = payMethodName;
 	}
-	public String getPayMethodType() {
+	public Integer getPayMethodType() {
 		return payMethodType;
 	}
-	public void setPayMethodType(String payMethodType) {
+	public void setPayMethodType(Integer payMethodType) {
 		this.payMethodType = payMethodType;
 	}
 	public String getOrderDetailStatus() {

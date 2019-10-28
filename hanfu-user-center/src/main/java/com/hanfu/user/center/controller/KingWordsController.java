@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -31,6 +30,7 @@ import com.hanfu.common.utils.FdfsClient;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
@@ -40,7 +40,6 @@ import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
-import com.hanfu.user.center.utils.GetMessageCode;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -60,33 +59,40 @@ public class KingWordsController {
 	private UserCenterService userCenterService;
 	@Resource
     private RedisTemplate<String, String> redisTemplate;
-	@Autowired HfAuthMapper hfAuthMapper;
-
+	@Autowired 
+	HfAuthMapper hfAuthMapper;
+    @Autowired
+    UserDao userDao;
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "token", value = "token", required = false, type = "String")
 			})
-	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd, @RequestParam(name = "token") String token) throws Exception {
+	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//		Map<String,Integer> list = userCenterService.login();
-//		if (StringUtils.isEmpty(token)) { 
-//			userCenterService.checkToken(token);
-//		} else if(! "1".equals(authType)) {
-//			if (StringUtils.isEmpty(authType)) {
-//				throw new ParamInvalidException("authType is invalid");
-//			}
-//			GetMessageCode.getCode(authKey);
-//		}
-//		Todo
-		HashMap<String, Object> result = new HashMap<>();
-		result.put("token", "ss");
-		result.put("userId", 5);
-		result.put("userInfo", new HfUser());
-		return builder.body(ResponseUtils.getResponseBody(result));
+		HfAuth hfAuth = userDao.selectList(authKey);
+		Map<String , Integer> list = new HashMap<>();
+		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
+		//将token存入redis
+		redisTemplate.opsForValue().set(token, String.valueOf(hfAuth.getUserId()));
+		if (StringUtils.isEmpty(token)) { 
+			userCenterService.checkToken(token);
+		}
+		if(!"1".equals(authType)) {
+			if(!(hfAuth.getAuthKey()).equals(authKey)) {
+//				if(passwd != GetMessageCode.getCode(authKey)) {
+				throw new ParamInvalidException("authType is invalid");
+//				}
+			}		
+		}
+		list.put(token, hfAuth.getUserId());
+//		HashMap<String, Object> result = new HashMap<>();
+//		result.put("token", "ss");
+//		result.put("userId", 5);
+//		result.put("userInfo", new HfUser());
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -165,6 +171,7 @@ public class KingWordsController {
 			user.setSex(request.getSex());
 		}
 		user.setModifyDate(LocalDateTime.now());
+		user.setIdDeleted((byte) 0);
 		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
 		System.out.println("-------------------------------");
 		FileInputStream fis = new  FileInputStream(file);

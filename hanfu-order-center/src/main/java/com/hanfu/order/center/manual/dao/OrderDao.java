@@ -6,6 +6,6 @@ import com.hanfu.order.center.model.HfOrderLogistics;
 
 public interface OrderDao {
 
-	List<HfOrderLogistics> selectOrderList(Integer ordersId);
+	List<HfOrderLogistics> selectOrderList();
 
 }
