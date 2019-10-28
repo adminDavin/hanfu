@@ -203,13 +203,4 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrders);
 		return list;
 	}
-	@Override
-	public List updateOrder(Integer id) {
-		List list = orderDao.selectOrderList(id);
-		for (Object object : list) {
-			
-		}
-		return null;
-	}
-
 }

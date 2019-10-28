@@ -76,7 +76,7 @@ public class OrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(id);
 //		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
-//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));
+//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));	
 //		}
 		if(!StringUtils.isEmpty(hfOrdersDetail.getOrderDetailStatus())) {
 			hfOrdersDetail.setOrderDetailStatus(orderDetailStatus);
@@ -87,10 +87,10 @@ public class OrderController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> updateOrder(@RequestParam Integer id)
+	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics)
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List list = hfOrdersService.updateOrder(id);
+		List list = hfOrdersService.updateOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 }
