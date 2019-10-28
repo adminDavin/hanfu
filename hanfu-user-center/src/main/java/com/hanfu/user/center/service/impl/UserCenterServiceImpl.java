@@ -7,31 +7,23 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.HfAuth;
+import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.Constants;
+import com.hanfu.user.center.utils.GetMessageCode;
 @Component
 public class UserCenterServiceImpl implements UserCenterService{
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;
 	@Autowired
-	private HfUserMapper hfUsersMapper;
-	@Override
-	public Map<String, Integer> login() {	
-		Map<String , Integer> list = new HashMap<>();
-		//生成token
-		UUID uuid = UUID.randomUUID();
-		String token ="_"+uuid.toString().replaceAll("-", "");
-		//将token存入redis
-		String key ="_token";
-		redisTemplate.opsForValue().set(key, token, 
-			Constants.STATE_MANAGER, TimeUnit.HOURS);
-        HfUser hfUser = new HfUser();
-		list.put(token, hfUser.getId());
-		return list;
-	}
+	private HfAuthMapper hfAuthMapper;
 	public boolean checkToken(String token){
 		//解析出userId和uuid
 		if(token==null || "".equals(token)){
@@ -54,5 +46,29 @@ public class UserCenterServiceImpl implements UserCenterService{
 		redisTemplate.opsForValue().set(key, token, 
 				Constants.STATE_MANAGER, TimeUnit.HOURS);
 		return true;
+	}
+	@Override
+	public Map<String, Integer> login(String authType, String authKey, String passwd, String token) throws Exception {
+		HfAuth hfAuth = new HfAuth();
+		Map<String , Integer> list = new HashMap<>();
+		//生成token
+		UUID uuid = UUID.randomUUID();
+		token ="_"+uuid.toString().replaceAll("-", "");
+		//将token存入redis
+		String key ="_token";
+		redisTemplate.opsForValue().set(key, token, 
+				Constants.STATE_MANAGER, TimeUnit.HOURS);
+		if (StringUtils.isEmpty(token)) { 
+			checkToken(token);
+		}
+		if(hfAuth.getAuthType().equals(authType)) {
+			if(hfAuth.getAuthKey().equals(authKey)) {
+				if(passwd != GetMessageCode.getCode(authKey)) {
+					throw new ParamInvalidException("authType is invalid");
+				}
+			}		
+		}
+		list.put(token, hfAuth.getUserId());
+		return list;
 	}
 }

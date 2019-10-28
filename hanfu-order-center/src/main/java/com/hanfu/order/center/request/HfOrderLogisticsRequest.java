@@ -29,7 +29,15 @@ public class HfOrderLogisticsRequest implements Serializable{
 	private String hfDesc;
 	@ApiModelProperty(required = true, value = "添加时间")
 	private LocalDateTime createTime;
+	@ApiModelProperty(required = true, value = "用户Id")
+	private Integer userId;	
 	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 	public Integer getId() {
 		return id;
 	}

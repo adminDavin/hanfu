@@ -51,14 +51,14 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "物流id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> query(@RequestParam Integer id)
+		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> query()
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList(id)));
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
 	}
 	@ApiOperation(value = "创建订单", notes = "创建订单")
-	@RequestMapping(value = "/creat", method = RequestMethod.POST)
+	@RequestMapping(value = "/creat", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
