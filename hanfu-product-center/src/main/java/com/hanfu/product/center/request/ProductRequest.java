@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class ProductRequest extends CommonRequest {
+	@ApiModelProperty(required = true, value = "商品id")
+	private Integer id;
 	@ApiModelProperty(required = true, value = "商品名称")
 	private String hfName;
 	@ApiModelProperty(required = true, value = "商品所属的类目id")
@@ -12,10 +14,17 @@ public class ProductRequest extends CommonRequest {
 	private Integer brandId;
 	@ApiModelProperty(required = true, value = "商品描述")
 	private String productDesc;
-	@ApiModelProperty(required = true, name = "userId", value = "商家id")
+	@ApiModelProperty(required = true, name = "bossId", value = "商家id")
 	private Integer bossId;
-	@ApiModelProperty(name = "username", required = true, value = "商家名称")
+	@ApiModelProperty(name = "lastModifier", required = true, value = "商家名称")
 	private String lastModifier;
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getHfName() {
 		return hfName;
 	}

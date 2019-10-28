@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
@@ -21,7 +23,7 @@ import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
 import com.hanfu.order.center.response.handler.OrderIsExistException;
 import com.hanfu.order.center.service.HfOrdersService;
-import com.hanfu.order.center.service.ProductService;
+
 @Service("hfOrdersDetailService")
 public class HfOrdersServiceImpl implements HfOrdersService {
 	@Autowired
@@ -30,7 +32,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	HfOrderLogisticsMapper hfOrderLogisticsMapper;
 	@Autowired
 	HfOrdersMapper hfOrdersMapper;
-	@Autowired
+	@Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService")
 	ProductService productService;
 	@Autowired
 	OrderDao orderDao;

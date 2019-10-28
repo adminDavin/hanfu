@@ -22,6 +22,9 @@
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="brand_id" jdbcType="TIMESTAMP" property="brandId" />
     <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
     <result column="hf_name" jdbcType="VARCHAR" property="hfName" />
   </resultMap>
   
@@ -45,15 +48,16 @@
   			p.hf_name productName,product_desc,
   			h.hf_name productCategoryName,p.category_id,
   		    p.brand_id,p.last_modifier,
-  		    p.id productId
+  		    p.id productId,p.create_time,
+  		    p.modify_time, p.is_deleted
     	    FROM
     	    	 product p
     	    LEFT JOIN 
     	    	 hf_category h
     	    ON  p.category_id = h.id
     	    WHERE  p.boss_id = #{bossId} 
-    	    <if test="hfName != null and hfName != ''">
-    	    	AND p.hf_name like '%${hfName}%'
+    	    <if test="productName != null and productName != ''">
+    	    	AND p.hf_name like '%${productName}%'
     	    </if>
     	    <if test="categoryId != null and categoryId != ''">
     	    	AND h.id = #{categoryId} 
@@ -65,7 +69,9 @@
   			p.hf_name productName,product_desc,
   			h.hf_name productCategoryName,p.category_id,
   		    p.brand_id,p.last_modifier,
-  		    p.id productId
+  		    p.id productId,p.create_time, 
+      		p.last_modifier,p.modify_time,
+      		p.is_deleted
   		FROM 
   			product p
   		LEFT JOIN

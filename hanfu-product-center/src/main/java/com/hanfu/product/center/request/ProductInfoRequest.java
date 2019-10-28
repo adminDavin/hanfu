@@ -11,9 +11,11 @@ public class ProductInfoRequest extends CommonRequest {
 	@ApiModelProperty(required = true, value = "属性值")
 	private String infoValue;
 	@ApiModelProperty(name = "username", required = true, value = "商家名称")
-	private String lastModifier;
+	private String username;
 	@ApiModelProperty(name = "hfRemark", required = false, value = "备注")
 	private String hfRemark;
+	@ApiModelProperty(name = "categoryId", required = false, value = "类目id")
+	private Integer categoryId;
 	public String getHfName() {
 		return hfName;
 	}
@@ -32,11 +34,11 @@ public class ProductInfoRequest extends CommonRequest {
 	public void setInfoValue(String infoValue) {
 		this.infoValue = infoValue;
 	}
-	public String getLastModifier() {
-		return lastModifier;
+	public String getUsername() {
+		return username;
 	}
-	public void setLastModifier(String lastModifier) {
-		this.lastModifier = lastModifier;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getHfRemark() {
 		return hfRemark;
@@ -44,6 +46,11 @@ public class ProductInfoRequest extends CommonRequest {
 	public void setHfRemark(String hfRemark) {
 		this.hfRemark = hfRemark;
 	}
-	
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
 	
 }
