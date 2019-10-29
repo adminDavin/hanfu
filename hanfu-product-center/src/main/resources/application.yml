@@ -18,7 +18,6 @@ dubbo:
   provider:
     server: netty4
 
-
 spring:
   datasource:
     name: dataSource
@@ -37,6 +36,9 @@ spring:
         max-size: 16
         queue-capacity: 100
         keep-alive: 3600s
+  servlet:
+    multipart:
+      enabled: true
 
 
 #

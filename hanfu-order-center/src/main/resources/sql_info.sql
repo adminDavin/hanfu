@@ -20,7 +20,7 @@ create table hf_order_logistics
    id                   int not null AUTO_INCREMENT comment '序列号',
    orders_id            int comment '订单id',
    order_detail_id      int comment '订单详情id',
-   uuser_id             int comment '用户id',
+   user_id             int comment '用户id',
    user_address_id      int comment '用户地址id',
    googs_id             int comment '物品id',
    logistics_order_name varchar(63) comment '物流名称',

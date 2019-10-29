@@ -1,5 +1,5 @@
 server:
-  port: 9096
+  port: 9098
 
 dubbo:
   registry:
@@ -14,7 +14,7 @@ dubbo:
   protocol:
     id: dubbo
     name: dubbo
-    port: 1900
+    port: 1902
   provider:
     server: netty4
 

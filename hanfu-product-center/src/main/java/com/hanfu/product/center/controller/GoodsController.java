@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -466,7 +467,7 @@ public class GoodsController {
 	}
 
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
-	@RequestMapping(value = "/addPicture", method = RequestMethod.POST)
+	@PostMapping(value = "/addPicture")
 	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
