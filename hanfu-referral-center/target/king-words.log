@@ -225,3 +225,10 @@ org.apache.curator.CuratorConnectionLossException: KeeperErrorCode = ConnectionL
 2019-10-30 05:32:31.655  INFO 38152 --- [http-nio-9100-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2019-10-30 05:32:31.665  INFO 38152 --- [http-nio-9100-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2019-10-30 05:32:31.695  INFO 38152 --- [http-nio-9100-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 24 ms
+2019-10-30 06:12:24.279  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2019-10-30 06:12:24.342  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] .b.c.e.AwaitingNonWebApplicationListener :  [Dubbo] Current Spring Boot Application is about to shutdown...
+2019-10-30 06:12:24.514  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2019-10-30 06:12:24.576  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2019-10-30 06:12:24.592  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] f.a.ReferenceAnnotationBeanPostProcessor : org.apache.dubbo.common.bytecode.proxy1@6c6a8459 was destroying!
+2019-10-30 06:12:24.592  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] f.a.ReferenceAnnotationBeanPostProcessor : org.apache.dubbo.common.bytecode.proxy0@67e1a198 was destroying!
+2019-10-30 06:12:24.592  INFO 38152 --- [RMI TCP Connection(44)-127.0.0.1] f.a.ReferenceAnnotationBeanPostProcessor : class org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor was destroying!

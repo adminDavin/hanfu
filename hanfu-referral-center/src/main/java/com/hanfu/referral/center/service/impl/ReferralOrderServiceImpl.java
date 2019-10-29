@@ -9,7 +9,7 @@ import com.hanfu.inner.sdk.order.center.HfOrderService;
 import com.hanfu.referral.center.service.ReferralOrderService;
 
 public class ReferralOrderServiceImpl implements ReferralOrderService {
-    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.HfOrderService")
+    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1901/com.hanfu.inner.sdk.product.center.HfOrderService")
     private HfOrderService hfOrderService;
     
     @Override
