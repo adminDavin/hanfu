@@ -20,8 +20,8 @@ public class UserAddressRequest implements Serializable{
 	private String hfCity;
 	@ApiParam(required = true, value = "备注")
 	private String hfDesc;
-	@ApiParam(required = true, value = "创建时间")
-	private LocalDateTime createTime;
+//	@ApiParam(required = true, value = "创建时间")
+//	private LocalDateTime createTime;
 	@ApiParam(required = true, value = "详细地址信息")
 	private String hfAddressDetail;
 	@ApiParam(required = true, value = "是否为默认地址")
@@ -66,12 +66,12 @@ public class UserAddressRequest implements Serializable{
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
+//	public LocalDateTime getCreateTime() {
+//		return createTime;
+//	}
+//	public void setCreateTime(LocalDateTime createTime) {
+//		this.createTime = createTime;
+//	}
 	public String getHfAddressDetail() {
 		return hfAddressDetail;
 	}

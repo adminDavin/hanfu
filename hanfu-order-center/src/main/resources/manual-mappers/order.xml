@@ -26,22 +26,24 @@
     <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity" />
     <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier" />
     <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
 </resultMap>
 <select id="selectOrderList" resultMap="BaseResultMap">
      SELECT 
         h1.id,h1.orders_id,h1.resp_id,h5.hf_name,h4.address,
         h1.order_detail_id,h1.googs_id,h1.user_address_id,
         h1.logistics_order_name,h1.uuser_id,h2.pay_method_name,h2.pay_method_type,
-        h1.logistics_orders_id,h1.logistics_company,h2.order_type,
+        h1.logistics_orders_id,h1.logistics_company,h2.order_type,h2.pay_status,
         h1.hf_desc,h1.create_time,h2.amount,h3.order_detail_status,h3.purchase_quantity,
-        h1.modify_time,h1.last_modifier,h3.purchase_price
+        h1.modify_time,h1.last_modifier,h3.purchase_price,h4.real_name
      FROM 
-        hf_order_logistics h1
+        hf_order_logistics h1	
      LEFT JOIN	
         hf_orders h2
      ON h1.orders_id = h2.id
      LEFT JOIN
-        hf_orders_detail  h3
+        hf_orders_detail  h3	
      ON   h1.order_detail_id = h3.id
      LEFT JOIN 
         hf_user h4

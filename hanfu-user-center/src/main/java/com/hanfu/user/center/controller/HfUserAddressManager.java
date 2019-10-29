@@ -72,7 +72,8 @@ public class HfUserAddressManager {
 	public ResponseEntity<JSONObject> delete(@RequestParam(name = "id") Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfUserAddresseExample example = new HfUserAddresseExample(); 
-		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.deleteByExample(example)));
+		example.createCriteria().andIdEqualTo(id);
+		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.deleteByPrimaryKey(id)));
 	}
 	@RequestMapping(value = "/updateAddress", method = RequestMethod.GET)
 	@ApiOperation(value = "更新用戶地址", notes = "更改用戶地址")
