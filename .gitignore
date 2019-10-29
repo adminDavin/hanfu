@@ -70,3 +70,4 @@ hanfu-user-center/.factorypath
 hanfu-web-utils/.factorypath
 hanfu-web-utils/.settings/org.eclipse.jdt.apt.core.prefs
 hanfu-web-utils/.settings/org.eclipse.jdt.core.prefs
+hanfu-referral-center/target/*
