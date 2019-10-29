@@ -17,6 +17,7 @@
 		<module>hanfu-inner-sdk</module>
 		<module>hanfu-payment-center</module>
 		<module>hanfu-payment-client</module>
+		<module>hanfu-referral-center</module>
 	</modules>
 	<profiles>
 		<profile>

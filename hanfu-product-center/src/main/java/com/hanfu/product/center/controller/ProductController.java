@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
@@ -63,7 +64,6 @@ import com.hanfu.product.center.response.handler.ProductNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
-import com.hanfu.product.center.service.ProductService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
