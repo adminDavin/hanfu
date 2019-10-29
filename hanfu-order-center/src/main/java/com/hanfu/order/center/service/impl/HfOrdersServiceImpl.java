@@ -39,7 +39,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
-		Integer ordersId = UUID.randomUUID().version();
+		Integer ordersId = UUID.randomUUID().variant();
 		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrders hfOrders = new HfOrders();
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -57,6 +57,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setOrderType(hfOrder.getOrderType());
 		hfOrders.setModifyTime(LocalDateTime.now());
 		hfOrders.setIsDeleted((short) 0);
+		hfOrders.setLastModifier("1");
+		hfOrders.setId(hfOrder.getOrdersid());
 		hfOrdersMapper.insert(hfOrders);
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
 		hfOrdersDetail.setGoogsId(request.getGoogsId()); 
@@ -83,7 +85,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrderLogistic.setOrderDetailId(request.getId());
 		hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
 		hfOrderLogistic.setUserId(hfOrderLogistics.getUserId());
-		hfOrderLogistic.setOrdersId(ordersId);
+		hfOrderLogistic.setOrdersId(hfOrder.getOrdersid());
 		hfOrderLogistic.setRespId(request.getRespId());
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
@@ -134,7 +136,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
 		HfOrders hfOrders = new HfOrders();
 		if(hfOrders == null) {
-			throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
+			throw new OrderIsExistException(String.valueOf(hfOrder.getOrdersid()));
 		}
 		if(!StringUtils.isEmpty(hfOrder.getUserId())) {
 			hfOrders.setUserId(hfOrder.getUserId());
