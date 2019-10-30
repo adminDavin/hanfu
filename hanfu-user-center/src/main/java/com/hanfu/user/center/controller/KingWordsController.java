@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.common.utils.FdfsClient;
@@ -145,6 +144,9 @@ public class KingWordsController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
+//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//		String localTime = df.format(request.getBirthDay());
+//		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
 		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (user == null) {
 			throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -152,9 +154,9 @@ public class KingWordsController {
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());
 		}
-		if(!StringUtils.isEmpty(request.getBirthDay())) {
-			user.setBirthDay(request.getBirthDay());
-		}
+//		if(!StringUtils.isEmpty(request.getBirthDay())) {
+//			user.setBirthDay(ldt);
+//		}
 		if(!StringUtils.isEmpty(request.getEmail())) {
 			user.setEmail(request.getEmail());
 		}

@@ -174,8 +174,11 @@ public class ProductController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listProduct(@RequestParam(name = "bossId") Integer bossId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ProductExample example = new ProductExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
+		ProductExample example = null;
+		if(bossId!=null) {
+			example = new ProductExample();
+			example.createCriteria().andBossIdEqualTo(bossId);
+		}
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
 	}
 
@@ -237,6 +240,7 @@ public class ProductController {
 			example.createCriteria().andProductIdEqualTo(productId[i]);
 			example2.createCriteria().andProductIdEqualTo(productId[i]);
 			productSpecMapper.deleteByExample(example);
+			productInfoMapper.deleteByExample(example2);
 		}
 		return builder.body(ResponseUtils.getResponseBody(productDao.deleteSelectProduct(productId)));
 	}
@@ -413,6 +417,5 @@ public class ProductController {
 //		hfGoodsMapper.updateByPrimaryKey(record);
 //		return builder.body(ResponseUtils.getResponseBody("product insert success"));
 //	}
-
 	
 }

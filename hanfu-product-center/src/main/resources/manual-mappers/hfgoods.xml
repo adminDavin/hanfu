@@ -34,6 +34,31 @@
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
+  
+  	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly">
+			SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h.create_time,h.modify_time,
+				h.is_deleted
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+		    <if test="stoneId != null and stoneId != ''">
+    	    WHERE
+		        h.stone_id=#{stoneId}
+    	    </if>
+		    
+	</select>
    
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 			SELECT

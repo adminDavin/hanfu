@@ -8,12 +8,10 @@ public class AlipayConfig {
 		// 支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
 	    public static String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz9YczyBgwO1x5j6UiML2VQRlNcLFWCmnLbpeb+GyUldy3tMxoVfNhiD9Acl/bTc1Pv/5GsRYEbHWcj70dvIg23/SGlWfp/nGRwNq73r5p7c6It8DEhIX4vIB5mN/hblAC5iAnCvGvKzVeao6c0QMjm9CES4dTsbQm+uHGikIryLejkxJi78ifQRXWGzksR1qWjnelDKF8xvYFM6EZDEIr/Wxj5Gzo8Ul72GVyFzBfTh/mh0NKAfeDnf2P7nNcWr9t4TxKux32hDHTXN2XkcQtiURmZtBxJ9+tIUOX3bhOUB5wtIWr6XnLzzZpib9fCpmDyArytFhDjV0M2ZHe4nlmQIDAQAB";
 		// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-		public static String notify_url = "http://d9tc3e.natappfree.cc/alipay/notify_url.jsp";
+		public static String notify_url = "http://localhost:9097/payment/pay/";
 		// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问，
 	//标红的域名为内网穿透工具生成的域名，没启动一次穿透工具，生成的域名都不一样，所有启动一次都需要进行修改
-		public static String return_url = "http://aa7xmz.natappfree.cc/alipay/return_url.jsp";
-		//请求网关地址
-		public static String URL="http://aa7xmz.natappfree.cc/gateway.do";
+		public static String return_url = "http://localhost:9097/payment/pay/";
 		// 签名方式
 		public static String SIGNTYPE = "RSA2";
 		// 字符编码格式
