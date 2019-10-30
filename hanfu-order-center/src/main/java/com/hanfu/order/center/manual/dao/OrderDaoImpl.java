@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hanfu.order.center.model.HfOrderLogistics;
+import com.hanfu.order.center.model.HfOrderStatus;
 
 
 
@@ -17,6 +18,11 @@ public class OrderDaoImpl implements OrderDao{
 	@Override
 	public List<HfOrderLogistics> selectOrderList() {
 		List<HfOrderLogistics> result = sqlSessionTemplate.selectList("selectOrderList");
+		return result;
+	}
+	@Override
+	public List<HfOrderStatus> selectOrderStatus() {
+		List<HfOrderStatus> result = sqlSessionTemplate.selectList("selectOrderStatus");
 		return result;
 	}
 

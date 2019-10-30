@@ -32,7 +32,7 @@ public String getAliPayOrderStr(Integer bossId, Integer orderId, Integer amount)
 	alipaymentOrder.setRefundFee(amount);	//总退款金额
 	try{	
 	//实例化客户端（参数：网关地址、商户appid、商户私钥、格式、编码、支付宝公钥、加密类型），为了取得预付订单信息
-            AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID, 
+            AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.APPID, 
     		        AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, 
     		        AlipayConfig.ALIPAY_PUBLIC_KEY,AlipayConfig.SIGNTYPE);
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay 

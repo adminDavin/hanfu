@@ -12,18 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.request.AlipayTradePayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.hanfu.payment.center.request.AlipayConfig;
 import com.hanfu.payment.center.request.AlipayRefund;
-import com.hanfu.payment.center.request.HfGoodsRequest;
 import com.hanfu.payment.center.service.AlipayService;
 import com.hanfu.payment.center.service.WeChatService;
 import com.hanfu.utils.response.handler.ResponseEntity;

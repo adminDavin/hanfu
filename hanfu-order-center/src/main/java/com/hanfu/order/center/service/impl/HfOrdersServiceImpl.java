@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
+import com.hanfu.order.center.dao.HfOrderStatusMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
@@ -36,10 +37,12 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	ProductService productService;
 	@Autowired
 	OrderDao orderDao;
+	@Autowired
+	HfOrderStatusMapper hfOrderStatusMapper;
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
-		Integer ordersId = UUID.randomUUID().variant();
+		Integer ordersId = UUID.randomUUID().hashCode();
 		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrders hfOrders = new HfOrders();
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -49,7 +52,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setAmount(amount);
 		hfOrders.setHfMemo(hfOrder.getHfMemo());
 		hfOrders.setHfRemark(hfOrder.getHfRemark());
-		hfOrders.setId(ordersId);
+		hfOrders.setId(request.getId());
 		hfOrders.setPayMethodName(hfOrder.getPayMethodName());
 		hfOrders.setPayMethodType(hfOrder.getPayMethodType());
 		hfOrders.setPayStatus(hfOrder.getPayStatus());
@@ -58,7 +61,6 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setModifyTime(LocalDateTime.now());
 		hfOrders.setIsDeleted((short) 0);
 		hfOrders.setLastModifier("1");
-		hfOrders.setId(hfOrder.getOrdersid());
 		hfOrdersMapper.insert(hfOrders);
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
 		hfOrdersDetail.setGoogsId(request.getGoogsId()); 
@@ -68,13 +70,13 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setRespId(request.getRespId());
 		hfOrdersDetail.setPurchasePrice(request.getPurchasePrice());
 		hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
-		hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
+		hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetail.setModifyTime(LocalDateTime.now());
 		hfOrdersDetail.setIsDeleted((short) 0);
 		hfOrdersDetail.setOrdersId(ordersId);
 		hfOrdersDetail.setLastModifier("1");
-		hfOrdersDetail.setId(ordersId);
+		hfOrdersDetail.setId(hfOrder.getOrdersid());
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
 		hfOrderLogistic.setGoogsId(request.getGoogsId());

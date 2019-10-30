@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
+import com.hanfu.order.center.dao.HfOrderStatusMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
+import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.model.HfOrdersExample;
@@ -50,6 +52,8 @@ public class OrderController {
 	HfOrdersService hfOrdersService;
 	@Autowired
 	OrderDao orderDao;
+	@Autowired
+	HfOrderStatusMapper hfOrderStatusMapper;
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -67,22 +71,25 @@ public class OrderController {
 		List  list = hfOrdersService.creatOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
+	@ApiOperation(value = "获取订单状态", notes = "获取订单状态")
+	@RequestMapping(value = "/status", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> status()
+			throws JSONException, Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderStatus()));
+	}
 	@ApiOperation(value = "修改订单状态", notes = "修改订单状态")
 	@RequestMapping(value = "/updatestatus", method = RequestMethod.POST)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态：1.待支付，2.待发货 ，3.待收货，4.待评价，5.待接单，6.已接单，7.制作中", required = true, type = "String")
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "id", value = "状态id", required = true, type = "Integer")
 		})
-	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer id,  @RequestParam String orderDetailStatus)
+	public ResponseEntity<JSONObject> deleteOrder(@RequestParam Integer orderId,  @RequestParam Integer id)
 			throws JSONException, Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(id);
-//		if(!StringUtils.isEmpty(hfOrdersDetail == null)) {
-//			throw new OrderIsExistException(String.valueOf(hfOrdersDetail.getId()));	
-//		}
-		if(!StringUtils.isEmpty(hfOrdersDetail.getOrderDetailStatus())) {
-			hfOrdersDetail.setOrderDetailStatus(orderDetailStatus);
-		}
+		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(orderId);
+		HfOrderStatus hfOrderStatus = hfOrderStatusMapper.selectByPrimaryKey(id);
+		hfOrdersDetail.setOrderDetailStatus(hfOrderStatus.getHfName());
 		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail)));
 	}
 	@ApiOperation(value = "修改订单", notes = "修改订单")
