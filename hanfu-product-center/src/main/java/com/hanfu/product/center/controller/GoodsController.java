@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -474,11 +475,11 @@ public class GoodsController {
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
-		Arrays.asList(request.getFileInfo()).stream().forEach(fileInfo -> {
 			try {
 				FileMangeService fileMangeService = new FileMangeService();
 				String arr[];
-				arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+				MultipartFile fileInfo = request.getFileInfo();
+                arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
 				FileDesc fileDesc = new FileDesc();
 				fileDesc.setFileName(fileInfo.getName());
 				fileDesc.setGroupName(arr[0]);
@@ -502,7 +503,6 @@ public class GoodsController {
 			} catch (IOException e) {
 				logger.error("add picture failed", e);
 			}
-		});
 		return builder.body(ResponseUtils.getResponseBody(pictures));
 	}
 
