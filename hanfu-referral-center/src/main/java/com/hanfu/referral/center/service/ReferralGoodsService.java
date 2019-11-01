@@ -7,4 +7,8 @@ import com.hanfu.inner.model.product.center.Product;
 
 public interface ReferralGoodsService {
 	public List<HfGoodsDisplay> getAllGoods();
+	
+	public Integer[] findAllPicture();
+	
+//	public void getPicture();
 }

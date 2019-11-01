@@ -82,7 +82,9 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class GoodsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	private static final String LOCK = "LOCK";
+	
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
 
@@ -516,9 +518,75 @@ public class GoodsController {
 			throw new Exception("file not exists");
 		}
 		FileMangeService fileManageService = new FileMangeService();
-		byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
-		ImageIO.write(readImg, "png", response.getOutputStream());
+		synchronized(LOCK) {
+			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			ByteArrayInputStream stream = new ByteArrayInputStream(file);
+			BufferedImage readImg = ImageIO.read(stream);
+			stream.reset();
+			stream.close();
+			ImageIO.write(readImg, "png", response.getOutputStream());
+		}
+	}
+	
+	
+//	@ApiOperation(value = "获取物品图片", notes = "获取物品图片")
+//	@RequestMapping(value = "/getFileByGoods", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+//	public void getFileByGoods(@RequestParam(name = "goodsId") Integer goodsId, HttpServletResponse response) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+//		example.createCriteria().andGoodsIdEqualTo(goodsId);
+//		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example);
+//		for(int i=0;i<list.size();i++) {
+//		if(!list.isEmpty()) {
+//			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(0).getFileId());
+//			if (fileDesc == null) {
+//				throw new Exception("file not exists");
+//			}
+//			FileMangeService fileManageService = new FileMangeService();
+//			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+//			if(file!=null) {
+//				BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
+//				ImageIO.write(readImg, "png", response.getOutputStream());
+//			}
+//		}
+//			
+//		}
+//	}
+	
+	@ApiOperation(value = "删除图片", notes = "删除图片根据物品")
+	@RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public void deleteFile(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+		example.createCriteria().andGoodsIdEqualTo(goodsId);
+		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example);
+		for(int i=0;i<list.size();i++) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(i).getFileId());
+			FileMangeService fileManageService = new FileMangeService();
+			if(fileDesc!=null) {
+				fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			}
+			hfGoodsPictrueMapper.deleteByPrimaryKey(list.get(i).getId());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+		}
+	}
+	
+	@ApiOperation(value = "删除单张图片", notes = "删除单张图片")
+	@RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "物品图片id", required = true, type = "Integer") })
+	public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
+		FileMangeService fileMangeService = new FileMangeService();
+		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+		hfGoodsMapper.deleteByPrimaryKey(id);
 	}
 
 }
