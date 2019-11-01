@@ -1,8 +1,5 @@
 package com.hanfu.user.center.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -11,17 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +26,6 @@ import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
-import com.hanfu.common.utils.FdfsClient;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
@@ -44,7 +35,6 @@ import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.request.UserInfoRequest;
-import com.hanfu.user.center.request.UserPictrueRequeest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
@@ -184,19 +174,28 @@ public class KingWordsController {
 		}
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
-		System.out.println("-------------------------------");
-		FileInputStream fis = new  FileInputStream(file);
-		FileMangeService fileMangeService = new FileMangeService();
-		System.out.println("++++++++++++++++++++++++++++++++");
-		String arr[] = fileMangeService.uploadFile(FdfsClient.streamToByte(fis), String.valueOf(request.getUserId()));
-		fis.close();
-		FileDesc fileDesc = new FileDesc();
-		fileDesc.setGroupName(arr[0]);
-		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(request.getUserId());
-		int fileId = fileDescMapper.insert(fileDesc);
-		user.setFileId(fileId);
+		List<HfUser> pictures = Lists.newArrayList();
+		try {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			MultipartFile fileInfo = request.getFileInfo();
+            arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(request.getUserId());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfUser hfUser = new HfUser();
+			hfUser.setFileId(fileDesc.getId());
+			hfUserMapper.insert(hfUser);
+			pictures.add(hfUser);	
+		} catch (IOException e) {
+			logger.error("add picture failed", e);
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
@@ -223,51 +222,5 @@ public class KingWordsController {
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
-	}
-	@ApiOperation(value = "添加头像", notes = "添加头像")
-	@PostMapping(value = "/addPicture")
-	public ResponseEntity<JSONObject> addGoodsPicture(UserPictrueRequeest request) throws JSONException, IOException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
-		if (user == null) {
-		}
-		List<HfUser> pictures = Lists.newArrayList();
-			try {
-				FileMangeService fileMangeService = new FileMangeService();
-				String arr[];
-				MultipartFile fileInfo = request.getFileInfo();
-                arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
-				FileDesc fileDesc = new FileDesc();
-				fileDesc.setFileName(fileInfo.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(request.getUserId());
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				fileDescMapper.insert(fileDesc);
-				HfUser hfUser = new HfUser();
-				hfUser.setFileId(fileDesc.getId());
-				hfUserMapper.insert(hfUser);
-				pictures.add(hfUser);
-			} catch (IOException e) {
-				logger.error("add picture failed", e);
-			}
-		return builder.body(ResponseUtils.getResponseBody(pictures));
-	}
-
-	@ApiOperation(value = "获取图片", notes = "获取图片")
-	@RequestMapping(value = "/getFile", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
-	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
-		if (fileDesc == null) {
-			throw new Exception("file not exists");
-		}
-		FileMangeService fileManageService = new FileMangeService();
-		byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
-		ImageIO.write(readImg, "png", response.getOutputStream());
-	}
+	}		
 }
