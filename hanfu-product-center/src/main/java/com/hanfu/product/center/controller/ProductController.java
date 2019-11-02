@@ -376,7 +376,9 @@ public class ProductController {
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).getPriceId() != null) {
 					HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
-					list.get(i).setSellPrice(hfPrice.getSellPrice());
+					if(hfPrice != null) {
+						list.get(i).setSellPrice(hfPrice.getSellPrice());
+					}
 				}
 			}
 		}

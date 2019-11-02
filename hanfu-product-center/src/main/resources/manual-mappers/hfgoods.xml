@@ -18,6 +18,22 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
    </resultMap>
    
+	<resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
+    <result column="hf_name" jdbcType="VARCHAR" property="goodName" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="categoryId" jdbcType="INTEGER" property="categoryId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
+    <result column="resp_id" jdbcType="INTEGER" property="respId" />
+    <result column="price_id" jdbcType="INTEGER" property="priceId" />
+    <result column="productId" jdbcType="INTEGER" property="productId" />
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
+   </resultMap>
+   
    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="hf_name" jdbcType="INTEGER" property="goodName" />
@@ -35,7 +51,7 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
-  	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly">
+  	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly1">
 			SELECT
 				h.goods_desc,h.id,
 				h.hf_name,h.resp_id,

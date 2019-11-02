@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -23,6 +24,7 @@ import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
+import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
@@ -129,7 +131,10 @@ public class StoneController {
 		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);
 		if (!list.isEmpty()) {
 			for (int i = 0; i < list.size(); i++) {
-				fileDescMapper.deleteByPrimaryKey(list.get(i).getFileId());
+				FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(i).getFileId());
+				FileMangeService fileMangeService = new FileMangeService();
+				fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+				fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 			}
 		}
 		hfGoodsPictrueMapper.deleteByExample(example2);

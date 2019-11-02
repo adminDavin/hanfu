@@ -3,7 +3,12 @@ package com.hanfu.inner.model.product.center;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class HfGoodsDisplay{
+public class HfGoodsDisplay implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4264397359407638258L;
 	
 	private Integer id;
 	private String goodName;
