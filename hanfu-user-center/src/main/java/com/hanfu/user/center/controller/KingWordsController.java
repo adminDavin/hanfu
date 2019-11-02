@@ -1,10 +1,10 @@
 package com.hanfu.user.center.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.StringUtils; 
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,8 +24,8 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
-import com.hanfu.common.utils.FdfsClient;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
@@ -174,19 +174,28 @@ public class KingWordsController {
 		}
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		File file = new  File("C:\\\\Users\\\\123\\\\Desktop\\\\timg.jpg");
-		System.out.println("-------------------------------");
-		FileInputStream fis = new  FileInputStream(file);
-		FileMangeService fileMangeService = new FileMangeService();
-		System.out.println("++++++++++++++++++++++++++++++++");
-		String arr[] = fileMangeService.uploadFile(FdfsClient.streamToByte(fis), String.valueOf(request.getUserId()));
-		fis.close();
-		FileDesc fileDesc = new FileDesc();
-		fileDesc.setGroupName(arr[0]);
-		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(request.getUserId());
-		int fileId = fileDescMapper.insert(fileDesc);
-		user.setFileId(fileId);
+		List<HfUser> pictures = Lists.newArrayList();
+		try {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			MultipartFile fileInfo = request.getFileInfo();
+            arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(request.getUserId());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfUser hfUser = new HfUser();
+			hfUser.setFileId(fileDesc.getId());
+			hfUserMapper.insert(hfUser);
+			pictures.add(hfUser);	
+		} catch (IOException e) {
+			logger.error("add picture failed", e);
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
@@ -213,5 +222,5 @@ public class KingWordsController {
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
-	}
+	}		
 }

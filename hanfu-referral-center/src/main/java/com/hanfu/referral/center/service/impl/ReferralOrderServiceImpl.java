@@ -16,5 +16,4 @@ public class ReferralOrderServiceImpl implements ReferralOrderService {
     public List<HfOrders> getOrderByUserId(Integer userId) {
         return hfOrderService.getOrderByUserId(userId);
     }
-
 }

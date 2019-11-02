@@ -6,4 +6,5 @@ import com.hanfu.inner.model.product.center.HfOrders;
 
 public interface ReferralOrderService {
     public List<HfOrders> getOrderByUserId(Integer userId);
+
 }
