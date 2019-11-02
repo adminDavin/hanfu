@@ -72,3 +72,4 @@ hanfu-web-utils/.settings/org.eclipse.jdt.core.prefs
 hanfu-referral-center/target/*
 hanfu-payment-client/bin/*
 hanfu-inner-sdk/bin/*  
+hanfu-user-center/bin/*
