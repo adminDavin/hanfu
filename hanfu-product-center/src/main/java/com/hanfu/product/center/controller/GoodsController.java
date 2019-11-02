@@ -1,4 +1,4 @@
-package com.hanfu.product.center.controller;
+`package com.hanfu.product.center.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
