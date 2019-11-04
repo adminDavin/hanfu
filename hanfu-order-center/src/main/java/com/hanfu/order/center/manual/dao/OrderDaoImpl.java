@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderStatus;
+import com.hanfu.order.center.model.HfOrdersDetail;
 
 
 
@@ -23,6 +24,11 @@ public class OrderDaoImpl implements OrderDao{
 	@Override
 	public List<HfOrderStatus> selectOrderStatus() {
 		List<HfOrderStatus> result = sqlSessionTemplate.selectList("selectOrderStatus");
+		return result;
+	}
+	@Override
+	public List<HfOrdersDetail> selectOrderDetail(Integer id) {
+		List<HfOrdersDetail> result = sqlSessionTemplate.selectList("selectOrderDetail",id);
 		return result;
 	}
 
