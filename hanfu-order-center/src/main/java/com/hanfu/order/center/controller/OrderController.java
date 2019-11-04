@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.dao.HfOrderStatusMapper;
@@ -20,9 +19,7 @@ import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.model.HfOrderStatus;
-import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
-import com.hanfu.order.center.model.HfOrdersExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -101,5 +98,14 @@ public class OrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List list = hfOrdersService.updateOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	@ApiOperation(value = "获取订单详情", notes = "获取订单详情")
+	@RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> queryOrderList(@RequestParam Integer id)
+			throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderDetail(id)));
 	}
 }

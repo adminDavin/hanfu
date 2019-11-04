@@ -42,7 +42,6 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
-		Integer ordersId = UUID.randomUUID().hashCode();
 		String logisticsOrdersId = UUID.randomUUID().toString();
 		HfOrders hfOrders = new HfOrders();
 		hfOrders.setUserId(hfOrder.getUserId());
@@ -52,7 +51,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setAmount(amount);
 		hfOrders.setHfMemo(hfOrder.getHfMemo());
 		hfOrders.setHfRemark(hfOrder.getHfRemark());
-		hfOrders.setId(request.getId());
+		hfOrders.setId(hfOrder.getId());
 		hfOrders.setPayMethodName(hfOrder.getPayMethodName());
 		hfOrders.setPayMethodType(hfOrder.getPayMethodType());
 		hfOrders.setPayStatus(hfOrder.getPayStatus());
@@ -74,9 +73,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetail.setModifyTime(LocalDateTime.now());
 		hfOrdersDetail.setIsDeleted((short) 0);
-		hfOrdersDetail.setOrdersId(ordersId);
+		hfOrdersDetail.setOrdersId(hfOrder.getId());
 		hfOrdersDetail.setLastModifier("1");
-		hfOrdersDetail.setId(hfOrder.getOrdersid());
+		hfOrdersDetail.setId(hfOrder.getId());
 		hfOrdersDetailMapper.insert(hfOrdersDetail);
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
@@ -87,7 +86,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrderLogistic.setOrderDetailId(request.getId());
 		hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
 		hfOrderLogistic.setUserId(hfOrderLogistics.getUserId());
-		hfOrderLogistic.setOrdersId(hfOrder.getOrdersid());
+		hfOrderLogistic.setOrdersId(hfOrder.getId());
 		hfOrderLogistic.setRespId(request.getRespId());
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
@@ -138,7 +137,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
 		HfOrders hfOrders = new HfOrders();
 		if(hfOrders == null) {
-			throw new OrderIsExistException(String.valueOf(hfOrder.getOrdersid()));
+			throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
 		}
 		if(!StringUtils.isEmpty(hfOrder.getUserId())) {
 			hfOrders.setUserId(hfOrder.getUserId());

@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 @SuppressWarnings("serial")
 public class HfOrdersRequest implements Serializable{
 	@ApiModelProperty(required = true, value = "订单id")
-	private Integer ordersid;
+	private Integer Id;
 	@ApiModelProperty(required = true, value = "用户id")
 	private Integer userId;
 	@ApiModelProperty(required = true, value = "支付状态")
@@ -28,12 +28,11 @@ public class HfOrdersRequest implements Serializable{
 	@ApiModelProperty(required = true, value = "创建时间")
 	private LocalDateTime createTime ;
 	
-
-	public Integer getOrdersid() {
-		return ordersid;
+	public Integer getId() {
+		return Id;
 	}
-	public void setOrdersid(Integer ordersid) {
-		this.ordersid = ordersid;
+	public void setId(Integer id) {
+		Id = id;
 	}
 	public Integer getUserId() {
 		return userId;
