@@ -70,6 +70,7 @@ import com.hanfu.product.center.request.HfGoodsRequest;
 import com.hanfu.product.center.request.HfRespRequest;
 import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.RespInfo;
+import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -84,8 +85,6 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class GoodsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private static final String LOCK = "LOCK";
 	
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
@@ -125,6 +124,9 @@ public class GoodsController {
 
 	@Autowired
 	private WarehouseMapper warehouseMapper;
+	
+	@Autowired
+	private GoodsService goodsService;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -470,6 +472,15 @@ public class GoodsController {
 		example.createCriteria().andGoodsIdEqualTo(goodsId);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsPictrueMapper.selectByExample(example)));
 	}
+	
+	@ApiOperation(value = "获取所有物品图片", notes = "获取所有物品图片")
+	@RequestMapping(value = "/picturesAll", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getGoodsPictureAll()
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsPictrueMapper.selectByExample(example)));
+	}
 
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
 	@PostMapping(value = "/addPicture")
@@ -515,21 +526,8 @@ public class GoodsController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
 	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
-		if (fileDesc == null) {
-			throw new Exception("file not exists");
-		}
-		FileMangeService fileManageService = new FileMangeService();
-		synchronized(LOCK) {
-			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-			ByteArrayInputStream stream = new ByteArrayInputStream(file);
-			BufferedImage readImg = ImageIO.read(stream);
-			stream.reset();
-			stream.close();
-			ImageIO.write(readImg, "png", response.getOutputStream());
-		}
+		goodsService.getFile(fileId, response);
 	}
-	
 	
 //	@ApiOperation(value = "获取物品图片", notes = "获取物品图片")
 //	@RequestMapping(value = "/getFileByGoods", method = RequestMethod.GET)
@@ -588,7 +586,7 @@ public class GoodsController {
 		FileMangeService fileMangeService = new FileMangeService();
 		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 		fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-		hfGoodsMapper.deleteByPrimaryKey(id);
+		hfGoodsPictrueMapper.deleteByPrimaryKey(id);
 	}
 
 }

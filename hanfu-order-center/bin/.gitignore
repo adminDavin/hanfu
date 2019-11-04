@@ -1,2 +1,6 @@
 /target/
-/bin/
+/.gitignore
+/.project
+/.settings/
+/pom.xml
+/src/

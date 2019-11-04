@@ -31,4 +31,5 @@ public class HfProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(referralProductService.getAllProduct()));
     }
+	
 }
