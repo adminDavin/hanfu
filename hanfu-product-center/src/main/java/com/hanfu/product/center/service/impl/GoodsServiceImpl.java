@@ -1,6 +1,11 @@
 package com.hanfu.product.center.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,22 +13,29 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.common.service.FileMangeService;
+import com.hanfu.inner.model.product.center.Aa;
 import com.hanfu.inner.model.product.center.HfGoodsDisplay;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
 
 @Service("GoodsService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
-public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsService {
+public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsService,GoodsService{
+	
+	private static final String LOCK = "LOCK";
 	
 	@Autowired
 	private HfGoodsDao hfGoodsDao;
@@ -36,6 +48,9 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 	
 	@Autowired
 	private FileDescMapper fileDescMapper;
+	
+	@Autowired
+	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
 
 	@Override
     public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods() {
@@ -60,19 +75,35 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
     }
 	
 	@Override
-	public Integer[] findAllPicture() {
-		Integer[] count = new Integer[10];
-		List<FileDesc> fileDesc = fileDescMapper.selectByExample(null);
-		for(int i=0;i<fileDesc.size();i++) {
-			count[i] = fileDesc.get(i).getId();
-		}
-		return count;
+	public List<com.hanfu.inner.model.product.center.HfGoodsPictrue> findAllPicture() {
+		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(null);
+		System.out.println(list.get(0).toString()+"========================================");
+		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
 	}
 	
-//	@Override
-//	public void getPicture() {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public void getPicture(Aa aa) throws Exception {
+		picture(aa.getFileDescId(),aa.getResponse());
+	}
 	
+	@Override
+	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {
+		picture(FileDescId,response);
+	}
+	
+	public void picture(Integer FileDescId,HttpServletResponse response) throws Exception {
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(FileDescId);
+		if (fileDesc == null) {
+			throw new Exception("file not exists");
+		}
+		FileMangeService fileManageService = new FileMangeService();
+		synchronized(LOCK) {
+			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			ByteArrayInputStream stream = new ByteArrayInputStream(file);
+			BufferedImage readImg = ImageIO.read(stream);
+			stream.reset();
+			stream.close();
+			ImageIO.write(readImg, "png", response.getOutputStream());
+		}
+	}
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.inner.sdk.product.center.ProductService;
+import com.cedarsoftware.util.io.JsonObject;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
@@ -39,6 +39,7 @@ import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfPrice;
@@ -61,6 +62,7 @@ import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.product.center.response.handler.GoodsNotExistException;
 import com.hanfu.product.center.response.handler.ProductNotExistException;
+import com.hanfu.product.center.service.ProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -138,15 +140,16 @@ public class ProductController {
 			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
 			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfCategoryExample example = new HfCategoryExample();
-		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-		if (categoryId != null) {
-			example.clear();
-			example.createCriteria().andIdEqualTo(categoryId);
-		}
-		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+			throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfCategoryExample example = new HfCategoryExample();
+//		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+//		if (categoryId != null) {
+//			example.clear();
+//			example.createCriteria().andIdEqualTo(categoryId);
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+		return productService.listCategory(parentCategoryId, categoryId, levelId);
 	}
 
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
@@ -419,5 +422,28 @@ public class ProductController {
 //		hfGoodsMapper.updateByPrimaryKey(record);
 //		return builder.body(ResponseUtils.getResponseBody("product insert success"));
 //	}
+	
+	
+	@ApiOperation(value = "根据商品id查询此商品是否添加过", notes = "根据商品id查询此商品是否添加过")
+	@RequestMapping(value = "/selectProductIdIsExists", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> selectProductIdIsExists(@RequestParam(name = "productId") Integer productId) throws Exception{
+		Integer result = 1;
+		Product product = productMapper.selectByPrimaryKey(productId);
+		if(product==null) {
+			throw new Exception("该商品不存在");
+		}
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsExample example = new HfGoodsExample();
+		example.createCriteria().andProductIdEqualTo(product.getId());
+		List<HfGoods> list = hfGoodsMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			result = 0;
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}else {
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}
+	}
 	
 }
