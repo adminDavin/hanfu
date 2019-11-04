@@ -9,6 +9,7 @@ drop table if exists hf_order_logistics;
 drop table if exists hf_orders;
 
 drop table if exists hf_orders_detail;
+drop table if exists hf_order_status;
 
 
 /*==============================================================*/
@@ -19,7 +20,7 @@ create table hf_order_logistics
    id                   int not null AUTO_INCREMENT comment '序列号',
    orders_id            int comment '订单id',
    order_detail_id      int comment '订单详情id',
-   uuser_id             int comment '用户id',
+   user_id             int comment '用户id',
    user_address_id      int comment '用户地址id',
    googs_id             int comment '物品id',
    logistics_order_name varchar(63) comment '物流名称',
@@ -83,15 +84,14 @@ create table hf_orders_detail
 
 alter table hf_orders_detail comment '订单详情';
 
-alter table hf_order_logistics add constraint FK_Reference_28 foreign key (order_detail_id)
-      references hf_orders_detail (id) on delete restrict on update restrict;
 
-alter table hf_order_logistics add constraint FK_Reference_29 foreign key (user_address_id)
-      references hf_user_address (id) on delete restrict on update restrict;
-
-alter table hf_orders_detail add constraint FK_Reference_26 foreign key (googs_id)
-      references hf_goods (id) on delete restrict on update restrict;
-
-alter table hf_orders_detail add constraint FK_Reference_27 foreign key (orders_id)
-      references hf_orders (id) on delete restrict on update restrict;
-
+CREATE TABLE `hf_order_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '序列号',
+  `hf_name` varchar(100) DEFAULT NULL COMMENT '订单状态名称',
+  `hf_status` int(11) DEFAULT NULL COMMENT '订单状态',
+  `hf_desc` varchar(255) DEFAULT NULL COMMENT '订单状态描述',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `is_deleted` smallint(6) DEFAULT '0' COMMENT '是否失效',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='订单状态';
