@@ -56,6 +56,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                 identity="true" />
         </table>
+        <table schema="user_center" tableName="hf_order_status"
+            domainObjectName="HfOrderStatus">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
         <table schema="user_center" tableName="hf_orders_detail"
             domainObjectName="HfOrdersDetail">
             <property name="useActualColumnNames" value="false" />
