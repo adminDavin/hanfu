@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,6 +49,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api
 @RequestMapping("/user")
+@CrossOrigin
 public class KingWordsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
