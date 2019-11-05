@@ -8,13 +8,11 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
-import com.hanfu.inner.model.product.center.Aa;
 import com.hanfu.inner.model.product.center.HfGoodsDisplay;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
@@ -24,11 +22,8 @@ import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfResp;
-import com.hanfu.product.center.model.Product;
-import com.hanfu.product.center.service.GoodsService;
-import com.hanfu.utils.response.handler.ResponseUtils;
-import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import com.hanfu.product.center.model.HfResp; 
+import com.hanfu.product.center.service.GoodsService; 
 
 
 @Service("GoodsService")
@@ -81,10 +76,6 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
 	}
 	
-	@Override
-	public void getPicture(Aa aa) throws Exception {
-		picture(aa.getFileDescId(),aa.getResponse());
-	}
 	
 	@Override
 	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {

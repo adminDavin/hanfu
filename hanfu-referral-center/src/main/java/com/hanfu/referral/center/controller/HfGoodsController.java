@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.hanfu.inner.model.product.center.Aa;
+ 
 import com.hanfu.referral.center.service.ReferralGoodsService;
 import com.hanfu.referral.center.service.ReferralProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -41,10 +40,5 @@ public class HfGoodsController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(referralGoodsService.findAllPicture()));
     }
-	
-	@RequestMapping(path = "/getPicture",method = RequestMethod.GET)
-	public void getlunbotu(Aa aa) throws Exception{
-        referralGoodsService.getPicture(aa);
-	}
 	
 }
