@@ -78,3 +78,5 @@ hanfu-inner-sdk/.classpath
 hanfu-order-center/.classpath
 hanfu-web-utils/.classpath
 hanfu-user-center/logs/*
+hanfu-chat/.*
+hanfu-chat/target/*

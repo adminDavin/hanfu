@@ -72,8 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
+            <artifactId>slf4j-log4j12</artifactId> 
         </dependency>
         <dependency>
             <groupId>com.hanfu.common</groupId>
