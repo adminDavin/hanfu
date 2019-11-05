@@ -23,4 +23,6 @@ public interface HfGoodsDao {
 	
 	public Integer updateGoods(HfGoods hfGoods);
 	
+	public List<HfGoodsDisplay> selectProductBycategoryIdOrProductName(HfGoodsDisplay hfGoodsDisplay);
+	
 }

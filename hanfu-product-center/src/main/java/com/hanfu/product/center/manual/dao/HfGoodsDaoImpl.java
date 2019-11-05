@@ -60,4 +60,10 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		return row;
 	}
 	
+	@Override
+	public List<HfGoodsDisplay> selectProductBycategoryIdOrProductName(HfGoodsDisplay hfGoodsDisplay) {
+		List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectProductBycategoryIdOrProductName", hfGoodsDisplay);
+		return list;
+	}
+	
 }

@@ -43,6 +43,7 @@ import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
@@ -145,23 +146,15 @@ public class GoodsController {
 			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
-		if (hfGoodsDisplay.getPriceId() != null) {
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
-			hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
-		}
-		HfRespExample example = new HfRespExample();
-		example.createCriteria().andGoogsIdEqualTo(goodsId);
-		List<HfResp> hfResp = hfRespMapper.selectByExample(example);
-		if (!hfResp.isEmpty()) {
-			hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
-			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
-			if(warehouse !=null) {
-				hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplay));
+		return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
 
+	}
+	
+	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
+	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(HfGoodsDisplay goodsDisplay) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay)));
 	}
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
@@ -526,6 +519,7 @@ public class GoodsController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
 	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		goodsService.getFile(fileId, response);
 	}
 	

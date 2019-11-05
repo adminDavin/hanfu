@@ -2,13 +2,18 @@ package com.hanfu.product.center.service.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.dubbo.common.json.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -18,11 +23,15 @@ import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoodsPictrue;
+import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfResp; 
+import com.hanfu.product.center.model.HfResp;
+import com.hanfu.product.center.model.HfRespExample;
+import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.service.GoodsService; 
 
 
@@ -46,7 +55,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 	
 	@Autowired
 	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
-
+	
+	@Autowired
+	private WarehouseMapper warehouseMapper;
+	
 	@Override
     public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods() {
 		List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoodsInfo();
@@ -64,18 +76,83 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 						list.get(i).setQuantity(hfResp.getQuantity());
 					}
 				}
+				HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+				example.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
+				List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example);
+				if(!hfGoodsPictrue.isEmpty()) {
+					list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
+				}
 			}
 		}
         return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
     }
 	
 	@Override
+	public List<HfGoodsDisplay> getGoodsInfoApp(Integer goodsId) {
+//		List<HfGoodsDisplay> list = new ArrayList<HfGoodsDisplay>();
+//		com.hanfu.product.center.manual.model.HfGoodsDisplay display = getGoodsInfoUtil(goodsId);
+//		HfGoodsDisplay record = new HfGoodsDisplay();
+//		record.setId(display.getId());
+//		record.setGoodName(display.getGoodName());
+//		record.setWarehouseName(display.getWarehouseName());
+//		record.setProductCategoryName(display.getProductCategoryName());
+//		record.setGoodsDesc(display.getGoodsDesc());
+//		record.setCategoryId(display.getCategoryId());
+//		record.setSpecValue(display.getSpecValue());
+//		record.setProductSpecId(display.getProductSpecId());
+//		record.setPriceId(display.getPriceId());
+//		record.setRespId(display.getRespId());
+//		record.setProductId(display.getProductId());
+//		record.setUsername(display.getUsername());
+//		record.setCreateTime(display.getCreateTime());
+//		record.setModifyTime(display.getModifyTime());
+//		record.setIsDeleted(display.getIsDeleted());
+//		record.setIsDeleted(display.getIsDeleted());
+//		record.setIsDeleted(display.getIsDeleted());
+//		if(!StringUtils.isEmpty(display.getSellPrice())) {
+//			record.setSellPrice(display.getSellPrice());
+//		}
+//		if(!StringUtils.isEmpty(display.getQuantity())) {
+//			record.setQuantity(display.getQuantity());
+//		}
+//		return JSON.parse(JSONObject.toJSONString(getGoodsInfoUtil(goodsId)), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
+		return JSONArray.parseArray(JSONObject.toJSONString(getGoodsInfoUtil(goodsId)), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
+	}
+	
+	@Override
+	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfo(Integer goodsId) {
+		return getGoodsInfoUtil(goodsId);
+	}
+	
+	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId){
+		com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
+		if (hfGoodsDisplay.getPriceId() != null) {
+			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
+			hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
+		}
+		HfRespExample example = new HfRespExample();
+		example.createCriteria().andGoogsIdEqualTo(goodsId);
+		List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+		if (!hfResp.isEmpty()) {
+			hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
+			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
+			if(warehouse !=null) {
+				hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
+			}
+		}
+		return hfGoodsDisplay;
+	}
+	
+	@Override
 	public List<com.hanfu.inner.model.product.center.HfGoodsPictrue> findAllPicture() {
 		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(null);
-		System.out.println(list.get(0).toString()+"========================================");
 		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
 	}
 	
+	@Override
+	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
+		picture(FileDescId, response);
+	}
 	
 	@Override
 	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {
@@ -94,7 +171,9 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 			BufferedImage readImg = ImageIO.read(stream);
 			stream.reset();
 			stream.close();
-			ImageIO.write(readImg, "png", response.getOutputStream());
+			OutputStream outputStream = response.getOutputStream();
+			ImageIO.write(readImg, "png", outputStream);
+			outputStream.close();
 		}
 	}
 }

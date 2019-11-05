@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.inner.model.product.center.HfCategory;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.service.ProductService;
@@ -44,13 +46,24 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
     @Override
     public ResponseEntity<JSONObject> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
     	BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+    	return builder.body(ResponseUtils.getResponseBody(listAllCategory(parentCategoryId, categoryId, levelId)));
+    }
+    
+    @Override
+    public List<com.hanfu.inner.model.product.center.HfCategory> listCategoryApp(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
+    	List<Categories> list = listAllCategory(parentCategoryId, categoryId, levelId);
+    	return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfCategory.class);
+    }
+    
+    public List<Categories> listAllCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
+    	
     	HfCategoryExample example = new HfCategoryExample();
 		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
 		if (categoryId != null) {
 			example.clear();
 			example.createCriteria().andIdEqualTo(categoryId);
 		}
-		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+		return manualDao.selectCategories();
     }
 
 }
