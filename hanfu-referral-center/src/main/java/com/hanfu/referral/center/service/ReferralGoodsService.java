@@ -13,5 +13,7 @@ public interface ReferralGoodsService {
 	
 	public List<HfGoodsPictrue> findAllPicture();
  
-	
+	public void getPicture(Integer fileId, HttpServletResponse response) throws Exception;
+
+	public List<HfGoodsDisplay> getGoodsInfo(Integer goodsId);
 }

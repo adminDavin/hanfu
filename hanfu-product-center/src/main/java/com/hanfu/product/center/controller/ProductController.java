@@ -160,6 +160,9 @@ public class ProductController {
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());
+		category.setCreateTime(LocalDateTime.now());
+		category.setModifyTime(LocalDateTime.now());
+		category.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
 
@@ -167,7 +170,6 @@ public class ProductController {
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listProductBycategoryId(ProductDispaly productDispaly) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ProductInstanceExample example = new ProductInstanceExample();
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductBycategoryId(productDispaly)));
 	}
 

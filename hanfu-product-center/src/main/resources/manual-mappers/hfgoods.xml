@@ -187,6 +187,32 @@
 		        h.id=#{goodsId}
 	</select>
 	
+	<select id="selectProductBycategoryIdOrProductName" resultMap="EntityHfGoodDispaly">
+  		SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h.create_time,h.modify_time,
+				h.is_deleted
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+    	    <if test="goodName != null and goodName != ''">
+    	    	WHERE p.hf_name like '%${goodName}%'
+    	    </if>
+    	    <if test="categoryId != null and categoryId != ''">
+    	    	AND h.id = #{categoryId} 
+    	    </if>
+  </select>
+	
 	<update id="updateGoods">
 			UPDATE 
 				hf_goods
