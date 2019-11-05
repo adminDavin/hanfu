@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.HfUserAddresseMapper;
+import com.hanfu.user.center.manual.dao.AddressDao;
+import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.HfUserAddresse;
 import com.hanfu.user.center.model.HfUserAddresseExample;
 import com.hanfu.user.center.request.UserAddressRequest;
@@ -33,7 +35,8 @@ public class HfUserAddressManager {
 
 	@Autowired
 	private HfUserAddresseMapper hfUserAddresseMapper;
-
+    @Autowired
+    private AddressDao addressDao;
 	@RequestMapping(value = "/queryAddress", method = RequestMethod.GET)
 	@ApiOperation(value = "获取用戶地址列表", notes = "获取用戶地址列表")
 	@ApiImplicitParams({
@@ -51,6 +54,8 @@ public class HfUserAddressManager {
 	@ApiOperation(value = "添加用戶地址", notes = "添加用戶地址")
 	public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUser hfUser = new HfUser();
+		int i  = 0;
 		HfUserAddresse hfUserAddress = new HfUserAddresse();
 		hfUserAddress.setUserId(request.getUserId());
 		hfUserAddress.setContact(request.getContact());
@@ -65,6 +70,10 @@ public class HfUserAddressManager {
 		hfUserAddress.setIsDeleted((short) 0);
 		hfUserAddress.setLastModifier("1");
 		hfUserAddress.setPhoneNumber(request.getPhoneNumber());
+		if(StringUtils.isEmpty(hfUser.getAddress())) {
+			hfUserAddress.setIsFaultAddress(1);
+		}
+		i = addressDao.updateAddress(request.getId());
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.insert(hfUserAddress)));
 	}
 	@RequestMapping(value = "/deleteAddress", method = RequestMethod.GET)
@@ -115,5 +124,14 @@ public class HfUserAddressManager {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.updateByPrimaryKeySelective(hfUserAddresse)));
 	}
-
+	@RequestMapping(value = "/addressDetail", method = RequestMethod.GET)
+	@ApiOperation(value = "查询地址详情", notes = "查询地址详情")
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "地址id", required = true, type = "Integer")})
+	public ResponseEntity<JSONObject> addressDetail(@RequestParam(name = "id") Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUserAddresseExample example = new HfUserAddresseExample(); 
+		example.createCriteria().andIdEqualTo(id);
+		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByPrimaryKey(id)));
+	}
 }
