@@ -149,10 +149,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
 	}
 	
-	@Override
-	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
-		picture(FileDescId, response);
-	}
+//	@Override
+//	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
+//		picture(FileDescId, response);
+//	}
 	
 	@Override
 	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {

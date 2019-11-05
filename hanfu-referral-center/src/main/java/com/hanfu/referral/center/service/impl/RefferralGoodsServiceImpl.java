@@ -29,10 +29,10 @@ public class RefferralGoodsServiceImpl implements ReferralGoodsService {
 		return goodsService.findAllPicture();
 	}
 
-	@Override
-	public void getPicture(Integer fileId, HttpServletResponse response) throws Exception {
-		goodsService.getPicture(fileId, response);
-	}
+//	@Override
+//	public void getPicture(Integer fileId, HttpServletResponse response) throws Exception {
+//		goodsService.getPicture(fileId, response);
+//	}
 
 	@Override
 	public List<HfGoodsDisplay> getGoodsInfo(Integer goodsId) {

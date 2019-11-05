@@ -47,9 +47,9 @@ public class HfGoodsController {
         return builder.body(ResponseUtils.getResponseBody(referralGoodsService.findAllPicture()));
     }
 	
-	@RequestMapping(path = "/getPicture",method = RequestMethod.GET)
-	public void getlunbotu(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception{
-        referralGoodsService.getPicture(fileId,response);
-	}
+//	@RequestMapping(path = "/getPicture",method = RequestMethod.GET)
+//	public void getlunbotu(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception{
+//        referralGoodsService.getPicture(fileId,response);
+//	}
 	
 }
