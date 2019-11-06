@@ -576,11 +576,13 @@ public class GoodsController {
 	public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
-		FileMangeService fileMangeService = new FileMangeService();
-		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-		hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		if(hfGoodsPictrue!=null) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
+			FileMangeService fileMangeService = new FileMangeService();
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		}
 	}
 
 }

@@ -170,7 +170,6 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 			ByteArrayInputStream stream = new ByteArrayInputStream(file);
 			BufferedImage readImg = ImageIO.read(stream);
 			stream.reset();
-			stream.close();
 			OutputStream outputStream = response.getOutputStream();
 			ImageIO.write(readImg, "png", outputStream);
 			outputStream.close();
