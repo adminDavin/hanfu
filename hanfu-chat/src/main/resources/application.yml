@@ -1,5 +1,5 @@
 server:
-  port: 9100
+  port: 9101
 
 # http://47.105.72.216:1234/#/service?filter=%2a&pattern=service
 

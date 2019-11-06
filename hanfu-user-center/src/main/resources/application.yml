@@ -8,7 +8,7 @@ spring:  datasource:    name: dataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select now()
-      idle-timeout: 3000000
+      idle-timeout: 300
       auto-commit: true
   redis:
     database: 0

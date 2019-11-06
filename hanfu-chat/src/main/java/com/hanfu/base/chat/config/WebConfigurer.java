@@ -18,12 +18,12 @@ import com.hanfu.order.center.intercepter.AuthorityInterceptor;
 @Configuration
 public class WebConfigurer implements WebMvcConfigurer {
 
-	@Autowired
-	private AuthorityInterceptor authorityInterceptor;
+//	@Autowired
+//	private AuthorityInterceptor authorityInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(authorityInterceptor);
+//		registry.addInterceptor(authorityInterceptor);
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}
 
