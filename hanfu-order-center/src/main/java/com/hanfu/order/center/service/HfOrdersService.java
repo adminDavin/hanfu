@@ -14,7 +14,4 @@ public interface HfOrdersService {
 
 	List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics) throws Exception;
 
-
-
-
 }

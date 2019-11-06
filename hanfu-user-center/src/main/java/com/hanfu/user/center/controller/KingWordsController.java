@@ -1,10 +1,7 @@
 package com.hanfu.user.center.controller;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -25,7 +22,6 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -156,6 +152,9 @@ public class KingWordsController {
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());
 		}
+		if(!StringUtils.isEmpty(request.getUsername())) {
+			user.setUsername(request.getUsername());
+		}
 //		if(!StringUtils.isEmpty(request.getBirthDay())) {
 //			user.setBirthDay(ldt);
 //		}
@@ -176,46 +175,31 @@ public class KingWordsController {
 		}
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		List<HfUser> pictures = Lists.newArrayList();
-		try {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
+	}
+	
+	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@ApiOperation(value = "上传头像", notes = "上传头像")
+	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
+			Integer userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
-			MultipartFile fileInfo = request.getFileInfo();
-            arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
 			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(request.getUserId());
+			fileDesc.setUserId(userId);
 			fileDesc.setCreateTime(LocalDateTime.now());
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
 			HfUser hfUser = new HfUser();
 			hfUser.setFileId(fileDesc.getId());
-			hfUserMapper.insert(hfUser);
-			pictures.add(hfUser);	
-		} catch (IOException e) {
-			logger.error("add picture failed", e);
-		}
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
-	}
-	
-	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam("file") MultipartFile file,
-			String userId) throws Exception{
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		FileMangeService fileManageService = new FileMangeService();
-		FileInputStream fis = null;
-		try {
-			fis = (FileInputStream) file.getInputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String[] fileid = fileManageService.uploadFile(fis, userId);
-		return builder.body(ResponseUtils.getResponseBody(fileid));
+			hfUserMapper.insert(hfUser);	
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(hfUser)));
 	}
 	@RequestMapping(path = "/download_avatar",  method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> downloadAvatar(String group_name,

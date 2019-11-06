@@ -28,6 +28,7 @@
     <result column="order_type" jdbcType="VARCHAR" property="orderType" />
     <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
 </resultMap>
 <select id="selectOrderList" resultMap="BaseResultMap">
      SELECT *
