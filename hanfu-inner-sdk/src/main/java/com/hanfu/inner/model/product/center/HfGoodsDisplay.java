@@ -23,6 +23,7 @@ public class HfGoodsDisplay implements Serializable{
 	private Integer priceId;
 	private Integer respId;
 	private Integer productId;
+	private Integer stoneId;
 	private String username;
 	private Integer hfGoodsPictureId;
 	private LocalDateTime createTime;

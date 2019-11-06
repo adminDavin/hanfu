@@ -39,6 +39,8 @@ public class HfGoodsDisplay extends CommonRequest{
 	private Integer hfGoodsPictureId;
 	@ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
 	private String username;
+	@ApiModelProperty(required = true, value = "店铺id")
+	private Integer stoneId;
 	private LocalDateTime createTime;
 	private LocalDateTime modifyTime;
 	private short isDeleted;
@@ -149,6 +151,12 @@ public class HfGoodsDisplay extends CommonRequest{
 	}
 	public void setHfGoodsPictureId(Integer hfGoodsPictureId) {
 		this.hfGoodsPictureId = hfGoodsPictureId;
+	}
+	public Integer getStoneId() {
+		return stoneId;
+	}
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
 	}
 	
 }

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,6 +82,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/goods")
 @Api
@@ -576,11 +578,13 @@ public class GoodsController {
 	public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
-		FileMangeService fileMangeService = new FileMangeService();
-		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-		hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		if(hfGoodsPictrue!=null) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
+			FileMangeService fileMangeService = new FileMangeService();
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		}
 	}
 
 }
