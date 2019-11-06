@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.inner.model.product.center.HfCategory;
+import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.model.Categories;
@@ -30,6 +31,9 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
 	
 	@Autowired
     private ProductMapper productMapper;
+	
+	@Autowired
+	private HfCategoryMapper hfCategoryMapper;
 
 	@Override
 	public void getProductByStone(Integer stoneId) {
@@ -51,11 +55,11 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
     
     @Override
     public List<com.hanfu.inner.model.product.center.HfCategory> listCategoryApp(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
-    	List<Categories> list = listAllCategory(parentCategoryId, categoryId, levelId);
+    	List<com.hanfu.product.center.model.HfCategory> list = listAllCategory(parentCategoryId, categoryId, levelId);
     	return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfCategory.class);
     }
     
-    public List<Categories> listAllCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
+    public List<com.hanfu.product.center.model.HfCategory> listAllCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
     	
     	HfCategoryExample example = new HfCategoryExample();
 		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
@@ -63,7 +67,8 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
 			example.clear();
 			example.createCriteria().andIdEqualTo(categoryId);
 		}
-		return manualDao.selectCategories();
+//		return manualDao.selectCategories();
+		return hfCategoryMapper.selectByExample(example);
     }
 
 }

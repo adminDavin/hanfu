@@ -83,6 +83,7 @@
   </select>
   
   <delete id="deleteSelectProduct">
+ 	 <if test="productId != null and productId != ''">
   		DELETE FROM
   			product
   		WHERE
@@ -92,6 +93,7 @@
   			item="productId">
   				#{productId}
   			</foreach>
+  	  </if>
   </delete>
   
   <update id="updateProduct">

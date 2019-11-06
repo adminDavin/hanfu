@@ -20,12 +20,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.inner.model.product.center.HfGoodsDisplay;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfPrice;
@@ -40,6 +42,9 @@ import com.hanfu.product.center.service.GoodsService;
 public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsService,GoodsService{
 	
 	private static final String LOCK = "LOCK";
+	
+	@Autowired
+	private HfGoodsMapper hfGoodsMapper;
 	
 	@Autowired
 	private HfGoodsDao hfGoodsDao;
@@ -126,6 +131,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 	
 	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId){
 		com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
+		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+		if(hfGoods!=null) {
+			hfGoodsDisplay.setStoneId(hfGoods.getStoneId());
+		}
 		if (hfGoodsDisplay.getPriceId() != null) {
 			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
 			hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());

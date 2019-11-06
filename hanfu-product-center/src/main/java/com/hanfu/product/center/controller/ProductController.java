@@ -141,13 +141,13 @@ public class ProductController {
 			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
 			throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfCategoryExample example = new HfCategoryExample();
-//		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-//		if (categoryId != null) {
-//			example.clear();
-//			example.createCriteria().andIdEqualTo(categoryId);
-//		}
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategoryExample example = new HfCategoryExample();
+		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+		if (categoryId != null) {
+			example.clear();
+			example.createCriteria().andIdEqualTo(categoryId);
+		}
 //		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
 		return productService.listCategory(parentCategoryId, categoryId, levelId);
 	}
