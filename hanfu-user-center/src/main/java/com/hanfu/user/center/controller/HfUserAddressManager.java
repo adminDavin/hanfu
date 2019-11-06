@@ -134,4 +134,14 @@ public class HfUserAddressManager {
 		example.createCriteria().andIdEqualTo(id);
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByPrimaryKey(id)));
 	}
+	@RequestMapping(value = "/searchAddress", method = RequestMethod.GET)
+	@ApiOperation(value = "搜索地址", notes = "搜索地址")
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "phoneNumber", value = "手机号", required = true, type = "String")})
+	public ResponseEntity<JSONObject> search(@RequestParam String phoneNumber) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUserAddresseExample example = new HfUserAddresseExample(); 
+		example.createCriteria().andPhoneNumberEqualTo(phoneNumber);
+		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(example)));
+	}
 }
