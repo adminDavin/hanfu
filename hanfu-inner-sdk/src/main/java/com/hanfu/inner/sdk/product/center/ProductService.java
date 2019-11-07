@@ -12,6 +12,6 @@ public interface ProductService {
 
     public List<Product> getProduct();
 
-	public List<HfCategory> listCategoryApp(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception;
+	public List<HfCategory> listCategoryApp(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception;
 
 }

@@ -37,12 +37,14 @@ public class HfProductController {
 	
 	@RequestMapping(path = "/listCategory",method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listCategory(
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size,
 			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
 			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(referralProductService.listCategory(parentCategoryId, categoryId, levelId)));
+        return builder.body(ResponseUtils.getResponseBody(referralProductService.listCategory(parentCategoryId, categoryId, levelId,page,size)));
 
 	}
 	
