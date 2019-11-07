@@ -156,7 +156,33 @@ public class GoodsController {
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(HfGoodsDisplay goodsDisplay) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay)));
+		List<HfGoodsDisplay> list = hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody(null));
+		}
+		for(int i=0;i<list.size();i++) {
+			if (list.get(i).getPriceId() != null) {
+				HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
+				list.get(i).setSellPrice(hfPrice.getSellPrice());
+			}
+			HfRespExample example = new HfRespExample();
+			example.createCriteria().andGoogsIdEqualTo(list.get(i).getId());
+			List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+			if (!hfResp.isEmpty()) {
+				list.get(i).setQuantity(hfResp.get(0).getQuantity());
+				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
+				if(warehouse !=null) {
+					list.get(i).setWarehouseName(warehouse.getHfName());
+				}
+			}
+			HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
+			example1.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
+			List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example1);
+			if(!hfGoodsPictrue.isEmpty()) {
+				list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")

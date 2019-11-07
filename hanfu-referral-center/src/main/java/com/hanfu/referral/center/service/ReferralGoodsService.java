@@ -9,7 +9,7 @@ import com.hanfu.inner.model.product.center.HfGoodsPictrue;
 import com.hanfu.inner.model.product.center.Product;
 
 public interface ReferralGoodsService {
-	public List<HfGoodsDisplay> getAllGoods();
+	public List<HfGoodsDisplay> getAllGoods(Integer page,Integer size);
 	
 	public List<HfGoodsPictrue> findAllPicture();
  

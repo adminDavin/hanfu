@@ -30,9 +30,11 @@ public class HfGoodsController {
 	private ReferralGoodsService referralGoodsService;
 	
 	@RequestMapping(path = "/findAllGoods",method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> findAllGoods() throws JSONException {
+	public ResponseEntity<Map<String, Object>> findAllGoods(
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(referralGoodsService.getAllGoods()));
+        return builder.body(ResponseUtils.getResponseBody(referralGoodsService.getAllGoods(page,size)));
     }
 	
 	@RequestMapping(path = "/findGoodsById",method = RequestMethod.GET)

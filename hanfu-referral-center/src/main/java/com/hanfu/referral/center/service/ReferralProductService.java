@@ -11,7 +11,7 @@ public interface ReferralProductService {
 	
     public List<Product> getAllProduct();
 
-	public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception;
+	public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception;
 
 	
 }

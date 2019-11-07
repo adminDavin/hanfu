@@ -20,8 +20,8 @@ public class RefferralGoodsServiceImpl implements ReferralGoodsService {
 	private GoodsService goodsService;
 
 	@Override
-	public List<HfGoodsDisplay> getAllGoods() {
-		return goodsService.findAllGoods();
+	public List<HfGoodsDisplay> getAllGoods(Integer page,Integer size) {
+		return goodsService.findAllGoods(page,size);
 	}
 
 	@Override
