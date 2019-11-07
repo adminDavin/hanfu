@@ -23,7 +23,9 @@ public class HfGoodsDisplay implements Serializable{
 	private Integer priceId;
 	private Integer respId;
 	private Integer productId;
+	private Integer stoneId;
 	private String username;
+	private Integer hfGoodsPictureId;
 	private LocalDateTime createTime;
 	private LocalDateTime modifyTime;
 	private short isDeleted;
@@ -128,6 +130,12 @@ public class HfGoodsDisplay implements Serializable{
 	}
 	public void setWarehouseName(String warehouseName) {
 		this.warehouseName = warehouseName;
+	}
+	public Integer getHfGoodsPictureId() {
+		return hfGoodsPictureId;
+	}
+	public void setHfGoodsPictureId(Integer hfGoodsPictureId) {
+		this.hfGoodsPictureId = hfGoodsPictureId;
 	}
 	
 }

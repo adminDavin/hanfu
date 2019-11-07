@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cedarsoftware.util.io.JsonObject;
+import com.github.pagehelper.PageHelper;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
@@ -137,19 +138,21 @@ public class ProductController {
 			@ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer") })
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listCategory(
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size,
 			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
 			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
 			throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfCategoryExample example = new HfCategoryExample();
-//		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-//		if (categoryId != null) {
-//			example.clear();
-//			example.createCriteria().andIdEqualTo(categoryId);
-//		}
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategoryExample example = new HfCategoryExample();
+		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+		if (categoryId != null) {
+			example.clear();
+			example.createCriteria().andIdEqualTo(categoryId);
+		}
 //		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
-		return productService.listCategory(parentCategoryId, categoryId, levelId);
+		return productService.listCategory(parentCategoryId, categoryId, levelId ,page ,size);
 	}
 
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
@@ -160,6 +163,9 @@ public class ProductController {
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());
+		category.setCreateTime(LocalDateTime.now());
+		category.setModifyTime(LocalDateTime.now());
+		category.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
 
@@ -167,7 +173,6 @@ public class ProductController {
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listProductBycategoryId(ProductDispaly productDispaly) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ProductInstanceExample example = new ProductInstanceExample();
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductBycategoryId(productDispaly)));
 	}
 
@@ -189,11 +194,19 @@ public class ProductController {
 	@RequestMapping(value = "/listProductAndCategoryName", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> listProductAndCategoryName(@RequestParam(name = "bossId") Integer bossId)
+	public ResponseEntity<JSONObject> listProductAndCategoryName(@RequestParam(name = "bossId") Integer bossId,
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductExample example = new ProductExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
+		if(!StringUtils.isEmpty(page)) {
+			if(!StringUtils.isEmpty(size)) {
+				PageHelper.startPage(page, size);
+			}
+		}
+		
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(bossId)));
 	}
 

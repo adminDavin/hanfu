@@ -8,11 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.hanfu.inner.model.product.center.HfCategory;
+import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.model.HfCategoryExample;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.service.ProductService;
@@ -28,6 +33,9 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
 	
 	@Autowired
     private ProductMapper productMapper;
+	
+	@Autowired
+	private HfCategoryMapper hfCategoryMapper;
 
 	@Override
 	public void getProductByStone(Integer stoneId) {
@@ -42,15 +50,36 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
     }
 
     @Override
-    public ResponseEntity<JSONObject> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId) throws Exception {
+    public ResponseEntity<JSONObject> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId ,Integer page ,Integer size) throws Exception {
     	BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+    	return builder.body(ResponseUtils.getResponseBody(listAllCategory(parentCategoryId, categoryId, levelId ,page ,size)));
+    }
+    
+    @Override
+    public List<com.hanfu.inner.model.product.center.HfCategory> listCategoryApp(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception {
+    	List<com.hanfu.product.center.model.HfCategory> list = listAllCategory(parentCategoryId, categoryId, levelId,page ,size);
+    	return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfCategory.class);
+    }
+    
+    public List<com.hanfu.product.center.model.HfCategory> listAllCategory(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception {
+    	
     	HfCategoryExample example = new HfCategoryExample();
 		example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
 		if (categoryId != null) {
 			example.clear();
 			example.createCriteria().andIdEqualTo(categoryId);
 		}
-		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+		if(levelId != null) {
+			example.clear();
+			example.createCriteria().andLevelIdEqualTo(levelId);
+		}
+//		return manualDao.selectCategories();
+		if(!StringUtils.isEmpty(page)) {
+			if(!StringUtils.isEmpty(size)) {
+				PageHelper.startPage(page, size);
+			}
+		}
+		return hfCategoryMapper.selectByExample(example);
     }
 
 }

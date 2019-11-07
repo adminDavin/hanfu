@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,7 @@ import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
@@ -80,6 +82,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/goods")
 @Api
@@ -145,23 +148,41 @@ public class GoodsController {
 			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
-		if (hfGoodsDisplay.getPriceId() != null) {
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
-			hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
+		return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
+
+	}
+	
+	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
+	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(HfGoodsDisplay goodsDisplay) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfGoodsDisplay> list = hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody(null));
 		}
-		HfRespExample example = new HfRespExample();
-		example.createCriteria().andGoogsIdEqualTo(goodsId);
-		List<HfResp> hfResp = hfRespMapper.selectByExample(example);
-		if (!hfResp.isEmpty()) {
-			hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
-			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
-			if(warehouse !=null) {
-				hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
+		for(int i=0;i<list.size();i++) {
+			if (list.get(i).getPriceId() != null) {
+				HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
+				list.get(i).setSellPrice(hfPrice.getSellPrice());
+			}
+			HfRespExample example = new HfRespExample();
+			example.createCriteria().andGoogsIdEqualTo(list.get(i).getId());
+			List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+			if (!hfResp.isEmpty()) {
+				list.get(i).setQuantity(hfResp.get(0).getQuantity());
+				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
+				if(warehouse !=null) {
+					list.get(i).setWarehouseName(warehouse.getHfName());
+				}
+			}
+			HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
+			example1.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
+			List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example1);
+			if(!hfGoodsPictrue.isEmpty()) {
+				list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
 			}
 		}
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplay));
-
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
@@ -526,6 +547,7 @@ public class GoodsController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
 	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		goodsService.getFile(fileId, response);
 	}
 	
@@ -582,11 +604,13 @@ public class GoodsController {
 	public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
-		FileMangeService fileMangeService = new FileMangeService();
-		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-		hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		if(hfGoodsPictrue!=null) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
+			FileMangeService fileMangeService = new FileMangeService();
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		}
 	}
 
 }

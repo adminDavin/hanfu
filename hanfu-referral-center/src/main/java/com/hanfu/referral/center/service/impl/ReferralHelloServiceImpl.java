@@ -1,5 +1,7 @@
 package com.hanfu.referral.center.service.impl;
 
+import java.time.LocalDateTime;
+
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,20 @@ public class ReferralHelloServiceImpl implements ReferralHelloService {
     
     public void hello() {
         helloTestService.test();
+    }
+    
+    @Override
+    public String getYear() {
+    	Integer year = LocalDateTime.now().getYear();
+    	if(year<1900){
+			return "未知";
+		}
+		Integer start=1900;
+		String [] years=new String[]{
+				"鼠","牛","虎","兔",
+				"龙","蛇","马","羊",
+				"猴","鸡","狗","猪"
+				};
+		return years[(year-start)%years.length];
     }
 }
