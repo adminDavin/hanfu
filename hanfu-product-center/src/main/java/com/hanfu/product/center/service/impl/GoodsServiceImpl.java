@@ -27,6 +27,7 @@ import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
+//import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsPictrue;
@@ -190,4 +191,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 			outputStream.close();
 		}
 	}
+	
+//	@Override
+//	public Integer insertAwardInfo(AwardInfo awardInfo) {
+//		Integer row = hfGoodsDao.insertAwardInfo(awardInfo);
+//		return row;
+//	}
 }
