@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.hanfu.order.activity.center.intercepter.AuthorityInterceptor;
+import com.hanfu.activity.center.intercepter.AuthorityInterceptor;
 
 @Configuration
 public class WebConfigurer implements WebMvcConfigurer {

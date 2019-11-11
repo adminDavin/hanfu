@@ -1,4 +1,4 @@
-package com.hanfu.order.activity.center.intercepter;
+package com.hanfu.activity.center.intercepter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
