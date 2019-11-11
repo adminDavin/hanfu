@@ -1,4 +1,4 @@
-package com.hanfu.order.activity.center.request;
+package com.hanfu.activity.center.request;
 
 import java.io.Serializable;
 
