@@ -111,7 +111,7 @@ public class ActivityController {
 		RuleValueDescExample example = new RuleValueDescExample();
 		example.createCriteria().andActivityIdEqualTo(activItyId);
 		ruleValueDescMapper.selectByExample(example);
-		return builder.body(ResponseUtils.getResponseBody());
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
 	@ApiOperation(value = "此活动开始评委投票", notes = "此活动开始评委投票")
