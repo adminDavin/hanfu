@@ -45,19 +45,19 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.selectByExample(null)));
 	}
 	
-	@ApiOperation(value = "增加策略规则关系", notes = "公司每次举行活动的策略规则关系")
-	@RequestMapping(value = "/addStrategyRuleRelate", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addStrategyRuleRelate(StrategyRuleRelateRequest request) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		StrategyRuleRelate strategyRuleRelate = new StrategyRuleRelate();
-		strategyRuleRelate.setStrategyId(request.getStrategyId());
-		strategyRuleRelate.setStrategyRuleId(request.getStrategyRuleId());
-		strategyRuleRelate.setIsUsed(request.isUsed());
-		strategyRuleRelate.setCreateTime(LocalDateTime.now());
-		strategyRuleRelate.setModifyTime(LocalDateTime.now());
-		strategyRuleRelate.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.insert(strategyRuleRelate)));
-	}
+//	@ApiOperation(value = "增加策略规则关系", notes = "公司每次举行活动的策略规则关系")
+//	@RequestMapping(value = "/addStrategyRuleRelate", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> addStrategyRuleRelate(StrategyRuleRelateRequest request) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		StrategyRuleRelate strategyRuleRelate = new StrategyRuleRelate();
+//		strategyRuleRelate.setStrategyId(request.getStrategyId());
+//		strategyRuleRelate.setStrategyRuleId(request.getStrategyRuleId());
+//		strategyRuleRelate.setIsUsed(request.isUsed());
+//		strategyRuleRelate.setCreateTime(LocalDateTime.now());
+//		strategyRuleRelate.setModifyTime(LocalDateTime.now());
+//		strategyRuleRelate.setIsDeleted((short) 0);
+//		return builder.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.insert(strategyRuleRelate)));
+//	}
 
 	@ApiOperation(value = "删除策略规则关系", notes = "公司每次举行策略规则关系的删除")
 	@RequestMapping(value = "/deleteStrategyRuleRelate", method = RequestMethod.POST)
@@ -107,7 +107,7 @@ public class StrategyController {
 		strategyRule.setRuleDesc(request.getRuleDesc());
 		strategyRule.setRuleStatus(request.getRuleStatus());
 		strategyRule.setRuleType(request.getRuleType());
-		strategyRule.setRuelValueType(request.getRuelValueType());
+		strategyRule.setRuelValueType(request.getRuleValueType());
 		strategyRule.setCreateTime(LocalDateTime.now());
 		strategyRule.setModifyTime(LocalDateTime.now());
 		strategyRule.setIsDeleted((short) 0);
@@ -143,8 +143,8 @@ public class StrategyController {
 		if (!StringUtils.isEmpty(request.getRuleType())) {
 			strategyRule.setRuleType(request.getRuleType());
 		}
-		if (!StringUtils.isEmpty(request.getRuelValueType())) {
-			strategyRule.setRuelValueType(request.getRuelValueType());
+		if (!StringUtils.isEmpty(request.getRuleValueType())) {
+			strategyRule.setRuelValueType(request.getRuleValueType());
 		}
 		strategyRule.setModifyTime(LocalDateTime.now());
 		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.updateByPrimaryKey(strategyRule)));
