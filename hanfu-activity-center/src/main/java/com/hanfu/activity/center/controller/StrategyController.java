@@ -105,7 +105,7 @@ public class StrategyController {
 		StrategyRule strategyRule = new StrategyRule();
 		strategyRule.setRuleName(request.getRuleName());
 		strategyRule.setRuleDesc(request.getRuleDesc());
-		strategyRule.setRuleStatus(request.getRuleStatus());
+//		strategyRule.setRuleStatus(request.getRuleStatus());
 		strategyRule.setRuleType(request.getRuleType());
 		strategyRule.setRuelValueType(request.getRuelValueType());
 		strategyRule.setCreateTime(LocalDateTime.now());
@@ -122,31 +122,31 @@ public class StrategyController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.deleteByPrimaryKey(strategyRuleId)));
 	}
-
-	@ApiOperation(value = "修改策略规则", notes = "公司每次举行策略规则的修改")
-	@RequestMapping(value = "/updateStrategyRule", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateStrategyRule(StrategyRuleRequest request) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		StrategyRule strategyRule = strategyRuleMapper.selectByPrimaryKey(request.getId());
-		if (strategyRule == null) {
-			throw new Exception("此策略规则不存在");
-		}
-		if (!StringUtils.isEmpty(request.getRuleName())) {
-			strategyRule.setRuleName(request.getRuleName());
-		}
-		if (!StringUtils.isEmpty(request.getRuleDesc())) {
-			strategyRule.setRuleDesc(request.getRuleDesc());
-		}
-		if (!StringUtils.isEmpty(request.getRuleStatus())) {
-			strategyRule.setRuleStatus(request.getRuleStatus());
-		}
-		if (!StringUtils.isEmpty(request.getRuleType())) {
-			strategyRule.setRuleType(request.getRuleType());
-		}
-		if (!StringUtils.isEmpty(request.getRuelValueType())) {
-			strategyRule.setRuelValueType(request.getRuelValueType());
-		}
-		strategyRule.setModifyTime(LocalDateTime.now());
-		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.updateByPrimaryKey(strategyRule)));
-	}
+//
+//	@ApiOperation(value = "修改策略规则", notes = "公司每次举行策略规则的修改")
+//	@RequestMapping(value = "/updateStrategyRule", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> updateStrategyRule(StrategyRuleRequest request) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		StrategyRule strategyRule = strategyRuleMapper.selectByPrimaryKey(request.getId());
+//		if (strategyRule == null) {
+//			throw new Exception("此策略规则不存在");
+//		}
+//		if (!StringUtils.isEmpty(request.getRuleName())) {
+//			strategyRule.setRuleName(request.getRuleName());
+//		}
+//		if (!StringUtils.isEmpty(request.getRuleDesc())) {
+//			strategyRule.setRuleDesc(request.getRuleDesc());
+//		}
+//		if (!StringUtils.isEmpty(request.getRuleStatus())) {
+//			strategyRule.setRuleStatus(request.getRuleStatus());
+//		}
+//		if (!StringUtils.isEmpty(request.getRuleType())) {
+//			strategyRule.setRuleType(request.getRuleType());
+//		}
+//		if (!StringUtils.isEmpty(request.getRuelValueType())) {
+//			strategyRule.setRuelValueType(request.getRuelValueType());
+//		}
+//		strategyRule.setModifyTime(LocalDateTime.now());
+//		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.updateByPrimaryKey(strategyRule)));
+//	}
 }

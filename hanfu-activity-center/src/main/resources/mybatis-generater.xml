@@ -56,8 +56,8 @@
             <generatedKey column="id" sqlStatement="mysql"
                 identity="true" />
         </table>
-        <table schema="user_center" tableName="rule_value_desc"
-            domainObjectName="RuleValueDesc">
+        <table schema="user_center" tableName="activiti_rule_instance"
+            domainObjectName="ActivitiRuleInstance">
             <property name="useActualColumnNames" value="false" />
             <generatedKey column="id" sqlStatement="mysql"
                 identity="true" />
