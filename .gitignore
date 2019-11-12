@@ -79,5 +79,5 @@ hanfu-order-center/.classpath
 hanfu-web-utils/.classpath
 hanfu-user-center/logs/*
 hanfu-chat/.*
-**/target/*
+**/target/*g'i
 **/.project
