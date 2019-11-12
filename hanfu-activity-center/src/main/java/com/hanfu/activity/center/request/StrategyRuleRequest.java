@@ -17,7 +17,7 @@ public class StrategyRuleRequest extends CommonRequest{
 	@ApiModelProperty(required = true, value = "规则类型")
 	private String ruleType;
 	@ApiModelProperty(required = true, value = "规则值类型")
-	private String ruelValueType;
+	private String ruleValueType;
 	public Integer getId() {
 		return id;
 	}
@@ -48,10 +48,10 @@ public class StrategyRuleRequest extends CommonRequest{
 	public void setRuleType(String ruleType) {
 		this.ruleType = ruleType;
 	}
-	public String getRuelValueType() {
-		return ruelValueType;
+	public String getRuleValueType() {
+		return ruleValueType;
 	}
-	public void setRuelValueType(String ruelValueType) {
-		this.ruelValueType = ruelValueType;
+	public void setRuleValueType(String ruleValueType) {
+		this.ruleValueType = ruleValueType;
 	}
 }
