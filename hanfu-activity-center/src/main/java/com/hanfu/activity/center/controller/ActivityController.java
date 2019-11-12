@@ -106,9 +106,12 @@ public class ActivityController {
 	
 	@ApiOperation(value = "查询此活动的前三名", notes = "查询前三名先比票数，票数相同比分数")
 	@RequestMapping(value = "/listActivityVictory", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityVictory() throws JSONException {
+	public ResponseEntity<JSONObject> listActivityVictory(@RequestParam Integer activItyId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		RuleValueDescExample example = new RuleValueDescExample();
+		example.createCriteria().andActivityIdEqualTo(activItyId);
+		ruleValueDescMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody());
 	}
 	
 	@ApiOperation(value = "此活动开始评委投票", notes = "此活动开始评委投票")
