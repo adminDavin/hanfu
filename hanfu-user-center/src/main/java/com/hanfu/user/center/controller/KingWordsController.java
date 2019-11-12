@@ -208,5 +208,11 @@ public class KingWordsController {
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
-	}		
+	}
+	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
+	@ApiOperation(value = "用户列表", notes = "用户列表")
+	public ResponseEntity<JSONObject> userList() throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+	}
 }

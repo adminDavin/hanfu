@@ -20,7 +20,6 @@ import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
-import com.hanfu.order.center.model.HfOrdersDetailExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -108,16 +107,5 @@ public class OrderController {
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderDetail(id)));
-	}
-	@ApiOperation(value = "根据状态获取订单", notes = "根据状态获取订单")
-	@RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "status", value = "订单状态", required = true, type = "String") })
-	public ResponseEntity<JSONObject> queryOrder(@RequestParam String status)
-			throws Exception{
-		HfOrdersDetailExample example = new HfOrdersDetailExample();
-		example.createCriteria().andOrderDetailStatusEqualTo(status);
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.selectByExample(example)));
 	}
 }
