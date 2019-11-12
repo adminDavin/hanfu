@@ -1,37 +1,29 @@
 package com.hanfu.user.center.service.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.hanfu.user.center.dao.HfUserAddresseMapper;
+import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.model.HfAuth;
+import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
-import com.hanfu.user.center.model.HfUserAddresse;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.Constants;
 import com.hanfu.user.center.utils.GetMessageCode;
 @Component
-@Service("UserCenterService")
-@org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
-public class UserCenterServiceImpl implements UserCenterService,com.hanfu.inner.sdk.user.center.UserCenterService{
-	@Autowired
-	HfUserMapper hfUserMapper;
-	@Autowired
-	HfUserAddresseMapper hfUserAddresseMapper;
+public class UserCenterServiceImpl implements UserCenterService{
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;
+	@Autowired
+	private HfAuthMapper hfAuthMapper;
 	public boolean checkToken(String token){
 		//解析出userId和uuid
 		if(token==null || "".equals(token)){
@@ -78,15 +70,5 @@ public class UserCenterServiceImpl implements UserCenterService,com.hanfu.inner.
 		}
 		list.put(token, hfAuth.getUserId());
 		return list;
-	}
-	@Override
-	public List<com.hanfu.inner.model.product.center.HfUser> getUserById(Integer id) {	
-		List<HfUser> hfUser = hfUserMapper.selectByExample(null);
-		 return JSONArray.parseArray(JSONObject.toJSONString(hfUser), com.hanfu.inner.model.product.center.HfUser.class);
-	}
-	@Override
-	public List<com.hanfu.inner.model.product.center.HfUserAddresse> getUserAddressById(Integer id) {
-		List<HfUserAddresse> hfUserAddress = hfUserAddresseMapper.selectByExample(null);
-		 return JSONArray.parseArray(JSONObject.toJSONString(hfUserAddress), com.hanfu.inner.model.product.center.HfUserAddresse.class);
 	}
 }

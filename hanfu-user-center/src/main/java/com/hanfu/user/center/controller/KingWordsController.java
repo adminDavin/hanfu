@@ -112,7 +112,7 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
-		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request))); 	
+		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
 		user.setLastAuthTime(LocalDateTime.now());
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
