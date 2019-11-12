@@ -17,23 +17,15 @@ import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.RuleValueDescMapper;
-import com.hanfu.activity.center.dao.StrategyRuleMapper;
-import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.model.ActivitiStrategy;
 import com.hanfu.activity.center.model.Activity;
-import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
-import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.RuleValueDesc;
 import com.hanfu.activity.center.model.RuleValueDescExample;
-import com.hanfu.activity.center.model.StrategyRule;
-import com.hanfu.activity.center.model.StrategyRuleRelate;
-import com.hanfu.activity.center.model.StrategyRuleRelateExample;
 import com.hanfu.activity.center.request.ActivityRequest;
 import com.hanfu.activity.center.request.ActivityStrategyInstanceRequest;
 import com.hanfu.activity.center.request.ActivityStrategyRequest;
 import com.hanfu.activity.center.request.RuleValueDescRequest;
-import com.hanfu.activity.center.request.StrategyRuleRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -61,19 +53,11 @@ public class ActivityController {
 	@Autowired
 	private RuleValueDescMapper ruleValueDescMapper;
 	
-	@Autowired
-	private StrategyRuleRelateMapper strategyRuleRelateMapper;
-	
-	@Autowired
-	private StrategyRuleMapper strategyRuleMapper;
-	
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId) throws JSONException {
+	public ResponseEntity<JSONObject> listActivityUser() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		RuleValueDescExample example = new RuleValueDescExample();
-		example.createCriteria().andActivityIdEqualTo(activityId);
-		return builder.body(ResponseUtils.getResponseBody(ruleValueDescMapper.selectByExample(example)));
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
 	}
 	
 	@ApiOperation(value = "查询参加活动的所有人员", notes = "查询参加活动的所有人员")
@@ -82,64 +66,40 @@ public class ActivityController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
 	}
-	//在用户里实现
-//	@ApiOperation(value = "注册该活动所参加的人员", notes = "注册该活动所参加的人员")
-//	@RequestMapping(value = "/addActivityUser", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> addActivityUser() throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
-//	}
 	
-//	@ApiOperation(value = "查看参加活动人个人信息", notes = "查看参加活动人个人信息")
-//	@RequestMapping(value = "/listActivityUserInfo", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> listActivityUserInfo() throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
-//	}
-//	
-//	@ApiOperation(value = "修改参加活动人的信息", notes = "参加活动人自己修改自己的信息包括头像")
-//	@RequestMapping(value = "/updateActivityUserInfo", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> updateActivityUserInfo() throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
-//	}
+	@ApiOperation(value = "注册该活动所参加的人员", notes = "注册该活动所参加的人员")
+	@RequestMapping(value = "/addActivityUser", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> addActivityUser() throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+	}
+	
+	@ApiOperation(value = "查看参加活动人个人信息", notes = "查看参加活动人个人信息")
+	@RequestMapping(value = "/listActivityUserInfo", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> listActivityUserInfo() throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+	}
+	
+	@ApiOperation(value = "修改参加活动人的信息", notes = "参加活动人自己修改自己的信息包括头像")
+	@RequestMapping(value = "/updateActivityUserInfo", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> updateActivityUserInfo() throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+	}
 	
 	@ApiOperation(value = "查询此活动的前三名", notes = "查询前三名先比票数，票数相同比分数")
 	@RequestMapping(value = "/listActivityVictory", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityVictory(@RequestParam Integer activItyId) throws JSONException {
+	public ResponseEntity<JSONObject> listActivityVictory() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		RuleValueDescExample example = new RuleValueDescExample();
-		example.createCriteria().andActivityIdEqualTo(activItyId);
-		ruleValueDescMapper.selectByExample(example);
-		return builder.body(ResponseUtils.getResponseBody(null));
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
 	}
 	
 	@ApiOperation(value = "此活动开始评委投票", notes = "此活动开始评委投票")
 	@RequestMapping(value = "/addActivityUserVote", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> addActivityUserVote(@RequestParam Integer candidateId,@RequestParam Integer voteId) throws Exception {
+	public ResponseEntity<JSONObject> addActivityUserVote() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		RuleValueDesc ruleValueDesc = ruleValueDescMapper.selectByPrimaryKey(candidateId);
-		RuleValueDesc ruleValueDesc2 = ruleValueDescMapper.selectByPrimaryKey(voteId);
-		if(ruleValueDesc ==null) {
-			throw new Exception("此被投票人不存在");
-		}
-		if(ruleValueDesc2 ==null) {
-			throw new Exception("此投票人不存在");
-		}
-		StrategyRule strategyRule = strategyRuleMapper.selectByPrimaryKey(ruleValueDesc2.getRuleId());
-		if(strategyRule.getRuelValueType() == "vetor") {
-			return builder.body(ResponseUtils.getResponseBody("无资格"));
-		}
-			
-		if(ruleValueDesc.getIsDeleted() == 0) {
-			short index = 0;
-			index++;
-			ruleValueDesc.setRemarks(String.valueOf(index));
-			ruleValueDesc.setIsDeleted((short) 1);
-			return builder.body(ResponseUtils.getResponseBody(1));
-		}else {
-			return builder.body(ResponseUtils.getResponseBody(0));
-		}
+		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
 	}
 	
 	@ApiOperation(value = "查询活动", notes = "公司每次举行活动的获取")
@@ -265,23 +225,23 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(activityStrategyInstanceMapper.selectByExample(null)));
 	}
 	
-//	@ApiOperation(value = "增加活动策略实体", notes = "公司每次举行活动的策略实体添加")
-//	@RequestMapping(value = "/addActivityStrategyInstance", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addActivityStrategyInstance(ActivityStrategyInstanceRequest request) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		ActivityStrategyInstance activityStrategyInstance = new ActivityStrategyInstance();
-//		activityStrategyInstance.setRuleName(request.getRuleName());
-//		activityStrategyInstance.setRuleDesc(request.getRuleDesc());
-//		activityStrategyInstance.setRuleStatus(request.getRuleStatus());
-//		activityStrategyInstance.setRuleValue(request.getRuleValue());
-//		activityStrategyInstance.setRuleValueType(request.getRuleValueType());
-//		activityStrategyInstance.setActivityId(request.getActivityId());
-//		activityStrategyInstance.setRuleId(request.getRuleId());
-//		activityStrategyInstance.setCreateTime(LocalDateTime.now());
-//		activityStrategyInstance.setModifyTime(LocalDateTime.now());
-//		activityStrategyInstance.setIsDeleted((short) 0);
-//		return builder.body(ResponseUtils.getResponseBody(activityStrategyInstanceMapper.insert(activityStrategyInstance)));
-//	}
+	@ApiOperation(value = "增加活动策略实体", notes = "公司每次举行活动的策略实体添加")
+	@RequestMapping(value = "/addActivityStrategyInstance", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addActivityStrategyInstance(ActivityStrategyInstanceRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivityStrategyInstance activityStrategyInstance = new ActivityStrategyInstance();
+		activityStrategyInstance.setRuleName(request.getRuleName());
+		activityStrategyInstance.setRuleDesc(request.getRuleDesc());
+		activityStrategyInstance.setRuleStatus(request.getRuleStatus());
+		activityStrategyInstance.setRuleValue(request.getRuleValue());
+		activityStrategyInstance.setRuleValueType(request.getRuleValueType());
+		activityStrategyInstance.setActivityId(request.getActivityId());
+		activityStrategyInstance.setRuleId(request.getRuleId());
+		activityStrategyInstance.setCreateTime(LocalDateTime.now());
+		activityStrategyInstance.setModifyTime(LocalDateTime.now());
+		activityStrategyInstance.setIsDeleted((short) 0);
+		return builder.body(ResponseUtils.getResponseBody(activityStrategyInstanceMapper.insert(activityStrategyInstance)));
+	}
 
 	@ApiOperation(value = "删除活动策略实体", notes = "公司每次举行活动策略实体的删除")
 	@RequestMapping(value = "/deleteActivityStrategyInstance", method = RequestMethod.POST)
@@ -334,24 +294,24 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(ruleValueDescMapper.selectByExample(null)));
 	}
 	
-//	@ApiOperation(value = "增加活动规则值描述", notes = "公司每次举行活动规则值描述增加")
-//	@RequestMapping(value = "/addActivityRuleValueDesc", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addActivityRuleValueDesc(RuleValueDescRequest request) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		RuleValueDesc ruleValueDesc = new RuleValueDesc();
-//		ruleValueDesc.setActivityId(request.getActivityId());
-//		ruleValueDesc.setRuleId(request.getRuleId());
-//		ruleValueDesc.setRuleInstanceId(request.getRuleInstanceId());
-//		ruleValueDesc.setIsRelateUser(request.isRelateUser());
-//		ruleValueDesc.setUserId(request.getUserId());
-//		ruleValueDesc.setRuleInstanceValue(request.getRuleInstanceValue());
-//		ruleValueDesc.setRemarks(request.getRemarks());
-//		ruleValueDesc.setCreateTime(LocalDateTime.now());
-//		ruleValueDesc.setModifyTime(LocalDateTime.now());
-//		ruleValueDesc.setIsDeleted((short) 0);
-//		ruleValueDescMapper.insert(ruleValueDesc);
-//		return builder.body(ResponseUtils.getResponseBody(ruleValueDesc.getId()));
-//	}
+	@ApiOperation(value = "增加活动规则值描述", notes = "公司每次举行活动规则值描述增加")
+	@RequestMapping(value = "/addActivityRuleValueDesc", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addActivityRuleValueDesc(RuleValueDescRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		RuleValueDesc ruleValueDesc = new RuleValueDesc();
+		ruleValueDesc.setActivityId(request.getActivityId());
+		ruleValueDesc.setRuleId(request.getRuleId());
+		ruleValueDesc.setRuleInstanceId(request.getRuleInstanceId());
+		ruleValueDesc.setIsRelateUser(request.isRelateUser());
+		ruleValueDesc.setUserId(request.getUserId());
+		ruleValueDesc.setRuleInstanceValue(request.getRuleInstanceValue());
+		ruleValueDesc.setRemarks(request.getRemarks());
+		ruleValueDesc.setCreateTime(LocalDateTime.now());
+		ruleValueDesc.setModifyTime(LocalDateTime.now());
+		ruleValueDesc.setIsDeleted((short) 0);
+		ruleValueDescMapper.insert(ruleValueDesc);
+		return builder.body(ResponseUtils.getResponseBody(ruleValueDesc.getId()));
+	}
 
 	@ApiOperation(value = "删除活动规则值描述", notes = "公司每次举行活动规则值描述的删除")
 	@RequestMapping(value = "/deleteActivityRuleValueDesc", method = RequestMethod.POST)
@@ -397,76 +357,20 @@ public class ActivityController {
 	
 	@ApiOperation(value = "生成活动码", notes = "生成活动码")
 	@RequestMapping(value = "/createActivityCode", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> createActivityCode(@RequestParam Integer activityId,@RequestParam Boolean flag,@RequestParam Integer[] userId,
-			@RequestParam Integer len,StrategyRuleRequest request,
-			@RequestParam String remarks) throws JSONException {
+	public ResponseEntity<JSONObject> createActivityCode(@RequestParam Integer len,@RequestParam RuleValueDescRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr = "";
 		String str = "";
-		String id = ":";
-		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-		StrategyRuleRelateExample example = new StrategyRuleRelateExample();
-		example.clear();
-		example.createCriteria().andStrategyIdEqualTo(activity.getStrategyId()).andStrategyRuleIdEqualTo(request.getId());
-		List<StrategyRuleRelate> list = strategyRuleRelateMapper.selectByExample(example);
-		if(list.isEmpty()) {
-			StrategyRuleRelate strategyRuleRelate = new StrategyRuleRelate();
-			strategyRuleRelate.setStrategyId(activity.getStrategyId());
-			strategyRuleRelate.setStrategyRuleId(request.getId());
-			strategyRuleRelate.setIsUsed(flag);
-			strategyRuleRelate.setCreateTime(LocalDateTime.now());
-			strategyRuleRelate.setModifyTime(LocalDateTime.now());
-			strategyRuleRelate.setIsDeleted((short) 0);
-			strategyRuleRelateMapper.insert(strategyRuleRelate);
-		}
-		for(int i=0;i<len;i++) {
+		for(int i=1;i<=len;i++) {
 			arr = create();
-			ActivityStrategyInstanceExample example2 = new ActivityStrategyInstanceExample();
-			example2.createCriteria().andActivityIdEqualTo(activityId).andRuleIdEqualTo(request.getId());
-			List<ActivityStrategyInstance> list2 = activityStrategyInstanceMapper.selectByExample(example2);
-			Integer ruleInstanceId = 0;
-			if(list2.isEmpty()) {
-				ActivityStrategyInstance activityStrategyInstance = new ActivityStrategyInstance();
-				activityStrategyInstance.setRuleName(request.getRuleName());
-				activityStrategyInstance.setRuleDesc(request.getRuleDesc());
-				activityStrategyInstance.setRuleStatus(request.getRuleStatus());
-				activityStrategyInstance.setRuleValue(request.getRuleType());
-				activityStrategyInstance.setRuleValueType(request.getRuleValueType());
-				activityStrategyInstance.setActivityId(activityId);
-				activityStrategyInstance.setRuleId(request.getId());
-				activityStrategyInstance.setCreateTime(LocalDateTime.now());
-				activityStrategyInstance.setModifyTime(LocalDateTime.now());
-				activityStrategyInstance.setIsDeleted((short) 0);
-				activityStrategyInstanceMapper.insert(activityStrategyInstance);
-				ruleInstanceId = activityStrategyInstance.getActivityId();
-			}else {
-				ruleInstanceId = list2.get(0).getId();
-			}
-			RuleValueDescExample example3 = new RuleValueDescExample();
-			System.out.println(userId[i]+ruleInstanceId);
-			example3.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId[i]);
-			List<RuleValueDesc> list3 = ruleValueDescMapper.selectByExample(example3);
-			if(list3.isEmpty()) {
-				RuleValueDesc ruleValueDesc = new RuleValueDesc();
-				ruleValueDesc.setActivityId(activityId);
-				ruleValueDesc.setRuleId(request.getId());
-				ruleValueDesc.setRuleInstanceId(ruleInstanceId);
-				ruleValueDesc.setIsRelateUser(flag);
-				ruleValueDesc.setUserId(userId[i]);
-				ruleValueDesc.setRuleInstanceValue(arr);
-				ruleValueDesc.setRemarks(remarks);
-				ruleValueDesc.setCreateTime(LocalDateTime.now());
-				ruleValueDesc.setModifyTime(LocalDateTime.now());
-				ruleValueDesc.setIsDeleted((short) 0);
-				ruleValueDescMapper.insert(ruleValueDesc);
-			}else {
-				id = id + list3.get(0).getUserId() + ",";
-			}
+			addActivityRuleValueDesc(request);
+			List<RuleValueDesc> list = ruleValueDescMapper.selectByExample(null);
+			RuleValueDesc ruleValueDesc = list.get(list.size()-1);
+			ruleValueDesc.setRuleInstanceValue(arr);
 			arr = arr+",";
 			str = arr + str;
 		}
-		str = str + id;
-		return builder.body(ResponseUtils.getResponseBody(str));
+		return builder.body(ResponseUtils.getResponseBody(arr));
 	}
 	
 	public static String create() {
