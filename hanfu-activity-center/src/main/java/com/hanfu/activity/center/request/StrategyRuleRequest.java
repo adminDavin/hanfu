@@ -6,26 +6,25 @@ import io.swagger.annotations.ApiModelProperty;
 @SuppressWarnings("serial")
 @ApiModel
 public class StrategyRuleRequest extends CommonRequest{
+	@ApiModelProperty(required = true, value = "策略规则id")
+	private Integer id;
 	@ApiModelProperty(required = true, value = "规则名字")
 	private String ruleName;
 	@ApiModelProperty(required = true, value = "规则描述")
 	private String ruleDesc;
+	@ApiModelProperty(required = true, value = "规则状态")
+	private String ruleStatus;
 	@ApiModelProperty(required = true, value = "规则类型")
 	private String ruleType;
-    @ApiModelProperty(required = true, value = "规则值类型")
-    private String ruelValueType;
-    @ApiModelProperty(required = true, value = "活动策略id")
-    private Integer StrategyId;
-	
-	
-
-	public Integer getStrategyId() {
-        return StrategyId;
-    }
-    public void setStrategyId(Integer strategyId) {
-        StrategyId = strategyId;
-    }
-    public String getRuleName() {
+	@ApiModelProperty(required = true, value = "规则值类型")
+	private String ruleValueType;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getRuleName() {
 		return ruleName;
 	}
 	public void setRuleName(String ruleName) {
@@ -37,16 +36,22 @@ public class StrategyRuleRequest extends CommonRequest{
 	public void setRuleDesc(String ruleDesc) {
 		this.ruleDesc = ruleDesc;
 	}
+	public String getRuleStatus() {
+		return ruleStatus;
+	}
+	public void setRuleStatus(String ruleStatus) {
+		this.ruleStatus = ruleStatus;
+	}
 	public String getRuleType() {
 		return ruleType;
 	}
 	public void setRuleType(String ruleType) {
 		this.ruleType = ruleType;
 	}
-	public String getRuelValueType() {
-		return ruelValueType;
+	public String getRuleValueType() {
+		return ruleValueType;
 	}
-	public void setRuelValueType(String ruelValueType) {
-		this.ruelValueType = ruelValueType;
+	public void setRuleValueType(String ruleValueType) {
+		this.ruleValueType = ruleValueType;
 	}
 }

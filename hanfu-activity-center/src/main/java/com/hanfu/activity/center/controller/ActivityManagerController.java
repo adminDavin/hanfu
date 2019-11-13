@@ -83,10 +83,10 @@ public class ActivityManagerController {
         StrategyRule strategyRule = new StrategyRule();
         strategyRule.setRuleName(request.getRuleName());
         strategyRule.setRuleDesc(request.getRuleDesc());
-        strategyRule.setStrategyId(request.getStrategyId());
+//        strategyRule.setStrategyId(request.getStrategyId());
         strategyRule.setRuleStatus("生效中");
         strategyRule.setRuleType(request.getRuleType());
-        strategyRule.setRuelValueType(request.getRuelValueType());
+//        strategyRule.setRuelValueType(request.getRuelValueType());
         strategyRule.setCreateTime(LocalDateTime.now());
         strategyRule.setModifyTime(LocalDateTime.now());
         strategyRule.setIsDeleted((short) 0);
@@ -130,6 +130,7 @@ public class ActivityManagerController {
             StrategyRule strategyRule = strategyRuleMapper.selectByPrimaryKey(Integer.valueOf(request.getRuleId()));
             record.setActivityId(activity.getId());
             record.setRuleId(strategyRule.getId());
+            record.setRuleName(request.getRuleName());
             record.setRuleDesc(request.getRuleSDesc());
             record.setRuleValue(request.getRuleValue());
             record.setRuleValueType(strategyRule.getRuelValueType());
