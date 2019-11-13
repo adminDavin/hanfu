@@ -55,16 +55,29 @@ public class ActivityController {
 	
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityUser() throws JSONException {
+	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
+	}
+	
+	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
+	@RequestMapping(value = "/listActivityVoteUser", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> listActivityVoteUser(@RequestParam Integer activityId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(false);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
 	
 	@ApiOperation(value = "查询参加活动的所有人员", notes = "查询参加活动的所有人员")
 	@RequestMapping(value = "/listAllActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listAllActivityUser() throws JSONException {
+	public ResponseEntity<JSONObject> listAllActivityUser(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
 	
 	@ApiOperation(value = "注册该活动所参加的人员", notes = "注册该活动所参加的人员")
