@@ -8,7 +8,7 @@ drop table if exists activiti_strategy;
 
 drop table if exists activity_strategy_instance;
 
-drop table if exists rule_value_desc;
+drop table if exists activiti_rule_instance;
 
 drop table if exists strategy_rule;
 
@@ -58,7 +58,7 @@ alter table activity_strategy_instance comment '活动策略实体表';
 /*==============================================================*/
 /* Table: rule_value_desc                                       */
 /*==============================================================*/
-create table rule_value_desc
+create table activiti_rule_instance
 (
    id                   int not null AUTO_INCREMENT comment '序列号',
    activity_id          int comment '活动id',
@@ -66,6 +66,9 @@ create table rule_value_desc
    rule_instance_id     int comment '规则实体id',
    is_relate_user       bool comment '是否关联用户',
    user_id              int comment '用户id',
+   user_ticket_count          int comment '用户所持有的票数',
+   user_score           int comment '用户得分',
+   is_elected           boolean comment '是否是被选举者', 
    rule_instance_value  varchar(511) comment '规则实体值',
    remarks              varchar(1023) comment '备注',
    create_time          timestamp default now() comment '添加时间',
@@ -74,7 +77,7 @@ create table rule_value_desc
    primary key (id)
 );
 
-alter table rule_value_desc comment '活动规则值描述表';
+alter table activiti_rule_instance comment '活动规则值描述表';
 
 /*==============================================================*/
 /* Table: strategy_rule                                         */
@@ -105,7 +108,12 @@ create table activity
    activity_desc        varchar(1024) comment 'activity_desc',
    activiy_type         varchar(31) comment 'activiy_type',
    activity_status      varchar(15) comment '活动状态',
+   activity_result      varchar(1023) comment '活动结果',
    strategy_id          int comment '策略id',
+   user_id          int comment '活动发起者的用户id',
+   is_timing_start          smallint default false comment '是否定时开启活动',
+   start_time          timestamp default now()  comment '活动开启时间',
+   end_time          timestamp default now()  comment '活动结束时间',
    create_time          timestamp default now() comment '添加时间',
    modify_time          timestamp default now() comment '修改时间',
    is_deleted           smallint default false comment '是否失效',

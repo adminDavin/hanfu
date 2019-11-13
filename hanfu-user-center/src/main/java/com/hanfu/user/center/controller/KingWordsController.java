@@ -112,7 +112,7 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
-		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request))); 	
+		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
 		user.setLastAuthTime(LocalDateTime.now());
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
@@ -208,5 +208,11 @@ public class KingWordsController {
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
-	}		
+	}
+	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
+	@ApiOperation(value = "用户列表", notes = "用户列表")
+	public ResponseEntity<JSONObject> userList() throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+	}
 }

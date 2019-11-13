@@ -1,4 +1,4 @@
-package com.hanfu.order.activity.center.response.handler;
+package com.hanfu.message.center.response.handler;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;

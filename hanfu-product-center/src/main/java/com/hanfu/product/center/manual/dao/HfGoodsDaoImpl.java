@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+//import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.UserInfo;
@@ -65,5 +66,11 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectProductBycategoryIdOrProductName", hfGoodsDisplay);
 		return list;
 	}
+	
+//	@Override
+//	public Integer insertAwardInfo(AwardInfo awardInfo) {
+//		Integer row = sqlSessionTemplate.insert("insertAwardInfo", awardInfo);
+//		return null;
+//	}
 	
 }

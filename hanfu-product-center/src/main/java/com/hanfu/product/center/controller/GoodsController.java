@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
@@ -43,6 +44,7 @@ import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
+//import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.FileDesc;
@@ -75,6 +77,7 @@ import com.hanfu.product.center.request.RespInfo;
 import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+
 import com.hanfu.utils.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
@@ -154,8 +157,16 @@ public class GoodsController {
 	
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(HfGoodsDisplay goodsDisplay) throws JSONException {
+	public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(
+			@RequestParam(name = "goodsDisplay",required = false)HfGoodsDisplay goodsDisplay,
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(!StringUtils.isEmpty(page)) {
+			if(!StringUtils.isEmpty(size)) {
+				PageHelper.startPage(page, size);
+			}
+		}
 		List<HfGoodsDisplay> list = hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay);
 		if(list.isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody(null));
@@ -612,5 +623,13 @@ public class GoodsController {
 			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
 		}
 	}
+	
+//	@ApiOperation(value = "添加活动奖项", notes = "添加活动奖项")
+//	@RequestMapping(value = "/addAwardInfo", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> addAwardInfo(AwardInfo awardInfo) throws JSONException{
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Integer row = goodsService.insertAwardInfo(awardInfo);
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
 
 }
