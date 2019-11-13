@@ -116,8 +116,8 @@ public class StrategyController {
 
 	@ApiOperation(value = "删除策略规则", notes = "公司每次举行策略规则的删除")
 	@RequestMapping(value = "/deleteStrategyRule", method = RequestMethod.POST)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "strategyRuleId", value = "策略规则id", required = true, type = "Integer") })
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "strategyRuleId", value = "策略规则id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteStrategyRule(@RequestParam Integer strategyRuleId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.deleteByPrimaryKey(strategyRuleId)));
