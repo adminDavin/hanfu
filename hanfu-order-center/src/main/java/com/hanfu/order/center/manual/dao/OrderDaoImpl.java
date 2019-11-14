@@ -1,5 +1,6 @@
 package com.hanfu.order.center.manual.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -29,6 +30,12 @@ public class OrderDaoImpl implements OrderDao{
 	@Override
 	public List<HfOrdersDetail> selectOrderDetail(Integer id) {
 		List<HfOrdersDetail> result = sqlSessionTemplate.selectList("selectOrderDetail",id);
+		return result;
+	}
+	@Override
+	public List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus,
+			LocalDateTime creatTime) {
+		List<HfOrderLogistics> result = sqlSessionTemplate.selectList("selectOrder");
 		return result;
 	}
 

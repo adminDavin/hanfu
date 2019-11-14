@@ -1,5 +1,7 @@
 package com.hanfu.order.center.controller;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
+import com.hanfu.order.center.request.MyPrint;
 import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -107,5 +110,31 @@ public class OrderController {
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderDetail(id)));
+	}
+	@ApiOperation(value = "打印订单", notes = "打印订单")
+	@RequestMapping(value = "/print", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> printOrder(@RequestParam Integer id)
+			throws Exception{
+		MyPrint myPrint = new MyPrint();
+		myPrint.setTotalPageCount(2);	
+		myPrint.doPrint(myPrint);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody("打印成功"));
+	}
+	@ApiOperation(value = "根据条件查询订单", notes = "根据条件查询订单")
+	@RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
+	})
+	public ResponseEntity<JSONObject> queryOrder(Integer orderId,String hfName,String payMethodType,String orderDetailStatus,LocalDateTime creatTime)
+			throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderId,hfName,payMethodType,orderDetailStatus,creatTime)));
 	}
 }

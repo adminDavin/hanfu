@@ -1,5 +1,6 @@
 package com.hanfu.order.center.manual.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.hanfu.order.center.model.HfOrderLogistics;
@@ -13,5 +14,7 @@ public interface OrderDao {
 	List<HfOrderStatus> selectOrderStatus();
 
 	List<HfOrdersDetail> selectOrderDetail(Integer id);
+
+	List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus,LocalDateTime creatTime);
 
 }
