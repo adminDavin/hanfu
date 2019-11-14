@@ -62,6 +62,11 @@
     </build>
 
     <dependencies>
+    <dependency>
+   			<groupId>com.github.pagehelper</groupId>
+   			<artifactId>pagehelper-spring-boot-starter</artifactId>
+   			<version>1.2.5</version>
+		</dependency>
         <dependency>
             <artifactId>hanfu-web-utils</artifactId>
             <groupId>com.hanfu.utils</groupId>
