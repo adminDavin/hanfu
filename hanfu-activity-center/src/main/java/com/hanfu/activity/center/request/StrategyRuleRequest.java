@@ -18,6 +18,8 @@ public class StrategyRuleRequest extends CommonRequest{
 	private String ruleType;
 	@ApiModelProperty(required = true, value = "规则值类型")
 	private String ruleValueType;
+	@ApiModelProperty(required = true, value = "策略id")
+	private Integer strategyId;
 	public Integer getId() {
 		return id;
 	}
@@ -53,5 +55,11 @@ public class StrategyRuleRequest extends CommonRequest{
 	}
 	public void setRuleValueType(String ruleValueType) {
 		this.ruleValueType = ruleValueType;
+	}
+	public Integer getStrategyId() {
+		return strategyId;
+	}
+	public void setStrategyId(Integer strategyId) {
+		this.strategyId = strategyId;
 	}
 }
