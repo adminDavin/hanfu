@@ -59,7 +59,15 @@ public class OrderInfo implements Serializable{
 	private String realName;
 	@ApiModelProperty(required = true, value = "商品规格")
 	private String goodsDesc;
+	@ApiModelProperty(required = true, value = "手机号")
+	private String phone;
 	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 	public String getGoodsDesc() {
 		return goodsDesc;
 	}

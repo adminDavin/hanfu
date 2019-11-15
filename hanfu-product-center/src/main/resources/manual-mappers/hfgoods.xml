@@ -51,12 +51,12 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
-  <resultMap id="AwardInfoEntityMap" 
+<!--   <resultMap id="AwardInfoEntityMap" 
 		type="cn.tedu.store.entity.AwardInfo">
 		<id column="id" property="id"/>
 		<result column="award_name" property="awardName"/>
 		<result column="emp_num" property="empNum"/>
-	</resultMap>
+	</resultMap> -->
   
   	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly1">
 			SELECT
