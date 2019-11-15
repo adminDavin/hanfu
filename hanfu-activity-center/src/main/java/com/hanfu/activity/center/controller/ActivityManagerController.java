@@ -385,5 +385,4 @@ public class ActivityManagerController {
         return builder.body(ResponseUtils.getResponseBody(list));
     }
     
-    
 }
