@@ -6,6 +6,7 @@ public class Total {
 	private Integer voteCount;
 	private Integer socre;
 	private Integer activityId;
+	private String code;
 	
 	public Integer getUserId() {
 		return userId;
@@ -31,8 +32,15 @@ public class Total {
 	public void setActivityId(Integer activityId) {
 		this.activityId = activityId;
 	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
 	@Override
 	public String toString() {
-		return "Total [userId=" + userId + ", voteCount=" + voteCount + ", socre=" + socre + "]";
+		Integer i = 1;
+		return "统计 :第"+ i++ +"名,用户id=" + userId + ", 用户票数=" + voteCount + ", 用户分数=" + socre + ")";
 	}
 }
