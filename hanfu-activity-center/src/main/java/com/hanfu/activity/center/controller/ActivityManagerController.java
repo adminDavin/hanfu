@@ -166,7 +166,7 @@ public class ActivityManagerController {
 		String str = "";
 		String id = ":";
 		for (int i = 0; i < request.getUserIds().length; i++) {
-			arr = create();
+//			arr = create();
 			ActivitiRuleInstanceExample example3 = new ActivitiRuleInstanceExample();
 			example3.createCriteria().andActivityIdEqualTo(request.getActivityId())
 					.andUserIdEqualTo(request.getUserIds()[i]);
@@ -206,11 +206,25 @@ public class ActivityManagerController {
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
 			}
-			arr = arr + ",";
-			str = arr + str;
+//			arr = arr + ",";
+//			str = arr + str;
 		}
-		str = str + id;
-		return builder.body(ResponseUtils.getResponseBody(str));
+//		str = str + id;
+		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
+	@ApiOperation(value = "生成活动码", notes = "生成活动码")
+	@RequestMapping(value = "/creatrCode", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> creatrCode(Integer[] usersId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<Total> list = new ArrayList<Total>(usersId.length);
+		for (int i = 0; i < usersId.length; i++) {
+			Total total = new Total();
+			total.setUserId(usersId[i]);
+			total.setCode(create());
+			list.add(total);
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	public static String create() {

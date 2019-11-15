@@ -513,6 +513,14 @@ public class GoodsController {
 		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsPictrueMapper.selectByExample(example)));
 	}
+	
+	@ApiOperation(value = "获取所有文件图片", notes = "获取所有文件图片")
+	@RequestMapping(value = "/filePicturesAll", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getfilePicturesAll()
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(fileDescMapper.selectByExample(null)));
+	}
 
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
 	@PostMapping(value = "/addPicture")

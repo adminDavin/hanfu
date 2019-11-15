@@ -6,6 +6,7 @@ public class Total {
 	private Integer voteCount;
 	private Integer socre;
 	private Integer activityId;
+	private String code;
 	
 	public Integer getUserId() {
 		return userId;
@@ -30,6 +31,12 @@ public class Total {
 	}
 	public void setActivityId(Integer activityId) {
 		this.activityId = activityId;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 	@Override
 	public String toString() {
