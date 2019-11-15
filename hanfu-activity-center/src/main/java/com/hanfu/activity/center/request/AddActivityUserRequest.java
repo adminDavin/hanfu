@@ -8,8 +8,6 @@ public class AddActivityUserRequest  extends CommonRequest{
     private Integer activityId;
     @ApiModelProperty(required = true, value = "活动策略里的规则id")
     private Integer ruleId;
-    @ApiModelProperty(required = false, value = "活动实例规则id")
-    private Integer ruleInstanceId;
     @ApiModelProperty(required = true, value = "用户id列表")
     private Integer[] userIds;
     public Integer getActivityId() {
@@ -23,12 +21,6 @@ public class AddActivityUserRequest  extends CommonRequest{
     }
     public void setRuleId(Integer ruleId) {
         this.ruleId = ruleId;
-    }
-    public Integer getRuleInstanceId() {
-        return ruleInstanceId;
-    }
-    public void setRuleInstanceId(Integer ruleInstanceId) {
-        this.ruleInstanceId = ruleInstanceId;
     }
     public Integer[] getUserIds() {
         return userIds;
