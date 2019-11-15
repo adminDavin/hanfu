@@ -159,7 +159,7 @@ public class ActivityManagerController {
 
 	@ApiOperation(value = "5 添加活动参与者", notes = "添加活动参与者")
 	@RequestMapping(value = "/addActivityUser", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addActivityUser(AddActivityUserRequest request)
+	public ResponseEntity<JSONObject> addActivityUser(AddActivityUserRequest request, @RequestParam Boolean isElected)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr = "";
@@ -175,30 +175,29 @@ public class ActivityManagerController {
 			if (list3.isEmpty()) {
 				ActivitiRuleInstance ruleValueDesc = new ActivitiRuleInstance();
 				ruleValueDesc.setActivityId(request.getActivityId());
-				
-				if ("elector".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuleType())) {
+				if (isElected == false) {
 					ActivityStrategyInstance activityStrategyInstance = activityStrategyInstanceMapper
 							.selectByPrimaryKey(3);
 					ruleValueDesc.setUserTicketCount(Integer.valueOf(activityStrategyInstance.getRuleValue()));
 				}
 				ruleValueDesc.setRuleId(request.getRuleId());
-//				ruleValueDesc.setIsElected(isElected);
+				ruleValueDesc.setRuleInstanceId(request.getRuleInstanceId());
+				ruleValueDesc.setIsElected(isElected);
 				ruleValueDesc.setUserId(request.getUserIds()[i]);
 				ruleValueDesc.setRuleInstanceValue(arr);
 				ruleValueDesc.setCreateTime(LocalDateTime.now());
 				ruleValueDesc.setModifyTime(LocalDateTime.now());
 				ruleValueDesc.setIsDeleted((short) 0);
 				activitiRuleInstanceMapper.insert(ruleValueDesc);
-				if (!"ticket_count".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuelValueType())) {
-					ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
-					example.createCriteria().andRuleIdEqualTo(request.getRuleId());
-					List<ActivityStrategyInstance> activityStrategyInstance1 = activityStrategyInstanceMapper.selectByExample(example);
-					if (Integer.valueOf(activityStrategyInstance1.get(0).getRuleValue()) <= 0) {
+				if (request.getRuleInstanceId() != 3) {
+					ActivityStrategyInstance activityStrategyInstance1 = activityStrategyInstanceMapper
+							.selectByPrimaryKey(request.getRuleInstanceId());
+					if (Integer.valueOf(activityStrategyInstance1.getRuleValue()) <= 0) {
 						return builder.body(ResponseUtils.getResponseBody("超过限定人数"));
 					}
-					activityStrategyInstance1.get(0).setRuleValue(
-							String.valueOf(Integer.valueOf(activityStrategyInstance1.get(0).getRuleValue()) - 1));
-					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1.get(0));
+					activityStrategyInstance1.setRuleValue(
+							String.valueOf(Integer.valueOf(activityStrategyInstance1.getRuleValue()) - 1));
+					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1);
 				}
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
