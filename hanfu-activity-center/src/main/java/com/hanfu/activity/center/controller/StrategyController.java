@@ -105,9 +105,10 @@ public class StrategyController {
 		StrategyRule strategyRule = new StrategyRule();
 		strategyRule.setRuleName(request.getRuleName());
 		strategyRule.setRuleDesc(request.getRuleDesc());
-//		strategyRule.setRuleStatus(request.getRuleStatus());
+		strategyRule.setRuleStatus(request.getRuleStatus());
 		strategyRule.setRuleType(request.getRuleType());
-//		strategyRule.setRuelValueType(request.getRuelValueType());
+		strategyRule.setStrategyId(request.getStrategyId());
+		strategyRule.setRuelValueType(request.getRuleValueType());
 		strategyRule.setCreateTime(LocalDateTime.now());
 		strategyRule.setModifyTime(LocalDateTime.now());
 		strategyRule.setIsDeleted((short) 0);

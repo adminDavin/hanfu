@@ -10,7 +10,7 @@ public class VoteTicketRequest extends CommonRequest{
     private Integer userId;
     @ApiModelProperty(required = false, value = "被选举者的用户id")
     private Integer electedUserId;
-    @ApiModelProperty(required = false, value = "活动规则id")
+    @ApiModelProperty(required = false, value = "规则id")
     private Integer ruleInstanceId;
     @ApiModelProperty(required = true, value = "备注")
     private String remark;
