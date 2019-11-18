@@ -1,6 +1,7 @@
 package com.hanfu.activity.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,11 @@ import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
+import com.hanfu.activity.center.manual.model.ActivityInfo;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
+import com.hanfu.activity.center.model.ActivitiStrategyExample;
 import com.hanfu.activity.center.model.Activity;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
@@ -127,7 +130,28 @@ public class ActivityController {
 	@RequestMapping(value = "/listActivity", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listWareHouse() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		List<Activity> list = activityMapper.selectByExample(null);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
+			ActivityInfo activityInfo = new ActivityInfo();
+			activityInfo.setActivityName(list.get(i).getActivityName());
+			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
+			activityInfo.setActivityResult(list.get(i).getActivityResult());
+			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			activityInfo.setActiviyType(list.get(i).getActiviyType());
+			activityInfo.setCreateTime(list.get(i).getCreateTime());
+			activityInfo.setEndTime(list.get(i).getEndTime());
+			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
+			activityInfo.setIsTimingStart(list.get(i).getIsTimingStart());
+			activityInfo.setModifyTime(list.get(i).getModifyTime());
+			activityInfo.setStrategyId(strategy.getId());
+			activityInfo.setUserId(list.get(i).getUserId());
+			activityInfo.setStrategyName(strategy.getStrategyName());
+			activityInfo.setStartTime(list.get(i).getStartTime());
+			activityInfos.add(activityInfo);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
 	}
 
 	@ApiOperation(value = "增加活动", notes = "公司每次举行活动的添加")

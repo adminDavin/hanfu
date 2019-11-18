@@ -32,7 +32,7 @@
 		SELECT user_id,auth_type,auth_key
 		FROM
 		hf_auth
-		WHEREs
+		WHERE
 		auth_key=#{authKey}
 	</select>
 	<select id="selectUserList" resultMap="ResultMap">

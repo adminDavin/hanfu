@@ -1,6 +1,7 @@
 package com.hanfu.user.center.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +37,7 @@ import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
+import com.hanfu.user.center.utils.GetMessageCode;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -70,6 +72,9 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfAuth hfAuth = userDao.selectList(authKey);
+		if(hfAuth == null) {
+			return builder.body(ResponseUtils.getResponseBody("用户不存在")); 
+		}
 		Map<String , Integer> list = new HashMap<>();
 		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
 		//将token存入redis
@@ -79,9 +84,9 @@ public class KingWordsController {
 		}
 		if(!"1".equals(authType)) {
 			if(!(hfAuth.getAuthKey()).equals(authKey)) {
-//				if(passwd != GetMessageCode.getCode(authKey)) {
+				if(passwd != GetMessageCode.getCode(authKey)) {
 				throw new ParamInvalidException("authType is invalid");
-//				}
+				}
 			}		
 		}
 		list.put(token, hfAuth.getUserId());
@@ -117,11 +122,11 @@ public class KingWordsController {
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		int userId = hfUserMapper.insert(user);
+//		int userId = hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
-		auth.setUserId(userId);
+		auth.setUserId(user.getId());
 		auth.setAuthStatus((byte) 0);
 		auth.setIdDeleted((byte) 0);
 		auth.setEncodeType("0");
@@ -132,7 +137,7 @@ public class KingWordsController {
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(token, String.valueOf(userId));
+		map.put(token, String.valueOf(user.getId()));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
@@ -142,9 +147,9 @@ public class KingWordsController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
-//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//		String localTime = df.format(request.getBirthDay());
-//		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String localTime = df.format(request.getBirthDay());
+		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
 		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (user == null) {
 			throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -155,9 +160,9 @@ public class KingWordsController {
 		if(!StringUtils.isEmpty(request.getUsername())) {
 			user.setUsername(request.getUsername());
 		}
-//		if(!StringUtils.isEmpty(request.getBirthDay())) {
-//			user.setBirthDay(ldt);
-//		}
+		if(!StringUtils.isEmpty(request.getBirthDay())) {
+			user.setBirthDay(ldt);
+		}
 		if(!StringUtils.isEmpty(request.getEmail())) {
 			user.setEmail(request.getEmail());
 		}
