@@ -20,7 +20,7 @@ public class GetMessageCode {
 		String rod = smsCode();
 		String timestamp = getTimestamp();
 		String sig = getMD5(ACCOUNT_SID, AUTH_TOKEN, timestamp);
-		String tamp = "【联途旅游】尊敬的用户，您好，您的验证码为：" + rod + "，若非本人操作，请忽略此短信。";
+		String tamp = "您好，您的验证码为：" + rod + "，若非本人操作，请忽略此短信。";
 		OutputStreamWriter out = null;
 		BufferedReader br = null;
 		StringBuilder result = new StringBuilder();
