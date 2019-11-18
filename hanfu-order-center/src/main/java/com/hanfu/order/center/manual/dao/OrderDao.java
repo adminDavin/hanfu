@@ -15,6 +15,6 @@ public interface OrderDao {
 
 	List<HfOrdersDetail> selectOrderDetail(Integer id);
 
-	List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus,LocalDateTime creatTime);
+	List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus);
 
 }
