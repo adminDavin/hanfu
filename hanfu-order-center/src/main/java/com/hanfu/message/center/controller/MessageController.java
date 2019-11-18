@@ -35,7 +35,7 @@ public class MessageController {
     @Autowired
     MessageDao messageDao;
 	@Resource
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 	@ApiOperation(value = "查询全部消息", notes = "查询全部消息")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> query()
@@ -43,14 +43,68 @@ public class MessageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(messageDao.selectMeaasgeList()));
 	}
-	@ApiOperation(value = "评价回复", notes = "评价回复")
-	@RequestMapping(value = "/creat", method = RequestMethod.GET)
+	@ApiOperation(value = "添加消息", notes = "添加消息")
+	@RequestMapping(value = "/addMessage", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String") })
-	public ResponseEntity<JSONObject> creatOrder(@RequestParam String evaluate)
+		@ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer")
+	})
+	public ResponseEntity<JSONObject> addMessage(String message,Integer userId)
 			throws JSONException {
-		String key = null;
+		String key = userId.toString();
+		redisTemplate.opsForValue().set(key, message);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}
+	@ApiOperation(value = "删除消息", notes = "删除消息")
+	@RequestMapping(value = "/deleteMessage", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")
+	})
+	public ResponseEntity<JSONObject> deleteMessage(Integer userId)
+			throws JSONException {
+		String userid = userId.toString();
+		redisTemplate.delete(userid);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}
+	@ApiOperation(value = "修改消息", notes = "修改消息")
+	@RequestMapping(value = "/updateMessage", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String")
+	})
+	public ResponseEntity<JSONObject> updateMessage(Integer userId, String message)
+			throws JSONException {
+		redisTemplate.opsForValue().get(userId);
+		String key  = userId.toString();
+		redisTemplate.opsForValue().append(key, message);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}    
+	@ApiOperation(value = "评价回复", notes = "评价回复")
+	@RequestMapping(value = "/queryReply", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),	
+	})
+	public ResponseEntity<JSONObject> queryReply(@RequestParam String evaluate,Integer orderId)
+			throws JSONException {
+		String key = orderId.toString();
 		redisTemplate.opsForValue().set(key, evaluate);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}
+	@ApiOperation(value = "评价回复", notes = "评价回复")
+	@RequestMapping(value = "/reply", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),	
+	})
+	public ResponseEntity<JSONObject> reply(@RequestParam String evaluate,Integer orderId)
+			throws JSONException {
+		String key  = orderId.toString();
+		redisTemplate.opsForValue().append(key, evaluate);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
