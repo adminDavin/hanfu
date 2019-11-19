@@ -2,10 +2,6 @@ package com.hanfu.order.center.request;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import com.hanfu.order.center.model.HfOrdersDetail;
-
 import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
