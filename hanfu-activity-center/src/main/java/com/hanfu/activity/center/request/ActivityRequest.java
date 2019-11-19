@@ -18,7 +18,8 @@ public class ActivityRequest extends CommonRequest{
 	private String activityStatus;
 	@ApiModelProperty(required = true, value = "策略id")
 	private Integer strategyId;
-	
+	@ApiModelProperty(required = true, value = "活动发起者id")
+	private Integer userId;
 	public Integer getId() {
 		return id;
 	}
@@ -55,5 +56,10 @@ public class ActivityRequest extends CommonRequest{
 	public void setStrategyId(Integer strategyId) {
 		this.strategyId = strategyId;
 	}
-	
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 }
