@@ -75,10 +75,10 @@ public class ActivityManagerController {
 
 	@Autowired
 	private StrategyRuleMapper strategyRuleMapper;
-	
+
 	@Autowired
 	private ActivityVoteRecordsMapper activityVoteRecordsMapper;
-	
+
 	@Autowired
 	private HfUserDao hfUserMapper;
 
@@ -164,8 +164,7 @@ public class ActivityManagerController {
 
 	@ApiOperation(value = "5 添加活动参与者", notes = "添加活动参与者")
 	@RequestMapping(value = "/addActivityUser", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addActivityUser(AddActivityUserRequest request)
-			throws JSONException {
+	public ResponseEntity<JSONObject> addActivityUser(AddActivityUserRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr = "";
 		String str = "";
@@ -180,21 +179,23 @@ public class ActivityManagerController {
 			if (list3.isEmpty()) {
 				ActivitiRuleInstance ruleValueDesc = new ActivitiRuleInstance();
 				ruleValueDesc.setActivityId(request.getActivityId());
-				
+
 				if ("elector".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuleType())) {
 					ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 					example.createCriteria().andRuleValueTypeEqualTo("count");
-					List<ActivityStrategyInstance> activityStrategyInstance = activityStrategyInstanceMapper.selectByExample(example);
+					List<ActivityStrategyInstance> activityStrategyInstance = activityStrategyInstanceMapper
+							.selectByExample(example);
 					ruleValueDesc.setUserTicketCount(Integer.valueOf(activityStrategyInstance.get(0).getRuleValue()));
 				}
 				ActivityStrategyInstanceExample strategyInstanceExample = new ActivityStrategyInstanceExample();
 				strategyInstanceExample.createCriteria().andRuleIdEqualTo(request.getRuleId());
-				ruleValueDesc.setRuleInstanceId(activityStrategyInstanceMapper.selectByExample(strategyInstanceExample).get(0).getId());
+				ruleValueDesc.setRuleInstanceId(
+						activityStrategyInstanceMapper.selectByExample(strategyInstanceExample).get(0).getId());
 				ruleValueDesc.setRuleId(request.getRuleId());
 				StrategyRule rule = strategyRuleMapper.selectByPrimaryKey(request.getRuleId());
-				if("elector".equals(rule.getRuleType())) {
+				if ("elector".equals(rule.getRuleType())) {
 					ruleValueDesc.setIsElected(false);
-				}else if("elected".equals(rule.getRuleType())){
+				} else if ("elected".equals(rule.getRuleType())) {
 					ruleValueDesc.setIsElected(true);
 				}
 //				ruleValueDesc.setIsElected(isElected);
@@ -204,10 +205,12 @@ public class ActivityManagerController {
 				ruleValueDesc.setModifyTime(LocalDateTime.now());
 				ruleValueDesc.setIsDeleted((short) 0);
 				activitiRuleInstanceMapper.insert(ruleValueDesc);
-				if (!"ticket_count".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuelValueType())) {
+				if (!"ticket_count"
+						.equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuelValueType())) {
 					ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 					example.createCriteria().andRuleIdEqualTo(request.getRuleId());
-					List<ActivityStrategyInstance> activityStrategyInstance1 = activityStrategyInstanceMapper.selectByExample(example);
+					List<ActivityStrategyInstance> activityStrategyInstance1 = activityStrategyInstanceMapper
+							.selectByExample(example);
 					if (Integer.valueOf(activityStrategyInstance1.get(0).getRuleValue()) <= 0) {
 						return builder.body(ResponseUtils.getResponseBody("超过限定人数"));
 					}
@@ -224,17 +227,18 @@ public class ActivityManagerController {
 //		str = str + id;
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
-	
+
 	@ApiOperation(value = "生成活动码", notes = "生成活动码")
 	@RequestMapping(value = "/creatrCode", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> creatrCode(Integer[] usersId,@RequestParam Integer activityId) throws JSONException {
+	public ResponseEntity<JSONObject> creatrCode(Integer[] usersId, @RequestParam Integer activityId)
+			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<Total> list = new ArrayList<Total>(usersId.length);
 		for (int i = 0; i < usersId.length; i++) {
-			ActivitiRuleInstanceExample example =  new ActivitiRuleInstanceExample();
+			ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 			example.createCriteria().andUserIdEqualTo(usersId[i]).andActivityIdEqualTo(activityId);
 			List<ActivitiRuleInstance> instance = activitiRuleInstanceMapper.selectByExample(example);
-			if(instance.isEmpty()) {
+			if (instance.isEmpty()) {
 				return builder.body(ResponseUtils.getResponseBody("此活动人不存在"));
 			}
 			ActivitiRuleInstance ruleInstance = instance.get(0);
@@ -265,18 +269,26 @@ public class ActivityManagerController {
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
-		Integer index = activitiRuleInstanceMapper.selectByPrimaryKey(request.getUserId()).getUserTicketCount();
+		ActivitiRuleInstanceExample ruleInstanceExample = new ActivitiRuleInstanceExample();
+		ruleInstanceExample.createCriteria().andActivityIdEqualTo(request.getActivityId())
+				.andUserIdEqualTo(request.getUserId());
+		if (activitiRuleInstanceMapper.selectByExample(ruleInstanceExample).isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此投票人不存在"));
+		}
+		Integer index = activitiRuleInstanceMapper.selectByExample(ruleInstanceExample).get(0).getUserTicketCount();
 		if (index <= 0) {
 			return builder.body(ResponseUtils.getResponseBody("没票了"));
 		}
 		ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
-		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId()).andElectedUserIdEqualTo(request.getElectedUserId());
-		if(!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId())
+				.andElectedUserIdEqualTo(request.getElectedUserId());
+		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复投"));
 		}
 		activityVoteRecordsExample.clear();
-		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId()).andRemarksEqualTo(request.getRemark());
-		if(!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId())
+				.andRemarksEqualTo(request.getRemark());
+		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("此分数已经使用"));
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
@@ -298,7 +310,8 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("没票了"));
 		}
 		if (userElect.getUserTicketCount() == null) {
-			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index,request.getRemark());
+			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), index,
+					request.getRemark());
 			userElect.setRemarks(request.getRemark());
 			userElect.setUserTicketCount(1);
 			userElect.setUserScore(Integer.valueOf(request.getRemark()));
@@ -306,7 +319,8 @@ public class ActivityManagerController {
 			userVote.setUserTicketCount(userVote.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		} else {
-			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index,request.getRemark());
+			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), index,
+					request.getRemark());
 			userElect.setRemarks(request.getRemark());
 			userElect.setUserTicketCount(userElect.getUserTicketCount() + 1);
 			userElect.setUserScore(userElect.getUserScore() + Integer.valueOf(request.getRemark()));
@@ -315,7 +329,8 @@ public class ActivityManagerController {
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		}
 		ActivitiRuleInstanceExample example3 = new ActivitiRuleInstanceExample();
-		example3.createCriteria().andActivityIdEqualTo(request.getActivityId()).andRuleInstanceIdEqualTo(request.getRuleInstanceId());
+		example3.createCriteria().andActivityIdEqualTo(request.getActivityId())
+				.andRuleInstanceIdEqualTo(request.getRuleInstanceId());
 		example3.setOrderByClause("user_ticket_count DESC,user_score DESC");
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example3);
 		return builder.body(ResponseUtils.getResponseBody(list));
@@ -329,7 +344,6 @@ public class ActivityManagerController {
 			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer page = 1;
-		List<Total> result = new ArrayList<Total>();
 		ActivityExample example = new ActivityExample();
 		example.createCriteria().andUserIdEqualTo(userId).andIsTimingStartEqualTo((short) 0);
 		List<Activity> activity = activityMapper.selectByExample(example);
@@ -338,38 +352,47 @@ public class ActivityManagerController {
 		}
 		for (int i = 0; i < activity.size(); i++) {
 			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
-			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andRuleValueTypeEqualTo("count");
-			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample(); 
-			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
+			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+					.andRuleValueTypeEqualTo("count");
+			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
+			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+					.andIsElectedEqualTo(false);
 			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
 			for (int j = 0; j < list.size(); j++) {
 				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
-				activitiRuleInstanceExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
-				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample);
-				if(activityVoteRecords.size()<Integer.valueOf(activityStrategyInstanceMapper.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
-					for (int k = 0; k < activityVoteRecords.size(); k++) {
-						ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
-						activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
-						List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample2);
-						ActivitiRuleInstance instance = activitiRuleInstance.get(0);
-						instance.setUserTicketCount(instance.getUserTicketCount()-1);
-						instance.setUserScore(instance.getUserScore()-Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
-						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+				activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
+				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
+						.selectByExample(activityVoteRecordsExample);
+				if (!activityVoteRecords.isEmpty()) {
+					if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
+							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
+						for (int k = 0; k < activityVoteRecords.size(); k++) {
+							ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
+							activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+									.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
+							List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
+									.selectByExample(activitiRuleInstanceExample2);
+							ActivitiRuleInstance instance = activitiRuleInstance.get(0);
+							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+							instance.setUserScore(
+									instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
+							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+						}
+						for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
+								.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
+								- activityVoteRecords.size(); k++) {
+							ActivityVoteRecords records = new ActivityVoteRecords();
+							records.setUserId(activityVoteRecords.get(0).getUserId());
+							activityVoteRecordsMapper.insert(records);
+						}
 					}
-//					ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-//					example2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andUserIdEqualTo(activityVoteRecords.get(0).getUserId());
-//					List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper.selectByExample(example2);
-//					activitiRuleInstance.get(0).setUserTicketCount(0);
-//					activitiRuleInstanceMapper.updateByPrimaryKey(activitiRuleInstance.get(0));
-					ActivityVoteRecords records = new ActivityVoteRecords();
-					records.setUserId(list.get(j).getUserId());
-					activityVoteRecordsMapper.insert(records);
 				}
 			}
 		}
-		
+
 		List<ActivitiRuleInstance> list = null;
 		for (int i = 0; i < activity.size(); i++) {
+			List<Total> result = new ArrayList<Total>();
 			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
 			example2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
 			example2.setOrderByClause("user_ticket_count DESC,user_score DESC");
@@ -377,31 +400,35 @@ public class ActivityManagerController {
 				PageHelper.startPage(page, size);
 			}
 			list = activitiRuleInstanceMapper.selectByExample(example2);
-			for (int j = 0; j < list.size(); j++) {
-				Total total = new Total();
-				if (list.get(j).getUserScore() == null) {
-					total.setSocre(0);
-				} else {
-					total.setSocre(list.get(j).getUserScore());
+			if (!list.isEmpty()) {
+				Integer index = 1;
+				for (int j = 0; j < list.size(); j++) {
+					Total total = new Total();
+					if (list.get(j).getUserScore() == null) {
+						total.setSocre(0);
+					} else {
+						total.setSocre(list.get(j).getUserScore());
+					}
+					if (list.get(j).getUserTicketCount() == null) {
+						total.setVoteCount(0);
+					} else {
+						total.setVoteCount(list.get(j).getUserTicketCount());
+					}
+					total.setPosition(index);
+					total.setUserId(list.get(j).getUserId());
+					total.setActivityId(list.get(j).getActivityId());
+					result.add(total);
+					index++;
 				}
-				if (list.get(j).getUserTicketCount() == null) {
-					total.setVoteCount(0);
-				} else {
-					total.setVoteCount(list.get(j).getUserTicketCount());
-				}
-
-				total.setUserId(list.get(j).getUserId());
-				total.setActivityId(list.get(j).getActivityId());
-				result.add(total);
+				activity.get(i).setActivityResult(result.toString());
+				activityMapper.updateByPrimaryKey(activity.get(i));
 			}
-			activity.get(i).setActivityResult(result.toString());
-			activityMapper.updateByPrimaryKey(activity.get(i));
 		}
-		if (result.isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("还未有活动开始"));
-		}
+//		if (result.isEmpty()) {
+//			return builder.body(ResponseUtils.getResponseBody("还未有活动开始"));
+//		}
 //        TODO 统计投票 并将投票结果存入activity的activity_result 返回投票结果
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(activity));
 	}
 
 	@ApiOperation(value = "查看活动列表", notes = "查看活动列表")
@@ -485,10 +512,11 @@ public class ActivityManagerController {
 		ActivitiStrategy activitiStrategy = activitiStrategyMapper.selectByPrimaryKey(activity.getStrategyId());
 		return builder.body(ResponseUtils.getResponseBody(activitiStrategy));
 	}
-	
+
 	@ApiOperation(value = "投票记录", notes = "投票记录")
 	@RequestMapping(value = "/addVoteRecords", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addVoteRecords(Integer activityId,Integer userId,Integer electedUserId,Integer voteTimes,String remarks) throws JSONException {
+	public ResponseEntity<JSONObject> addVoteRecords(Integer activityId, Integer userId, Integer electedUserId,
+			Integer voteTimes, String remarks) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
 		activityVoteRecords.setActivityId(activityId);
@@ -502,7 +530,7 @@ public class ActivityManagerController {
 		activityVoteRecordsMapper.insert(activityVoteRecords);
 		return builder.body(ResponseUtils.getResponseBody(activityVoteRecords));
 	}
-	
+
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId) throws JSONException {
@@ -510,16 +538,19 @@ public class ActivityManagerController {
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
-		if(list.isEmpty()) {
+		if (list.isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody(null));
 		}
 		List<HfUser> users = new ArrayList<HfUser>(list.size());
 		List<HfUser> users2 = hfUserMapper.findAllUser();
 		for (int i = 0; i < users2.size(); i++) {
 			for (int j = 0; j < list.size(); j++) {
-				if(list.get(j).getUserId() == users2.get(i).getId()) {
-					if(list.get(j).getRuleInstanceValue()!=null) {
+				if (list.get(j).getUserId() == users2.get(i).getId()) {
+					if (list.get(j).getRuleInstanceValue() != null) {
 						users2.get(i).setCode(list.get(j).getRuleInstanceValue());
+					}
+					if(list.get(j).getUserTicketCount() != null) {
+						users2.get(i).setCount((list.get(j).getUserTicketCount()));
 					}
 					users.add(users2.get(i));
 				}
@@ -527,14 +558,23 @@ public class ActivityManagerController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(users));
 	}
-	
+
 	@ApiOperation(value = "删除参选人", notes = "删除参选人")
 	@RequestMapping(value = "/deleteActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteActivityUser(@RequestParam Integer activityId,@RequestParam Integer userId) throws JSONException {
+	public ResponseEntity<JSONObject> deleteActivityUser(@RequestParam Integer activityId,Integer userId[])
+			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId);
-		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.deleteByExample(example)));
+		for (int i = 0; i < userId.length; i++) {
+			ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId[i]);
+			List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper.selectByExample(example);
+			ActivitiRuleInstance instance = activitiRuleInstance.get(0);
+			ActivityStrategyInstance activityStrategyInstance = activityStrategyInstanceMapper.selectByPrimaryKey(instance.getRuleInstanceId());
+			activityStrategyInstance.setRuleValue(String.valueOf(Integer.valueOf(activityStrategyInstance.getRuleValue())+1));
+			activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance);
+			activitiRuleInstanceMapper.deleteByExample(example);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
 }

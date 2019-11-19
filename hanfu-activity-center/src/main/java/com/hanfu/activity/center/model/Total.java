@@ -2,12 +2,19 @@ package com.hanfu.activity.center.model;
 
 public class Total {
 	
+	private Integer position;
 	private Integer userId;
 	private Integer voteCount;
 	private Integer socre;
 	private Integer activityId;
 	private String code;
 	
+	public Integer getPosition() {
+		return position;
+	}
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
@@ -40,7 +47,6 @@ public class Total {
 	}
 	@Override
 	public String toString() {
-		Integer i = 1;
-		return "统计 :第"+ i++ +"名,用户id=" + userId + ", 用户票数=" + voteCount + ", 用户分数=" + socre + ")";
+		return "统计 :第"+ position +"名,用户id=" + userId + ", 用户票数=" + voteCount + ", 用户分数=" + socre + ")";
 	}
 }
