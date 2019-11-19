@@ -117,11 +117,11 @@ public class KingWordsController {
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		int userId = hfUserMapper.insert(user);
+		hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
-		auth.setUserId(userId);
+		auth.setUserId(user.getId());
 		auth.setAuthStatus((byte) 0);
 		auth.setIdDeleted((byte) 0);
 		auth.setEncodeType("0");
@@ -132,7 +132,7 @@ public class KingWordsController {
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(token, String.valueOf(userId));
+		map.put(token, String.valueOf(user.getId()));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
