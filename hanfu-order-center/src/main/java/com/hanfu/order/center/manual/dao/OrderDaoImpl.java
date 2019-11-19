@@ -33,8 +33,8 @@ public class OrderDaoImpl implements OrderDao{
 		return result;
 	}
 	@Override
-	public List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus,
-			LocalDateTime creatTime) {
+	public List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus
+			) {
 		List<HfOrderLogistics> result = sqlSessionTemplate.selectList("selectOrder");
 		return result;
 	}

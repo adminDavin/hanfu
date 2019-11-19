@@ -1,6 +1,8 @@
 package com.hanfu.user.center.request;
 
 
+import java.time.LocalDateTime;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -18,8 +20,8 @@ public class UserInfoRequest extends CommonRequest {
 	private String realName;
 	@ApiParam(required = false, value = "用户性别")
 	private Byte sex;
-//	@ApiParam(required = false, value = "出生时间, 时间格式:20181023T081324Z")
-//	private LocalDateTime birthDay;
+	@ApiParam(required = false, value = "出生时间, 时间格式:20181023T081324Z")
+	private LocalDateTime birthDay;
 	@ApiModelProperty(required = false, value = "图片文件")
 	private MultipartFile fileInfo;
 	@ApiParam(required = false, value = "详细地址")
@@ -56,12 +58,12 @@ public class UserInfoRequest extends CommonRequest {
 	public void setSex(Byte sex) {
 		this.sex = sex;
 	}
-//	public LocalDateTime getBirthDay() {
-//		return birthDay;
-//	}
-//	public void setBirthDay(LocalDateTime birthDay) {
-//		this.birthDay = birthDay;
-//	}
+	public LocalDateTime getBirthDay() {
+		return birthDay;
+	}
+	public void setBirthDay(LocalDateTime birthDay) {
+		this.birthDay = birthDay;
+	}
 	public MultipartFile getFileInfo() {
 		return fileInfo;
 	}

@@ -57,7 +57,7 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> query()
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -130,11 +130,11 @@ public class OrderController {
 		@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
 		@ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
 		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
+		//@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
 	})
-	public ResponseEntity<JSONObject> queryOrder(Integer orderId,String hfName,String payMethodType,String orderDetailStatus,LocalDateTime creatTime)
+	public ResponseEntity<JSONObject> queryOrder(Integer orderId,String hfName,String payMethodType,String orderDetailStatus)
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderId,hfName,payMethodType,orderDetailStatus,creatTime)));
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderId,hfName,payMethodType,orderDetailStatus)));
 	}
 }
