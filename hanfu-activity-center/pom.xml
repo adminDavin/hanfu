@@ -63,6 +63,11 @@
 
     <dependencies>
     <dependency>
+            <groupId>com.hanfu.common</groupId>
+            <artifactId>hanfu-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    <dependency>
    			<groupId>com.github.pagehelper</groupId>
    			<artifactId>pagehelper-spring-boot-starter</artifactId>
    			<version>1.2.5</version>

@@ -23,6 +23,7 @@ public class HfUser implements Serializable {
     private LocalDateTime modifyDate;
     private Byte idDeleted;
     private String code;
+    private Integer count;
     private static final long serialVersionUID = 1L;
 	public Integer getId() {
 		return id;
@@ -137,5 +138,11 @@ public class HfUser implements Serializable {
 	}
 	public void setCode(String code) {
 		this.code = code;
+	}
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 }
