@@ -1,10 +1,17 @@
 package com.hanfu.activity.center.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
@@ -26,7 +36,9 @@ import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.manual.dao.HfUserDao;
+import com.hanfu.activity.center.manual.dao.VotePictureDao;
 import com.hanfu.activity.center.manual.model.HfUser;
+import com.hanfu.activity.center.manual.model.Pictures;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
@@ -46,6 +58,7 @@ import com.hanfu.activity.center.request.AddActivityUserRequest;
 import com.hanfu.activity.center.request.StrategyRuleRequest;
 import com.hanfu.activity.center.request.UpdateActivityRuleRequest;
 import com.hanfu.activity.center.request.VoteTicketRequest;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -59,6 +72,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/wareHouse")
 @Api
 public class ActivityManagerController {
+	private static final String LOCK = "lock";
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -81,6 +96,9 @@ public class ActivityManagerController {
 
 	@Autowired
 	private HfUserDao hfUserMapper;
+	
+	@Autowired
+	private VotePictureDao votePictureDao;
 
 	@ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
 	@RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
@@ -575,6 +593,56 @@ public class ActivityManagerController {
 			activitiRuleInstanceMapper.deleteByExample(example);
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
+	@ApiOperation(value = "添加奖品图片", notes = "添加奖品图片")
+	@PostMapping(value = "/addPicture")
+	public ResponseEntity<JSONObject> addAwardPicture(Pictures request) throws JSONException, IOException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+			try {
+				FileMangeService fileMangeService = new FileMangeService();
+				String arr[];
+				MultipartFile fileInfo = request.getFileInfo();
+                arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
+				com.hanfu.activity.center.manual.model.FileDesc fileDesc = new com.hanfu.activity.center.manual.model.FileDesc();
+				fileDesc.setFileName(fileInfo.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setUserId(request.getUserId());
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				votePictureDao.insertFileDesc(fileDesc);
+				ActivitiRuleInstance instance = new ActivitiRuleInstance();
+//				instance.setFileId
+				activitiRuleInstanceMapper.insert(instance);
+			} catch (IOException e) {
+				logger.error("add picture failed", e);
+			}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	@ApiOperation(value = "获取图片", notes = "获取图片")
+	@RequestMapping(value = "/getFile", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
+	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		com.hanfu.activity.center.manual.model.FileDesc fileDesc = votePictureDao.selectFileDesc(fileId);
+		if (fileDesc == null) {
+			throw new Exception("file not exists");
+		}
+		FileMangeService fileManageService = new FileMangeService();
+		synchronized(LOCK) {
+			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			ByteArrayInputStream stream = new ByteArrayInputStream(file);
+			BufferedImage readImg = ImageIO.read(stream);
+			stream.reset();
+			OutputStream outputStream = response.getOutputStream();
+			ImageIO.write(readImg, "png", outputStream);
+			outputStream.close();
+		}
 	}
 
 }
