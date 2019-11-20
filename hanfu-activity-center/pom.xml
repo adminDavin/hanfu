@@ -17,7 +17,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hanfu.order.center.Application</mainClass>
+                    <mainClass>com.hanfu.activity.center.Application</mainClass>
                 </configuration>
             </plugin>
             <plugin>
