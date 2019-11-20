@@ -1,4 +1,4 @@
-package com.hanfu.user.center.controller;
+ package com.hanfu.user.center.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -220,5 +220,26 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> userList() throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+	}
+	
+	@RequestMapping(path = "/uploadResume",  method = RequestMethod.POST)
+	@ApiOperation(value = "上传简历", notes = "上传简历")
+	public ResponseEntity<JSONObject> uploadResume(MultipartFile file,
+			@RequestParam Integer userId, @RequestParam String baseInfo) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(file.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(userId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+//			HfUserInfo
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 }

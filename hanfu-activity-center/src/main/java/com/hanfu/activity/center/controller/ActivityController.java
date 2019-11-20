@@ -135,6 +135,7 @@ public class ActivityController {
 		for (int i = 0; i < list.size(); i++) {
 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
 			ActivityInfo activityInfo = new ActivityInfo();
+			activityInfo.setId(list.get(i).getId());
 			activityInfo.setActivityName(list.get(i).getActivityName());
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
