@@ -1,7 +1,5 @@
 package com.hanfu.order.center.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -63,6 +61,7 @@ public class OrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
 	}
+	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "创建订单", notes = "创建订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
@@ -92,6 +91,7 @@ public class OrderController {
 		hfOrdersDetail.setOrderDetailStatus(hfOrderStatus.getHfName());
 		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail)));
 	}
+	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiImplicitParams({

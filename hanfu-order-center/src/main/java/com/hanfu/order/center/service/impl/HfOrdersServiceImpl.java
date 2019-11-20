@@ -39,6 +39,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	OrderDao orderDao;
 	@Autowired
 	HfOrderStatusMapper hfOrderStatusMapper;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
@@ -98,7 +99,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrders);
 		return list;
 	}
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	@Override
 	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics) throws Exception {

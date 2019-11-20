@@ -122,7 +122,8 @@ public class KingWordsController {
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-//		int userId = hfUserMapper.insert(user);
+
+		hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);

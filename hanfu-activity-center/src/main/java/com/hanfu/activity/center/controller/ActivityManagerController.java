@@ -259,6 +259,8 @@ public class ActivityManagerController {
 	@RequestMapping(value = "/voteTicket", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> voteTicket(VoteTicketRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		ActivitiStrategy activitiStrategy = activitiStrategyMapper.selectByPrimaryKey(request.getRuleInstanceId());
+//		
 		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
@@ -271,6 +273,11 @@ public class ActivityManagerController {
 		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId()).andElectedUserIdEqualTo(request.getElectedUserId());
 		if(!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复投"));
+		}
+		activityVoteRecordsExample.clear();
+		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId()).andRemarksEqualTo(request.getRemark());
+		if(!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此分数已经使用"));
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
@@ -291,18 +298,18 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("没票了"));
 		}
 		if (userElect.getUserTicketCount() == null) {
-			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index);
+			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index,request.getRemark());
 			userElect.setRemarks(request.getRemark());
 			userElect.setUserTicketCount(1);
-			userElect.setUserScore(index);
+			userElect.setUserScore(Integer.valueOf(request.getRemark()));
 			activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 			userVote.setUserTicketCount(userVote.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		} else {
-			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index);
+			addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),index,request.getRemark());
 			userElect.setRemarks(request.getRemark());
 			userElect.setUserTicketCount(userElect.getUserTicketCount() + 1);
-			userElect.setUserScore(userElect.getUserScore() + index);
+			userElect.setUserScore(userElect.getUserScore() + Integer.valueOf(request.getRemark()));
 			activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 			userVote.setUserTicketCount(userVote.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
@@ -330,6 +337,8 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("还未有活动结束"));
 		}
 		for (int i = 0; i < activity.size(); i++) {
+			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
+			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andRuleValueTypeEqualTo("count");
 			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample(); 
 			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
 			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
@@ -337,14 +346,14 @@ public class ActivityManagerController {
 				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
 				activitiRuleInstanceExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
 				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample);
-				if(activityVoteRecords.size()<3) {
+				if(activityVoteRecords.size()<Integer.valueOf(activityStrategyInstanceMapper.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
 					for (int k = 0; k < activityVoteRecords.size(); k++) {
 						ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
 						activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
 						List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample2);
 						ActivitiRuleInstance instance = activitiRuleInstance.get(0);
 						instance.setUserTicketCount(instance.getUserTicketCount()-1);
-						instance.setUserScore(instance.getUserScore()-activityVoteRecords.get(k).getVoteTimes());
+						instance.setUserScore(instance.getUserScore()-Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
 						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 					}
 //					ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
@@ -479,13 +488,14 @@ public class ActivityManagerController {
 	
 	@ApiOperation(value = "投票记录", notes = "投票记录")
 	@RequestMapping(value = "/addVoteRecords", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addVoteRecords(Integer activityId,Integer userId,Integer electedUserId,Integer voteTimes) throws JSONException {
+	public ResponseEntity<JSONObject> addVoteRecords(Integer activityId,Integer userId,Integer electedUserId,Integer voteTimes,String remarks) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
 		activityVoteRecords.setActivityId(activityId);
 		activityVoteRecords.setUserId(userId);
 		activityVoteRecords.setElectedUserId(electedUserId);
 		activityVoteRecords.setVoteTimes(voteTimes);
+		activityVoteRecords.setRemarks(remarks);
 		activityVoteRecords.setCreateTime(LocalDateTime.now());
 		activityVoteRecords.setModifyTime(LocalDateTime.now());
 		activityVoteRecords.setIsDeleted((short) 0);
