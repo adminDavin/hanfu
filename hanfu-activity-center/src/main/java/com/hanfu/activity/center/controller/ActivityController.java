@@ -73,7 +73,7 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
 	
-	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
+	@ApiOperation(value = "查询参加该活动投票人员", notes = "查询参加该活动投票人员")
 	@RequestMapping(value = "/listActivityVoteUser", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listActivityVoteUser(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -487,14 +487,12 @@ public class ActivityController {
 	
 	@ApiOperation(value = "查询活动码", notes = "查询活动码")
 	@RequestMapping(value = "/listActivityCode", method = RequestMethod.POST)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "activityRuleValueDescId", value = "活动策略实体id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listActivityCode(@RequestParam String code) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		boolean flag = true;
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andRuleInstanceValueEqualTo(code);
-		if(activitiRuleInstanceMapper.selectByExample(example)==null) {
+		if(activitiRuleInstanceMapper.selectByExample(example).isEmpty()) {
 			flag = false;
 		}
 		return builder.body(ResponseUtils.getResponseBody(flag));

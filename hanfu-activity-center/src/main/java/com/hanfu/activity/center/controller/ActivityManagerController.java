@@ -2,6 +2,8 @@ package com.hanfu.activity.center.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -34,7 +36,9 @@ import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
+import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
+import com.hanfu.activity.center.dao.UserInfoMapper;
 import com.hanfu.activity.center.manual.dao.HfUserDao;
 import com.hanfu.activity.center.manual.dao.VotePictureDao;
 import com.hanfu.activity.center.manual.model.HfUser;
@@ -48,9 +52,11 @@ import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
+import com.hanfu.activity.center.model.FileDesc;
 import com.hanfu.activity.center.model.StrategyRule;
 import com.hanfu.activity.center.model.StrategyRuleExample;
 import com.hanfu.activity.center.model.Total;
+import com.hanfu.activity.center.model.UserInfo;
 import com.hanfu.activity.center.request.ActivityRequest;
 import com.hanfu.activity.center.request.ActivityStrategyRequest;
 import com.hanfu.activity.center.request.ActivityVoteRecordRequest;
@@ -96,9 +102,15 @@ public class ActivityManagerController {
 
 	@Autowired
 	private HfUserDao hfUserMapper;
-	
+
 	@Autowired
 	private VotePictureDao votePictureDao;
+
+	@Autowired
+	private FileDescMapper fileDescMapper;
+
+	@Autowired
+	private UserInfoMapper userInfoMapper;
 
 	@ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
 	@RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
@@ -567,7 +579,7 @@ public class ActivityManagerController {
 					if (list.get(j).getRuleInstanceValue() != null) {
 						users2.get(i).setCode(list.get(j).getRuleInstanceValue());
 					}
-					if(list.get(j).getUserTicketCount() != null) {
+					if (list.get(j).getUserTicketCount() != null) {
 						users2.get(i).setCount((list.get(j).getUserTicketCount()));
 					}
 					users.add(users2.get(i));
@@ -579,7 +591,7 @@ public class ActivityManagerController {
 
 	@ApiOperation(value = "删除参选人", notes = "删除参选人")
 	@RequestMapping(value = "/deleteActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteActivityUser(@RequestParam Integer activityId,Integer userId[])
+	public ResponseEntity<JSONObject> deleteActivityUser(@RequestParam Integer activityId, Integer userId[])
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		for (int i = 0; i < userId.length; i++) {
@@ -587,54 +599,55 @@ public class ActivityManagerController {
 			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId[i]);
 			List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper.selectByExample(example);
 			ActivitiRuleInstance instance = activitiRuleInstance.get(0);
-			ActivityStrategyInstance activityStrategyInstance = activityStrategyInstanceMapper.selectByPrimaryKey(instance.getRuleInstanceId());
-			activityStrategyInstance.setRuleValue(String.valueOf(Integer.valueOf(activityStrategyInstance.getRuleValue())+1));
+			ActivityStrategyInstance activityStrategyInstance = activityStrategyInstanceMapper
+					.selectByPrimaryKey(instance.getRuleInstanceId());
+			activityStrategyInstance
+					.setRuleValue(String.valueOf(Integer.valueOf(activityStrategyInstance.getRuleValue()) + 1));
 			activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance);
 			activitiRuleInstanceMapper.deleteByExample(example);
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-	
-	
+
 	@ApiOperation(value = "添加奖品图片", notes = "添加奖品图片")
 	@PostMapping(value = "/addPicture")
 	public ResponseEntity<JSONObject> addAwardPicture(Pictures request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-			try {
-				FileMangeService fileMangeService = new FileMangeService();
-				String arr[];
-				MultipartFile fileInfo = request.getFileInfo();
-                arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
-				com.hanfu.activity.center.manual.model.FileDesc fileDesc = new com.hanfu.activity.center.manual.model.FileDesc();
-				fileDesc.setFileName(fileInfo.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(request.getUserId());
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				votePictureDao.insertFileDesc(fileDesc);
-				ActivitiRuleInstance instance = new ActivitiRuleInstance();
-//				instance.setFileId
-				activitiRuleInstanceMapper.insert(instance);
-			} catch (IOException e) {
-				logger.error("add picture failed", e);
-			}
+		try {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			MultipartFile fileInfo = request.getFileInfo();
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(request.getUserId());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			ActivitiRuleInstance instance = new ActivitiRuleInstance();
+			instance.setFileId(fileDesc.getId());
+			activitiRuleInstanceMapper.insert(instance);
+		} catch (IOException e) {
+			logger.error("add picture failed", e);
+		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-	
+
 	@ApiOperation(value = "获取图片", notes = "获取图片")
 	@RequestMapping(value = "/getFile", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
 	public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
 		response.addHeader("Access-Control-Allow-Origin", "*");
-		com.hanfu.activity.center.manual.model.FileDesc fileDesc = votePictureDao.selectFileDesc(fileId);
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
 		if (fileDesc == null) {
 			throw new Exception("file not exists");
 		}
 		FileMangeService fileManageService = new FileMangeService();
-		synchronized(LOCK) {
+		synchronized (LOCK) {
 			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 			ByteArrayInputStream stream = new ByteArrayInputStream(file);
 			BufferedImage readImg = ImageIO.read(stream);
@@ -643,6 +656,48 @@ public class ActivityManagerController {
 			ImageIO.write(readImg, "png", outputStream);
 			outputStream.close();
 		}
+	}
+
+	@RequestMapping(path = "/uploadResume", method = RequestMethod.POST)
+	@ApiOperation(value = "上传简历", notes = "上传简历")
+	public ResponseEntity<JSONObject> uploadResume(MultipartFile file, @RequestParam Integer userId,
+			@RequestParam String baseInfo) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(file.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(userId);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		fileDescMapper.insert(fileDesc);
+		UserInfo info = new UserInfo();
+		info.setBaseInfo(baseInfo);
+		info.setCreateTime(LocalDateTime.now());
+		info.setFileId(fileDesc.getId());
+		info.setIsDeleted((short) 0);
+		info.setModifyTime(LocalDateTime.now());
+		info.setUserId(userId);
+		return builder.body(ResponseUtils.getResponseBody(userInfoMapper.insert(info)));
+	}
+
+	@RequestMapping(path = "/downloadResume", method = RequestMethod.POST)
+	@ApiOperation(value = "下载简历", notes = "下载简历")
+	public ResponseEntity<JSONObject> downloadResume(@RequestParam(name = "fileId") Integer fileId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+		FileMangeService fileManageService = new FileMangeService();
+		byte[] file_buff = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		File file = new File("src/main/resources/"+fileId+".word");
+		FileOutputStream outStream = new FileOutputStream(file);
+		outStream.write(file_buff);
+		outStream.flush();
+		outStream.close();
+		return builder.body(ResponseUtils.getResponseBody(file));
 	}
 
 }
