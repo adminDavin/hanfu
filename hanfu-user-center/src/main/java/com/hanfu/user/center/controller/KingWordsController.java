@@ -247,8 +247,10 @@ public class KingWordsController {
 		logger.info( "Start get SessionKey" );
 		Map<String,Object> map = new HashMap<String, Object>(  );    
 		//JSONObject rawDataJson = JSON.parseObject( rawData );     
-		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    
+		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    	
 		Integer openid = SessionKeyOpenId.getInteger("openid");   
+		
+		
 		String sessionKey = SessionKeyOpenId.getString( "session_key" );    
 		//HfUser user = hfUserMapper.selectByPrimaryKey(openid);   
 		//uuid生成唯一key    

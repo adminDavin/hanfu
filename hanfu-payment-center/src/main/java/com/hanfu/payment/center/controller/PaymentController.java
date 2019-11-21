@@ -1,5 +1,15 @@
 package com.hanfu.payment.center.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +34,7 @@ import com.hanfu.payment.center.request.AlipayConfig;
 import com.hanfu.payment.center.request.AlipayRefund;
 import com.hanfu.payment.center.service.AlipayService;
 import com.hanfu.payment.center.service.WeChatService;
+import com.hanfu.payment.center.util.WxMD5Util;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -54,7 +65,67 @@ public class PaymentController {
 		String pay = alipayService.getAliPayOrderStr(bossId,orderId,amount);
 		return builder.body(ResponseUtils.getResponseBody(pay));	
 	}
-
+	@ApiOperation(value = "支付流程", notes = "支付流程")
+	@RequestMapping(value = "/wxpay", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "totalFee", value = "商品实体id", required = true, type = "String")})
+	public ResponseEntity<JSONObject> wxpay(@RequestParam Integer userId,String  totalFee)
+			throws Exception {
+		String attach = "{\"user_id\":\"" + userId + "\"}";
+		Map<String, String> result = weChatService.dounifiedOrder(attach, totalFee);
+		WxMD5Util md5Util = new WxMD5Util();
+		Map<String, String> map = new HashMap<>();
+		//返回APP端的数据
+		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
+		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
+		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
+		map.put("appid", result.get("appid"));
+		map.put("partnerid", result.get("mch_id"));
+		map.put("prepayid", result.get("prepay_id"));
+		map.put("package", "Sign=WXPay");
+		map.put("noncestr", result.get("nonce_str"));
+		map.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));//单位为秒
+		map.put("sign", md5Util.getSign(map));
+		map.put("extdata", attach);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(map));	
+	}
+	@ApiOperation(value = "支付流程", notes = "支付流程")
+	@RequestMapping(value = "/notify", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> wxPayNotify(HttpServletRequest request, HttpServletResponse response)
+			throws JSONException {
+		 String resXml = "";
+	      try {
+	            InputStream inputStream = request.getInputStream();
+	            //将InputStream转换成xmlString
+	            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	            StringBuilder sb = new StringBuilder();
+	            String line = null;
+	            try {
+	                while ((line = reader.readLine()) != null) {
+	                    sb.append(line);
+	                }
+	            } catch (IOException e) {
+	                System.out.println(e.getMessage());
+	            } finally {
+	                try {
+	                    inputStream.close();
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	            resXml = sb.toString();
+	            String result = weChatService.payBack(resXml);
+	            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	      		return builder.body(ResponseUtils.getResponseBody(result));	
+	        } catch (Exception e) {
+	            System.out.println("微信手机支付失败:" + e.getMessage());
+	            String result = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
+	            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	      		return builder.body(ResponseUtils.getResponseBody(result));	
+	        }
+}
 	@ApiOperation(value = "退款流程", notes = "退款流程")
 	@RequestMapping(value = "/refund", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -85,16 +156,16 @@ public class PaymentController {
 		return builder.body(ResponseUtils.getResponseBody("退款成功"));
 	}
 	/**
-     * 
-     * 说明：单笔转账到支付宝账户
-     * @param out_biz_no  商户转账唯一订单号
-     * @param payee_type 收款方账户类型  (1、ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号。以2088开头的16位纯数字组成。2、ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。)
-     * @param payee_account 收款方账户
-     * @param amount 转账金额
-     * @param payer_show_name 付款方姓名
-     * @param payee_real_name 收款方真实姓名
-     * @param remark 转账备注
-     */
+	 * 
+	 * 说明：单笔转账到支付宝账户
+	 * @param out_biz_no  商户转账唯一订单号
+	 * @param payee_type 收款方账户类型  (1、ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号。以2088开头的16位纯数字组成。2、ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。)
+	 * @param payee_account 收款方账户
+	 * @param amount 转账金额
+	 * @param payer_show_name 付款方姓名
+	 * @param payee_real_name 收款方真实姓名
+	 * @param remark 转账备注
+	 */
 	@RequestMapping("/transferAccounts")
 	public void transferAccounts(String out_biz_no,String payee_type,String payee_account,String amount,String payer_show_name,String payee_real_name,String remark) {
 		//填写自己创建的app的对应参数
