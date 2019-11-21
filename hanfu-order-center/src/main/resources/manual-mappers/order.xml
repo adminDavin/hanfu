@@ -28,6 +28,9 @@
     <result column="order_type" jdbcType="VARCHAR" property="orderType" />
     <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime"/>
+    <result column="username" jdbcType="VARCHAR" property="userName"/>
 </resultMap>
 <select id="selectOrderList" resultMap="BaseResultMap">
      SELECT *
@@ -52,4 +55,45 @@
         hf_user_address h7
      ON h1.user_address_id =h7.id    
 </select>
+<select id="selectOrder" resultMap="BaseResultMap">
+         SELECT *
+     FROM 
+        hf_order_logistics h1	
+     LEFT JOIN	
+        hf_orders h2
+     ON h1.orders_id = h2.id
+     LEFT JOIN
+        hf_orders_detail  h3	
+     ON   h1.order_detail_id = h3.id
+     LEFT JOIN 
+        hf_user h4
+     ON   h1.user_id = h4.id
+     LEFT JOIN
+        hf_goods h5
+     ON   h1.googs_id = h5.id
+     LEFT JOIN
+        hf_user_address h6
+     ON h1.user_address_id =h6.id 
+     <where>
+        <if test="orderId!=null and ''!=orderId">
+           h2.id=#{orderId}
+        </if>
+        <if test="hfName!=null and ''!=hfName">
+           h5.hf_name=#{hfName}
+        </if>
+        <if test="payMethodType!=null and ''!=payMethodType">
+           h2.pay_method_type=#{payMethodType}
+           </if>
+        <if test="orderDetailStatus!=null and ''!=orderDetailStatus">
+           h3.order_detail_status=#{orderDetailStatus}
+        </if>
+        <if test="creatTime!=null and ''!=creatTime">
+           h2.creat_time=#{creatTime}
+        </if> 
+     </where>
+</select>
+
+
+
+
 </mapper>

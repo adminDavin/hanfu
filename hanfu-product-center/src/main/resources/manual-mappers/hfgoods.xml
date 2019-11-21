@@ -51,6 +51,13 @@
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
   </resultMap>
   
+<!--   <resultMap id="AwardInfoEntityMap" 
+		type="cn.tedu.store.entity.AwardInfo">
+		<id column="id" property="id"/>
+		<result column="award_name" property="awardName"/>
+		<result column="emp_num" property="empNum"/>
+	</resultMap> -->
+  
   	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly1">
 			SELECT
 				h.goods_desc,h.id,
@@ -206,10 +213,10 @@
 		    ON 
 		    	h.category_id = h1.id
     	    <if test="goodName != null and goodName != ''">
-    	    	WHERE p.hf_name like '%${goodName}%'
+    	    	WHERE h.hf_name like '%${goodName}%'
     	    </if>
     	    <if test="categoryId != null and categoryId != ''">
-    	    	AND h.id = #{categoryId} 
+    	    	AND h1.id = #{categoryId} 
     	    </if>
   </select>
 	
@@ -222,4 +229,12 @@
 			WHERE
 				id = #{id}
 	</update>
+	
+	<insert id="insertAwardInfo" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO 
+				award(award_name,emp_num) 
+		values(#{awardName},#{empNum})
+	</insert>
+	
 </mapper>

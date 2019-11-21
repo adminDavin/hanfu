@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.inner.model.product.center.HfGoodsDisplay;
 import com.hanfu.product.center.dao.FileDescMapper;
@@ -26,6 +27,7 @@ import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
+//import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsPictrue;
@@ -65,7 +67,12 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 	private WarehouseMapper warehouseMapper;
 	
 	@Override
-    public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods() {
+    public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods(Integer page,Integer size) {
+		if(!StringUtils.isEmpty(page)) {
+			if(!StringUtils.isEmpty(size)) {
+				PageHelper.startPage(page, size);
+			}
+		}
 		List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoodsInfo();
 		if (!list.isEmpty()) {
 			for (int i = 0; i < list.size(); i++) {
@@ -158,10 +165,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
 	}
 	
-	@Override
-	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
-		picture(FileDescId, response);
-	}
+//	@Override
+//	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
+//		picture(FileDescId, response);
+//	}
 	
 	@Override
 	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {
@@ -184,4 +191,10 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 			outputStream.close();
 		}
 	}
+	
+//	@Override
+//	public Integer insertAwardInfo(AwardInfo awardInfo) {
+//		Integer row = hfGoodsDao.insertAwardInfo(awardInfo);
+//		return row;
+//	}
 }

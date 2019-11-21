@@ -20,8 +20,8 @@ public class RefferralGoodsServiceImpl implements ReferralGoodsService {
 	private GoodsService goodsService;
 
 	@Override
-	public List<HfGoodsDisplay> getAllGoods() {
-		return goodsService.findAllGoods();
+	public List<HfGoodsDisplay> getAllGoods(Integer page,Integer size) {
+		return goodsService.findAllGoods(page,size);
 	}
 
 	@Override
@@ -29,10 +29,10 @@ public class RefferralGoodsServiceImpl implements ReferralGoodsService {
 		return goodsService.findAllPicture();
 	}
 
-	@Override
-	public void getPicture(Integer fileId, HttpServletResponse response) throws Exception {
-		goodsService.getPicture(fileId, response);
-	}
+//	@Override
+//	public void getPicture(Integer fileId, HttpServletResponse response) throws Exception {
+//		goodsService.getPicture(fileId, response);
+//	}
 
 	@Override
 	public List<HfGoodsDisplay> getGoodsInfo(Integer goodsId) {

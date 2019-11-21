@@ -23,6 +23,7 @@ import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
+import com.hanfu.order.center.request.MyPrint;
 import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -54,12 +55,13 @@ public class OrderController {
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> query()
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
 	}
+	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "创建订单", notes = "创建订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
@@ -89,6 +91,7 @@ public class OrderController {
 		hfOrdersDetail.setOrderDetailStatus(hfOrderStatus.getHfName());
 		return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.updateByPrimaryKey(hfOrdersDetail)));
 	}
+	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiImplicitParams({
@@ -107,5 +110,31 @@ public class OrderController {
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderDetail(id)));
+	}
+	@ApiOperation(value = "打印订单", notes = "打印订单")
+	@RequestMapping(value = "/print", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> printOrder(@RequestParam Integer id)
+			throws Exception{
+		MyPrint myPrint = new MyPrint();
+		myPrint.setTotalPageCount(2);	
+		myPrint.doPrint(myPrint);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody("打印成功"));
+	}
+	@ApiOperation(value = "根据条件查询订单", notes = "根据条件查询订单")
+	@RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
+		//@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
+	})
+	public ResponseEntity<JSONObject> queryOrder(Integer orderId,String hfName,String payMethodType,String orderDetailStatus)
+			throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderId,hfName,payMethodType,orderDetailStatus)));
 	}
 }

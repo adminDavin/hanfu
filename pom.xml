@@ -18,6 +18,7 @@
 		<module>hanfu-payment-center</module>
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
+		<module>hanfu-chat</module>
 	</modules>
 	<profiles>
 		<profile>

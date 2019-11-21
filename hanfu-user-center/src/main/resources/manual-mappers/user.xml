@@ -9,11 +9,33 @@
 			property="authType" />
 		<result column="auth_key" jdbcType="VARCHAR" property="authKey" />
 	</resultMap>
+	<resultMap type="com.hanfu.user.center.model.HfUser" id="ResultMap">
+	       <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="birth_day" jdbcType="TIMESTAMP" property="birthDay" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
+    <result column="file_id" jdbcType="INTEGER" property="fileId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="user_level" jdbcType="TINYINT" property="userLevel" />
+    <result column="last_auth_time" jdbcType="TIMESTAMP" property="lastAuthTime" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="id_deleted" jdbcType="TINYINT" property="idDeleted" />
+	</resultMap>
 	<select id="selectAuthList" resultMap="BaseResultMap">
 		SELECT user_id,auth_type,auth_key
 		FROM
 		hf_auth
 		WHERE
 		auth_key=#{authKey}
+	</select>
+	<select id="selectUserList" resultMap="ResultMap">
+	     SELECT * FROM hf_user
 	</select>
 </mapper>

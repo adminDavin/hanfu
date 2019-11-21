@@ -1,10 +1,8 @@
-package com.hanfu.user.center.controller;
+ package com.hanfu.user.center.controller;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -14,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +23,6 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -39,6 +37,7 @@ import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
+import com.hanfu.user.center.utils.GetMessageCode;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -48,6 +47,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api
 @RequestMapping("/user")
+@CrossOrigin
 public class KingWordsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
@@ -72,6 +72,9 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfAuth hfAuth = userDao.selectList(authKey);
+		if(hfAuth == null) {
+			return builder.body(ResponseUtils.getResponseBody("用户不存在")); 
+		}
 		Map<String , Integer> list = new HashMap<>();
 		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
 		//将token存入redis
@@ -81,9 +84,9 @@ public class KingWordsController {
 		}
 		if(!"1".equals(authType)) {
 			if(!(hfAuth.getAuthKey()).equals(authKey)) {
-//				if(passwd != GetMessageCode.getCode(authKey)) {
+				if(passwd != GetMessageCode.getCode(authKey)) {
 				throw new ParamInvalidException("authType is invalid");
-//				}
+				}
 			}		
 		}
 		list.put(token, hfAuth.getUserId());
@@ -119,11 +122,12 @@ public class KingWordsController {
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		int userId = hfUserMapper.insert(user);
+
+		hfUserMapper.insert(user);
 		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
-		auth.setUserId(userId);
+		auth.setUserId(user.getId());
 		auth.setAuthStatus((byte) 0);
 		auth.setIdDeleted((byte) 0);
 		auth.setEncodeType("0");
@@ -134,7 +138,7 @@ public class KingWordsController {
 		UUID uuid = UUID.randomUUID();
 		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
-		map.put(token, String.valueOf(userId));
+		map.put(token, String.valueOf(user.getId()));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
@@ -144,9 +148,9 @@ public class KingWordsController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
-//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//		String localTime = df.format(request.getBirthDay());
-//		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String localTime = df.format(request.getBirthDay());
+		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
 		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (user == null) {
 			throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -154,9 +158,12 @@ public class KingWordsController {
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());
 		}
-//		if(!StringUtils.isEmpty(request.getBirthDay())) {
-//			user.setBirthDay(ldt);
-//		}
+		if(!StringUtils.isEmpty(request.getUsername())) {
+			user.setUsername(request.getUsername());
+		}
+		if(!StringUtils.isEmpty(request.getBirthDay())) {
+			user.setBirthDay(ldt);
+		}
 		if(!StringUtils.isEmpty(request.getEmail())) {
 			user.setEmail(request.getEmail());
 		}
@@ -174,46 +181,31 @@ public class KingWordsController {
 		}
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-		List<HfUser> pictures = Lists.newArrayList();
-		try {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
+	}
+	
+	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@ApiOperation(value = "上传头像", notes = "上传头像")
+	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
+			Integer userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
-			MultipartFile fileInfo = request.getFileInfo();
-            arr = fileMangeService.uploadFile(fileInfo .getBytes(), String.valueOf(request.getUserId()));
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
 			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(request.getUserId());
+			fileDesc.setUserId(userId);
 			fileDesc.setCreateTime(LocalDateTime.now());
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
 			HfUser hfUser = new HfUser();
 			hfUser.setFileId(fileDesc.getId());
-			hfUserMapper.insert(hfUser);
-			pictures.add(hfUser);	
-		} catch (IOException e) {
-			logger.error("add picture failed", e);
-		}
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
-	}
-	
-	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam("file") MultipartFile file,
-			String userId) throws Exception{
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		FileMangeService fileManageService = new FileMangeService();
-		FileInputStream fis = null;
-		try {
-			fis = (FileInputStream) file.getInputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String[] fileid = fileManageService.uploadFile(fis, userId);
-		return builder.body(ResponseUtils.getResponseBody(fileid));
+			hfUserMapper.insert(hfUser);	
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(hfUser)));
 	}
 	@RequestMapping(path = "/download_avatar",  method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> downloadAvatar(String group_name,
@@ -222,5 +214,32 @@ public class KingWordsController {
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
-	}		
+	}
+	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
+	@ApiOperation(value = "用户列表", notes = "用户列表")
+	public ResponseEntity<JSONObject> userList() throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+	}
+	
+	@RequestMapping(path = "/uploadResume",  method = RequestMethod.POST)
+	@ApiOperation(value = "上传简历", notes = "上传简历")
+	public ResponseEntity<JSONObject> uploadResume(MultipartFile file,
+			@RequestParam Integer userId, @RequestParam String baseInfo) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(file.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(userId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+//			HfUserInfo
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 }

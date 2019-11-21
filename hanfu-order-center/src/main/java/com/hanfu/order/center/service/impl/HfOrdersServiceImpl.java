@@ -39,6 +39,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	OrderDao orderDao;
 	@Autowired
 	HfOrderStatusMapper hfOrderStatusMapper;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics)  {
@@ -73,22 +74,20 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setCreateTime(LocalDateTime.now());
 		hfOrdersDetail.setModifyTime(LocalDateTime.now());
 		hfOrdersDetail.setIsDeleted((short) 0);
-		hfOrdersDetail.setOrdersId(hfOrder.getId());
+		hfOrdersDetail.setOrdersId(hfOrders.getId());
 		hfOrdersDetail.setLastModifier("1");
-		hfOrdersDetail.setId(hfOrder.getId());
-		hfOrdersDetailMapper.insert(hfOrdersDetail);
+		hfOrdersDetailMapper.insert(hfOrdersDetail); 
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
 		hfOrderLogistic.setGoogsId(request.getGoogsId());
 		hfOrderLogistic.setCreateTime(LocalDateTime.now());
 		hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
 		hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
 		hfOrderLogistic.setLogisticsOrdersId(logisticsOrdersId);
-		hfOrderLogistic.setOrderDetailId(request.getId());
+		hfOrderLogistic.setOrderDetailId(hfOrdersDetail.getId());
 		hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
 		hfOrderLogistic.setUserId(hfOrderLogistics.getUserId());
-		hfOrderLogistic.setOrdersId(hfOrder.getId());
+		hfOrderLogistic.setOrdersId(hfOrders.getId());
 		hfOrderLogistic.setRespId(request.getRespId());
-		hfOrderLogistic.setGoogsId(request.getGoogsId());
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
 		hfOrderLogistic.setIsDeleted((short) 0);
 		hfOrderLogistic.setLastModifier("1");
@@ -100,7 +99,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrders);
 		return list;
 	}
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	@Override
 	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics) throws Exception {
