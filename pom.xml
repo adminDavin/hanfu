@@ -19,6 +19,7 @@
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
 		<module>hanfu-chat</module>
+		<module>hanfu-activity-center</module>
 	</modules>
 	<profiles>
 		<profile>

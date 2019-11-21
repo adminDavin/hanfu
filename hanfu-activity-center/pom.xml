@@ -9,7 +9,7 @@
   <artifactId>hanfu-activity-center</artifactId>
   
   <build>
-        <finalName>hanfu-order-center</finalName>
+        <finalName>hanfu-activity-center</finalName>
         <defaultGoal>compile</defaultGoal>
         <plugins>
 
