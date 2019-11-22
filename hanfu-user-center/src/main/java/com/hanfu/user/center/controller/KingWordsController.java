@@ -248,30 +248,19 @@ public class KingWordsController {
 		Map<String,Object> map = new HashMap<String, Object>(  );    
 		//JSONObject rawDataJson = JSON.parseObject( rawData );     
 		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    	
-		Integer openid = SessionKeyOpenId.getInteger("openid");   
-		
-		
-		String sessionKey = SessionKeyOpenId.getString( "session_key" );    
-		//HfUser user = hfUserMapper.selectByPrimaryKey(openid);   
+		Integer openid = (Integer) SessionKeyOpenId.get("openid");   
+		String sessionKey = (String) SessionKeyOpenId.get( "session_key" );    
 		//uuid生成唯一key    
+		System.out.println("openid="+openid+",session_key="+sessionKey);
 		String skey = UUID.randomUUID().toString();    
-		/*
-		 * if(user==null){ //入库 String nickName = rawDataJson.getString( "nickName" );
-		 * String city = rawDataJson.getString( "city" ); String country =
-		 * rawDataJson.getString( "country" ); String province = rawDataJson.getString(
-		 * "province" ); user = new HfUser(); user.setCreateDate(LocalDateTime.now());
-		 * user.setAddress(country+province+city); user.setNickName(nickName);
-		 * user.setModifyDate(LocalDateTime.now());; hfUserMapper.insert(user); }else {
-		 * //已存在 logger.info( "用户openid已存在,不需要插入" ); }
-		 */  
 		//根据openid查询skey是否存在   
-		String skey_redis = (String) redisTemplate.opsForValue().get( openid ); 
-		if(skey_redis != null){    
+		String skey_redis =redisTemplate.opsForValue().get( openid ); 
+		if(StringUtils.isEmpty(skey_redis)){    
 			//存在 删除 skey 重新生成skey 将skey返回    
 			redisTemplate.delete( skey_redis );   
 		}      
 		//  缓存一份新的       
-		JSONObject sessionObj = new JSONObject(  );      
+		JSONObject sessionObj = new JSONObject();      
 		sessionObj.put( "openId",openid );     
 		sessionObj.put( "sessionKey",sessionKey );  
 		redisTemplate.opsForValue().set( skey,sessionObj.toJSONString() );
@@ -343,7 +332,7 @@ public class KingWordsController {
 		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
 		Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
-		requestUrlParam.put( "secret","65747dee28352c4f1d1236f03cc5929c" );
+		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
 		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
 		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
 		//发送post请求读取调用微信接口获取openid用户唯一标识
