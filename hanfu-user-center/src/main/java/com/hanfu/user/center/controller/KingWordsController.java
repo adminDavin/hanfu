@@ -1,22 +1,33 @@
 package com.hanfu.user.center.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.AlgorithmParameters;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+import java.security.spec.InvalidParameterSpecException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
@@ -35,7 +47,6 @@ import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.model.FileDesc;
-import com.hanfu.user.center.model.FileDescExample;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
@@ -44,7 +55,7 @@ import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
-import com.hanfu.user.center.utils.GetMessageCode;
+import com.hanfu.user.center.utils.UrlUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -56,7 +67,6 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 @CrossOrigin
 public class KingWordsController {
-	private static final String LOCK = "LOCK";
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	FileDescMapper fileDescMapper;
@@ -66,59 +76,54 @@ public class KingWordsController {
 	private UserCenterService userCenterService;
 	@Resource
 	private RedisTemplate<String, String> redisTemplate;
-	@Autowired
+	@Autowired 
 	HfAuthMapper hfAuthMapper;
 	@Autowired
 	UserDao userDao;
-
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
-	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType,
-			@RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd)
-			throws Exception {
+		@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
+	})
+	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfAuth hfAuth = userDao.selectList(authKey);
-		if (hfAuth == null) {
-			return builder.body(ResponseUtils.getResponseBody("用户不存在"));
-		}
-		Map<String, Integer> list = new HashMap<>();
-		String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
-		// 将token存入redis
+		Map<String , Integer> list = new HashMap<>();
+		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
+		//将token存入redis
 		redisTemplate.opsForValue().set(token, String.valueOf(hfAuth.getUserId()));
-		if (StringUtils.isEmpty(token)) {
+		if (StringUtils.isEmpty(token)) { 
 			userCenterService.checkToken(token);
 		}
-		if (!"1".equals(authType)) {
-			if (!(hfAuth.getAuthKey()).equals(authKey)) {
-				if (passwd != GetMessageCode.getCode(authKey)) {
-					throw new ParamInvalidException("authType is invalid");
-				}
-			}
+		if(!"1".equals(authType)) {
+			if(!(hfAuth.getAuthKey()).equals(authKey)) {
+				//				if(passwd != GetMessageCode.getCode(authKey)) {
+				throw new ParamInvalidException("authType is invalid");
+				//				}
+			}		
 		}
 		list.put(token, hfAuth.getUserId());
-//		HashMap<String, Object> result = new HashMap<>();
-//		result.put("token", "ss");
-//		result.put("userId", 5);
-//		result.put("userInfo", new HfUser());
+		//		HashMap<String, Object> result = new HashMap<>();
+		//		result.put("token", "ss");
+		//		result.put("userId", 5);
+		//		result.put("userInfo", new HfUser());
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式. 2  手机号码注册", required = true, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String") })
-	public ResponseEntity<JSONObject> register(@RequestParam(name = "authType") String authType,
-			@RequestParam(name = "authKey") String authKey, @RequestParam("passwd") String passwd) throws Exception {
+		@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式. 2  手机号码注册", required = true, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
+		@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String")
+	})
+	public ResponseEntity<JSONObject> register(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam("passwd") String passwd) throws Exception {
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		long authCount = hfAuthMapper.countByExample(example);
-		if (authCount > 0) {
+		if (authCount > 0) { 
 			throw new AuthKeyIsExistException(authKey);
 		}
 		HfUser user = new HfUser();
@@ -127,14 +132,13 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
-		// user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
+		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
 		user.setLastAuthTime(LocalDateTime.now());
 		user.setCreateDate(LocalDateTime.now());
 		user.setModifyDate(LocalDateTime.now());
 		user.setIdDeleted((byte) 0);
-
 		hfUserMapper.insert(user);
-		HfAuth auth = new HfAuth();
+		HfAuth auth = new HfAuth(); 
 		auth.setAuthKey(authKey);
 		auth.setAuthType(authType);
 		auth.setUserId(user.getId());
@@ -146,19 +150,21 @@ public class KingWordsController {
 		auth.setIdDeleted((byte) 0);
 		hfAuthMapper.insert(auth);
 		UUID uuid = UUID.randomUUID();
-		String token = "_" + uuid.toString().replaceAll("-", "");
+		String token ="_"+uuid.toString().replaceAll("-", "");
 		Map<String, String> map = new HashMap<String, String>();
 		map.put(token, String.valueOf(user.getId()));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 
+
+
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		String localTime = df.format(request.getBirthDay());
-		LocalDateTime ldt = LocalDateTime.parse(localTime, df);
+		//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		//		String localTime = df.format(request.getBirthDay());
+		//		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
 		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (user == null) {
 			throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -166,25 +172,25 @@ public class KingWordsController {
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());
 		}
-		if (!StringUtils.isEmpty(request.getUsername())) {
+		if(!StringUtils.isEmpty(request.getUsername())) {
 			user.setUsername(request.getUsername());
 		}
-		if (!StringUtils.isEmpty(request.getBirthDay())) {
-			user.setBirthDay(ldt);
-		}
-		if (!StringUtils.isEmpty(request.getEmail())) {
+		//		if(!StringUtils.isEmpty(request.getBirthDay())) {
+		//			user.setBirthDay(ldt);
+		//		}
+		if(!StringUtils.isEmpty(request.getEmail())) {
 			user.setEmail(request.getEmail());
 		}
-		if (!StringUtils.isEmpty(request.getNickName())) {
+		if(!StringUtils.isEmpty(request.getNickName())) {
 			user.setEmail(request.getNickName());
 		}
-		if (!StringUtils.isEmpty(request.getRealName())) {
+		if(!StringUtils.isEmpty(request.getRealName())) {
 			user.setRealName(request.getRealName());
 		}
-		if (!StringUtils.isEmpty(request.getRegion())) {
+		if(!StringUtils.isEmpty(request.getRegion())) {
 			user.setRegion(request.getRegion());
 		}
-		if (!StringUtils.isEmpty(request.getSex())) {
+		if(!StringUtils.isEmpty(request.getSex())) {
 			user.setSex(request.getSex());
 		}
 		user.setModifyDate(LocalDateTime.now());
@@ -193,69 +199,144 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
 
-	@RequestMapping(path = "/uploadAvatar", method = RequestMethod.POST)
-	@ApiOperation(value = "更新头像", notes = "更新头像")
-	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file, Integer userId) throws Exception {
+	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@ApiOperation(value = "上传头像", notes = "上传头像")
+	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
+			Integer userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		FileDescExample example = new FileDescExample();
-		example.createCriteria().andUserIdEqualTo(userId);
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
-		List<FileDesc> fileDesc = fileDescMapper.selectByExample(example);
 		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-		if(!fileDesc.isEmpty()) {
-			FileDesc desc = fileDesc.get(0);
-			desc.setFileName(file.getName());
-			desc.setGroupName(arr[0]);
-			desc.setRemoteFilename(arr[1]);
-			desc.setModifyTime(LocalDateTime.now());
-			desc.setIsDeleted((short) 0);
-			fileDescMapper.updateByPrimaryKey(desc);
-		}else {
-			FileDesc desc = new FileDesc();
-			desc.setFileName(file.getName());
-			desc.setGroupName(arr[0]);
-			desc.setRemoteFilename(arr[1]);
-			desc.setUserId(userId);
-			desc.setCreateTime(LocalDateTime.now());
-			desc.setModifyTime(LocalDateTime.now());
-			desc.setIsDeleted((short) 0);
-			fileDescMapper.insert(desc);
-			HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
-			hfUser.setFileId(desc.getId());
-			hfUserMapper.updateByPrimaryKeySelective(hfUser);
-		}
-		return builder.body(ResponseUtils.getResponseBody(null));
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(file.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(userId);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		fileDescMapper.insert(fileDesc);
+		HfUser hfUser = new HfUser();
+		hfUser.setFileId(fileDesc.getId());
+		hfUserMapper.insert(hfUser);	
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(hfUser)));
 	}
-
-	@ApiOperation(value = "获取头像", notes = "获取头像")
-	@RequestMapping(value = "/downloadAvatar", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
-	public void downloadAvatar(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response)
-			throws Exception {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
-		if (fileDesc == null) {
-			throw new Exception("file not exists");
-		}
+	@RequestMapping(path = "/download_avatar",  method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> downloadAvatar(String group_name,
+			String remoteFilename) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		FileMangeService fileManageService = new FileMangeService();
-		synchronized (LOCK) {
-			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-			ByteArrayInputStream stream = new ByteArrayInputStream(file);
-			BufferedImage readImg = ImageIO.read(stream);
-			stream.reset();
-			OutputStream outputStream = response.getOutputStream();
-			ImageIO.write(readImg, "png", outputStream);
-			outputStream.close();
-		}
+		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
+		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
-
-	@RequestMapping(path = "/userList", method = RequestMethod.GET)
+	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
-	public ResponseEntity<JSONObject> userList() throws Exception {
+	public ResponseEntity<JSONObject> userList() throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
 	}
+	@RequestMapping(path = "/wxLogin",  method = RequestMethod.GET)
+	@ApiOperation(value = "微信登录", notes = "微信登录")
+	public ResponseEntity<JSONObject> wxLogin(Model model,                                  
+			@RequestParam(value = "code",required = false) String code,                                  
+			@RequestParam(value = "rawData",required = false) String rawData,                                  
+			@RequestParam(value = "signature",required = false) String signature,                                  
+			@RequestParam(value = "encrypteData",required = false) String encrypteData,                                  
+			@RequestParam(value = "iv",required = false) String iv
+			) throws Exception{
+		logger.info( "Start get SessionKey" );
+		Map<String,Object> map = new HashMap<String, Object>(  );    
+		//JSONObject rawDataJson = JSON.parseObject( rawData );     
+		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    	
+		Integer openid = (Integer) SessionKeyOpenId.get("openid");   
+		String sessionKey = (String) SessionKeyOpenId.get( "session_key" );    
+		//uuid生成唯一key    
+		System.out.println("openid="+openid+",session_key="+sessionKey);
+		String skey = UUID.randomUUID().toString();    
+		//根据openid查询skey是否存在   
+		String skey_redis =redisTemplate.opsForValue().get( openid ); 
+		if(StringUtils.isEmpty(skey_redis)){    
+			//存在 删除 skey 重新生成skey 将skey返回    
+			redisTemplate.delete( skey_redis );   
+		}      
+		//  缓存一份新的       
+		JSONObject sessionObj = new JSONObject();      
+		sessionObj.put( "openId",openid );     
+		sessionObj.put( "sessionKey",sessionKey );  
+		redisTemplate.opsForValue().set( skey,sessionObj.toJSONString() );
+		redisTemplate.opsForValue().set( openid.toString(),skey );     
+		//把新的sessionKey和oppenid返回给小程序      
+		map.put( "skey",skey );  
+		map.put( "result","0" );  
+		JSONObject userInfo = getUserInfo( encrypteData, sessionKey, iv ); 
+		map.put( "userInfo",userInfo );  
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
 
+	private JSONObject getUserInfo(String encrypteData, String sessionKey, String iv) {
+		// 被加密的数据
+		byte[] dataByte = Base64.getDecoder().decode(encrypteData);
+		// 加密秘钥
+		byte[] keyByte = Base64.getDecoder().decode(sessionKey);
+		// 偏移量
+		byte[] ivByte = Base64.getDecoder().decode(iv);
+		try {
+			// 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
+			int base = 16;
+			if (keyByte.length % base != 0) {
+				int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
+				byte[] temp = new byte[groups * base];
+				Arrays.fill(temp, (byte) 0);
+				System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
+				keyByte = temp;
+			}
+			// 初始化
+			Security.addProvider(new BouncyCastleProvider());
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding","BC");
+			SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
+			AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
+			parameters.init(new IvParameterSpec(ivByte));
+			cipher.init( Cipher.DECRYPT_MODE, spec, parameters);// 初始化
+			byte[] resultByte = cipher.doFinal(dataByte);
+			if (null != resultByte && resultByte.length > 0) {
+				String result = new String(resultByte, "UTF-8");
+				return JSON.parseObject(result);
+			}
+		} catch (NoSuchAlgorithmException e) {
+			logger.error(e.getMessage(), e);
+		} catch (NoSuchPaddingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidParameterSpecException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IllegalBlockSizeException e) {
+			logger.error(e.getMessage(), e);
+		} catch (BadPaddingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidKeyException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			logger.error(e.getMessage(), e);
+		} catch (NoSuchProviderException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+
+	}
+
+	private JSONObject getSessionKeyOrOpenId(String code) {
+		//微信端登录code
+		String wxCode = code;
+		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
+		Map<String,String> requestUrlParam = new HashMap<String, String>(  );
+		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
+		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
+		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
+		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
+		//发送post请求读取调用微信接口获取openid用户唯一标识
+		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
+		return jsonObject;
+	}
 }
