@@ -1,6 +1,7 @@
 package com.hanfu.activity.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,22 @@ import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
+import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
+import com.hanfu.activity.center.manual.model.ActivityInfo;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
+import com.hanfu.activity.center.model.ActivitiStrategyExample;
 import com.hanfu.activity.center.model.Activity;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
+import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.StrategyRuleRelate;
+import com.hanfu.activity.center.model.StrategyRuleRelateExample;
 import com.hanfu.activity.center.request.ActivityRequest;
 import com.hanfu.activity.center.request.ActivityStrategyInstanceRequest;
 import com.hanfu.activity.center.request.ActivityStrategyRequest;
 import com.hanfu.activity.center.request.RuleValueDescRequest;
+import com.hanfu.activity.center.request.StrategyRuleRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -53,18 +61,34 @@ public class ActivityController {
 	@Autowired
 	private ActivitiRuleInstanceMapper activitiRuleInstanceMapper;
 	
+	@Autowired
+	private StrategyRuleRelateMapper strategyRuleRelateMapper;
+	
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityUser() throws JSONException {
+	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
+	}
+	
+	@ApiOperation(value = "查询参加该活动投票人员", notes = "查询参加该活动投票人员")
+	@RequestMapping(value = "/listActivityVoteUser", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> listActivityVoteUser(@RequestParam Integer activityId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(false);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
 	
 	@ApiOperation(value = "查询参加活动的所有人员", notes = "查询参加活动的所有人员")
 	@RequestMapping(value = "/listAllActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listAllActivityUser() throws JSONException {
+	public ResponseEntity<JSONObject> listAllActivityUser(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId);
+		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
 	
 	@ApiOperation(value = "注册该活动所参加的人员", notes = "注册该活动所参加的人员")
@@ -106,7 +130,29 @@ public class ActivityController {
 	@RequestMapping(value = "/listActivity", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> listWareHouse() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.selectByExample(null)));
+		List<Activity> list = activityMapper.selectByExample(null);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
+			ActivityInfo activityInfo = new ActivityInfo();
+			activityInfo.setId(list.get(i).getId());
+			activityInfo.setActivityName(list.get(i).getActivityName());
+			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
+			activityInfo.setActivityResult(list.get(i).getActivityResult());
+			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			activityInfo.setActiviyType(list.get(i).getActiviyType());
+			activityInfo.setCreateTime(list.get(i).getCreateTime());
+			activityInfo.setEndTime(list.get(i).getEndTime());
+			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
+			activityInfo.setIsTimingStart(list.get(i).getIsTimingStart());
+			activityInfo.setModifyTime(list.get(i).getModifyTime());
+			activityInfo.setStrategyId(strategy.getId());
+			activityInfo.setUserId(list.get(i).getUserId());
+			activityInfo.setStrategyName(strategy.getStrategyName());
+			activityInfo.setStartTime(list.get(i).getStartTime());
+			activityInfos.add(activityInfo);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
 	}
 
 	@ApiOperation(value = "增加活动", notes = "公司每次举行活动的添加")
@@ -356,20 +402,76 @@ public class ActivityController {
 	
 	@ApiOperation(value = "生成活动码", notes = "生成活动码")
 	@RequestMapping(value = "/createActivityCode", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> createActivityCode(@RequestParam Integer len,@RequestParam RuleValueDescRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> createActivityCode(@RequestParam Integer activityId,@RequestParam Boolean flag,@RequestParam Integer[] userId,
+			@RequestParam Integer len,StrategyRuleRequest request,
+			@RequestParam String remarks) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr = "";
 		String str = "";
-		for(int i=1;i<=len;i++) {
+		String id = ":";
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		StrategyRuleRelateExample example = new StrategyRuleRelateExample();
+		example.clear();
+		example.createCriteria().andStrategyIdEqualTo(activity.getStrategyId()).andStrategyRuleIdEqualTo(request.getId());
+		List<StrategyRuleRelate> list = strategyRuleRelateMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			StrategyRuleRelate strategyRuleRelate = new StrategyRuleRelate();
+			strategyRuleRelate.setStrategyId(activity.getStrategyId());
+			strategyRuleRelate.setStrategyRuleId(request.getId());
+			strategyRuleRelate.setIsUsed(flag);
+			strategyRuleRelate.setCreateTime(LocalDateTime.now());
+			strategyRuleRelate.setModifyTime(LocalDateTime.now());
+			strategyRuleRelate.setIsDeleted((short) 0);
+			strategyRuleRelateMapper.insert(strategyRuleRelate);
+		}
+		for(int i=0;i<len;i++) {
 			arr = create();
-			addActivityRuleValueDesc(request);
-			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(null);
-			ActivitiRuleInstance ruleValueDesc = list.get(list.size()-1);
-			ruleValueDesc.setRuleInstanceValue(arr);
+			ActivityStrategyInstanceExample example2 = new ActivityStrategyInstanceExample();
+			example2.createCriteria().andActivityIdEqualTo(activityId).andRuleIdEqualTo(request.getId());
+			List<ActivityStrategyInstance> list2 = activityStrategyInstanceMapper.selectByExample(example2);
+			Integer ruleInstanceId = 0;
+			if(list2.isEmpty()) {
+				ActivityStrategyInstance activityStrategyInstance = new ActivityStrategyInstance();
+				activityStrategyInstance.setRuleName(request.getRuleName());
+				activityStrategyInstance.setRuleDesc(request.getRuleDesc());
+				activityStrategyInstance.setRuleStatus(request.getRuleStatus());
+				activityStrategyInstance.setRuleValue(request.getRuleType());
+				activityStrategyInstance.setRuleValueType(request.getRuleValueType());
+				activityStrategyInstance.setActivityId(activityId);
+				activityStrategyInstance.setRuleId(request.getId());
+				activityStrategyInstance.setCreateTime(LocalDateTime.now());
+				activityStrategyInstance.setModifyTime(LocalDateTime.now());
+				activityStrategyInstance.setIsDeleted((short) 0);
+				activityStrategyInstanceMapper.insert(activityStrategyInstance);
+				ruleInstanceId = activityStrategyInstance.getActivityId();
+			}else {
+				ruleInstanceId = list2.get(0).getId();
+			}
+			ActivitiRuleInstanceExample example3 = new ActivitiRuleInstanceExample();
+			System.out.println(userId[i]+ruleInstanceId);
+			example3.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId[i]);
+			List<ActivitiRuleInstance> list3 = activitiRuleInstanceMapper.selectByExample(example3);
+			if(list3.isEmpty()) {
+				ActivitiRuleInstance ruleValueDesc = new ActivitiRuleInstance();
+				ruleValueDesc.setActivityId(activityId);
+				ruleValueDesc.setRuleId(request.getId());
+				ruleValueDesc.setRuleInstanceId(ruleInstanceId);
+				ruleValueDesc.setIsElected(flag);
+				ruleValueDesc.setUserId(userId[i]);
+				ruleValueDesc.setRuleInstanceValue(arr);
+				ruleValueDesc.setRemarks(remarks);
+				ruleValueDesc.setCreateTime(LocalDateTime.now());
+				ruleValueDesc.setModifyTime(LocalDateTime.now());
+				ruleValueDesc.setIsDeleted((short) 0);
+				activitiRuleInstanceMapper.insert(ruleValueDesc);
+			}else {
+				id = id + list3.get(0).getUserId() + ",";
+			}
 			arr = arr+",";
 			str = arr + str;
 		}
-		return builder.body(ResponseUtils.getResponseBody(arr));
+		str = str + id;
+		return builder.body(ResponseUtils.getResponseBody(str));
 	}
 	
 	public static String create() {
@@ -385,14 +487,12 @@ public class ActivityController {
 	
 	@ApiOperation(value = "查询活动码", notes = "查询活动码")
 	@RequestMapping(value = "/listActivityCode", method = RequestMethod.POST)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "activityRuleValueDescId", value = "活动策略实体id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listActivityCode(@RequestParam String code) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		boolean flag = true;
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andRuleInstanceValueEqualTo(code);
-		if(activitiRuleInstanceMapper.selectByExample(example)==null) {
+		if(activitiRuleInstanceMapper.selectByExample(example).isEmpty()) {
 			flag = false;
 		}
 		return builder.body(ResponseUtils.getResponseBody(flag));

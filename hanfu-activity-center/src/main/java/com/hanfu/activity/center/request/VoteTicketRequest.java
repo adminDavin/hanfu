@@ -10,9 +10,9 @@ public class VoteTicketRequest extends CommonRequest{
     private Integer userId;
     @ApiModelProperty(required = false, value = "被选举者的用户id")
     private Integer electedUserId;
-    @ApiModelProperty(required = false, value = "活动规则id")
+    @ApiModelProperty(required = false, value = "规则id")
     private Integer ruleInstanceId;
-    @ApiModelProperty(required = true, value = "备注")
+    @ApiModelProperty(required = true, value = "备注(暂用投票分数)")
     private String remark;
     public Integer getActivityId() {
         return activityId;
@@ -26,13 +26,13 @@ public class VoteTicketRequest extends CommonRequest{
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-    public Integer getElectedUserId() {
-        return electedUserId;
-    }
-    public void setElectedUserId(Integer electedUserId) {
-        this.electedUserId = electedUserId;
-    }
-    public Integer getRuleInstanceId() {
+	public Integer getElectedUserId() {
+		return electedUserId;
+	}
+	public void setElectedUserId(Integer electedUserId) {
+		this.electedUserId = electedUserId;
+	}
+	public Integer getRuleInstanceId() {
         return ruleInstanceId;
     }
     public void setRuleInstanceId(Integer ruleInstanceId) {

@@ -15,6 +15,29 @@ drop table if exists strategy_rule;
 drop table if exists activity;
 
 drop table if exists strategy_rule_relate;
+drop table if exists activity_vote_records;
+drop table if exists file_desc;
+drop table if exists hf_user_info;
+
+/*==============================================================*/
+/* Table: rule_value_desc                                       */
+/*==============================================================*/
+create table activity_vote_records
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   activity_id          int comment '活动id',
+   user_id              int comment '用户id',
+   vote_times     int comment '投票次数',
+   elected_user_id       int comment '被投票人的用户id',
+   remarks              varchar(511) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table activity_vote_records comment '活动投票记录';
+
 
 /*==============================================================*/
 /* Table: activiti_strategy                                     */
@@ -65,6 +88,7 @@ create table activiti_rule_instance
    rule_id              int comment '规则id',
    rule_instance_id     int comment '规则实体id',
    is_relate_user       bool comment '是否关联用户',
+   file_id              int comment '用户id',
    user_id              int comment '用户id',
    user_ticket_count          int comment '用户所持有的票数',
    user_score           int comment '用户得分',
@@ -78,6 +102,44 @@ create table activiti_rule_instance
 );
 
 alter table activiti_rule_instance comment '活动规则值描述表';
+
+
+/*==============================================================*/
+/* Table: rule_value_desc                                       */
+/*==============================================================*/
+create table hf_user_info
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   file_id              int comment '文件id',
+   base_info            varchar(1023) comment '用户基本信息',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table hf_user_info comment '用户基本信息';
+
+
+/*==============================================================*/
+/* Table: file_desc                                             */
+/*==============================================================*/
+create table file_desc
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   file_name            varchar(63) comment '文件名',
+   user_id              int comment '用户Id',
+   group_name           varchar(63) comment '文件组',
+   remote_filename      varchar(255) comment '文件路径',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table file_desc comment '文件描述';
 
 /*==============================================================*/
 /* Table: strategy_rule                                         */
