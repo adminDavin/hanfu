@@ -8,6 +8,8 @@ public class Total {
 	private Integer socre;
 	private Integer activityId;
 	private String code;
+	private String username;
+	private Integer fileId;
 	
 	public Integer getPosition() {
 		return position;
@@ -44,6 +46,18 @@ public class Total {
 	}
 	public void setCode(String code) {
 		this.code = code;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
 	}
 	@Override
 	public String toString() {

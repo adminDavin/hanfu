@@ -24,6 +24,7 @@ public class HfUser implements Serializable {
     private Byte idDeleted;
     private String code;
     private Integer count;
+    private Boolean isElected;
     private static final long serialVersionUID = 1L;
 	public Integer getId() {
 		return id;
@@ -144,5 +145,11 @@ public class HfUser implements Serializable {
 	}
 	public void setCount(Integer count) {
 		this.count = count;
+	}
+	public Boolean getIsElected() {
+		return isElected;
+	}
+	public void setIsElected(Boolean isElected) {
+		this.isElected = isElected;
 	}
 }
