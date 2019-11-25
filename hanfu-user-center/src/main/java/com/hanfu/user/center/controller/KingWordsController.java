@@ -41,6 +41,7 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -55,6 +56,7 @@ import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.user.center.service.UserCenterService;
+import com.hanfu.user.center.utils.GetMessageCode;
 import com.hanfu.user.center.utils.UrlUtil;
 
 import io.swagger.annotations.Api;
@@ -94,24 +96,28 @@ public class KingWordsController {
 		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
 		//将token存入redis
 		redisTemplate.opsForValue().set(token, String.valueOf(hfAuth.getUserId()));
+		redisTemplate.opsForValue().get(authKey);
 		if (StringUtils.isEmpty(token)) { 
 			userCenterService.checkToken(token);
 		}
 		if(!"1".equals(authType)) {
 			if(!(hfAuth.getAuthKey()).equals(authKey)) {
-				//				if(passwd != GetMessageCode.getCode(authKey)) {
+								if(passwd != redisTemplate.opsForValue().get(authKey)) {
 				throw new ParamInvalidException("authType is invalid");
-				//				}
-			}		
+								}
+								}		
 		}
 		list.put(token, hfAuth.getUserId());
-		//		HashMap<String, Object> result = new HashMap<>();
-		//		result.put("token", "ss");
-		//		result.put("userId", 5);
-		//		result.put("userInfo", new HfUser());
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
-
+	@RequestMapping(path = "/code",  method = RequestMethod.GET)
+	@ApiOperation(value = "发送验证码", notes = "发送验证码")
+	public ResponseEntity<JSONObject> code(String phone) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		SendSmsResponse code = GetMessageCode.sendSms(phone);
+		redisTemplate.opsForValue().set(phone, String.valueOf(code));
+		return builder.body(ResponseUtils.getResponseBody(code));
+	}
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
@@ -132,6 +138,7 @@ public class KingWordsController {
 		user.setUsername(UUID.randomUUID().toString());
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
+		user.setSex((byte)1);
 		//user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
 		user.setLastAuthTime(LocalDateTime.now());
 		user.setCreateDate(LocalDateTime.now());
@@ -182,7 +189,7 @@ public class KingWordsController {
 			user.setEmail(request.getEmail());
 		}
 		if(!StringUtils.isEmpty(request.getNickName())) {
-			user.setEmail(request.getNickName());
+			user.setNickName(request.getNickName());
 		}
 		if(!StringUtils.isEmpty(request.getRealName())) {
 			user.setRealName(request.getRealName());
