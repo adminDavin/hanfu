@@ -1,11 +1,15 @@
 package com.hanfu.activity.center.controller;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,8 +140,14 @@ public class ActivityManagerController {
 		strategyRule.setRuleDesc(request.getRuleDesc());
 		strategyRule.setStrategyId(request.getStrategyId());
 		strategyRule.setRuleStatus("生效中");
-		strategyRule.setRuleType(request.getRuleType());
-		strategyRule.setRuelValueType(request.getRuleValueType());
+		String ruleType = request.getRuleType();
+		strategyRule.setRuleType(ruleType);
+		if ("elector".equals(ruleType) || "elected".equals(ruleType) || "internal selection".equals(ruleType)) {
+			strategyRule.setRuelValueType("user_list");
+		}
+		if ("vote_ticket_count".equals(ruleType)) {
+			strategyRule.setRuelValueType("ticket_count");
+		}
 		strategyRule.setCreateTime(LocalDateTime.now());
 		strategyRule.setModifyTime(LocalDateTime.now());
 		strategyRule.setIsDeleted((short) 0);
@@ -159,6 +169,18 @@ public class ActivityManagerController {
 		activity.setCreateTime(LocalDateTime.now());
 		activity.setModifyTime(LocalDateTime.now());
 		activity.setIsDeleted((short) 0);
+		StrategyRuleExample example = new StrategyRuleExample();
+		example.createCriteria().andStrategyIdEqualTo(request.getStrategyId());
+		List<StrategyRule> list = strategyRuleMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			UpdateActivityRuleRequest request2 = new UpdateActivityRuleRequest();
+			request2.setActivityId(activity.getId());
+			request2.setRuleId(String.valueOf(list.get(i).getId()));
+			request2.setRuleName(list.get(i).getRuleName());
+			request2.setRuleSDesc(list.get(i).getRuleDesc());
+			request2.setRuleValue(list.get(i).getRuleType());
+			setActivitiRules(request2);
+		}
 		return builder.body(ResponseUtils.getResponseBody(activityMapper.insert(activity)));
 	}
 
@@ -187,6 +209,10 @@ public class ActivityManagerController {
 			record.setRuleDesc(request.getRuleSDesc());
 			record.setRuleValue(request.getRuleValue());
 			record.setRuleValueType(strategyRule.getRuelValueType());
+			record.setRuleStatus("0");
+			record.setCreateTime(LocalDateTime.now());
+			record.setModifyTime(LocalDateTime.now());
+			record.setIsDeleted((short) 0);
 			activityStrategyInstanceMapper.insert(record);
 		}
 		return builder.body(ResponseUtils.getResponseBody(record));
@@ -212,7 +238,7 @@ public class ActivityManagerController {
 
 				if ("elector".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuleType())) {
 					ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
-					example.createCriteria().andRuleValueTypeEqualTo("count");
+					example.createCriteria().andRuleValueTypeEqualTo("ticket_count");
 					List<ActivityStrategyInstance> activityStrategyInstance = activityStrategyInstanceMapper
 							.selectByExample(example);
 					ruleValueDesc.setUserTicketCount(Integer.valueOf(activityStrategyInstance.get(0).getRuleValue()));
@@ -235,8 +261,7 @@ public class ActivityManagerController {
 				ruleValueDesc.setModifyTime(LocalDateTime.now());
 				ruleValueDesc.setIsDeleted((short) 0);
 				activitiRuleInstanceMapper.insert(ruleValueDesc);
-				if (!"ticket_count"
-						.equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuelValueType())) {
+				if ("user_list".equals(strategyRuleMapper.selectByPrimaryKey(request.getRuleId()).getRuelValueType())) {
 					ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 					example.createCriteria().andRuleIdEqualTo(request.getRuleId());
 					List<ActivityStrategyInstance> activityStrategyInstance1 = activityStrategyInstanceMapper
@@ -294,7 +319,6 @@ public class ActivityManagerController {
 	public ResponseEntity<JSONObject> voteTicket(VoteTicketRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		ActivitiStrategy activitiStrategy = activitiStrategyMapper.selectByPrimaryKey(request.getRuleInstanceId());
-//		
 		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
@@ -358,108 +382,132 @@ public class ActivityManagerController {
 			userVote.setUserTicketCount(userVote.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		}
-		ActivitiRuleInstanceExample example3 = new ActivitiRuleInstanceExample();
-		example3.createCriteria().andActivityIdEqualTo(request.getActivityId())
-				.andRuleInstanceIdEqualTo(request.getRuleInstanceId());
-		example3.setOrderByClause("user_ticket_count DESC,user_score DESC");
-		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example3);
-		return builder.body(ResponseUtils.getResponseBody(list));
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
-	@ApiOperation(value = "7 统计投票结果", notes = "统计投票结果")
-	@RequestMapping(value = "/statisticsTicket", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "userId活动发起者", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> statisticsTicket(@RequestParam Integer userId,
-			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
+	@ApiOperation(value = "内部推荐", notes = "内部推荐")
+	@RequestMapping(value = "/internalVote", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> creatrCode(VoteTicketRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Integer page = 1;
-		ActivityExample example = new ActivityExample();
-		example.createCriteria().andUserIdEqualTo(userId).andIsTimingStartEqualTo((short) 0);
-		List<Activity> activity = activityMapper.selectByExample(example);
-		if (activity.isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("还未有活动结束"));
+		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+		if (activity.getIsTimingStart() == 0) {
+			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
-		for (int i = 0; i < activity.size(); i++) {
-			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
-			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-					.andRuleValueTypeEqualTo("count");
-			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
-			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-					.andIsElectedEqualTo(false);
-			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
-			for (int j = 0; j < list.size(); j++) {
-				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
-				activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
-				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
-						.selectByExample(activityVoteRecordsExample);
-				if (!activityVoteRecords.isEmpty()) {
-					if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
-							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
-						for (int k = 0; k < activityVoteRecords.size(); k++) {
-							ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
-							activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-									.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
-							List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
-									.selectByExample(activitiRuleInstanceExample2);
-							ActivitiRuleInstance instance = activitiRuleInstance.get(0);
-							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-							instance.setUserScore(
-									instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
-							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
-						}
-						for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
-								.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
-								- activityVoteRecords.size(); k++) {
-							ActivityVoteRecords records = new ActivityVoteRecords();
-							records.setUserId(activityVoteRecords.get(0).getUserId());
-							activityVoteRecordsMapper.insert(records);
-						}
-					}
-				}
-			}
+		ActivitiRuleInstanceExample ruleInstanceExample = new ActivitiRuleInstanceExample();
+		ruleInstanceExample.createCriteria().andActivityIdEqualTo(request.getActivityId())
+				.andUserIdEqualTo(request.getUserId());
+		if (activitiRuleInstanceMapper.selectByExample(ruleInstanceExample).isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此投票人不存在"));
 		}
-
-		List<ActivitiRuleInstance> list = null;
-		for (int i = 0; i < activity.size(); i++) {
-			List<Total> result = new ArrayList<Total>();
-			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-			example2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
-			example2.setOrderByClause("user_ticket_count DESC,user_score DESC");
-			if (!StringUtils.isEmpty(size)) {
-				PageHelper.startPage(page, size);
-			}
-			list = activitiRuleInstanceMapper.selectByExample(example2);
-			if (!list.isEmpty()) {
-				Integer index = 1;
-				for (int j = 0; j < list.size(); j++) {
-					Total total = new Total();
-					if (list.get(j).getUserScore() == null) {
-						total.setSocre(0);
-					} else {
-						total.setSocre(list.get(j).getUserScore());
-					}
-					if (list.get(j).getUserTicketCount() == null) {
-						total.setVoteCount(0);
-					} else {
-						total.setVoteCount(list.get(j).getUserTicketCount());
-					}
-					total.setPosition(index);
-					total.setUserId(list.get(j).getUserId());
-					total.setActivityId(list.get(j).getActivityId());
-					result.add(total);
-					index++;
-				}
-				activity.get(i).setActivityResult(result.toString());
-				activityMapper.updateByPrimaryKey(activity.get(i));
-			}
-		}
-//		if (result.isEmpty()) {
-//			return builder.body(ResponseUtils.getResponseBody("还未有活动开始"));
-//		}
-//        TODO 统计投票 并将投票结果存入activity的activity_result 返回投票结果
-		return builder.body(ResponseUtils.getResponseBody(activity));
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
+				.andActivityIdEqualTo(request.getActivityId());
+		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
+		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
+		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
+		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
+		addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), -1, "-1");
+		userElect.setIsDeleted((short) 1);
+		userVote.setIsDeleted((short) 1);
+		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
+		activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
+
+//	@ApiOperation(value = "7 统计投票结果", notes = "统计投票结果")
+//	@RequestMapping(value = "/statisticsTicket", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> statisticsTicket(@RequestParam Integer userId,
+//			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Integer page = 1;
+//		ActivityExample example = new ActivityExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andIsTimingStartEqualTo((short) 0);
+//		List<Activity> activity = activityMapper.selectByExample(example);
+//		if (activity.isEmpty()) {
+//			return builder.body(ResponseUtils.getResponseBody("还未有活动结束"));
+//		}
+//		for (int i = 0; i < activity.size(); i++) {
+//			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
+//			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+//					.andRuleValueTypeEqualTo("ticket_count");
+//			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
+//			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+//					.andIsElectedEqualTo(false);
+//			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
+//			for (int j = 0; j < list.size(); j++) {
+//				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
+//				activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
+//				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
+//						.selectByExample(activityVoteRecordsExample);
+//				if (!activityVoteRecords.isEmpty()) {
+//					if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
+//							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
+//						for (int k = 0; k < activityVoteRecords.size(); k++) {
+//							ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
+//							activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
+//									.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
+//							List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
+//									.selectByExample(activitiRuleInstanceExample2);
+//							ActivitiRuleInstance instance = activitiRuleInstance.get(0);
+//							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+//							instance.setUserScore(
+//									instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
+//							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+//						}
+//						for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
+//								.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
+//								- activityVoteRecords.size(); k++) {
+//							ActivityVoteRecords records = new ActivityVoteRecords();
+//							records.setUserId(activityVoteRecords.get(0).getUserId());
+//							activityVoteRecordsMapper.insert(records);
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		List<ActivitiRuleInstance> list = null;
+//		for (int i = 0; i < activity.size(); i++) {
+//			List<Total> result = new ArrayList<Total>();
+//			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+//			example2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
+//			example2.setOrderByClause("user_ticket_count DESC,user_score DESC");
+//			if (!StringUtils.isEmpty(size)) {
+//				PageHelper.startPage(page, size);
+//			}
+//			list = activitiRuleInstanceMapper.selectByExample(example2);
+//			if (!list.isEmpty()) {
+//				Integer index = 1;
+//				for (int j = 0; j < list.size(); j++) {
+//					Total total = new Total();
+//					if (list.get(j).getUserScore() == null) {
+//						total.setSocre(0);
+//					} else {
+//						total.setSocre(list.get(j).getUserScore());
+//					}
+//					if (list.get(j).getUserTicketCount() == null) {
+//						total.setVoteCount(0);
+//					} else {
+//						total.setVoteCount(list.get(j).getUserTicketCount());
+//					}
+//					total.setPosition(index);
+//					total.setUserId(list.get(j).getUserId());
+//					total.setActivityId(list.get(j).getActivityId());
+//					result.add(total);
+//					index++;
+//				}
+//				activity.get(i).setActivityResult(result.toString());
+//				activityMapper.updateByPrimaryKey(activity.get(i));
+//			}
+//		}
+////		if (result.isEmpty()) {
+////			return builder.body(ResponseUtils.getResponseBody("还未有活动开始"));
+////		}
+////        TODO 统计投票 并将投票结果存入activity的activity_result 返回投票结果
+//		return builder.body(ResponseUtils.getResponseBody(activity));
+//	}
 
 	@ApiOperation(value = "查看活动列表", notes = "查看活动列表")
 	@RequestMapping(value = "/activities", method = RequestMethod.GET)
@@ -582,6 +630,9 @@ public class ActivityManagerController {
 					if (list.get(j).getUserTicketCount() != null) {
 						users2.get(i).setCount((list.get(j).getUserTicketCount()));
 					}
+					if (list.get(j).getIsElected() != null) {
+						users2.get(i).setIsElected(list.get(j).getIsElected());
+					}
 					users.add(users2.get(i));
 				}
 			}
@@ -685,18 +736,43 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(userInfoMapper.insert(info)));
 	}
 
-	@RequestMapping(path = "/downloadResume", method = RequestMethod.POST)
+	@RequestMapping(path = "/downloadResume", method = RequestMethod.GET)
 	@ApiOperation(value = "下载简历", notes = "下载简历")
-	public ResponseEntity<JSONObject> downloadResume(@RequestParam(name = "fileId") Integer fileId) throws Exception {
+	public ResponseEntity<JSONObject> downloadResume(@RequestParam(name = "fileId") Integer fileId,
+			HttpServletResponse response, Boolean isOnLine) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
 		FileMangeService fileManageService = new FileMangeService();
 		byte[] file_buff = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-		File file = new File("src/main/resources/"+fileId+".word");
+		File file = new File("src/main/resources/" + fileId + ".doc");
 		FileOutputStream outStream = new FileOutputStream(file);
 		outStream.write(file_buff);
 		outStream.flush();
 		outStream.close();
+		File file1 = new File("src/main/resources/" + fileId + ".doc");
+		if (!file1.exists()) {
+			response.sendError(404, "File not found!");
+			return builder.body(ResponseUtils.getResponseBody(0));
+		}
+		BufferedInputStream br = new BufferedInputStream(new FileInputStream(file1));
+		byte[] buf = new byte[1024];
+		int len = 0;
+
+		response.reset(); // 非常重要
+		if (isOnLine) { // 在线打开方式
+			URL u = new URL("file:///" + "src/main/resources/" + fileId + ".doc");
+			response.setContentType(u.openConnection().getContentType());
+			response.setHeader("Content-Disposition", "inline; filename=" + file1.getName());
+			// 文件名应该编码成UTF-8
+		} else { // 纯下载方式
+			response.setContentType("application/x-msdownload");
+			response.setHeader("Content-Disposition", "attachment; filename=" + file1.getName());
+		}
+		OutputStream out = response.getOutputStream();
+		while ((len = br.read(buf)) > 0)
+			out.write(buf, 0, len);
+		br.close();
+		out.close();
 		return builder.body(ResponseUtils.getResponseBody(file));
 	}
 
