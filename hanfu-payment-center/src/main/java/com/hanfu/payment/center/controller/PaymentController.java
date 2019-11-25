@@ -55,7 +55,7 @@ public class PaymentController {
 	@Autowired
 	private WeChatService weChatService;
 
-	@ApiOperation(value = "支付流程", notes = "支付流程")
+	@ApiOperation(value = "支付宝支付", notes = "支付宝支付")
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
@@ -65,7 +65,7 @@ public class PaymentController {
 		String pay = alipayService.getAliPayOrderStr(bossId,orderId,amount);
 		return builder.body(ResponseUtils.getResponseBody(pay));	
 	}
-	@ApiOperation(value = "支付流程", notes = "支付流程")
+	@ApiOperation(value = "微信支付", notes = "微信支付")
 	@RequestMapping(value = "/wxpay", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
@@ -77,8 +77,6 @@ public class PaymentController {
 		WxMD5Util md5Util = new WxMD5Util();
 		Map<String, String> map = new HashMap<>();
 		//返回APP端的数据
-		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
-		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
 		//参加调起支付的签名字段有且只能是6个，分别为appid、partnerid、prepayid、package、noncestr和timestamp，而且都必须是小写
 		map.put("appid", result.get("appid"));
 		map.put("partnerid", result.get("mch_id"));
