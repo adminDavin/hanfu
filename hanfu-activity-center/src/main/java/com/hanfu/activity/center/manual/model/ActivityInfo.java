@@ -19,6 +19,7 @@ public class ActivityInfo implements Serializable {
     private LocalDateTime modifyTime;
     private Short isDeleted;
     private String strategyName;
+    private String type;
     private static final long serialVersionUID = 1L;
     public Integer getId() {
         return id;
@@ -124,6 +125,12 @@ public class ActivityInfo implements Serializable {
 	}
 	public void setStrategyName(String strategyName) {
 		this.strategyName = strategyName;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	@Override
     public String toString() {
