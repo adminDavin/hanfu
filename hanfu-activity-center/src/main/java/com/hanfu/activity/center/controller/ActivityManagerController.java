@@ -148,6 +148,9 @@ public class ActivityManagerController {
 		if ("vote_ticket_count".equals(ruleType)) {
 			strategyRule.setRuelValueType("ticket_count");
 		}
+		if("record_score".equals(ruleType)) {
+			strategyRule.setRuelValueType("score");
+		}
 		strategyRule.setCreateTime(LocalDateTime.now());
 		strategyRule.setModifyTime(LocalDateTime.now());
 		strategyRule.setIsDeleted((short) 0);
