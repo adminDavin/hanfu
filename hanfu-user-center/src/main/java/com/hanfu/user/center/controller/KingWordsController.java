@@ -51,6 +51,7 @@ import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.HfUserExample;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
@@ -132,6 +133,9 @@ public class KingWordsController {
 		if (authCount > 0) { 
 			throw new AuthKeyIsExistException(authKey);
 		}
+		if(passwd != redisTemplate.opsForValue().get(authKey)) {
+			throw new ParamInvalidException("authKey is invalid");
+							}
 		HfUser user = new HfUser();
 		user.setSourceType(authType);
 		user.setPhone(authKey);
@@ -238,8 +242,16 @@ public class KingWordsController {
 	}
 	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
-	public ResponseEntity<JSONObject> userList() throws Exception{
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
+	})
+	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if(!StringUtils.isEmpty(userId)) {
+			HfUserExample hfUserExample = new HfUserExample();
+			hfUserExample.createCriteria().andIdNotEqualTo(userId);
+			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+		}	
 		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
 	}
 	@RequestMapping(path = "/wxLogin",  method = RequestMethod.GET)

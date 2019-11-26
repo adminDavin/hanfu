@@ -29,7 +29,7 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.hanfu.order.center.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.hanfu.payment.center.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(securitySchemes())
