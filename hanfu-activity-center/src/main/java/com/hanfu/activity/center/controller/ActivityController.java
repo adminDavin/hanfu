@@ -20,6 +20,7 @@ import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.HfUserMapper;
+import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.model.ActivityInfo;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
@@ -32,6 +33,8 @@ import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
 import com.hanfu.activity.center.model.HfUser;
+import com.hanfu.activity.center.model.StrategyRule;
+import com.hanfu.activity.center.model.StrategyRuleExample;
 import com.hanfu.activity.center.model.StrategyRuleRelate;
 import com.hanfu.activity.center.model.StrategyRuleRelateExample;
 import com.hanfu.activity.center.model.Total;
@@ -75,6 +78,9 @@ public class ActivityController {
 	
 	@Autowired
 	private ActivityVoteRecordsMapper activityVoteRecordsMapper;
+	
+	@Autowired
+	private StrategyRuleMapper strategyRuleMapper;
 	
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
@@ -169,9 +175,18 @@ public class ActivityController {
 	public ResponseEntity<JSONObject> listWareHouse() throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<Activity> list = activityMapper.selectByExample(null);
+		String type = "";
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
+			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
+			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
+			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
+			for (int j = 0; j < instance.size(); j++) {
+				if(!"user_list".equals(instance.get(j).getRuleValueType()) && instance.get(j).getRuleValueType() != null) {
+					type = instance.get(j).getRuleValueType();
+				}
+			}
 			ActivityInfo activityInfo = new ActivityInfo();
 			activityInfo.setId(list.get(i).getId());
 			activityInfo.setActivityName(list.get(i).getActivityName());
@@ -188,7 +203,9 @@ public class ActivityController {
 			activityInfo.setUserId(list.get(i).getUserId());
 			activityInfo.setStrategyName(strategy.getStrategyName());
 			activityInfo.setStartTime(list.get(i).getStartTime());
+			activityInfo.setType(type);
 			activityInfos.add(activityInfo);
+			type = "";
 		}
 		return builder.body(ResponseUtils.getResponseBody(activityInfos));
 	}

@@ -6,14 +6,16 @@ import io.swagger.annotations.ApiModelProperty;
 public class UpdateActivityRuleRequest extends CommonRequest{
     @ApiModelProperty(required = true, value = "活动id")
     private Integer activityId;
-    @ApiModelProperty(required = true, value = "活动策略里的规则id")
-    private String ruleId;
+    @ApiModelProperty(required = true, value = "活动策略实体id")
+    private Integer ruleInstanceId;
     @ApiModelProperty(required = false, value = "活动策略里的规则名称")
     private String ruleName;
     @ApiModelProperty(required = false, value = "活动策略里的规则描述")
     private String ruleSDesc;
     @ApiModelProperty(required = true, value = "活动策略里的规则值")
     private String ruleValue;
+    @ApiModelProperty(required = false, value = "活动策略里的规则描述")
+    private Integer ruleId;
 
     public Integer getActivityId() {
         return activityId;
@@ -21,13 +23,13 @@ public class UpdateActivityRuleRequest extends CommonRequest{
     public void setActivityId(Integer activityId) {
         this.activityId = activityId;
     }
-    public String getRuleId() {
-        return ruleId;
-    }
-    public void setRuleId(String ruleId) {
-        this.ruleId = ruleId;
-    }
-    public String getRuleName() {
+    public Integer getRuleInstanceId() {
+		return ruleInstanceId;
+	}
+	public void setRuleInstanceId(Integer ruleInstanceId) {
+		this.ruleInstanceId = ruleInstanceId;
+	}
+	public String getRuleName() {
         return ruleName;
     }
     public void setRuleName(String ruleName) {
@@ -45,5 +47,11 @@ public class UpdateActivityRuleRequest extends CommonRequest{
     public void setRuleValue(String ruleValue) {
         this.ruleValue = ruleValue;
     }
+	public Integer getRuleId() {
+		return ruleId;
+	}
+	public void setRuleId(Integer ruleId) {
+		this.ruleId = ruleId;
+	}
 
 }
