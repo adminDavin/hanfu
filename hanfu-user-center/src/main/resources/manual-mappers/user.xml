@@ -10,7 +10,8 @@
 		<result column="auth_key" jdbcType="VARCHAR" property="authKey" />
 	</resultMap>
 	<resultMap type="com.hanfu.user.center.model.HfUser" id="ResultMap">
-	       <result column="username" jdbcType="VARCHAR" property="username" />
+	<result column="user_id" jdbcType="INTEGER" property="userId" />
+	<result column="username" jdbcType="VARCHAR" property="username" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
@@ -36,6 +37,6 @@
 		auth_key=#{authKey}
 	</select>
 	<select id="selectUserList" resultMap="ResultMap">
-	     SELECT * FROM hf_user
+	     SELECT * FROM hf_user 
 	</select>
 </mapper>

@@ -10,7 +10,6 @@ import com.hanfu.user.center.utils.Constants;
 public class UserCenterServiceImpl implements UserCenterService{
 	@Autowired
 	private RedisTemplate<Object, Object> redisTemplate;
-	@Autowired
 	public boolean checkToken(String token){
 		//解析出userId和uuid
 		if(token==null || "".equals(token)){

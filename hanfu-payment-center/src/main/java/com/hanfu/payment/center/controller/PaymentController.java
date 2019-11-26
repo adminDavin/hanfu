@@ -89,7 +89,7 @@ public class PaymentController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(map));	
 	}
-	@ApiOperation(value = "支付流程", notes = "支付流程")
+	@ApiOperation(value = "异步调用", notes = "异步调用")
 	@RequestMapping(value = "/notify", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> wxPayNotify(HttpServletRequest request, HttpServletResponse response)
 			throws JSONException {
