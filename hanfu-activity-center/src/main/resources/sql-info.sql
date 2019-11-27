@@ -200,3 +200,82 @@ create table strategy_rule_relate
 );
 
 alter table strategy_rule_relate comment '策略规则关系表';
+
+
+
+
+drop table if exists activity_user_info;
+/*==============================================================*/
+/* Table: rule_value_desc                                       */
+/*==============================================================*/
+create table activity_user_info
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   file_id              int comment '文件id',
+   department_id        int comment '部门id',
+   hiredate             timestamp default now() comment '添加时间',
+   evaluation           varchar(1023) comment '职工评价',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table activity_user_info comment '用户基本信息';
+
+drop table if exists activity_user_experience;
+create table activity_user_experience
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   company_name         varchar(128) comment '公司名称',
+   department_name      varchar(128) comment '所属部门',
+   company_post         varchar(128) comment '职务名称',
+   job_content          varchar(1023) comment '工作内容',
+   achievements         varchar(1023) comment '绩效',
+   start_time           timestamp default now() comment '添加时间',
+   end_time             timestamp default now() comment '添加时间',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table activity_user_experience comment '用户基本信息';
+
+
+drop table if exists activity_compony;
+create table activity_compony (
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   company_name         varchar(128) comment '公司名称',
+   company_info         varchar(1023) comment '公司简介',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   file_id              int comment '文件id',
+   primary key (id)
+);
+
+alter table activity_compony comment '公司基本信息';
+
+drop table if exists activity_department;
+create table activity_department (
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   department_name      varchar(128) comment '部门名称',
+   superior_id           int comment '上级部门id',
+   compony_id           int comment '公司id',
+   company_name         varchar(128) comment '公司名称',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   file_id              int comment '文件id',
+   primary key (id)
+);
+
+alter table activity_department comment '部门基本信息';
+

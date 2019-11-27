@@ -106,5 +106,38 @@
             <generatedKey column="id" sqlStatement="mysql"
                 identity="true" />
         </table>
+        
+        
+        
+        
+        
+        
+        <table schema="user_center" tableName="activity_user_info"
+            domainObjectName="ActivityUserInfo">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
+        
+        <table schema="user_center" tableName="activity_user_experience"
+            domainObjectName="ActivityUserExperience">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
+        
+        <table schema="user_center" tableName="activity_compony"
+            domainObjectName="ActivityCompony">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
+        
+        <table schema="user_center" tableName="activity_department"
+            domainObjectName="ActivityDepartment">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
 	</context>
 </generatorConfiguration>
