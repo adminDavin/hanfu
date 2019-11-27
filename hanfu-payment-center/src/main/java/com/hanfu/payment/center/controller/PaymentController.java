@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,12 +27,10 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayFundTransToaccountTransferModel;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
-import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
-import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.hanfu.payment.center.request.AlipayConfig;
-import com.hanfu.payment.center.request.AlipayRefund;
 import com.hanfu.payment.center.service.AlipayService;
 import com.hanfu.payment.center.service.WeChatService;
 import com.hanfu.payment.center.util.WxMD5Util;
@@ -65,6 +64,110 @@ public class PaymentController {
 		String pay = alipayService.getAliPayOrderStr(bossId,orderId,amount);
 		return builder.body(ResponseUtils.getResponseBody(pay));	
 	}
+	@ApiOperation(value = "异步回调", notes = "异步回调")
+	@RequestMapping(value = "/payNotify", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> payNotify(HttpServletRequest request,HttpServletResponse response)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	    boolean flag = alipayService.rsaCheckV1(request);
+        if (flag) {
+            String tradeStatus = request.getParameter("trade_status"); // 交易状态
+            String outTradeNo = request.getParameter("out_trade_no"); // 商户订单号
+            String tradeNo = request.getParameter("trade_no"); // 支付宝订单号
+            /**
+             * 还可以从request中获取更多有用的参数，自己尝试
+             */
+            boolean notify = alipayService.notify(tradeStatus, outTradeNo, tradeNo);
+            if(notify){
+            	return builder.body(ResponseUtils.getResponseBody("成功"));	
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody("失败"));	
+	}
+	@ApiOperation(value = "退款流程", notes = "退款流程")
+	@RequestMapping(value = "/refund", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "amount", value = "退款金额", required = true, type = "Double"),
+		@ApiImplicitParam(paramType = "query", name = "refundReason", value = "退款原因", required = true, type = "String")
+	})
+	public ResponseEntity<JSONObject> refund(Integer orderId,Double amount,String refundReason)
+			throws JSONException, Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(alipayService.refund(orderId, amount, refundReason)));
+	}
+	/**
+	 * 
+	 * 说明：单笔转账到支付宝账户
+	 * @param out_biz_no  商户转账唯一订单号
+	 * @param payee_type 收款方账户类型  (1、ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号。以2088开头的16位纯数字组成。2、ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。)
+	 * @param payee_account 收款方账户
+	 * @param amount 转账金额
+	 * @param payer_show_name 付款方姓名
+	 * @param payee_real_name 收款方真实姓名
+	 * @param remark 转账备注
+	 */
+	@RequestMapping("/transferAccounts")
+	public void transferAccounts(String out_biz_no,String payee_type,String payee_account,String amount,String payer_show_name,String payee_real_name,String remark) {
+		//填写自己创建的app的对应参数
+		AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
+				AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, "json", "UTF-8",
+				AlipayConfig.ALIPAY_PUBLIC_KEY, "RSA");
+		AlipayFundTransToaccountTransferRequest  transferAccounts_request = new AlipayFundTransToaccountTransferRequest();
+		AlipayFundTransToaccountTransferModel model = new AlipayFundTransToaccountTransferModel();
+		model.setOutBizNo(out_biz_no);
+		model.setPayeeType(payee_type);
+		model.setPayeeAccount(payee_account);
+		model.setAmount(amount);
+		model.setPayerShowName(payer_show_name);
+		model.setPayeeRealName(payee_real_name);
+		model.setRemark(remark);
+		transferAccounts_request.setBizModel(model);
+		try {
+			AlipayFundTransToaccountTransferResponse response = alipayClient.execute(transferAccounts_request);
+			if(response.isSuccess()){
+				System.out.println(response.getBody());
+			} else {
+				System.out.println("调用失败");
+			}
+		} catch (AlipayApiException e) {
+			e.printStackTrace();
+		}
+	}  
+	@SuppressWarnings({ "rawtypes", "unused" })
+	@ApiOperation(value = "同步回调流程", notes = "同步回调流程")
+	@RequestMapping(value = "/returnUrl", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> returnUrl(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("text/html;charset=" + AlipayConfig.CHARSET );
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        //获取支付宝GET过来反馈信息
+        Map<String,String> params = new HashMap<>();
+		Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+            valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+            params.put(name, valueStr);
+        }
+        boolean verifyResult = AlipaySignature.rsaCheckV1(params, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
+        if(verifyResult){
+            //验证成功
+            //请在这里加上商户的业务逻辑程序代码，如保存支付宝交易号
+            //商户订单号
+            String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            //支付宝交易号
+            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            return builder.body(ResponseUtils.getResponseBody("成功"));
+        }else{
+        	return builder.body(ResponseUtils.getResponseBody("失败"));
+        }
+    }
 	@ApiOperation(value = "微信支付", notes = "微信支付")
 	@RequestMapping(value = "/wxpay", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -90,7 +193,7 @@ public class PaymentController {
 		return builder.body(ResponseUtils.getResponseBody(map));	
 	}
 	@ApiOperation(value = "异步调用", notes = "异步调用")
-	@RequestMapping(value = "/notify", method = RequestMethod.GET)
+	@RequestMapping(value = "/wxnotify", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> wxPayNotify(HttpServletRequest request, HttpServletResponse response)
 			throws JSONException {
 		 String resXml = "";
@@ -124,73 +227,4 @@ public class PaymentController {
 	      		return builder.body(ResponseUtils.getResponseBody(result));	
 	        }
 }
-	@ApiOperation(value = "退款流程", notes = "退款流程")
-	@RequestMapping(value = "/refund", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商品实体id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> refund(@RequestParam Integer bossId)
-			throws JSONException, Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
-				AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, "json", "UTF-8",
-				AlipayConfig.ALIPAY_PUBLIC_KEY, "RSA");
-		AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
-		AlipayRefund alipayRefund= new AlipayRefund();
-		alipayRefund.setOut_trade_no("316594250940");//这个是商户的订单号
-		alipayRefund.setTrade_no("2017091221001004040242043928");//这个是支付宝的订单号
-		alipayRefund.setRefund_amount("0.5");//退款金额
-		alipayRefund.setRefund_reason("正常退款");//退款说明
-		alipayRefund.setOut_request_no("HZ01RF001");
-		alipayRefund.setOperator_id("OP001");
-		alipayRefund.setStore_id("NJ_S_001");
-		alipayRefund.setTerminal_id("NJ_T_001");//request.setBizContent(JSONUtil.simpleObjectToJsonStr(alipayRefund));
-		request.setBizContent(JSONObject.toJSONString(alipayRefund));//2个都可以，这个参数的顺序 不影响退款
-		AlipayTradeRefundResponse response = alipayClient.execute(request);
-		if (response.isSuccess()) {
-			System.out.println("调用成功");
-		} else {	
-			System.out.println("调用失败");
-		}
-		return builder.body(ResponseUtils.getResponseBody("退款成功"));
-	}
-	/**
-	 * 
-	 * 说明：单笔转账到支付宝账户
-	 * @param out_biz_no  商户转账唯一订单号
-	 * @param payee_type 收款方账户类型  (1、ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号。以2088开头的16位纯数字组成。2、ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。)
-	 * @param payee_account 收款方账户
-	 * @param amount 转账金额
-	 * @param payer_show_name 付款方姓名
-	 * @param payee_real_name 收款方真实姓名
-	 * @param remark 转账备注
-	 */
-	@RequestMapping("/transferAccounts")
-	public void transferAccounts(String out_biz_no,String payee_type,String payee_account,String amount,String payer_show_name,String payee_real_name,String remark) {
-		//填写自己创建的app的对应参数
-		AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
-				AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, "json", "UTF-8",
-				AlipayConfig.ALIPAY_PUBLIC_KEY, "RSA");
-		AlipayFundTransToaccountTransferRequest  transferAccounts_request = new AlipayFundTransToaccountTransferRequest();
-		AlipayFundTransToaccountTransferModel model = new AlipayFundTransToaccountTransferModel();
-		model.setOutBizNo(out_biz_no);
-		model.setPayeeType(payee_type);
-		model.setPayeeAccount(payee_account);
-		model.setAmount(amount);
-		model.setPayerShowName(payer_show_name);
-		model.setPayeeRealName(payee_real_name);
-		model.setRemark(remark);
-		transferAccounts_request.setBizModel(model);
-		try {
-			AlipayFundTransToaccountTransferResponse response = alipayClient.execute(transferAccounts_request);
-			if(response.isSuccess()){
-				System.out.println(response.getBody());
-
-			} else {
-				System.out.println("调用失败");
-			}
-		} catch (AlipayApiException e) {
-			e.printStackTrace();
-		}
-
-	}        
 }
