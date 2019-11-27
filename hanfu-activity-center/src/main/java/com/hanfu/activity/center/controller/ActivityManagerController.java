@@ -1,6 +1,7 @@
 package com.hanfu.activity.center.controller;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -18,6 +19,9 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cedarsoftware.util.StringUtilities;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
@@ -230,8 +235,11 @@ public class ActivityManagerController {
 		String str = "";
 		String id = ":";
 		ActivityStrategyInstance instance = activityStrategyInstanceMapper.selectByPrimaryKey(request.getRuleInstanceId());
-		if("ticket_count".equals(instance.getRuleValueType()) || "socre".equals(instance.getRuleValueType())) {
+		if("ticket_count".equals(instance.getRuleValueType()) || "score".equals(instance.getRuleValueType())) {
 			return builder.body(ResponseUtils.getResponseBody("违反规则"));
+		}
+		if(request.getUserIds().length>Integer.valueOf(instance.getRuleValue())) {
+			return builder.body(ResponseUtils.getResponseBody("超过限定数量"));
 		}
 		for (int i = 0; i < request.getUserIds().length; i++) {
 			ActivitiRuleInstanceExample example3 = new ActivitiRuleInstanceExample();
@@ -332,7 +340,7 @@ public class ActivityManagerController {
 		}
 		ActivitiRuleInstanceExample ruleInstanceExample = new ActivitiRuleInstanceExample();
 		ruleInstanceExample.createCriteria().andActivityIdEqualTo(request.getActivityId())
-				.andUserIdEqualTo(request.getUserId());
+				.andUserIdEqualTo(request.getUserId()).andIsElectedEqualTo(false);
 		if (activitiRuleInstanceMapper.selectByExample(ruleInstanceExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("此投票人不存在"));
 		}
@@ -342,7 +350,7 @@ public class ActivityManagerController {
 		}
 		ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
 		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId())
-				.andElectedUserIdEqualTo(request.getElectedUserId());
+				.andElectedUserIdEqualTo(request.getElectedUserId()).andActivityIdEqualTo(request.getActivityId());
 		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复投"));
 		}
@@ -403,9 +411,15 @@ public class ActivityManagerController {
 		}
 		ActivitiRuleInstanceExample ruleInstanceExample = new ActivitiRuleInstanceExample();
 		ruleInstanceExample.createCriteria().andActivityIdEqualTo(request.getActivityId())
-				.andUserIdEqualTo(request.getUserId());
+				.andUserIdEqualTo(request.getUserId()).andIsElectedEqualTo(false);
 		if (activitiRuleInstanceMapper.selectByExample(ruleInstanceExample).isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("此投票人不存在"));
+			return builder.body(ResponseUtils.getResponseBody("此打分人不存在"));
+		}
+		ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
+		activityVoteRecordsExample.createCriteria().andUserIdEqualTo(request.getUserId())
+				.andElectedUserIdEqualTo(request.getElectedUserId()).andActivityIdEqualTo(request.getActivityId());
+		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("不能重复打分"));
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
@@ -424,122 +438,33 @@ public class ActivityManagerController {
 		}
 		addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1,
 				String.valueOf(total));
-		userElect.setRemarks(String.valueOf(total*0.5));
-		userElect.setIsDeleted((short) 1);
-		userVote.setIsDeleted((short) 1);
+		if(userElect.getRemarks() == null) {
+			userElect.setRemarks(String.valueOf(total*0.5));
+		}else {
+			userElect.setRemarks(userElect.getRemarks()+String.valueOf(total*0.5));
+		}
+		if(userElect.getUserTicketCount() == null) {
+			userElect.setUserTicketCount(1);
+		}else {
+			userElect.setUserTicketCount(userElect.getUserTicketCount()+1);
+		}
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
-		activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
 	
 	@ApiOperation(value = "统计总分", notes = "统计总分")
 	@RequestMapping(value = "/totalScore", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> totalScore(@RequestParam String onlineScore,@RequestParam Integer offlineScore,@RequestParam Integer userId,
+	public ResponseEntity<JSONObject> totalScore(@RequestParam Integer offlineScore,@RequestParam Integer userId,
 			@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
 		ActivitiRuleInstance instance = list.get(0);
-		instance.setRemarks(String.valueOf(Integer.valueOf(onlineScore)+offlineScore));
+		instance.setUserScore(offlineScore);
 		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.updateByPrimaryKey(instance)));
 	}
-
-	
-	
-//	@ApiOperation(value = "7 统计投票结果", notes = "统计投票结果")
-//	@RequestMapping(value = "/statisticsTicket", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> statisticsTicket(@RequestParam Integer userId,
-//			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		Integer page = 1;
-//		ActivityExample example = new ActivityExample();
-//		example.createCriteria().andUserIdEqualTo(userId).andIsTimingStartEqualTo((short) 0);
-//		List<Activity> activity = activityMapper.selectByExample(example);
-//		if (activity.isEmpty()) {
-//			return builder.body(ResponseUtils.getResponseBody("还未有活动结束"));
-//		}
-//		for (int i = 0; i < activity.size(); i++) {
-//			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
-//			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-//					.andRuleValueTypeEqualTo("ticket_count");
-//			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
-//			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-//					.andIsElectedEqualTo(false);
-//			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
-//			for (int j = 0; j < list.size(); j++) {
-//				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
-//				activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
-//				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
-//						.selectByExample(activityVoteRecordsExample);
-//				if (!activityVoteRecords.isEmpty()) {
-//					if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
-//							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
-//						for (int k = 0; k < activityVoteRecords.size(); k++) {
-//							ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
-//							activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activity.get(i).getId())
-//									.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
-//							List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
-//									.selectByExample(activitiRuleInstanceExample2);
-//							ActivitiRuleInstance instance = activitiRuleInstance.get(0);
-//							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-//							instance.setUserScore(
-//									instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
-//							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
-//						}
-//						for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
-//								.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
-//								- activityVoteRecords.size(); k++) {
-//							ActivityVoteRecords records = new ActivityVoteRecords();
-//							records.setUserId(activityVoteRecords.get(0).getUserId());
-//							activityVoteRecordsMapper.insert(records);
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		List<ActivitiRuleInstance> list = null;
-//		for (int i = 0; i < activity.size(); i++) {
-//			List<Total> result = new ArrayList<Total>();
-//			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-//			example2.createCriteria().andActivityIdEqualTo(activity.get(i).getId()).andIsElectedEqualTo(true);
-//			example2.setOrderByClause("user_ticket_count DESC,user_score DESC");
-//			if (!StringUtils.isEmpty(size)) {
-//				PageHelper.startPage(page, size);
-//			}
-//			list = activitiRuleInstanceMapper.selectByExample(example2);
-//			if (!list.isEmpty()) {
-//				Integer index = 1;
-//				for (int j = 0; j < list.size(); j++) {
-//					Total total = new Total();
-//					if (list.get(j).getUserScore() == null) {
-//						total.setSocre(0);
-//					} else {
-//						total.setSocre(list.get(j).getUserScore());
-//					}
-//					if (list.get(j).getUserTicketCount() == null) {
-//						total.setVoteCount(0);
-//					} else {
-//						total.setVoteCount(list.get(j).getUserTicketCount());
-//					}
-//					total.setPosition(index);
-//					total.setUserId(list.get(j).getUserId());
-//					total.setActivityId(list.get(j).getActivityId());
-//					result.add(total);
-//					index++;
-//				}
-//				activity.get(i).setActivityResult(result.toString());
-//				activityMapper.updateByPrimaryKey(activity.get(i));
-//			}
-//		}
-////		if (result.isEmpty()) {
-////			return builder.body(ResponseUtils.getResponseBody("还未有活动开始"));
-////		}
-////        TODO 统计投票 并将投票结果存入activity的activity_result 返回投票结果
-//		return builder.body(ResponseUtils.getResponseBody(activity));
-//	}
 
 	@ApiOperation(value = "查看活动列表", notes = "查看活动列表")
 	@RequestMapping(value = "/activities", method = RequestMethod.GET)
@@ -807,5 +732,18 @@ public class ActivityManagerController {
 		out.close();
 		return builder.body(ResponseUtils.getResponseBody(file));
 	}
-
+	
+	@RequestMapping(path = "/downloadForm", method = RequestMethod.POST)
+	@ApiOperation(value = "上传简历", notes = "上传简历")
+	public void downloadForm() throws Exception {
+		JEditorPane jep = new JEditorPane(new URL("https://jingyan.baidu.com/article/4b52d702d4bd71fc5c774ba7.html"));
+		jep.setSize(10000, 10000);
+		ByteArrayInputStream stream = new ByteArrayInputStream();
+		BufferedImage image = new BufferedImage(jep.getWidth(), jep.getHeight(), BufferedImage.TYPE_INT_RGB);
+		stream.reset();
+		OutputStream outputStream = response.getOutputStream();
+		ImageIO.write(readImg, "png", outputStream);
+		outputStream.close();
+	}
+	
 }
