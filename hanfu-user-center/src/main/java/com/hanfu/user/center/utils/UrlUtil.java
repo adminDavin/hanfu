@@ -1,18 +1,29 @@
 package com.hanfu.user.center.utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Iterator;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class UrlUtil {
+	private static final String Charset = "utf-8"; 
 	/**
 	 * 向指定 URL 发送POST方法的请求
 	 * 
@@ -21,58 +32,140 @@ public class UrlUtil {
 	 * @return 所代表远程资源的响应结果
 	 */
 	protected final static Logger log = LoggerFactory.getLogger(UrlUtil.class);
+	@SuppressWarnings("unchecked")
 	public static String sendPost(String url, Map<String, ?> paramMap) {
-
-		PrintWriter out = null;
-		BufferedReader in = null;
-		String result = "";
-		String param = "";
-		Iterator<String> it = paramMap.keySet().iterator();
-		while(it.hasNext()) {
-			String key = it.next();
-			param += key + "=" + paramMap.get(key) + "&";
-		}
-		try {
-			URL realUrl = new URL(url);
-			// 打开和URL之间的连接
-			URLConnection conn = realUrl.openConnection();
-			// 设置通用的请求属性
-			conn.setRequestProperty("accept", "*/*");
-			conn.setRequestProperty("connection", "Keep-Alive");
-			conn.setRequestProperty("Accept-Charset", "utf-8");
-			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-			// 发送POST请求必须设置如下两行
-			conn.setDoOutput(true);
-			conn.setDoInput(true);
-			// 获取URLConnection对象对应的输出流
-			out = new PrintWriter(conn.getOutputStream());
-			// 发送请求参数
-			out.print(param);
-			// flush输出流的缓冲
-			out.flush();
-			// 定义BufferedReader输入流来读取URL的响应
-			in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-			String line;
-			while ((line = in.readLine()) != null) {
-				result += line;
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		//使用finally块来关闭输出流、输入流
-		finally{
-			try{
-				if(out!=null){
-					out.close();
-				}
-				if(in!=null){
-					in.close();
-				}
-			}
-			catch(IOException ex){
-				ex.printStackTrace();
-			}
-		}
-		return result;
-	}
+		  // 处理请求地址  
+        try {  
+            CloseableHttpClient client = HttpClientBuilder.create().build();  
+            URI uri = new URI(url);  
+            HttpPost post = new HttpPost(uri);  
+  
+            // 添加参数  
+            List<NameValuePair> params = new ArrayList<NameValuePair>();  
+            for (String str : paramMap.keySet()) {  
+                params.addAll((Collection<? extends NameValuePair>) new BasicNameValuePair(str, (String) paramMap.get(str)));  
+            }  
+            post.setEntity(new UrlEncodedFormEntity((List<? extends org.apache.http.NameValuePair>) params, Charset));  
+            // 执行请求  
+            CloseableHttpResponse response = client.execute(post);  
+  
+            if (response.getStatusLine().getStatusCode() == 200) {  
+                // 处理请求结果  
+                StringBuffer buffer = new StringBuffer();  
+                InputStream in = null;  
+                try {  
+                    in = response.getEntity().getContent();  
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,Charset));  
+                    String line = null;  
+                    while ((line = reader.readLine()) != null) {  
+                        buffer.append(line);  
+                    }  
+  
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                } finally {  
+                    // 关闭流  
+                    if (in != null)  
+                        try {  
+                            in.close();  
+                        } catch (Exception e) {  
+                            e.printStackTrace();  
+                        }  
+                }  
+  
+                return buffer.toString();  
+            } else {  
+                return null;  
+            }  
+        } catch (Exception e1) {  
+            e1.printStackTrace();  
+        }  
+        return null;  
+  
+    }  
+  
+    /** 
+     * 发送请求，如果失败会返回null 
+     * @param url 
+     * @param str 
+     * @return 
+     */  
+    public static String post(String url, String str) {  
+        // 处理请求地址  
+        try {  
+            CloseableHttpClient client = HttpClientBuilder.create().build();  
+            URI uri = new URI(url);  
+            HttpPost post = new HttpPost(uri);  
+            post.setEntity(new StringEntity(str, Charset));  
+            // 执行请求  
+            CloseableHttpResponse response = client.execute(post);  
+  
+            if (response.getStatusLine().getStatusCode() == 200) {  
+                // 处理请求结果  
+                StringBuffer buffer = new StringBuffer();  
+                InputStream in = null;  
+                try {  
+                    in = response.getEntity().getContent();  
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,"utf-8"));  
+                    String line = null;  
+                    while ((line = reader.readLine()) != null) {  
+                        buffer.append(line);  
+                    }  
+  
+                } finally {  
+                    // 关闭流  
+                    if (in != null)  
+                        in.close();  
+                }  
+  
+                return buffer.toString();  
+            } else {  
+                return null;  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return null;  
+  
+    }  
+  
+    /** 
+     * 发送GET方式的请求，并返回结果字符串。 
+     * <br> 
+     * 时间：2017年2月27日，作者：http://wallimn.iteye.com 
+     * @param url 
+     * @return 如果失败，返回为null 
+     */  
+    public static String get(String url) {  
+        try {  
+            CloseableHttpClient client = HttpClientBuilder.create().build();  
+            URI uri = new URI(url);  
+            HttpGet get = new HttpGet(uri);  
+            CloseableHttpResponse response = client.execute(get);  
+            if (response.getStatusLine().getStatusCode() == 200) {  
+                StringBuffer buffer = new StringBuffer();  
+                InputStream in = null;  
+                try {  
+                    in = response.getEntity().getContent();  
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in,Charset));  
+                    String line = null;  
+                    while ((line = reader.readLine()) != null) {  
+                        buffer.append(line);  
+                    }  
+  
+                } finally {  
+                    if (in != null)  
+                        in.close();  
+                }  
+  
+                return buffer.toString();  
+            } else {  
+                return null;  
+            }  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return null;  
+  
+    }  
 }
