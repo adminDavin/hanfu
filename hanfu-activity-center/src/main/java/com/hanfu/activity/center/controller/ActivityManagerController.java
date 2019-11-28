@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,32 +43,47 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
+import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
+import com.hanfu.activity.center.dao.ActivityUserExperienceMapper;
+import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.FileDescMapper;
+import com.hanfu.activity.center.dao.HfUserMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.UserInfoMapper;
 import com.hanfu.activity.center.manual.dao.HfUserDao;
 import com.hanfu.activity.center.manual.dao.VotePictureDao;
 import com.hanfu.activity.center.manual.model.HfUser;
 import com.hanfu.activity.center.manual.model.Pictures;
+import com.hanfu.activity.center.manual.model.TimeTime;
+import com.hanfu.activity.center.manual.model.UserFormInfo;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
 import com.hanfu.activity.center.model.Activity;
+import com.hanfu.activity.center.model.ActivityDepartment;
+import com.hanfu.activity.center.model.ActivityDepartmentExample;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.ActivityUserExperience;
+import com.hanfu.activity.center.model.ActivityUserExperienceExample;
+import com.hanfu.activity.center.model.ActivityUserInfo;
+import com.hanfu.activity.center.model.ActivityUserInfoExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
 import com.hanfu.activity.center.model.FileDesc;
+import com.hanfu.activity.center.model.FileDescExample;
 import com.hanfu.activity.center.model.StrategyRule;
 import com.hanfu.activity.center.model.StrategyRuleExample;
 import com.hanfu.activity.center.model.Total;
 import com.hanfu.activity.center.model.UserInfo;
+import com.hanfu.activity.center.request.ActivityDepartmentRequest;
 import com.hanfu.activity.center.request.ActivityRequest;
 import com.hanfu.activity.center.request.ActivityStrategyRequest;
+import com.hanfu.activity.center.request.ActivityUserBaseInfoRequest;
 import com.hanfu.activity.center.request.ActivityVoteRecordRequest;
 import com.hanfu.activity.center.request.AddActivityUserRequest;
 import com.hanfu.activity.center.request.RecordScoreRequest;
@@ -111,7 +127,7 @@ public class ActivityManagerController {
 	private ActivityVoteRecordsMapper activityVoteRecordsMapper;
 
 	@Autowired
-	private HfUserDao hfUserMapper;
+	private HfUserDao hfUserDao;
 
 	@Autowired
 	private VotePictureDao votePictureDao;
@@ -121,6 +137,18 @@ public class ActivityManagerController {
 
 	@Autowired
 	private UserInfoMapper userInfoMapper;
+	
+	@Autowired
+	private ActivityUserInfoMapper activityUserInfoMapper;
+	
+	@Autowired
+	private ActivityDepartmentMapper activityDepartmentMapper;
+	
+	@Autowired
+	private ActivityUserExperienceMapper activityUserExperienceMapper;
+	
+	@Autowired
+	private HfUserMapper hfUserMapper;
 
 	@ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
 	@RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
@@ -156,6 +184,12 @@ public class ActivityManagerController {
 		}
 		if("record_score".equals(ruleType)) {
 			strategyRule.setRuelValueType("score");
+		}
+		if("internal_election".equals(ruleType)) {
+			strategyRule.setRuelValueType("election");
+		}
+		if("public_praise".equals(ruleType)) {
+			strategyRule.setRuelValueType("praise");
 		}
 		strategyRule.setCreateTime(LocalDateTime.now());
 		strategyRule.setModifyTime(LocalDateTime.now());
@@ -404,7 +438,7 @@ public class ActivityManagerController {
 	@RequestMapping(value = "/recordScore", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> recordScore(RecordScoreRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Integer total = null;
+		Integer total = 0;
 		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
@@ -430,8 +464,12 @@ public class ActivityManagerController {
 		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
 		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
 		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
-		for (int i = 0; i < request.getRemark().length; i++) {
-			total  = Integer.valueOf(request.getRemark()[i])+total;
+		Integer[] remark = request.getRemark();
+		for (int i = 0; i < remark.length; i++) {
+			if(remark[i]<0) {
+				return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
+			}
+			total  = remark[i]+total;
 		}
 		if(total>100) {
 			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
@@ -441,7 +479,7 @@ public class ActivityManagerController {
 		if(userElect.getRemarks() == null) {
 			userElect.setRemarks(String.valueOf(total*0.5));
 		}else {
-			userElect.setRemarks(userElect.getRemarks()+String.valueOf(total*0.5));
+			userElect.setRemarks(String.valueOf(Double.valueOf(userElect.getRemarks())+total*0.5));
 		}
 		if(userElect.getUserTicketCount() == null) {
 			userElect.setUserTicketCount(1);
@@ -453,11 +491,48 @@ public class ActivityManagerController {
 	}
 	
 	
+	
+	
+	@ApiOperation(value = "点赞", notes = "点赞")
+	@RequestMapping(value = "/clickPraise", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> clickPraise(RecordScoreRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer total = 0;
+		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+		if (activity.getIsTimingStart() == 0) {
+			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
+		}
+		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+		if(hfUser.getIdDeleted() == 1) {
+			return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
+		}
+		hfUser.setIdDeleted((byte) 1);
+		hfUserMapper.updateByPrimaryKey(hfUser);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+		}
+		ActivitiRuleInstance instance = list.get(0);
+		if(instance.getUserTicketCount() == null) {
+			instance.setUserTicketCount(1);
+		}else {
+			instance.setUserTicketCount(instance.getUserTicketCount()+1);
+		}
+		activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
 	@ApiOperation(value = "统计总分", notes = "统计总分")
 	@RequestMapping(value = "/totalScore", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> totalScore(@RequestParam Integer offlineScore,@RequestParam Integer userId,
 			@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(offlineScore>50 || offlineScore<0) {
+			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
+		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
@@ -577,7 +652,7 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody(null));
 		}
 		List<HfUser> users = new ArrayList<HfUser>(list.size());
-		List<HfUser> users2 = hfUserMapper.findAllUser();
+		List<HfUser> users2 = hfUserDao.findAllUser();
 		for (int i = 0; i < users2.size(); i++) {
 			for (int j = 0; j < list.size(); j++) {
 				if (list.get(j).getUserId() == users2.get(i).getId()) {
@@ -733,17 +808,226 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(file));
 	}
 	
-	@RequestMapping(path = "/downloadForm", method = RequestMethod.POST)
-	@ApiOperation(value = "上传简历", notes = "上传简历")
-	public void downloadForm() throws Exception {
-		JEditorPane jep = new JEditorPane(new URL("https://jingyan.baidu.com/article/4b52d702d4bd71fc5c774ba7.html"));
-		jep.setSize(10000, 10000);
-		ByteArrayInputStream stream = new ByteArrayInputStream();
-		BufferedImage image = new BufferedImage(jep.getWidth(), jep.getHeight(), BufferedImage.TYPE_INT_RGB);
-		stream.reset();
-		OutputStream outputStream = response.getOutputStream();
-		ImageIO.write(readImg, "png", outputStream);
-		outputStream.close();
+	@RequestMapping(path = "/updateUserBaseInfo", method = RequestMethod.POST)
+	@ApiOperation(value = "更改用户基本信息", notes = "更改用户基本信息")
+	public ResponseEntity<JSONObject> updateUserBaseInfo(MultipartFile fileInfo,ActivityUserBaseInfoRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+		if(!StringUtils.isEmpty(request.getUsername())) {
+			hfUser.setRealName(request.getUsername());
+			hfUserMapper.updateByPrimaryKey(hfUser);
+		}
+		ActivityUserInfoExample example = new ActivityUserInfoExample();
+		example.createCriteria().andUserIdEqualTo(request.getUserId());
+		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			ActivityUserInfo userInfo = new ActivityUserInfo();
+			userInfo.setUserId(request.getUserId());
+			userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			if(!StringUtils.isEmpty(request.getDepartmentName())) {
+				ActivityDepartmentRequest departmentRequest = new ActivityDepartmentRequest();
+				departmentRequest.setDepartmentName(request.getDepartmentName());
+				userInfo.setDepartmentId(updateDepartment(departmentRequest));
+			}
+			if(!StringUtils.isEmpty(request.getHiredate())) {
+				userInfo.setHiredate(request.getHiredate());
+			}
+			activityUserInfoMapper.insert(userInfo);
+		}else {
+			ActivityUserInfo userInfo = list.get(0);
+			userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			if(!StringUtils.isEmpty(request.getDepartmentName())) {
+				ActivityDepartmentRequest departmentRequest = new ActivityDepartmentRequest();
+				departmentRequest.setDepartmentName(request.getDepartmentName());
+				userInfo.setDepartmentId(updateDepartment(departmentRequest));
+			}
+			if(!StringUtils.isEmpty(request.getHiredate())) {
+				userInfo.setHiredate(request.getHiredate());
+			}
+			activityUserInfoMapper.updateByPrimaryKey(userInfo);
+		}
+		
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
+	
+	@RequestMapping(path = "/updateDepartment", method = RequestMethod.POST)
+	@ApiOperation(value = "更新部门", notes = "更新部门")
+	public Integer updateDepartment(ActivityDepartmentRequest request) throws Exception {
+		Integer departmentId = null;
+		ActivityDepartmentExample example = new ActivityDepartmentExample();
+		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName());
+		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			ActivityDepartment department = new ActivityDepartment();
+			if(!StringUtils.isEmpty(request.getDepartmentName())) {
+				department.setDepartmentName(request.getDepartmentName());
+			}
+			if(!StringUtils.isEmpty(request.getCompanyName())) {
+				department.setCompanyName(request.getCompanyName());
+			}
+			
+			if(!StringUtils.isEmpty(request.getCompanyId())) {
+				department.setComponyId(request.getCompanyId());
+			}
+			
+			if(!StringUtils.isEmpty(request.getRemarks())) {
+				department.setRemarks(request.getRemarks());
+			}
+			
+			if(!StringUtils.isEmpty(request.getSuperiorId())) {
+				department.setSuperiorId(request.getSuperiorId());
+			}
+			department.setCreateTime(LocalDateTime.now());
+			department.setIsDeleted((short) 0);
+			department.setModifyTime(LocalDateTime.now());
+			activityDepartmentMapper.insert(department);
+			departmentId = department.getId();
+		}else {
+			ActivityDepartment department = list.get(0);
+			if(!StringUtils.isEmpty(request.getDepartmentName())) {
+				department.setDepartmentName(request.getDepartmentName());
+			}
+			if(!StringUtils.isEmpty(request.getCompanyName())) {
+				department.setCompanyName(request.getCompanyName());
+			}
+			
+			if(!StringUtils.isEmpty(request.getCompanyId())) {
+				department.setComponyId(request.getCompanyId());
+			}
+			
+			if(!StringUtils.isEmpty(request.getRemarks())) {
+				department.setRemarks(request.getRemarks());
+			}
+			
+			if(!StringUtils.isEmpty(request.getSuperiorId())) {
+				department.setSuperiorId(request.getSuperiorId());
+			}
+			department.setModifyTime(LocalDateTime.now());
+			activityDepartmentMapper.updateByPrimaryKey(department);
+			departmentId = department.getId();
+		}
+		return departmentId;
+	}
+	
+	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
+	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
+	public Integer updateUserAvatar(@RequestParam MultipartFile fileInfo,@RequestParam Integer userId) throws Exception {
+		Integer fileId = null;
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
+		FileDescExample example  = new FileDescExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<FileDesc> list = fileDescMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName("用户头像");
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(userId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			fileId = fileDesc.getId();
+		}else {
+			FileDesc fileDesc = list.get(0);
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDescMapper.updateByPrimaryKey(fileDesc);
+			fileId = fileDesc.getId();
+		}
+		
+		return fileId;
+	}
+	
+	@RequestMapping(path = "/updateUserExperience", method = RequestMethod.POST)
+	@ApiOperation(value = "更改用户经历", notes = "更改用户经历")
+	public ResponseEntity<JSONObject> updateUserExperience(@RequestParam String jobContent,@RequestParam Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityUserExperienceExample example = new ActivityUserExperienceExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserExperience> list = activityUserExperienceMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			ActivityUserExperience experience = new ActivityUserExperience();
+			experience.setJobContent(jobContent);
+			experience.setCreateTime(LocalDateTime.now());
+			experience.setModifyTime(LocalDateTime.now());
+			experience.setIsDeleted((short) 0);
+			experience.setUserId(userId);
+			activityUserExperienceMapper.insert(experience);
+		}else {
+			ActivityUserExperience experience = list.get(0);
+			experience.setJobContent(jobContent);
+			experience.setModifyTime(LocalDateTime.now());
+			activityUserExperienceMapper.updateByPrimaryKey(experience);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
+	@RequestMapping(path = "/updateUserEvaluation", method = RequestMethod.POST)
+	@ApiOperation(value = "更改用户个人评价", notes = "更改用户个人评价")
+	public ResponseEntity<JSONObject> updateUserEvaluation(@RequestParam String[] evaluation,@RequestParam Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		String str = "";
+		for (int i = 0; i < evaluation.length; i++) {
+			if(evaluation[i].contains("*")) {
+				return builder.body(ResponseUtils.getResponseBody("*"));
+			}
+			str = str+evaluation[i]+"*";
+		}
+		ActivityUserInfoExample example = new ActivityUserInfoExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			ActivityUserInfo userInfo = new ActivityUserInfo();
+			userInfo.setEvaluation(str);
+			userInfo.setCreateTime(LocalDateTime.now());
+			userInfo.setModifyTime(LocalDateTime.now());
+			userInfo.setIsDeleted((short) 0);
+			activityUserInfoMapper.insert(userInfo);
+		}else {
+			ActivityUserInfo userInfo = list.get(0);
+			userInfo.setEvaluation(str);
+			userInfo.setModifyTime(LocalDateTime.now());
+			
+			activityUserInfoMapper.updateByPrimaryKey(userInfo);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
+	
+	@RequestMapping(path = "/findUserFormInfo", method = RequestMethod.GET)
+	@ApiOperation(value = "查询用户表单信息", notes = "查询用户表单信息")
+	public ResponseEntity<JSONObject> findUserFormInfo(@RequestParam Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		UserFormInfo info = hfUserDao.findByUserId(userId);
+		ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(info.getDepartmentId());
+		if(department != null) {
+			if(!StringUtils.isEmpty(department.getDepartmentName())) {
+				info.setDepartmentName(department.getDepartmentName());
+			}
+		}
+		if(!StringUtils.isEmpty(info.getEvaluation())) {
+			String[] str = info.getEvaluation().split("\\*");
+			info.setA(str[0]);
+			info.setB(str[1]);
+			info.setC(str[2]);
+			info.setD(str[3]);
+		}
+		
+		return builder.body(ResponseUtils.getResponseBody(info));
+	}
+	
+//	@RequestMapping(path = "/timetime", method = RequestMethod.GET)
+//	@ApiOperation(value = "时间时间", notes = "时间时间")
+//	public ResponseEntity<JSONObject> timetime(TimeTime time) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		System.out.println("1111111111111111111111111111111");
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
 }

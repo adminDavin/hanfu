@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,11 +29,13 @@ import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
 import com.hanfu.activity.center.model.ActivitiStrategyExample;
 import com.hanfu.activity.center.model.Activity;
+import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
 import com.hanfu.activity.center.model.HfUser;
+import com.hanfu.activity.center.model.HfUserExample;
 import com.hanfu.activity.center.model.StrategyRule;
 import com.hanfu.activity.center.model.StrategyRuleExample;
 import com.hanfu.activity.center.model.StrategyRuleRelate;
@@ -131,7 +134,11 @@ public class ActivityController {
 			for (int j = 0; j < list.size(); j++) {
 				Total total = new Total();
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list.get(j).getUserId());
-				total.setSocre(Integer.valueOf(list.get(j).getRemarks())/list.get(j).getUserTicketCount()+list.get(j).getUserScore());
+				if(!StringUtils.isEmpty(list.get(j).getUserTicketCount())) {
+					total.setTotalScore(Double.valueOf(list.get(j).getRemarks())/list.get(j).getUserTicketCount()+list.get(j).getUserScore());;
+				}else {
+					total.setTotalScore(0.0);
+				}
 				total.setFileId(hfUser.getFileId());
 				total.setUsername(hfUser.getUsername());
 //				total.setPosition(index);
@@ -409,5 +416,33 @@ public class ActivityController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	@Scheduled(cron = "*/5 * * * * ?")
+	    public void ssgx(){
+		 	HfUserExample example = new HfUserExample();
+		 	example.createCriteria().andIdDeletedEqualTo((byte) 1);
+		 	List<HfUser> list = hfUserMapper.selectByExample(example);
+		 	for (int i = 0; i < list.size(); i++) {
+				HfUser hfUser = list.get(i);
+				hfUser.setIdDeleted((byte) 0);
+				hfUserMapper.updateByPrimaryKey(hfUser);
+			}
+	    }
 	
+	@Scheduled(cron = "*/5 * * * * ?")
+    public void activity(){
+		ActivityExample example = new ActivityExample();
+		example.createCriteria().andStartTimeLessThan(LocalDateTime.now());
+		List<Activity> list = activityMapper.selectByExample(example);
+	 	for (int i = 0; i < list.size(); i++) {
+			Activity activity = list.get(i);
+			activity.setIsTimingStart((short) 1);
+	 	}
+	 	example.clear();
+	 	example.createCriteria().andEndTimeGreaterThanOrEqualTo(LocalDateTime.now());
+	 	List<Activity> list1 = activityMapper.selectByExample(example);
+	 	for (int i = 0; i < list.size(); i++) {
+			Activity activity = list.get(i);
+			activity.setIsTimingStart((short) 0);
+	 	}
+    }
 }
