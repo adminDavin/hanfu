@@ -999,8 +999,6 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
-	
-	
 	@RequestMapping(path = "/findUserFormInfo", method = RequestMethod.GET)
 	@ApiOperation(value = "查询用户表单信息", notes = "查询用户表单信息")
 	public ResponseEntity<JSONObject> findUserFormInfo(@RequestParam Integer userId) throws Exception {
@@ -1023,11 +1021,5 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	
-//	@RequestMapping(path = "/timetime", method = RequestMethod.GET)
-//	@ApiOperation(value = "时间时间", notes = "时间时间")
-//	public ResponseEntity<JSONObject> timetime(TimeTime time) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//		System.out.println("1111111111111111111111111111111");
-//		return builder.body(ResponseUtils.getResponseBody(null));
-//	}
+	
 }
