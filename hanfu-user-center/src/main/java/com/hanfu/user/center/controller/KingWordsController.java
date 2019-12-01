@@ -103,10 +103,10 @@ public class KingWordsController {
 		}
 		if(!"1".equals(authType)) {
 			if(!(hfAuth.getAuthKey()).equals(authKey)) {
-								if(passwd != redisTemplate.opsForValue().get(authKey)) {
-				throw new ParamInvalidException("authType is invalid");
-								}
-								}		
+				if(passwd != redisTemplate.opsForValue().get(authKey)) {
+					throw new ParamInvalidException("authType is invalid");
+				}
+			}		
 		}
 		list.put(token, hfAuth.getUserId());
 		return builder.body(ResponseUtils.getResponseBody(list));
@@ -135,7 +135,7 @@ public class KingWordsController {
 		}
 		if(passwd != redisTemplate.opsForValue().get(authKey)) {
 			throw new ParamInvalidException("authKey is invalid");
-							}
+		}
 		HfUser user = new HfUser();
 		user.setSourceType(authType);
 		user.setPhone(authKey);
@@ -173,9 +173,8 @@ public class KingWordsController {
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
-		//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		//		String localTime = df.format(request.getBirthDay());
-		//		LocalDateTime ldt = LocalDateTime.parse(localTime,df);
+//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//		LocalDateTime ldt = LocalDateTime.parse("request.getBirthDay()",df);
 		HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (user == null) {
 			throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -186,9 +185,9 @@ public class KingWordsController {
 		if(!StringUtils.isEmpty(request.getUsername())) {
 			user.setUsername(request.getUsername());
 		}
-		//		if(!StringUtils.isEmpty(request.getBirthDay())) {
-		//			user.setBirthDay(ldt);
-		//		}
+//		if(!StringUtils.isEmpty(request.getBirthDay())) {
+//			user.setBirthDay(ldt);
+//		}
 		if(!StringUtils.isEmpty(request.getEmail())) {
 			user.setEmail(request.getEmail());
 		}
