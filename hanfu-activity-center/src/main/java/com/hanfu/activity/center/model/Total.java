@@ -11,6 +11,7 @@ public class Total {
 	private String code;
 	private String username;
 	private Integer fileId;
+	private String departmentName;
 	
 	public Integer getPosition() {
 		return position;
@@ -65,6 +66,12 @@ public class Total {
 	}
 	public void setFileId(Integer fileId) {
 		this.fileId = fileId;
+	}
+	public String getDepartmentName() {
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
 	}
 	@Override
 	public String toString() {

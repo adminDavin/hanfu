@@ -14,7 +14,7 @@ public class UserFormInfo implements Serializable{
 	private Integer fileId;
 	private String username;
 	private String departmentName;
-	private Date hiredate;
+	private LocalDateTime hiredate;
 	private String jobContent;
 	private String phone;
 	private String evaluation;
@@ -41,10 +41,10 @@ public class UserFormInfo implements Serializable{
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
 	}
-	public Date getHiredate() {
+	public LocalDateTime getHiredate() {
 		return hiredate;
 	}
-	public void setHiredate(Date hiredate) {
+	public void setHiredate(LocalDateTime hiredate) {
 		this.hiredate = hiredate;
 	}
 	public String getJobContent() {

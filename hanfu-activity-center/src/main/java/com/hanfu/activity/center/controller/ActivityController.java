@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
+import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
+import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.HfUserMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
@@ -37,9 +39,12 @@ import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
 import com.hanfu.activity.center.model.ActivitiStrategyExample;
 import com.hanfu.activity.center.model.Activity;
+import com.hanfu.activity.center.model.ActivityDepartment;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.ActivityUserInfo;
+import com.hanfu.activity.center.model.ActivityUserInfoExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
 import com.hanfu.activity.center.model.HfUser;
@@ -94,6 +99,12 @@ public class ActivityController {
 	
 	@Autowired
 	private ActivityDao activityDao;
+	
+	@Autowired
+	private ActivityUserInfoMapper activityUserInfoMapper;
+	
+	@Autowired
+	private ActivityDepartmentMapper activityDepartmentMapper;
 
 	@ApiOperation(value = "查询参加该活动参与人员", notes = "查询参加该活动参与人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
@@ -118,8 +129,20 @@ public class ActivityController {
 					total.setVoteCount(list.get(j).getUserTicketCount());
 				}
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list.get(j).getUserId());
+				ActivityUserInfoExample example2 = new ActivityUserInfoExample();
+				example2.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
+				List<ActivityUserInfo> list2 = activityUserInfoMapper.selectByExample(example2);
+				if(!list2.isEmpty()) {
+					ActivityUserInfo userInfo = list2.get(0);
+					ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(userInfo.getDepartmentId());
+					total.setDepartmentName(department.getDepartmentName());
+				}
 				total.setFileId(hfUser.getFileId());
-				total.setUsername(hfUser.getUsername());
+				if(hfUser.getRealName() == null) {
+					total.setUsername(hfUser.getUsername());
+				}else {
+					total.setUsername(hfUser.getRealName());
+				}
 				total.setPosition(index);
 				total.setUserId(list.get(j).getUserId());
 				total.setActivityId(list.get(j).getActivityId());
@@ -486,12 +509,12 @@ public class ActivityController {
 			for (int i = 0; i < list.size(); i++) {
 				Activity activity = list.get(i);
 				LocalDateTime date = activity.getStartTime();
-				System.out.println(date.toString());
+//				System.out.println(date.toString());
 				LocalDateTime date2 = activity.getEndTime();
-				System.out.println(date2.toString());
+//				System.out.println(date2.toString());
 				ZoneId z = ZoneId.of("UTC");
 				LocalDateTime localDateTime = LocalDateTime.now(z);
-				System.out.println(localDateTime.toString());
+//				System.out.println(localDateTime.toString());
 				if (date.isBefore(localDateTime) && localDateTime.isBefore(date2)) {
 					if (activity.getIsTimingStart() != 1) {
 						activity.setIsTimingStart((short) 1);

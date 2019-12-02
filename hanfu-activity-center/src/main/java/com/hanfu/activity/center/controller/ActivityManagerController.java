@@ -11,12 +11,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -300,10 +307,10 @@ public class ActivityManagerController {
 							.selectByExample(example2);
 					ruleValueDesc.setUserTicketCount(Integer.valueOf(activityStrategyInstance.get(0).getRuleValue()));
 				}
-				ActivityStrategyInstanceExample strategyInstanceExample = new ActivityStrategyInstanceExample();
-				strategyInstanceExample.createCriteria().andRuleIdEqualTo(instance.getRuleId());
-				ruleValueDesc.setRuleInstanceId(
-						activityStrategyInstanceMapper.selectByExample(strategyInstanceExample).get(0).getId());
+//				ActivityStrategyInstanceExample strategyInstanceExample = new ActivityStrategyInstanceExample();
+//				strategyInstanceExample.createCriteria().andRuleIdEqualTo(instance.getRuleId());
+//				activityStrategyInstanceMapper.selectByExample(strategyInstanceExample).get(0).getId()
+				ruleValueDesc.setRuleInstanceId(request.getRuleInstanceId());
 				ruleValueDesc.setRuleId(instance.getRuleId());
 				StrategyRule rule = strategyRuleMapper.selectByPrimaryKey(instance.getRuleId());
 				if ("elector".equals(rule.getRuleType())) {
@@ -431,7 +438,7 @@ public class ActivityManagerController {
 			userVote.setUserTicketCount(userVote.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(userVote);
 		}
-		return builder.body(ResponseUtils.getResponseBody(null));
+		return builder.body(ResponseUtils.getResponseBody(request.getRemark()));
 	}
 
 	@ApiOperation(value = "打分", notes = "打分")
@@ -823,27 +830,55 @@ public class ActivityManagerController {
 		if(list.isEmpty()) {
 			ActivityUserInfo userInfo = new ActivityUserInfo();
 			userInfo.setUserId(request.getUserId());
-			userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			if(fileInfo != null) {
+				userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			}
 			if(!StringUtils.isEmpty(request.getDepartmentName())) {
 				ActivityDepartmentRequest departmentRequest = new ActivityDepartmentRequest();
 				departmentRequest.setDepartmentName(request.getDepartmentName());
 				userInfo.setDepartmentId(updateDepartment(departmentRequest));
 			}
 			if(!StringUtils.isEmpty(request.getHiredate())) {
-				userInfo.setHiredate(request.getHiredate());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				Date date;
+				try {
+					date = sdf.parse(request.getHiredate());
+				} catch (ParseException e) {
+					return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
+				}
+				Instant instant = date.toInstant();
+				ZoneId zoneId = ZoneId.systemDefault();
+				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+				userInfo.setHiredate(localDateTime);
 			}
+			userInfo.setCreateTime(LocalDateTime.now());
 			activityUserInfoMapper.insert(userInfo);
 		}else {
 			ActivityUserInfo userInfo = list.get(0);
-			userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			if(fileInfo != null) {
+				userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
+			}
 			if(!StringUtils.isEmpty(request.getDepartmentName())) {
 				ActivityDepartmentRequest departmentRequest = new ActivityDepartmentRequest();
 				departmentRequest.setDepartmentName(request.getDepartmentName());
 				userInfo.setDepartmentId(updateDepartment(departmentRequest));
 			}
 			if(!StringUtils.isEmpty(request.getHiredate())) {
-				userInfo.setHiredate(request.getHiredate());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				Date date;
+				try {
+					date = sdf.parse(request.getHiredate());
+				} catch (ParseException e) {
+					return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
+				}
+				Instant instant = date.toInstant();
+				ZoneId zoneId = ZoneId.systemDefault();
+				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+				userInfo.setHiredate(localDateTime);
 			}
+			userInfo.setCreateTime(LocalDateTime.now());
 			activityUserInfoMapper.updateByPrimaryKey(userInfo);
 		}
 		
@@ -913,6 +948,10 @@ public class ActivityManagerController {
 	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
 	public Integer updateUserAvatar(@RequestParam MultipartFile fileInfo,@RequestParam Integer userId) throws Exception {
+		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+		if(hfUser == null) {
+			throw new Exception("此人不存在");
+		}
 		Integer fileId = null;
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
@@ -931,6 +970,8 @@ public class ActivityManagerController {
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
 			fileId = fileDesc.getId();
+			hfUser.setFileId(fileId);
+			hfUserMapper.updateByPrimaryKey(hfUser);
 		}else {
 			FileDesc fileDesc = list.get(0);
 			fileDesc.setGroupName(arr[0]);
@@ -938,6 +979,8 @@ public class ActivityManagerController {
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDescMapper.updateByPrimaryKey(fileDesc);
 			fileId = fileDesc.getId();
+			hfUser.setFileId(fileId);
+			hfUserMapper.updateByPrimaryKey(hfUser);
 		}
 		
 		return fileId;
@@ -1004,6 +1047,12 @@ public class ActivityManagerController {
 	public ResponseEntity<JSONObject> findUserFormInfo(@RequestParam Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		UserFormInfo info = hfUserDao.findByUserId(userId);
+		LocalDateTime localDateTime = info.getHiredate();
+		ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        Date date = Date.from(zdt.toInstant());
+        SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        bjSdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(info.getDepartmentId());
 		if(department != null) {
 			if(!StringUtils.isEmpty(department.getDepartmentName())) {
@@ -1018,7 +1067,7 @@ public class ActivityManagerController {
 			info.setD(str[3]);
 		}
 		
-		return builder.body(ResponseUtils.getResponseBody(info));
+		return builder.body(ResponseUtils.getResponseBody(bjSdf.format(date)));
 	}
 	
 	
