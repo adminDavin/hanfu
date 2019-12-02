@@ -237,7 +237,7 @@ public class MyPrint implements Printable{
         }
         return widthTotal;
 	}
-	 public void doPrint(Printable printable) {
+	 public void doPrint(Printable order) {
 	        try {
 	            //Book 类提供文档的表示形式，该文档的页面可以使用不同的页面格式和页面 painter
 	            Book book = new Book(); //要打印的文档
@@ -253,7 +253,7 @@ public class MyPrint implements Printable{
 	            //paper.setImageableArea(20, 20, 683, 793.7);
 	            paper.setImageableArea(20, 20, 683, 500);
 	            pf.setPaper(paper);
-	            book.append(printable, pf, this.totalPageCount);
+	            book.append(order, pf, this.totalPageCount);
 	            PrinterJob job = PrinterJob.getPrinterJob();   //获取打印服务对象
 	            job.setPageable(book);  //设置打印类
 	            job.print();

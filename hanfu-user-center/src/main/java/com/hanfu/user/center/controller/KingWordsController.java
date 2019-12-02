@@ -139,7 +139,7 @@ public class KingWordsController {
 		HfUser user = new HfUser();
 		user.setSourceType(authType);
 		user.setPhone(authKey);
-		user.setUsername(UUID.randomUUID().toString());
+		user.setUsername(authKey);
 		user.setUserStatus("0".getBytes()[0]);
 		user.setBirthDay(LocalDateTime.now());
 		user.setSex((byte)1);
