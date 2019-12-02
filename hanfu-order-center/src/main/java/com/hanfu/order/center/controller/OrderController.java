@@ -1,5 +1,6 @@
 package com.hanfu.order.center.controller;
 
+import java.awt.print.Printable;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public class OrderController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "订单id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> printOrder(@RequestParam Integer id)
-			throws Exception{
+			throws Exception{	
 		MyPrint myPrint = new MyPrint();
 		myPrint.setTotalPageCount(2);	
 		myPrint.doPrint(myPrint);
