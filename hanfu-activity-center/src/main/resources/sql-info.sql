@@ -225,6 +225,50 @@ create table activity_user_info
 
 alter table activity_user_info comment '用户基本信息';
 
+
+drop table if exists activity_user_evaluate;
+/*==============================================================*/
+/* Table: rule_value_desc                                       */
+/*==============================================================*/
+create table activity_user_evaluate
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   user_id              int comment '用户id',
+   evaluate_template_id int comment '评价模板id',
+   evaluate_content     varchar(1023) comment '评价内容',
+   evaluate_result      varchar(1023) comment '评价内容',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table activity_user_evaluate comment '用户评价';
+
+
+drop table if exists activity_evaluate_template;
+/*==============================================================*/
+/* Table: rule_value_desc                                       */
+/*==============================================================*/
+create table activity_evaluate_template
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   parent_template_id int comment '评价模板id',
+   evaluate_type     varchar(128) comment '评价类型',
+   evaluate_content     varchar(1023) comment '评价内容',
+   evaluate_weight      varchar(1023) comment '评价权重',
+   remarks              varchar(1023) comment '备注',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table activity_evaluate_template comment '评价模板';
+
+
+
 drop table if exists activity_user_experience;
 create table activity_user_experience
 (

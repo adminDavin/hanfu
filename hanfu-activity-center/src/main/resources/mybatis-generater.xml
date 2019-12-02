@@ -108,6 +108,19 @@
         </table>
         
         
+        <table schema="user_center" tableName="activity_user_evaluate"
+            domainObjectName="ActivityUserEvaluate">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
+        <table schema="user_center" tableName="activity_evaluate_template"
+            domainObjectName="ActivityEvaluateTemplate">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                identity="true" />
+        </table>
+        
         
         
         
