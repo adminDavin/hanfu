@@ -24,6 +24,7 @@ public class HfUser implements Serializable {
     private Byte idDeleted;
     private String code;
     private Integer count;
+    private Integer score;
     private Boolean isElected;
     private static final long serialVersionUID = 1L;
 	public Integer getId() {
