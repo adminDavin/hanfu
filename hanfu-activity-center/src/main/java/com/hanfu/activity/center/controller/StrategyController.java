@@ -2,6 +2,7 @@ package com.hanfu.activity.center.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.hanfu.activity.center.dao.ActivityComponyMapper;
+import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
+import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
 import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.dao.StrategyRuleDao;
+import com.hanfu.activity.center.model.ActivityCompony;
+import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
+import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
+import com.hanfu.activity.center.model.ActivityUserEvaluate;
+import com.hanfu.activity.center.model.ActivityUserEvaluateExample;
 import com.hanfu.activity.center.model.FileDesc;
 import com.hanfu.activity.center.model.FileDescExample;
 import com.hanfu.activity.center.model.StrategyRule;
 import com.hanfu.activity.center.model.StrategyRuleExample;
 import com.hanfu.activity.center.model.StrategyRuleRelate;
+import com.hanfu.activity.center.request.ActivityCompanyRequest;
+import com.hanfu.activity.center.request.ActivityEvaluateTemplateRequest;
+import com.hanfu.activity.center.request.ActivityUserEvaluateRequest;
 import com.hanfu.activity.center.request.StrategyRuleRelateRequest;
 import com.hanfu.activity.center.request.StrategyRuleRequest;
 import com.hanfu.common.service.FileMangeService;
@@ -53,63 +65,18 @@ public class StrategyController {
 
 	@Autowired
 	private FileDescMapper fileDescMapper;
-	
+
 	@Autowired
 	private StrategyRuleDao strategyRuleDao;
 
-//	@ApiOperation(value = "查询策略规则关系", notes = "公司每次举行活动的策略规则关系")
-//	@RequestMapping(value = "/listStrategyRuleRelate", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> listStrategyRuleRelate() throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		return builder.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.selectByExample(null)));
-//	}
-//
-//	@ApiOperation(value = "增加策略规则关系", notes = "公司每次举行活动的策略规则关系")
-//	@RequestMapping(value = "/addStrategyRuleRelate", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addStrategyRuleRelate(StrategyRuleRelateRequest request) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		StrategyRuleRelate strategyRuleRelate = new StrategyRuleRelate();
-//		strategyRuleRelate.setStrategyId(request.getStrategyId());
-//		strategyRuleRelate.setStrategyRuleId(request.getStrategyRuleId());
-//		strategyRuleRelate.setIsUsed(request.isUsed());
-//		strategyRuleRelate.setCreateTime(LocalDateTime.now());
-//		strategyRuleRelate.setModifyTime(LocalDateTime.now());
-//		strategyRuleRelate.setIsDeleted((short) 0);
-//		return builder.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.insert(strategyRuleRelate)));
-//	}
-//
-//	@ApiOperation(value = "删除策略规则关系", notes = "公司每次举行策略规则关系的删除")
-//	@RequestMapping(value = "/deleteStrategyRuleRelate", method = RequestMethod.POST)
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "strategyRuleRelateId", value = "策略规则关系id", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> deleteStrategyRuleRelate(@RequestParam Integer strategyRuleRelateId)
-//			throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		return builder
-//				.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.deleteByPrimaryKey(strategyRuleRelateId)));
-//	}
-//
-//	@ApiOperation(value = "修改策略规则关系", notes = "公司每次举行策略规则关系的修改")
-//	@RequestMapping(value = "/updateStrategyRuleRelate", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> updateStrategyRuleRelate(StrategyRuleRelateRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		StrategyRuleRelate strategyRuleRelate = strategyRuleRelateMapper.selectByPrimaryKey(request.getId());
-//		if (strategyRuleRelate == null) {
-//			throw new Exception("此活动策略关系不存在");
-//		}
-//		if (!StringUtils.isEmpty(request.getStrategyId())) {
-//			strategyRuleRelate.setStrategyId(request.getStrategyId());
-//		}
-//		if (!StringUtils.isEmpty(request.getStrategyRuleId())) {
-//			strategyRuleRelate.setStrategyRuleId(request.getStrategyRuleId());
-//		}
-//		if (!StringUtils.isEmpty(request.isUsed())) {
-//			strategyRuleRelate.setIsUsed(request.isUsed());
-//		}
-//		strategyRuleRelate.setModifyTime(LocalDateTime.now());
-//		return builder
-//				.body(ResponseUtils.getResponseBody(strategyRuleRelateMapper.updateByPrimaryKey(strategyRuleRelate)));
-//	}
+	@Autowired
+	private ActivityEvaluateTemplateMapper activityEvaluateTemplateMapper;
+
+	@Autowired
+	private ActivityUserEvaluateMapper activityUserEvaluateMapper;
+	
+	@Autowired
+	private ActivityComponyMapper activityComponyMapper;
 
 	@ApiOperation(value = "查询策略规则", notes = "公司每次举行活动的策略规则")
 	@RequestMapping(value = "/listStrategyRule", method = RequestMethod.GET)
@@ -117,25 +84,30 @@ public class StrategyController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		StrategyRuleExample example = new StrategyRuleExample();
 //		example.setDistinct(true);
-		return builder.body(ResponseUtils.getResponseBody(strategyRuleDao.findRuleType()));
+		List<String> list = strategyRuleDao.findRuleType();
+		for (int i = 0; i < list.size(); i++) {
+			String str = list.get(i);
+			if("elector".equals(list.get(i))) {
+				list.set(i, "投票人");
+			}
+			if("elected".equals(list.get(i))) {
+				list.set(i, "被投票人");
+			}
+			if("vote_ticket_count".equals(list.get(i))) {
+				list.set(i, "星星投票");
+			}
+			if("record_score".equals(list.get(i))) {
+				list.set(i, "线上线下评分");
+			}
+			if("internal_election".equals(list.get(i))) {
+				list.set(i, "内部选举");
+			}
+			if("public_praise".equals(list.get(i))) {
+				list.set(i, "公共选举");
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
-
-//	@ApiOperation(value = "增加策略规则", notes = "公司每次举行活动的策略规则")
-//	@RequestMapping(value = "/addStrategyRule", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addStrategyRule(StrategyRuleRequest request) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		StrategyRule strategyRule = new StrategyRule();
-//		strategyRule.setRuleName(request.getRuleName());
-//		strategyRule.setRuleDesc(request.getRuleDesc());
-//		strategyRule.setRuleStatus(request.getRuleStatus());
-//		strategyRule.setRuleType(request.getRuleType());
-//		strategyRule.setStrategyId(request.getStrategyId());
-//		strategyRule.setRuelValueType(request.getRuleValueType());
-//		strategyRule.setCreateTime(LocalDateTime.now());
-//		strategyRule.setModifyTime(LocalDateTime.now());
-//		strategyRule.setIsDeleted((short) 0);
-//		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.insert(strategyRule)));
-//	}
 
 	@ApiOperation(value = "删除策略规则", notes = "公司每次举行策略规则的删除")
 	@RequestMapping(value = "/deleteStrategyRule", method = RequestMethod.POST)
@@ -145,33 +117,6 @@ public class StrategyController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.deleteByPrimaryKey(strategyRuleId)));
 	}
-
-//	@ApiOperation(value = "修改策略规则", notes = "公司每次举行策略规则的修改")
-//	@RequestMapping(value = "/updateStrategyRule", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> updateStrategyRule(StrategyRuleRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		StrategyRule strategyRule = strategyRuleMapper.selectByPrimaryKey(request.getId());
-//		if (strategyRule == null) {
-//			throw new Exception("此策略规则不存在");
-//		}
-//		if (!StringUtils.isEmpty(request.getRuleName())) {
-//			strategyRule.setRuleName(request.getRuleName());
-//		}
-//		if (!StringUtils.isEmpty(request.getRuleDesc())) {
-//			strategyRule.setRuleDesc(request.getRuleDesc());
-//		}
-//		if (!StringUtils.isEmpty(request.getRuleStatus())) {
-//			strategyRule.setRuleStatus(request.getRuleStatus());
-//		}
-//		if (!StringUtils.isEmpty(request.getRuleType())) {
-//			strategyRule.setRuleType(request.getRuleType());
-//		}
-//		if (!StringUtils.isEmpty(request.getRuleValueType())) {
-//			strategyRule.setRuelValueType(request.getRuleValueType());
-//		}
-//		strategyRule.setModifyTime(LocalDateTime.now());
-//		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.updateByPrimaryKey(strategyRule)));
-//	}
 
 	@ApiOperation(value = "增加轮播图", notes = "增加轮播图")
 	@RequestMapping(value = "/addlunbotu", method = RequestMethod.POST)
@@ -189,7 +134,7 @@ public class StrategyController {
 		fileDesc.setIsDeleted((short) 0);
 		fileDescMapper.insert(fileDesc);
 	}
-	
+
 	@ApiOperation(value = "获取轮播图", notes = "获取轮播图")
 	@RequestMapping(value = "/findlunbotu", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findlunbotu() throws JSONException {
@@ -198,7 +143,7 @@ public class StrategyController {
 		example.createCriteria().andFileNameEqualTo("lunbotu");
 		return builder.body(ResponseUtils.getResponseBody(fileDescMapper.selectByExample(example)));
 	}
-	
+
 	@ApiOperation(value = "删除图片", notes = "删除图片")
 	@RequestMapping(value = "/deletelunbotu", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deletelunbotu(@RequestParam Integer fileId) throws JSONException {
@@ -209,4 +154,131 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
+	@RequestMapping(path = "/addUserEvaluationTemplate", method = RequestMethod.POST)
+	@ApiOperation(value = "增加用户评价模板", notes = "增加用户评价模板")
+	public ResponseEntity<JSONObject> addUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityEvaluateTemplate template = new ActivityEvaluateTemplate();
+		template.setEvaluateContent(request.getEvaluateContent());
+		template.setEvaluateType(request.getEvaluateType());
+		template.setEvaluateWeight(request.getEvaluateWeight());
+		template.setParentTemplateId(request.getParentTemplateId());
+		template.setCreateTime(LocalDateTime.now());
+		template.setModifyTime(LocalDateTime.now());
+		template.setIsDeleted((short) 0);
+		activityEvaluateTemplateMapper.insert(template);
+		return builder.body(ResponseUtils.getResponseBody(template.getId()));
+	}
+
+	@RequestMapping(path = "/delterUserEvaluationTemplate", method = RequestMethod.GET)
+	@ApiOperation(value = "删除用户评价模板", notes = "删除用户评价模板")
+	public ResponseEntity<JSONObject> delterUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityEvaluateTemplate activityEvaluateTemplate = activityEvaluateTemplateMapper
+				.selectByPrimaryKey(request.getId());
+		if (activityEvaluateTemplate == null) {
+			return builder.body(ResponseUtils.getResponseBody("此模板不存在"));
+		}
+		activityEvaluateTemplateMapper.deleteByPrimaryKey(request.getId());
+		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
+	}
+
+	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
+	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
+	public ResponseEntity<JSONObject> updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(null);
+		Integer count = 0;
+		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
+			return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
+		}
+		for (int i = 0; i < list.size(); i++) {
+			ActivityEvaluateTemplate template = list.get(i);
+			count = count + Integer.valueOf(template.getEvaluateWeight());
+			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
+				return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
+			}
+		}
+		ActivityEvaluateTemplate activityEvaluateTemplate = activityEvaluateTemplateMapper
+				.selectByPrimaryKey(request.getId());
+		if (activityEvaluateTemplate == null) {
+			return builder.body(ResponseUtils.getResponseBody("此模板不存在"));
+		}
+		activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
+		activityEvaluateTemplate.setEvaluateType(request.getEvaluateType());
+		activityEvaluateTemplate.setEvaluateWeight(request.getEvaluateWeight());
+		activityEvaluateTemplate.setModifyTime(LocalDateTime.now());
+		activityEvaluateTemplateMapper.updateByPrimaryKey(activityEvaluateTemplate);
+		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
+	}
+
+	@RequestMapping(path = "/findUserEvaluationTemplate", method = RequestMethod.GET)
+	@ApiOperation(value = "查询用户评价模板", notes = "查询用户评价模板")
+	public ResponseEntity<JSONObject> findUserEvaluationTemplate(@RequestParam Integer companyId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(companyId);
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+
+	@RequestMapping(path = "/userAddEvaluation", method = RequestMethod.POST)
+	@ApiOperation(value = "用户填写评价", notes = "用户填写评价")
+	public ResponseEntity<JSONObject> userAddEvaluation(ActivityUserEvaluateRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
+		example.createCriteria().andUserIdEqualTo(request.getUserId()).andEvaluateTemplateIdEqualTo(request.getEvaluateTemplateId());
+		List<ActivityUserEvaluate> list = activityUserEvaluateMapper.selectByExample(example);
+		if(!list.isEmpty()) {
+			userUpdateEvaluation(list.get(0).getId(),request.getEvaluateContent());
+		}
+		ActivityUserEvaluate activityUserEvaluate = new ActivityUserEvaluate();
+		activityUserEvaluate.setUserId(request.getUserId());
+		activityUserEvaluate.setEvaluateTemplateId(request.getEvaluateTemplateId());
+		activityUserEvaluate.setEvaluateContent(request.getEvaluateContent());
+//			activityUserEvaluate.setEvaluateResult(request.getEvaluateResult());
+		activityUserEvaluate.setCreateTime(LocalDateTime.now());
+		activityUserEvaluate.setModifyTime(LocalDateTime.now());
+		activityUserEvaluate.setIsDeleted((short) 0);
+		activityUserEvaluateMapper.insert(activityUserEvaluate);
+		return builder.body(ResponseUtils.getResponseBody(activityUserEvaluate.getId()));
+	}
+
+	@RequestMapping(path = "/userUpdateEvaluation", method = RequestMethod.POST)
+	@ApiOperation(value = "用户更新个人评价", notes = "用户更新个人评价")
+	public ResponseEntity<JSONObject> userUpdateEvaluation(@RequestParam Integer userEvaluateId,@RequestParam String evaluateContent) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityUserEvaluate activityUserEvaluate = activityUserEvaluateMapper.selectByPrimaryKey(userEvaluateId);
+		if (activityUserEvaluate == null) {
+			return builder.body(ResponseUtils.getResponseBody("异常异常"));
+		}
+		activityUserEvaluate.setEvaluateContent(evaluateContent);
+		activityUserEvaluateMapper.updateByPrimaryKey(activityUserEvaluate);
+		return builder.body(ResponseUtils.getResponseBody(activityUserEvaluate.getId()));
+	}
+	
+	@RequestMapping(path = "/addCompany", method = RequestMethod.POST)
+	@ApiOperation(value = "添加公司", notes = "添加公司")
+	public ResponseEntity<JSONObject> addCompany(ActivityCompanyRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityCompony compony = new ActivityCompony();
+		compony.setCompanyName(request.getCompanyName());
+		compony.setCompanyInfo(request.getCompanyInfo());
+		compony.setCreateTime(LocalDateTime.now());
+		compony.setModifyTime(LocalDateTime.now());
+		compony.setRemarks(request.getRemarks());
+		compony.setIsDeleted((short) 0);
+		activityComponyMapper.insert(compony);
+		return builder.body(ResponseUtils.getResponseBody(compony.getId()));
+	}
+	
+	@RequestMapping(path = "/findCompany", method = RequestMethod.POST)
+	@ApiOperation(value = "查询公司", notes = "查询公司")
+	public ResponseEntity<JSONObject> addCompany() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(null)));
+	}
 }

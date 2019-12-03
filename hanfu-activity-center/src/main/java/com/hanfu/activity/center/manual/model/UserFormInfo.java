@@ -3,6 +3,9 @@ package com.hanfu.activity.center.manual.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+
+import com.hanfu.activity.center.model.ActivityUserEvaluate;
 
 public class UserFormInfo implements Serializable{
 
@@ -19,10 +22,8 @@ public class UserFormInfo implements Serializable{
 	private String phone;
 	private String evaluation;
 	private Integer departmentId;
-	private String A;
-	private String B;
-	private String C;
-	private String D;
+	private List<ActivityUserEvaluate> list;
+	
 	public Integer getFileId() {
 		return fileId;
 	}
@@ -71,30 +72,10 @@ public class UserFormInfo implements Serializable{
 	public void setDepartmentId(Integer departmentId) {
 		this.departmentId = departmentId;
 	}
-	public String getA() {
-		return A;
+	public List<ActivityUserEvaluate> getList() {
+		return list;
 	}
-	public void setA(String a) {
-		A = a;
+	public void setList(List<ActivityUserEvaluate> list) {
+		this.list = list;
 	}
-	public String getB() {
-		return B;
-	}
-	public void setB(String b) {
-		B = b;
-	}
-	public String getC() {
-		return C;
-	}
-	public void setC(String c) {
-		C = c;
-	}
-	public String getD() {
-		return D;
-	}
-	public void setD(String d) {
-		D = d;
-	}
-	
-	
 }

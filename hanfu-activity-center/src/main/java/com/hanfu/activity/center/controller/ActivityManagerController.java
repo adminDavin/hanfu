@@ -53,6 +53,7 @@ import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
+import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
 import com.hanfu.activity.center.dao.ActivityUserExperienceMapper;
 import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
@@ -75,6 +76,8 @@ import com.hanfu.activity.center.model.ActivityDepartmentExample;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.ActivityUserEvaluate;
+import com.hanfu.activity.center.model.ActivityUserEvaluateExample;
 import com.hanfu.activity.center.model.ActivityUserExperience;
 import com.hanfu.activity.center.model.ActivityUserExperienceExample;
 import com.hanfu.activity.center.model.ActivityUserInfo;
@@ -156,6 +159,9 @@ public class ActivityManagerController {
 	
 	@Autowired
 	private HfUserMapper hfUserMapper;
+	
+	@Autowired
+	private ActivityUserEvaluateMapper activityUserEvaluateMapper;
 
 	@ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
 	@RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
@@ -1010,65 +1016,32 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
-	
-	@RequestMapping(path = "/updateUserEvaluation", method = RequestMethod.POST)
-	@ApiOperation(value = "更改用户个人评价", notes = "更改用户个人评价")
-	public ResponseEntity<JSONObject> updateUserEvaluation(@RequestParam String[] evaluation,@RequestParam Integer userId) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		String str = "";
-		for (int i = 0; i < evaluation.length; i++) {
-			if(evaluation[i].contains("*")) {
-				return builder.body(ResponseUtils.getResponseBody("*"));
-			}
-			str = str+evaluation[i]+"*";
-		}
-		ActivityUserInfoExample example = new ActivityUserInfoExample();
-		example.createCriteria().andUserIdEqualTo(userId);
-		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
-		if(list.isEmpty()) {
-			ActivityUserInfo userInfo = new ActivityUserInfo();
-			userInfo.setEvaluation(str);
-			userInfo.setCreateTime(LocalDateTime.now());
-			userInfo.setModifyTime(LocalDateTime.now());
-			userInfo.setIsDeleted((short) 0);
-			activityUserInfoMapper.insert(userInfo);
-		}else {
-			ActivityUserInfo userInfo = list.get(0);
-			userInfo.setEvaluation(str);
-			userInfo.setModifyTime(LocalDateTime.now());
-			
-			activityUserInfoMapper.updateByPrimaryKey(userInfo);
-		}
-		return builder.body(ResponseUtils.getResponseBody(null));
-	}
-	
 	@RequestMapping(path = "/findUserFormInfo", method = RequestMethod.GET)
 	@ApiOperation(value = "查询用户表单信息", notes = "查询用户表单信息")
 	public ResponseEntity<JSONObject> findUserFormInfo(@RequestParam Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		UserFormInfo info = hfUserDao.findByUserId(userId);
-		LocalDateTime localDateTime = info.getHiredate();
-		ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zdt = localDateTime.atZone(zoneId);
-        Date date = Date.from(zdt.toInstant());
-        SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        bjSdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+//		LocalDateTime localDateTime = info.getHiredate();
+//		ZoneId zoneId = ZoneId.systemDefault();
+//        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+//        Date date = Date.from(zdt.toInstant());
+//        SimpleDateFormat bjSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        bjSdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 		ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(info.getDepartmentId());
 		if(department != null) {
 			if(!StringUtils.isEmpty(department.getDepartmentName())) {
 				info.setDepartmentName(department.getDepartmentName());
 			}
 		}
-		if(!StringUtils.isEmpty(info.getEvaluation())) {
-			String[] str = info.getEvaluation().split("\\*");
-			info.setA(str[0]);
-			info.setB(str[1]);
-			info.setC(str[2]);
-			info.setD(str[3]);
+		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserEvaluate> activityUserEvaluate = activityUserEvaluateMapper.selectByExample(example);
+		List<ActivityUserEvaluate> list = new ArrayList<ActivityUserEvaluate>(activityUserEvaluate.size());
+		for (int i = 0; i < activityUserEvaluate.size(); i++) {
+			list.set(i, activityUserEvaluate.get(i));
 		}
-		
-		return builder.body(ResponseUtils.getResponseBody(bjSdf.format(date)));
+		info.setList(list);
+		return builder.body(ResponseUtils.getResponseBody(info));
 	}
-	
 	
 }
