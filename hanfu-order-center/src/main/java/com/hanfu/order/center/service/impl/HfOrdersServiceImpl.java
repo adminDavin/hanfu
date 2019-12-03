@@ -103,7 +103,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	@Override
 	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
 			HfOrderLogisticsRequest hfOrderLogistics) throws Exception {
-		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(request.getId());
 		if(hfOrdersDetail == null) {
 			throw new OrderIsExistException(String.valueOf(request.getId()));
 		}
@@ -134,7 +134,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setModifyTime(LocalDateTime.now());
 		hfOrdersDetail.setIsDeleted((short) 0);
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
-		HfOrders hfOrders = new HfOrders();
+		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(request.getId());
 		if(hfOrders == null) {
 			throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
 		}
@@ -164,8 +164,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		}
 		hfOrders.setModifyTime(LocalDateTime.now());
 		hfOrders.setIsDeleted((short) 0);
-		hfOrdersMapper.updateByPrimaryKey(hfOrders);
-		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
+		hfOrdersMapper.updateByPrimaryKeySelective(hfOrders);
+		HfOrderLogistics hfOrderLogistic = hfOrderLogisticsMapper.selectByPrimaryKey(request.getId());
 		if(hfOrderLogistic == null) {
 			throw new OrderIsExistException(String.valueOf(hfOrderLogistics.getId()));
 		}
@@ -194,16 +194,16 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 			hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
 		}
 		if(!StringUtils.isEmpty(hfOrderLogistics.getHfDesc())) {
-			hfOrderLogistic.setHfDesc(hfOrderLogistics.getHfDesc());
+			hfOrderLogistic.setHfDesc(request.getHfDesc());
 		}
 		if(!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
 			hfOrderLogistic.setGoogsId(hfOrderLogistics.getGoogsId());
 		}
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
 		hfOrderLogistic.setIsDeleted((short) 0);
-		hfOrderLogisticsMapper.updateByPrimaryKey(hfOrderLogistic);
+		hfOrderLogisticsMapper.updateByPrimaryKeySelective(hfOrderLogistic);
 		List list = new ArrayList<>();
-		list.add(hfOrdersDetail);
+		list.add(hfOrdersDetail); 
 		list.add(hfOrderLogistic);
 		list.add(hfOrders);
 		return list;
