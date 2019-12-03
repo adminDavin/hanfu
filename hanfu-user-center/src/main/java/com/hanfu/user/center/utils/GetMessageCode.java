@@ -20,7 +20,7 @@ public class GetMessageCode {
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
     static final String accessKeyId = "LTAI4FcwjjugxzJCxcfTDwUX";  // TODO 修改成自己的
     static final String accessKeySecret = "vs6blWodGEAsvlIoOsah69WeXVwvmh";   // TODO 修改成自己的
-    public static SendSmsResponse sendSms(String telephone) throws ClientException {
+    public static Integer sendSms(String telephone) throws ClientException {
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -50,7 +50,7 @@ public class GetMessageCode {
         }else {
             System.out.println("短信发送失败！");
         }
-        return sendSmsResponse;
+        return code;
     }
     public static Integer setNewcode(){
        int  newcode = (int)(Math.random()*9999)+100;  //每次调用生成一位四位数的随机数
