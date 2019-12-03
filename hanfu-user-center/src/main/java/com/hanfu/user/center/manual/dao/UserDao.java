@@ -8,7 +8,7 @@ import com.hanfu.user.center.model.HfUser;
 
 public interface UserDao {
 
-	HfAuth selectList(String authKey);
+	HfAuth selectAuthList(String authKey);
 
 	List<HfUser> selectUserList();
 

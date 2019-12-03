@@ -137,7 +137,9 @@ public class ActivityController {
 					ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(userInfo.getDepartmentId());
 					total.setDepartmentName(department.getDepartmentName());
 				}
-				total.setFileId(hfUser.getFileId());
+				if(hfUser.getFileId() == null) {
+					total.setFileId(hfUser.getFileId());
+				}
 				if(hfUser.getRealName() == null) {
 					total.setUsername(hfUser.getUsername());
 				}else {
