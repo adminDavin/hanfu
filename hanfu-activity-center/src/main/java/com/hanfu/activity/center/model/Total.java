@@ -6,10 +6,12 @@ public class Total {
 	private Integer userId;
 	private Integer voteCount;
 	private Integer socre;
+	private Double totalScore;
 	private Integer activityId;
 	private String code;
 	private String username;
 	private Integer fileId;
+	private String departmentName;
 	
 	public Integer getPosition() {
 		return position;
@@ -35,6 +37,12 @@ public class Total {
 	public void setSocre(Integer socre) {
 		this.socre = socre;
 	}
+	public Double getTotalScore() {
+		return totalScore;
+	}
+	public void setTotalScore(Double totalScore) {
+		this.totalScore = totalScore;
+	}
 	public Integer getActivityId() {
 		return activityId;
 	}
@@ -58,6 +66,12 @@ public class Total {
 	}
 	public void setFileId(Integer fileId) {
 		this.fileId = fileId;
+	}
+	public String getDepartmentName() {
+		return departmentName;
+	}
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
 	}
 	@Override
 	public String toString() {

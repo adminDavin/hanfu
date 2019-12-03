@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.hanfu.activity.center.manual.model.HfUser;
+import com.hanfu.activity.center.manual.model.UserFormInfo;
 
 public interface HfUserDao {
 	List<HfUser> findAllUser();
+	
+	UserFormInfo findByUserId(Integer userId);
 }

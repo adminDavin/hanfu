@@ -1,3 +1,4 @@
+
 package com.hanfu.user.center.controller;
 
 import java.io.UnsupportedEncodingException;
@@ -94,32 +95,48 @@ public class KingWordsController {
 	})
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfAuth hfAuth = userDao.selectList(authKey);
-		Map<String , Integer> list = new HashMap<>();
-		String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
+
+		HfAuth hfAuth = userDao.selectAuthList(authKey);
+		if(hfAuth == null) {
+			return builder.body(ResponseUtils.getResponseBody("还未注册"));
+		}
+		System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId()));
+		if(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
+			System.out.println("1111111111111111111111111111111111");
+			String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
+			redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()),token);
+		}else {
+			return builder.body(ResponseUtils.getResponseBody("1"));
+		}
+		if(!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+		}
+//		Map<String , Integer> list = new HashMap<>();
+		
 		//将token存入redis
-		redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()),token);
-		if (!StringUtils.isEmpty(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())))) { 
-			userCenterService.checkToken(token);
-		}
-		if(!"1".equals(authType)) {
-			if(!(hfAuth.getAuthKey()).equals(authKey)) {
-				if(passwd != redisTemplate.opsForValue().get(authKey)) {
-					throw new ParamInvalidException("authType is invalid");
-				}
-			}		
-		}
-		list.put(token, hfAuth.getUserId());
-		return builder.body(ResponseUtils.getResponseBody(list));
+		
+//		if (!StringUtils.isEmpty(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())))) { 
+//			userCenterService.checkToken(token);
+//		}
+//		if(!"1".equals(authType)) {
+//			if(!(hfAuth.getAuthKey()).equals(authKey)) {
+//				if(passwd != redisTemplate.opsForValue().get(authKey)) {
+//					throw new ParamInvalidException("authType is invalid");
+//				}
+//			}		
+//		}
+//		list.put(token, hfAuth.getUserId());
+		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 	@RequestMapping(path = "/code",  method = RequestMethod.GET)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
 	public ResponseEntity<JSONObject> code(String phone) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Integer code = GetMessageCode.sendSms(phone);
-		redisTemplate.opsForValue().set(phone, code);
+		redisTemplate.opsForValue().set(phone, String.valueOf(code));
 		return builder.body(ResponseUtils.getResponseBody(code));
 	}
+	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
@@ -134,7 +151,8 @@ public class KingWordsController {
 		if (authCount > 0) { 
 			throw new AuthKeyIsExistException(authKey);
 		}
-		if(passwd != redisTemplate.opsForValue().get(authKey)) {
+		System.out.println(redisTemplate.opsForValue().get(authKey));
+		if(!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
 			throw new ParamInvalidException("authKey is invalid");
 		}
 		HfUser user = new HfUser();
@@ -254,6 +272,8 @@ public class KingWordsController {
 		}	
 		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
 	}
+	
+	
 	@RequestMapping(path = "/wxLogin",  method = RequestMethod.GET)
 	@ApiOperation(value = "微信登录", notes = "微信登录")
 	public ResponseEntity<JSONObject> wxLogin(Model model,                                  

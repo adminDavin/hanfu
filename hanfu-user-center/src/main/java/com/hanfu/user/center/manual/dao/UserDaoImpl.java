@@ -14,7 +14,7 @@ public class UserDaoImpl implements UserDao{
 	@Autowired
     SqlSessionTemplate sqlSessionTemplate;
 	@Override
-	public HfAuth selectList(String authKey) {
+	public HfAuth selectAuthList(String authKey) {
 		HfAuth result = sqlSessionTemplate.selectOne("selectAuthList",authKey);
 		return result;
 	}
