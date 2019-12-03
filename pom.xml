@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>hanfug-user-center</module>
+		<module>hanfu-user-center</module>
 		<module>hanfu-product-center</module>
 		<module>hanfu-common</module>
 		<module>hanfu-product-client</module>
