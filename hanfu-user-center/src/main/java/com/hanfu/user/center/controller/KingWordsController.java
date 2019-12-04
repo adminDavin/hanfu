@@ -1,6 +1,7 @@
 
 package com.hanfu.user.center.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -25,6 +27,12 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.Subject;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +110,6 @@ public class KingWordsController {
 		}
 		System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId()));
 		if(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
-			System.out.println("1111111111111111111111111111111111");
 			String token ="_"+UUID.randomUUID().toString().replaceAll("-", "");
 			redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()),token);
 		}else {
@@ -280,23 +287,25 @@ public class KingWordsController {
 			@RequestParam(value = "code",required = false) String code,                                  
 			@RequestParam(value = "rawData",required = false) String rawData,                                  
 			@RequestParam(value = "signature",required = false) String signature,                                  
-			@RequestParam(value = "encrypteData",required = false) String encrypteData,                                  
+			@RequestParam(value = "encryptedData",required = false) String encryptedData,                                  
 			@RequestParam(value = "iv",required = false) String iv
 			) throws Exception{
 		logger.info( "Start get SessionKey" );
-		Map<String,Object> map = new HashMap<String, Object>(  );    
+		Integer userId = null;
+		Map<String,Object> map = new HashMap<String, Object>();    
 		//JSONObject rawDataJson = JSON.parseObject( rawData );     
 		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    	
-		Integer openid = (Integer) SessionKeyOpenId.get("openid");   
+		String openid = (String) SessionKeyOpenId.get("openid");   
 		String sessionKey = (String) SessionKeyOpenId.get( "session_key" );    
 		//uuid生成唯一key    
-		System.out.println("openid="+openid+",session_key="+sessionKey);
 		String skey = UUID.randomUUID().toString();    
 		//根据openid查询skey是否存在   
+
 		String skey_redis =(String) redisTemplate.opsForValue().get( openid ); 
 		if(StringUtils.isEmpty(skey_redis)){    
 			//存在 删除 skey 重新生成skey 将skey返回    
-			redisTemplate.delete( skey_redis );   
+			redisTemplate.delete( skey_redis );
+			skey = UUID.randomUUID().toString();
 		}      
 		//  缓存一份新的       
 		JSONObject sessionObj = new JSONObject();      
@@ -307,15 +316,34 @@ public class KingWordsController {
 		//把新的sessionKey和oppenid返回给小程序      
 		map.put( "skey",skey );  
 		map.put( "result","0" );  
-		JSONObject userInfo = getUserInfo( encrypteData, sessionKey, iv ); 
-		map.put( "userInfo",userInfo );  
+		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv ); 
+		String unionId = (String) userInfo.get("unionId");
+		String nickName = 	userInfo.getString("nickName");
+		HfUserExample example = new HfUserExample();
+		example.createCriteria().andUsernameEqualTo(unionId);
+		List<HfUser> list = hfUserMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			HfUser hfUser = new HfUser();
+			hfUser.setNickName(nickName);
+			hfUser.setUsername(unionId);
+			hfUser.setCreateDate(LocalDateTime.now());
+			hfUser.setModifyDate(LocalDateTime.now());
+			hfUser.setIdDeleted((byte) 0);
+			hfUserMapper.insert(hfUser);
+			userId = hfUser.getId();
+		}else {
+			HfUser hfUser = list.get(0);
+			userId = hfUser.getId();
+		}
+		map.put("userId", userId);
+		map.put( "userInfo",userInfo ); 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 
-	private JSONObject getUserInfo(String encrypteData, String sessionKey, String iv) {
+	private JSONObject getUserInfo(String encryptedData, String sessionKey, String iv) {
 		// 被加密的数据
-		byte[] dataByte = Base64.getDecoder().decode(encrypteData);
+		byte[] dataByte = Base64.getDecoder().decode(encryptedData);
 		// 加密秘钥
 		byte[] keyByte = Base64.getDecoder().decode(sessionKey);
 		// 偏移量
@@ -368,14 +396,32 @@ public class KingWordsController {
 	private JSONObject getSessionKeyOrOpenId(String code) {
 		//微信端登录code
 		String wxCode = code;
-		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
+		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42&js_code="+code+"&grant_type=authorization_code";
 		Map<String,String> requestUrlParam = new HashMap<String, String>(  );
-		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
-		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
-		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
-		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
-		//发送post请求读取调用微信接口获取openid用户唯一标识
-		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
-		return jsonObject;
+//		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
+//		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
+//		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
+//		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
+//		//发送post请求读取调用微信接口获取openid用户唯一标识
+//		String str = UrlUtil.sendPost( requestUrl,requestUrlParam );
+//		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(requestUrl);
+		JSONObject jsonObject = null;
+		
+		try {
+			HttpResponse response = httpClient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
+			if(entity != null) {
+				String result = EntityUtils.toString(entity,"UTF-8");
+				jsonObject = JSONObject.parseObject(result);
+			}
+		} catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+        return jsonObject;
 	}
 }

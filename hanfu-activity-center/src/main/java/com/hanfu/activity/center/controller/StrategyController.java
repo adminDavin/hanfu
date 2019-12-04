@@ -128,7 +128,7 @@ public class StrategyController {
 		fileDesc.setFileName("lunbotu");
 		fileDesc.setGroupName(arr[0]);
 		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(userId);
+//		fileDesc.setUserId(userId);
 		fileDesc.setCreateTime(LocalDateTime.now());
 		fileDesc.setModifyTime(LocalDateTime.now());
 		fileDesc.setIsDeleted((short) 0);
@@ -162,6 +162,20 @@ public class StrategyController {
 		ActivityEvaluateTemplate template = new ActivityEvaluateTemplate();
 		template.setEvaluateContent(request.getEvaluateContent());
 		template.setEvaluateType(request.getEvaluateType());
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(request.getParentTemplateId());
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
+		Double count = 0.0;
+		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
+			return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
+		}
+		for (int i = 0; i < list.size(); i++) {
+			ActivityEvaluateTemplate template1 = list.get(i);
+			count = count + Double.valueOf(template1.getEvaluateWeight());
+			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
+				return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
+			}
+		}
 		template.setEvaluateWeight(request.getEvaluateWeight());
 		template.setParentTemplateId(request.getParentTemplateId());
 		template.setCreateTime(LocalDateTime.now());
@@ -169,6 +183,22 @@ public class StrategyController {
 		template.setIsDeleted((short) 0);
 		activityEvaluateTemplateMapper.insert(template);
 		return builder.body(ResponseUtils.getResponseBody(template.getId()));
+	}
+	
+	@RequestMapping(path = "/findEvaluationTemplateWeight", method = RequestMethod.GET)
+	@ApiOperation(value = "查询现有模板权重", notes = "查询现有模板权重")
+	public ResponseEntity<JSONObject> findEvaluationTemplateWeight(@RequestParam Integer activityId)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Double weight = 0.0;
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(activityId);
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			ActivityEvaluateTemplate activityEvaluateTemplate = list.get(0);
+			weight = weight + Double.valueOf(activityEvaluateTemplate.getEvaluateWeight());
+		}
+		return builder.body(ResponseUtils.getResponseBody(weight));
 	}
 
 	@RequestMapping(path = "/delterUserEvaluationTemplate", method = RequestMethod.GET)
@@ -190,7 +220,9 @@ public class StrategyController {
 	public ResponseEntity<JSONObject> updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(null);
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(request.getParentTemplateId());
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
 		Integer count = 0;
 		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
 			return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
@@ -217,10 +249,10 @@ public class StrategyController {
 
 	@RequestMapping(path = "/findUserEvaluationTemplate", method = RequestMethod.GET)
 	@ApiOperation(value = "查询用户评价模板", notes = "查询用户评价模板")
-	public ResponseEntity<JSONObject> findUserEvaluationTemplate(@RequestParam Integer companyId) throws Exception {
+	public ResponseEntity<JSONObject> findUserEvaluationTemplate(@RequestParam Integer activityId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
-		example.createCriteria().andParentTemplateIdEqualTo(companyId);
+		example.createCriteria().andParentTemplateIdEqualTo(activityId);
 		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
