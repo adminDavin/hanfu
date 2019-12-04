@@ -450,7 +450,11 @@ public class ActivityController {
 				}
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list1.get(j).getUserId());
 				total.setFileId(hfUser.getFileId());
-				total.setUsername(hfUser.getUsername());
+				if(hfUser.getRealName() == null) {
+					total.setUsername(hfUser.getUsername());
+				}else {
+					total.setUsername(hfUser.getRealName());
+				}
 				total.setPosition(index);
 				total.setUserId(list1.get(j).getUserId());
 				total.setActivityId(list1.get(j).getActivityId());

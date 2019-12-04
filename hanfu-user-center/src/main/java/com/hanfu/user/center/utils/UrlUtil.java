@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.NameValuePair;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -45,7 +45,7 @@ public class UrlUtil {
             for (String str : paramMap.keySet()) {  
                 params.addAll((Collection<? extends NameValuePair>) new BasicNameValuePair(str, (String) paramMap.get(str)));  
             }  
-            post.setEntity(new UrlEncodedFormEntity((List<? extends org.apache.http.NameValuePair>) params, Charset));  
+            post.setEntity(new UrlEncodedFormEntity((List<NameValuePair>) params, Charset));  
             // 执行请求  
             CloseableHttpResponse response = client.execute(post);  
   

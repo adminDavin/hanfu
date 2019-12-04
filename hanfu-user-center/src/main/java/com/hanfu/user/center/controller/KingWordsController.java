@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
@@ -24,6 +25,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.security.auth.Subject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -50,7 +52,7 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.google.api.client.util.SecurityUtils;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -87,7 +89,7 @@ public class KingWordsController {
 	@Autowired
 	private UserCenterService userCenterService;
 	@Resource
-	private RedisTemplate<String, String> redisTemplate;
+	private RedisTemplate<String, Object> redisTemplate;
 	@Autowired 
 	HfAuthMapper hfAuthMapper;
 	@Autowired
@@ -99,8 +101,9 @@ public class KingWordsController {
 		@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 		@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
 	})
-	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd) throws Exception {
+	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
 		HfAuth hfAuth = userDao.selectAuthList(authKey);
 		if(hfAuth == null) {
 			return builder.body(ResponseUtils.getResponseBody("还未注册"));
@@ -137,7 +140,6 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> code(String phone) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Integer code = GetMessageCode.sendSms(phone);
-		System.out.println(code);
 		redisTemplate.opsForValue().set(phone, String.valueOf(code));
 		return builder.body(ResponseUtils.getResponseBody(code));
 	}
@@ -298,8 +300,9 @@ public class KingWordsController {
 		//uuid生成唯一key    
 		String skey = UUID.randomUUID().toString();    
 		//根据openid查询skey是否存在   
-		String skey_redis =redisTemplate.opsForValue().get( openid ); 
-		if(!StringUtils.isEmpty(skey_redis)){    
+
+		String skey_redis =(String) redisTemplate.opsForValue().get( openid ); 
+		if(StringUtils.isEmpty(skey_redis)){    
 			//存在 删除 skey 重新生成skey 将skey返回    
 			redisTemplate.delete( skey_redis );
 			skey = UUID.randomUUID().toString();
