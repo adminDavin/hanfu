@@ -228,7 +228,7 @@ public class ActivityController {
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
 			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
-			activityInfo.setActiviyType(list.get(i).getActiviyType());
+//			activityInfo.setActiviyType(list.get(i).getActiviyType());
 			activityInfo.setCreateTime(list.get(i).getCreateTime());
 			activityInfo.setEndTime(list.get(i).getEndTime());
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());

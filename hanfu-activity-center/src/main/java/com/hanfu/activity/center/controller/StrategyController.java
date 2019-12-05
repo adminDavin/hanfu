@@ -19,11 +19,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.hanfu.activity.center.dao.ActivityComponyMapper;
 import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
+import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
 import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.dao.StrategyRuleDao;
+import com.hanfu.activity.center.model.Activity;
 import com.hanfu.activity.center.model.ActivityCompony;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
@@ -314,4 +316,5 @@ public class StrategyController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(null)));
 	}
+	
 }
