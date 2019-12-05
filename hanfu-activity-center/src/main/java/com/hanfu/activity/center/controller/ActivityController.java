@@ -234,7 +234,7 @@ public class ActivityController {
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
 			activityInfo.setIsTimingStart(list.get(i).getIsTimingStart());
 			activityInfo.setModifyTime(list.get(i).getModifyTime());
-			activityInfo.setStrategyId(strategy.getId());
+//			activityInfo.setStrategyId(strategy.getId());
 			activityInfo.setUserId(list.get(i).getUserId());
 			activityInfo.setStrategyName(strategy.getStrategyName());
 			activityInfo.setStartTime(list.get(i).getStartTime());

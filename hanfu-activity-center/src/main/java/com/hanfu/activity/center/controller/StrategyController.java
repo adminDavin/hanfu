@@ -85,6 +85,7 @@ public class StrategyController {
 //		StrategyRuleExample example = new StrategyRuleExample();
 //		example.setDistinct(true);
 		List<String> list = strategyRuleDao.findRuleType();
+		System.out.println(list.toString());
 		for (int i = 0; i < list.size(); i++) {
 			String str = list.get(i);
 			if("elector".equals(list.get(i))) {

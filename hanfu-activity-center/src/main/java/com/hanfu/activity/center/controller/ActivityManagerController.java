@@ -182,32 +182,40 @@ public class ActivityManagerController {
 	@RequestMapping(value = "/addStrategyRule", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addStrategyRule(StrategyRuleRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		StrategyRule strategyRule = new StrategyRule();
-		strategyRule.setRuleName(request.getRuleName());
-		strategyRule.setRuleDesc(request.getRuleDesc());
-		strategyRule.setStrategyId(request.getStrategyId());
-		strategyRule.setRuleStatus("生效中");
-		String ruleType = request.getRuleType();
-		strategyRule.setRuleType(ruleType);
-		if ("elector".equals(ruleType) || "elected".equals(ruleType) || "internal selection".equals(ruleType)) {
-			strategyRule.setRuelValueType("user_list");
+		StrategyRuleExample example = new StrategyRuleExample();
+		example.createCriteria().andRuleTypeEqualTo(request.getRuleType()).andStrategyIdEqualTo(request.getStrategyId());
+		List<StrategyRule> list = strategyRuleMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			StrategyRule strategyRule = new StrategyRule();
+			strategyRule.setRuleName(request.getRuleName());
+			strategyRule.setRuleDesc(request.getRuleDesc());
+			strategyRule.setStrategyId(request.getStrategyId());
+			strategyRule.setRuleStatus("生效中");
+			String ruleType = request.getRuleType();
+			strategyRule.setRuleType(ruleType);
+			if ("elector".equals(ruleType) || "elected".equals(ruleType) || "internal selection".equals(ruleType)) {
+				strategyRule.setRuelValueType("user_list");
+			}
+			if ("vote_ticket_count".equals(ruleType)) {
+				strategyRule.setRuelValueType("ticket_count");
+			}
+			if("record_score".equals(ruleType)) {
+				strategyRule.setRuelValueType("score");
+			}
+			if("internal_election".equals(ruleType)) {
+				strategyRule.setRuelValueType("election");
+			}
+			if("public_praise".equals(ruleType)) {
+				strategyRule.setRuelValueType("praise");
+			}
+			strategyRule.setCreateTime(LocalDateTime.now());
+			strategyRule.setModifyTime(LocalDateTime.now());
+			strategyRule.setIsDeleted((short) 0);
+			return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.insert(strategyRule)));
+		}else {
+			return builder.body(ResponseUtils.getResponseBody("已经存在"));
 		}
-		if ("vote_ticket_count".equals(ruleType)) {
-			strategyRule.setRuelValueType("ticket_count");
-		}
-		if("record_score".equals(ruleType)) {
-			strategyRule.setRuelValueType("score");
-		}
-		if("internal_election".equals(ruleType)) {
-			strategyRule.setRuelValueType("election");
-		}
-		if("public_praise".equals(ruleType)) {
-			strategyRule.setRuelValueType("praise");
-		}
-		strategyRule.setCreateTime(LocalDateTime.now());
-		strategyRule.setModifyTime(LocalDateTime.now());
-		strategyRule.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(strategyRuleMapper.insert(strategyRule)));
+		
 	}
 
 	@ApiOperation(value = "3 发起活动", notes = "公司每次举行活动的添加")
