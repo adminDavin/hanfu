@@ -151,6 +151,7 @@ public class StrategyController {
 		FileMangeService fileMangeService = new FileMangeService();
 		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
 		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		fileDescMapper.deleteByPrimaryKey(fileId);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
