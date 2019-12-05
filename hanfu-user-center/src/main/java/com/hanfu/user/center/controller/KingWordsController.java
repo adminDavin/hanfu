@@ -277,7 +277,26 @@ public class KingWordsController {
 			hfUserExample.createCriteria().andIdNotEqualTo(userId);
 			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
 		}	
-		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+		List<HfUser> list = userDao.selectUserList();
+		for (int i = 0; i < list.size(); i++) {
+			HfUser hfUser = list.get(i);
+			if(hfUser.getRealName() != null) {
+				hfUser.setNickName(hfUser.getRealName());
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+	
+	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)
+	@ApiOperation(value = "删除人", notes = "删除人")
+	public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+		if(hfUser == null) {
+			return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
 	}
 	
 	
