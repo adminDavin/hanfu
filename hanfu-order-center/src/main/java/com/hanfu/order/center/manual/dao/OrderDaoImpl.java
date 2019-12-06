@@ -1,12 +1,13 @@
 package com.hanfu.order.center.manual.dao;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.hanfu.order.center.manual.model.OrderFindValue;
+import com.hanfu.order.center.manual.model.OrderInfo;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
@@ -33,9 +34,9 @@ public class OrderDaoImpl implements OrderDao{
 		return result;
 	}
 	@Override
-	public List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus
+	public List<OrderInfo> selectOrder(OrderFindValue orderFindValue
 			) {
-		List<HfOrderLogistics> result = sqlSessionTemplate.selectList("selectOrder");
+		List<OrderInfo> result = sqlSessionTemplate.selectList("selectOrder",orderFindValue);
 		return result;
 	}
 

@@ -95,17 +95,4 @@ public class MessageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
-	@ApiOperation(value = "评价回复", notes = "评价回复")
-	@RequestMapping(value = "/reply", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),	
-	})
-	public ResponseEntity<JSONObject> reply(@RequestParam String evaluate,Integer orderId)
-			throws JSONException {
-		String key  = orderId.toString();
-		redisTemplate.opsForValue().append(key, evaluate);
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(""));
-	}
 }
