@@ -212,8 +212,7 @@ public class ActivityController {
 		String type = "";
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getStrategyId()+"111111111111111111");
-			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
+ 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
 			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
 			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
