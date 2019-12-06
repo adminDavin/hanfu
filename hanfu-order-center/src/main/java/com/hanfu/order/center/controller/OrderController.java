@@ -19,6 +19,7 @@ import com.hanfu.order.center.dao.HfOrderStatusMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
+import com.hanfu.order.center.manual.model.OrderFindValue;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
@@ -133,9 +134,9 @@ public class OrderController {
 		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
 		//@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
 	})
-	public ResponseEntity<JSONObject> queryOrder(Integer orderId,String hfName,String payMethodType,String orderDetailStatus)
+	public ResponseEntity<JSONObject> queryOrder(OrderFindValue orderFindValue)
 			throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderId,hfName,payMethodType,orderDetailStatus)));
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
 	}
 }

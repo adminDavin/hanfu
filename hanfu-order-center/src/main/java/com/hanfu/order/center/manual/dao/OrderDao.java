@@ -2,6 +2,8 @@ package com.hanfu.order.center.manual.dao;
 
 import java.util.List;
 
+import com.hanfu.order.center.manual.model.OrderFindValue;
+import com.hanfu.order.center.manual.model.OrderInfo;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
@@ -14,6 +16,6 @@ public interface OrderDao {
 
 	List<HfOrdersDetail> selectOrderDetail(Integer id);
 
-	List<HfOrderLogistics> selectOrder(Integer orderId, String hfName, String payMethodType, String orderDetailStatus);
+	List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
 
 }

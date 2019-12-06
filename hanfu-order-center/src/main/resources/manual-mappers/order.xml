@@ -75,23 +75,19 @@
      LEFT JOIN
         hf_user_address h6
      ON h1.user_address_id =h6.id 
-     <where>
+     WHERE 1=1
         <if test="orderId!=null and ''!=orderId">
-           h2.id=#{orderId}
+          AND h2.id=#{orderId}
         </if>
         <if test="hfName!=null and ''!=hfName">
-           h5.hf_name=#{hfName}
+         AND  h5.hf_name like '%${hfName}%'
         </if>
         <if test="payMethodType!=null and ''!=payMethodType">
-           h2.pay_method_type=#{payMethodType}
+         AND  h2.pay_method_type=#{payMethodType}
            </if>
         <if test="orderDetailStatus!=null and ''!=orderDetailStatus">
-           h3.order_detail_status=#{orderDetailStatus}
+       AND    h3.order_detail_status=#{orderDetailStatus}
         </if>
-        <if test="creatTime!=null and ''!=creatTime">
-           h2.creat_time=#{creatTime}
-        </if> 
-     </where>
 </select>
 
 
