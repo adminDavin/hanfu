@@ -535,6 +535,7 @@ public class ActivityManagerController {
 		}
 		hfUser.setIdDeleted((byte) 1);
 		hfUserMapper.updateByPrimaryKey(hfUser);
+		addVoteRecords(request.getActivityId(),request.getUserId(),request.getElectedUserId(),1,"1");
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);

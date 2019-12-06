@@ -466,18 +466,17 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
-//	@Scheduled(cron = "0 */1 * * * ?")
-//	public void ssgx() {
-//		HfUserExample example = new HfUserExample();
-//		System.out.println("1111111111111111111111");
-//		example.createCriteria().andIdDeletedEqualTo((byte) 1);
-//		List<HfUser> list = hfUserMapper.selectByExample(example);
-//		for (int i = 0; i < list.size(); i++) {
-//			HfUser hfUser = list.get(i);
-//			hfUser.setIdDeleted((byte) 0);
-//			hfUserMapper.updateByPrimaryKey(hfUser);
-//		}
-//	}
+	@Scheduled(cron = "0 0 1 * * ?")
+	public void ssgx() {
+		HfUserExample example = new HfUserExample();
+		example.createCriteria().andIdDeletedEqualTo((byte) 1);
+		List<HfUser> list = hfUserMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfUser hfUser = list.get(i);
+			hfUser.setIdDeleted((byte) 0);
+			hfUserMapper.updateByPrimaryKey(hfUser);
+		}
+	}
 
 //	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
 //	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)

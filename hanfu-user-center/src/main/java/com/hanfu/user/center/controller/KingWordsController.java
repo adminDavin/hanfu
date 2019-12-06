@@ -337,10 +337,13 @@ public class KingWordsController {
 		map.put( "result","0" );  
 		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv );
 		String unionId = "";
-		if(userInfo.get("unionId") != null) {
-			unionId = (String) userInfo.get("unionId");
+		String nickName = "";
+		if(userInfo != null) {
+			if(userInfo.get("unionId") != null) {
+				unionId = (String) userInfo.get("unionId");
+			}
+			nickName = 	userInfo.getString("nickName");
 		}
-		String nickName = 	userInfo.getString("nickName");
 		HfUserExample example = new HfUserExample();
 		example.createCriteria().andUsernameEqualTo(unionId);
 		List<HfUser> list = hfUserMapper.selectByExample(example);
