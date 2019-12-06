@@ -335,8 +335,11 @@ public class KingWordsController {
 		//把新的sessionKey和oppenid返回给小程序      
 		map.put( "skey",skey );  
 		map.put( "result","0" );  
-		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv ); 
-		String unionId = (String) userInfo.get("unionId");
+		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv );
+		String unionId = "";
+		if(userInfo.get("unionId") != null) {
+			unionId = (String) userInfo.get("unionId");
+		}
 		String nickName = 	userInfo.getString("nickName");
 		HfUserExample example = new HfUserExample();
 		example.createCriteria().andUsernameEqualTo(unionId);

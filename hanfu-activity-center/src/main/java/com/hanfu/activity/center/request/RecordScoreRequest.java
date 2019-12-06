@@ -10,7 +10,7 @@ public class RecordScoreRequest extends CommonRequest{
     private Integer userId;
     @ApiModelProperty(required = false, value = "被选举者的用户id")
     private Integer electedUserId;
-    @ApiModelProperty(required = true, value = "备注(暂用投票分数)")
+    @ApiModelProperty(required = false, value = "备注(暂用投票分数)")
     private Integer[] remark;
     public Integer getActivityId() {
         return activityId;

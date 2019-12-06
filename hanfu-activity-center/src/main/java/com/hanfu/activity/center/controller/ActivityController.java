@@ -212,6 +212,7 @@ public class ActivityController {
 		String type = "";
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getStrategyId()+"111111111111111111");
 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
 			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
@@ -465,77 +466,78 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
-	@Scheduled(cron = "*/5 * * * * ?")
-	public void ssgx() {
-		HfUserExample example = new HfUserExample();
-		example.createCriteria().andIdDeletedEqualTo((byte) 1);
-		List<HfUser> list = hfUserMapper.selectByExample(example);
-		for (int i = 0; i < list.size(); i++) {
-			HfUser hfUser = list.get(i);
-			hfUser.setIdDeleted((byte) 0);
-			hfUserMapper.updateByPrimaryKey(hfUser);
-		}
-	}
+//	@Scheduled(cron = "0 */1 * * * ?")
+//	public void ssgx() {
+//		HfUserExample example = new HfUserExample();
+//		System.out.println("1111111111111111111111");
+//		example.createCriteria().andIdDeletedEqualTo((byte) 1);
+//		List<HfUser> list = hfUserMapper.selectByExample(example);
+//		for (int i = 0; i < list.size(); i++) {
+//			HfUser hfUser = list.get(i);
+//			hfUser.setIdDeleted((byte) 0);
+//			hfUserMapper.updateByPrimaryKey(hfUser);
+//		}
+//	}
 
-	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
-	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> setActivityTime(@RequestParam Integer activityId, @RequestParam String startTime,
-			@RequestParam String endTime) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdf.setLenient(false);
-		Date date;
-		Date date2;
-		try {
-			date = sdf.parse(startTime);
-			date2 = sdf.parse(endTime);
-		} catch (ParseException e) {
-			return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
-		}
-		Instant instant = date.toInstant();
-		Instant instant2 = date2.toInstant();
-		ZoneId zoneId = ZoneId.systemDefault();
-		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-		LocalDateTime localDateTime2 = instant2.atZone(zoneId).toLocalDateTime();
-		System.out.println(localDateTime.toString());
-		System.out.println(localDateTime2.toString());
-		activity.setStartTime(localDateTime);
-		activity.setEndTime(localDateTime2);
-		activityMapper.updateByPrimaryKey(activity);
-		return builder.body(ResponseUtils.getResponseBody(null));
-	}
+//	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
+//	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> setActivityTime(@RequestParam Integer activityId, @RequestParam String startTime,
+//			@RequestParam String endTime) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		sdf.setLenient(false);
+//		Date date;
+//		Date date2;
+//		try {
+//			date = sdf.parse(startTime);
+//			date2 = sdf.parse(endTime);
+//		} catch (ParseException e) {
+//			return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
+//		}
+//		Instant instant = date.toInstant();
+//		Instant instant2 = date2.toInstant();
+//		ZoneId zoneId = ZoneId.systemDefault();
+//		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+//		LocalDateTime localDateTime2 = instant2.atZone(zoneId).toLocalDateTime();
+//		System.out.println(localDateTime.toString());
+//		System.out.println(localDateTime2.toString());
+//		activity.setStartTime(localDateTime);
+//		activity.setEndTime(localDateTime2);
+//		activityMapper.updateByPrimaryKey(activity);
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
 
-	@Scheduled(cron = "*/1 * * * * ?")
-	public void activity() {
-		ActivityExample example = new ActivityExample();
-		example.createCriteria().andStartTimeIsNotNull().andEndTimeIsNotNull();
-		List<Activity> list = activityMapper.selectByExample(example);
-		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				Activity activity = list.get(i);
-				LocalDateTime date = activity.getStartTime();
-//				System.out.println(date.toString());
-				LocalDateTime date2 = activity.getEndTime();
-//				System.out.println(date2.toString());
-				ZoneId z = ZoneId.of("UTC");
-				LocalDateTime localDateTime = LocalDateTime.now(z);
-//				System.out.println(localDateTime.toString());
-				if (date.isBefore(localDateTime) && localDateTime.isBefore(date2)) {
-					if (activity.getIsTimingStart() != 1) {
-						activity.setIsTimingStart((short) 1);
-						activityDao.updateActivityStart(activity.getId());
-						System.out.println("开始开始");
-					}
-				}
-				if (date2.isBefore(localDateTime)) {
-					if (activity.getIsTimingStart() != 0) {
-						activity.setIsTimingStart((short) 0);
-						activityDao.updateActivityEnd(activity.getId());
-						System.out.println("停止停止");
-					}
-				}
-			}
-		}
-	}
+//	@Scheduled(cron = "*/1 * * * * ?")
+//	public void activity() {
+//		ActivityExample example = new ActivityExample();
+//		example.createCriteria().andStartTimeIsNotNull().andEndTimeIsNotNull();
+//		List<Activity> list = activityMapper.selectByExample(example);
+//		if (!list.isEmpty()) {
+//			for (int i = 0; i < list.size(); i++) {
+//				Activity activity = list.get(i);
+//				LocalDateTime date = activity.getStartTime();
+////				System.out.println(date.toString());
+//				LocalDateTime date2 = activity.getEndTime();
+////				System.out.println(date2.toString());
+//				ZoneId z = ZoneId.of("UTC");
+//				LocalDateTime localDateTime = LocalDateTime.now(z);
+////				System.out.println(localDateTime.toString());
+//				if (date.isBefore(localDateTime) && localDateTime.isBefore(date2)) {
+//					if (activity.getIsTimingStart() != 1) {
+//						activity.setIsTimingStart((short) 1);
+//						activityDao.updateActivityStart(activity.getId());
+//						System.out.println("开始开始");
+//					}
+//				}
+//				if (date2.isBefore(localDateTime)) {
+//					if (activity.getIsTimingStart() != 0) {
+//						activity.setIsTimingStart((short) 0);
+//						activityDao.updateActivityEnd(activity.getId());
+//						System.out.println("停止停止");
+//					}
+//				}
+//			}
+//		}
+//	}
 }

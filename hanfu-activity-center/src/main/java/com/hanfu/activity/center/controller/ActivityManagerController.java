@@ -293,6 +293,15 @@ public class ActivityManagerController {
 		if("ticket_count".equals(instance.getRuleValueType()) || "score".equals(instance.getRuleValueType())) {
 			return builder.body(ResponseUtils.getResponseBody("违反规则"));
 		}
+		if("score".equals(instance.getRuleValueType()) || "score".equals(instance.getRuleValueType())) {
+			return builder.body(ResponseUtils.getResponseBody("违反规则"));
+		}
+		if("election".equals(instance.getRuleValueType()) || "score".equals(instance.getRuleValueType())) {
+			return builder.body(ResponseUtils.getResponseBody("违反规则"));
+		}
+		if("praise".equals(instance.getRuleValueType()) || "score".equals(instance.getRuleValueType())) {
+			return builder.body(ResponseUtils.getResponseBody("违反规则"));
+		}
 		if(request.getUserIds().length>Integer.valueOf(instance.getRuleValue())) {
 			return builder.body(ResponseUtils.getResponseBody("超过限定数量"));
 		}
@@ -511,9 +520,6 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
-	
-	
-	
 	@ApiOperation(value = "点赞", notes = "点赞")
 	@RequestMapping(value = "/clickPraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> clickPraise(RecordScoreRequest request) throws JSONException {
@@ -545,6 +551,16 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
+	@ApiOperation(value = "判断用户是否点过赞", notes = "判断用户是否点过赞")
+	@RequestMapping(value = "/findIsPraise", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findIsPraise(Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		com.hanfu.activity.center.model.HfUser hfUser= hfUserMapper.selectByPrimaryKey(userId);
+		if(hfUser.getIdDeleted() == 1) {
+			return builder.body(ResponseUtils.getResponseBody("已经点过了"));
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 	
 	@ApiOperation(value = "统计总分", notes = "统计总分")
 	@RequestMapping(value = "/totalScore", method = RequestMethod.POST)
@@ -597,6 +613,19 @@ public class ActivityManagerController {
 	public ResponseEntity<JSONObject> startActivity(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		List<Activity> list = activityMapper.selectByExample(null);
+		for (int i = 0; i < list.size(); i++) {
+			Activity activity2 = list.get(i);
+			StrategyRuleExample example  = new StrategyRuleExample();
+			example.createCriteria().andStrategyIdEqualTo(activity2.getStrategyId());
+			List<StrategyRule> list2 = strategyRuleMapper.selectByExample(example);
+			for (int j = 0; j < list2.size(); j++) {
+				StrategyRule rule = list2.get(j);
+				if(activity2.getIsTimingStart() == 1 && "praise".equals(rule.getRuelValueType())) {
+					return builder.body(ResponseUtils.getResponseBody("只能同时开启一个点赞活动"));
+				}
+			}
+		}
 		System.out.println(activity.getIsTimingStart());
 		if (activity.getIsTimingStart() == (short) 0) {
 			activity.setIsTimingStart((short) 1);
