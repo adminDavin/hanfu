@@ -212,8 +212,7 @@ public class ActivityController {
 		String type = "";
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getStrategyId()+"111111111111111111");
-			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
+ 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
 			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
 			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
 			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
@@ -466,18 +465,17 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
-//	@Scheduled(cron = "0 */1 * * * ?")
-//	public void ssgx() {
-//		HfUserExample example = new HfUserExample();
-//		System.out.println("1111111111111111111111");
-//		example.createCriteria().andIdDeletedEqualTo((byte) 1);
-//		List<HfUser> list = hfUserMapper.selectByExample(example);
-//		for (int i = 0; i < list.size(); i++) {
-//			HfUser hfUser = list.get(i);
-//			hfUser.setIdDeleted((byte) 0);
-//			hfUserMapper.updateByPrimaryKey(hfUser);
-//		}
-//	}
+	@Scheduled(cron = "0 0 1 * * ?")
+	public void ssgx() {
+		HfUserExample example = new HfUserExample();
+		example.createCriteria().andIdDeletedEqualTo((byte) 1);
+		List<HfUser> list = hfUserMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfUser hfUser = list.get(i);
+			hfUser.setIdDeleted((byte) 0);
+			hfUserMapper.updateByPrimaryKey(hfUser);
+		}
+	}
 
 //	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
 //	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)
