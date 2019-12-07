@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.hanfu.activity.center.dao.ActivityComponyMapper;
+import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
@@ -25,8 +26,12 @@ import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.dao.StrategyRuleDao;
+import com.hanfu.activity.center.manual.model.Evaluate;
 import com.hanfu.activity.center.model.Activity;
 import com.hanfu.activity.center.model.ActivityCompony;
+import com.hanfu.activity.center.model.ActivityComponyExample;
+import com.hanfu.activity.center.model.ActivityDepartment;
+import com.hanfu.activity.center.model.ActivityDepartmentExample;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
@@ -79,6 +84,9 @@ public class StrategyController {
 	
 	@Autowired
 	private ActivityComponyMapper activityComponyMapper;
+	
+	@Autowired
+	private ActivityDepartmentMapper activityDepartmentMapper;
 
 	@ApiOperation(value = "查询策略规则", notes = "公司每次举行活动的策略规则")
 	@RequestMapping(value = "/listStrategyRule", method = RequestMethod.GET)
@@ -158,7 +166,7 @@ public class StrategyController {
 	}
 
 	@RequestMapping(path = "/addUserEvaluationTemplate", method = RequestMethod.POST)
-	@ApiOperation(value = "增加用户评价模板", notes = "增加用户评价模板")
+	@ApiOperation(value = "增加用户事迹或汇报模板", notes = "增加用户事迹或汇报模板")
 	public ResponseEntity<JSONObject> addUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -179,23 +187,24 @@ public class StrategyController {
 				return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
 			}
 		}
+		template.setRemarks(request.getRemarks());
 		template.setEvaluateWeight(request.getEvaluateWeight());
 		template.setParentTemplateId(request.getParentTemplateId());
 		template.setCreateTime(LocalDateTime.now());
 		template.setModifyTime(LocalDateTime.now());
-		template.setIsDeleted((short) 0);
+		template.setIsDeleted(request.getIsDeleted());
 		activityEvaluateTemplateMapper.insert(template);
 		return builder.body(ResponseUtils.getResponseBody(template.getId()));
 	}
 	
 	@RequestMapping(path = "/findEvaluationTemplateWeight", method = RequestMethod.GET)
 	@ApiOperation(value = "查询现有模板权重", notes = "查询现有模板权重")
-	public ResponseEntity<JSONObject> findEvaluationTemplateWeight(@RequestParam Integer activityId)
+	public ResponseEntity<JSONObject> findEvaluationTemplateWeight(@RequestParam Integer activityId,@RequestParam Short type)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Double weight = 0.0;
 		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
-		example.createCriteria().andParentTemplateIdEqualTo(activityId);
+		example.createCriteria().andParentTemplateIdEqualTo(activityId).andIsDeletedEqualTo(type);
 		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			ActivityEvaluateTemplate activityEvaluateTemplate = list.get(0);
@@ -205,7 +214,7 @@ public class StrategyController {
 	}
 
 	@RequestMapping(path = "/delterUserEvaluationTemplate", method = RequestMethod.GET)
-	@ApiOperation(value = "删除用户评价模板", notes = "删除用户评价模板")
+	@ApiOperation(value = "删除用户事迹或汇报模板", notes = "删除用户事迹或汇报模板")
 	public ResponseEntity<JSONObject> delterUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -219,7 +228,7 @@ public class StrategyController {
 	}
 
 	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
-	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
+	@ApiOperation(value = "修改用户事迹或汇报模板", notes = "修改用户事迹或汇报模板")
 	public ResponseEntity<JSONObject> updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -251,17 +260,17 @@ public class StrategyController {
 	}
 
 	@RequestMapping(path = "/findUserEvaluationTemplate", method = RequestMethod.GET)
-	@ApiOperation(value = "查询用户评价模板", notes = "查询用户评价模板")
-	public ResponseEntity<JSONObject> findUserEvaluationTemplate(@RequestParam Integer activityId) throws Exception {
+	@ApiOperation(value = "查询用户事迹或汇报模板", notes = "查询用户事迹或汇报模板")
+	public ResponseEntity<JSONObject> findUserEvaluationTemplate(@RequestParam Integer activityId,@RequestParam Short type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
-		example.createCriteria().andParentTemplateIdEqualTo(activityId);
+		example.createCriteria().andParentTemplateIdEqualTo(activityId).andIsDeletedEqualTo(type);
 		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@RequestMapping(path = "/userAddEvaluation", method = RequestMethod.POST)
-	@ApiOperation(value = "用户填写评价", notes = "用户填写评价")
+	@ApiOperation(value = "用户填写事迹或汇报", notes = "用户填写事迹或汇报")
 	public ResponseEntity<JSONObject> userAddEvaluation(ActivityUserEvaluateRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
@@ -283,7 +292,7 @@ public class StrategyController {
 	}
 
 	@RequestMapping(path = "/userUpdateEvaluation", method = RequestMethod.POST)
-	@ApiOperation(value = "用户更新个人评价", notes = "用户更新个人评价")
+	@ApiOperation(value = "用户更新个人事迹或汇报", notes = "用户更新个人事迹或汇报")
 	public ResponseEntity<JSONObject> userUpdateEvaluation(@RequestParam Integer userEvaluateId,@RequestParam String evaluateContent) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		ActivityUserEvaluate activityUserEvaluate = activityUserEvaluateMapper.selectByPrimaryKey(userEvaluateId);
@@ -293,6 +302,27 @@ public class StrategyController {
 		activityUserEvaluate.setEvaluateContent(evaluateContent);
 		activityUserEvaluateMapper.updateByPrimaryKey(activityUserEvaluate);
 		return builder.body(ResponseUtils.getResponseBody(activityUserEvaluate.getId()));
+	}
+	
+	@RequestMapping(path = "/findUserEvaluation", method = RequestMethod.POST)
+	@ApiOperation(value = "用户个人事迹或汇报查询", notes = "用户个人事迹或汇报查询")
+	public ResponseEntity<JSONObject> findUserEvaluation(@RequestParam Integer userId,@RequestParam Short type) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserEvaluate> list = activityUserEvaluateMapper.selectByExample(example);
+		List<Evaluate> list2 = new ArrayList<Evaluate>(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			ActivityUserEvaluate userEvaluate = list.get(0);
+			if(userEvaluate.getIsDeleted() == type) {
+				Evaluate evaluate = new Evaluate();
+				evaluate.setEvaluateContent(userEvaluate.getEvaluateContent());
+				ActivityEvaluateTemplate activityEvaluateTemplate = activityEvaluateTemplateMapper.selectByPrimaryKey(userEvaluate.getEvaluateTemplateId());
+				evaluate.setEvaluateType(activityEvaluateTemplate.getEvaluateType());
+				list2.add(evaluate);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list2));
 	}
 	
 	@RequestMapping(path = "/addCompany", method = RequestMethod.POST)
@@ -317,4 +347,22 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(null)));
 	}
 	
+	@RequestMapping(path = "/findDepartmentByCompanyCode", method = RequestMethod.POST)
+	@ApiOperation(value = "根据公司编号查询部门", notes = "根据公司编号查询部门")
+	public ResponseEntity<JSONObject> findDepartmentByCompanyCode(@RequestParam String code) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Boolean flag = true;
+		ActivityComponyExample example = new ActivityComponyExample();
+		example.createCriteria().andCompanyInfoEqualTo(code);
+		List<ActivityCompony> list = activityComponyMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此编码不存在"));
+		}else {
+			ActivityCompony compony = list.get(0);
+			ActivityDepartmentExample example2 = new ActivityDepartmentExample();
+			example2.createCriteria().andComponyIdEqualTo(compony.getId());
+			List<ActivityDepartment> department = activityDepartmentMapper.selectByExample(example2);
+			return builder.body(ResponseUtils.getResponseBody(department));
+		}
+	}
 }

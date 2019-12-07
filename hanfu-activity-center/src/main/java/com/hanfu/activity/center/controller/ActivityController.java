@@ -134,8 +134,12 @@ public class ActivityController {
 				List<ActivityUserInfo> list2 = activityUserInfoMapper.selectByExample(example2);
 				if(!list2.isEmpty()) {
 					ActivityUserInfo userInfo = list2.get(0);
-					ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(userInfo.getDepartmentId());
-					total.setDepartmentName(department.getDepartmentName());
+					if(userInfo.getDepartmentId() != null) {
+						ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(userInfo.getDepartmentId());
+						if(department != null && department.getDepartmentName() != null) {
+							total.setDepartmentName(department.getDepartmentName());
+						}
+					}
 				}
 				if(hfUser.getFileId() == null) {
 					total.setFileId(hfUser.getFileId());
@@ -213,15 +217,15 @@ public class ActivityController {
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
  			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
-			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
-			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
-			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
-			for (int j = 0; j < instance.size(); j++) {
-				if (!"user_list".equals(instance.get(j).getRuleValueType())
-						&& instance.get(j).getRuleValueType() != null) {
-					type = instance.get(j).getRuleValueType();
-				}
-			}
+//			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
+//			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
+//			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
+//			for (int j = 0; j < instance.size(); j++) {
+//				if (!"user_list".equals(instance.get(j).getRuleValueType())
+//						&& instance.get(j).getRuleValueType() != null) {
+//					type = instance.get(j).getRuleValueType();
+//				}
+//			}
 			ActivityInfo activityInfo = new ActivityInfo();
 			activityInfo.setId(list.get(i).getId());
 			activityInfo.setActivityName(list.get(i).getActivityName());
@@ -238,7 +242,7 @@ public class ActivityController {
 			activityInfo.setUserId(list.get(i).getUserId());
 			activityInfo.setStrategyName(strategy.getStrategyName());
 			activityInfo.setStartTime(list.get(i).getStartTime());
-			activityInfo.setType(type);
+			activityInfo.setType(list.get(i).getActiviyType());
 			activityInfos.add(activityInfo);
 			type = "";
 		}
@@ -383,6 +387,9 @@ public class ActivityController {
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andUserIdEqualTo(userId).andActivityIdEqualTo(activityId);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("没有权限"));
+		}
 		if ((short) list.get(0).getIsDeleted() == 0) {
 			flag = false;
 		}

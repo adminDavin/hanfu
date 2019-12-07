@@ -18,6 +18,8 @@ public class ActivityUserBaseInfoRequest implements Serializable{
 	private String departmentName;
 	@ApiModelProperty(required = false, value = "入职时间")
 	private String hiredate;
+	@ApiModelProperty(required = false, value = "手机号")
+	private String phone;
 	@ApiModelProperty(required = true, value = "用户id")
 	private Integer userId;
 	public String getUsername() {
@@ -39,6 +41,12 @@ public class ActivityUserBaseInfoRequest implements Serializable{
 		this.departmentName = departmentName;
 	}
 	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

@@ -193,7 +193,7 @@ public class ActivityManagerController {
 			strategyRule.setRuleStatus("生效中");
 			String ruleType = request.getRuleType();
 			strategyRule.setRuleType(ruleType);
-			if ("elector".equals(ruleType) || "elected".equals(ruleType) || "internal selection".equals(ruleType)) {
+			if ("elector".equals(ruleType) || "elected".equals(ruleType) || "promotion".equals(ruleType)) {
 				strategyRule.setRuelValueType("user_list");
 			}
 			if ("vote_ticket_count".equals(ruleType)) {
@@ -273,6 +273,22 @@ public class ActivityManagerController {
 			records.setRuleDesc(request.getRuleSDesc());
 			records.setRuleValue(request.getRuleValue());
 			records.setRuleValueType(strategyRule.getRuelValueType());
+			if("ticket_count".equals(strategyRule.getRuelValueType())) {
+				activity.setActiviyType(strategyRule.getRuelValueType());
+				activityMapper.updateByPrimaryKey(activity);
+			}
+			if("score".equals(strategyRule.getRuelValueType())) {
+				activity.setActiviyType(strategyRule.getRuelValueType());
+				activityMapper.updateByPrimaryKey(activity);
+			}
+			if("election".equals(strategyRule.getRuelValueType())) {
+				activity.setActiviyType(strategyRule.getRuelValueType());
+				activityMapper.updateByPrimaryKey(activity);
+			}
+			if("praise".equals(strategyRule.getRuelValueType())) {
+				activity.setActiviyType(strategyRule.getRuelValueType());
+				activityMapper.updateByPrimaryKey(activity);
+			}
 			records.setRuleStatus("0");
 			records.setCreateTime(LocalDateTime.now());
 			records.setModifyTime(LocalDateTime.now());
@@ -319,7 +335,7 @@ public class ActivityManagerController {
 				example.createCriteria().andActivityIdEqualTo(request.getActivityId());
 				List<ActivityStrategyInstance> instance1 = activityStrategyInstanceMapper.selectByExample(example);
 				for (int j = 0; j < instance1.size(); j++) {
-					if(!"user_list".equals(instance1.get(j).getRuleValueType()) && instance1.get(j).getRuleValueType() != null) {
+					if("ticket_count".equals(instance1.get(j).getRuleValueType()) && instance1.get(j).getRuleValueType() != null) {
 						type = instance1.get(j).getRuleValueType();
 					}
 				}
@@ -614,20 +630,16 @@ public class ActivityManagerController {
 	public ResponseEntity<JSONObject> startActivity(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-		List<Activity> list = activityMapper.selectByExample(null);
-		for (int i = 0; i < list.size(); i++) {
-			Activity activity2 = list.get(i);
-			StrategyRuleExample example  = new StrategyRuleExample();
-			example.createCriteria().andStrategyIdEqualTo(activity2.getStrategyId());
-			List<StrategyRule> list2 = strategyRuleMapper.selectByExample(example);
-			for (int j = 0; j < list2.size(); j++) {
-				StrategyRule rule = list2.get(j);
-				if(activity2.getIsTimingStart() == 1 && "praise".equals(rule.getRuelValueType())) {
-					return builder.body(ResponseUtils.getResponseBody("只能同时开启一个点赞活动"));
-				}
+		if("praise".equals(activity.getActiviyType())) {
+			ActivityExample example = new ActivityExample();
+			example.createCriteria().andActiviyTypeEqualTo("praise");
+			List<Activity> list = activityMapper.selectByExample(example);
+			for (int i = 0; i < list.size(); i++) {
+				Activity activity2 = list.get(i);
+				activity2.setIsTimingStart((short) 0);
+				activityMapper.updateByPrimaryKey(activity2);
 			}
 		}
-		System.out.println(activity.getIsTimingStart());
 		if (activity.getIsTimingStart() == (short) 0) {
 			activity.setIsTimingStart((short) 1);
 		} else {
@@ -871,6 +883,10 @@ public class ActivityManagerController {
 			hfUser.setRealName(request.getUsername());
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		}
+		if(!StringUtils.isEmpty(request.getPhone())) {
+			hfUser.setPhone(request.getPhone());
+			hfUserMapper.updateByPrimaryKey(hfUser);
+		}
 		ActivityUserInfoExample example = new ActivityUserInfoExample();
 		example.createCriteria().andUserIdEqualTo(request.getUserId());
 		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
@@ -878,6 +894,7 @@ public class ActivityManagerController {
 			ActivityUserInfo userInfo = new ActivityUserInfo();
 			userInfo.setUserId(request.getUserId());
 			if(fileInfo != null) {
+				System.out.println("+++++++++++++++++++++");
 				userInfo.setFileId(updateUserAvatar(fileInfo,request.getUserId()));
 			}
 			if(!StringUtils.isEmpty(request.getDepartmentName())) {
@@ -992,6 +1009,28 @@ public class ActivityManagerController {
 		return departmentId;
 	}
 	
+	@RequestMapping(path = "/findDepartmentByCompany", method = RequestMethod.GET)
+	@ApiOperation(value = "根据公司id查询部门", notes = "根据公司id查询部门")
+	public ResponseEntity<JSONObject> findDepartmentByCompany(@RequestParam Integer companyId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityDepartmentExample example = new ActivityDepartmentExample();
+		example.createCriteria().andComponyIdEqualTo(companyId);
+		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+	@RequestMapping(path = "/deleteDepartment", method = RequestMethod.POST)
+	@ApiOperation(value = "删除部门", notes = "删除部门")
+	public ResponseEntity<JSONObject> deleteDepartment(@RequestParam Integer departmentId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(departmentId);
+		if(department == null) {
+			return builder.body(ResponseUtils.getResponseBody("此部门不存在"));
+		}
+		activityDepartmentMapper.deleteByPrimaryKey(departmentId);
+		return builder.body(ResponseUtils.getResponseBody(department.getId()));
+	}
+	
 	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
 	public Integer updateUserAvatar(@RequestParam MultipartFile fileInfo,@RequestParam Integer userId) throws Exception {
@@ -1057,6 +1096,30 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
+	@RequestMapping(path = "/updateUserEvaluate", method = RequestMethod.POST)
+	@ApiOperation(value = "更改用户个人评价", notes = "更改用户个人评价")
+	public ResponseEntity<JSONObject> updateUserEvaluate(@RequestParam String evaluate,@RequestParam Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityUserInfoExample example = new ActivityUserInfoExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			ActivityUserInfo info = new ActivityUserInfo();
+			info.setEvaluation(evaluate);
+			info.setCreateTime(LocalDateTime.now());
+			info.setModifyTime(LocalDateTime.now());
+			info.setIsDeleted((short) 0);
+			info.setUserId(userId);
+			activityUserInfoMapper.insert(info);
+		}else {
+			ActivityUserInfo info = list.get(0);
+			info.setEvaluation(evaluate);
+			info.setModifyTime(LocalDateTime.now());
+			activityUserInfoMapper.updateByPrimaryKey(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
 	@RequestMapping(path = "/findUserFormInfo", method = RequestMethod.GET)
 	@ApiOperation(value = "查询用户表单信息", notes = "查询用户表单信息")
 	public ResponseEntity<JSONObject> findUserFormInfo(@RequestParam Integer userId) throws Exception {
@@ -1077,11 +1140,11 @@ public class ActivityManagerController {
 		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
 		example.createCriteria().andUserIdEqualTo(userId);
 		List<ActivityUserEvaluate> activityUserEvaluate = activityUserEvaluateMapper.selectByExample(example);
-		List<ActivityUserEvaluate> list = new ArrayList<ActivityUserEvaluate>(activityUserEvaluate.size());
-		for (int i = 0; i < activityUserEvaluate.size(); i++) {
-			list.set(i, activityUserEvaluate.get(i));
-		}
-		info.setList(list);
+//		List<ActivityUserEvaluate> list = new ArrayList<ActivityUserEvaluate>(activityUserEvaluate.size());
+//		for (int i = 0; i < activityUserEvaluate.size(); i++) {
+//			list.set(i, activityUserEvaluate.get(i));
+//		}
+//		info.setList(list);
 		return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	

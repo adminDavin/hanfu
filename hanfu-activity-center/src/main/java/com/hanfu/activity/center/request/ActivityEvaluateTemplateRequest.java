@@ -8,16 +8,18 @@ import io.swagger.annotations.ApiModelProperty;
 public class ActivityEvaluateTemplateRequest extends CommonRequest{
 	@ApiModelProperty(required = false, value = "模板id")
 	private Integer id;
-	@ApiModelProperty(required = false, value = "暂时存放公司id")
+	@ApiModelProperty(required = false, value = "暂时存放活动id")
 	private Integer parentTemplateId;
-	@ApiModelProperty(required = false, value = "评价类型")
+	@ApiModelProperty(required = false, value = "评价名字（类型）")
 	private String evaluateType;
 	@ApiModelProperty(required = false, value = "评价内容")
 	private String evaluateContent;
 	@ApiModelProperty(required = false, value = "评价权重")
 	private String evaluateWeight;
-	@ApiModelProperty(required = false, value = "评论")
+	@ApiModelProperty(required = false, value = "评论（备注）")
 	private String remarks;
+	@ApiModelProperty(required = false, value = "暂时存放类型")
+	private Short isDeleted;
 	public Integer getId() {
 		return id;
 	}
@@ -54,5 +56,10 @@ public class ActivityEvaluateTemplateRequest extends CommonRequest{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-
+	public Short getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(Short isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 }

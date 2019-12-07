@@ -341,6 +341,7 @@ public class KingWordsController {
 		if(userInfo != null) {
 			if(userInfo.get("unionId") != null) {
 				unionId = (String) userInfo.get("unionId");
+				System.out.println(unionId+"unionId11111111111111++++++++++++");
 			}
 			nickName = 	userInfo.getString("nickName");
 		}
@@ -360,6 +361,7 @@ public class KingWordsController {
 			HfUser hfUser = list.get(0);
 			userId = hfUser.getId();
 		}
+		System.out.println(userId+"11111111111111111111111111111111111111");
 		map.put("userId", userId);
 		map.put( "userInfo",userInfo ); 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
