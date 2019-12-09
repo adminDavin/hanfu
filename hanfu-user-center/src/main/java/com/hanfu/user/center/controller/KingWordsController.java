@@ -338,17 +338,20 @@ public class KingWordsController {
 		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv );
 		String unionId = "";
 		String nickName = "";
+		String avatarUrl = "";
 		if(userInfo != null) {
 			if(userInfo.get("unionId") != null) {
 				unionId = (String) userInfo.get("unionId");
 			}
 			nickName = 	userInfo.getString("nickName");
+			avatarUrl = userInfo.getString("avatarUrl");
 		}
 		HfUserExample example = new HfUserExample();
 		example.createCriteria().andUsernameEqualTo(unionId);
 		List<HfUser> list = hfUserMapper.selectByExample(example);
 		if(list.isEmpty()) {
 			HfUser hfUser = new HfUser();
+			hfUser.setAddress(avatarUrl);
 			hfUser.setNickName(nickName);
 			hfUser.setUsername(unionId);
 			hfUser.setCreateDate(LocalDateTime.now());
@@ -358,6 +361,9 @@ public class KingWordsController {
 			userId = hfUser.getId();
 		}else {
 			HfUser hfUser = list.get(0);
+			hfUser.setAddress(avatarUrl);
+			hfUser.setNickName(nickName);
+			hfUserMapper.updateByPrimaryKey(hfUser);
 			userId = hfUser.getId();
 		}
 		map.put("userId", userId);
