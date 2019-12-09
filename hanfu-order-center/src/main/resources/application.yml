@@ -37,6 +37,15 @@ spring:
         max-size: 16
         queue-capacity: 100
         keep-alive: 3600s
+  redis:
+    database: 0
+    host: 47.105.72.216
+    port: 6379
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 16
+        max-idle: 4
 
 
 #
