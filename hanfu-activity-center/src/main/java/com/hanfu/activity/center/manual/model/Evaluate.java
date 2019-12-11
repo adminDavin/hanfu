@@ -14,6 +14,8 @@ public class Evaluate implements Serializable{
 	private String evaluateType;
 	private Integer evaluateTemplateId;
 	private String score;
+	private String templateContent;
+	private char zimu;
 //	private Boolean isRecord;
 	public String getEvaluateContent() {
 		return evaluateContent;
@@ -38,6 +40,18 @@ public class Evaluate implements Serializable{
 	}
 	public void setScore(String score) {
 		this.score = score;
+	}
+	public String getTemplateContent() {
+		return templateContent;
+	}
+	public void setTemplateContent(String templateContent) {
+		this.templateContent = templateContent;
+	}
+	public char getZimu() {
+		return zimu;
+	}
+	public void setZimu(char zimu) {
+		this.zimu = zimu;
 	}
 //	public Boolean getIsRecord() {
 //		return isRecord;

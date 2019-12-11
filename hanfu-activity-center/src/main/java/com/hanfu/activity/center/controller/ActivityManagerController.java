@@ -26,7 +26,9 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -43,6 +45,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cedarsoftware.util.StringUtilities;
@@ -108,6 +113,7 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 
+import io.netty.handler.codec.http.HttpRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -528,20 +534,19 @@ public class ActivityManagerController {
 		ActivityEvaluateTemplateExample example3 = new ActivityEvaluateTemplateExample();
 		example3.createCriteria().andParentTemplateIdEqualTo(request.getActivityId()).andIsDeletedEqualTo((short)((int)request.getType()));
 		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example3);
-		System.out.println(list.size()+"11111111111111111");
 		for (int i = 0; i < remark.length; i++) {
 			//TODO
 			ActivityEvaluateTemplate template = list.get(i);
 			if (remark[i] < 0) {
 				return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 			}
+			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), request.getType(),
+					String.valueOf(remark[i]));
 			total = remark[i]*Double.valueOf(template.getEvaluateWeight()) + total;
 		}
 		if (total > 100) {
 			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 		}
-		addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), request.getType(),
-				String.valueOf(total));
 
 		double reportScore = 0.00;
 		double deedScore = 0.00;
@@ -553,7 +558,11 @@ public class ActivityManagerController {
 			ActivityVoteRecords records = list2.get(i);
 			deedScore = Double.valueOf(records.getRemarks()) + deedScore;
 		}
-		deedScore = (deedScore / list2.size()) * 0.5;
+		if(list2.isEmpty()) {
+			deedScore = 0.00;
+		}else {
+			deedScore = (deedScore / list2.size()) * 0.5;
+		}
 		example4.clear();
 		example4.createCriteria().andActivityIdEqualTo(request.getActivityId())
 				.andElectedUserIdEqualTo(request.getElectedUserId()).andVoteTimesEqualTo(1);
@@ -562,8 +571,12 @@ public class ActivityManagerController {
 			ActivityVoteRecords records = list2.get(i);
 			reportScore = Double.valueOf(records.getRemarks()) + reportScore;
 		}
-		reportScore = (reportScore / list2.size()) * 0.5;
-		System.out.println(deedScore);
+		if(list2.isEmpty()) {
+			reportScore = 0.00;
+		}else {
+			reportScore = (reportScore / list2.size()) * 0.5;
+		}
+		System.out.println(reportScore);
 		userElect.setRemarks(String.valueOf(deedScore + reportScore));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
@@ -914,7 +927,7 @@ public class ActivityManagerController {
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
-		if (!StringUtils.isEmpty(request.getUsername())) {
+		if (!StringUtils.isEmpty(request.getUsername())) { 
 			hfUser.setRealName(request.getUsername());
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		}
@@ -950,9 +963,9 @@ public class ActivityManagerController {
 			activityUserInfoMapper.insert(userInfo);
 		} else {
 			ActivityUserInfo userInfo = list.get(0);
-			if (fileInfo != null) {
-				userInfo.setFileId(updateUserAvatar(fileInfo, request.getUserId()));
-			}
+				if (fileInfo != null) {
+					userInfo.setFileId(updateUserAvatar(fileInfo, request.getUserId()));
+				}
 			if (!StringUtils.isEmpty(request.getDepartmentName())) {
 				ActivityDepartmentRequest departmentRequest = new ActivityDepartmentRequest();
 				departmentRequest.setDepartmentName(request.getDepartmentName());
@@ -1040,7 +1053,7 @@ public class ActivityManagerController {
 
 	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
-	public Integer updateUserAvatar(@RequestParam MultipartFile fileInfo, @RequestParam Integer userId)
+	public Integer updateUserAvatar(MultipartFile fileInfo, @RequestParam Integer userId)
 			throws Exception {
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
 		if (hfUser == null) {
@@ -1148,6 +1161,11 @@ public class ActivityManagerController {
 					info.setDepartmentName(department.getDepartmentName());
 				}
 			}
+		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		if(!StringUtils.isEmpty(info.getHiredate())) {
+			String date = format.format(info.getHiredate());
+			info.setDate(date);
 		}
 //		ActivityUserEvaluateExample example = new ActivityUserEvaluateExample();
 //		example.createCriteria().andUserIdEqualTo(userId);

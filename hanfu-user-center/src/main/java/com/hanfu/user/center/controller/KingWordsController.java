@@ -103,7 +103,6 @@ public class KingWordsController {
 	})
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-
 		HfAuth hfAuth = userDao.selectAuthList(authKey);
 		if(hfAuth == null) {
 			return builder.body(ResponseUtils.getResponseBody("还未注册"));
