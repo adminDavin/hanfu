@@ -23,6 +23,7 @@ import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
+import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
@@ -38,6 +39,8 @@ import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
 import com.hanfu.activity.center.model.ActivityUserEvaluateExample;
+import com.hanfu.activity.center.model.ActivityUserInfo;
+import com.hanfu.activity.center.model.ActivityUserInfoExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
 import com.hanfu.activity.center.model.ActivityVoteRecordsExample;
 import com.hanfu.activity.center.model.FileDesc;
@@ -94,6 +97,9 @@ public class StrategyController {
 	
 	@Autowired
 	private ActivityDepartmentMapper activityDepartmentMapper;
+	
+	@Autowired
+	private ActivityUserInfoMapper activityUserInfoMapper;
 
 	@ApiOperation(value = "查询策略规则", notes = "公司每次举行活动的策略规则")
 	@RequestMapping(value = "/listStrategyRule", method = RequestMethod.GET)
@@ -449,7 +455,7 @@ public class StrategyController {
 	
 	@RequestMapping(path = "/findDepartmentByCompany", method = RequestMethod.GET)
 	@ApiOperation(value = "根据公司编号查询部门", notes = "根据公司编号查询部门")
-	public ResponseEntity<JSONObject> findDepartmentByCompany(String companyCode) throws Exception {
+	public ResponseEntity<JSONObject> findDepartmentByCompany(@RequestParam String companyCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		ActivityComponyExample example = new ActivityComponyExample();
 		example.createCriteria().andCompanyInfoEqualTo(companyCode);
@@ -461,8 +467,69 @@ public class StrategyController {
 			ActivityDepartmentExample example2 = new ActivityDepartmentExample();
 			example2.createCriteria().andComponyIdEqualTo(compony.getId());
 			List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
-			return builder.body(ResponseUtils.getResponseBody(list2));
+			String[] departmentName = new String[list2.size()];
+			for (int i = 0; i < list2.size(); i++) {
+				ActivityDepartment department = list2.get(i);
+				departmentName[i] = department.getDepartmentName();
+			}
+			return builder.body(ResponseUtils.getResponseBody(departmentName));
 		}
+	}
+	
+	@RequestMapping(path = "/intoActivity", method = RequestMethod.POST)
+	@ApiOperation(value = "进入活动首页", notes = "进入活动首页")
+	public ResponseEntity<JSONObject> intoActivity(@RequestParam String code,@RequestParam Integer userId,@RequestParam String departmentName) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityComponyExample activityComponyExample = new ActivityComponyExample();
+		activityComponyExample.createCriteria().andCompanyInfoEqualTo(code);
+		List<ActivityCompony> componies = activityComponyMapper.selectByExample(activityComponyExample);
+		if(componies.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("您输入的公司编码不存在"));
+		}
+		ActivityUserInfoExample example = new ActivityUserInfoExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+		ActivityDepartmentExample example2 = new ActivityDepartmentExample();
+		example2.createCriteria().andDepartmentNameEqualTo(departmentName);
+		List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
+		ActivityDepartment department = list2.get(0);
+		if(list.isEmpty()) {
+			ActivityUserInfo userInfo = new ActivityUserInfo();
+			userInfo.setUserId(userId);
+			userInfo.setDepartmentId(department.getId());
+			userInfo.setCreateTime(LocalDateTime.now());
+			userInfo.setModifyTime(LocalDateTime.now());
+			userInfo.setIsDeleted((short) 0);
+			activityUserInfoMapper.insert(userInfo);
+		}else {
+			ActivityUserInfo userInfo = list.get(0);
+			userInfo.setDepartmentId(department.getId());
+		}
+		return builder.body(ResponseUtils.getResponseBody("进入成功"));
+	}
+	
+	@RequestMapping(path = "/findUserIsDepartment", method = RequestMethod.GET)
+	@ApiOperation(value = "查询此人是否提交过部门", notes = "查询此人是否提交过部门")
+	public ResponseEntity<JSONObject> findUserIsDepartment(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		boolean flag = true;
+		ActivityUserInfoExample example = new ActivityUserInfoExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			flag = false;
+		}
+		return builder.body(ResponseUtils.getResponseBody(flag));
+	}
+	
+	@RequestMapping(path = "/findDepartmentByCompanyId", method = RequestMethod.GET)
+	@ApiOperation(value = "根据公司id查询部门", notes = "根据公司id查询部门")
+	public ResponseEntity<JSONObject> findDepartmentByCompanyId(Integer companyId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		ActivityDepartmentExample example = new ActivityDepartmentExample();
+		example.createCriteria().andComponyIdEqualTo(companyId);
+		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
 }

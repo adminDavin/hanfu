@@ -1026,23 +1026,11 @@ public class ActivityManagerController {
 			departmentId = department.getId();
 		} else {
 			ActivityDepartment department = list.get(0);
-			if (!StringUtils.isEmpty(request.getDepartmentName())) {
-				department.setDepartmentName(request.getDepartmentName());
-			}
 			if (!StringUtils.isEmpty(request.getCompanyName())) {
 				department.setCompanyName(request.getCompanyName());
 			}
-
-			if (!StringUtils.isEmpty(request.getCompanyId())) {
-				department.setComponyId(request.getCompanyId());
-			}
-
 			if (!StringUtils.isEmpty(request.getRemarks())) {
 				department.setRemarks(request.getRemarks());
-			}
-
-			if (!StringUtils.isEmpty(request.getSuperiorId())) {
-				department.setSuperiorId(request.getSuperiorId());
 			}
 			department.setModifyTime(LocalDateTime.now());
 			activityDepartmentMapper.updateByPrimaryKey(department);
