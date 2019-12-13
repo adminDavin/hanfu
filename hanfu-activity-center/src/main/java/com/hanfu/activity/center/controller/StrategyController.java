@@ -302,6 +302,9 @@ public class StrategyController {
 				ActivityEvaluateTemplate template = list.get(i);
 				evaluate.setEvaluateTemplateId(template.getId());
 				evaluate.setEvaluateType(template.getEvaluateType());
+				evaluate.setRemarks(template.getRemarks());
+				evaluate.setEvaluateWeight(template.getEvaluateWeight());
+				evaluate.setEvaluateContent(template.getEvaluateContent());
 				evaluate.setZimu((char) index);
 				index++;
 				userEvaluateInfo.add(evaluate);
@@ -329,6 +332,7 @@ public class StrategyController {
 						evaluate.setEvaluateContent(list2.get(0).getEvaluateContent());
 					}
 				}
+				evaluate.setRemarks(template.getRemarks());
 				evaluate.setEvaluateType(template.getEvaluateType());
 				evaluate.setEvaluateTemplateId(template.getId());
 				if(activityVoteRecords.isEmpty()) {
@@ -355,6 +359,7 @@ public class StrategyController {
 						evaluate.setEvaluateContent(list2.get(0).getEvaluateContent());
 					}
 				}
+				evaluate.setRemarks(template.getRemarks());
 				evaluate.setEvaluateType(template.getEvaluateType());
 				evaluate.setEvaluateTemplateId(template.getId());
 				userEvaluateInfo.add(evaluate);

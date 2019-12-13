@@ -357,11 +357,12 @@ public class ActivityManagerController {
 				}
 				if ("elector".equals(strategyRuleMapper.selectByPrimaryKey(instance.getRuleId()).getRuleType())
 						&& "ticket_count".equals(type)) {
-					ActivityStrategyInstanceExample example2 = new ActivityStrategyInstanceExample();
-					example2.createCriteria().andRuleValueTypeEqualTo("ticket_count");
-					List<ActivityStrategyInstance> activityStrategyInstance = activityStrategyInstanceMapper
-							.selectByExample(example2);
-					ruleValueDesc.setUserTicketCount(Integer.valueOf(activityStrategyInstance.get(0).getRuleValue()));
+//					ActivityStrategyInstanceExample example2 = new ActivityStrategyInstanceExample();
+//					example2.createCriteria().andRuleValueTypeEqualTo("ticket_count");
+//					List<ActivityStrategyInstance> activityStrategyInstance = activityStrategyInstanceMapper
+//							.selectByExample(example2);
+//					Integer.valueOf(activityStrategyInstance.get(0).getRuleValue())
+					ruleValueDesc.setUserTicketCount(3);
 				}
 //				ActivityStrategyInstanceExample strategyInstanceExample = new ActivityStrategyInstanceExample();
 //				strategyInstanceExample.createCriteria().andRuleIdEqualTo(instance.getRuleId());
@@ -638,7 +639,6 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
-		if (hfUser.getIdDeleted() == 1) {
 			hfUser.setIdDeleted((byte) 0);
 			hfUserMapper.updateByPrimaryKey(hfUser);
 			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
@@ -659,7 +659,6 @@ public class ActivityManagerController {
 			ActivitiRuleInstance instance = list2.get(0);
 			instance.setUserTicketCount(instance.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(instance);
-		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 

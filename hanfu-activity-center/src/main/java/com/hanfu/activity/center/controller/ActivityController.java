@@ -231,6 +231,50 @@ public class ActivityController {
 		example.createCriteria().andActivityIdEqualTo(activityId);
 		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
+	
+	@ApiOperation(value = "查询此人参加过哪些活动", notes = "查询此人参加过哪些活动")
+	@RequestMapping(value = "/findUserAddActivity", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findUserAddActivity(@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance instance = list.get(i);
+			Activity activity = activityMapper.selectByPrimaryKey(instance.getActivityId());
+			ActivityInfo info = new ActivityInfo();
+			info.setActivityName(activity.getActivityName());
+			info.setActiviyType(activity.getActiviyType());
+			info.setId(activity.getId());
+			activityInfos.add(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
+	}
+	
+	
+	@ApiOperation(value = "查询此人是哪些活动的评委", notes = "查询此人是哪些活动的评委")
+	@RequestMapping(value = "/findUserActivityVote", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findUserActivityVote(@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(false);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance instance = list.get(i);
+			Activity activity = activityMapper.selectByPrimaryKey(instance.getActivityId());
+			ActivityInfo info = new ActivityInfo();
+			info.setActivityName(activity.getActivityName());
+			info.setActiviyType(activity.getActiviyType());
+			info.setId(activity.getId());
+			info.setActivityDesc(activity.getActivityDesc());
+			info.setIsTimingStart(activity.getIsTimingStart());
+			info.setUserId(activity.getUserId());
+			activityInfos.add(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
+	}
 
 	@ApiOperation(value = "查询活动", notes = "公司每次举行活动的获取")
 	@RequestMapping(value = "/listActivity", method = RequestMethod.GET)

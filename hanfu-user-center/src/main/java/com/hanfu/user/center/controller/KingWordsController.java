@@ -318,9 +318,8 @@ public class KingWordsController {
 		//uuid生成唯一key    
 		String skey = UUID.randomUUID().toString();    
 		//根据openid查询skey是否存在   
-
 		String skey_redis =(String) redisTemplate.opsForValue().get( openid ); 
-		if(StringUtils.isEmpty(skey_redis)){    
+		if(!StringUtils.isEmpty(skey_redis)){    
 			//存在 删除 skey 重新生成skey 将skey返回    
 			redisTemplate.delete( skey_redis );
 			skey = UUID.randomUUID().toString();
