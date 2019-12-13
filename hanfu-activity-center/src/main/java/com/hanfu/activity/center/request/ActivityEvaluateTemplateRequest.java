@@ -18,6 +18,8 @@ public class ActivityEvaluateTemplateRequest extends CommonRequest{
 	private String evaluateWeight;
 	@ApiModelProperty(required = false, value = "评论")
 	private String remarks;
+	@ApiModelProperty(required = false, value = "评论")
+	private Short isDeleted;
 	public Integer getId() {
 		return id;
 	}
@@ -54,5 +56,10 @@ public class ActivityEvaluateTemplateRequest extends CommonRequest{
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-
+	public Short getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(Short isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 }
