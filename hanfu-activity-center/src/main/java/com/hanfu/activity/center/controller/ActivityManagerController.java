@@ -403,6 +403,7 @@ public class ActivityManagerController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<Total> list = new ArrayList<Total>(usersId.length);
+		String code = "";
 		for (int i = 0; i < usersId.length; i++) {
 			ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 			example.createCriteria().andUserIdEqualTo(usersId[i]).andActivityIdEqualTo(activityId);
@@ -410,8 +411,20 @@ public class ActivityManagerController {
 			if (instance.isEmpty()) {
 				return builder.body(ResponseUtils.getResponseBody("此活动人不存在"));
 			}
+			example.clear();
+			example.createCriteria().andUserIdEqualTo(usersId[i]);
+			List<ActivitiRuleInstance> activitiRuleInstances = activitiRuleInstanceMapper.selectByExample(example);
 			ActivitiRuleInstance ruleInstance = instance.get(0);
-			ruleInstance.setRuleInstanceValue(create());
+			for (int j = 0; j < activitiRuleInstances.size(); j++) {
+				ActivitiRuleInstance instance2 = activitiRuleInstances.get(j);
+				if(!StringUtils.isEmpty(instance2.getRuleInstanceValue())) {
+					code = instance2.getRuleInstanceValue();
+					ruleInstance.setRuleInstanceValue(code);
+					break;
+				}else {
+					ruleInstance.setRuleInstanceValue(create());
+				}
+			}
 			activitiRuleInstanceMapper.updateByPrimaryKey(ruleInstance);
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
@@ -614,6 +627,41 @@ public class ActivityManagerController {
 		activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
+	
+	@ApiOperation(value = "取消点赞", notes = "取消点赞")
+	@RequestMapping(value = "/deleteclickPraise", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteclickPraise(RecordScoreRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer total = 0;
+		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+		if (activity.getIsTimingStart() == 0) {
+			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
+		}
+		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+		if (hfUser.getIdDeleted() == 1) {
+			hfUser.setIdDeleted((byte) 0);
+			hfUserMapper.updateByPrimaryKey(hfUser);
+			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+			example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
+			.andElectedUserIdEqualTo(request.getElectedUserId());
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+			if(!list.isEmpty()) {
+				ActivityVoteRecords records = list.get(0);
+				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
+			}
+			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+			example2.createCriteria().andActivityIdEqualTo(request.getActivityId())
+					.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
+			List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
+			if (list2.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+			}
+			ActivitiRuleInstance instance = list2.get(0);
+			instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+			activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 
 	@ApiOperation(value = "判断用户是否点过赞", notes = "判断用户是否点过赞")
 	@RequestMapping(value = "/findIsPraise", method = RequestMethod.GET)
@@ -624,6 +672,34 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("已经点过了"));
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	@ApiOperation(value = "内推提交", notes = "内推提交")
+	@RequestMapping(value = "/addElection", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addElection(@RequestParam Integer activityId,@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance electedUserId = list.get(i);
+			addVoteRecords(activityId, userId, electedUserId.getUserId(), 1, "1");
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	@ApiOperation(value = "查询内推是否提交", notes = "查询内推是否提交")
+	@RequestMapping(value = "/findElection", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findElection(@RequestParam Integer activityId,@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		boolean flag = true;
+		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId);
+		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			flag = false;
+		}
+		return builder.body(ResponseUtils.getResponseBody(flag));
 	}
 
 //	@ApiOperation(value = "统计总分", notes = "统计总分")

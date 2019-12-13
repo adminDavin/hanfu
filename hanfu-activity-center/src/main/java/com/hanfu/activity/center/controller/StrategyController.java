@@ -504,6 +504,7 @@ public class StrategyController {
 		}else {
 			ActivityUserInfo userInfo = list.get(0);
 			userInfo.setDepartmentId(department.getId());
+			activityUserInfoMapper.updateByPrimaryKey(userInfo);
 		}
 		return builder.body(ResponseUtils.getResponseBody("进入成功"));
 	}

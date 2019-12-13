@@ -277,12 +277,12 @@ public class KingWordsController {
 			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
 		}	
 		List<HfUser> list = userDao.selectUserList();
-		for (int i = 0; i < list.size(); i++) {
-			HfUser hfUser = list.get(i);
-			if(hfUser.getRealName() != null) {
-				hfUser.setNickName(hfUser.getRealName());
-			}
-		}
+//		for (int i = 0; i < list.size(); i++) {
+//			HfUser hfUser = list.get(i);
+//			if(hfUser.getRealName() != null) {
+//				hfUser.setNickName(hfUser.getRealName());
+//			}
+//		}
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
