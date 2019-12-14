@@ -12,6 +12,9 @@ public class Total {
 	private String username;
 	private Integer fileId;
 	private String departmentName;
+	private boolean isRecord;
+	private String activityName;
+	private String activityType;
 	
 	public Integer getPosition() {
 		return position;
@@ -72,6 +75,24 @@ public class Total {
 	}
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
+	}
+	public boolean isRecord() {
+		return isRecord;
+	}
+	public void setRecord(boolean isRecord) {
+		this.isRecord = isRecord;
+	}
+	public String getActivityName() {
+		return activityName;
+	}
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
+	public String getActivityType() {
+		return activityType;
+	}
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
 	}
 	@Override
 	public String toString() {

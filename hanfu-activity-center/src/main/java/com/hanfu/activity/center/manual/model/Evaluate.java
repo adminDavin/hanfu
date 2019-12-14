@@ -15,6 +15,8 @@ public class Evaluate implements Serializable{
 	private Integer evaluateTemplateId;
 	private String score;
 	private String templateContent;
+	private String evaluateWeight;
+	private String remarks;
 	private char zimu;
 //	private Boolean isRecord;
 	public String getEvaluateContent() {
@@ -52,6 +54,18 @@ public class Evaluate implements Serializable{
 	}
 	public void setZimu(char zimu) {
 		this.zimu = zimu;
+	}
+	public String getEvaluateWeight() {
+		return evaluateWeight;
+	}
+	public void setEvaluateWeight(String evaluateWeight) {
+		this.evaluateWeight = evaluateWeight;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 //	public Boolean getIsRecord() {
 //		return isRecord;
