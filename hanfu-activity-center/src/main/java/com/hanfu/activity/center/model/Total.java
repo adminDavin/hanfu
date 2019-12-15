@@ -6,7 +6,7 @@ public class Total {
 	private Integer userId;
 	private Integer voteCount;
 	private Integer socre;
-	private Double totalScore;
+	private double totalScore;
 	private Integer activityId;
 	private String code;
 	private String username;
@@ -40,10 +40,10 @@ public class Total {
 	public void setSocre(Integer socre) {
 		this.socre = socre;
 	}
-	public Double getTotalScore() {
+	public double getTotalScore() {
 		return totalScore;
 	}
-	public void setTotalScore(Double totalScore) {
+	public void setTotalScore(double totalScore) {
 		this.totalScore = totalScore;
 	}
 	public Integer getActivityId() {

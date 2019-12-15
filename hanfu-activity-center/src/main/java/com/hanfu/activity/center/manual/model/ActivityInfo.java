@@ -21,7 +21,7 @@ public class ActivityInfo implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date date;
     private String createTime;
-    private LocalDateTime modifyTime;
+    private String modifyTime;
     private Short isDeleted;
     private String strategyName;
     private String type;
@@ -107,15 +107,13 @@ public class ActivityInfo implements Serializable {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-	public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public Short getIsDeleted() {
+    public String getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(String modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public Short getIsDeleted() {
         return isDeleted;
     }
 
