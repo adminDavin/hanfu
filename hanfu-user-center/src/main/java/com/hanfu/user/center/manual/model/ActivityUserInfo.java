@@ -15,6 +15,7 @@ public class ActivityUserInfo implements Serializable{
 	private String realName;
 	private String Jobposition;
 	private String createtime;
+	private Integer departmentId;
 	public String getAvatar() {
 		return avatar;
 	}
@@ -50,6 +51,12 @@ public class ActivityUserInfo implements Serializable{
 	}
 	public void setCreatetime(String createtime) {
 		this.createtime = createtime;
+	}
+	public Integer getDepartmentId() {
+		return departmentId;
+	}
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
 	}
 	
 }
