@@ -1,3 +1,4 @@
+
 package com.hanfu.activity.center.controller;
 
 import java.awt.image.BufferedImage;
@@ -638,14 +639,14 @@ public class ActivityManagerController {
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
-		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
-			hfUser.setIdDeleted((byte) 0);
-			hfUserMapper.updateByPrimaryKey(hfUser);
 			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 			example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
 			.andElectedUserIdEqualTo(request.getElectedUserId());
 			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
 			if(!list.isEmpty()) {
+				com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+				hfUser.setIdDeleted((byte) 0);
+				hfUserMapper.updateByPrimaryKey(hfUser);
 				ActivityVoteRecords records = list.get(0);
 				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 			}
@@ -1004,6 +1005,10 @@ public class ActivityManagerController {
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		if (!StringUtils.isEmpty(request.getUsername())) { 
 			hfUser.setRealName(request.getUsername());
+			hfUserMapper.updateByPrimaryKey(hfUser);
+		}
+		if (!StringUtils.isEmpty(request.getPhone())) { 
+			hfUser.setPhone(request.getPhone());
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		}
 		ActivityUserInfoExample example = new ActivityUserInfoExample();

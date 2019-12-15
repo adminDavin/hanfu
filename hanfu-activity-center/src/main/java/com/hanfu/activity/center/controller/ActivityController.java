@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -237,7 +238,7 @@ public class ActivityController {
 	public ResponseEntity<JSONObject> findUserAddActivity(@RequestParam Integer userId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andUserIdEqualTo(userId);
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
 		for (int i = 0; i < list.size(); i++) {
@@ -291,20 +292,14 @@ public class ActivityController {
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
 			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
-			ZoneId zoneId = ZoneId.systemDefault();
-			ZonedDateTime zdt = list.get(i).getCreateTime().atZone(zoneId);
-			Date date = Date.from(zdt.toInstant());
-			String dateString = sdf.format(date);
-			activityInfo.setCreateTime(dateString);
-			activityInfo.setEndTime(list.get(i).getEndTime());
+			activityInfo.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getCreateTime().plusHours(8L)));
+//			activityInfo.setEndTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getEndTime().plusHours(8L)));
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
 			activityInfo.setIsTimingStart(list.get(i).getIsTimingStart());
-			activityInfo.setModifyTime(list.get(i).getModifyTime());
+			activityInfo.setModifyTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getModifyTime().plusHours(8L)));
 			activityInfo.setUserId(list.get(i).getUserId());
 			activityInfo.setStrategyName(strategy.getStrategyName());
-			activityInfo.setStartTime(list.get(i).getStartTime());
+//			activityInfo.setStartTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getStartTime().plusHours(8L)));
 			activityInfo.setType(list.get(i).getActiviyType());
 			activityInfos.add(activityInfo);
 			type = "";
@@ -504,17 +499,25 @@ public class ActivityController {
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
-		example.setOrderByClause("user_ticket_count DESC,user_score DESC");
+		example.setOrderByClause("user_ticket_count DESC,user_score DESC,remarks DESC");
 		List<ActivitiRuleInstance> list1 = activitiRuleInstanceMapper.selectByExample(example);
 		List<Total> result = new ArrayList<Total>();
 		if (!list1.isEmpty()) {
 			Integer index = 1;
 			for (int j = 0; j < list1.size(); j++) {
 				Total total = new Total();
-				if (list1.get(j).getUserScore() == null) {
-					total.setSocre(0);
-				} else {
-					total.setSocre(list1.get(j).getUserScore());
+				if("score".equals(activity.getActiviyType())){
+					if(list1.get(j).getRemarks() == null) {
+						total.setTotalScore(0);
+					}else {
+						total.setTotalScore(Double.valueOf(list1.get(j).getRemarks()));
+					}
+				}else {
+					if (list1.get(j).getUserScore() == null) {
+						total.setSocre(0);
+					} else {
+						total.setSocre(list1.get(j).getUserScore());
+					}
 				}
 				if (list1.get(j).getUserTicketCount() == null) {
 					total.setVoteCount(0);
@@ -527,7 +530,7 @@ public class ActivityController {
 						total.setFileId(hfUser.getFileId());
 					}
 					if (hfUser.getRealName() == null) {
-						total.setUsername(hfUser.getUsername());
+						total.setUsername(hfUser.getNickName());
 					} else {
 						total.setUsername(hfUser.getRealName());
 					}
@@ -537,6 +540,20 @@ public class ActivityController {
 				total.setActivityId(list1.get(j).getActivityId());
 				result.add(total);
 				index++;
+			}
+			if("score".equals(activity.getActiviyType())) {
+				for (int i = 0; i < result.size()-1; i++) {
+					Total total1 = result.get(i);
+					for (int j = 0; j < result.size()-1-i; j++) {
+						Total total2 = result.get(j);
+						Total total3 = result.get(j+1);
+						if(total2.getTotalScore() < total3.getTotalScore()) {
+							Total total4 = total3;
+							result.set(j+1, total2);
+							result.set(j, total4);
+						}
+					}
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -631,7 +648,7 @@ public class ActivityController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andUserIdEqualTo(userId);
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
 		List<Total> result = new ArrayList<Total>();
 		if (!list.isEmpty()) {
@@ -740,4 +757,42 @@ public class ActivityController {
 			}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	
+	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
+	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+		if(userId == null) {
+			example.createCriteria().andActivityIdEqualTo(activityId);
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
+			for (int i = 0; i < list.size(); i++) {
+				ActivityVoteRecords records = list.get(i);
+				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				if(votePerson != null) {
+					if(votePerson.getRealName() != null) {
+						entity.setVoteName(votePerson.getRealName());
+					}else {
+						entity.setVoteName(votePerson.getNickName());
+					}
+				}
+				if(electedPeson != null) {
+					if(electedPeson.getRealName() != null) {
+						entity.setEceltedName(electedPeson.getRealName());
+					}else {
+						entity.setEceltedName(electedPeson.getNickName());
+					}
+				}
+				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
+				result.add(entity);
+			}
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
 }
