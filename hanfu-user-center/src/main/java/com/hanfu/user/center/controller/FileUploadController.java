@@ -85,7 +85,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api
-@RequestMapping("/file")
+@RequestMapping("/user/weChat")
 @CrossOrigin
 public class FileUploadController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -101,7 +101,7 @@ public class FileUploadController {
 	UserDao userDao;
 	
 	
-	@RequestMapping(value = "/weChat/uploadImage", method = { RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value = "/uploadImage", method = { RequestMethod.POST,RequestMethod.GET})
     public ModelAndView uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("进入get方法！");
  
