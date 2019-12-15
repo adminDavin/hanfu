@@ -6,7 +6,7 @@ public class Total {
 	private Integer userId;
 	private Integer voteCount;
 	private Integer socre;
-	private Double totalScore;
+	private double totalScore;
 	private Integer activityId;
 	private String code;
 	private String username;
@@ -15,6 +15,7 @@ public class Total {
 	private boolean isRecord;
 	private String activityName;
 	private String activityType;
+	private String avatarUrl;
 	
 	public Integer getPosition() {
 		return position;
@@ -40,10 +41,10 @@ public class Total {
 	public void setSocre(Integer socre) {
 		this.socre = socre;
 	}
-	public Double getTotalScore() {
+	public double getTotalScore() {
 		return totalScore;
 	}
-	public void setTotalScore(Double totalScore) {
+	public void setTotalScore(double totalScore) {
 		this.totalScore = totalScore;
 	}
 	public Integer getActivityId() {
@@ -93,6 +94,12 @@ public class Total {
 	}
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
+	}
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 	@Override
 	public String toString() {

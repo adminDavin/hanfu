@@ -16,12 +16,10 @@ public class ActivityInfo implements Serializable {
     private Integer strategyId;
     private Integer userId;
     private Short isTimingStart;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private Date date;
+    private String startTime;
+    private String endTime;
     private String createTime;
-    private LocalDateTime modifyTime;
+    private String modifyTime;
     private Short isDeleted;
     private String strategyName;
     private String type;
@@ -86,34 +84,30 @@ public class ActivityInfo implements Serializable {
     public void setIsTimingStart(Short isTimingStart) {
         this.isTimingStart = isTimingStart;
     }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
+	public String getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public String getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(String modifyTime) {
+		this.modifyTime = modifyTime;
+	}
 	public String getCreateTime() {
 		return createTime;
 	}
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-	public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
-    }
 
     public Short getIsDeleted() {
         return isDeleted;
@@ -133,12 +127,6 @@ public class ActivityInfo implements Serializable {
 	}
 	public void setType(String type) {
 		this.type = type;
-	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
 	}
 	@Override
     public String toString() {

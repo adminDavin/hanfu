@@ -112,7 +112,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated Tue Dec 03 07:29:15 CST 2019
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
