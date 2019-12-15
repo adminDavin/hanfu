@@ -236,10 +236,10 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
 
-	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@RequestMapping(path = "/upload_avatar")
 	@ApiOperation(value = "上传头像", notes = "上传头像")
-	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
-			Integer userId) throws Exception{
+	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
+	        @RequestParam(value = "userId", required = false) Integer userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
