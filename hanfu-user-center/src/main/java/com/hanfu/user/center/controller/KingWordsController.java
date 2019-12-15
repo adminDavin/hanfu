@@ -52,12 +52,14 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.domain.Activity;
 import com.google.api.client.util.SecurityUtils;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
@@ -264,27 +266,30 @@ public class KingWordsController {
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
-	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
-	@ApiOperation(value = "用户列表", notes = "用户列表")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
-	})
-	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		if(!StringUtils.isEmpty(userId)) {
-			HfUserExample hfUserExample = new HfUserExample();
-			hfUserExample.createCriteria().andIdNotEqualTo(userId);
-			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
-		}	
-		List<HfUser> list = userDao.selectUserList();
+	
+//	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
+//	@ApiOperation(value = "用户列表", notes = "用户列表")
+//	@ApiImplicitParams({
+//		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
+//	})
+//	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		if(!StringUtils.isEmpty(userId)) {
+//			HfUserExample hfUserExample = new HfUserExample();
+//			hfUserExample.createCriteria().andIdNotEqualTo(userId);
+//			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+//		}	
+//		List<HfUser> list = userDao.selectUserList();
 //		for (int i = 0; i < list.size(); i++) {
 //			HfUser hfUser = list.get(i);
-//			if(hfUser.getRealName() != null) {
-//				hfUser.setNickName(hfUser.getRealName());
-//			}
+//			ActivityUserInfo info = new ActivityUserInfo();
+//			info.setAvatar(hfUser.getAddress());
+//			info.setJobposition(hfUser.getPhone());
+//			Activity
+//			info.setDepartmentName();
 //		}
-		return builder.body(ResponseUtils.getResponseBody(list));
-	}
+//		return builder.body(ResponseUtils.getResponseBody(list));
+//	}
 	
 	
 	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)

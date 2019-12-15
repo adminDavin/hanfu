@@ -1077,7 +1077,7 @@ public class ActivityManagerController {
 	public Integer updateDepartment(ActivityDepartmentRequest request) throws Exception {
 		Integer departmentId = null;
 		ActivityDepartmentExample example = new ActivityDepartmentExample();
-		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName());
+		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName()).andComponyIdEqualTo(request.getCompanyId());
 		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
 		if (list.isEmpty()) {
 			ActivityDepartment department = new ActivityDepartment();
