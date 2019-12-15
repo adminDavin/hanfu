@@ -40,6 +40,21 @@
 		<result column="id_deleted" jdbcType="TINYINT"
 			property="idDeleted" />
 	</resultMap>
+	
+	<resultMap type="com.hanfu.user.center.manual.model.ActivityUserInfo"
+		id="ActivityUserInfo">
+		<result column="phone" jdbcType="VARCHAR" property="Jobposition" />
+		<result column="nick_name" jdbcType="VARCHAR"
+			property="wxName" />
+		<result column="real_name" jdbcType="VARCHAR"
+			property="realName" />
+		<result column="address" jdbcType="VARCHAR" property="avatar" />
+		<result column="create_date" jdbcType="TIMESTAMP"
+			property="createtime" />
+		<result column="department_id" jdbcType="TIMESTAMP"
+			property="departmentId" />
+	</resultMap>
+	
 	<select id="selectAuthList" resultMap="BaseResultMap">
 		SELECT
 		user_id,auth_type,auth_key
@@ -50,5 +65,26 @@
 	</select>
 	<select id="selectUserList" resultMap="ResultMap">
 		SELECT * FROM hf_user
+	</select>
+	<select id="findActivityUserInfo" resultMap="ActivityUserInfo">
+		SELECT 
+			h.address,h.nick_name,
+			h.real_name,h.phone,
+			h.create_date,a.department_id
+		FROM 
+			hf_user h
+		LEFT JOIN
+			activity_user_info a
+		ON 
+			h.id = a.user_id
+	</select>
+	
+	<select id="findDepartmentName" resultType="String">
+		SELECT 
+			department_name
+		FROM 
+			activity_department
+		WHERE
+			id = #{departmentId}
 	</select>
 </mapper>

@@ -267,29 +267,30 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
 	
-//	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
-//	@ApiOperation(value = "用户列表", notes = "用户列表")
-//	@ApiImplicitParams({
-//		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
-//	})
-//	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//		if(!StringUtils.isEmpty(userId)) {
-//			HfUserExample hfUserExample = new HfUserExample();
-//			hfUserExample.createCriteria().andIdNotEqualTo(userId);
-//			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
-//		}	
-//		List<HfUser> list = userDao.selectUserList();
-//		for (int i = 0; i < list.size(); i++) {
-//			HfUser hfUser = list.get(i);
-//			ActivityUserInfo info = new ActivityUserInfo();
-//			info.setAvatar(hfUser.getAddress());
-//			info.setJobposition(hfUser.getPhone());
-//			Activity
-//			info.setDepartmentName();
-//		}
-//		return builder.body(ResponseUtils.getResponseBody(list));
-//	}
+	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
+	@ApiOperation(value = "用户列表", notes = "用户列表")
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
+	})
+	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if(!StringUtils.isEmpty(userId)) {
+			HfUserExample hfUserExample = new HfUserExample();
+			hfUserExample.createCriteria().andIdNotEqualTo(userId);
+			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+		}	
+		List<ActivityUserInfo> list = userDao.findActivityUserInfo();
+		for (int i = 0; i < list.size(); i++) {
+			ActivityUserInfo info = list.get(i);
+			if(info != null) {
+				if(info.getDepartmentId() != null) {
+					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+					info.setDepartmentName(departmentName);
+				}
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
 	
 	
 	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)

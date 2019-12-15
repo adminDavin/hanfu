@@ -15,6 +15,7 @@ public class VoteRecordsEntity implements Serializable{
 	private String voteName;
 	private String eceltedName;
 	private String voteTimes;
+	private double totalScore;
 	public Integer getActivityId() {
 		return activityId;
 	}
@@ -44,5 +45,11 @@ public class VoteRecordsEntity implements Serializable{
 	}
 	public void setVoteTimes(String voteTimes) {
 		this.voteTimes = voteTimes;
+	}
+	public double getTotalScore() {
+		return totalScore;
+	}
+	public void setTotalScore(double totalScore) {
+		this.totalScore = totalScore;
 	}
 }

@@ -591,7 +591,6 @@ public class ActivityManagerController {
 		}else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		System.out.println(reportScore);
 		userElect.setRemarks(String.valueOf(deedScore + reportScore));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
