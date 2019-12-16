@@ -20,9 +20,8 @@ public class ActivityUserBaseInfoRequest implements Serializable{
 	private String hiredate;
 	@ApiModelProperty(required = true, value = "用户id")
 	private Integer userId;
-	@ApiModelProperty(required = false, value = "电话")
+	@ApiModelProperty(required = false, value = "用户手机")
 	private String phone;
-	
 	public String getUsername() {
 		return username;
 	}

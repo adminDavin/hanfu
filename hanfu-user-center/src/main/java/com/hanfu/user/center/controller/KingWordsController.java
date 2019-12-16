@@ -52,12 +52,14 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.domain.Activity;
 import com.google.api.client.util.SecurityUtils;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
@@ -234,10 +236,10 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
 
-	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@RequestMapping(path = "/upload_avatar")
 	@ApiOperation(value = "上传头像", notes = "上传头像")
-	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
-			Integer userId) throws Exception{
+	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
+	        @RequestParam(value = "userId", required = false) Integer userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
@@ -264,6 +266,7 @@ public class KingWordsController {
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
+	
 	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
 	@ApiImplicitParams({
@@ -276,13 +279,16 @@ public class KingWordsController {
 			hfUserExample.createCriteria().andIdNotEqualTo(userId);
 			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
 		}	
-		List<HfUser> list = userDao.selectUserList();
-//		for (int i = 0; i < list.size(); i++) {
-//			HfUser hfUser = list.get(i);
-//			if(hfUser.getRealName() != null) {
-//				hfUser.setNickName(hfUser.getRealName());
-//			}
-//		}
+		List<ActivityUserInfo> list = userDao.findActivityUserInfo();
+		for (int i = 0; i < list.size(); i++) {
+			ActivityUserInfo info = list.get(i);
+			if(info != null) {
+				if(info.getDepartmentId() != null) {
+					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+					info.setDepartmentName(departmentName);
+				}
+			}
+		}
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	

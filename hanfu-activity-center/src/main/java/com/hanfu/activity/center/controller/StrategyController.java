@@ -483,13 +483,18 @@ public class StrategyController {
 	
 	@RequestMapping(path = "/intoActivity", method = RequestMethod.POST)
 	@ApiOperation(value = "进入活动首页", notes = "进入活动首页")
-	public ResponseEntity<JSONObject> intoActivity(@RequestParam String code,@RequestParam Integer userId,@RequestParam String departmentName) throws Exception {
+	public ResponseEntity<JSONObject> intoActivity(@RequestParam(required = false) String code,@RequestParam Integer userId,@RequestParam String departmentName) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		ActivityComponyExample activityComponyExample = new ActivityComponyExample();
-		activityComponyExample.createCriteria().andCompanyInfoEqualTo(code);
-		List<ActivityCompony> componies = activityComponyMapper.selectByExample(activityComponyExample);
-		if(componies.isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("您输入的公司编码不存在"));
+		boolean flag = true;
+		if(!StringUtils.isEmpty(code)) {
+			ActivityComponyExample activityComponyExample = new ActivityComponyExample();
+			activityComponyExample.createCriteria().andCompanyInfoEqualTo(code);
+			List<ActivityCompony> componies = activityComponyMapper.selectByExample(activityComponyExample);
+			if(componies.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody(false));
+			}else {
+				return builder.body(ResponseUtils.getResponseBody(true));
+			}
 		}
 		ActivityUserInfoExample example = new ActivityUserInfoExample();
 		example.createCriteria().andUserIdEqualTo(userId);

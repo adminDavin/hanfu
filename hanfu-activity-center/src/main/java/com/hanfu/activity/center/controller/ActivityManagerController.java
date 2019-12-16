@@ -1,3 +1,4 @@
+
 package com.hanfu.activity.center.controller;
 
 import java.awt.image.BufferedImage;
@@ -590,7 +591,6 @@ public class ActivityManagerController {
 		}else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		System.out.println(reportScore);
 		userElect.setRemarks(String.valueOf(deedScore + reportScore));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
@@ -1076,7 +1076,7 @@ public class ActivityManagerController {
 	public Integer updateDepartment(ActivityDepartmentRequest request) throws Exception {
 		Integer departmentId = null;
 		ActivityDepartmentExample example = new ActivityDepartmentExample();
-		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName());
+		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName()).andComponyIdEqualTo(request.getCompanyId());
 		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
 		if (list.isEmpty()) {
 			ActivityDepartment department = new ActivityDepartment();
