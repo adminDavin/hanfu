@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/hanfu-activity-center/hanfu-activity-center.iml" filepath="$PROJECT_DIR$/hanfu-activity-center/hanfu-activity-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-chat/hanfu-chat.iml" filepath="$PROJECT_DIR$/hanfu-chat/hanfu-chat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-common/hanfu-common.iml" filepath="$PROJECT_DIR$/hanfu-common/hanfu-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-inner-sdk/hanfu-inner-sdk.iml" filepath="$PROJECT_DIR$/hanfu-inner-sdk/hanfu-inner-sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-order-center/hanfu-order-center.iml" filepath="$PROJECT_DIR$/hanfu-order-center/hanfu-order-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-order-client/hanfu-order-client.iml" filepath="$PROJECT_DIR$/hanfu-order-client/hanfu-order-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-payment-center/hanfu-payment-center.iml" filepath="$PROJECT_DIR$/hanfu-payment-center/hanfu-payment-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-group-center/hanfu-payment-center (1) (com.hanfu.group.center).iml" filepath="$PROJECT_DIR$/hanfu-group-center/hanfu-payment-center (1) (com.hanfu.group.center).iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-payment-client/hanfu-payment-client.iml" filepath="$PROJECT_DIR$/hanfu-payment-client/hanfu-payment-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-product-center/hanfu-product-center.iml" filepath="$PROJECT_DIR$/hanfu-product-center/hanfu-product-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-product-client/hanfu-product-client.iml" filepath="$PROJECT_DIR$/hanfu-product-client/hanfu-product-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-referral-center/hanfu-referral-center.iml" filepath="$PROJECT_DIR$/hanfu-referral-center/hanfu-referral-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-system.iml" filepath="$PROJECT_DIR$/hanfu-system.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-user-center/hanfu-user-center.iml" filepath="$PROJECT_DIR$/hanfu-user-center/hanfu-user-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-web-utils/hanfu-web-utils.iml" filepath="$PROJECT_DIR$/hanfu-web-utils/hanfu-web-utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-seckill-center/seckill.iml" filepath="$PROJECT_DIR$/hanfu-seckill-center/seckill.iml" />
+    </modules>
+  </component>
+</project>
