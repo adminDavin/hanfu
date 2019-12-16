@@ -1,4 +1,4 @@
-package com.hanfu.referral.center.config;
+package com.hanfu.cart.center.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.hanfu.referral.center.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.hanfu.cart.center.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(securitySchemes())
