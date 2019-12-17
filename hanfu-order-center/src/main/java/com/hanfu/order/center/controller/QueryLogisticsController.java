@@ -1,8 +1,5 @@
 package com.hanfu.order.center.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,14 +22,14 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/query")
 @Api
-public class QueryOrderController {
+public class QueryLogisticsController {
 	@ApiOperation(value = "查询物流", notes = "查询物流")
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
+	@RequestMapping(value = "/logistics", method = RequestMethod.GET)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "expCode", value = "快递名称", required = true, type = "String"),
 		@ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
 		})
-	public ResponseEntity<JSONObject> queryOrder(String expCode,String expNo)
+	public ResponseEntity<JSONObject> logistics(String expCode,String expNo)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
