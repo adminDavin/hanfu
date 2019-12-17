@@ -611,13 +611,14 @@ public class ActivityManagerController {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
-		if (hfUser.getIdDeleted() == 1) {
-			return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
-		}
 		synchronized (LOCKLOCK2) {
-			hfUser.setIdDeleted((byte) 1);
-			hfUserMapper.updateByPrimaryKey(hfUser);
-			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+			if (hfUser.getIdDeleted() == 1) {
+				return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
+			}else {
+				hfUser.setIdDeleted((byte) 1);
+				hfUserMapper.updateByPrimaryKey(hfUser);
+				addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+			}
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(request.getActivityId())
@@ -658,15 +659,15 @@ public class ActivityManagerController {
 				.andElectedUserIdEqualTo(request.getElectedUserId());
 		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
 		if (!list.isEmpty()) {
-			com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
 			synchronized (LOCKLOCK3) {
+				com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
 				if (hfUser.getIdDeleted() == 1) {
 					hfUser.setIdDeleted((byte) 0);
 					hfUserMapper.updateByPrimaryKey(hfUser);
 					ActivityVoteRecords records = list.get(0);
 					activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 					synchronized (LOCKLOCK) {
-						if (instance.getUserTicketCount() > 0) {
+						if (instance.getUserTicketCount() > 0 && !activityVoteRecordsMapper.selectByExample(example).isEmpty()) {
 							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
 							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 						}
