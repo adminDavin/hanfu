@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.base.chat.model.Message;
+import com.hanfu.base.chat.response.handler.GlobalException;
 import com.hanfu.base.chat.service.ChatSessionService;
-import com.hanfu.order.center.response.handler.GlobalException;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;

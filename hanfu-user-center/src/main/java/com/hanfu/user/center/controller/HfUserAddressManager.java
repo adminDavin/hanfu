@@ -55,7 +55,7 @@ public class HfUserAddressManager {
 	public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfUser hfUser = new HfUser();
-		int i  = 0;
+
 		HfUserAddresse hfUserAddress = new HfUserAddresse();
 		hfUserAddress.setUserId(request.getUserId());
 		hfUserAddress.setContact(request.getContact());
@@ -73,7 +73,7 @@ public class HfUserAddressManager {
 		if(StringUtils.isEmpty(hfUser.getAddress())) {
 			hfUserAddress.setIsFaultAddress(1);
 		}
-		i = addressDao.updateAddress(request.getId());
+		int i = addressDao.updateAddress(request.getId());
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.insert(hfUserAddress)));
 	}
 	@RequestMapping(value = "/deleteAddress", method = RequestMethod.GET)

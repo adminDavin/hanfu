@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.base.chat.model.HfUser;
 import com.hanfu.base.chat.model.Message;
+import com.hanfu.base.chat.response.handler.GlobalException;
 import com.hanfu.base.chat.service.ChatSessionService;
 import com.hanfu.base.chat.utils.CoreUtil;
-import com.hanfu.order.center.response.handler.GlobalException;
 
 @Component
 @ServerEndpoint(value = "/chat/{id}")
@@ -122,7 +122,7 @@ public class WebsocketServerEndpoint {
 		entity.setTo(chatSessionService.findById(toId));
 		return JSONObject.toJSONString(entity);
 	}
-	public void sendTo(String toId, Message entity) {
+	public void sendTo(String toId, Message entity) throws Exception {
 		fromId = entity.getFrom().getId().toString();
 		if (websocketServerEndpoints.size() <= 1) {
 			throw new GlobalException("用户未上线");
