@@ -5,7 +5,10 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
+
+import io.swagger.annotations.ApiModelProperty;
 
 public class UserFormInfo implements Serializable{
 
@@ -17,7 +20,10 @@ public class UserFormInfo implements Serializable{
 	private Integer fileId;
 	private String username;
 	private String departmentName;
-	private LocalDateTime hiredate;
+	@ApiModelProperty(value = "创建时间",required = false)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+	private Date hiredate;
+	private String date;
 	private String jobContent;
 	private String phone;
 	private String evaluation;
@@ -41,12 +47,6 @@ public class UserFormInfo implements Serializable{
 	}
 	public void setDepartmentName(String departmentName) {
 		this.departmentName = departmentName;
-	}
-	public LocalDateTime getHiredate() {
-		return hiredate;
-	}
-	public void setHiredate(LocalDateTime hiredate) {
-		this.hiredate = hiredate;
 	}
 	public String getJobContent() {
 		return jobContent;
@@ -77,5 +77,17 @@ public class UserFormInfo implements Serializable{
 	}
 	public void setList(List<ActivityUserEvaluate> list) {
 		this.list = list;
+	}
+	public Date getHiredate() {
+		return hiredate;
+	}
+	public void setHiredate(Date hiredate) {
+		this.hiredate = hiredate;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 }

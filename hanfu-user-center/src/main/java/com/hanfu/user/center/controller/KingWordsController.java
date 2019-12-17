@@ -55,6 +55,7 @@ import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.model.FileDesc;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
@@ -99,7 +100,6 @@ public class KingWordsController {
 	})
 	public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-
 		HfAuth hfAuth = userDao.selectAuthList(authKey);
 		if(hfAuth == null) {
 			return builder.body(ResponseUtils.getResponseBody("还未注册"));
@@ -231,10 +231,10 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
 	}
 
-	@RequestMapping(path = "/upload_avatar",  method = RequestMethod.POST)
+	@RequestMapping(path = "/upload_avatar")
 	@ApiOperation(value = "上传头像", notes = "上传头像")
-	public ResponseEntity<JSONObject> uploadAvatar(MultipartFile file,
-			Integer userId) throws Exception{
+	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
+	        @RequestParam(value = "userId", required = false) Integer userId) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
@@ -261,6 +261,7 @@ public class KingWordsController {
 		byte[] fileid = fileManageService.downloadFile(group_name, remoteFilename);
 		return builder.body(ResponseUtils.getResponseBody(fileid));
 	}
+	
 	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
 	@ApiImplicitParams({
@@ -273,7 +274,29 @@ public class KingWordsController {
 			hfUserExample.createCriteria().andIdNotEqualTo(userId);
 			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
 		}	
-		return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+		List<ActivityUserInfo> list = userDao.findActivityUserInfo();
+		for (int i = 0; i < list.size(); i++) {
+			ActivityUserInfo info = list.get(i);
+			if(info != null) {
+				if(info.getDepartmentId() != null) {
+					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+					info.setDepartmentName(departmentName);
+				}
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+	
+	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)
+	@ApiOperation(value = "删除人", notes = "删除人")
+	public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception{
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+		if(hfUser == null) {
+			return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
 	}
 	
 	
@@ -296,9 +319,8 @@ public class KingWordsController {
 		//uuid生成唯一key    
 		String skey = UUID.randomUUID().toString();    
 		//根据openid查询skey是否存在   
-
 		String skey_redis =(String) redisTemplate.opsForValue().get( openid ); 
-		if(StringUtils.isEmpty(skey_redis)){    
+		if(!StringUtils.isEmpty(skey_redis)){    
 			//存在 删除 skey 重新生成skey 将skey返回    
 			redisTemplate.delete( skey_redis );
 			skey = UUID.randomUUID().toString();
@@ -312,14 +334,23 @@ public class KingWordsController {
 		//把新的sessionKey和oppenid返回给小程序      
 		map.put( "skey",skey );  
 		map.put( "result","0" );  
-		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv ); 
-		String unionId = (String) userInfo.get("unionId");
-		String nickName = 	userInfo.getString("nickName");
+		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv );
+		String unionId = "";
+		String nickName = "";
+		String avatarUrl = "";
+		if(userInfo != null) {
+			if(userInfo.get("unionId") != null) {
+				unionId = (String) userInfo.get("unionId");
+			}
+			nickName = 	userInfo.getString("nickName");
+			avatarUrl = userInfo.getString("avatarUrl");
+		}
 		HfUserExample example = new HfUserExample();
 		example.createCriteria().andUsernameEqualTo(unionId);
 		List<HfUser> list = hfUserMapper.selectByExample(example);
 		if(list.isEmpty()) {
 			HfUser hfUser = new HfUser();
+			hfUser.setAddress(avatarUrl);
 			hfUser.setNickName(nickName);
 			hfUser.setUsername(unionId);
 			hfUser.setCreateDate(LocalDateTime.now());
@@ -329,6 +360,9 @@ public class KingWordsController {
 			userId = hfUser.getId();
 		}else {
 			HfUser hfUser = list.get(0);
+			hfUser.setAddress(avatarUrl);
+			hfUser.setNickName(nickName);
+			hfUserMapper.updateByPrimaryKey(hfUser);
 			userId = hfUser.getId();
 		}
 		map.put("userId", userId);

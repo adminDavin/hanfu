@@ -10,8 +10,10 @@ public class RecordScoreRequest extends CommonRequest{
     private Integer userId;
     @ApiModelProperty(required = false, value = "被选举者的用户id")
     private Integer electedUserId;
-    @ApiModelProperty(required = true, value = "备注(暂用投票分数)")
+    @ApiModelProperty(required = false, value = "备注(暂用投票分数)")
     private Integer[] remark;
+    @ApiModelProperty(required = false, value = "暂用打分类型")
+    private Integer type;
     public Integer getActivityId() {
         return activityId;
     }
@@ -35,5 +37,11 @@ public class RecordScoreRequest extends CommonRequest{
 	}
 	public void setRemark(Integer[] remark) {
 		this.remark = remark;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
 	}
 }

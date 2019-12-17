@@ -53,7 +53,7 @@ public class GetMessageCode {
         return code;
     }
     public static Integer setNewcode(){
-       int  newcode = (int)(Math.random()*9999)+100;  //每次调用生成一位四位数的随机数
+       int  newcode = (int)(Math.random()*9999)+1000;  //每次调用生成一位四位数的随机数
 		return newcode;
     }
 }

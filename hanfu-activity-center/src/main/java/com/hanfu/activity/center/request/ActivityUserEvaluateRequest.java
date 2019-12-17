@@ -13,9 +13,9 @@ public class ActivityUserEvaluateRequest extends CommonRequest{
 	@ApiModelProperty(required = false, value = "用户id")
 	private Integer userId;
 	@ApiModelProperty(required = false, value = "模板id")
-	private Integer evaluateTemplateId;
+	private Integer[] evaluateTemplateId;
 	@ApiModelProperty(required = false, value = "评价内容")
-	private String evaluateContent;
+	private String[] evaluateContent;
 	@ApiModelProperty(required = false, value = "评价结果")
 	private String evaluateResult;
 	@ApiModelProperty(required = false, value = "评论")
@@ -32,16 +32,16 @@ public class ActivityUserEvaluateRequest extends CommonRequest{
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	public Integer getEvaluateTemplateId() {
+	public Integer[] getEvaluateTemplateId() {
 		return evaluateTemplateId;
 	}
-	public void setEvaluateTemplateId(Integer evaluateTemplateId) {
+	public void setEvaluateTemplateId(Integer[] evaluateTemplateId) {
 		this.evaluateTemplateId = evaluateTemplateId;
 	}
-	public String getEvaluateContent() {
+	public String[] getEvaluateContent() {
 		return evaluateContent;
 	}
-	public void setEvaluateContent(String evaluateContent) {
+	public void setEvaluateContent(String[] evaluateContent) {
 		this.evaluateContent = evaluateContent;
 	}
 	public String getEvaluateResult() {

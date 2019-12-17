@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -33,7 +35,10 @@ import com.hanfu.activity.center.dao.HfUserMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
 import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.dao.ActivityDao;
+import com.hanfu.activity.center.manual.dao.VoteRecordsDao;
 import com.hanfu.activity.center.manual.model.ActivityInfo;
+import com.hanfu.activity.center.manual.model.TimeTime;
+import com.hanfu.activity.center.manual.model.VoteRecordsEntity;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
 import com.hanfu.activity.center.model.ActivitiStrategy;
@@ -96,20 +101,24 @@ public class ActivityController {
 
 	@Autowired
 	private StrategyRuleMapper strategyRuleMapper;
-	
+
 	@Autowired
 	private ActivityDao activityDao;
-	
+
 	@Autowired
 	private ActivityUserInfoMapper activityUserInfoMapper;
-	
+
 	@Autowired
 	private ActivityDepartmentMapper activityDepartmentMapper;
+	
+	@Autowired
+	private VoteRecordsDao voteRecordsDao;
 
 	@ApiOperation(value = "查询参加该活动参与人员", notes = "查询参加该活动参与人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId) throws JSONException {
+	public ResponseEntity<JSONObject> listActivityUser(@RequestParam Integer activityId,@RequestParam(required = false) Integer userId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
@@ -118,6 +127,26 @@ public class ActivityController {
 			Integer index = 1;
 			for (int j = 0; j < list.size(); j++) {
 				Total total = new Total();
+				if(userId != null) {
+					ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
+					activityVoteRecordsExample.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
+					.andElectedUserIdEqualTo(list.get(j).getUserId());
+					if(activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+						total.setRecord(false);
+					}else {
+						total.setRecord(true);
+					}
+					if("praise".equals(activity.getActiviyType())) {
+						activityVoteRecordsExample.clear();
+						activityVoteRecordsExample.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
+						.andElectedUserIdEqualTo(list.get(j).getUserId()).andIsDeletedEqualTo((short) 0);
+						if(activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
+							total.setRecord(false);
+						}else {
+							total.setRecord(true);
+						}
+					}
+				}
 				if (list.get(j).getUserScore() == null) {
 					total.setSocre(0);
 				} else {
@@ -129,62 +158,62 @@ public class ActivityController {
 					total.setVoteCount(list.get(j).getUserTicketCount());
 				}
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list.get(j).getUserId());
-				ActivityUserInfoExample example2 = new ActivityUserInfoExample();
-				example2.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
-				List<ActivityUserInfo> list2 = activityUserInfoMapper.selectByExample(example2);
-				if(!list2.isEmpty()) {
-					ActivityUserInfo userInfo = list2.get(0);
-					ActivityDepartment department = activityDepartmentMapper.selectByPrimaryKey(userInfo.getDepartmentId());
-					total.setDepartmentName(department.getDepartmentName());
+				if (hfUser != null) {
+					ActivityUserInfoExample example2 = new ActivityUserInfoExample();
+					example2.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
+					List<ActivityUserInfo> list2 = activityUserInfoMapper.selectByExample(example2);
+					if (!list2.isEmpty()) {
+						ActivityUserInfo userInfo = list2.get(0);
+						ActivityDepartment department = activityDepartmentMapper
+								.selectByPrimaryKey(userInfo.getDepartmentId());
+						if (department != null && department.getDepartmentName() != null) {
+							total.setDepartmentName(department.getDepartmentName());
+						}
+					}
+					if (hfUser.getFileId() != null) {
+						total.setFileId(hfUser.getFileId());
+					}
+					if (hfUser.getRealName() == null) {
+						total.setUsername(hfUser.getNickName());
+					} else {
+						total.setUsername(hfUser.getRealName());
+					}
+					if ("score".equals(activityMapper.selectByPrimaryKey(activityId).getActiviyType())) {
+						if (StringUtils.isEmpty(list.get(j).getRemarks())) {
+							total.setTotalScore(0.00);
+						} else {
+							total.setTotalScore(Double.valueOf(list.get(j).getRemarks()));
+						}
+					}
+					total.setPosition(index);
+					total.setUserId(list.get(j).getUserId());
+					total.setActivityId(list.get(j).getActivityId());
 				}
-				if(hfUser.getFileId() == null) {
-					total.setFileId(hfUser.getFileId());
-				}
-				if(hfUser.getRealName() == null) {
-					total.setUsername(hfUser.getUsername());
-				}else {
-					total.setUsername(hfUser.getRealName());
-				}
-				total.setPosition(index);
-				total.setUserId(list.get(j).getUserId());
-				total.setActivityId(list.get(j).getActivityId());
-				result.add(total);
 				index++;
+				result.add(total);
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
-	@ApiOperation(value = "查询参加打分活动的人员情况", notes = "查询参加打分活动的人员情况")
-	@RequestMapping(value = "/listTotalScore", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listTotalScore(@RequestParam Integer activityId) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
-		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
-		List<Total> result = new ArrayList<Total>();
-		if (!list.isEmpty()) {
-//			Integer index = 1;
-			for (int j = 0; j < list.size(); j++) {
-				Total total = new Total();
-				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list.get(j).getUserId());
-				if (!StringUtils.isEmpty(list.get(j).getUserTicketCount())) {
-					total.setTotalScore(Double.valueOf(list.get(j).getRemarks()) / list.get(j).getUserTicketCount()
-							+ list.get(j).getUserScore());
-					;
-				} else {
-					total.setTotalScore(0.0);
-				}
-				total.setFileId(hfUser.getFileId());
-				total.setUsername(hfUser.getUsername());
-//				total.setPosition(index);
-				total.setUserId(list.get(j).getUserId());
-				total.setActivityId(list.get(j).getActivityId());
-				result.add(total);
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(result));
-	}
+//	@ApiOperation(value = "查询此人打分情况", notes = "查询此人打分情况")
+//	@RequestMapping(value = "/findUserScore", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> findUserScore(@RequestParam Integer activityId,@RequestParam Integer userId) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+//		if("score".equals(activity.getActiviyType())) {
+//			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId).andIsDeletedEqualTo(value)
+//		}
+//		example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId);
+//		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+//		if(list.isEmpty()) {
+//			return builder.body(ResponseUtils.getResponseBody("还未打过分"));
+//		}else {
+//			ActivityVoteRecords records = list.get(0);
+//			return builder.body(ResponseUtils.getResponseBody(records));
+//		}
+//	}
 
 	@ApiOperation(value = "查询参加该活动投票人员", notes = "查询参加该活动投票人员")
 	@RequestMapping(value = "/listActivityVoteUser", method = RequestMethod.GET)
@@ -203,6 +232,50 @@ public class ActivityController {
 		example.createCriteria().andActivityIdEqualTo(activityId);
 		return builder.body(ResponseUtils.getResponseBody(activitiRuleInstanceMapper.selectByExample(example)));
 	}
+	
+	@ApiOperation(value = "查询此人参加过哪些活动", notes = "查询此人参加过哪些活动")
+	@RequestMapping(value = "/findUserAddActivity", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findUserAddActivity(@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(true);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance instance = list.get(i);
+			Activity activity = activityMapper.selectByPrimaryKey(instance.getActivityId());
+			ActivityInfo info = new ActivityInfo();
+			info.setActivityName(activity.getActivityName());
+			info.setActiviyType(activity.getActiviyType());
+			info.setId(activity.getId());
+			activityInfos.add(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
+	}
+	
+	
+	@ApiOperation(value = "查询此人是哪些活动的评委", notes = "查询此人是哪些活动的评委")
+	@RequestMapping(value = "/findUserActivityVote", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findUserActivityVote(@RequestParam Integer userId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(false);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance instance = list.get(i);
+			Activity activity = activityMapper.selectByPrimaryKey(instance.getActivityId());
+			ActivityInfo info = new ActivityInfo();
+			info.setActivityName(activity.getActivityName());
+			info.setActiviyType(activity.getActiviyType());
+			info.setId(activity.getId());
+			info.setActivityDesc(activity.getActivityDesc());
+			info.setIsTimingStart(activity.getIsTimingStart());
+			info.setUserId(activity.getUserId());
+			activityInfos.add(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(activityInfos));
+	}
 
 	@ApiOperation(value = "查询活动", notes = "公司每次举行活动的获取")
 	@RequestMapping(value = "/listActivity", method = RequestMethod.GET)
@@ -213,32 +286,21 @@ public class ActivityController {
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
 		for (int i = 0; i < list.size(); i++) {
 			ActivitiStrategy strategy = activitiStrategyMapper.selectByPrimaryKey(list.get(i).getStrategyId());
-			ActivityStrategyInstanceExample example = new ActivityStrategyInstanceExample();
-			example.createCriteria().andActivityIdEqualTo(list.get(i).getId());
-			List<ActivityStrategyInstance> instance = activityStrategyInstanceMapper.selectByExample(example);
-			for (int j = 0; j < instance.size(); j++) {
-				if (!"user_list".equals(instance.get(j).getRuleValueType())
-						&& instance.get(j).getRuleValueType() != null) {
-					type = instance.get(j).getRuleValueType();
-				}
-			}
 			ActivityInfo activityInfo = new ActivityInfo();
 			activityInfo.setId(list.get(i).getId());
 			activityInfo.setActivityName(list.get(i).getActivityName());
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
 			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
-			activityInfo.setActiviyType(list.get(i).getActiviyType());
-			activityInfo.setCreateTime(list.get(i).getCreateTime());
-			activityInfo.setEndTime(list.get(i).getEndTime());
+			activityInfo.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getCreateTime().plusHours(8L)));
+//			activityInfo.setEndTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getEndTime().plusHours(8L)));
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
 			activityInfo.setIsTimingStart(list.get(i).getIsTimingStart());
-			activityInfo.setModifyTime(list.get(i).getModifyTime());
-//			activityInfo.setStrategyId(strategy.getId());
+			activityInfo.setModifyTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getModifyTime().plusHours(8L)));
 			activityInfo.setUserId(list.get(i).getUserId());
 			activityInfo.setStrategyName(strategy.getStrategyName());
-			activityInfo.setStartTime(list.get(i).getStartTime());
-			activityInfo.setType(type);
+//			activityInfo.setStartTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getStartTime().plusHours(8L)));
+			activityInfo.setType(list.get(i).getActiviyType());
 			activityInfos.add(activityInfo);
 			type = "";
 		}
@@ -383,6 +445,9 @@ public class ActivityController {
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andUserIdEqualTo(userId).andActivityIdEqualTo(activityId);
 		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		if (list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此人在此活动不存在"));
+		}
 		if ((short) list.get(0).getIsDeleted() == 0) {
 			flag = false;
 		}
@@ -393,55 +458,66 @@ public class ActivityController {
 	@RequestMapping(value = "/findActivityResult", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findActivityResult(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
-		activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activityId)
-				.andRuleValueTypeEqualTo("ticket_count");
-		ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
-		activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(false);
-		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
-		for (int j = 0; j < list.size(); j++) {
-			ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
-			activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
-			List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
-					.selectByExample(activityVoteRecordsExample);
-			if (!activityVoteRecords.isEmpty()) {
-				if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
-						.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
-					for (int k = 0; k < activityVoteRecords.size(); k++) {
-						ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
-						activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activityId)
-								.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
-						List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
-								.selectByExample(activitiRuleInstanceExample2);
-						ActivitiRuleInstance instance = activitiRuleInstance.get(0);
-						instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-						instance.setUserScore(
-								instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
-						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
-					}
-					for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
-							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
-							- activityVoteRecords.size(); k++) {
-						ActivityVoteRecords records = new ActivityVoteRecords();
-						records.setUserId(activityVoteRecords.get(0).getUserId());
-						activityVoteRecordsMapper.insert(records);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		if ("ticket_count".equals(activity.getActiviyType())) {
+			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
+			activityStrategyInstanceExample.createCriteria().andActivityIdEqualTo(activityId)
+					.andRuleValueTypeEqualTo("ticket_count");
+			ActivitiRuleInstanceExample activitiRuleInstanceExample = new ActivitiRuleInstanceExample();
+			activitiRuleInstanceExample.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(false);
+			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(activitiRuleInstanceExample);
+			for (int j = 0; j < list.size(); j++) {
+				ActivityVoteRecordsExample activityVoteRecordsExample = new ActivityVoteRecordsExample();
+				activityVoteRecordsExample.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
+				List<ActivityVoteRecords> activityVoteRecords = activityVoteRecordsMapper
+						.selectByExample(activityVoteRecordsExample);
+				if (!activityVoteRecords.isEmpty()) {
+					if (activityVoteRecords.size() < Integer.valueOf(activityStrategyInstanceMapper
+							.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())) {
+						for (int k = 0; k < activityVoteRecords.size(); k++) {
+							ActivitiRuleInstanceExample activitiRuleInstanceExample2 = new ActivitiRuleInstanceExample();
+							activitiRuleInstanceExample2.createCriteria().andActivityIdEqualTo(activityId)
+									.andUserIdEqualTo(activityVoteRecords.get(k).getElectedUserId());
+							List<ActivitiRuleInstance> activitiRuleInstance = activitiRuleInstanceMapper
+									.selectByExample(activitiRuleInstanceExample2);
+							ActivitiRuleInstance instance = activitiRuleInstance.get(0);
+							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+							instance.setUserScore(
+									instance.getUserScore() - Integer.valueOf(activityVoteRecords.get(k).getRemarks()));
+							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+						}
+						for (int k = 0; k < Integer.valueOf(activityStrategyInstanceMapper
+								.selectByExample(activityStrategyInstanceExample).get(0).getRuleValue())
+								- activityVoteRecords.size(); k++) {
+							ActivityVoteRecords records = new ActivityVoteRecords();
+							records.setUserId(activityVoteRecords.get(0).getUserId());
+							activityVoteRecordsMapper.insert(records);
+						}
 					}
 				}
 			}
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
-		example.setOrderByClause("user_ticket_count DESC,user_score DESC");
+		example.setOrderByClause("user_ticket_count DESC,user_score DESC,remarks DESC");
 		List<ActivitiRuleInstance> list1 = activitiRuleInstanceMapper.selectByExample(example);
 		List<Total> result = new ArrayList<Total>();
 		if (!list1.isEmpty()) {
 			Integer index = 1;
 			for (int j = 0; j < list1.size(); j++) {
 				Total total = new Total();
-				if (list1.get(j).getUserScore() == null) {
-					total.setSocre(0);
-				} else {
-					total.setSocre(list1.get(j).getUserScore());
+				if("score".equals(activity.getActiviyType())){
+					if(list1.get(j).getRemarks() == null) {
+						total.setTotalScore(0);
+					}else {
+						total.setTotalScore(Double.valueOf(list1.get(j).getRemarks()));
+					}
+				}else {
+					if (list1.get(j).getUserScore() == null) {
+						total.setSocre(0);
+					} else {
+						total.setSocre(list1.get(j).getUserScore());
+					}
 				}
 				if (list1.get(j).getUserTicketCount() == null) {
 					total.setVoteCount(0);
@@ -449,11 +525,15 @@ public class ActivityController {
 					total.setVoteCount(list1.get(j).getUserTicketCount());
 				}
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(list1.get(j).getUserId());
-				total.setFileId(hfUser.getFileId());
-				if(hfUser.getRealName() == null) {
-					total.setUsername(hfUser.getUsername());
-				}else {
-					total.setUsername(hfUser.getRealName());
+				if(hfUser != null) {
+					if(hfUser.getFileId() != null) {
+						total.setFileId(hfUser.getFileId());
+					}
+					if (hfUser.getRealName() == null) {
+						total.setUsername(hfUser.getNickName());
+					} else {
+						total.setUsername(hfUser.getRealName());
+					}
 				}
 				total.setPosition(index);
 				total.setUserId(list1.get(j).getUserId());
@@ -461,11 +541,28 @@ public class ActivityController {
 				result.add(total);
 				index++;
 			}
+			if("score".equals(activity.getActiviyType())) {
+				for (int i = 0; i < result.size()-1; i++) {
+					Total total1 = result.get(i);
+					for (int j = 0; j < result.size()-1-i; j++) {
+						Total total2 = result.get(j);
+						Total total3 = result.get(j+1);
+						if(total2.getTotalScore() < total3.getTotalScore()) {
+							Total total4 = total3;
+							result.set(j+1, total2);
+							result.set(j, total4);
+						}
+					}
+				}
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-
-	@Scheduled(cron = "*/5 * * * * ?")
+	
+//	@ApiOperation(value = "刷新点赞", notes = "刷新点赞")
+//	@RequestMapping(value = "/updatePraise", method = RequestMethod.POST)
+	
+	@Scheduled(cron = "0 0 0 * * ?")
 	public void ssgx() {
 		HfUserExample example = new HfUserExample();
 		example.createCriteria().andIdDeletedEqualTo((byte) 1);
@@ -475,67 +572,231 @@ public class ActivityController {
 			hfUser.setIdDeleted((byte) 0);
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		}
-	}
-
-	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
-	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> setActivityTime(@RequestParam Integer activityId, @RequestParam String startTime,
-			@RequestParam String endTime) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdf.setLenient(false);
-		Date date;
-		Date date2;
-		try {
-			date = sdf.parse(startTime);
-			date2 = sdf.parse(endTime);
-		} catch (ParseException e) {
-			return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
+		List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(null);
+		for (int i = 0; i < list2.size(); i++) {
+			ActivityVoteRecords records = list2.get(i);
+			records.setIsDeleted((short) 1);
+			activityVoteRecordsMapper.updateByPrimaryKey(records);	
 		}
-		Instant instant = date.toInstant();
-		Instant instant2 = date2.toInstant();
-		ZoneId zoneId = ZoneId.systemDefault();
-		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-		LocalDateTime localDateTime2 = instant2.atZone(zoneId).toLocalDateTime();
-		System.out.println(localDateTime.toString());
-		System.out.println(localDateTime2.toString());
-		activity.setStartTime(localDateTime);
-		activity.setEndTime(localDateTime2);
-		activityMapper.updateByPrimaryKey(activity);
-		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
-	@Scheduled(cron = "*/1 * * * * ?")
-	public void activity() {
-		ActivityExample example = new ActivityExample();
-		example.createCriteria().andStartTimeIsNotNull().andEndTimeIsNotNull();
-		List<Activity> list = activityMapper.selectByExample(example);
+//	@ApiOperation(value = "设置活动开始与结束时间", notes = "设置活动开始与结束时间")
+//	@RequestMapping(value = "/setActivityTime", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> setActivityTime(@RequestParam Integer activityId, @RequestParam String startTime,
+//			@RequestParam String endTime) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		sdf.setLenient(false);
+//		Date date;
+//		Date date2;
+//		try {
+//			date = sdf.parse(startTime);
+//			date2 = sdf.parse(endTime);
+//		} catch (ParseException e) {
+//			return builder.body(ResponseUtils.getResponseBody("请输入正确的日期格式"));
+//		}
+//		Instant instant = date.toInstant();
+//		Instant instant2 = date2.toInstant();
+//		ZoneId zoneId = ZoneId.systemDefault();
+//		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+//		LocalDateTime localDateTime2 = instant2.atZone(zoneId).toLocalDateTime();
+//		System.out.println(localDateTime.toString());
+//		System.out.println(localDateTime2.toString());
+//		activity.setStartTime(localDateTime);
+//		activity.setEndTime(localDateTime2);
+//		activityMapper.updateByPrimaryKey(activity);
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
+
+//	@Scheduled(cron = "*/1 * * * * ?")
+//	public void activity() {
+//		ActivityExample example = new ActivityExample();
+//		example.createCriteria().andStartTimeIsNotNull().andEndTimeIsNotNull();
+//		List<Activity> list = activityMapper.selectByExample(example);
+//		if (!list.isEmpty()) {
+//			for (int i = 0; i < list.size(); i++) {
+//				Activity activity = list.get(i);
+//				LocalDateTime date = activity.getStartTime();
+////				System.out.println(date.toString());
+//				LocalDateTime date2 = activity.getEndTime();
+////				System.out.println(date2.toString());
+//				ZoneId z = ZoneId.of("UTC");
+//				LocalDateTime localDateTime = LocalDateTime.now(z);
+////				System.out.println(localDateTime.toString());
+//				if (date.isBefore(localDateTime) && localDateTime.isBefore(date2)) {
+//					if (activity.getIsTimingStart() != 1) {
+//						activity.setIsTimingStart((short) 1);
+//						activityDao.updateActivityStart(activity.getId());
+//						System.out.println("开始开始");
+//					}
+//				}
+//				if (date2.isBefore(localDateTime)) {
+//					if (activity.getIsTimingStart() != 0) {
+//						activity.setIsTimingStart((short) 0);
+//						activityDao.updateActivityEnd(activity.getId());
+//						System.out.println("停止停止");
+//					}
+//				}
+//			}
+//		}
+//	}
+//	
+	@ApiOperation(value = "参选记录", notes = "参选记录")
+	@RequestMapping(value = "/activityRecords", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> activityRecords(@RequestParam Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsElectedEqualTo(true);
+		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+		List<Total> result = new ArrayList<Total>();
 		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				Activity activity = list.get(i);
-				LocalDateTime date = activity.getStartTime();
-//				System.out.println(date.toString());
-				LocalDateTime date2 = activity.getEndTime();
-//				System.out.println(date2.toString());
-				ZoneId z = ZoneId.of("UTC");
-				LocalDateTime localDateTime = LocalDateTime.now(z);
-//				System.out.println(localDateTime.toString());
-				if (date.isBefore(localDateTime) && localDateTime.isBefore(date2)) {
-					if (activity.getIsTimingStart() != 1) {
-						activity.setIsTimingStart((short) 1);
-						activityDao.updateActivityStart(activity.getId());
-						System.out.println("开始开始");
-					}
+			for (int j = 0; j < list.size(); j++) {
+				Total total = new Total();
+				if (list.get(j).getUserScore() == null) {
+					total.setSocre(0);
+				} else {
+					total.setSocre(list.get(j).getUserScore());
 				}
-				if (date2.isBefore(localDateTime)) {
-					if (activity.getIsTimingStart() != 0) {
-						activity.setIsTimingStart((short) 0);
-						activityDao.updateActivityEnd(activity.getId());
-						System.out.println("停止停止");
-					}
+				if (list.get(j).getUserTicketCount() == null) {
+					total.setVoteCount(0);
+				} else {
+					total.setVoteCount(list.get(j).getUserTicketCount());
 				}
+				Activity activity = activityMapper.selectByPrimaryKey(list.get(j).getActivityId());
+				if(activity != null) {
+					if("score".equals(activity.getActiviyType())) {
+						if(StringUtils.isEmpty(list.get(j).getRemarks())) {
+							total.setTotalScore(0.00);
+						}else {
+							total.setTotalScore(Double.valueOf(list.get(j).getRemarks()));
+						}
+					}
+					total.setActivityName(activity.getActivityName());
+					total.setActivityType(activity.getActiviyType());
+				}
+				result.add(total);
 			}
 		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	
+	@ApiOperation(value = "投票记录", notes = "投票记录")
+	@RequestMapping(value = "/voteRecords", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> voteRecords(@RequestParam Integer userId,@RequestParam Integer activityId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		Total total = new Total();
+		List<Total> result = new ArrayList<Total>();
+			VoteRecordsEntity entity = new VoteRecordsEntity();
+			entity.setActivityId(activityId);
+			entity.setUserId(userId);
+			List<Integer> list = voteRecordsDao.distinctUserId(entity);
+			for (int i = 0; i < list.size(); i++) {
+				Integer electedId = list.get(i);
+				HfUser hfUser = hfUserMapper.selectByPrimaryKey(electedId);
+				if (hfUser != null) {
+					ActivityUserInfoExample example2 = new ActivityUserInfoExample();
+					example2.createCriteria().andUserIdEqualTo(electedId);
+					List<ActivityUserInfo> list2 = activityUserInfoMapper.selectByExample(example2);
+					if (!list2.isEmpty()) {
+						ActivityUserInfo userInfo = list2.get(0);
+						ActivityDepartment department = activityDepartmentMapper
+								.selectByPrimaryKey(userInfo.getDepartmentId());
+						if (department != null && department.getDepartmentName() != null) {
+							total.setDepartmentName(department.getDepartmentName());
+						}
+					}
+					if (hfUser.getFileId() != null) {
+						total.setFileId(hfUser.getFileId());
+					}
+					if (hfUser.getRealName() == null) {
+						total.setUsername(hfUser.getNickName());
+					} else {
+						total.setUsername(hfUser.getRealName());
+					}
+					total.setUserId(electedId);
+				}
+				total.setActivityType(activity.getActiviyType());
+				ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+				example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
+				.andElectedUserIdEqualTo(electedId);
+				List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example);
+				if(!list2.isEmpty()) {
+					if("praise".equals(activity.getActiviyType())) {
+						Integer count = 0;
+					for (int j = 0; j < list2.size(); j++) {
+						ActivityVoteRecords records2 = list2.get(j);
+						count++;		
+					}
+					total.setVoteCount(count);
+					}
+					if("score".equals(activity.getActiviyType())) {
+						double score = 0;
+						for (int j = 0; j < list2.size(); j++) {
+							ActivityVoteRecords records2 = list2.get(j);
+							score = score + Double.valueOf(records2.getRemarks());		
+						}
+						total.setTotalScore(score);
+					}
+					if("ticket_count".equals(activity.getActiviyType())) {
+						Integer count = 0;
+						Integer score = 0;
+						for (int j = 0; j < list2.size(); j++) {
+							ActivityVoteRecords records2 = list2.get(j);
+							score = score + Integer.valueOf(records2.getRemarks());		
+							count++;
+						}
+						total.setSocre(score);
+						total.setVoteCount(count);
+					}
+				}
+				result.add(total);
+			}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
+	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+		if(userId == null) {
+			example.createCriteria().andActivityIdEqualTo(activityId);
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
+			for (int i = 0; i < list.size(); i++) {
+				ActivityVoteRecords records = list.get(i);
+				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				if(votePerson != null) {
+					if(votePerson.getRealName() != null) {
+						entity.setVoteName(votePerson.getRealName());
+					}else {
+						entity.setVoteName(votePerson.getNickName());
+					}
+				}
+				if(electedPeson != null) {
+					if(electedPeson.getRealName() != null) {
+						entity.setEceltedName(electedPeson.getRealName());
+					}else {
+						entity.setEceltedName(electedPeson.getNickName());
+					}
+				}
+//				if("score".equals(activity.getActiviyType())) {
+//					entity.setTotalScore(Double.valueOf(records.getRemarks()));
+//				}
+				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
+				result.add(entity);
+			}
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
 }
