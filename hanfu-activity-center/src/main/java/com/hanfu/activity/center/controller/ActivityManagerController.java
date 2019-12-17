@@ -633,6 +633,17 @@ public class ActivityManagerController {
 	@RequestMapping(value = "/deleteclickPraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> deleteclickPraise(RecordScoreRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+		example2.createCriteria().andActivityIdEqualTo(request.getActivityId())
+				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
+		List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
+		ActivitiRuleInstance instance = list2.get(0);
+		if(instance.getUserTicketCount() <= 0) {
+			return builder.body(ResponseUtils.getResponseBody(null));
+		}
+		if (list2.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+		}
 		Integer total = 0;
 		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
 		if (activity.getIsTimingStart() == 0) {
@@ -649,14 +660,6 @@ public class ActivityManagerController {
 				ActivityVoteRecords records = list.get(0);
 				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 			}
-			ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-			example2.createCriteria().andActivityIdEqualTo(request.getActivityId())
-					.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
-			List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
-			if (list2.isEmpty()) {
-				return builder.body(ResponseUtils.getResponseBody("此人不存在"));
-			}
-			ActivitiRuleInstance instance = list2.get(0);
 			instance.setUserTicketCount(instance.getUserTicketCount() - 1);
 			activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(null));
