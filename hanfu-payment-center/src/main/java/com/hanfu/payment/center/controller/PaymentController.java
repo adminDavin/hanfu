@@ -64,6 +64,7 @@ public class PaymentController {
 		String pay = alipayService.getAliPayOrderStr(bossId,orderId,amount);
 		return builder.body(ResponseUtils.getResponseBody(pay));	
 	}
+
 	@ApiOperation(value = "异步回调", notes = "异步回调")
 	@RequestMapping(value = "/payNotify", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> payNotify(HttpServletRequest request,HttpServletResponse response)
@@ -226,5 +227,5 @@ public class PaymentController {
 	            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 	      		return builder.body(ResponseUtils.getResponseBody(result));	
 	        }
-}
+	}
 }

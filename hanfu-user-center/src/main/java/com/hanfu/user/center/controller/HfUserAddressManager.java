@@ -1,8 +1,13 @@
 package com.hanfu.user.center.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -143,5 +148,51 @@ public class HfUserAddressManager {
 		HfUserAddresseExample example = new HfUserAddresseExample(); 
 		example.createCriteria().andPhoneNumberEqualTo(phoneNumber);
 		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(example)));
+	}
+
+	@RequestMapping(value = "/getIngAndLat",method = RequestMethod.GET)
+	@ApiOperation(value = "腾讯地图",notes = "腾讯地图")
+	public ResponseEntity<JSONObject> getIngAndLat(@RequestParam(required = false,defaultValue = "") String address) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		System.out.println("----------经纬度查询-----------");
+		String key = "4G5BZ-7ROKG-KBKQZ-IVBX5-SBG7K-FCBRX";//申请的key
+
+		StringBuffer sb = new StringBuffer("https://apis.map.qq.com/ws/geocoder/v1/?");
+		sb.append("address"+address);
+		sb.append("&key="+key);
+		System.out.println("===>>>查询链接: "+sb.toString());
+
+		return builder.body(ResponseUtils.getResponseBody(getURLContent(sb.toString())));
+	}
+
+
+	public static String getURLContent(String urlStr) {
+		//请求的url
+		URL url = null;
+		//请求的输入流
+		BufferedReader in = null;
+		//输入流的缓冲
+		StringBuffer sb = new StringBuffer();
+		try{
+			url = new URL(urlStr);
+			in = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8") );
+			String str = null;
+			//一行一行进行读入
+			while((str = in.readLine()) != null) {
+				sb.append( str );
+			}
+		} catch (Exception ex) {
+
+		} finally{
+			try{
+				if(in!=null) {
+					in.close(); //关闭流
+				}
+			}catch(IOException ex) {
+
+			}
+		}
+		String result =sb.toString();
+		return result;
 	}
 }

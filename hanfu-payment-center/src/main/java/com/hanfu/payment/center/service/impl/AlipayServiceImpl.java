@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.ibatis.mapping.ResultMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,10 @@ import com.hanfu.payment.center.service.AlipayService;
 @Service("alipayService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class AlipayServiceImpl implements AlipayService {
+
 	@Autowired
 	private AlipayClient alipayClient;
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String TRADE_SUCCESS = "TRADE_SUCCESS"; //支付成功标识
 	public static final String TRADE_CLOSED = "TRADE_CLOSED";//交易关闭

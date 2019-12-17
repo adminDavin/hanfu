@@ -138,6 +138,4 @@ public class WeChatServiceImpl implements WeChatService {
         }
         return xmlBack;
     }
-
-
 }
