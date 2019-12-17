@@ -624,7 +624,7 @@ public class ActivityManagerController {
 						.andIsDeletedEqualTo((short) 0);
 				synchronized (LOCKLOCK4) {
 					List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-					if (list.isEmpty()) {
+					if (list.isEmpty() && hfUser.getIdDeleted() == 0) {
 						addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1,
 								"1");
 					}
