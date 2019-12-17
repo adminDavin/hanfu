@@ -96,4 +96,19 @@ public class Group implements Serializable {
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", Repertory=" + Repertory +
+                ", bossId=" + bossId +
+                ", goodsId=" + goodsId +
+                ", price=" + price +
+                ", number=" + number +
+                ", startTime=" + startTime +
+                ", stopTime=" + stopTime +
+                ", isDeleted=" + isDeleted +
+                '}';
+    }
 }
