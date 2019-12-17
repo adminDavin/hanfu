@@ -127,10 +127,11 @@ public class ActivityManagerController {
 	private static final String LOCK = "lock";
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	private static final String LOCKLOCK = "LOCKLOCK";
 	private static final String LOCKLOCK2 = "LOCKLOCK2";
-	
+	private static final String LOCKLOCK3 = "LOCKLOCK3";
+
 	@Autowired
 	private ActivityMapper activityMapper;
 
@@ -613,7 +614,7 @@ public class ActivityManagerController {
 		if (hfUser.getIdDeleted() == 1) {
 			return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
 		}
-		synchronized(LOCKLOCK2) {
+		synchronized (LOCKLOCK2) {
 			hfUser.setIdDeleted((byte) 1);
 			hfUserMapper.updateByPrimaryKey(hfUser);
 			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
@@ -644,33 +645,35 @@ public class ActivityManagerController {
 				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
 		ActivitiRuleInstance instance = list2.get(0);
-			if (list2.isEmpty()) {
-				return builder.body(ResponseUtils.getResponseBody("此人不存在"));
-			}
-			Integer total = 0;
-			Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
-			if (activity.getIsTimingStart() == 0) {
-				return builder.body(ResponseUtils.getResponseBody("活动未开始"));
-			}
-			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
-			example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
-					.andElectedUserIdEqualTo(request.getElectedUserId());
-			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-			if (!list.isEmpty()) {
-				com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
-				hfUser.setIdDeleted((byte) 0);
-				hfUserMapper.updateByPrimaryKey(hfUser);
-				ActivityVoteRecords records = list.get(0);
-				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
-				if(hfUser.getIdDeleted() == 1) {
-					synchronized(LOCKLOCK) {
+		if (list2.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+		}
+		Integer total = 0;
+		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+		if (activity.getIsTimingStart() == 0) {
+			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
+		}
+		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+		example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
+				.andElectedUserIdEqualTo(request.getElectedUserId());
+		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+		if (!list.isEmpty()) {
+			com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+			synchronized (LOCKLOCK3) {
+				if (hfUser.getIdDeleted() == 1) {
+					hfUser.setIdDeleted((byte) 0);
+					hfUserMapper.updateByPrimaryKey(hfUser);
+					ActivityVoteRecords records = list.get(0);
+					activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
+					synchronized (LOCKLOCK) {
 						if (instance.getUserTicketCount() > 0) {
-						instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 						}
 					}
 				}
-			
+			}
+
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
