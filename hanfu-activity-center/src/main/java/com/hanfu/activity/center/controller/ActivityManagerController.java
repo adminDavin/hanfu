@@ -826,20 +826,22 @@ public class ActivityManagerController {
 			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
 			.andElectedUserIdEqualTo(electedUserId).andIsDeletedEqualTo((short) 0);
-			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-			if(list.isEmpty()) {
-				ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
-				activityVoteRecords.setActivityId(activityId);
-				activityVoteRecords.setUserId(userId);
-				activityVoteRecords.setElectedUserId(electedUserId);
-				activityVoteRecords.setVoteTimes(voteTimes);
-				activityVoteRecords.setRemarks(remarks);
-				activityVoteRecords.setCreateTime(LocalDateTime.now());
-				activityVoteRecords.setModifyTime(LocalDateTime.now());
-				activityVoteRecords.setIsDeleted((short) 0);
-				activityVoteRecordsMapper.insert(activityVoteRecords);
+			synchronized (LOCK) {
+				List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+				if(list.isEmpty()) {
+					ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
+					activityVoteRecords.setActivityId(activityId);
+					activityVoteRecords.setUserId(userId);
+					activityVoteRecords.setElectedUserId(electedUserId);
+					activityVoteRecords.setVoteTimes(voteTimes);
+					activityVoteRecords.setRemarks(remarks);
+					activityVoteRecords.setCreateTime(LocalDateTime.now());
+					activityVoteRecords.setModifyTime(LocalDateTime.now());
+					activityVoteRecords.setIsDeleted((short) 0);
+					activityVoteRecordsMapper.insert(activityVoteRecords);
 			}else {
 				return builder.body(ResponseUtils.getResponseBody("今日票数已经用完")); 
+			}
 			}
 		}else {
 			ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
