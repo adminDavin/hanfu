@@ -615,17 +615,19 @@ public class ActivityManagerController {
 		synchronized (LOCKLOCK2) {
 			if (hfUser.getIdDeleted() == 1) {
 				return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
-			}else {
+			} else {
 				hfUser.setIdDeleted((byte) 1);
 				hfUserMapper.updateByPrimaryKey(hfUser);
 				ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
-				example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
-				.andElectedUserIdEqualTo(request.getElectedUserId()).andIsDeletedEqualTo((short) 0);
-				synchronized(LOCKLOCK4) {
+				example.createCriteria().andActivityIdEqualTo(request.getActivityId())
+						.andUserIdEqualTo(request.getUserId()).andElectedUserIdEqualTo(request.getElectedUserId())
+						.andIsDeletedEqualTo((short) 0);
+				synchronized (LOCKLOCK4) {
 					List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-					if(list.isEmpty()) {
-						addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
-					}	
+					if (list.isEmpty()) {
+						addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1,
+								"1");
+					}
 				}
 			}
 		}
@@ -676,7 +678,8 @@ public class ActivityManagerController {
 					ActivityVoteRecords records = list.get(0);
 					activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 					synchronized (LOCKLOCK) {
-						if (instance.getUserTicketCount() > 0 && !activityVoteRecordsMapper.selectByExample(example).isEmpty()) {
+						if (instance.getUserTicketCount() > 0
+								&& !activityVoteRecordsMapper.selectByExample(example).isEmpty()) {
 							instance.setUserTicketCount(instance.getUserTicketCount() - 1);
 							activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 						}
