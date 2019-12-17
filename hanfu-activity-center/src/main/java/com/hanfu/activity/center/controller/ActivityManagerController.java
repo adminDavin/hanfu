@@ -658,9 +658,11 @@ public class ActivityManagerController {
 				hfUserMapper.updateByPrimaryKey(hfUser);
 				ActivityVoteRecords records = list.get(0);
 				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
+				if(hfUser.getIdDeleted() == 1) {
+					instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+					activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+				}
 			}
-			instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-			activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
