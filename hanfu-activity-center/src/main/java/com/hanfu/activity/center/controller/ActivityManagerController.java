@@ -602,6 +602,7 @@ public class ActivityManagerController {
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
 	}
 
+	
 	@ApiOperation(value = "点赞", notes = "点赞")
 	@RequestMapping(value = "/clickPraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> clickPraise(RecordScoreRequest request) throws JSONException {
@@ -611,8 +612,9 @@ public class ActivityManagerController {
 		if (activity.getIsTimingStart() == 0) {
 			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
 		}
-		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
 		synchronized (LOCKLOCK2) {
+		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+		
 			if (hfUser.getIdDeleted() == 1) {
 				return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
 			} else {
@@ -630,7 +632,6 @@ public class ActivityManagerController {
 					}
 				}
 			}
-		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(request.getActivityId())
 				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
@@ -645,6 +646,7 @@ public class ActivityManagerController {
 			instance.setUserTicketCount(instance.getUserTicketCount() + 1);
 		}
 		activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
@@ -655,22 +657,23 @@ public class ActivityManagerController {
 		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
 		example2.createCriteria().andActivityIdEqualTo(request.getActivityId())
 				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
-		List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
-		ActivitiRuleInstance instance = list2.get(0);
-		if (list2.isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("此人不存在"));
-		}
-		Integer total = 0;
-		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
-		if (activity.getIsTimingStart() == 0) {
-			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
-		}
-		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
-		example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
-				.andElectedUserIdEqualTo(request.getElectedUserId());
-		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-		if (!list.isEmpty()) {
-			synchronized (LOCKLOCK3) {
+		synchronized (LOCKLOCK3) {
+			List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
+			ActivitiRuleInstance instance = list2.get(0);
+			if (list2.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+			}
+			Integer total = 0;
+			Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+			if (activity.getIsTimingStart() == 0) {
+				return builder.body(ResponseUtils.getResponseBody("活动未开始"));
+			}
+			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+			example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
+					.andElectedUserIdEqualTo(request.getElectedUserId());
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+			if (!list.isEmpty()) {
+
 				com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
 				if (hfUser.getIdDeleted() == 1) {
 					hfUser.setIdDeleted((byte) 0);
