@@ -129,6 +129,8 @@ public class ActivityManagerController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private static final String LOCKLOCK = "LOCKLOCK";
+	private static final String LOCKLOCK2 = "LOCKLOCK2";
+	
 	@Autowired
 	private ActivityMapper activityMapper;
 
@@ -611,9 +613,11 @@ public class ActivityManagerController {
 		if (hfUser.getIdDeleted() == 1) {
 			return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
 		}
-		hfUser.setIdDeleted((byte) 1);
-		hfUserMapper.updateByPrimaryKey(hfUser);
-		addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+		synchronized(LOCKLOCK2) {
+			hfUser.setIdDeleted((byte) 1);
+			hfUserMapper.updateByPrimaryKey(hfUser);
+			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
 		example.createCriteria().andActivityIdEqualTo(request.getActivityId())
 				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
@@ -640,7 +644,6 @@ public class ActivityManagerController {
 				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
 		List<ActivitiRuleInstance> list2 = activitiRuleInstanceMapper.selectByExample(example2);
 		ActivitiRuleInstance instance = list2.get(0);
-		if (instance.getUserTicketCount() > 0) {
 			if (list2.isEmpty()) {
 				return builder.body(ResponseUtils.getResponseBody("此人不存在"));
 			}
@@ -661,11 +664,13 @@ public class ActivityManagerController {
 				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 				if(hfUser.getIdDeleted() == 1) {
 					synchronized(LOCKLOCK) {
+						if (instance.getUserTicketCount() > 0) {
 						instance.setUserTicketCount(instance.getUserTicketCount() - 1);
 						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+						}
 					}
 				}
-			}
+			
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
