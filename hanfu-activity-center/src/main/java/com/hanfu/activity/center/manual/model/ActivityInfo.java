@@ -108,13 +108,6 @@ public class ActivityInfo implements Serializable {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-
-    public String getModifyTime() {
-		return modifyTime;
-	}
-	public void setModifyTime(String modifyTime) {
-		this.modifyTime = modifyTime;
-	}
 	public Short getIsDeleted() {
         return isDeleted;
     }
