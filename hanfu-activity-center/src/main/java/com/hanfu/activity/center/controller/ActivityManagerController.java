@@ -127,7 +127,8 @@ public class ActivityManagerController {
 	private static final String LOCK = "lock";
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	private static final String LOCKLOCK = "LOCKLOCK";
 	@Autowired
 	private ActivityMapper activityMapper;
 
@@ -659,8 +660,10 @@ public class ActivityManagerController {
 				ActivityVoteRecords records = list.get(0);
 				activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
 				if(hfUser.getIdDeleted() == 1) {
-					instance.setUserTicketCount(instance.getUserTicketCount() - 1);
-					activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+					synchronized(LOCKLOCK) {
+						instance.setUserTicketCount(instance.getUserTicketCount() - 1);
+						activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+					}
 				}
 			}
 		}
