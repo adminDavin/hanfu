@@ -826,7 +826,7 @@ public class ActivityManagerController {
 			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
 			.andElectedUserIdEqualTo(electedUserId).andIsDeletedEqualTo((short) 0);
-			synchronized (LOCK) {
+			synchronized (LOCKLOCK) {
 				List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
 				if(list.isEmpty()) {
 					ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
