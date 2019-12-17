@@ -2,6 +2,9 @@ package com.hanfu.activity.center.manual.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ActivityInfo implements Serializable {
     private Integer id;
@@ -15,8 +18,10 @@ public class ActivityInfo implements Serializable {
     private Short isTimingStart;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private LocalDateTime createTime;
-    private LocalDateTime modifyTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    private Date date;
+    private String createTime;
+    private String modifyTime;
     private Short isDeleted;
     private String strategyName;
     private String type;
@@ -96,24 +101,19 @@ public class ActivityInfo implements Serializable {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public Short getIsDeleted() {
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+    public String getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(String modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public Short getIsDeleted() {
         return isDeleted;
     }
 
@@ -131,6 +131,12 @@ public class ActivityInfo implements Serializable {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	@Override
     public String toString() {

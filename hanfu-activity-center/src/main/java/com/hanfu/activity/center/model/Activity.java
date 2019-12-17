@@ -3,6 +3,8 @@ package com.hanfu.activity.center.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Activity implements Serializable {
     /**
      *
@@ -110,6 +112,7 @@ public class Activity implements Serializable {
      *
      * @mbg.generated Tue Dec 03 07:29:15 CST 2019
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime createTime;
 
     /**
