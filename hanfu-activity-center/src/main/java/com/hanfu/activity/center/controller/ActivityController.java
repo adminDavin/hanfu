@@ -763,6 +763,7 @@ public class ActivityController {
 	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 		if(userId == null) {
