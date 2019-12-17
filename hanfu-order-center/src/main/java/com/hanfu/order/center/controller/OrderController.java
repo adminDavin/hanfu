@@ -1,6 +1,5 @@
 package com.hanfu.order.center.controller;
 
-import java.awt.print.Printable;
 import java.util.List;
 
 import org.slf4j.Logger;

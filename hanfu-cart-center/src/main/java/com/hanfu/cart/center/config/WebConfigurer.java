@@ -1,6 +1,7 @@
-package com.hanfu.base.chat.config;
+package com.hanfu.cart.center.config;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace;
@@ -12,16 +13,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.hanfu.cart.center.intercepter.AuthorityInterceptor;
 
 @Configuration
 public class WebConfigurer implements WebMvcConfigurer {
 
-//	@Autowired
-//	private AuthorityInterceptor authorityInterceptor;
+	@Autowired
+	private AuthorityInterceptor authorityInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(authorityInterceptor);
+		registry.addInterceptor(authorityInterceptor);
 		WebMvcConfigurer.super.addInterceptors(registry);
 	}
 
