@@ -788,9 +788,9 @@ public class ActivityController {
 						entity.setEceltedName(electedPeson.getNickName());
 					}
 				}
-//				if("score".equals(activity.getActiviyType())) {
-//					entity.setTotalScore(Double.valueOf(records.getRemarks()));
-//				}
+				if("score".equals(activity.getActiviyType())) {
+					entity.setTotalScore(Double.valueOf(records.getRemarks()));
+				}
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);
 			}
