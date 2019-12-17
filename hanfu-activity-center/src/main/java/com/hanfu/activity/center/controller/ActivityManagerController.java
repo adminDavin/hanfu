@@ -131,6 +131,7 @@ public class ActivityManagerController {
 	private static final String LOCKLOCK = "LOCKLOCK";
 	private static final String LOCKLOCK2 = "LOCKLOCK2";
 	private static final String LOCKLOCK3 = "LOCKLOCK3";
+	private static final String LOCKLOCK4 = "LOCKLOCK4";
 
 	@Autowired
 	private ActivityMapper activityMapper;
@@ -617,7 +618,15 @@ public class ActivityManagerController {
 			}else {
 				hfUser.setIdDeleted((byte) 1);
 				hfUserMapper.updateByPrimaryKey(hfUser);
-				addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+				ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+				example.createCriteria().andActivityIdEqualTo(request.getActivityId()).andUserIdEqualTo(request.getUserId())
+				.andElectedUserIdEqualTo(request.getElectedUserId()).andIsDeletedEqualTo((short) 0);
+				synchronized(LOCKLOCK4) {
+					List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+					if(list.isEmpty()) {
+						addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+					}	
+				}
 			}
 		}
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
