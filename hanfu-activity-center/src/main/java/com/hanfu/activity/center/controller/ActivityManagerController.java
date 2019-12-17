@@ -667,6 +667,7 @@ public class ActivityManagerController {
 			activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
+	
 	@ApiOperation(value = "判断用户是否点过赞", notes = "判断用户是否点过赞")
 	@RequestMapping(value = "/findIsPraise", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findIsPraise(Integer userId) throws JSONException {
@@ -840,18 +841,19 @@ public class ActivityManagerController {
 			}else {
 				return builder.body(ResponseUtils.getResponseBody("今日票数已经用完")); 
 			}
+		}else {
+			ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
+			activityVoteRecords.setActivityId(activityId);
+			activityVoteRecords.setUserId(userId);
+			activityVoteRecords.setElectedUserId(electedUserId);
+			activityVoteRecords.setVoteTimes(voteTimes);
+			activityVoteRecords.setRemarks(remarks);
+			activityVoteRecords.setCreateTime(LocalDateTime.now());
+			activityVoteRecords.setModifyTime(LocalDateTime.now());
+			activityVoteRecords.setIsDeleted((short) 0);
+			activityVoteRecordsMapper.insert(activityVoteRecords);
 		}
-		ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
-		activityVoteRecords.setActivityId(activityId);
-		activityVoteRecords.setUserId(userId);
-		activityVoteRecords.setElectedUserId(electedUserId);
-		activityVoteRecords.setVoteTimes(voteTimes);
-		activityVoteRecords.setRemarks(remarks);
-		activityVoteRecords.setCreateTime(LocalDateTime.now());
-		activityVoteRecords.setModifyTime(LocalDateTime.now());
-		activityVoteRecords.setIsDeleted((short) 0);
-		activityVoteRecordsMapper.insert(activityVoteRecords);
-		return builder.body(ResponseUtils.getResponseBody(activityVoteRecords));
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
 	@ApiOperation(value = "查询参加该活动人员", notes = "查询参加该活动人员")
