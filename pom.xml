@@ -21,6 +21,7 @@
 		<module>hanfu-chat</module>
 		<module>hanfu-activity-center</module>
 		<module>hanfu-cart-center</module>
+        <module>hanfu-cancel-center</module>
 	</modules>
 	<profiles>
 		<profile>
