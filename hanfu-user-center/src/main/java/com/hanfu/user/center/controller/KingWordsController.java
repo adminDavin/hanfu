@@ -457,7 +457,6 @@ public class KingWordsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-		
         return jsonObject;
 	}
 }

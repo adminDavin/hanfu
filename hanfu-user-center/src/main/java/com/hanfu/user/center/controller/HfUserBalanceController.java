@@ -36,7 +36,7 @@ public class HfUserBalanceController {
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true,type = "Integer"),
 	})
 	public ResponseEntity<JSONObject> query(@RequestParam Integer userId) throws Exception {
 		HUserBalanceExample example = new HUserBalanceExample();
@@ -62,12 +62,5 @@ public class HfUserBalanceController {
 		}else{
 			return builder.body(ResponseUtils.getResponseBody("余额不足,请充值"));
 		}
-	}
-
-	@RequestMapping(value = "/recharge")
-	@ApiOperation(value = "用户充值",notes = "用户充值")
-	public ResponseEntity<JSONObject> recharge() throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody("充值成功"));
 	}
 }

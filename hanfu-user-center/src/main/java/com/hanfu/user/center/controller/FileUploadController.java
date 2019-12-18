@@ -136,4 +136,4 @@ public class FileUploadController {
 		hfUserMapper.insert(hfUser);	
 		return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(hfUser)));
 	}
-	}
+}
