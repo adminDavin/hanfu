@@ -763,6 +763,7 @@ public class ActivityController {
 	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 		if(userId == null) {
@@ -788,9 +789,9 @@ public class ActivityController {
 						entity.setEceltedName(electedPeson.getNickName());
 					}
 				}
-//				if("score".equals(activity.getActiviyType())) {
-//					entity.setTotalScore(Double.valueOf(records.getRemarks()));
-//				}
+				if("score".equals(activity.getActiviyType())) {
+					entity.setTotalScore(Double.valueOf(records.getRemarks()));
+				}
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);
 			}

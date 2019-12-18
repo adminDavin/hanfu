@@ -43,6 +43,7 @@
 	
 	<resultMap type="com.hanfu.user.center.manual.model.ActivityUserInfo"
 		id="ActivityUserInfo">
+		<result column="id" jdbcType="VARCHAR" property="userId" />
 		<result column="phone" jdbcType="VARCHAR" property="Jobposition" />
 		<result column="nick_name" jdbcType="VARCHAR"
 			property="wxName" />
@@ -70,7 +71,8 @@
 		SELECT 
 			h.address,h.nick_name,
 			h.real_name,h.phone,
-			h.create_date,a.department_id
+			h.create_date,a.department_id,
+			h.id
 		FROM 
 			hf_user h
 		LEFT JOIN
