@@ -23,6 +23,7 @@
 		<module>hanfu-activity-center</module>
     <module>hanfu-seckill-center</module>
 		<module>hanfu-cart-center</module>
+		<module>hanfu-message-center</module>
 	</modules>
 	<profiles>
 		<profile>
