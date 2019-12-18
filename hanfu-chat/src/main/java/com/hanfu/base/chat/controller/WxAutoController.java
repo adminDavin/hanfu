@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiOperation;
 public class WxAutoController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@RequestMapping(value = "/WxAutoReply", method = RequestMethod.GET)
-	@ApiOperation(value = "当前用户信息", notes = "当前用户信息")
+	@ApiOperation(value = "微信回复", notes = "微信回复")
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "String")
 	})
@@ -59,7 +59,7 @@ public class WxAutoController {
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	@RequestMapping(value = "/WxAutoReply", method = RequestMethod.POST)
-	@ApiOperation(value = "当前用户信息", notes = "当前用户信息")
+	@ApiOperation(value = "微信回复", notes = "微信回复")
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "String")
 	})
