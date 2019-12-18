@@ -16,8 +16,16 @@
     select 
     <include refid="Base_Column_List" />
     from group_open
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id} and is_deleted=0;
   </select>
+
+  <select id="selectByGroupOpen" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where group_id = #{groupId} and is_deleted=0;
+  </select>
+
 
   <select id="selectNumber" resultType="int">
         select count(*)
@@ -26,27 +34,59 @@
 		where a.group_id=#{groupId} and b.is_deleted=0
     </select>
 
-  <select id="selectUserId" resultType="java.util.List">
+  <select id="selectUserId" parameterType="java.lang.Integer" resultType="int">
         select b.user_id
         from
         group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
 		where a.group_id=#{groupId} and b.is_deleted=0
     </select>
 
+  <select id="selectByStopTime"  resultType="com.hanfu.group.center.manual.model.GroupOpen">
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+		where group_id=#{groupId} and stop_time=#{stopTime} and is_deleted=0;
+    </select>
+
+  <select id="getStopTime" resultType="Date"   >
+    select stop_time
+    from group_open
+    where is_deleted=0 order by stop_time
+  </select>
+
+  <select id="selectStopTime"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where stop_time=#{stopTime} and is_deleted=0;
+  </select>
+
+  <select id="selectId"  parameterType="java.lang.Integer"  resultType="int">
+    select
+    id
+    from group_open
+    where group_id = #{groupId} ;
+  </select>
+
+
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from group_open
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hanfu.group.center.manual.model.GroupOpen" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into group_open (group_id, connect_id, is_deleted, 
-      start_time, stop_time)
-    values (#{groupId,jdbcType=INTEGER}, #{connectId,jdbcType=INTEGER}, #{isDeleted,jdbcType=SMALLINT}, 
-      #{startTime,jdbcType=TIMESTAMP}, #{stopTime,jdbcType=TIMESTAMP})
+
+  <delete id="deleteByGroupId" parameterType="java.lang.Integer" >
+    delete from group_open
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert"  >
+    insert into group_open (group_id,  is_deleted,start_time,
+       stop_time)
+    values (#{groupId,jdbcType=INTEGER},  0,  #{startTime,jdbcType=TIMESTAMP},
+       #{stopTime,jdbcType=TIMESTAMP})
   </insert>
+
   <insert id="insertSelective" parameterType="com.hanfu.group.center.manual.model.GroupOpen" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
@@ -117,9 +157,11 @@
       stop_time = #{stopTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-
-
-
+  <update id="updateByIsDeleted" parameterType="java.lang.Integer" >
+    update group_open
+    set
+    is_deleted=1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 
 </mapper>

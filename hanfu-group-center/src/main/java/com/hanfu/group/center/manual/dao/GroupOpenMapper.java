@@ -18,6 +18,10 @@ public interface GroupOpenMapper {
     int insertSelective(GroupOpenMapper record);
 //    根据groupId查询所在开表编号
     List<Integer> selectId(Integer groupId);
+    //
+    List<Date> getStopTime();
+//    根据停止时间查
+    GroupOpen selectStopTime(Date stopTime);
 
     GroupOpenMapper selectByPrimaryKey(Integer id);
 
@@ -29,4 +33,6 @@ public interface GroupOpenMapper {
     //    查看开团信息
     GroupOpen selectByGroupOpen(Integer groupId);
     GroupOpen selectByStopTime(@Param("groupId") Integer groupId,@Param("stopTime") Date stopTime);
+//    更改开团转态
+    void updateByIsDeleted(Integer id);
 }

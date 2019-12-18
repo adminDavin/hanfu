@@ -19,10 +19,10 @@
 		<module>hanfu-payment-center</module>
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
-		<module>hanfu-seckill-center</module>
 		<module>hanfu-chat</module>
 		<module>hanfu-activity-center</module>
-	</modules>
+        <module>hanfu-seckill-center</module>
+    </modules>
 	<profiles>
 		<profile>
 			<id>jdk11</id>

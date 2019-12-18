@@ -11,7 +11,7 @@ import java.util.Date;
  * @time: 10:57
  */
 public interface GroupService {
-    int deleteByPrimaryKey(Integer id);
+    void deleteByPrimaryKey(Integer id);
 
     void insert(Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
 
@@ -21,6 +21,9 @@ public interface GroupService {
 
     int updateByPrimaryKeySelective(Group record);
 
-    int updateByPrimaryKey(Group record);
+    void updateByPrimaryKey(Integer groupId,Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
+
     void updateRrepertory(Integer id,Integer repertory);
+//    更改状态
+    void updateState(Integer id);
 }

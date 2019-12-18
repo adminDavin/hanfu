@@ -19,7 +19,7 @@ public interface GroupMapper {
 
     int updateByPrimaryKeySelective(Group record);
 
-    int updateByPrimaryKey(@Param("groupId")Integer  groupId,@Param("bossId") Integer bossId,@Param("goodsId")  Integer goodsId, @Param("price")
+    void updateByPrimaryKey(@Param("groupId")Integer  groupId,@Param("bossId") Integer bossId,@Param("goodsId")  Integer goodsId, @Param("price")
             Double price,@Param("number")  Integer number,@Param("startTime")  Date startTime, @Param("stopTime") Date stopTime,@Param("repertory") Integer repertory);
 
     void updateRrepertory(@Param("id") Integer id,@Param("repertory")Integer repertory);

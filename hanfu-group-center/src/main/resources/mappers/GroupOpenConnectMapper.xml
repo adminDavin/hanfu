@@ -15,16 +15,23 @@
     from group_open_connect
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <delete id="deleteByGroupOpenId"  >
+    delete from group_open_connect
+    where group_open_id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from group_open_connect
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect" >
+  <insert id="insert"  >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into group_open_connect (user_id, group_open_id)
-    values (#{userId,jdbcType=INTEGER}, #{groupOpenId,jdbcType=INTEGER})
+    values (#{userId,jdbcType=INTEGER},  #{groupOpenId,jdbcType=INTEGER})
   </insert>
 
 
@@ -66,9 +73,16 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <update id="updateisDeleted" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect" >
+  <update id="updateisDeleted" parameterType="java.lang.Integer" >
     update group_open_connect
-    set is_deleted =1,
-    where user_id = #{userId,jdbcType=INTEGER} and   group_open_id = #{groupOpenId,jdbcType=INTEGER},
+    set is_deleted =1
+    where user_id = #{userId} and   group_open_id = #{groupOpenId}
+  </update>
+
+
+  <update id="updateState" parameterType="java.lang.Integer" >
+    update group_open_connect
+    set is_deleted =2
+    where user_id = #{userId} and   group_open_id = #{groupOpenId}
   </update>
 </mapper>

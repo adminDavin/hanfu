@@ -20,8 +20,8 @@ class GroupServiceImpl implements GroupService {
     @Autowired
     GroupMapper groupMapper;
     @Override
-    public int deleteByPrimaryKey(Integer id) {
-        return 0;
+    public void deleteByPrimaryKey(Integer id) {
+        groupMapper.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -33,24 +33,30 @@ class GroupServiceImpl implements GroupService {
     public int insertSelective(Group record) {
         return 0;
     }
-
+//    根据id查一个
     @Override
     public Group selectByPrimaryKey(Integer id) {
-        return null;
+        return groupMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(Group record) {
+    public int updateByPrimaryKeySelective(Group group) {
         return 0;
     }
 
     @Override
-    public int updateByPrimaryKey(Group record) {
-        return 0;
+    public void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
+     groupMapper.updateByPrimaryKey( groupId,  bossId,  goodsId,  price,  number,  startTime,  stopTime,  repertory);
     }
+
 
     @Override
     public void updateRrepertory(Integer id, Integer repertory) {
         groupMapper.updateRrepertory(id,repertory);
+    }
+
+    @Override
+    public void updateState(Integer id) {
+        groupMapper.updateState(id);
     }
 }

@@ -18,5 +18,6 @@ public interface GroupOpenConnectMapper {
 
     int updateByPrimaryKeySelective(GroupOpenConnect record);
 
-    int updateisDeleted(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId);
+    void updateisDeleted(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId);
+    void updateState(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId);
 }
