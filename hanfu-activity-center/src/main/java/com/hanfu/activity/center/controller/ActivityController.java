@@ -458,6 +458,7 @@ public class ActivityController {
 	@RequestMapping(value = "/findActivityResult", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findActivityResult(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		String victoryCount = "";
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		if ("ticket_count".equals(activity.getActiviyType())) {
 			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
@@ -535,6 +536,7 @@ public class ActivityController {
 						total.setUsername(hfUser.getRealName());
 					}
 				}
+//				total.setVictoryCount(Integer.valueOf(activity.getActivityStatus()));
 				total.setPosition(index);
 				total.setUserId(list1.get(j).getUserId());
 				total.setActivityId(list1.get(j).getActivityId());
@@ -555,8 +557,11 @@ public class ActivityController {
 					}
 				}
 			}
+			if(!StringUtils.isEmpty(victoryCount)) {
+				victoryCount = activity.getActivityStatus();
+			}
 		}
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(result+":"+victoryCount));
 	}
 	
 //	@ApiOperation(value = "刷新点赞", notes = "刷新点赞")
