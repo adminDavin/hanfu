@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 
     @RequestMapping(path = "/sendMessage",  method = RequestMethod.GET)
-    @ApiOperation(value = "发送消息", notes = "发送消息")
+    @ApiOperation(value = "发送模板消息", notes = "发送消息")
     public ResponseEntity<JSONObject> sendMessage(String openid,String title, String defeated, String instructions) throws Exception {
     	BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Template tem=new Template();
@@ -76,7 +76,7 @@ public class MessageController {
         return flag;
     }
     public static String getToken(Template template){
-        String requestUrl="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=你的appid&secret=你的appid对应的秘钥";
+        String requestUrl="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42";
         JSONObject jsonResult= HttpRequest.httpsRequest(requestUrl, "POST", template.toJSON());
         if(jsonResult!=null){
             String access_token=jsonResult.getString("access_token");
