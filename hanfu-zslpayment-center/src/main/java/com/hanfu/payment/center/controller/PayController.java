@@ -72,7 +72,11 @@ public class PayController {
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
             order.setBody(title);
             order.setOut_trade_no(RandomStringGenerator.getRandomStringByLength(32));
+
+            //注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
             order.setTotal_fee(request.getTotal_fee()); // 该金钱其实10 是 0.1元  测试数据  后期可以从NewWXOrder里面获取
+
+
             order.setSpbill_create_ip("127.0.0.1");
             order.setNotify_url(notify_url);
             order.setTrade_type(trade_type);
