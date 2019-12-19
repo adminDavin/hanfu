@@ -1,48 +1,33 @@
 package com.hanfu.base.chat.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.base.chat.utils.SignUtil;
 import com.hanfu.base.chat.utils.WXMsgResponseUtil;
-import com.hanfu.utils.response.handler.ResponseEntity;
-import com.hanfu.utils.response.handler.ResponseUtils;
-import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+
+/**
+ * Created by dingd on 2018-07-22.
+ */
 
 @RestController
-@RequestMapping("/Wx")
-@Api
-@CrossOrigin
 public class WxAutoController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	@RequestMapping(value = "/WxAutoReply", method = RequestMethod.GET)
-	@ApiOperation(value = "微信回复", notes = "微信回复")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "String")
-	})
-	public ResponseEntity<JSONObject> weixinProcessGetMethod(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		 // 微信加密签名
+    @GetMapping("/WxAutoReply")
+    public @ResponseBody String weixinProcessGetMethod(HttpServletRequest request,
+                                                       HttpServletResponse response) throws IOException {
+        // 微信加密签名
         String signature = request.getParameter("signature");
         // 时间戳
         String timestamp = request.getParameter("timestamp");
@@ -53,20 +38,17 @@ public class WxAutoController {
         // 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
         if (SignUtil.checkSignature(signature, timestamp, nonce)) {
             logger.info("get"+ echostr);
-            return builder.body(ResponseUtils.getResponseBody(echostr));
+            return echostr;
         }
         logger.info("get   NULL");
-		return builder.body(ResponseUtils.getResponseBody(""));
-	}
-	@RequestMapping(value = "/WxAutoReply", method = RequestMethod.POST)
-	@ApiOperation(value = "微信回复", notes = "微信回复")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "String")
-	})
-	public ResponseEntity<JSONObject> weixinProcessPostMethod(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		 // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+        return null;
+    }
+
+    @PostMapping("/WxAutoReply")
+    @ResponseBody
+    public String weixinProcessPostMethod(HttpServletRequest request,
+                                              HttpServletResponse response) throws IOException {
+        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
         response.setCharacterEncoding("UTF-8");
         String success = "{\"success\":\"success\"}";
         JSONObject object = JSONObject.parseObject(success);
@@ -93,12 +75,12 @@ public class WxAutoController {
                     String json = JSON.toJSONString(resultMap);
                     JSONObject result = JSONObject.parseObject(json);
                     logger.info("POST   result"  +  result);
-                    return builder.body(ResponseUtils.getResponseBody(result.toString()));
+                    return result.toString();
                 }
                 //也回复一个文本消息
                 logger.info("POST"  +  jsonObject);
                 WXMsgResponseUtil.sendCustomerMessage(jsonObject.getString("FromUserName"),jsonObject.getString("ToUserName"),jsonObject.getString("Content"));
-                return builder.body(ResponseUtils.getResponseBody("success"));
+                return "success";
             } else if(jsonObject.getString("MsgType").equals("event")){
                 String sessionFrom = (String) jsonObject.get("SessionFrom");
                 logger.info("SessionFrom   SessionFrom"  +  sessionFrom);
@@ -115,12 +97,12 @@ public class WxAutoController {
                     }
                 }
                 WXMsgResponseUtil.sendFirstMessage(appId,sessionFromFirst,jsonObject.getString("FromUserName"));
-                return builder.body(ResponseUtils.getResponseBody("success"));
+                return "success";
             } else { //那就是图片的消息了
 
                 //也回复一个图片消息
                 WXMsgResponseUtil.sendCustomerImageMessage(jsonObject.getString("FromUserName"), jsonObject.getString("MediaId"));
-                return builder.body(ResponseUtils.getResponseBody("success"));
+                return "success";
             }
 
 
@@ -128,6 +110,8 @@ public class WxAutoController {
             e.printStackTrace();
             logger.info("回复异常："+e);
         }
-		return builder.body(ResponseUtils.getResponseBody(""));
-	}
+        return null;
+
+    }
+
 }
