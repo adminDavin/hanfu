@@ -78,6 +78,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 @CrossOrigin
 public class KingWordsController {
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	FileDescMapper fileDescMapper;
@@ -451,7 +452,6 @@ public class KingWordsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-		
         return jsonObject;
 	}
 }
