@@ -20,6 +20,15 @@ public class cancel {
    private String site;
    private Integer recordId;
    private Integer goodsId;
+   private Integer presentMoney;
+
+    public Integer getPresentMoney() {
+        return presentMoney;
+    }
+
+    public void setPresentMoney(Integer presentMoney) {
+        this.presentMoney = presentMoney;
+    }
 
     public Integer getGoodsId() {
         return goodsId;

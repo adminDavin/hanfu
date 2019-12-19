@@ -40,17 +40,6 @@ public class HfOrdersDetail {
     private String lastModifier;
 
     private Short isDeleted;
-    @ApiModelProperty(value = "是否自提null否")
-    private Integer claim;
-
-
-    public Integer getClaim() {
-        return claim;
-    }
-
-    public void setClaim(Integer claim) {
-        this.claim = claim;
-    }
 
     public Integer getId() {
         return id;

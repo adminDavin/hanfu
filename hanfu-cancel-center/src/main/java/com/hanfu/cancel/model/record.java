@@ -1,12 +1,61 @@
 package com.hanfu.cancel.model;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.time.LocalDateTime;
 
 public class record {
+    @ApiModelProperty(value = "核销记录id")
+    private Integer id;
   private LocalDateTime createDate;
   private String realName;
-  private Integer amount;
+  private Integer purchasePrice;
+    private Integer purchaseQuantity;
   private String site;
+  private Integer rental;
+  private Integer cancelId;
+  private Integer money;
+private Integer presentMoney;
+
+    public Integer getPresentMoney() {
+        return presentMoney;
+    }
+
+    public void setPresentMoney(Integer presentMoney) {
+        this.presentMoney = presentMoney;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+    }
+
+    public Integer getCancelId() {
+        return cancelId;
+    }
+
+    public void setCancelId(Integer cancelId) {
+        this.cancelId = cancelId;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getRental() {
+        return rental;
+    }
+
+    public void setRental(Integer rental) {
+        this.rental = rental;
+    }
 
     public LocalDateTime getCreateDate() {
         return createDate;
@@ -24,12 +73,20 @@ public class record {
         this.realName = realName;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getPurchasePrice() {
+        return purchasePrice;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setPurchasePrice(Integer purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public Integer getPurchaseQuantity() {
+        return purchaseQuantity;
+    }
+
+    public void setPurchaseQuantity(Integer purchaseQuantity) {
+        this.purchaseQuantity = purchaseQuantity;
     }
 
     public String getSite() {
