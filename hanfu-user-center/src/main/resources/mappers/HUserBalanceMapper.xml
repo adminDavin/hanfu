@@ -374,4 +374,13 @@
         where user_id = #{userId,jdbcType=INTEGER}
   </update>
 
+  <!-- 判断用户是不是第一次充钱 -->
+  <select id="itExistUserById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from hf_user_balance
+    <where>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER}
+            </if>
+    </where>
+  </select>
 </mapper>
