@@ -346,25 +346,27 @@ public class KingWordsController {
 			nickName = 	userInfo.getString("nickName");
 			avatarUrl = userInfo.getString("avatarUrl");
 		}
-		HfUserExample example = new HfUserExample();
-		example.createCriteria().andUsernameEqualTo(unionId);
-		List<HfUser> list = hfUserMapper.selectByExample(example);
-		if(list.isEmpty()) {
-			HfUser hfUser = new HfUser();
-			hfUser.setAddress(avatarUrl);
-			hfUser.setNickName(nickName);
-			hfUser.setUsername(unionId);
-			hfUser.setCreateDate(LocalDateTime.now());
-			hfUser.setModifyDate(LocalDateTime.now());
-			hfUser.setIdDeleted((byte) 0);
-			hfUserMapper.insert(hfUser);
-			userId = hfUser.getId();
-		}else {
-			HfUser hfUser = list.get(0);
-			hfUser.setAddress(avatarUrl);
-			hfUser.setNickName(nickName);
-			hfUserMapper.updateByPrimaryKey(hfUser);
-			userId = hfUser.getId();
+		if(!StringUtils.isEmpty(unionId)) {
+			HfUserExample example = new HfUserExample();
+			example.createCriteria().andUsernameEqualTo(unionId);
+			List<HfUser> list = hfUserMapper.selectByExample(example);
+			if(list.isEmpty()) {
+				HfUser hfUser = new HfUser();
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				hfUser.setUsername(unionId);
+				hfUser.setCreateDate(LocalDateTime.now());
+				hfUser.setModifyDate(LocalDateTime.now());
+				hfUser.setIdDeleted((byte) 0);
+				hfUserMapper.insert(hfUser);
+				userId = hfUser.getId();
+			}else {
+				HfUser hfUser = list.get(0);
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				hfUserMapper.updateByPrimaryKey(hfUser);
+				userId = hfUser.getId();
+			}
 		}
 		map.put("userId", userId);
 		map.put( "userInfo",userInfo ); 

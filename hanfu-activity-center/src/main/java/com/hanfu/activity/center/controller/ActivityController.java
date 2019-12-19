@@ -291,7 +291,11 @@ public class ActivityController {
 			activityInfo.setActivityName(list.get(i).getActivityName());
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
-			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			if(StringUtils.isEmpty(list.get(i).getActivityStatus())) {
+				activityInfo.setActivityStatus("0");
+			}else {
+				activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			}
 			activityInfo.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getCreateTime().plusHours(8L)));
 //			activityInfo.setEndTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getEndTime().plusHours(8L)));
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
@@ -557,11 +561,11 @@ public class ActivityController {
 					}
 				}
 			}
-			if(!StringUtils.isEmpty(victoryCount)) {
-				victoryCount = activity.getActivityStatus();
-			}
+//			if(!StringUtils.isEmpty(victoryCount)) {
+//				victoryCount = activity.getActivityStatus();
+//			}
 		}
-		return builder.body(ResponseUtils.getResponseBody(result+":"+victoryCount));
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 //	@ApiOperation(value = "刷新点赞", notes = "刷新点赞")
