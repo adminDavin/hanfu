@@ -685,7 +685,9 @@ public class ActivityController {
 					total.setActivityName(activity.getActivityName());
 					total.setActivityType(activity.getActiviyType());
 				}
-				result.add(total);
+				if(!StringUtils.isEmpty(total.getActivityName())) {
+					result.add(total);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
