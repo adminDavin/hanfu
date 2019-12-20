@@ -1,4 +1,4 @@
-package com.hanfu.order.center.manual.model;
+package com.hanfu.payment.center.manual.model;
 
 import java.io.Serializable;
 
