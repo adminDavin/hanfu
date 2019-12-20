@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -396,7 +397,11 @@ public class ActivityManagerController {
 							String.valueOf(Integer.valueOf(activityStrategyInstance1.getRuleValue()) - 1));
 					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1);
 				}
-				activitiRuleInstanceMapper.insert(ruleValueDesc);
+				synchronized(LOCKLOCK3) {
+					if(activitiRuleInstanceMapper.selectByExample(example3).isEmpty()) {
+						activitiRuleInstanceMapper.insert(ruleValueDesc);
+					}
+				}
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
 			}
@@ -597,7 +602,8 @@ public class ActivityManagerController {
 		} else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		userElect.setRemarks(String.valueOf(deedScore + reportScore));
+		DecimalFormat df = new DecimalFormat("0.000");  
+		userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
 	}

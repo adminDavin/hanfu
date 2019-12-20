@@ -54,6 +54,8 @@
 			property="createtime" />
 		<result column="department_id" jdbcType="TIMESTAMP"
 			property="departmentId" />
+		<result column="file_id" jdbcType="TIMESTAMP"
+			property="fileId" />
 	</resultMap>
 	
 	<select id="selectAuthList" resultMap="BaseResultMap">
@@ -72,7 +74,7 @@
 			h.address,h.nick_name,
 			h.real_name,h.phone,
 			h.create_date,a.department_id,
-			h.id
+			h.id,h.file_id
 		FROM 
 			hf_user h
 		LEFT JOIN

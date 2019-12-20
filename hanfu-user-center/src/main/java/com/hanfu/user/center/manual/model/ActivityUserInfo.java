@@ -17,6 +17,7 @@ public class ActivityUserInfo implements Serializable{
 	private String createtime;
 	private Integer departmentId;
 	private Integer userId;
+	private Integer fileId;
 	public String getAvatar() {
 		return avatar;
 	}
@@ -64,5 +65,11 @@ public class ActivityUserInfo implements Serializable{
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
 	}
 }
