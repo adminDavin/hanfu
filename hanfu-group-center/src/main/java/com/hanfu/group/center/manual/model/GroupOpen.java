@@ -69,15 +69,5 @@ public class GroupOpen  implements Serializable {
         this.stopTime = stopTime;
     }
 
-    @Override
-    public String toString() {
-        return "GroupOpen{" +
-                "id=" + id +
-                ", groupId=" + groupId +
-                ", connectId=" + connectId +
-                ", isDeleted=" + isDeleted +
-                ", startTime=" + startTime +
-                ", stopTime=" + stopTime +
-                '}';
-    }
+
 }

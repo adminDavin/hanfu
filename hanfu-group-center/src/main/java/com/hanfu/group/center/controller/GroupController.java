@@ -10,19 +10,20 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.function.DoubleToIntFunction;
 
 /**
  * @author:gyj
  * @date: 2019/12/16
  * @time: 10:35
  */
+
 @RestController
 @RequestMapping("/group")
 @Api
@@ -38,7 +39,7 @@ public class GroupController {
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "price", value = "团购价格", required = false, type = "Double"),
             @ApiImplicitParam(paramType = "query", name = "number", value = "成团人数", required = false, type = "Integer"),
@@ -46,7 +47,8 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "团购结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup(Integer bossId, Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+    public  boolean  insertGroup( Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+        Integer bossId=1;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     try {
         Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
@@ -119,12 +121,25 @@ public class GroupController {
 
 
     //删除团购商品
-    @ApiOperation(value = "删除团购商品", notes = "删除团购商品")
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @ApiOperation(value = "批量删除团购商品", notes = "批量删除团购商品")
+    @RequestMapping(value = "/deleteMulti", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
     })
-        public  String  deleteGroup(Integer groupId){
+        public  String  deleteMulti(@RequestParam("groupId")List<Integer> groupId){
+        for (Integer id:groupId) {
+            groupService.deleteByPrimaryKey(id);
+            List<Integer> groupOpenId = groupOpenService.selectId(id);
+            for (Integer id1 : groupOpenId) {
+                groupOpenConnectService.deleteByGroupOpenId(id1);
+            }
+            groupOpenService.deleteByGroupId(id);
+        }
+        return "ok";
+        }
+    @ApiOperation(value = "删除团购商品", notes = "删除团购商品")
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public  String  deleteGroup(Integer groupId){
         groupService.deleteByPrimaryKey(groupId);
         List<Integer>  groupOpenId = groupOpenService.selectId(groupId);
         for (Integer  id:groupOpenId) {
@@ -132,13 +147,16 @@ public class GroupController {
         }
         groupOpenService.deleteByGroupId(groupId);
         return "ok";
-        }
+    }
+
+
+
     //    添加团购商品
     @ApiOperation(value = "修改团购商品", notes = "修改团购商品")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "price", value = "团购价格", required = false, type = "Double"),
             @ApiImplicitParam(paramType = "query", name = "number", value = "成团人数", required = false, type = "Integer"),
@@ -146,11 +164,12 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "团购结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup(Integer  groupId,Integer bossId, Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+    public  boolean  insertGroup(Integer  groupId, Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
             Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+            Integer bossId=1;
             groupService.updateByPrimaryKey(groupId, bossId,  goodsId, price, number, startTime1,stopTime1,repertory);
             return true;
         } catch (ParseException e) {
@@ -159,4 +178,28 @@ public class GroupController {
         return false;
     }
 
+    @ApiOperation(value = "查询所有团购商品", notes = "查询所有团购商品")
+    @RequestMapping(value = "/selete", method = RequestMethod.GET)
+    public @ResponseBody List<Group>  seleteGroup(){
+        Integer bossId=1;
+        return groupService.seleteAll(bossId);
+    }
+    @ApiOperation(value = "搜索团购商品", notes = "搜索团购商品")
+    @RequestMapping(value = "/seek", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer")
+    })
+
+    public  List<Group>  seek( Integer goodsId){
+
+        return groupService.seleteId(goodsId);
+    }
+    @ApiOperation(value = "根据id查询团购商品", notes = "根据id查询团购商品")
+    @RequestMapping(value = "/selectId", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer")
+    })
+    public  Group  seleteId( Integer id){
+        return groupService.selectByPrimaryKey(id);
+    }
 }

@@ -19,10 +19,30 @@ public class Seckill implements Serializable{
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date startTime;
+    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    private Date stopTime;
     private Integer categoryId;
     private Double   price;
     private Integer repertory;
     private Short isDeleted;
+    private HfGoods hfGoods;
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    public HfGoods getHfGoods() {
+        return hfGoods;
+    }
+
+    public void setHfGoods(HfGoods hfGoods) {
+        this.hfGoods = hfGoods;
+    }
 
     public Integer getId() {
         return id;

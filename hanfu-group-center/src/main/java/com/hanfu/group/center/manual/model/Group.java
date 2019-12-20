@@ -8,8 +8,6 @@ import java.util.Date;
 public class Group implements Serializable {
     private Integer id;
 
-    private Integer Repertory;
-
     private Integer bossId;
 
     private Integer goodsId;
@@ -24,6 +22,15 @@ public class Group implements Serializable {
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date stopTime;
     private Short isDeleted;
+    private Integer Repertory;
+    private HfGoods hfGoods;
+    public HfGoods getHfGoods() {
+        return hfGoods;
+    }
+
+    public void setHfGoods(HfGoods hfGoods) {
+        this.hfGoods = hfGoods;
+    }
 
     public Integer getId() {
         return id;
@@ -97,18 +104,5 @@ public class Group implements Serializable {
         this.isDeleted = isDeleted;
     }
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", Repertory=" + Repertory +
-                ", bossId=" + bossId +
-                ", goodsId=" + goodsId +
-                ", price=" + price +
-                ", number=" + number +
-                ", startTime=" + startTime +
-                ", stopTime=" + stopTime +
-                ", isDeleted=" + isDeleted +
-                '}';
-    }
+
 }

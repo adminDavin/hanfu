@@ -41,7 +41,7 @@
 		where a.group_id=#{groupId} and b.is_deleted=0
     </select>
 
-  <select id="selectByStopTime"  resultType="com.hanfu.group.center.manual.model.GroupOpen">
+  <select id="selectByStopTime"  resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from group_open

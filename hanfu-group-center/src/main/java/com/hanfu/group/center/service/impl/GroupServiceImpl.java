@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author:gyj
@@ -33,7 +34,18 @@ class GroupServiceImpl implements GroupService {
     public int insertSelective(Group record) {
         return 0;
     }
-//    根据id查一个
+
+    @Override
+    public List<Group> seleteId(Integer groupId) {
+        return groupMapper.seleteId(groupId);
+    }
+
+    @Override
+    public List<Group> seleteGroup(Integer bossId) {
+        return groupMapper.seleteGroup(bossId);
+    }
+
+    //    根据id查一个
     @Override
     public Group selectByPrimaryKey(Integer id) {
         return groupMapper.selectByPrimaryKey(id);
@@ -58,5 +70,10 @@ class GroupServiceImpl implements GroupService {
     @Override
     public void updateState(Integer id) {
         groupMapper.updateState(id);
+    }
+
+    @Override
+    public List<Group> seleteAll(Integer bossId) {
+        return groupMapper.seleteAll(bossId);
     }
 }

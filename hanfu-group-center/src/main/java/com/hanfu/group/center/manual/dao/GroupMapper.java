@@ -5,6 +5,7 @@ import com.hanfu.group.center.manual.model.Group;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 public interface GroupMapper {
@@ -16,6 +17,8 @@ public interface GroupMapper {
     int insertSelective(Group record);
 
     Group selectByPrimaryKey(Integer id);
+    List<Group> seleteId(Integer groupId);
+    List<Group> seleteGroup(Integer bossId);
 
     int updateByPrimaryKeySelective(Group record);
 
@@ -24,4 +27,5 @@ public interface GroupMapper {
 
     void updateRrepertory(@Param("id") Integer id,@Param("repertory")Integer repertory);
     void updateState(Integer id);
+    List<Group> seleteAll(Integer bossId);
 }

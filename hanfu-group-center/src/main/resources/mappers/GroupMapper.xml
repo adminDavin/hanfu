@@ -3,7 +3,6 @@
 <mapper namespace="com.hanfu.group.center.manual.dao.GroupMapper" >
   <resultMap id="BaseResultMap" type="com.hanfu.group.center.manual.model.Group" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="repertory" property="repertory" jdbcType="INTEGER" />
     <result column="boss_id" property="bossId" jdbcType="INTEGER" />
     <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
     <result column="price" property="price" jdbcType="DOUBLE" />
@@ -11,7 +10,25 @@
     <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
     <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
     <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="repertory" property="repertory" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="Base" type="com.hanfu.group.center.manual.model.Group" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="aprice" property="price" jdbcType="DOUBLE" />
+    <result column="anumber" property="number" jdbcType="INTEGER" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+    <association property="hfGoods" javaType="com.hanfu.group.center.manual.model.HfGoods">
+      <id column="bid" property="id" jdbcType="INTEGER" />
+      <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+
   <sql id="Base_Column_List" >
     id,  boss_id, goods_id, price, number, start_time, stop_time,
     is_deleted,repertory
@@ -21,7 +38,29 @@
     select 
     <include refid="Base_Column_List" />
     from group_id
-    where id = #{id,jdbcType=INTEGER} and is_deleted = 0
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="seleteGroup" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_id
+    where boss_id = #{bossId} order by id
+  </select>
+
+  <select id="seleteAll" resultMap="Base" parameterType="java.lang.Integer" >
+    select a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+        b.id bid, b.goods_desc bgoods_desc
+    from group_id a left join   hf_goods b on    a.goods_id =b.id
+    where a.boss_id = #{bossId} order by a.id
+  </select>
+
+  <select id="seleteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_id
+    where goods_id = #{goodsId} order by id
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
