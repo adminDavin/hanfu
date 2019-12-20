@@ -1112,8 +1112,7 @@ public class ActivityManagerController {
 	public Integer updateDepartment(ActivityDepartmentRequest request) throws Exception {
 		Integer departmentId = null;
 		ActivityDepartmentExample example = new ActivityDepartmentExample();
-		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName())
-				.andComponyIdEqualTo(request.getCompanyId());
+		example.createCriteria().andDepartmentNameEqualTo(request.getDepartmentName());
 		List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
 		if (list.isEmpty()) {
 			ActivityDepartment department = new ActivityDepartment();
@@ -1142,14 +1141,14 @@ public class ActivityManagerController {
 			departmentId = department.getId();
 		} else {
 			ActivityDepartment department = list.get(0);
-			if (!StringUtils.isEmpty(request.getCompanyName())) {
-				department.setCompanyName(request.getCompanyName());
-			}
-			if (!StringUtils.isEmpty(request.getRemarks())) {
-				department.setRemarks(request.getRemarks());
-			}
-			department.setModifyTime(LocalDateTime.now());
-			activityDepartmentMapper.updateByPrimaryKey(department);
+//			if (!StringUtils.isEmpty(request.getCompanyName())) {
+//				department.setCompanyName(request.getCompanyName());
+//			}
+//			if (!StringUtils.isEmpty(request.getRemarks())) {
+//				department.setRemarks(request.getRemarks());
+//			}
+//			department.setModifyTime(LocalDateTime.now());
+//			activityDepartmentMapper.updateByPrimaryKey(department);
 			departmentId = department.getId();
 		}
 		return departmentId;
@@ -1288,7 +1287,8 @@ public class ActivityManagerController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		activity.setActivityStatus(String.valueOf(count));
-		return builder.body(ResponseUtils.getResponseBody(activityMapper.updateByPrimaryKey(activity)));
+		activityMapper.updateByPrimaryKey(activity);
+		return builder.body(ResponseUtils.getResponseBody(count));
 	}
 
 }

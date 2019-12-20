@@ -93,4 +93,6 @@ public interface HUserBalanceMapper {
     int updateByPrimaryKey(HUserBalance record);
 
     void balanceCutTotal(@Param("userId") Integer userId,@Param("hfBalance") Integer hfBalance,@Param("total") Integer total);
+
+    HUserBalance itExistUserById(@Param("userId") Integer userId);//判断用户是不是第一次充钱
 }
