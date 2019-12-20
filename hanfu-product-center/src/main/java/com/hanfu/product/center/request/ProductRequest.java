@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class ProductRequest extends CommonRequest {
-	@ApiModelProperty(required = true, value = "商品id")
+	@ApiModelProperty(required = false, value = "商品id")
 	private Integer id;
 	@ApiModelProperty(required = true, value = "商品名称")
 	private String hfName;

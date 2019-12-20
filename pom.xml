@@ -22,6 +22,9 @@
 		<module>hanfu-activity-center</module>
 		<module>hanfu-cart-center</module>
 		<module>hanfu-message-center</module>
+		<module>hanfu-seckill-center</module>
+		<module>hanfu-group-center</module>
+		<module>hanfu-zslpayment-center</module>
 	</modules>
 	<profiles>
 		<profile>

@@ -138,6 +138,7 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 	
 	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId){
 		com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
+		System.out.println(hfGoodsDao.selectGoodsPartInfo(goodsId));
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
 		if(hfGoods!=null) {
 			hfGoodsDisplay.setStoneId(hfGoods.getStoneId());
