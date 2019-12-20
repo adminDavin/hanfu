@@ -397,7 +397,11 @@ public class ActivityManagerController {
 							String.valueOf(Integer.valueOf(activityStrategyInstance1.getRuleValue()) - 1));
 					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1);
 				}
-				activitiRuleInstanceMapper.insert(ruleValueDesc);
+				synchronized(LOCKLOCK3) {
+					if(activitiRuleInstanceMapper.selectByExample(example3).isEmpty()) {
+						activitiRuleInstanceMapper.insert(ruleValueDesc);
+					}
+				}
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
 			}
