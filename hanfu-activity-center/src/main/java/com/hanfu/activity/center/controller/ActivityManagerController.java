@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -597,7 +598,8 @@ public class ActivityManagerController {
 		} else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		userElect.setRemarks(String.valueOf(deedScore + reportScore));
+		DecimalFormat df = new DecimalFormat("0.000");  
+		userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
 	}

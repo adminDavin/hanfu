@@ -799,7 +799,11 @@ public class ActivityController {
 					}
 				}
 				if("score".equals(activity.getActiviyType())) {
-					entity.setTotalScore(Double.valueOf(records.getRemarks()));
+					if(!StringUtils.isEmpty(records.getRemarks())) {
+						entity.setTotalScore(Double.valueOf(records.getRemarks()));
+					}else {
+						entity.setTotalScore(0);
+					}
 				}
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);
