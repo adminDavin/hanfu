@@ -20,7 +20,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.hanfu.payment.center.Application</mainClass>
+					<mainClass>Application</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>

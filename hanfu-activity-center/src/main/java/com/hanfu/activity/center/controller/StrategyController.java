@@ -251,36 +251,47 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
 	}
 
-	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
+	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.GET)
 	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
-	public ResponseEntity<JSONObject> updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
+	public String updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
-		example.createCriteria().andParentTemplateIdEqualTo(request.getParentTemplateId());
-		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
-		Integer count = 0;
-		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
-			return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
-		}
-		for (int i = 0; i < list.size(); i++) {
-			ActivityEvaluateTemplate template = list.get(i);
-			count = count + Integer.valueOf(template.getEvaluateWeight());
-			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
-				return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
-			}
-		}
 		ActivityEvaluateTemplate activityEvaluateTemplate = activityEvaluateTemplateMapper
 				.selectByPrimaryKey(request.getId());
 		if (activityEvaluateTemplate == null) {
-			return builder.body(ResponseUtils.getResponseBody("此模板不存在"));
+			return "此模板不存在";
 		}
-		activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
-		activityEvaluateTemplate.setEvaluateType(request.getEvaluateType());
-		activityEvaluateTemplate.setEvaluateWeight(request.getEvaluateWeight());
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(activityEvaluateTemplate.getParentTemplateId()).andIsDeletedEqualTo(request.getIsDeleted());
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
+		double count = 0;
+		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
+			return "true";
+		}
+		for (int i = 0; i < list.size(); i++) {
+			ActivityEvaluateTemplate template = list.get(i);
+			if(template.getId() != request.getId()) {
+				count = count + Double.valueOf(template.getEvaluateWeight());
+			}
+			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
+				return "false";
+			}
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateContent())) {
+			activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateType())) {
+			activityEvaluateTemplate.setEvaluateType(request.getEvaluateType());
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateWeight())) {
+			activityEvaluateTemplate.setEvaluateWeight(request.getEvaluateWeight());
+		}
+		if(!StringUtils.isEmpty(request.getRemarks())) {
+			activityEvaluateTemplate.setRemarks(request.getRemarks());
+		}
 		activityEvaluateTemplate.setModifyTime(LocalDateTime.now());
 		activityEvaluateTemplateMapper.updateByPrimaryKey(activityEvaluateTemplate);
-		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
+		return "activityEvaluateTemplate.getId()";
 	}
 
 	@RequestMapping(path = "/findUserEvaluationTemplate", method = RequestMethod.GET)
@@ -460,15 +471,32 @@ public class StrategyController {
 	
 	@RequestMapping(path = "/findDepartmentByCompany", method = RequestMethod.GET)
 	@ApiOperation(value = "根据公司编号查询部门", notes = "根据公司编号查询部门")
-	public ResponseEntity<JSONObject> findDepartmentByCompany(@RequestParam String companyCode) throws Exception {
+	public ResponseEntity<JSONObject> findDepartmentByCompany(@RequestParam(required = false) String companyCode,@RequestParam(required = false) Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		ActivityComponyExample example = new ActivityComponyExample();
-		example.createCriteria().andCompanyInfoEqualTo(companyCode);
-		List<ActivityCompony> list = activityComponyMapper.selectByExample(example);
-		if(list.isEmpty()) {
-			return builder.body(ResponseUtils.getResponseBody("您输入的公司编码不存在"));
+		if(!StringUtils.isEmpty(companyCode)) {
+			ActivityComponyExample example = new ActivityComponyExample();
+			example.createCriteria().andCompanyInfoEqualTo(companyCode);
+			List<ActivityCompony> list = activityComponyMapper.selectByExample(example);
+			if(list.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody("您输入的公司编码不存在"));
+			}else {
+				ActivityCompony compony = list.get(0);
+				ActivityDepartmentExample example2 = new ActivityDepartmentExample();
+				example2.createCriteria().andComponyIdEqualTo(compony.getId());
+				List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
+				String[] departmentName = new String[list2.size()];
+				for (int i = 0; i < list2.size(); i++) {
+					ActivityDepartment department = list2.get(i);
+					departmentName[i] = department.getDepartmentName();
+				}
+				return builder.body(ResponseUtils.getResponseBody(departmentName));
+			}
 		}else {
-			ActivityCompony compony = list.get(0);
+			ActivityUserInfoExample example = new ActivityUserInfoExample();
+			example.createCriteria().andUserIdEqualTo(userId);
+			List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+			ActivityUserInfo info = list.get(0);
+			ActivityCompony compony = activityComponyMapper.selectByPrimaryKey(info.getDepartmentId());
 			ActivityDepartmentExample example2 = new ActivityDepartmentExample();
 			example2.createCriteria().andComponyIdEqualTo(compony.getId());
 			List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
@@ -483,7 +511,7 @@ public class StrategyController {
 	
 	@RequestMapping(path = "/intoActivity", method = RequestMethod.POST)
 	@ApiOperation(value = "进入活动首页", notes = "进入活动首页")
-	public ResponseEntity<JSONObject> intoActivity(@RequestParam(required = false) String code,@RequestParam Integer userId,@RequestParam String departmentName) throws Exception {
+	public ResponseEntity<JSONObject> intoActivity(@RequestParam(required = false) String code,@RequestParam Integer userId,@RequestParam(required = false) String departmentName) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		boolean flag = true;
 		if(!StringUtils.isEmpty(code)) {
@@ -496,25 +524,27 @@ public class StrategyController {
 				return builder.body(ResponseUtils.getResponseBody(true));
 			}
 		}
-		ActivityUserInfoExample example = new ActivityUserInfoExample();
-		example.createCriteria().andUserIdEqualTo(userId);
-		List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
-		ActivityDepartmentExample example2 = new ActivityDepartmentExample();
-		example2.createCriteria().andDepartmentNameEqualTo(departmentName);
-		List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
-		ActivityDepartment department = list2.get(0);
-		if(list.isEmpty()) {
-			ActivityUserInfo userInfo = new ActivityUserInfo();
-			userInfo.setUserId(userId);
-			userInfo.setDepartmentId(department.getId());
-			userInfo.setCreateTime(LocalDateTime.now());
-			userInfo.setModifyTime(LocalDateTime.now());
-			userInfo.setIsDeleted((short) 0);
-			activityUserInfoMapper.insert(userInfo);
-		}else {
-			ActivityUserInfo userInfo = list.get(0);
-			userInfo.setDepartmentId(department.getId());
-			activityUserInfoMapper.updateByPrimaryKey(userInfo);
+		if(!StringUtils.isEmpty(departmentName)) {
+			ActivityUserInfoExample example = new ActivityUserInfoExample();
+			example.createCriteria().andUserIdEqualTo(userId);
+			List<ActivityUserInfo> list = activityUserInfoMapper.selectByExample(example);
+			ActivityDepartmentExample example2 = new ActivityDepartmentExample();
+			example2.createCriteria().andDepartmentNameEqualTo(departmentName);
+			List<ActivityDepartment> list2 = activityDepartmentMapper.selectByExample(example2);
+			ActivityDepartment department = list2.get(0);
+			if(list.isEmpty()) {
+				ActivityUserInfo userInfo = new ActivityUserInfo();
+				userInfo.setUserId(userId);
+				userInfo.setDepartmentId(department.getId());
+				userInfo.setCreateTime(LocalDateTime.now());
+				userInfo.setModifyTime(LocalDateTime.now());
+				userInfo.setIsDeleted((short) 0);
+				activityUserInfoMapper.insert(userInfo);
+			}else {
+				ActivityUserInfo userInfo = list.get(0);
+				userInfo.setDepartmentId(department.getId());
+				activityUserInfoMapper.updateByPrimaryKey(userInfo);
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody("进入成功"));
 	}

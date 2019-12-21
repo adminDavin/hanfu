@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="hanfu-activity-center" />
+        <module name="hanfu-inner-sdk" />
+        <module name="hanfu-product-center" />
+        <module name="hanfu-referral-center" />
+        <module name="hanfu-group-center" />
+        <module name="hanfu-order-center" />
+        <module name="hanfu-payment-center" />
+        <module name="hanfu-common" />
+        <module name="seckill" />
+        <module name="hanfu-user-center" />
+        <module name="hanfu-product-client" />
+        <module name="hanfu-seckill-center" />
+        <module name="hanfu-chat" />
+        <module name="hanfu-web-utils" />
+        <module name="hanfu-order-client" />
+        <module name="hanfu-payment-client" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hanfu-activity-center" target="11" />
+      <module name="hanfu-chat" target="11" />
+      <module name="hanfu-common" target="11" />
+      <module name="hanfu-group-center" target="11" />
+      <module name="hanfu-inner-sdk" target="11" />
+      <module name="hanfu-order-center" target="11" />
+      <module name="hanfu-order-client" target="11" />
+      <module name="hanfu-payment-center" target="11" />
+      <module name="hanfu-payment-client" target="11" />
+      <module name="hanfu-product-center" target="11" />
+      <module name="hanfu-product-client" target="11" />
+      <module name="hanfu-referral-center" target="11" />
+      <module name="hanfu-seckill-center" target="11" />
+      <module name="hanfu-system" target="11" />
+      <module name="hanfu-user-center" target="11" />
+      <module name="hanfu-web-utils" target="11" />
+      <module name="seckill" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

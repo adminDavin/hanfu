@@ -18,6 +18,7 @@ public class Evaluate implements Serializable{
 	private String evaluateWeight;
 	private String remarks;
 	private char zimu;
+	private boolean flag;
 //	private Boolean isRecord;
 	public String getEvaluateContent() {
 		return evaluateContent;
@@ -66,6 +67,12 @@ public class Evaluate implements Serializable{
 	}
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+	public boolean isFlag() {
+		return flag;
+	}
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 //	public Boolean getIsRecord() {
 //		return isRecord;

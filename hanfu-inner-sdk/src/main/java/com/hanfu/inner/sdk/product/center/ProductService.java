@@ -2,7 +2,6 @@ package com.hanfu.inner.sdk.product.center;
 
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hanfu.inner.model.product.center.HfCategory;
 import com.hanfu.inner.model.product.center.Product;
 
