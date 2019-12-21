@@ -39,7 +39,7 @@
   
   <select id="findByUserId" resultMap="UserFormInfo">
     SELECT 
-    	a1.file_id,h1.real_name,
+    	h1.file_id,h1.real_name,
     	a1.hiredate,a2.job_content,
     	a1.evaluation,h1.phone,
     	a1.department_id
