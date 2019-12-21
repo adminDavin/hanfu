@@ -786,6 +786,31 @@ public class ActivityManagerController {
 		activityMapper.updateByPrimaryKey(activity);
 		return builder.body(ResponseUtils.getResponseBody("修改成功"));
 	}
+	
+	
+	@ApiOperation(value = "开启关闭活动排行榜", notes = "开启关闭活动排行榜")
+	@RequestMapping(value = "/startActivityResult", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> startActivityResult(@RequestParam Integer activityId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		if ("praise".equals(activity.getActiviyType())) {
+//			ActivityExample example = new ActivityExample();
+//			example.createCriteria().andActiviyTypeEqualTo("praise");
+//			List<Activity> list = activityMapper.selectByExample(example);
+//			for (int i = 0; i < list.size(); i++) {
+//				Activity activity2 = list.get(i);
+//				activity2.setIsTimingStart((short) 0);
+//				activityMapper.updateByPrimaryKey(activity2);
+//			}
+//		}
+		if (activity.getIsDeleted() == (short) 0) {
+			activity.setIsDeleted((short) 1);
+		} else {
+			activity.setIsDeleted((short) 0);
+		}
+		activityMapper.updateByPrimaryKey(activity);
+		return builder.body(ResponseUtils.getResponseBody("修改成功"));
+	}
 
 	@ApiOperation(value = "查询某个活动的结果", notes = "查询某个活动的结果")
 	@RequestMapping(value = "/findActivityResult", method = RequestMethod.GET)
