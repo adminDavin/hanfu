@@ -11,16 +11,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -204,31 +202,49 @@ public class WXPayUtil {
      * @throws Exception
      */
     public static Map<String, String> xmlToMap(String strXML) throws Exception {
-        try {
-            Map<String, String> data = new HashMap<String, String>();
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
-            org.w3c.dom.Document doc = documentBuilder.parse(stream);
-            doc.getDocumentElement().normalize();
-            NodeList nodeList = doc.getDocumentElement().getChildNodes();
-            for (int idx = 0; idx < nodeList.getLength(); ++idx) {
-                Node node = nodeList.item(idx);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    org.w3c.dom.Element element = (org.w3c.dom.Element) node;
-                    data.put(element.getNodeName(), element.getTextContent());
-                }
-            }
-            try {
-                stream.close();
-            } catch (Exception ex) {
-                // do nothing
-            }
-            return data;
-        } catch (Exception ex) {
-            WXPayUtil.getLogger().warn("Invalid XML, can not convert to map. Error message: {}. XML content: {}", ex.getMessage(), strXML);
-            throw ex;
-        }
+    	try {
+    	Map<String, String > data = new HashMap<String , String >();
+    	org.dom4j.Document document = DocumentHelper.parseText(strXML);
+    	org.dom4j.Element nodeElement = document.getRootElement();
+    	List node = nodeElement.elements();
+    	for (Iterator it = node.iterator(); it.hasNext(); ) {
+    		org.dom4j.Element elm = (Element) it.next();
+    		data.put(elm.getName(), elm.getText());
+		}
+    	node = null;
+    	nodeElement = null;
+    	document = null;
+    	return data;
+    	}
+    	catch (Exception e ) {
+    		e.printStackTrace();
+    	}
+    	return null;
+//        try {
+//            Map<String, String> data = new HashMap<String, String>();
+//            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+//            InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
+//            org.w3c.dom.Document doc = documentBuilder.parse(stream);
+//            doc.getDocumentElement().normalize();
+//            NodeList nodeList = doc.getDocumentElement().getChildNodes();
+//            for (int idx = 0; idx < nodeList.getLength(); ++idx) {
+//                Node node = nodeList.item(idx);
+//                if (node.getNodeType() == Node.ELEMENT_NODE) {
+//                    org.w3c.dom.Element element = (org.w3c.dom.Element) node;
+//                    data.put(element.getNodeName(), element.getTextContent());
+//                }
+//            }
+//            try {
+//                stream.close();
+//            } catch (Exception ex) {
+//                // do nothing
+//            }
+//            return data;
+//        } catch (Exception ex) {
+//            WXPayUtil.getLogger().warn("Invalid XML, can not convert to map. Error message: {}. XML content: {}", ex.getMessage(), strXML);
+//            throw ex;
+//        }
 
     }
 
