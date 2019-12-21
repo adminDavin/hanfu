@@ -1,4 +1,4 @@
-package com.hanfu.payment.center.service.impl;
+package com.hanfu.group.center.service.impl;
 
 
 import java.util.HashMap;
@@ -22,9 +22,9 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
-import com.hanfu.payment.center.request.AlipayConfig;
-import com.hanfu.payment.center.request.AlipaymentOrder;
-import com.hanfu.payment.center.service.AlipayService;
+import com.hanfu.group.center.request.AlipayConfig;
+import com.hanfu.group.center.request.AlipaymentOrder;
+import com.hanfu.group.center.service.AlipayService;
 
 @Service("alipayService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
