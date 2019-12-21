@@ -1,0 +1,24 @@
+package com.hanfu.payment.center.returnutil;
+/**
+ * @Author: HONGLINCHEN
+ * @Description:微信支付参数
+ * @Date: 2017-9-7 10:08
+ */
+public class WXPayConstants {
+
+    //请同时修改  androidmanifest.xml里面 .PayActivityd里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid
+    public static final String APP_ID = "你们自己的";
+
+    //商户号
+    public static final String MCH_ID = "你们自己的";
+
+    //API密钥，在商户平台设置
+    public static final  String API_KEY="你们自己的";
+
+    //商户号 微信小程序使用
+    public static final String APPLET_MCHID = "你们自己的";
+    //appid 微信小程序使用
+    public static final String APPLET_APPID = "你们自己的";
+
+}
+

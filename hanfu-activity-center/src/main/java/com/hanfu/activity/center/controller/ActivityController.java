@@ -685,7 +685,9 @@ public class ActivityController {
 					total.setActivityName(activity.getActivityName());
 					total.setActivityType(activity.getActiviyType());
 				}
-				result.add(total);
+				if(!StringUtils.isEmpty(total.getActivityName())) {
+					result.add(total);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -799,7 +801,11 @@ public class ActivityController {
 					}
 				}
 				if("score".equals(activity.getActiviyType())) {
-					entity.setTotalScore(Double.valueOf(records.getRemarks()));
+					if(!StringUtils.isEmpty(records.getRemarks())) {
+						entity.setTotalScore(Double.valueOf(records.getRemarks()));
+					}else {
+						entity.setTotalScore(0);
+					}
 				}
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);

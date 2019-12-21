@@ -251,36 +251,47 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
 	}
 
-	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
+	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.GET)
 	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
-	public ResponseEntity<JSONObject> updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
+	public String updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
-		example.createCriteria().andParentTemplateIdEqualTo(request.getParentTemplateId());
-		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
-		Integer count = 0;
-		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
-			return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
-		}
-		for (int i = 0; i < list.size(); i++) {
-			ActivityEvaluateTemplate template = list.get(i);
-			count = count + Integer.valueOf(template.getEvaluateWeight());
-			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
-				return builder.body(ResponseUtils.getResponseBody("非法，比重分配超过1"));
-			}
-		}
 		ActivityEvaluateTemplate activityEvaluateTemplate = activityEvaluateTemplateMapper
 				.selectByPrimaryKey(request.getId());
 		if (activityEvaluateTemplate == null) {
-			return builder.body(ResponseUtils.getResponseBody("此模板不存在"));
+			return "此模板不存在";
 		}
-		activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
-		activityEvaluateTemplate.setEvaluateType(request.getEvaluateType());
-		activityEvaluateTemplate.setEvaluateWeight(request.getEvaluateWeight());
+		ActivityEvaluateTemplateExample example = new ActivityEvaluateTemplateExample();
+		example.createCriteria().andParentTemplateIdEqualTo(activityEvaluateTemplate.getParentTemplateId()).andIsDeletedEqualTo(request.getIsDeleted());
+		List<ActivityEvaluateTemplate> list = activityEvaluateTemplateMapper.selectByExample(example);
+		double count = 0;
+		if(Double.valueOf(request.getEvaluateWeight()) < 0.00 || Double.valueOf(request.getEvaluateWeight()) > 1.00) {
+			return "true";
+		}
+		for (int i = 0; i < list.size(); i++) {
+			ActivityEvaluateTemplate template = list.get(i);
+			if(template.getId() != request.getId()) {
+				count = count + Double.valueOf(template.getEvaluateWeight());
+			}
+			if(count + Double.valueOf(request.getEvaluateWeight()) > 1) {
+				return "false";
+			}
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateContent())) {
+			activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateType())) {
+			activityEvaluateTemplate.setEvaluateType(request.getEvaluateType());
+		}
+		if(!StringUtils.isEmpty(request.getEvaluateWeight())) {
+			activityEvaluateTemplate.setEvaluateWeight(request.getEvaluateWeight());
+		}
+		if(!StringUtils.isEmpty(request.getRemarks())) {
+			activityEvaluateTemplate.setRemarks(request.getRemarks());
+		}
 		activityEvaluateTemplate.setModifyTime(LocalDateTime.now());
 		activityEvaluateTemplateMapper.updateByPrimaryKey(activityEvaluateTemplate);
-		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
+		return "activityEvaluateTemplate.getId()";
 	}
 
 	@RequestMapping(path = "/findUserEvaluationTemplate", method = RequestMethod.GET)

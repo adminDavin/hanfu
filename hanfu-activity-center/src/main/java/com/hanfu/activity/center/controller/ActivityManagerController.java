@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -40,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -120,6 +122,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/wareHouse")
 @Api
@@ -396,7 +399,11 @@ public class ActivityManagerController {
 							String.valueOf(Integer.valueOf(activityStrategyInstance1.getRuleValue()) - 1));
 					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1);
 				}
-				activitiRuleInstanceMapper.insert(ruleValueDesc);
+				synchronized(LOCKLOCK3) {
+					if(activitiRuleInstanceMapper.selectByExample(example3).isEmpty()) {
+						activitiRuleInstanceMapper.insert(ruleValueDesc);
+					}
+				}
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
 			}
@@ -597,11 +604,47 @@ public class ActivityManagerController {
 		} else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		userElect.setRemarks(String.valueOf(deedScore + reportScore));
+		DecimalFormat df = new DecimalFormat("0.000");  
+		userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
 	}
 
+//	@ApiOperation(value = "点赞", notes = "点赞")
+//	@RequestMapping(value = "/clickPraise", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> clickPraise(RecordScoreRequest request) throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Integer total = 0;
+//		Activity activity = activityMapper.selectByPrimaryKey(request.getActivityId());
+//		if (activity.getIsTimingStart() == 0) {
+//			return builder.body(ResponseUtils.getResponseBody("活动未开始"));
+//		}
+//		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+//		if (hfUser.getIdDeleted() == 1) {
+//			return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
+//		}
+//		hfUser.setIdDeleted((byte) 1);
+//		hfUserMapper.updateByPrimaryKey(hfUser);
+//		addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
+//		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+//		example.createCriteria().andActivityIdEqualTo(request.getActivityId())
+//				.andUserIdEqualTo(request.getElectedUserId()).andIsElectedEqualTo(true);
+//		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+//		if (list.isEmpty()) {
+//			return builder.body(ResponseUtils.getResponseBody("此人不存在"));
+//		}
+//		ActivitiRuleInstance instance = list.get(0);
+//		if (instance.getUserTicketCount() == null) {
+//			instance.setUserTicketCount(1);
+//		} else {
+//			instance.setUserTicketCount(instance.getUserTicketCount() + 1);
+//		}
+//		activitiRuleInstanceMapper.updateByPrimaryKey(instance);
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
+	
+	
+	
 	@ApiOperation(value = "点赞", notes = "点赞")
 	@RequestMapping(value = "/clickPraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> clickPraise(RecordScoreRequest request) throws JSONException {
@@ -1153,8 +1196,7 @@ public class ActivityManagerController {
 		}
 		return departmentId;
 	}
-
-	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateUserAvatar", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
 	public Integer updateUserAvatar(MultipartFile fileInfo, @RequestParam Integer userId) throws Exception {
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
