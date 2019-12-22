@@ -112,7 +112,7 @@ public class FileUploadController {
 		return null;
 	}
 
-	@RequestMapping(path = "/upload_avatar",method = RequestMethod.POST)
+	@RequestMapping(value = "/upload_avatar",method = RequestMethod.POST)
 	@ApiOperation(value = "上传头像", notes = "上传头像")
 	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
 			@RequestParam(value = "userId", required = false) Integer userId) throws Exception {

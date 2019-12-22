@@ -526,7 +526,9 @@ public class GoodsController {
 	@PostMapping(value = "/addPicture")
 	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println(request.getGoodsId());
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
+		
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();

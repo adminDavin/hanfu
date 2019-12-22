@@ -12,6 +12,7 @@ import java.util.Date;
  * @date: 2019/12/10
  * @time: 17:50
  */
+@SuppressWarnings("serial")
 public class Seckill implements Serializable{
     private Integer id;
     private Integer bossId;

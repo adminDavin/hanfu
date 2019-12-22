@@ -7,6 +7,7 @@ import com.hanfu.product.center.request.CommonRequest;
 
 import io.swagger.annotations.ApiModelProperty;
 
+@SuppressWarnings("serial")
 public class HfGoodsDisplay extends CommonRequest{
 	
 	@ApiModelProperty(required = true, value = "物品id")
