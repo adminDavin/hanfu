@@ -63,14 +63,15 @@ public class PayController {
         Map map = new HashMap();
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         //String money = "10";
-        String title = "商品名字";
+        //String title = "商品名字";  例如会员
 
         try {
             OrderInfo order = new OrderInfo();
             order.setAppid(Configure.getAppID());
             order.setMch_id(Configure.getMch_id());
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
-            order.setBody(title);
+            order.setBody(request.getBody());
+            order.setOrder_id(request.getOreder_id());
             order.setOut_trade_no(RandomStringGenerator.getRandomStringByLength(32));
 
             //注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
@@ -125,6 +126,7 @@ public class PayController {
             map.put("msg", "统一下单失败!");
             map.put("data", null);
             return builder.body(ResponseUtils.getResponseBody(map));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,7 +140,7 @@ public class PayController {
      * @throws Exception
      */
     @PostMapping(value = "/weixin/callback")
-    public void wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
         String line = null;
         StringBuilder sb = new StringBuilder();
@@ -150,9 +152,7 @@ public class PayController {
         String notityXml = sb.toString();
         String resXml = "";
         System.out.println("接收到的报文：" + notityXml);
-
         Map map = PayUtil.doXMLParse(notityXml);
-
         String returnCode = (String) map.get("return_code");
         if ("SUCCESS".equals(returnCode)) {
             //验证签名是否正确
@@ -160,29 +160,25 @@ public class PayController {
             String validStr = PayUtil.createLinkString(validParams);//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
             String sign = PayUtil.sign(validStr, Configure.getKey(), "utf-8").toUpperCase();//拼装生成服务器端验证的签名
             // 因为微信回调会有八次之多,所以当第一次回调成功了,那么我们就不再执行逻辑了
-
-              //根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
+            // 根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
             if (sign.equals(map.get("sign"))) {
-                /**此处添加自己的业务逻辑代码start**/
-                // bla bla bla....
-                 /**此处添加自己的业务逻辑代码end**/
+
+                Object order_id = map.get("order_id");
+                Object out_trade_no = map.get("out_trade_no");
+
+
+
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+                return resXml;
             } else {
-                System.out.println("微信支付回调失败!签名不一致");
+                return "微信支付回调失败!签名不一致";
             }
         } else {
             resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"
                     + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
         }
-        System.out.println(resXml);
-        System.out.println("微信支付回调数据结束");
-
-        BufferedOutputStream out = new BufferedOutputStream(
-                response.getOutputStream());
-        out.write(resXml.getBytes());
-        out.flush();
-        out.close();
+        return resXml;
     }
 }
