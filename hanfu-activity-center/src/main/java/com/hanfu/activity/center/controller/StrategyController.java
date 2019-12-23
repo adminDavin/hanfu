@@ -251,7 +251,7 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
 	}
 
-	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.GET)
+	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
 	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
 	public String updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
@@ -356,6 +356,7 @@ public class StrategyController {
 				userEvaluateInfo.add(evaluate);
 			}
 			return builder.body(ResponseUtils.getResponseBody(userEvaluateInfo));
+			
 		}else {
 			for (int i = 0; i < list.size(); i++) {
 				Evaluate evaluate = new Evaluate();

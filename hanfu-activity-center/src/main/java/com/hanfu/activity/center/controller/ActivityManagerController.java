@@ -115,6 +115,7 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.mysql.cj.result.Field;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.swagger.annotations.Api;
@@ -548,15 +549,6 @@ public class ActivityManagerController {
 		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复打分"));
 		}
-		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
-				.andActivityIdEqualTo(request.getActivityId());
-		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
-		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
-		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
-		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
-		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		Integer[] remark = request.getRemark();
 		ActivityEvaluateTemplateExample example3 = new ActivityEvaluateTemplateExample();
 		example3.createCriteria().andParentTemplateIdEqualTo(request.getActivityId())
@@ -565,7 +557,7 @@ public class ActivityManagerController {
 		for (int i = 0; i < remark.length; i++) {
 			// TODO
 			ActivityEvaluateTemplate template = list.get(i);
-			if (remark[i] < 0) {
+			if (remark[i] < 0 || remark[i]>100) {
 				return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 			}
 			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), request.getType(),
@@ -575,7 +567,15 @@ public class ActivityManagerController {
 		if (total > 100) {
 			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 		}
-
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
+				.andActivityIdEqualTo(request.getActivityId());
+		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
+		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
+		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
+		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		double reportScore = 0.00;
 		double deedScore = 0.00;
 		ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
@@ -1213,6 +1213,7 @@ public class ActivityManagerController {
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		} else {
 			FileDesc fileDesc = list.get(0);
+			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setModifyTime(LocalDateTime.now());
