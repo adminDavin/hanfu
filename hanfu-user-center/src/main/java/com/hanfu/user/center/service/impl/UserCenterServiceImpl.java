@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.Constants;
+
 @Component
 public class UserCenterServiceImpl implements UserCenterService{
 	@Autowired
@@ -34,5 +35,4 @@ public class UserCenterServiceImpl implements UserCenterService{
 				Constants.STATE_MANAGER, TimeUnit.HOURS);
 		return true;
 	}
-
 }
