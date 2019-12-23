@@ -21544,3 +21544,1111 @@ java.lang.NullPointerException: null
 2019-12-23 16:59:04.120  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
 2019-12-23 16:59:04.167  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
 2019-12-23 16:59:04.215  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 16:59:35.452  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["10"]}
+2019-12-23 16:59:35.457  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findActivityResult{"activityId":["10"]}
+2019-12-23 16:59:35.457  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["10"]}
+2019-12-23 16:59:35.468  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 16:59:45.488  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/updateUserBaseInfo{"fileInfo":["wxfile://tmp_9d8f0fc1fc3b9abe615b7c571c172c5db220d76ac6df2ec7.jpg"],"userId":["11"],"hiredate":["2019-02-12"],"phone":["装配式助理工程师"],"username":["范宇岐"],"departmentName":["图审中心"]}
+2019-12-23 16:59:46.888  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 16:59:53.554  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 16:59:53.556  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 16:59:53.556  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 16:59:53.556  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 16:59:53.556  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 16:59:53.618  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 16:59:53.638  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:00:06.506  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:00:06.507  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["17"]}
+2019-12-23 17:00:06.506  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["17"]}
+2019-12-23 17:00:06.506  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findActivityResult{"activityId":["17"]}
+2019-12-23 17:00:15.155  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserAddActivity{"userId":["11"]}
+2019-12-23 17:00:15.541  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/addActivityUser{"activityId":["17"],"ruleInstanceId":["87"],"userIds":["11"]}
+2019-12-23 17:00:15.619  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["17"]}
+2019-12-23 17:00:15.644  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["17"]}
+2019-12-23 17:00:20.711  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:00:21.786  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/activityRecords{"userId":["11"]}
+2019-12-23 17:00:23.117  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:00:24.196  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserAddActivity{"userId":["11"]}
+2019-12-23 17:00:26.343  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:00:27.034  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserAddActivity{"userId":["11"]}
+2019-12-23 17:00:33.816  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["19"]}
+2019-12-23 17:00:34.090  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:00:34.316  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["5"]}
+2019-12-23 17:00:35.035  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"electedId":["11"],"type":["0"],"activityId":["17"]}
+2019-12-23 17:00:42.587  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:00:47.028  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 17:00:47.028  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:00:47.028  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 17:00:47.028  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:00:47.029  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:00:47.080  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:00:47.129  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:00:51.598  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:00:51.602  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["16"]}
+2019-12-23 17:00:51.602  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findActivityResult{"activityId":["16"]}
+2019-12-23 17:00:51.616  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["16"]}
+2019-12-23 17:00:52.237  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:00:52.277  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["8"]}
+2019-12-23 17:00:52.526  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:00:55.331  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["10"]}
+2019-12-23 17:01:04.405  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":[""],"code":["tenio2019"]}
+2019-12-23 17:01:04.587  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:01:04.672  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:01:04.751  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:01:04.752  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:01:04.755  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:01:04.827  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:01:04.871  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:01:34.614  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["12"]}
+2019-12-23 17:01:34.883  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:01:34.884  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 17:01:34.885  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 17:01:34.981  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:01:34.999  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:01:35.870  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:01:35.873  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:01:39.803  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompany{"userId":["12"],"companyCode":["tenio2019"]}
+2019-12-23 17:01:39.883  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["12"]}
+2019-12-23 17:01:40.053  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["undefined"]}
+2019-12-23 17:01:40.054 ERROR 7836 --- [nio-9200-exec-9] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "undefined"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "undefined"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:01:40.054  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /error{"fileId":["undefined"]}
+2019-12-23 17:02:12.290  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":[""],"code":["tenio2019"]}
+2019-12-23 17:02:12.632  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:02:12.634  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:02:12.647  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:02:12.663  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:02:12.883  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:02:12.903  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:02:12.951  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:02:24.496  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/updateUserAvatar{"userId":[""]}
+2019-12-23 17:02:24.498 ERROR 7836 --- [nio-9200-exec-1] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.Exception: 此人不存在
+	at com.hanfu.activity.center.controller.ActivityManagerController.updateUserAvatar(ActivityManagerController.java:1193) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:02:24.500 ERROR 7836 --- [nio-9200-exec-1] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' not supported
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.handleNoMatch(RequestMappingInfoHandlerMapping.java:200) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.lookupHandlerMethod(AbstractHandlerMethodMapping.java:419) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:365) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:65) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:401) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1232) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1015) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:712) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:461) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:384) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:312) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:394) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:253) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:175) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:02:31.675  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:02:31.720  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["10"]}
+2019-12-23 17:02:32.062  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:02:35.549  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:02:35.890  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:02:35.990  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:02:35.990  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:02:42.277  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["7"]}
+2019-12-23 17:02:42.454  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"type":["0"],"activityId":["17"],"electedId":["7"]}
+2019-12-23 17:02:46.369  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["17"]}
+2019-12-23 17:02:46.384  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:02:47.264  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["11"]}
+2019-12-23 17:03:23.024  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":["11"],"code":["tenio2019"]}
+2019-12-23 17:03:23.630  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:23.703  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:03:23.703  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:03:23.735  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:23.927  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:03:23.984  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:03:24.114  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:03:29.262  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:03:29.429  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:03:30.526  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:03:30.527  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:03:40.574  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"electedId":["7"],"type":["0"],"activityId":["17"]}
+2019-12-23 17:03:44.370  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":["4"],"code":["tenio2019"]}
+2019-12-23 17:03:44.494  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:03:44.566  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:03:44.612  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:44.799  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:03:44.868  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:03:44.893  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:44.969  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:03:46.487  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["9"]}
+2019-12-23 17:03:47.381  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["10"]}
+2019-12-23 17:03:56.319  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserActivityVote{"userId":["4"]}
+2019-12-23 17:03:56.328  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserActivityVote{"userId":["4"]}
+2019-12-23 17:03:58.253  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:58.272  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:03:58.352  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["8"]}
+2019-12-23 17:03:58.374  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["8"]}
+2019-12-23 17:04:02.126  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":[""],"code":["tenio2019"]}
+2019-12-23 17:04:02.331  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["5"]}
+2019-12-23 17:04:02.476  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:04:02.484  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:02.485  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:04:02.487  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:02.625  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["4"]}
+2019-12-23 17:04:02.627 ERROR 7836 --- [nio-9200-exec-2] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.NullPointerException: null
+	at com.hanfu.activity.center.controller.ActivityManagerController.findUserFormInfo(ActivityManagerController.java:1291) ~[classes/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor296.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:04:02.628  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["4"]}
+2019-12-23 17:04:02.633  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["4"]}
+2019-12-23 17:04:02.634 ERROR 7836 --- [nio-9200-exec-1] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.NullPointerException: null
+	at com.hanfu.activity.center.controller.ActivityManagerController.findUserFormInfo(ActivityManagerController.java:1291) ~[classes/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor296.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:04:02.635  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["4"]}
+2019-12-23 17:04:02.701  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:04:02.765  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:04:02.767  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:04:04.608  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:04.693  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["8"]}
+2019-12-23 17:04:05.922  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:05.941  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["10"]}
+2019-12-23 17:04:06.020  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:04:06.331  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["17"]}
+2019-12-23 17:04:06.340  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:06.742  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["11"]}
+2019-12-23 17:04:08.162  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["11"]}
+2019-12-23 17:04:09.027  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["18"]}
+2019-12-23 17:04:09.590  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["50"]}
+2019-12-23 17:04:09.664  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:04:10.993  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["18"]}
+2019-12-23 17:04:11.409  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["3"]}
+2019-12-23 17:04:12.992  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"type":["0"],"activityId":["11"],"electedId":["3"]}
+2019-12-23 17:04:15.571  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["undefined"]}
+2019-12-23 17:04:15.572 ERROR 7836 --- [nio-9200-exec-2] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "undefined"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "undefined"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:04:15.573  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["undefined"]}
+2019-12-23 17:04:17.241  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:17.260  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["11"]}
+2019-12-23 17:04:17.307  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["4"]}
+2019-12-23 17:04:18.850  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["12"]}
+2019-12-23 17:04:19.101  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["88"]}
+2019-12-23 17:04:19.572  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompany{"userId":["undefined"],"companyCode":["tenio2019"]}
+2019-12-23 17:04:19.572  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["undefined"]}
+2019-12-23 17:04:19.573 ERROR 7836 --- [nio-9200-exec-3] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "undefined"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "undefined"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:04:19.573 ERROR 7836 --- [io-9200-exec-10] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "undefined"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "undefined"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:04:19.573  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["undefined"],"companyCode":["tenio2019"]}
+2019-12-23 17:04:19.573  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["undefined"]}
+2019-12-23 17:04:24.102  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["19"]}
+2019-12-23 17:04:25.039  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/updateUserAvatar{"userId":["[object Undefined]"]}
+2019-12-23 17:04:25.040 ERROR 7836 --- [nio-9200-exec-8] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "[objectUndefined]"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "[objectUndefined]"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:04:25.041 ERROR 7836 --- [nio-9200-exec-8] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' not supported
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.handleNoMatch(RequestMappingInfoHandlerMapping.java:200) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.lookupHandlerMethod(AbstractHandlerMethodMapping.java:419) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:365) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:65) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:401) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1232) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1015) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:712) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:461) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:384) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:312) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:394) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:253) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:175) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:04:27.340  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["9"]}
+2019-12-23 17:04:28.606  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"type":["0"],"activityId":["12"],"electedId":["9"]}
+2019-12-23 17:04:29.187  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["20"]}
+2019-12-23 17:04:31.625  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["19"]}
+2019-12-23 17:04:31.742  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["13"]}
+2019-12-23 17:04:31.745 ERROR 7836 --- [nio-9200-exec-5] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.NullPointerException: null
+	at com.hanfu.activity.center.controller.ActivityManagerController.findUserFormInfo(ActivityManagerController.java:1291) ~[classes/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor296.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:04:31.745  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["13"]}
+2019-12-23 17:04:32.220  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:04:32.238  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["12"]}
+2019-12-23 17:04:32.298  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["4"]}
+2019-12-23 17:04:33.787  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["15"]}
+2019-12-23 17:04:34.944  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["12"]}
+2019-12-23 17:04:35.024  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["88"]}
+2019-12-23 17:04:35.877  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["13"]}
+2019-12-23 17:04:35.879 ERROR 7836 --- [nio-9200-exec-1] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.NullPointerException: null
+	at com.hanfu.activity.center.controller.ActivityManagerController.findUserFormInfo(ActivityManagerController.java:1291) ~[classes/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor296.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-23 17:04:35.880  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /error{"userId":["13"]}
+2019-12-23 17:04:35.892  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompany{"userId":["13"],"companyCode":["tenio2019"]}
+2019-12-23 17:04:35.937  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"userId":["11"],"activityId":["8"]}
+2019-12-23 17:04:37.340  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["16"]}
+2019-12-23 17:04:38.049  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["9"]}
+2019-12-23 17:04:39.214  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:04:39.274  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:04:39.317  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["10"]}
+2019-12-23 17:04:39.383  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:04:39.431  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:04:42.230  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["11"]}
+2019-12-23 17:04:44.299  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["12"]}
+2019-12-23 17:04:44.446  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["88"]}
+2019-12-23 17:04:53.160  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["15"]}
+2019-12-23 17:04:55.451  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["18"]}
+2019-12-23 17:04:55.508  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["50"]}
+2019-12-23 17:04:57.561  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["16"]}
+2019-12-23 17:04:59.956  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:05:00.646  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["19"]}
+2019-12-23 17:05:02.600  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["20"]}
+2019-12-23 17:05:03.012  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["18"]}
+2019-12-23 17:05:03.464  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["21"]}
+2019-12-23 17:05:04.831  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["23"]}
+2019-12-23 17:05:05.374  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["19"]}
+2019-12-23 17:05:06.668  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["24"]}
+2019-12-23 17:05:07.393  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["20"]}
+2019-12-23 17:05:09.211  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["21"]}
+2019-12-23 17:05:11.848  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["23"]}
+2019-12-23 17:05:13.085  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["24"]}
+2019-12-23 17:05:17.146  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserActivityVote{"userId":["11"]}
+2019-12-23 17:05:17.146  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserActivityVote{"userId":["11"]}
+2019-12-23 17:05:19.620  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:05:19.620  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:05:19.930  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["8"]}
+2019-12-23 17:05:19.935  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["8"]}
+2019-12-23 17:05:24.096  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/findActivityResult{"activityId":["17"]}
+2019-12-23 17:05:25.736  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:05:25.847  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:05:27.716  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/findUserAddActivity{"userId":["11"]}
+2019-12-23 17:05:32.853  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["11"]}
+2019-12-23 17:05:33.825  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:05:33.830  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["24"]}
+2019-12-23 17:05:34.153  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["11"]}
+2019-12-23 17:06:06.254  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":["5"],"code":["tenio2019"]}
+2019-12-23 17:06:06.370  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:06:06.400  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:06:06.469  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:06:06.520  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:06:06.520  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":[""]}
+2019-12-23 17:06:06.581  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":[""]}
+2019-12-23 17:06:06.628  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:06:08.124  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["9"]}
+2019-12-23 17:06:09.094  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["10"]}
+2019-12-23 17:06:13.163  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["15"]}
+2019-12-23 17:06:14.784  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["16"]}
+2019-12-23 17:06:16.709  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:06:16.787  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:06:16.806  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:06:16.853  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:06:24.080  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findUserFormInfo{"userId":["7"]}
+2019-12-23 17:06:26.469  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findUserEvaluationTemplate{"type":["0"],"activityId":["17"],"electedId":["7"]}
+2019-12-23 17:06:29.590  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:06:29.607  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{"activityId":["17"]}
+2019-12-23 17:06:29.656  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["8"],"userId":["5"]}
+2019-12-23 17:06:32.010  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["21"]}
+2019-12-23 17:06:32.999  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["23"]}
+2019-12-23 17:06:34.828  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["24"]}
+2019-12-23 17:06:35.386  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 17:06:35.406  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 17:06:35.411  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:06:35.472  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:06:35.475  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:06:35.475  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:06:35.524  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["68"]}
+2019-12-23 17:06:35.528  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:06:35.544  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["88"]}
+2019-12-23 17:06:35.545  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:06:35.549  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:06:35.627  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["50"]}
+2019-12-23 17:06:36.664  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:06:40.435  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityUser{"activityId":["17"]}
+2019-12-23 17:06:40.498  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["86"]}
+2019-12-23 17:06:40.505  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["51"]}
+2019-12-23 17:06:40.520  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/getFile{"fileId":["85"]}
+2019-12-23 17:06:41.628  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["10"]}
+2019-12-23 17:06:41.646  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findActivityResult{"activityId":["10"]}
+2019-12-23 17:06:41.650  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:06:41.657  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["10"]}
+2019-12-23 17:07:00.561  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/deleteActivityUser{"userId":["1"],"activityId":["10"]}
+2019-12-23 17:07:00.648  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["10"]}
+2019-12-23 17:07:21.306  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 17:07:21.306  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:07:21.312  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:07:21.320  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 17:07:21.321  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:07:21.352  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:07:21.378  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:07:25.017  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["19"]}
+2019-12-23 17:07:25.023  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["19"]}
+2019-12-23 17:07:25.029  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:07:25.031  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/findActivityResult{"activityId":["19"]}
+2019-12-23 17:07:32.758  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/addActivityUser{"activityId":["19"],"ruleInstanceId":["93"],"userIds":["12"]}
+2019-12-23 17:07:32.848  INFO 7836 --- [nio-9200-exec-1] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategyInstance{"activityId":["19"]}
+2019-12-23 17:07:32.887  INFO 7836 --- [nio-9200-exec-7] c.h.a.c.i.AuthorityInterceptor           : /wareHouse/listActivityUser{"activityId":["19"]}
+2019-12-23 17:07:38.165  INFO 7836 --- [nio-9200-exec-5] c.h.a.c.i.AuthorityInterceptor           : /strategy/findCompany{}
+2019-12-23 17:07:38.196  INFO 7836 --- [nio-9200-exec-2] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:07:38.199  INFO 7836 --- [io-9200-exec-10] c.h.a.c.i.AuthorityInterceptor           : /strategy/findlunbotu{}
+2019-12-23 17:07:38.218  INFO 7836 --- [nio-9200-exec-6] c.h.a.c.i.AuthorityInterceptor           : /strategy/listStrategyRule{}
+2019-12-23 17:07:38.229  INFO 7836 --- [nio-9200-exec-3] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivityStrategy{}
+2019-12-23 17:07:38.233  INFO 7836 --- [nio-9200-exec-8] c.h.a.c.i.AuthorityInterceptor           : /activity/listActivity{}
+2019-12-23 17:07:38.245  INFO 7836 --- [nio-9200-exec-4] c.h.a.c.i.AuthorityInterceptor           : /strategy/findDepartmentByCompanyId{"companyId":["1"]}
+2019-12-23 17:08:20.349  INFO 7836 --- [nio-9200-exec-9] c.h.a.c.i.AuthorityInterceptor           : /strategy/intoActivity{"departmentName":[""],"userId":["undefined"],"code":["tenio2019"]}
+2019-12-23 17:08:20.350 ERROR 7836 --- [nio-9200-exec-9] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "undefined"
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:132) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:127) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:167) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:134) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+Caused by: java.lang.NumberFormatException: For input string: "undefined"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65) ~[na:na]
+	at java.base/java.lang.Integer.parseInt(Integer.java:652) ~[na:na]
+	at java.base/java.lang.Integer.valueOf(Integer.java:983) ~[na:na]
+	at org.springframework.util.NumberUtils.parseNumber(NumberUtils.java:211) ~[spring-core-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.propertyeditors.CustomNumberEditor.setAsText(CustomNumberEditor.java:115) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertTextValue(TypeConverterDelegate.java:429) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.doConvertValue(TypeConverterDelegate.java:402) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterDelegate.convertIfNecessary(TypeConverterDelegate.java:155) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:73) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.TypeConverterSupport.convertIfNecessary(TypeConverterSupport.java:53) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.validation.DataBinder.convertIfNecessary(DataBinder.java:693) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:124) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 51 common frames omitted
+
+2019-12-23 17:08:20.351 ERROR 7836 --- [nio-9200-exec-9] c.h.a.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' not supported
+	at org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.handleNoMatch(RequestMappingInfoHandlerMapping.java:200) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.lookupHandlerMethod(AbstractHandlerMethodMapping.java:419) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:365) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.getHandlerInternal(AbstractHandlerMethodMapping.java:65) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:401) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1232) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1015) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:908) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:712) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:461) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:384) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:312) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.custom(StandardHostValve.java:394) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.status(StandardHostValve.java:253) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:175) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
