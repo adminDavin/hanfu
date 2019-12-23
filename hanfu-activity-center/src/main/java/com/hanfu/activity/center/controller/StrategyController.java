@@ -251,7 +251,7 @@ public class StrategyController {
 		return builder.body(ResponseUtils.getResponseBody(activityEvaluateTemplate.getId()));
 	}
 
-	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.GET)
+	@RequestMapping(path = "/updateUserEvaluationTemplate", method = RequestMethod.POST)
 	@ApiOperation(value = "修改用户评价模板", notes = "修改用户评价模板")
 	public String updateUserEvaluationTemplate(ActivityEvaluateTemplateRequest request)
 			throws Exception {
