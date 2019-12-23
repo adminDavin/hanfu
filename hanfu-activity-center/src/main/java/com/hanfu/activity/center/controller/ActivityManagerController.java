@@ -565,7 +565,7 @@ public class ActivityManagerController {
 		for (int i = 0; i < remark.length; i++) {
 			// TODO
 			ActivityEvaluateTemplate template = list.get(i);
-			if (remark[i] < 0) {
+			if (remark[i] < 0 || remark[i]>100) {
 				return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 			}
 			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), request.getType(),
