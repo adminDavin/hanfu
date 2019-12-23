@@ -19,7 +19,13 @@ public class NewWXOrderRequest {
     @NotNull
     private String openId; // 小程序的用户openId
     @NotNull
-    private Integer total_fee;
+    private Integer total_fee;//金额
+    @NotNull
+    private String body;//描述
+    @NotNull
+    private Integer oreder_id;//订单id
+    @NotNull
+    private Integer user_id;
 
 //    private String orderRemark; // 订单备注留言
 //    // 地址
@@ -53,5 +59,21 @@ public class NewWXOrderRequest {
 
     public void setTotal_fee(Integer total_fee) {
         this.total_fee = total_fee;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Integer getOreder_id() {
+        return oreder_id;
+    }
+
+    public void setOreder_id(Integer oreder_id) {
+        this.oreder_id = oreder_id;
     }
 }

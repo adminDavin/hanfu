@@ -22,6 +22,8 @@ public class OrderInfo {
     private String trade_type;// 交易类型
     private String openid;//用户标识
 
+    private int order_id;
+
     public String getAppid() {
         return appid;
     }
@@ -116,5 +118,12 @@ public class OrderInfo {
 
     public void setOpenid(String openid) {
         this.openid = openid;
+    }
+
+    public int getOrder_id() {
+        return order_id;
+    }
+    public void setOrder_id(int order_id) {
+        this.order_id = order_id;
     }
 }
