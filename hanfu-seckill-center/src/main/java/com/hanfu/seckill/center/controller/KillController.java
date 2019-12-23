@@ -1,7 +1,9 @@
 package com.hanfu.seckill.center.controller;
 
 
+import com.hanfu.seckill.center.model.HfGoods;
 import com.hanfu.seckill.center.model.Seckill;
+import com.hanfu.seckill.center.service.HfGoodsService;
 import com.hanfu.seckill.center.service.SeckillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,6 +28,8 @@ import java.util.List;
 public class KillController {
     @Autowired
     SeckillService seckillService;
+    @Autowired
+    HfGoodsService hfGoodsService;
 
     @ApiOperation(value = "添加秒杀业务", notes = "添加秒杀业务")
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
@@ -177,9 +181,44 @@ public class KillController {
             @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer"),
 
     })
+
     @ResponseBody
-    public Seckill selectId(Integer id){
+    public Seckill selectByGoodsId(Integer id){
+
         return seckillService.selectId(id);
+    }
+
+
+    @ApiOperation(value = "查询根据id或者名字查商品", notes = "查询根据id查商品")
+    @RequestMapping(value = "/selectGoodsId",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "name", value = "商品名字", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = true, type = "Integer"),
+    })
+    @ResponseBody
+    public List<HfGoods> selectId(String name ,Integer goodsId){
+        if(name !=null){
+            return hfGoodsService.selectByName(name);
+        }
+        return hfGoodsService.selectByPrimaryKey(goodsId);
+    }
+
+
+
+    @ApiOperation(value = "查询查所有商品", notes = "查询查所有商品")
+    @RequestMapping(value = "/selectAll",method = RequestMethod.GET)
+    @ResponseBody
+    public List<HfGoods> selectAll(){
+        return hfGoodsService.selectAll();
+    }
+
+
+
+    @ApiOperation(value = "查询查所有商品详情", notes = "查询查所有商品")
+    @RequestMapping(value = "/selectAllGoods",method = RequestMethod.GET)
+    @ResponseBody
+    public List<HfGoods> selectAllGoods(){
+        return hfGoodsService.selectAll();
     }
 
 }

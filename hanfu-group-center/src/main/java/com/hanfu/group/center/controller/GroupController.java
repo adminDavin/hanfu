@@ -2,9 +2,11 @@ package com.hanfu.group.center.controller;
 
 import com.hanfu.group.center.manual.model.Group;
 import com.hanfu.group.center.manual.model.GroupOpen;
+import com.hanfu.group.center.manual.model.HfGoods;
 import com.hanfu.group.center.service.GroupOpenConnectService;
 import com.hanfu.group.center.service.GroupOpenService;
 import com.hanfu.group.center.service.GroupService;
+import com.hanfu.group.center.service.HfGoodsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -27,6 +29,7 @@ import java.util.function.DoubleToIntFunction;
 @RestController
 @RequestMapping("/group")
 @Api
+@CrossOrigin
 public class GroupController {
     @Autowired
     GroupService groupService;
@@ -34,6 +37,8 @@ public class GroupController {
     GroupOpenService groupOpenService;
     @Autowired
     GroupOpenConnectService groupOpenConnectService;
+    @Autowired
+    HfGoodsService hfGoodsService;
 
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
@@ -47,9 +52,9 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "团购结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup( Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+    public  boolean  insertGroup(  Integer goodsId,Double price,Integer number,
+                                  String startTime,  String stopTime, Integer repertory){
         Integer bossId=1;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     try {
         Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
         Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
@@ -194,12 +199,44 @@ public class GroupController {
 
         return groupService.seleteId(goodsId);
     }
-    @ApiOperation(value = "根据id查询团购商品", notes = "根据id查询团购商品")
-    @RequestMapping(value = "/selectId", method = RequestMethod.GET)
+
+    @ApiOperation(value = "查询根据id或者名字查商品", notes = "查询根据id查商品")
+    @RequestMapping(value = "/selectGoodsId",method = RequestMethod.GET)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "name", value = "商品名字", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = true, type = "Integer"),
     })
-    public  Group  seleteId( Integer id){
-        return groupService.selectByPrimaryKey(id);
+    @ResponseBody
+    public List<HfGoods> selectGoodsId(String name , Integer goodsId){
+        if(name !=null ){
+            return hfGoodsService.selectByPrimaryKey(goodsId);
+        }
+        return hfGoodsService.selectByPrimaryKey(goodsId);
     }
+
+
+
+    @ApiOperation(value = "下架秒杀商品", notes = "下架秒杀商品")
+    @RequestMapping(value = "/updateIsDeleted", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = false, type = "Integer"),
+    })
+    public  String  updateIsDeleted(Integer id){
+        groupService.updateState(id);
+        return "ok";
+    }
+
+    @ApiOperation(value = "批量下架秒杀商品", notes = "批量下架秒杀商品")
+    @RequestMapping(value = "/updateMulti", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "seckillId", value = "秒杀表id", required = false, type = "int"),
+//    })
+    public  String  updateMulti(@RequestParam("id")List<Integer> id){
+        for (Integer id1:id) {
+            groupService.updateState(id1);
+        }
+        return "ok";
+    }
+
+
 }

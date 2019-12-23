@@ -1,9 +1,11 @@
 package com.hanfu.group.center.controller;
 
 
+import ch.qos.logback.classic.spi.EventArgUtil;
 import com.hanfu.group.center.manual.model.GroupOpen;
 import com.hanfu.group.center.service.GroupOpenConnectService;
 import com.hanfu.group.center.service.GroupOpenService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 
 @Controller
-public class ScheduleTask {
+public class ScheduleTaskController {
     @Autowired
     GroupOpenService groupOpenService;
     @Autowired
@@ -53,6 +55,8 @@ public class ScheduleTask {
                     groupOpenConnectService.updateState(id,groupOpenId);
                 }
                 groupOpenService.updateByIsDeleted(groupOpenId);
+
+
 
 //                调退款接口
             }
