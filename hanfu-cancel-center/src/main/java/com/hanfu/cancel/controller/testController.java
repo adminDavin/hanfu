@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Api
@@ -27,7 +31,11 @@ import java.util.UUID;
 @CrossOrigin
 public class testController {
     @Autowired
+    private StringRedisTemplate redisClient;
+    @Autowired
     private CancelService cancelService;
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
     //转换时间格式
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
@@ -44,10 +52,40 @@ public class testController {
     }
 // @Scheduled(cron = "0/5 * * * * ? ")
 //    @RequestMapping(value = "/qqq", method = RequestMethod.GET)
-//    @ApiOperation(value = "查询查询", notes = "查询查询")
+//    @ApiOperation(value = "时间检查查询查询", notes = "时间检查查询查询")
 //    public ResponseEntity<JSONObject> qqq() throws Exception {
 //        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 //
 //        return builder.body(ResponseUtils.getResponseBody("123456"));
 //    }
+
+
+    @RequestMapping(value="setAndsave",method = RequestMethod.GET)
+    @ResponseBody
+    public String test(String para ) throws Exception{
+        JSONObject sessionObj = new JSONObject();
+        sessionObj.put( "openId","openId" );
+        sessionObj.put( "sessionKey","sessionKey" );
+        redisTemplate.opsForValue().set("test123",sessionObj.toString());
+
+
+        redisTemplate.opsForValue().set(para, "151230");
+        redisClient.opsForValue().set("test", para);
+        String str = redisClient.opsForValue().get("test");
+        String str2 = redisTemplate.opsForValue().get(para);
+        String str3 =redisTemplate.opsForValue().get("test123");
+        System.out.println(str);
+        System.out.println(str2);
+        System.out.println(str3+"session");
+        return str;
+    }
+    @RequestMapping(value="setAndsave2",method = RequestMethod.GET)
+    @ResponseBody
+    public String test2() throws Exception{
+        String str = redisClient.opsForValue().get("test");
+        System.out.println(str);
+        return str;
+    }
+
 }
+
