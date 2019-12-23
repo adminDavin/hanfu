@@ -549,15 +549,6 @@ public class ActivityManagerController {
 		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复打分"));
 		}
-		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
-				.andActivityIdEqualTo(request.getActivityId());
-		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
-		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
-		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
-		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
-		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		Integer[] remark = request.getRemark();
 		ActivityEvaluateTemplateExample example3 = new ActivityEvaluateTemplateExample();
 		example3.createCriteria().andParentTemplateIdEqualTo(request.getActivityId())
@@ -576,7 +567,15 @@ public class ActivityManagerController {
 		if (total > 100) {
 			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 		}
-
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
+				.andActivityIdEqualTo(request.getActivityId());
+		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
+		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
+		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
+		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		double reportScore = 0.00;
 		double deedScore = 0.00;
 		ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
