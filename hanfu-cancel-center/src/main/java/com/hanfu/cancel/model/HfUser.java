@@ -5,9 +5,10 @@ import tk.mybatis.mapper.annotation.KeySql;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class HfUser {
+public class HfUser implements Serializable {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

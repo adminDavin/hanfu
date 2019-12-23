@@ -27,9 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.WebRequest;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -44,6 +47,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.security.spec.InvalidParameterSpecException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -64,12 +69,26 @@ public class CancelController {
     private HfOrdersDetailMapper hfOrdersDetailMapper;
     @Autowired
     private HfLogMapper hfLogMapper;
+    @Autowired
+    private HfGoodsMapper hfGoodsMapper;
+    @Autowired
+    private CancelRecordMapper cancelRecordMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequestMapping(value = "/selectCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销员信息", notes = "核销员信息")
     public ResponseEntity<JSONObject> selectCancel() throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         return builder.body(ResponseUtils.getResponseBody(cancelService.select()));
+    }
+
+    @RequestMapping(value = "/selectCancelRecord", method = RequestMethod.GET)
+    @ApiOperation(value = "核销记录", notes = "核销记录")
+    public ResponseEntity<JSONObject> selectCancelRecord(Integer Id) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Example example = new Example(CancelRecord.class);
+        Example.Criteria criteria=example.createCriteria();
+        criteria.andEqualTo("cancelId",Id);
+        return builder.body(ResponseUtils.getResponseBody(cancelRecordMapper.selectByExample(example)));
     }
 
     @RequestMapping(value = "/deleteEmpty", method = RequestMethod.GET)
@@ -92,15 +111,22 @@ public class CancelController {
 
     @RequestMapping(value = "/selectDate", method = RequestMethod.GET)
     @ApiOperation(value = "核销时间筛选", notes = "核销时间筛选")
-    public ResponseEntity<JSONObject> selectDate(LocalDateTime createData,LocalDateTime createData1) throws Exception {
+    public ResponseEntity<JSONObject> selectDate(Date createData,Date createDate1) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(cancelService.selectDate(createData,createData1)));
+        return builder.body(ResponseUtils.getResponseBody(cancelService.selectDate(createData,createDate1)));
     }
     @RequestMapping(value = "/selectRegion", method = RequestMethod.GET)
     @ApiOperation(value = "地区筛选", notes = "地区筛选")
     public ResponseEntity<JSONObject> selectRegion(String site) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         return builder.body(ResponseUtils.getResponseBody(cancelService.selectRegion(site)));
+    }
+    //转换时间格式
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        //转换日期
+        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
     }
 
     @RequestMapping(value = "/deleterecord", method = RequestMethod.GET)
@@ -131,9 +157,9 @@ public class CancelController {
     public ResponseEntity<JSONObject> deleteBatchCancel(@RequestParam("id") List id) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         System.out.println(id);
-if (id==null){
-    builder.body(ResponseUtils.getResponseBody("请选择核销员"));
-}
+        if (id==null){
+            builder.body(ResponseUtils.getResponseBody("请选择核销员"));
+        }
         for(int i=0;i<id.size();i++){
             int cancelID=Integer.parseInt(id.get(i).toString());
             System.out.println(cancelID);
@@ -154,13 +180,11 @@ if (id==null){
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "GoodsId", value = "需要核销的商品", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String")
     })
-    public ResponseEntity<JSONObject> insertCancel(int UserId,String site,int GoodsId,String RealName) throws Exception {
+    public ResponseEntity<JSONObject> insertCancel(Integer UserId,String site,String RealName) throws Exception {
         System.out.println(UserId);
         System.out.println(site);
-        System.out.println(GoodsId);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser hfUser = new HfUser();
         hfUser.setId(UserId);
@@ -171,31 +195,60 @@ if (id==null){
         }
         Integer cancel = hfUser1.getCancelId();
         System.out.println(hfUser1.getCancelId());
-        if (cancel!=0){
+        if (cancel==1){
             return builder.body(ResponseUtils.getResponseBody("该人员已经是核销员"));
         }
         hfUser.setCancelId(1);
         hfUser.setRealName(RealName);
+        hfUser.setModifyDate(LocalDateTime.now());
         hfUserMapper.updateByPrimaryKeySelective(hfUser);
         cancel cancel1=new cancel();
-        cancel1.setGoodsId(GoodsId);
         cancel1.setCreateDate(LocalDateTime.now());
         cancel1.setModifyDate(LocalDateTime.now());
         cancel1.setUserId(UserId);
         cancel1.setSite(site);
-        cancelsMapper.insert(cancel1);
+        cancelsMapper.insertSelective(cancel1);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
+    @RequestMapping(value = "/updateCancelUser", method = RequestMethod.GET)
+    @ApiOperation(value = "根据核销id修改核销员信息", notes = "根据核销id修改核销员信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "Id", value = "核销id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否默认0,1是", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> updateCancelUser(int Id,String site,Integer cancel2,String RealName) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        cancel cancel= cancelsMapper.selectByPrimaryKey(Id);
+        cancel cancel1 = new cancel();
+        cancel1.setSite(site);
+        cancel1.setModifyDate(LocalDateTime.now());
+        cancel1.setId(Id);
+        cancelsMapper.updateByPrimaryKeySelective(cancel1);
+        HfUser hfUser = new HfUser();
+        hfUser.setModifyDate(LocalDateTime.now());
+        hfUser.setCancelId(cancel2);
+        hfUser.setRealName(RealName);
+        hfUser.setId(cancel.getUserId());
+        hfUserMapper.updateByPrimaryKeySelective(hfUser);
+        if (cancel2==0){
+            cancelsMapper.deleteByPrimaryKey(Id);
+            return builder.body(ResponseUtils.getResponseBody("已经取消此人的核销资格"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("成功"));
+    }
+
+
     @RequestMapping(value = "/updateCancel", method = RequestMethod.GET)
     @ApiOperation(value = "修改核销员信息", notes = "修改核销员信息")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "GoodsId", value = "需要核销的商品Id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否默认0,1是", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否默认0,1是", required = true, type = "Integer")
     })
-    public ResponseEntity<JSONObject> updateCancel(int UserId,String site,Integer GoodsId,int cancel2,String RealName) throws Exception {
+    public ResponseEntity<JSONObject> updateCancel(int UserId,String site,int cancel2,String RealName) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser hfUser = new HfUser();
         hfUser.setId(UserId);
@@ -207,7 +260,6 @@ if (id==null){
         cancel1.setUserId(UserId);
         cancel1.setCreateDate(LocalDateTime.now());
         cancel1.setModifyDate(LocalDateTime.now());
-        cancel1.setGoodsId(GoodsId);
         Example example = new Example(cancel.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",UserId);
@@ -223,14 +275,18 @@ if (id==null){
     @RequestMapping(path = "/wxLogin",  method = RequestMethod.GET)
     @ApiOperation(value = "授权核销", notes = "授权核销")
     public ResponseEntity<JSONObject> wxLogin(
-                                              @RequestParam(value = "code",required = false) String code,
-                                              @RequestParam(value = "rawData",required = false) String rawData,
-                                              @RequestParam(value = "signature",required = false) String signature,
-                                              @RequestParam(value = "goodsId商品Id",required = false) Integer goodsId,
-                                              @RequestParam(value = "orderId订单Id",required = false) Integer orderId,
-                                              @RequestParam(value = "encryptedData",required = false) String encryptedData,
-                                              @RequestParam(value = "iv",required = false) String iv
+            @RequestParam(value = "code",required = false) String code,
+            @RequestParam(value = "rawData",required = false) String rawData,
+            @RequestParam(value = "signature",required = false) String signature,
+            @RequestParam(value = "goodsId商品Id",required = false) Integer goodsId,
+            @RequestParam(value = "orderId订单Id",required = false) Integer orderId,
+            @RequestParam(value = "encryptedData",required = false) String encryptedData,
+            @RequestParam(value = "iv",required = false) String iv
     ) throws Exception{
+        if (code.equals("")){
+            ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+            return builder.body(ResponseUtils.getResponseBody("扫描获取失败"));
+        }
         logger.info( "Start get SessionKey" );
         Integer userId = null;
         Map<String,Object> map = new HashMap<String, Object>();
@@ -273,25 +329,34 @@ if (id==null){
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("username",unionId);
         List<HfUser> hfUserList= hfUserMapper.selectByExample(example);
-        if (hfUserList==null){
+        System.out.println(hfUserList+"根据用户唯一标识查出的数据");
+        if (hfUserList.size()==0){
             return builder.body(ResponseUtils.getResponseBody("请登录后操作"));
         }
         HfUser hfUser1=hfUserMapper.selectByPrimaryKey(hfUserList.get(0));
         if (hfUser1.getCancelId()==0){
             return builder.body(ResponseUtils.getResponseBody("对不起你不是核销员无法核销商品"));
         }
+        System.out.println(hfUser1.getCancelId()+"是否为核销员0否");
+        //判断核销员是否为该商品的核销员
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("userId",hfUserList.get(0));
-       List<cancel> cancelList= cancelsMapper.selectByExample(example1);
-       cancel cancel1= cancelsMapper.selectByPrimaryKey(cancelList.get(0));
-       if (!cancel1.getGoodsId().equals(goodsId)){
-           return builder.body(ResponseUtils.getResponseBody("对不起你不是该商品的核销员"));
-       }
-       //价格，根据物品id，设置订单状态
-       Example example2 = new Example(HfOrdersDetail.class);
-       Example.Criteria criteria2 = example2.createCriteria();
-       criteria2.andEqualTo("googsId",goodsId);
+        List<cancel> cancelList= cancelsMapper.selectByExample(example1);
+        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+        cancel cancel1= cancelsMapper.selectByPrimaryKey(cancelList.get(0));
+        System.out.println(cancel1+"cancelList.get(0)");
+        if (!hfGoods.getCancelId().equals(cancel1.getId())){
+            return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
+        }
+        //判断核销的商品是否为自提商品
+        if (hfGoodsMapper.selectByPrimaryKey(goodsId).getClaim().equals(0)){
+            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
+        }
+        //价格，根据订单id，设置订单状态
+        Example example2 = new Example(HfOrdersDetail.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        criteria2.andEqualTo("ordersId",orderId);
         List<HfOrdersDetail> hfPriceList= hfOrdersDetailMapper.selectByExample(example2);
         HfOrdersDetail hfPrice = hfOrdersDetailMapper.selectByPrimaryKey(hfPriceList.get(0));
         if (hfPrice.getOrderDetailStatus().equals("已完成")){
@@ -302,15 +367,19 @@ if (id==null){
         hfOrdersDetail.setOrderDetailStatus("已完成");
         hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
         //添加核销记录
-       CancelRecord cancelRecord = new CancelRecord();
-       cancelRecord.setCreateDate(LocalDateTime.now());
-       cancelRecord.setModifyDate(LocalDateTime.now());
-       cancelRecord.setGoodsId(goodsId);
-       cancelRecord.setCancelId(cancel1.getId());
-       cancelRecord.setAmount(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity());
-       hfLogMapper.insert(cancelRecord);
-
-
+        CancelRecord cancelRecord = new CancelRecord();
+        cancelRecord.setCreateDate(LocalDateTime.now());
+        cancelRecord.setModifyDate(LocalDateTime.now());
+        cancelRecord.setGoodsId(goodsId);
+        cancelRecord.setCancelId(cancel1.getId());
+        cancelRecord.setAmount(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity());
+        hfLogMapper.insert(cancelRecord);
+        //添加核销员核销额记录
+        cancel cancel = new cancel();
+        cancel.setId(cancel1.getId());
+        cancel.setMoney(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity()+cancel1.getMoney());
+        cancel.setPresentMoney(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity()+cancel1.getPresentMoney());
+        cancelsMapper.updateByPrimaryKeySelective(cancel);
 //        HfUserExample example = new HfUserExample();
 //        example.createCriteria().andUsernameEqualTo(unionId);
 //        List<HfUser> list = hfUserMapper.selectByExample(example);
@@ -422,5 +491,76 @@ if (id==null){
         }
 
         return jsonObject;
+    }
+
+    @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
+    @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
+    public ResponseEntity<JSONObject> testCancel(
+                                                 @RequestParam(value = "用户唯一标识",required = false) String unionId,
+                                                 @RequestParam(value = "goodsId商品Id",required = false) Integer goodsId,
+                                                 @RequestParam(value = "orderId订单Id",required = false) Integer orderId
+    ) throws Exception {
+        System.out.println(unionId+goodsId+orderId);
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Example example = new Example(HfUser.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username",unionId);
+        List<HfUser> hfUserList= hfUserMapper.selectByExample(example);
+        if (hfUserList.size()==0){
+            return builder.body(ResponseUtils.getResponseBody("请登录后操作"));
+        }
+        HfUser hfUser1=hfUserMapper.selectByPrimaryKey(hfUserList.get(0));
+        System.out.println(hfUser1);
+        if (hfUser1.getCancelId()==0){
+            return builder.body(ResponseUtils.getResponseBody("对不起你不是核销员无法核销商品"));
+        }
+        System.out.println(hfUser1.getCancelId()+"hfUser1.getCancelId()");
+        //判断核销的商品是否为自提商品
+        if (hfGoodsMapper.selectByPrimaryKey(goodsId).getClaim().equals(0)){
+            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
+        }
+        //判断核销员是否为该商品的核销员
+        Example example1 = new Example(cancel.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("userId",hfUserList.get(0).getId());
+        List<cancel> cancelList= cancelsMapper.selectByExample(example1);
+        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+        cancel cancel1= cancelsMapper.selectByPrimaryKey(cancelList.get(0));
+        if (!hfGoods.getCancelId().equals(cancel1.getId())){
+            return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
+        }
+
+        //价格，根据订单id，设置订单状态
+        Example example2 = new Example(HfOrdersDetail.class);
+        Example.Criteria criteria2 = example2.createCriteria();
+        System.out.println(1);
+        criteria2.andEqualTo("ordersId",orderId);
+        System.out.println(12);
+        List<HfOrdersDetail> hfPriceList= hfOrdersDetailMapper.selectByExample(example2);
+        System.out.println(123);
+        HfOrdersDetail hfPrice = hfOrdersDetailMapper.selectByPrimaryKey(hfPriceList.get(0));
+        System.out.println(hfPrice.getOrderDetailStatus());
+        if (hfPrice.getOrderDetailStatus().equals("已完成")){
+            return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
+        }
+        HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+        hfOrdersDetail.setId(hfPrice.getId());
+        hfOrdersDetail.setOrderDetailStatus("已完成");
+        hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
+        //添加核销记录
+        CancelRecord cancelRecord = new CancelRecord();
+        cancelRecord.setCreateDate(LocalDateTime.now());
+        cancelRecord.setModifyDate(LocalDateTime.now());
+        cancelRecord.setGoodsId(goodsId);
+        cancelRecord.setCancelId(cancel1.getId());
+        cancelRecord.setAmount(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity());
+        hfLogMapper.insert(cancelRecord);
+        //添加核销员核销额记录
+        cancel cancel = new cancel();
+        cancel.setId(cancel1.getId());
+        cancel.setMoney(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity()+cancel1.getMoney());
+        cancel.setPresentMoney(hfPrice.getPurchasePrice()*hfPrice.getPurchaseQuantity()+cancel1.getPresentMoney());
+        cancelsMapper.updateByPrimaryKeySelective(cancel);
+        return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 }
