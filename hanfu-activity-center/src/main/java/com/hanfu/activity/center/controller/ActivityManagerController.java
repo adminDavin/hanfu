@@ -115,6 +115,7 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.mysql.cj.result.Field;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.swagger.annotations.Api;
@@ -1213,6 +1214,7 @@ public class ActivityManagerController {
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		} else {
 			FileDesc fileDesc = list.get(0);
+			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setModifyTime(LocalDateTime.now());
