@@ -1,47 +1,51 @@
 package com.hanfu.user.center.service;
 
-import com.hanfu.user.center.model.HUserBalance;
+import com.hanfu.user.center.model.HfUserMember;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 
 public interface HfUserMemberService {
 
-    HUserBalance itExistUserById(@Param("userId") Integer userId);
+    HfUserMember itExistUserById(@Param("userId") Integer userId);//判断用户是不是第一次充值会员
 
-    void memberTime(@Param("userId") Integer userId,
-                    @Param("time") LocalDateTime time,
-                    @Param("thirtyTime") LocalDateTime thirtyTime,
-                    @Param("seasonTime") LocalDateTime seasonTime,
-                    @Param("yearTime") LocalDateTime yearTime,
-                    @Param("total") Integer total);//成为会员的时间
+    void insertthirtyTime(@Param("userId") Integer userId, @Param("time") LocalDateTime time, @Param("thirtyTime") LocalDateTime thirtyTime);
 
-    void insertBalance(@Param("userId") Integer userId,@Param("total") Integer total);//把用户冲的钱放入余额表
+    void insertseasonTime(@Param("userId") Integer userId, @Param("time") LocalDateTime time, @Param("seasonTime") LocalDateTime seasonTime);
 
-    String getModifyTime(@Param("userId") Integer userId);
+    void insertyearTime(@Param("userId") Integer userId, @Param("time") LocalDateTime time, @Param("yearTime") LocalDateTime yearTime);
 
-    void updateBalance(@Param("userId") Integer userId, @Param("total") Integer total);//因为他开通过会员  余额表已经数据了  直接添加他冲的钱就行了
+    void insertBalance(@Param("userId") Integer userId, @Param("total") Integer total);
+
+    String getModifyTime(@Param("userId") Integer userId);//判断会员过期没有
+
+    void updateModify(@Param("userId") Integer userId,
+                      @Param("time")LocalDateTime time,
+                      @Param("thirtyTime") LocalDateTime thirtyTime,
+                      @Param("seasonTime") LocalDateTime seasonTime,
+                      @Param("yearTime") LocalDateTime yearTime,
+                      @Param("total") Integer total);
+
+    void updateBalance(@Param("userId") Integer userId, @Param("total") Integer total);//会员过期重新开通  余额表的余额添加就好
 
     void updateModifyTime(@Param("userId") Integer userId,
-                          @Param("time") LocalDateTime time,
+                          @Param("time")LocalDateTime time,
                           @Param("thirtyTime") LocalDateTime thirtyTime,
                           @Param("seasonTime") LocalDateTime seasonTime,
                           @Param("yearTime") LocalDateTime yearTime,
-                          @Param("total") Integer total);
+                          @Param("total") Integer total);//没过期的会员  直接给他修改过期的日期就可以了
 
-    String getCreateTime(@Param("userId") Integer userId);//判断是不是第一次购买会员
+    void buyupdateModify(@Param("userId") Integer userId,
+                         @Param("time")LocalDateTime time,
+                         @Param("thirtyTime") LocalDateTime thirtyTime,
+                         @Param("seasonTime") LocalDateTime seasonTime,
+                         @Param("yearTime") LocalDateTime yearTime,
+                         @Param("total") Integer total);//购买会员  已经过期的  重新设置时间
 
-    void buymemberTime(@Param("userId") Integer userId,
-                       @Param("time") LocalDateTime time,
-                       @Param("thirtyTime") LocalDateTime thirtyTime,
-                       @Param("seasonTime") LocalDateTime seasonTime,
-                       @Param("yearTime") LocalDateTime yearTime,
-                       @Param("total") Integer total);//第一次购买会员
-
-    void updateTime(@Param("userId") Integer userId,
-                    @Param("time") LocalDateTime time,
-                    @Param("thirtyTime") LocalDateTime thirtyTime,
-                    @Param("seasonTime") LocalDateTime seasonTime,
-                    @Param("yearTime") LocalDateTime yearTime,
-                    @Param("total") Integer total);//购买会员的 没有过期的添加时间
+    void buyupdateModifyTime(@Param("userId") Integer userId,
+                             @Param("time")LocalDateTime time,
+                             @Param("thirtyTime") LocalDateTime thirtyTime,
+                             @Param("seasonTime") LocalDateTime seasonTime,
+                             @Param("yearTime") LocalDateTime yearTime,
+                             @Param("total") Integer total);//购买会员的  没有过期的
 }

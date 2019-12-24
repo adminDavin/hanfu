@@ -7,11 +7,11 @@ package com.hanfu.payment.center.config;
  **/
 public class Configure {
     // 商户支付秘钥
-    private static String key = "";
+    private static String key = "271217yz";
     //小程序ID
     private static String appID = "wxfa188a42d843a0b0";
     //商户号
-    private static String mch_id = "";
+    private static String mch_id = "1508952911";
     // 小程序的secret
     private static String secret = "0433593dd1887ea5381e6d01308f81ba";
 

@@ -7,7 +7,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan(value="com.hanfu.cancel.dao")
+@MapperScan(value = "com.hanfu.cancel.dao")
 public class HanfuCancelCenterApplication {
 
     public static void main(String[] args) {

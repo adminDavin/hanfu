@@ -13,9 +13,7 @@ import javax.validation.constraints.NotNull;
  **/
 @Data
 public class NewWXOrderRequest {
-    @NotNull
-    @Min(value = 1)
-    private Integer quantity; // 货物数量
+
     @NotNull
     private String openId; // 小程序的用户openId
     @NotNull
@@ -23,27 +21,11 @@ public class NewWXOrderRequest {
     @NotNull
     private String body;//描述
     @NotNull
-    private Integer oreder_id;//订单id
+    private String out_trade_no;//商户订单号
     @NotNull
-    private Integer user_id;
-
-//    private String orderRemark; // 订单备注留言
-//    // 地址
-//    private String name; // 收货人姓名
-//    private String phone; // 收货人联系方式
-//    private String province; // 省份
-//    private String city; // 城市
-//    private String district; // 区
-//    private String address; // 详细地址
-
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+    private Integer user_id;//用户id
+    @NotNull
+    private Integer id;//订单的id
 
     public String getOpenId() {
         return openId;
@@ -69,11 +51,27 @@ public class NewWXOrderRequest {
         this.body = body;
     }
 
-    public Integer getOreder_id() {
-        return oreder_id;
+    public String getOut_trade_no() {
+        return out_trade_no;
     }
 
-    public void setOreder_id(Integer oreder_id) {
-        this.oreder_id = oreder_id;
+    public void setOut_trade_no(String out_trade_no) {
+        this.out_trade_no = out_trade_no;
+    }
+
+    public Integer getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
