@@ -11,12 +11,12 @@ public class CancelRecord {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-   private Integer id;
-   private LocalDateTime createDate;
-   private LocalDateTime modifyDate;
-   private Integer cancelId;
-   private Integer goodsId;
-   private Integer amount;
+    private Integer id;
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
+    private Integer cancelId;
+    private Integer goodsId;
+    private Integer amount;
 
     public Integer getId() {
         return id;
