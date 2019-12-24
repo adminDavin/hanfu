@@ -18,7 +18,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>Application</mainClass>
+					<mainClass>com.hanfu.group.center.GroupApplication</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
