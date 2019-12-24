@@ -17,10 +17,10 @@ spring:
     database: 0
     host: 172.26.16.97
     port: 6379
-    timeout: 300000
+    timeout: 3000000
     jedis:
       pool:
-        max-active: 16
+        max-active: 1000
         max-idle: 4
   task:
     execution:
