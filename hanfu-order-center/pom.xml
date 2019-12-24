@@ -65,25 +65,46 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.hanfu.inner.sdk</groupId>
-			<artifactId>hanfu-inner-sdk</artifactId>
-			<version>0.0.1</version>
+   			<groupId>com.github.pagehelper</groupId>
+   			<artifactId>pagehelper-spring-boot-starter</artifactId>
+   			<version>1.2.5</version>
 		</dependency>
-		<dependency>
-			<artifactId>hanfu-web-utils</artifactId>
-			<groupId>com.hanfu.utils</groupId>
-			<version>0.0.1</version>
-		</dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId> 
+        </dependency>
+        <dependency>
+            <groupId>com.hanfu.common</groupId>
+            <artifactId>hanfu-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hanfu.inner.sdk</groupId>
+            <artifactId>hanfu-inner-sdk</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+		  <artifactId>hanfu-web-utils</artifactId>
+		  <groupId>com.hanfu.utils</groupId>
+		  <version>0.0.1</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
 			<version>4.2.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-recipes</artifactId>
 			<version>4.2.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.dubbo</groupId>
 			<artifactId>dubbo-remoting-netty4</artifactId>
@@ -105,11 +126,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.1.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.dubbo</groupId>
 			<artifactId>dubbo-spring-boot-starter</artifactId>
