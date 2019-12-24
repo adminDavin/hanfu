@@ -62,8 +62,6 @@ public class PayController {
     public ResponseEntity<JSONObject> payment(@Valid @RequestBody NewWXOrderRequest request, HttpServletRequest httpServletRequest) {
         Map map = new HashMap();
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        //String money = "10";
-        //String title = "商品名字";  例如会员
 
         try {
             OrderInfo order = new OrderInfo();
@@ -71,11 +69,9 @@ public class PayController {
             order.setMch_id(Configure.getMch_id());
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
             order.setBody(request.getBody());
-            order.setOrder_id(request.getOreder_id());
-            order.setOut_trade_no(RandomStringGenerator.getRandomStringByLength(32));
+            order.setOut_trade_no(request.getOut_trade_no());
 
-            //注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
-            order.setTotal_fee(request.getTotal_fee()); // 该金钱其实10 是 0.1元  测试数据  后期可以从NewWXOrder里面获取
+            order.setTotal_fee(request.getTotal_fee()*100);//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 
             order.setSpbill_create_ip("127.0.0.1");
             order.setNotify_url(notify_url);
@@ -100,26 +96,31 @@ public class PayController {
 
             // 二次签名
             if ("SUCCESS".equals(returnInfo.getReturn_code()) && returnInfo.getReturn_code().equals(returnInfo.getResult_code())) {
+
                 SignInfo signInfo = new SignInfo();
+
                 signInfo.setAppId(Configure.getAppID());
                 long time = System.currentTimeMillis() / 1000;
                 signInfo.setTimeStamp(String.valueOf(time));
                 signInfo.setNonceStr(RandomStringGenerator.getRandomStringByLength(32));
                 signInfo.setPrepay_id("prepay_id=" + returnInfo.getPrepay_id());
                 signInfo.setSignType("MD5");
+
                 //生成签名
                 String sign1 = Signature.getSign(signInfo);
+
                 Map payInfo = new HashMap();
+
+                payInfo.put("appid",signInfo.getAppId());
                 payInfo.put("timeStamp", signInfo.getTimeStamp());
                 payInfo.put("nonceStr", signInfo.getNonceStr());
                 payInfo.put("package", signInfo.getPrepay_id());
                 payInfo.put("signType", signInfo.getSignType());
                 payInfo.put("paySign", sign1);
+
                 map.put("status", 200);
                 map.put("msg", "统一下单成功!");
                 map.put("data", payInfo);
-                // 此处可以写唤起支付前的业务逻辑
-                // 业务逻辑结束
                 return builder.body(ResponseUtils.getResponseBody(map));
             }
             map.put("status", 500);
@@ -162,12 +163,6 @@ public class PayController {
             // 因为微信回调会有八次之多,所以当第一次回调成功了,那么我们就不再执行逻辑了
             // 根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
             if (sign.equals(map.get("sign"))) {
-
-                Object order_id = map.get("order_id");
-                Object out_trade_no = map.get("out_trade_no");
-
-
-
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
