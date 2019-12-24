@@ -1,11 +1,11 @@
-package com.hanfu.user.center.service;
+package com.hanfu.user.center.dao;
 
 import com.hanfu.user.center.model.HfUserMember;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 
-public interface HfUserMemberService {
+public interface HfUserMemberMapper {
 
     HfUserMember itExistUserById(@Param("userId") Integer userId);//判断用户是不是第一次充值会员
 
@@ -24,9 +24,9 @@ public interface HfUserMemberService {
                       @Param("thirtyTime") LocalDateTime thirtyTime,
                       @Param("seasonTime") LocalDateTime seasonTime,
                       @Param("yearTime") LocalDateTime yearTime,
-                      @Param("total") Integer total);
+                      @Param("total") Integer total);//过期重新开通会员的时间
 
-    void updateBalance(@Param("userId") Integer userId, @Param("total") Integer total);//会员过期重新开通  余额表的余额添加就好
+    void updateBalance(@Param("userId") Integer userId,  @Param("total") Integer total);//会员过期重新开通  余额表的余额添加就好
 
     void updateModifyTime(@Param("userId") Integer userId,
                           @Param("time")LocalDateTime time,
