@@ -80,3 +80,4 @@ hanfu-web-utils/.classpath
 hanfu-user-center/logs/*
 hanfu-chat/.*
 hanfu-chat/target/*
+*/*.class
