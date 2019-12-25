@@ -75,6 +75,8 @@ public class CancelController {
     private HfGoodsMapper hfGoodsMapper;
     @Autowired
     private CancelRecordMapper cancelRecordMapper;
+    @Autowired
+    private HfPriceMapper hfPriceMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/selectCancel", method = RequestMethod.GET)
@@ -293,6 +295,7 @@ public class CancelController {
             @RequestParam(value = "encryptedData", required = false) String encryptedData,
             @RequestParam(value = "iv", required = false) String iv
     ) throws Exception {
+        System.out.println(code);
         if (code.equals("")) {
             ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
             return builder.body(ResponseUtils.getResponseBody("扫描获取失败"));
@@ -335,6 +338,12 @@ public class CancelController {
         }
         System.out.println(unionId + goodsId + orderId);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (goodsId==null){
+            return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
+        }
+        if (orderId==null){
+            return builder.body(ResponseUtils.getResponseBody("orderId为空"));
+        }
         Example example = new Example(HfUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("username", unionId);
@@ -395,13 +404,19 @@ public class CancelController {
         cancelRecord.setGoodsId(goodsId);
         cancelRecord.setCancelId(cancel1.getId());
         System.out.println(cancel1.getId() + "123456789");//123456789
-        cancelRecord.setAmount(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity());
+        Example example3 = new Example(HfPrice.class);
+        Example.Criteria criteria3 = example3.createCriteria();
+        criteria3.andEqualTo("googsId",goodsId);
+        List<HfPrice> hfPriceList1= hfPriceMapper.selectByExample(example3);
+        System.out.println("hfPriceList1:"+hfPriceList1);
+        System.out.println(hfPriceList1.get(0).getSellPrice());//1234564865
+        cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity());
         hfLogMapper.insert(cancelRecord);
         //添加核销员核销额记录
         cancel cancel = new cancel();
         cancel.setId(cancel1.getId());
-        cancel.setMoney(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity() + cancel1.getMoney());
-        cancel.setPresentMoney(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity() + cancel1.getPresentMoney());
+        cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getMoney());
+        cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getPresentMoney());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
 //        HfUserExample example = new HfUserExample();
 //        example.createCriteria().andUsernameEqualTo(unionId);
@@ -517,12 +532,18 @@ public class CancelController {
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
     public ResponseEntity<JSONObject> testCancel(
-            @RequestParam(value = "用户唯一标识", required = false) String unionId,
-            @RequestParam(value = "goodsId商品Id", required = false) Integer goodsId,
-            @RequestParam(value = "orderId订单Id", required = false) Integer orderId
+            @RequestParam(value = "用户唯一标识", required = true) String unionId,
+            @RequestParam(value = "goodsId商品Id", required = true) Integer goodsId,
+            @RequestParam(value = "orderId订单Id", required = true) Integer orderId
     ) throws Exception {
         System.out.println(unionId + goodsId + orderId);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (goodsId==null){
+            return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
+        }
+        if (orderId==null){
+            return builder.body(ResponseUtils.getResponseBody("orderId为空"));
+        }
         Example example = new Example(HfUser.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("username", unionId);
@@ -583,13 +604,19 @@ public class CancelController {
         cancelRecord.setGoodsId(goodsId);
         cancelRecord.setCancelId(cancel1.getId());
         System.out.println(cancel1.getId() + "123456789");//123456789
-        cancelRecord.setAmount(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity());
+        Example example3 = new Example(HfPrice.class);
+        Example.Criteria criteria3 = example3.createCriteria();
+        criteria3.andEqualTo("googsId",goodsId);
+        List<HfPrice> hfPriceList1= hfPriceMapper.selectByExample(example3);
+        System.out.println("hfPriceList1:"+hfPriceList1);
+        System.out.println(hfPriceList1.get(0).getSellPrice());//1234564865
+        cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity());
         hfLogMapper.insert(cancelRecord);
         //添加核销员核销额记录
         cancel cancel = new cancel();
         cancel.setId(cancel1.getId());
-        cancel.setMoney(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity() + cancel1.getMoney());
-        cancel.setPresentMoney(hfPrice.getPurchasePrice() * hfPrice.getPurchaseQuantity() + cancel1.getPresentMoney());
+        cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getMoney());
+        cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getPresentMoney());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
