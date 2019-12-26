@@ -1,6 +1,6 @@
 server:
   port: 9099
-wxapplet.config.weixinpay.notifyurl: http://localhost:8082/api/v1/weixin/wxappletpaycallback
+wxapplet.config.weixinpay.notifyurl: http://localhost:9099/api/v1/weixin/wxappletpaycallback
 
 spring:
   datasource:

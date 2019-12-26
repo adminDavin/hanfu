@@ -52,8 +52,8 @@ public class HfUserMemberServiceImpl implements HfUserMemberService {
     }
 
     @Override
-    public void updateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hfUserMemberMapper.updateModify(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void updateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total, Integer money, Integer number) {
+        hfUserMemberMapper.updateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
@@ -62,17 +62,17 @@ public class HfUserMemberServiceImpl implements HfUserMemberService {
     }
 
     @Override
-    public void updateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hfUserMemberMapper.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void updateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total, Integer money, Integer number) {
+        hfUserMemberMapper.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
-    public void buyupdateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hfUserMemberMapper.buyupdateModify(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void buyupdateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total,Integer money, Integer number) {
+        hfUserMemberMapper.buyupdateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
-    public void buyupdateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hfUserMemberMapper.buyupdateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void buyupdateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total,Integer money, Integer number) {
+        hfUserMemberMapper.buyupdateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 }

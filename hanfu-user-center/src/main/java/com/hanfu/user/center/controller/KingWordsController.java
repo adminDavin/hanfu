@@ -140,7 +140,7 @@ public class KingWordsController {
 		redisTemplate.opsForValue().set(phone, String.valueOf(code));
 		return builder.body(ResponseUtils.getResponseBody(code));
 	}
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
