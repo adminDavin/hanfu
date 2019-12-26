@@ -1,0 +1,120 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-message-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 130, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 50, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 50, column 12
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ----------------< com.hanfu.base:hanfu-message-center >-----------------
+[INFO] Building hanfu-message-center 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) > test-compile @ hanfu-message-center >>>
+Downloading from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.11/xstream-1.4.11.pom
+Progress (1): 2.8/20 kBProgress (1): 5.5/20 kBProgress (1): 8.3/20 kBProgress (1): 11/20 kB Progress (1): 14/20 kBProgress (1): 16/20 kBProgress (1): 19/20 kBProgress (1): 20 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.11/xstream-1.4.11.pom (20 kB at 14 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.11/xstream-parent-1.4.11.pom
+Progress (1): 2.2/37 kBProgress (1): 5.0/37 kBProgress (1): 7.8/37 kBProgress (1): 11/37 kB Progress (1): 13/37 kBProgress (1): 16/37 kBProgress (1): 19/37 kBProgress (1): 21/37 kBProgress (1): 24/37 kBProgress (1): 27/37 kBProgress (1): 30/37 kBProgress (1): 32/37 kBProgress (1): 35/37 kBProgress (1): 37 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.11/xstream-parent-1.4.11.pom (37 kB at 72 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.pom
+Progress (1): 386 B                   Downloaded from central: https://repo.maven.apache.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.pom (386 B at 1.1 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.pom
+Progress (1): 1.6 kB                    Downloaded from central: https://repo.maven.apache.org/maven2/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.pom (1.6 kB at 4.8 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.11/xstream-1.4.11.jar
+Downloading from central: https://repo.maven.apache.org/maven2/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar
+Downloading from central: https://repo.maven.apache.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar
+Progress (1): 2.2/621 kBProgress (1): 5.0/621 kBProgress (1): 7.7/621 kBProgress (1): 10/621 kB Progress (1): 13/621 kBProgress (1): 16/621 kBProgress (1): 19/621 kBProgress (1): 21/621 kBProgress (1): 24/621 kBProgress (1): 27/621 kBProgress (1): 30/621 kBProgress (1): 32/621 kBProgress (1): 36/621 kBProgress (1): 40/621 kBProgress (1): 45/621 kBProgress (1): 49/621 kBProgress (1): 53/621 kBProgress (1): 57/621 kBProgress (1): 61/621 kBProgress (1): 65/621 kBProgress (1): 69/621 kBProgress (1): 73/621 kBProgress (1): 77/621 kBProgress (1): 81/621 kBProgress (1): 85/621 kBProgress (1): 90/621 kBProgress (1): 94/621 kBProgress (1): 98/621 kBProgress (1): 102/621 kBProgress (1): 106/621 kBProgress (1): 110/621 kBProgress (1): 114/621 kBProgress (1): 118/621 kBProgress (1): 122/621 kBProgress (1): 126/621 kBProgress (1): 131/621 kBProgress (1): 135/621 kBProgress (1): 139/621 kBProgress (1): 143/621 kBProgress (1): 147/621 kBProgress (1): 151/621 kBProgress (1): 155/621 kBProgress (1): 159/621 kBProgress (1): 163/621 kBProgress (1): 167/621 kBProgress (1): 171/621 kBProgress (1): 176/621 kBProgress (1): 180/621 kBProgress (1): 184/621 kBProgress (1): 188/621 kBProgress (1): 192/621 kBProgress (1): 196/621 kBProgress (1): 200/621 kBProgress (1): 204/621 kBProgress (1): 208/621 kBProgress (1): 212/621 kBProgress (1): 217/621 kBProgress (1): 221/621 kBProgress (1): 225/621 kBProgress (1): 229/621 kBProgress (1): 233/621 kBProgress (1): 237/621 kBProgress (1): 241/621 kBProgress (1): 245/621 kBProgress (1): 249/621 kBProgress (1): 253/621 kBProgress (1): 258/621 kBProgress (1): 262/621 kBProgress (1): 266/621 kBProgress (1): 270/621 kBProgress (1): 274/621 kBProgress (1): 278/621 kBProgress (2): 278/621 kB | 2.2/25 kBProgress (2): 278/621 kB | 5.0/25 kBProgress (3): 278/621 kB | 5.0/25 kB | 2.2/7.2 kBProgress (3): 278/621 kB | 7.7/25 kB | 2.2/7.2 kBProgress (3): 278/621 kB | 7.7/25 kB | 5.0/7.2 kBProgress (3): 278/621 kB | 7.7/25 kB | 7.2 kB    Progress (3): 282/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 286/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 290/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 294/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 298/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 303/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 307/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 311/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 315/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 319/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 323/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 327/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 331/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 335/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 339/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 344/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 348/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 352/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 356/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 360/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 364/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 368/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 372/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 376/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 380/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 384/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 389/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 393/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 397/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 401/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 405/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 409/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 413/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 417/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 421/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 425/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 430/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 434/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 438/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 442/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 446/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 450/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 454/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 458/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 462/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 466/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 470/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 475/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 479/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 483/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 487/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 491/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 495/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 499/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 503/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 507/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 511/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 516/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 520/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 524/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 528/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 532/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 536/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 540/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 544/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 548/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 552/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 557/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 561/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 565/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 569/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 573/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 577/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 581/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 585/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 589/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 593/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 597/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 602/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 606/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 610/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 614/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 618/621 kB | 7.7/25 kB | 7.2 kBProgress (3): 621 kB | 7.7/25 kB | 7.2 kB    Progress (3): 621 kB | 10/25 kB | 7.2 kB Progress (3): 621 kB | 13/25 kB | 7.2 kBProgress (3): 621 kB | 16/25 kB | 7.2 kBProgress (3): 621 kB | 19/25 kB | 7.2 kBProgress (3): 621 kB | 21/25 kB | 7.2 kBProgress (3): 621 kB | 24/25 kB | 7.2 kBProgress (3): 621 kB | 25 kB | 7.2 kB                                        Downloaded from central: https://repo.maven.apache.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar (7.2 kB at 9.5 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.11/xstream-1.4.11.jar (621 kB at 710 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar (25 kB at 27 kB/s)
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:build-info (default) @ hanfu-message-center ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hanfu-message-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hanfu-message-center ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 12 source files to /home/hanfu/project/hanfu/hanfu-message-center/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hanfu-message-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/hanfu/project/hanfu/hanfu-message-center/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hanfu-message-center ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) < test-compile @ hanfu-message-center <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) @ hanfu-message-center ---
+[INFO] Attaching agents: []
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.11.2/log4j-slf4j-impl-2.11.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+log4j:WARN No appenders could be found for logger (org.apache.dubbo.common.logger.LoggerFactory).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+2019-12-24 10:06:01.918  INFO 5342 --- [           main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-24 10:06:01.925  INFO 5342 --- [           main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.7.RELEASE)
+
+2019-12-24 10:06:02.029  INFO 5342 --- [           main] com.hanfu.message.center.Application     : Starting Application on iZ8vb5lq7zcx56jn12h1ugZ with PID 5342 (/home/hanfu/project/hanfu/hanfu-message-center/target/classes started by hanfu in /home/hanfu/project/hanfu/hanfu-message-center)
+2019-12-24 10:06:02.030  INFO 5342 --- [           main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-24 10:06:02.781  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-24 10:06:02.782  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-24 10:06:02.782  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-24 10:06:02.783  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-24 10:06:02.784  INFO 5342 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-24 10:06:02.831  INFO 5342 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-24 10:06:02.833  INFO 5342 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-24 10:06:02.858  INFO 5342 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15ms. Found 0 repository interfaces.
+2019-12-24 10:06:02.950  WARN 5342 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-24 10:06:03.140  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$9cfb8d8] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.226  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$dbdb8f72] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.274  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$9a89dda8] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.284  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.293  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.296  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.299  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.302  INFO 5342 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:06:03.620  INFO 5342 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-24 10:06:03.650  INFO 5342 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-24 10:06:03.651  INFO 5342 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-24 10:06:03.736  INFO 5342 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-24 10:06:03.737  INFO 5342 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1674 ms
+2019-12-24 10:06:04.272  INFO 5342 --- [           main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-24 10:06:04.432  INFO 5342 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-24 10:06:04.529  INFO 5342 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-24 10:06:04.535  INFO 5342 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-24 10:06:04.541  INFO 5342 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-24 10:06:04.554  INFO 5342 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-24 10:06:04.559  INFO 5342 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-24 10:06:05.227  INFO 5342 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-24 10:06:05.239  INFO 5342 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-24 10:06:05.261  INFO 5342 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-24 10:06:05.383  INFO 5342 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-24 10:06:05.387  INFO 5342 --- [           main] com.hanfu.message.center.Application     : Started Application in 3.83 seconds (JVM running for 4.169)

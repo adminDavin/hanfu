@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -40,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -113,6 +115,7 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.mysql.cj.result.Field;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.swagger.annotations.Api;
@@ -120,6 +123,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/wareHouse")
 @Api
@@ -396,7 +400,11 @@ public class ActivityManagerController {
 							String.valueOf(Integer.valueOf(activityStrategyInstance1.getRuleValue()) - 1));
 					activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance1);
 				}
-				activitiRuleInstanceMapper.insert(ruleValueDesc);
+				synchronized(LOCKLOCK3) {
+					if(activitiRuleInstanceMapper.selectByExample(example3).isEmpty()) {
+						activitiRuleInstanceMapper.insert(ruleValueDesc);
+					}
+				}
 			} else {
 				id = id + list3.get(0).getUserId() + ",";
 			}
@@ -541,15 +549,6 @@ public class ActivityManagerController {
 		if (!activityVoteRecordsMapper.selectByExample(activityVoteRecordsExample).isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody("不能重复打分"));
 		}
-		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
-				.andActivityIdEqualTo(request.getActivityId());
-		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
-		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
-		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
-		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
-		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
-		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		Integer[] remark = request.getRemark();
 		ActivityEvaluateTemplateExample example3 = new ActivityEvaluateTemplateExample();
 		example3.createCriteria().andParentTemplateIdEqualTo(request.getActivityId())
@@ -558,7 +557,7 @@ public class ActivityManagerController {
 		for (int i = 0; i < remark.length; i++) {
 			// TODO
 			ActivityEvaluateTemplate template = list.get(i);
-			if (remark[i] < 0) {
+			if (remark[i] < 0 || remark[i]>100) {
 				return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 			}
 			addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), request.getType(),
@@ -568,7 +567,15 @@ public class ActivityManagerController {
 		if (total > 100) {
 			return builder.body(ResponseUtils.getResponseBody("超出限定分数"));
 		}
-
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		example.createCriteria().andUserIdEqualTo(request.getElectedUserId())
+				.andActivityIdEqualTo(request.getActivityId());
+		ActivitiRuleInstanceExample example2 = new ActivitiRuleInstanceExample();
+		example2.createCriteria().andUserIdEqualTo(request.getUserId()).andActivityIdEqualTo(request.getActivityId());
+		List<ActivitiRuleInstance> ruleValueDesc = activitiRuleInstanceMapper.selectByExample(example);
+		List<ActivitiRuleInstance> ruleValueDesc2 = activitiRuleInstanceMapper.selectByExample(example2);
+		ActivitiRuleInstance userElect = ruleValueDesc.get(0);
+		ActivitiRuleInstance userVote = ruleValueDesc2.get(0);
 		double reportScore = 0.00;
 		double deedScore = 0.00;
 		ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
@@ -597,7 +604,8 @@ public class ActivityManagerController {
 		} else {
 			reportScore = (reportScore / list2.size()) * 0.5;
 		}
-		userElect.setRemarks(String.valueOf(deedScore + reportScore));
+		DecimalFormat df = new DecimalFormat("0.000");  
+		userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
 		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody("打分成功"));
 	}
@@ -634,7 +642,7 @@ public class ActivityManagerController {
 		activitiRuleInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-
+	
 	@ApiOperation(value = "取消点赞", notes = "取消点赞")
 	@RequestMapping(value = "/deleteclickPraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> deleteclickPraise(RecordScoreRequest request) throws JSONException {
@@ -778,6 +786,31 @@ public class ActivityManagerController {
 		activityMapper.updateByPrimaryKey(activity);
 		return builder.body(ResponseUtils.getResponseBody("修改成功"));
 	}
+	
+	
+	@ApiOperation(value = "开启关闭活动排行榜", notes = "开启关闭活动排行榜")
+	@RequestMapping(value = "/startActivityResult", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> startActivityResult(@RequestParam Integer activityId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		if ("praise".equals(activity.getActiviyType())) {
+//			ActivityExample example = new ActivityExample();
+//			example.createCriteria().andActiviyTypeEqualTo("praise");
+//			List<Activity> list = activityMapper.selectByExample(example);
+//			for (int i = 0; i < list.size(); i++) {
+//				Activity activity2 = list.get(i);
+//				activity2.setIsTimingStart((short) 0);
+//				activityMapper.updateByPrimaryKey(activity2);
+//			}
+//		}
+		if (activity.getIsDeleted() == (short) 0) {
+			activity.setIsDeleted((short) 1);
+		} else {
+			activity.setIsDeleted((short) 0);
+		}
+		activityMapper.updateByPrimaryKey(activity);
+		return builder.body(ResponseUtils.getResponseBody("修改成功"));
+	}
 
 	@ApiOperation(value = "查询某个活动的结果", notes = "查询某个活动的结果")
 	@RequestMapping(value = "/findActivityResult", method = RequestMethod.GET)
@@ -826,7 +859,6 @@ public class ActivityManagerController {
 			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 			example.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(userId)
 					.andElectedUserIdEqualTo(electedUserId).andIsDeletedEqualTo((short) 0);
-			synchronized (LOCKLOCK) {
 				List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
 				if (list.isEmpty()) {
 					ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
@@ -846,7 +878,6 @@ public class ActivityManagerController {
 				} else {
 					return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
 				}
-			}
 		} else {
 			ActivityVoteRecords activityVoteRecords = new ActivityVoteRecords();
 			activityVoteRecords.setActivityId(activityId);
@@ -1153,8 +1184,7 @@ public class ActivityManagerController {
 		}
 		return departmentId;
 	}
-
-	@RequestMapping(path = "/updateUserAvatar", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateUserAvatar", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户头像", notes = "更新用户头像")
 	public Integer updateUserAvatar(MultipartFile fileInfo, @RequestParam Integer userId) throws Exception {
 		com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
@@ -1183,6 +1213,7 @@ public class ActivityManagerController {
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		} else {
 			FileDesc fileDesc = list.get(0);
+			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setModifyTime(LocalDateTime.now());

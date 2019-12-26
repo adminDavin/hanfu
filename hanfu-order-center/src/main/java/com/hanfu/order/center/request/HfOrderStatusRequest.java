@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrderStatusRequest implements Serializable{
-	@ApiModelProperty(required = true, value = "类目名称")
+	@ApiModelProperty(required = true, value = "状态Id")
     private Integer id;
-	@ApiModelProperty(required = true, value = "状态名称")
+	@ApiModelProperty(required = true, value = "状态名称" )
 	private String hfName;
-	@ApiModelProperty(required = true, value = "订单状态")
+	@ApiModelProperty(required = true, value = "订单状态" )
 	private Integer hfStatus;
-	@ApiModelProperty(required = true, value = "订单状态描述")
+	@ApiModelProperty(required = true, value = "订单状态描述" )
 	private String hfDesc;
 	public Integer getId() {
 		return id;
