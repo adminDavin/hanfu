@@ -9,4 +9,6 @@ import com.hanfu.activity.center.model.ActivityVoteRecords;
 public interface VoteRecordsDao {
 	
 	List<Integer> distinctUserId(VoteRecordsEntity entity);
+	
+	List<Integer> distinctElectedId(Integer activityId);
 }
