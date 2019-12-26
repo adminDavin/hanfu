@@ -1213,7 +1213,7 @@ public class ActivityManagerController {
 			hfUserMapper.updateByPrimaryKey(hfUser);
 		} else {
 			FileDesc fileDesc = list.get(0);
-			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+//			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setModifyTime(LocalDateTime.now());

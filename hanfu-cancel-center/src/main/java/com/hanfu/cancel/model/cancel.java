@@ -11,16 +11,16 @@ public class cancel {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-  private Integer id;
-  private Integer money;
-  private Integer  userId;
-  private LocalDateTime createDate;
-  private LocalDateTime modifyDate;
-  private Integer ordersId;
-   private String site;
-   private Integer recordId;
-   private Integer goodsId;
-   private Integer presentMoney;
+    private Integer id;
+    private Integer money;
+    private Integer userId;
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
+    private Integer ordersId;
+    private String site;
+    private Integer recordId;
+    private Integer goodsId;
+    private Integer presentMoney;
 
     public Integer getPresentMoney() {
         return presentMoney;

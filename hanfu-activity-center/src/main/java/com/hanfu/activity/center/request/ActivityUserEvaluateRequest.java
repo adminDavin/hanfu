@@ -1,5 +1,7 @@
 package com.hanfu.activity.center.request;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.ApiModel;
@@ -15,7 +17,7 @@ public class ActivityUserEvaluateRequest extends CommonRequest{
 	@ApiModelProperty(required = false, value = "模板id")
 	private Integer[] evaluateTemplateId;
 	@ApiModelProperty(required = false, value = "评价内容")
-	private String[] evaluateContent;
+	private List<String> evaluateContent;
 	@ApiModelProperty(required = false, value = "评价结果")
 	private String evaluateResult;
 	@ApiModelProperty(required = false, value = "评论")
@@ -38,10 +40,10 @@ public class ActivityUserEvaluateRequest extends CommonRequest{
 	public void setEvaluateTemplateId(Integer[] evaluateTemplateId) {
 		this.evaluateTemplateId = evaluateTemplateId;
 	}
-	public String[] getEvaluateContent() {
+	public List<String> getEvaluateContent() {
 		return evaluateContent;
 	}
-	public void setEvaluateContent(String[] evaluateContent) {
+	public void setEvaluateContent(List<String> evaluateContent) {
 		this.evaluateContent = evaluateContent;
 	}
 	public String getEvaluateResult() {
