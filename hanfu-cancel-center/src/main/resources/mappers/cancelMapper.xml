@@ -47,7 +47,7 @@ select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from 
             AND h1.site LIKE concat('%',#{site},'%')
         </if>
         <if test="site == null">
-            AND h1.create_date between #{createData} and #{createDate1};
+            AND h1.create_date between #{createData} and #{createDate1}
         </if>
     </select>
 

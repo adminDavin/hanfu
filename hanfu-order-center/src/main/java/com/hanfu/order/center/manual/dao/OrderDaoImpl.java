@@ -19,8 +19,8 @@ public class OrderDaoImpl implements OrderDao{
 	@Autowired
     SqlSessionTemplate sqlSessionTemplate;
 	@Override
-	public List<HfOrderLogistics> selectOrderList() {
-		List<HfOrderLogistics> result = sqlSessionTemplate.selectList("selectOrderList");
+	public List<OrderInfo> selectOrderList() {
+		List<OrderInfo> result = sqlSessionTemplate.selectList("selectOrderList");
 		return result;
 	}
 	@Override
@@ -37,6 +37,11 @@ public class OrderDaoImpl implements OrderDao{
 	public List<OrderInfo> selectOrder(OrderFindValue orderFindValue
 			) {
 		List<OrderInfo> result = sqlSessionTemplate.selectList("selectOrder",orderFindValue);
+		return result;
+	}
+	@Override
+	public List<OrderInfo> selectOrderByUserId(Integer userId) {
+		List<OrderInfo> result = sqlSessionTemplate.selectList("selectOrderByUserId",userId);
 		return result;
 	}
 

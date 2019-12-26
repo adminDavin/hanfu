@@ -31,7 +31,7 @@ public class MessageController {
     public ResponseEntity<JSONObject> sendMessage(String openid,String title, String defeated, String instructions) throws Exception {
     	BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Template tem=new Template();
-        tem.setTemplateId("模板消息id");
+        tem.setTemplateId("9EHvCd008ioRmZpIWXE11FP_ltA9jAkBCeRsMOz1uu4");//订单商品自提通知
         tem.setTopColor("#00DD00");//颜色
         tem.setToUser(openid);//接收方ID
         System.out.println(openid+"=====================");

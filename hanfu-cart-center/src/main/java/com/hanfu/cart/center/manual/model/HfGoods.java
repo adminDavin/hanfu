@@ -1,4 +1,4 @@
-package com.hanfu.cart.center.model;
+package com.hanfu.cart.center.manual.model;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;

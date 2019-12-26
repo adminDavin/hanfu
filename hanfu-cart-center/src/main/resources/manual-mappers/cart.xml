@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hanfu.cart.center.dao.HfGoodsDao">
-	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.cart.center.model.HfGoods">
+<mapper namespace="com.hanfu.cart.center.manual.dao.HfGoodsDao">
+	<resultMap id="EntityHfGoodDispaly" type="com.hanfu.cart.center.manual.model.HfGoods">
     <result column="hf_name" jdbcType="VARCHAR" property="goodName" />
     <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
     <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName" />
@@ -18,7 +18,7 @@
    </resultMap>
 
 
-<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
+<select id="selectGoods" resultMap="EntityHfGoodDispaly">
 		SELECT
 				h.goods_desc,h.id,
 				h.hf_name,h.resp_id,

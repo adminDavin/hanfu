@@ -815,4 +815,43 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
+//	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
+//	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam Integer activityId)
+//			throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+//		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+//		if("election".equals(activity.getActiviyType())) {
+//			example.createCriteria().andActivityIdEqualTo(activityId);
+//			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+//			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
+//			for (int i = 0; i < list.size(); i++) {
+//				ActivityVoteRecords records = list.get(i);
+//				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+//				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+//				VoteRecordsEntity entity = new VoteRecordsEntity();
+//				if(votePerson != null) {
+//					if(votePerson.getRealName() != null) {
+//						entity.setVoteName(votePerson.getRealName());
+//					}else {
+//						entity.setVoteName(votePerson.getNickName());
+//					}
+//				}
+//				if(electedPeson != null) {
+//					if(electedPeson.getRealName() != null) {
+//						entity.setEceltedName(electedPeson.getRealName());
+//					}else {
+//						entity.setEceltedName(electedPeson.getNickName());
+//					}
+//				}
+//		}
+		
+//		List<Integer> list = voteRecordsDao.distinctElectedId(activityId);
+//		for (int i = 0; i < list.size(); i++) {
+//			
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(null));
+//	}
+//	
 }
