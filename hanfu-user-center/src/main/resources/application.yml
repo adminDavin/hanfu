@@ -1,5 +1,6 @@
 server:
   port: 8082
+  address: 0.0.0.0
 
 spring:
   datasource:
@@ -17,10 +18,10 @@ spring:
     database: 0
     host: 47.105.72.216
     port: 6379
-    timeout: 10000
+    timeout: 3000000
     jedis:
       pool:
-        max-active: 16
+        max-active: 1000
         max-idle: 4
   task:
     execution:
@@ -49,6 +50,6 @@ logging:
   file: ./logs/king-words.log  
   
 mybatis:
-  mapper-locations: 
+  mapper-locations:
     - mappers/*.xml
     - manual-mappers/*.xml

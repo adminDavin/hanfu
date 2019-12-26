@@ -1,4 +1,6 @@
-﻿package com.hanfu.order.center.utils;
+package com.hanfu.order.center.utils;
+
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,69 +16,69 @@ import java.util.Map;
 
 
 public class KdniaoTrackQueryAPI {
-	
-	
-	private String EBusinessID="1608906";
-	private String AppKey="c767ea43-cbc0-4e7b-85b4-82a40c8510eb";
-	private String ReqURL="http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";	
+    
+    
+    private String EBusinessID="1608906";
+    private String AppKey="c767ea43-cbc0-4e7b-85b4-82a40c8510eb";
+    private String ReqURL="http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";  
  
-	public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
-		String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
-		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("RequestData", urlEncoder(requestData, "UTF-8"));
-		params.put("EBusinessID", EBusinessID);
-		params.put("RequestType", "1002");
-		String dataSign=encrypt(requestData, AppKey, "UTF-8");
-		params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
-		params.put("DataType", "2");
-		
-		String result=sendPost(ReqURL, params);	
-		
-		//根据公司业务处理返回的信息......
-		
-		return result;
-	}
+    public String getOrderTracesByJson(String expCode, String expNo) throws Exception{
+        String requestData= "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
+        
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("RequestData", urlEncoder(requestData, "UTF-8"));
+        params.put("EBusinessID", EBusinessID);
+        params.put("RequestType", "1002");
+        String dataSign=encrypt(requestData, AppKey, "UTF-8");
+        params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
+        params.put("DataType", "2");
+        
+        String result=sendPost(ReqURL, params); 
+        
+        //根据公司业务处理返回的信息......
+        
+        return result;
+    }
  
-	@SuppressWarnings("unused")
-	private String MD5(String str, String charset) throws Exception {
-	    MessageDigest md = MessageDigest.getInstance("MD5");
-	    md.update(str.getBytes(charset));
-	    byte[] result = md.digest();
-	    StringBuffer sb = new StringBuffer(32);
-	    for (int i = 0; i < result.length; i++) {
-	        int val = result[i] & 0xff;
-	        if (val <= 0xf) {
-	            sb.append("0");
-	        }
-	        sb.append(Integer.toHexString(val));
-	    }
-	    return sb.toString().toLowerCase();
-	}
-	
-	private String base64(String str, String charset) throws UnsupportedEncodingException{
-		String encoded = base64Encode(str.getBytes(charset));
-		return encoded;    
-	}	
-	
-	@SuppressWarnings("unused")
-	private String urlEncoder(String str, String charset) throws UnsupportedEncodingException{
-		String result = URLEncoder.encode(str, charset);
-		return result;
-	}
-	
-	@SuppressWarnings("unused")
-	private String encrypt (String content, String keyValue, String charset) throws UnsupportedEncodingException, Exception
-	{
-		if (keyValue != null)
-		{
-			return base64(MD5(content + keyValue, charset), charset);
-		}
-		return base64(MD5(content, charset), charset);
-	}
-	
-	@SuppressWarnings("unused")
-	private String sendPost(String url, Map<String, String> params) {
+    @SuppressWarnings("unused")
+    private String MD5(String str, String charset) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(str.getBytes(charset));
+        byte[] result = md.digest();
+        StringBuffer sb = new StringBuffer(32);
+        for (int i = 0; i < result.length; i++) {
+            int val = result[i] & 0xff;
+            if (val <= 0xf) {
+                sb.append("0");
+            }
+            sb.append(Integer.toHexString(val));
+        }
+        return sb.toString().toLowerCase();
+    }
+    
+    private String base64(String str, String charset) throws UnsupportedEncodingException{
+        String encoded = base64Encode(str.getBytes(charset));
+        return encoded;    
+    }   
+    
+    @SuppressWarnings("unused")
+    private String urlEncoder(String str, String charset) throws UnsupportedEncodingException{
+        String result = URLEncoder.encode(str, charset);
+        return result;
+    }
+    
+    @SuppressWarnings("unused")
+    private String encrypt (String content, String keyValue, String charset) throws UnsupportedEncodingException, Exception
+    {
+        if (keyValue != null)
+        {
+            return base64(MD5(content + keyValue, charset), charset);
+        }
+        return base64(MD5(content, charset), charset);
+    }
+    
+    @SuppressWarnings("unused")
+    private String sendPost(String url, Map<String, String> params) {
         OutputStreamWriter out = null;
         BufferedReader in = null;        
         StringBuilder result = new StringBuilder(); 
@@ -94,18 +96,18 @@ public class KdniaoTrackQueryAPI {
             conn.connect();
             out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
             if (params != null) {
-		          StringBuilder param = new StringBuilder(); 
-		          for (Map.Entry<String, String> entry : params.entrySet()) {
-		        	  if(param.length()>0){
-		        		  param.append("&");
-		        	  }	        	  
-		        	  param.append(entry.getKey());
-		        	  param.append("=");
-		        	  param.append(entry.getValue());		        	  
-		        	  //System.out.println(entry.getKey()+":"+entry.getValue());
-		          }
-		          //System.out.println("param:"+param.toString());
-		          out.write(param.toString());
+                  StringBuilder param = new StringBuilder(); 
+                  for (Map.Entry<String, String> entry : params.entrySet()) {
+                      if(param.length()>0){
+                          param.append("&");
+                      }               
+                      param.append(entry.getKey());
+                      param.append("=");
+                      param.append(entry.getValue());                     
+                      //System.out.println(entry.getKey()+":"+entry.getValue());
+                  }
+                  //System.out.println("param:"+param.toString());
+                  out.write(param.toString());
             }
             // flush输出流的缓冲
             out.flush();
@@ -135,8 +137,8 @@ public class KdniaoTrackQueryAPI {
         }
         return result.toString();
     }
-	
-	
+    
+    
     private static char[] base64EncodeChars = new char[] { 
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
         'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
@@ -146,7 +148,7 @@ public class KdniaoTrackQueryAPI {
         'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
         'w', 'x', 'y', 'z', '0', '1', '2', '3', 
         '4', '5', '6', '7', '8', '9', '+', '/' }; 
-	
+    
     public static String base64Encode(byte[] data) { 
         StringBuffer sb = new StringBuffer(); 
         int len = data.length; 

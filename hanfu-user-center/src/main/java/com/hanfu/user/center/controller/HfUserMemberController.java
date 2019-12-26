@@ -1,7 +1,7 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.user.center.model.HUserBalance;
+import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -36,12 +36,15 @@ public class HfUserMemberController {
     @ApiOperation(value = "充值会员",notes = "充值会员")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "money", value = "会员月数对应的金额", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "number", value = "会员月数", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "total", value = "充值的金额", required = true, type = "Integer")
     })
     public ResponseEntity<JSONObject> rechargeMember(@RequestParam(required = true,defaultValue = "") Integer userId,
+                                                     @RequestParam(required = true,defaultValue = "") Integer money,
+                                                     @RequestParam(required = true,defaultValue = "") Integer number,
                                                      @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-
 
         LocalDateTime time = LocalDateTime.now();
         LocalDateTime thirtyTime = LocalDateTime.now();
@@ -51,13 +54,14 @@ public class HfUserMemberController {
         seasonTime = time.minus(-3, ChronoUnit.MONTHS);
         yearTime = time.minus(-12, ChronoUnit.MONTHS);
 
+        //先判断用户是不是第一次充值或者购买会员
+        HfUserMember hfUserMember = hfUserMemberService.itExistUserById(userId);
 
-        //先判断用户是不是第一次充值会员
-        HUserBalance hUserBalance = hfUserMemberService.itExistUserById(userId);
+        //如果用户不是第一次充值会员  直接修改会员表和余额表就可以了
+        if(hfUserMember!=null){
 
-        //如果用户不是第一次充值会员  直接修改用户表和余额表就可以了
-        if(hUserBalance!=null){
-            //如果不是第一次开会员 想看用户到期没有
+            System.out.println("不是第一次开会员");
+            //不是第一次开会员得先看他会员过期没有
             String str = hfUserMemberService.getModifyTime(userId);
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime parse = LocalDateTime.parse(str, df);//这个是用户的过期时间
@@ -67,33 +71,48 @@ public class HfUserMemberController {
 
             if (parseBefore){//如果过期时间在当前时间前面  则已经过期
                 System.out.println("已经过期");
-                hfUserMemberService.memberTime(userId,time,thirtyTime,seasonTime,yearTime,total); //到期的话 就重新设置开通会员的开始和过期时间
-                hfUserMemberService.updateBalance(userId,total);//但是余额表不用新增  修改余额就可以
-                return builder.body(ResponseUtils.getResponseBody("充值会员成功"));
+                //已经过期重新设置会员开通、过期时间，但余额表的余额是在原来的基础上相加
+                hfUserMemberService.updateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
+                hfUserMemberService.updateBalance(userId,total);
+                return builder.body(ResponseUtils.getResponseBody("会员开通成功"));
             }else{
                 System.out.println("没有过期");
-                //没有过期的话  先修改用户的过期时间
-                hfUserMemberService.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total);
-                //如何在添加用户余额就可以了
+                //没有过期的话 过期日期在加上对应的时间  余额表加上即可
+                hfUserMemberService.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
                 hfUserMemberService.updateBalance(userId,total);
-                return builder.body(ResponseUtils.getResponseBody("充值会员成功"));
+                return builder.body(ResponseUtils.getResponseBody("会员开通成功"));
             }
 
         }else{
-            hfUserMemberService.memberTime(userId,time,thirtyTime,seasonTime,yearTime,total);//如果是第一次充值  则要新增数据 先给用户表添加成为会员的时间，并改变用户的状态
-            hfUserMemberService.insertBalance(userId,total);//然后再把用户冲的钱放到用户的余额表里面
-            return builder.body(ResponseUtils.getResponseBody("充值会员成功"));
+            System.out.println("第一次开会员");
+            //第一次开会员  根据充值的金额分别开通不同的时间
+            if(total==money&&number==1){
+                hfUserMemberService.insertthirtyTime(userId,time,thirtyTime);
+            }if (total==money&&number==3){
+                hfUserMemberService.insertseasonTime(userId,time,seasonTime);
+            }if(total==money&&number==12){
+                hfUserMemberService.insertyearTime(userId,time,yearTime);
+            }
+            hfUserMemberService.insertBalance(userId,total);
+            return builder.body(ResponseUtils.getResponseBody("会员开通成功"));
         }
     }
+
+
+
 
 
     @ApiOperation(value = "购买会员",notes = "购买会员")
     @RequestMapping(value = "buyMember",method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "money", value = "会员月数对应的金额", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "number", value = "会员月数", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "total", value = "充值的金额", required = true, type = "Integer")
     })
     public ResponseEntity<JSONObject> buyMember(@RequestParam(required = true,defaultValue = "") Integer userId,
+                                                @RequestParam(required = true,defaultValue = "") Integer money,
+                                                @RequestParam(required = true,defaultValue = "") Integer number,
                                                 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
@@ -105,15 +124,12 @@ public class HfUserMemberController {
         seasonTime = time.minus(-3, ChronoUnit.MONTHS);
         yearTime = time.minus(-12, ChronoUnit.MONTHS);
 
+        //先判断用户是不是第一次充值会员
+        HfUserMember hfUserMember = hfUserMemberService.itExistUserById(userId);
 
-        //先判断是不是第一次购买会员
-        String createTime = hfUserMemberService.getCreateTime(userId);
-
-        System.out.println(createTime);
-
-        if (createTime!=null){
+        if(null!=hfUserMember){
             System.out.println("不是第一次购买会员");
-            //先判断他过期没有
+            //不是第一次购买会员  判断他会员过期没有
             String str = hfUserMemberService.getModifyTime(userId);
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime parse = LocalDateTime.parse(str, df);//这个是用户的过期时间
@@ -121,24 +137,53 @@ public class HfUserMemberController {
             System.out.println("这是当前时间:"+time);
             boolean parseBefore = parse.isBefore(time);
 
-            if (parseBefore){//如果过期日期在当前日期前面 则已经过期
+            if (parseBefore){//如果过期时间在当前时间前面  则已经过期
                 System.out.println("已经过期");
-                //购买会员  相当于重新设置开通，过期时间和状态
-                //直接调用第一次购买会员的方法就可以了
-                hfUserMemberService.buymemberTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+                //已经过期重新设置会员开通、过期时间，但余额表的余额是在原来的基础上相加
+                hfUserMemberService.buyupdateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
                 return builder.body(ResponseUtils.getResponseBody("购买会员成功"));
-            }else {
+            }else{
                 System.out.println("没有过期");
-                //没有过期  在过期时间上面加时间
-                hfUserMemberService.updateTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+                hfUserMemberService.buyupdateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
                 return builder.body(ResponseUtils.getResponseBody("购买会员成功"));
             }
 
-        }else {
-            System.out.println("第一次购买会员");
-            //第一次购买会员  只需要改变用户的状态、开通时间、过期时间
-            hfUserMemberService.buymemberTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+        }else{
+            System.out.println("是第一次购买会员");
+            //第一次开会员  根据充值的金额分别开通不同的时间
+            if(total==money&&number==1){
+                hfUserMemberService.insertthirtyTime(userId,time,thirtyTime);
+            }if (total==money&&number==3){
+                hfUserMemberService.insertseasonTime(userId,time,seasonTime);
+            }if(total==money&&number==12){
+                hfUserMemberService.insertyearTime(userId,time,yearTime);
+            }
             return builder.body(ResponseUtils.getResponseBody("购买会员成功"));
         }
     }
+
+//    @ApiOperation(value = "设置购买会员钱数月份",notes = "设置会员钱数月份")
+//    @RequestMapping(value = "/setbuyMember",method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
+//    })
+//    public ResponseEntity<JSONObject> setbuyMember(@RequestParam(required = true,defaultValue = "") Integer total,
+//                                                @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        return builder.body(ResponseUtils.getResponseBody("金额是:"+total+",金额对应的会员月份是"+number));
+//    }
+//
+//    @ApiOperation(value = "设置充值会员钱数月份",notes = "设置会员钱数月份")
+//    @RequestMapping(value = "/setrechargeMember",method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
+//    })
+//    public ResponseEntity<JSONObject> setrechargeMember(@RequestParam(required = true,defaultValue = "") Integer total,
+//                                                        @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        return builder.body(ResponseUtils.getResponseBody("金额是:"+total+",金额对应的会员月份是"+number));
+//    }
+
 }

@@ -410,7 +410,7 @@ public class StrategyController {
 			List<ActivityUserEvaluate> list = activityUserEvaluateMapper.selectByExample(example);
 			example.clear();
 			if(!list.isEmpty()) {
-				String evaluateContent = request.getEvaluateContent()[i];
+				String evaluateContent = request.getEvaluateContent().get(i);
 				if(!StringUtils.isEmpty(evaluateContent)) {
 					userUpdateEvaluation(list.get(0).getId(),evaluateContent);
 				}else {
@@ -420,8 +420,8 @@ public class StrategyController {
 				ActivityUserEvaluate activityUserEvaluate = new ActivityUserEvaluate();
 				activityUserEvaluate.setUserId(request.getUserId());
 				activityUserEvaluate.setEvaluateTemplateId(request.getEvaluateTemplateId()[i]);
-				if(request.getEvaluateContent()[i] != null) {
-					activityUserEvaluate.setEvaluateContent(request.getEvaluateContent()[i]);
+				if(request.getEvaluateContent().get(i) != null) {
+					activityUserEvaluate.setEvaluateContent(request.getEvaluateContent().get(i));
 				}
 //					activityUserEvaluate.setEvaluateResult(request.getEvaluateResult());
 				activityUserEvaluate.setCreateTime(LocalDateTime.now());

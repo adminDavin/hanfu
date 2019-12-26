@@ -1,21 +1,28 @@
 package com.hanfu.cancel.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import tk.mybatis.mapper.annotation.KeySql;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 public class record {
+    @KeySql(useGeneratedKeys = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @ApiModelProperty(value = "核销记录id")
     private Integer id;
-  private LocalDateTime createDate;
-  private String realName;
-  private Integer purchasePrice;
+    private LocalDateTime createDate;
+    private String realName;
+    private Integer purchasePrice;
     private Integer purchaseQuantity;
-  private String site;
-  private Integer rental;
-  private Integer cancelId;
-  private Integer money;
-private Integer presentMoney;
+    private String site;
+    private Integer rental;
+    private Integer cancelId;
+    private Integer money;
+    private Integer presentMoney;
 
     public Integer getPresentMoney() {
         return presentMoney;

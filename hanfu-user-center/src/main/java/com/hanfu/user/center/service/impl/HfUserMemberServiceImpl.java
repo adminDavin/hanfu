@@ -1,7 +1,9 @@
 package com.hanfu.user.center.service.impl;
 
 import com.hanfu.user.center.dao.HUserBalanceMapper;
+import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.model.HUserBalance;
+import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,50 +19,60 @@ import java.time.LocalDateTime;
 public class HfUserMemberServiceImpl implements HfUserMemberService {
 
     @Autowired
-    private HUserBalanceMapper hUserBalanceMapper;
+    private HfUserMemberMapper hfUserMemberMapper;
 
     @Override
-    public HUserBalance itExistUserById(Integer userId) {
-        return hUserBalanceMapper.itExistUserById(userId);
+    public HfUserMember itExistUserById(Integer userId) {
+        return hfUserMemberMapper.itExistUserById(userId);
     }
 
     @Override
-    public void memberTime(Integer userId, LocalDateTime time,LocalDateTime thirtyTime,LocalDateTime seasonTime,LocalDateTime yearTime,Integer total) {
-        hUserBalanceMapper.memberTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void insertthirtyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime) {
+        hfUserMemberMapper.insertthirtyTime(userId,time,thirtyTime);
+    }
+
+    @Override
+    public void insertseasonTime(Integer userId, LocalDateTime time, LocalDateTime seasonTime) {
+        hfUserMemberMapper.insertseasonTime(userId,time,seasonTime);
+    }
+
+    @Override
+    public void insertyearTime(Integer userId, LocalDateTime time, LocalDateTime yearTime) {
+        hfUserMemberMapper.insertyearTime(userId,time,yearTime);
     }
 
     @Override
     public void insertBalance(Integer userId, Integer total) {
-        hUserBalanceMapper.insertBalance(userId,total);
+        hfUserMemberMapper.insertBalance(userId,total);
     }
 
     @Override
     public String getModifyTime(Integer userId) {
-        return hUserBalanceMapper.getModifyTime(userId);
+        return hfUserMemberMapper.getModifyTime(userId);
+    }
+
+    @Override
+    public void updateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total, Integer money, Integer number) {
+        hfUserMemberMapper.updateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
     public void updateBalance(Integer userId, Integer total) {
-        hUserBalanceMapper.updateBalance(userId,total);
+        hfUserMemberMapper.updateBalance(userId,total);
     }
 
     @Override
-    public void updateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hUserBalanceMapper.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void updateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total, Integer money, Integer number) {
+        hfUserMemberMapper.updateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
-    public String getCreateTime(Integer userId) {
-        return hUserBalanceMapper.getCreateTime(userId);
+    public void buyupdateModify(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total,Integer money, Integer number) {
+        hfUserMemberMapper.buyupdateModify(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 
     @Override
-    public void buymemberTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hUserBalanceMapper.buymemberTime(userId,time,thirtyTime,seasonTime,yearTime,total);
-    }
-
-    @Override
-    public void updateTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total) {
-        hUserBalanceMapper.updateTime(userId,time,thirtyTime,seasonTime,yearTime,total);
+    public void buyupdateModifyTime(Integer userId, LocalDateTime time, LocalDateTime thirtyTime, LocalDateTime seasonTime, LocalDateTime yearTime, Integer total,Integer money, Integer number) {
+        hfUserMemberMapper.buyupdateModifyTime(userId,time,thirtyTime,seasonTime,yearTime,total,money,number);
     }
 }

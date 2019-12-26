@@ -1,5 +1,6 @@
 package com.hanfu.payment.center.entity;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;
 
 /**
@@ -12,7 +13,7 @@ public class SignInfo {
     private String appId;//小程序ID
     private String timeStamp;//时间戳
     private String nonceStr;//随机串
-    //@XStreamAlias("package")
+    @XStreamAlias("package")
     private String prepay_id;
 
     private String signType;//签名方式

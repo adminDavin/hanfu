@@ -27,6 +27,7 @@ import java.util.Map;
  * @Date 2019/12/23 10:41
  * @Author CONSAK
  **/
+
 @Service
 public class PayReturnServiceImpl implements PayReturnService {
 
@@ -34,6 +35,7 @@ public class PayReturnServiceImpl implements PayReturnService {
 
     @Override
     public ResponseEntity<JSONObject> refund(String out_trade_no, String transaction_id, int total_fee) throws Exception {
+
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         InputStream instream = null;
         KeyStore keyStore = null;
@@ -47,7 +49,6 @@ public class PayReturnServiceImpl implements PayReturnService {
              */
             keyStore = KeyStore.getInstance("PKCS12");
             instream = new FileInputStream(new File("D:\\微信商户平台支付证书\\apiclient_cert.p12"));
-
 
             /**
              * 此处要改
@@ -79,7 +80,6 @@ public class PayReturnServiceImpl implements PayReturnService {
 
             if (entity != null) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
-
                 String str;
                 while ((str = bufferedReader.readLine()) != null) {
                     text.append(str);
@@ -120,6 +120,6 @@ public class PayReturnServiceImpl implements PayReturnService {
         }else {
             return builder.body(ResponseUtils.getResponseBody("退款失败"));
         }
-
     }
+
 }

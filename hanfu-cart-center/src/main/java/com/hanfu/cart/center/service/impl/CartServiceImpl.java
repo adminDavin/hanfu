@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.cart.center.dao.HfGoodsDao;
+import com.hanfu.cart.center.manual.dao.HfGoodsDao;
+import com.hanfu.cart.center.manual.model.HfGoods;
 import com.hanfu.cart.center.model.Cart;
-import com.hanfu.cart.center.model.HfGoods;
 import com.hanfu.cart.center.service.CartService;
 import com.hanfu.cart.center.service.RedisService;
 import com.hanfu.cart.center.utils.CartPrefix;

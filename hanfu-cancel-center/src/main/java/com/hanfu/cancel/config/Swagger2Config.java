@@ -25,7 +25,7 @@ import java.util.List;
 @EnableSwagger2
 public class Swagger2Config {
     @Bean
-    public Docket createRestApi(){
+    public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
@@ -38,8 +38,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("xxx接口文档")
-                .description("xxx相关接口的文档")
+                .title("核销接口文档")
+                .description("核销相关接口的文档")
                 .termsOfServiceUrl("http://www.xxx.com")
                 .version("1.0")
                 .build();
@@ -62,7 +62,7 @@ public class Swagger2Config {
         return result;
     }
 
-    private SecurityContext getContextByPath(String pathRegex){
+    private SecurityContext getContextByPath(String pathRegex) {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .forPaths(PathSelectors.regex(pathRegex))

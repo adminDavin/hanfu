@@ -16,4 +16,7 @@
   <select id="distinctUserId" resultType="Integer">
   	SELECT DISTINCT(elected_user_id) FROM activity_vote_records WHERE activity_id = #{activityId} and user_id = #{userId}
   </select>
+  <select id="distinctElectedId" resultType="Integer">
+  	SELECT DISTINCT(elected_user_id) FROM activity_vote_records WHERE activity_id = #{activityId}
+  </select>
 </mapper>
