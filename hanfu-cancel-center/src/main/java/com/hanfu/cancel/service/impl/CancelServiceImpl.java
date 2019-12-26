@@ -42,11 +42,9 @@ public class CancelServiceImpl implements CancelService {
     }
 
     @Override
-    public PageInfo<record> Test(String site, Date createData, Date createDate1) {
-        PageHelper.startPage(2, 1);
+    public List<record> Test(String site, Date createData, Date createDate1) {
         List<record> recordList=cancelMapper.Test(site, createData, createDate1);
-        PageInfo<record> pageInfo = new PageInfo<>(recordList);
-        return pageInfo;
+        return recordList;
     }
 
 
