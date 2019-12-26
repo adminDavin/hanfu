@@ -28,6 +28,8 @@ public class UserInfoRequest extends CommonRequest {
 	private String address;
 	@ApiParam(required = false, value = "所在地区")
 	private String region;
+	@ApiParam(required = false, value = "手机号")
+	private String phone;
 	public String getUsername() {
 		return username;
 	}
@@ -81,6 +83,12 @@ public class UserInfoRequest extends CommonRequest {
 	}
 	public void setRegion(String region) {
 		this.region = region;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	
 	

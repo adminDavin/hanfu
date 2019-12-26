@@ -62,6 +62,15 @@ public class OrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
 	}
+	@ApiOperation(value = "根据用户Id查询订单", notes = "根据用户Id查询订单")
+	@RequestMapping(value = "/queryByUserid", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> queryByUserId(Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderByUserId(userId)));
+	}
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "创建订单", notes = "创建订单")
 	@RequestMapping(value = "/creat", method = RequestMethod.GET)
