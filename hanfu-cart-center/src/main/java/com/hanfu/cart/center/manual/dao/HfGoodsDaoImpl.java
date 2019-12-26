@@ -1,10 +1,11 @@
-package com.hanfu.cart.center.dao;
+package com.hanfu.cart.center.manual.dao;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.hanfu.cart.center.model.HfGoods;
+import com.hanfu.cart.center.manual.model.HfGoods;
+
 @Repository
 public class HfGoodsDaoImpl implements HfGoodsDao{
 	@Autowired
