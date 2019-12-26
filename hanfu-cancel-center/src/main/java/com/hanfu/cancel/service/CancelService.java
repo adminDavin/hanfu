@@ -18,5 +18,5 @@ public interface CancelService {
 
     List<record> selectCancelId(int cancelId);
 
-    PageInfo<record> Test(String site, Date createData, Date createDate1);
+    List<record> Test(String site, Date createData, Date createDate1);
 }

@@ -1,5 +1,7 @@
 package com.hanfu.cancel.model;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class Paging {
     private Integer pageNum;
     private Integer pageSize;
