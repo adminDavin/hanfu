@@ -903,27 +903,53 @@ public class ActivityManagerController {
 		if (list.isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody(null));
 		}
-		List<HfUser> users = new ArrayList<HfUser>(list.size());
-		List<HfUser> users2 = hfUserDao.findAllUser();
-		for (int i = 0; i < users2.size(); i++) {
-			if (users2.get(i).getRealName() != null) {
-				users2.get(i).setNickName(users2.get(i).getRealName());
+		List<HfUser> users = new ArrayList<HfUser>();
+		for (int i = 0; i < list.size(); i++) {
+			ActivitiRuleInstance instance = list.get(i);
+			HfUser user = new HfUser();
+			user.setIsElected(instance.getIsElected());
+			user.setCode(instance.getRuleInstanceValue());
+			com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+			user.setRealName(hfUser.getRealName());
+			if (hfUser.getRealName() != null) {
+				user.setNickName(hfUser.getRealName());
+			}else {
+				user.setNickName(hfUser.getNickName());
 			}
-			for (int j = 0; j < list.size(); j++) {
-				if (list.get(j).getUserId() == users2.get(i).getId()) {
-					if (list.get(j).getRuleInstanceValue() != null) {
-						users2.get(i).setCode(list.get(j).getRuleInstanceValue());
-					}
-					if (list.get(j).getUserTicketCount() != null) {
-						users2.get(i).setCount((list.get(j).getUserTicketCount()));
-					}
-					if (list.get(j).getIsElected() != null) {
-						users2.get(i).setIsElected(list.get(j).getIsElected());
-					}
-					users.add(users2.get(i));
-				}
-			}
+			users.add(user);
 		}
+//		Integer index = 0;
+//		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+//		example.createCriteria().andActivityIdEqualTo(activityId);
+//		List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+//		System.out.println(list.size());
+//		if (list.isEmpty()) {
+//			return builder.body(ResponseUtils.getResponseBody(null));
+//		}
+//		List<HfUser> users = new ArrayList<HfUser>(list.size());
+//		List<HfUser> users2 = hfUserDao.findAllUser();
+//		for (int i = 0; i < users2.size(); i++) {
+//			if (users2.get(i).getRealName() != null) {
+//				users2.get(i).setNickName(users2.get(i).getRealName());
+//			}
+//			for (int j = 0; j < list.size(); j++) {
+//				System.out.println(list.get(j).getUserId());
+//				if (list.get(j).getUserId() == users2.get(i).getId()) {
+//					if (list.get(j).getRuleInstanceValue() != null) {
+//						users2.get(i).setCode(list.get(j).getRuleInstanceValue());
+//					}
+//					if (list.get(j).getUserTicketCount() != null) {
+//						users2.get(i).setCount((list.get(j).getUserTicketCount()));
+//					}
+//					if (list.get(j).getIsElected() != null) {
+//						users2.get(i).setIsElected(list.get(j).getIsElected());
+//					}
+//					users.add(users2.get(i));
+//					index++;
+//				}
+//			}
+//		}
+//		System.out.println(index);
 		return builder.body(ResponseUtils.getResponseBody(users));
 	}
 
