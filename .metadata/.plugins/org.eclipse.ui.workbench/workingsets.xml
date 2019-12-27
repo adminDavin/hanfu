@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.jdt.internal.ui.DynamicSourcesWorkingSet" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1569332753044_0" label="Java Main Sources" name="Java Main Sources"/>
+<workingSet editPageId="org.eclipse.jdt.internal.ui.DynamicSourcesWorkingSet" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1569332753044_1" label="Java Test Sources" name="Java Test Sources"/>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1569333487152_3" label="hanfu-system" name="hanfu-system">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-user-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-product-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-common" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-product-client" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-web-utils" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-inner-sdk" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-group-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-payment-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-payment-client" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-referral-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-activity-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-seckill-center" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/hanfu-cart-center" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1569332755899_2" label="Window Working Set" name="Aggregate for window 1569332755899"/>
+</workingSetManager>
