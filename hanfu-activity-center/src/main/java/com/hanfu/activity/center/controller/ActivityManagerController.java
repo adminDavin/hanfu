@@ -916,6 +916,7 @@ public class ActivityManagerController {
 			}else {
 				user.setNickName(hfUser.getNickName());
 			}
+			user.setId(hfUser.getId());
 			users.add(user);
 		}
 //		Integer index = 0;
