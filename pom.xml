@@ -20,7 +20,6 @@
 		<module>hanfu-referral-center</module>
 		<module>hanfu-chat</module>
 		<module>hanfu-activity-center</module>
-        <module>hanfu-address-center</module>
         <module>hanfu-zslpayment-center</module>
     </modules>
 	<profiles>

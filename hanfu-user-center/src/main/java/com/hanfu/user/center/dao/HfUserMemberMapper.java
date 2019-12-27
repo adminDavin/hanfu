@@ -24,7 +24,9 @@ public interface HfUserMemberMapper {
                       @Param("thirtyTime") LocalDateTime thirtyTime,
                       @Param("seasonTime") LocalDateTime seasonTime,
                       @Param("yearTime") LocalDateTime yearTime,
-                      @Param("total") Integer total);//过期重新开通会员的时间
+                      @Param("total") Integer total,
+                      @Param("money") Integer money,
+                      @Param("number") Integer number);//过期重新开通会员的时间
 
     void updateBalance(@Param("userId") Integer userId,  @Param("total") Integer total);//会员过期重新开通  余额表的余额添加就好
 
@@ -33,19 +35,25 @@ public interface HfUserMemberMapper {
                           @Param("thirtyTime") LocalDateTime thirtyTime,
                           @Param("seasonTime") LocalDateTime seasonTime,
                           @Param("yearTime") LocalDateTime yearTime,
-                          @Param("total") Integer total);//没过期的会员  直接给他修改过期的日期就可以了
+                          @Param("total") Integer total,
+                          @Param("money") Integer money,
+                          @Param("number") Integer number);//没过期的会员  直接给他修改过期的日期就可以了
 
     void buyupdateModify(@Param("userId") Integer userId,
                          @Param("time")LocalDateTime time,
                          @Param("thirtyTime") LocalDateTime thirtyTime,
                          @Param("seasonTime") LocalDateTime seasonTime,
                          @Param("yearTime") LocalDateTime yearTime,
-                         @Param("total") Integer total);//购买会员  已经过期的  重新设置时间
+                         @Param("total") Integer total,
+                         @Param("money") Integer money,
+                         @Param("number") Integer number);//购买会员  已经过期的  重新设置时间
 
     void buyupdateModifyTime(@Param("userId") Integer userId,
                              @Param("time")LocalDateTime time,
                              @Param("thirtyTime") LocalDateTime thirtyTime,
                              @Param("seasonTime") LocalDateTime seasonTime,
                              @Param("yearTime") LocalDateTime yearTime,
-                             @Param("total") Integer total);//购买会员的  没有过期的
+                             @Param("total") Integer total,
+                             @Param("money") Integer money,
+                             @Param("number") Integer number);//购买会员的  没有过期的
 }

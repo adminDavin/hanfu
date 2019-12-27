@@ -47,13 +47,13 @@
   <update id="updateModify">
     update hf_member
     <set>
-      <if test="total == 200">
+      <if test="total == money and number==1">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
       </if>
-      <if test="total == 580">
+      <if test="total == money and number==3">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
       </if>
-      <if test="total == 1500">
+      <if test="total == money and number==12">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
       </if>
     </set>
@@ -76,13 +76,13 @@
   <update id="updateModifyTime">
     update hf_member
     <set>
-      <if test="total == 200">
+      <if test="total == money and number==1">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
       </if>
-      <if test="total == 580">
+      <if test="total == money and number==3">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
       </if>
-      <if test="total == 1500">
+      <if test="total == money and number==12">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
       </if>
     </set>
@@ -94,13 +94,13 @@
   <update id="buyupdateModify">
     update hf_member
     <set>
-      <if test="total == 99">
+      <if test="total == money and number==1">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
       </if>
-      <if test="total == 199">
+      <if test="total == money and number==3">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
       </if>
-      <if test="total == 699">
+      <if test="total == money and number==12">
         create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
       </if>
     </set>
@@ -111,19 +111,16 @@
   <update id="buyupdateModifyTime">
     update hf_member
     <set>
-      <if test="total == 99">
+      <if test="total == money and number==1">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
       </if>
-      <if test="total == 199">
+      <if test="total == money and number==3">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
       </if>
-      <if test="total == 699">
+      <if test="total == money and number==12">
         user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
-
-
-
 </mapper>

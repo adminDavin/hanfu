@@ -57,9 +57,8 @@ public class PayReturnServiceImpl implements PayReturnService {
 
             /**
              * 此处要改
-             */
-            SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, key.toCharArray())// 这里也是写密码的
-                    .build();
+             */// 这里也是写密码的
+            SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, key.toCharArray()).build();
             // Allow TLSv1 protocol only
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
             httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
@@ -113,7 +112,6 @@ public class PayReturnServiceImpl implements PayReturnService {
                 }
             }
         }
-
         Map<String,String> map = WXPayUtil.xmlToMap(text.toString());
         String return_msg = map.get("return_msg");
         if ("OK".equals(return_msg) && "SUCCESS".equals(map.get("return_code"))) {
@@ -121,6 +119,5 @@ public class PayReturnServiceImpl implements PayReturnService {
         }else {
             return builder.body(ResponseUtils.getResponseBody("退款失败"));
         }
-
     }
 }
