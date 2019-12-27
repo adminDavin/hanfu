@@ -38,6 +38,7 @@ import com.hanfu.activity.center.manual.dao.ActivityDao;
 import com.hanfu.activity.center.manual.dao.VoteRecordsDao;
 import com.hanfu.activity.center.manual.model.ActivityInfo;
 import com.hanfu.activity.center.manual.model.TimeTime;
+import com.hanfu.activity.center.manual.model.VoteEntity;
 import com.hanfu.activity.center.manual.model.VoteRecordsEntity;
 import com.hanfu.activity.center.model.ActivitiRuleInstance;
 import com.hanfu.activity.center.model.ActivitiRuleInstanceExample;
@@ -769,84 +770,99 @@ public class ActivityController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
-	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
-	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-
-		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
-		if(userId == null) {
-			example.createCriteria().andActivityIdEqualTo(activityId);
-			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
-			for (int i = 0; i < list.size(); i++) {
-				ActivityVoteRecords records = list.get(i);
-				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
-				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
-				VoteRecordsEntity entity = new VoteRecordsEntity();
-				if(votePerson != null) {
-					if(votePerson.getRealName() != null) {
-						entity.setVoteName(votePerson.getRealName());
-					}else {
-						entity.setVoteName(votePerson.getNickName());
-					}
-				}
-				if(electedPeson != null) {
-					if(electedPeson.getRealName() != null) {
-						entity.setEceltedName(electedPeson.getRealName());
-					}else {
-						entity.setEceltedName(electedPeson.getNickName());
-					}
-				}
-				if("praise".equals(activity.getActiviyType())) {
-					entity.setTotalScore(1);
-				}
-				if("score".equals(activity.getActiviyType())) {
-					if(!StringUtils.isEmpty(records.getRemarks())) {
-						entity.setTotalScore(Double.valueOf(records.getRemarks()));
-					}else {
-						entity.setTotalScore(0);
-					}
-				}
-				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
-				result.add(entity);
-			}
-			return builder.body(ResponseUtils.getResponseBody(result));
-		}
-		return builder.body(ResponseUtils.getResponseBody(null));
-	}
-	
 //	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
 //	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam Integer activityId)
+//	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
 //			throws JSONException {
 //		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//
 //		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-//		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
-//		if("praise".equals(activity.getActiviyType())) {
-//			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
-//			example.setOrderByClause("user_ticket_count DESC");
-//			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+//		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+//		if(userId == null) {
+//			example.createCriteria().andActivityIdEqualTo(activityId);
+//			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+//			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
 //			for (int i = 0; i < list.size(); i++) {
-//				ActivitiRuleInstance instance = list.get(i);
-//				HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
-//				ActivityVoteRecordsExample example2 = new ActivityVoteRecordsExample();
-//				example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId());
+//				ActivityVoteRecords records = list.get(i);
+//				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+//				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
 //				VoteRecordsEntity entity = new VoteRecordsEntity();
-//				if(StringUtils.isEmpty(hfUser.getRealName())) {
-//					entity.setEceltedName(hfUser.getNickName());
-//				}else {
-//					entity.setEceltedName(hfUser.getRealName());
+//				if(votePerson != null) {
+//					if(votePerson.getRealName() != null) {
+//						entity.setVoteName(votePerson.getRealName());
+//					}else {
+//						entity.setVoteName(votePerson.getNickName());
+//					}
 //				}
-//				entity.setTotalScore(instance.getUserTicketCount());
-//				
+//				if(electedPeson != null) {
+//					if(electedPeson.getRealName() != null) {
+//						entity.setEceltedName(electedPeson.getRealName());
+//					}else {
+//						entity.setEceltedName(electedPeson.getNickName());
+//					}
+//				}
+//				if("praise".equals(activity.getActiviyType())) {
+//					entity.setTotalScore(1);
+//				}
+//				if("score".equals(activity.getActiviyType())) {
+//					if(!StringUtils.isEmpty(records.getRemarks())) {
+//						entity.setTotalScore(Double.valueOf(records.getRemarks()));
+//					}else {
+//						entity.setTotalScore(0);
+//					}
+//				}
+//				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
+//				result.add(entity);
 //			}
+//			return builder.body(ResponseUtils.getResponseBody(result));
 //		}
-//		
-//		
 //		return builder.body(ResponseUtils.getResponseBody(null));
 //	}
+	
+	@ApiOperation(value = "后台整个活动投票记录", notes = "后台整个活动投票记录")
+	@RequestMapping(value = "/ActivityvoteRecords", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam Integer activityId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity = activityMapper.selectByPrimaryKey(activityId);
+		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		if("praise".equals(activity.getActiviyType())) {
+			List<VoteEntity> entities = new ArrayList<VoteEntity>();
+			List<Integer> userIds = new ArrayList<Integer>(); 
+			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+			example.setOrderByClause("user_ticket_count DESC");
+			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+			for (int i = 0; i < list.size(); i++) {
+				ActivitiRuleInstance instance = list.get(i);
+				HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+				ActivityVoteRecordsExample example2 = new ActivityVoteRecordsExample();
+				example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId());
+				List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example2);
+				for (int j = 0; j < list2.size(); j++) {
+					ActivityVoteRecords records = list2.get(j);
+					if(!userIds.contains(records.getUserId())) {
+						userIds.add(records.getUserId());
+					}
+				}
+				for (int j = 0; j < userIds.size(); j++) {
+					example2.clear();
+					example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId())
+					.andUserIdEqualTo(userIds.get(j));
+					List<ActivityVoteRecords> list3 = activityVoteRecordsMapper.selectByExample(example2);
+				}
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				if(StringUtils.isEmpty(hfUser.getRealName())) {
+					entity.setEceltedName(hfUser.getNickName());
+				}else {
+					entity.setEceltedName(hfUser.getRealName());
+				}
+				entity.setTotalScore(instance.getUserTicketCount());
+				
+			}
+		}
+		
+		
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 	
 }
