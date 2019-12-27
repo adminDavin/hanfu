@@ -1,4 +1,3 @@
-
 package com.hanfu.user.center.controller;
 
 import java.io.IOException;
@@ -78,7 +77,6 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 @CrossOrigin
 public class KingWordsController {
-
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	FileDescMapper fileDescMapper;
@@ -140,7 +138,7 @@ public class KingWordsController {
 		redisTemplate.opsForValue().set(phone, String.valueOf(code));
 		return builder.body(ResponseUtils.getResponseBody(code));
 	}
-
+	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
@@ -207,9 +205,6 @@ public class KingWordsController {
 		}
 		if(!StringUtils.isEmpty(request.getUsername())) {
 			user.setUsername(request.getUsername());
-		}
-		if(!StringUtils.isEmpty(request.getPhone())) {
-			user.setPhone(request.getPhone());
 		}
 //		if(!StringUtils.isEmpty(request.getBirthDay())) {
 //			user.setBirthDay(ldt);
@@ -432,7 +427,7 @@ public class KingWordsController {
 	private JSONObject getSessionKeyOrOpenId(String code) {
 		//微信端登录code
 		//String wxCode = code;
-		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code="+code+"&grant_type=authorization_code";
+		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42&js_code="+code+"&grant_type=authorization_code";
 		//Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
@@ -457,6 +452,7 @@ public class KingWordsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+		
         return jsonObject;
 	}
 }
