@@ -2,6 +2,7 @@ package com.hanfu.activity.center.manual.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class VoteRecordsEntity implements Serializable{
 
@@ -15,6 +16,7 @@ public class VoteRecordsEntity implements Serializable{
 	private String voteName;
 	private String eceltedName;
 	private String voteTimes;
+	private List<VoteEntity> voteEntity;
 	private double totalScore;
 	
 	public Integer getActivityId() {
@@ -52,5 +54,11 @@ public class VoteRecordsEntity implements Serializable{
 	}
 	public void setTotalScore(double totalScore) {
 		this.totalScore = totalScore;
+	}
+	public List<VoteEntity> getVoteEntity() {
+		return voteEntity;
+	}
+	public void setVoteEntity(List<VoteEntity> voteEntity) {
+		this.voteEntity = voteEntity;
 	}
 }

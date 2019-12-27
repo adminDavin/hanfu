@@ -800,6 +800,9 @@ public class ActivityController {
 						entity.setEceltedName(electedPeson.getNickName());
 					}
 				}
+				if("praise".equals(activity.getActiviyType())) {
+					entity.setTotalScore(1);
+				}
 				if("score".equals(activity.getActiviyType())) {
 					if(!StringUtils.isEmpty(records.getRemarks())) {
 						entity.setTotalScore(Double.valueOf(records.getRemarks()));
@@ -821,37 +824,29 @@ public class ActivityController {
 //			throws JSONException {
 //		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		Activity activity = activityMapper.selectByPrimaryKey(activityId);
-//		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
-//		if("election".equals(activity.getActiviyType())) {
-//			example.createCriteria().andActivityIdEqualTo(activityId);
-//			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
-//			List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
+//		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+//		if("praise".equals(activity.getActiviyType())) {
+//			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+//			example.setOrderByClause("user_ticket_count DESC");
+//			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
 //			for (int i = 0; i < list.size(); i++) {
-//				ActivityVoteRecords records = list.get(i);
-//				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
-//				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+//				ActivitiRuleInstance instance = list.get(i);
+//				HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+//				ActivityVoteRecordsExample example2 = new ActivityVoteRecordsExample();
+//				example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId());
 //				VoteRecordsEntity entity = new VoteRecordsEntity();
-//				if(votePerson != null) {
-//					if(votePerson.getRealName() != null) {
-//						entity.setVoteName(votePerson.getRealName());
-//					}else {
-//						entity.setVoteName(votePerson.getNickName());
-//					}
+//				if(StringUtils.isEmpty(hfUser.getRealName())) {
+//					entity.setEceltedName(hfUser.getNickName());
+//				}else {
+//					entity.setEceltedName(hfUser.getRealName());
 //				}
-//				if(electedPeson != null) {
-//					if(electedPeson.getRealName() != null) {
-//						entity.setEceltedName(electedPeson.getRealName());
-//					}else {
-//						entity.setEceltedName(electedPeson.getNickName());
-//					}
-//				}
+//				entity.setTotalScore(instance.getUserTicketCount());
+//				
+//			}
 //		}
-		
-//		List<Integer> list = voteRecordsDao.distinctElectedId(activityId);
-//		for (int i = 0; i < list.size(); i++) {
-//			
-//		}
+//		
+//		
 //		return builder.body(ResponseUtils.getResponseBody(null));
 //	}
-//	
+	
 }
