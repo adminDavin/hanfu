@@ -19,11 +19,16 @@
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
 		<module>hanfu-activity-center</module>
+<<<<<<< HEAD
     <module>hanfu-seckill-center</module>
 		<module>hanfu-cart-center</module>
 
 
 	</modules>
+=======
+        <module>hanfu-zslpayment-center</module>
+    </modules>
+>>>>>>> origin/txAddress
 	<profiles>
 		<profile>
 			<id>jdk11</id>
