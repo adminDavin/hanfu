@@ -1,5 +1,6 @@
 package com.hanfu.cancel.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -8,10 +9,7 @@ import com.google.zxing.common.BitMatrix;
 import com.hanfu.cancel.dao.CancelsMapper;
 import com.hanfu.cancel.dao.HfGoodsMapper;
 import com.hanfu.cancel.dao.HfUserMapper;
-import com.hanfu.cancel.model.HfGoods;
-import com.hanfu.cancel.model.HfUser;
-import com.hanfu.cancel.model.Paging;
-import com.hanfu.cancel.model.record;
+import com.hanfu.cancel.model.*;
 import com.hanfu.cancel.service.CancelService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -19,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.checkerframework.checker.units.qual.A;
 import org.hibernate.validator.internal.util.logging.Log;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +35,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +91,7 @@ public class testController {
         System.out.println(site + "-------" + createData + "---------" + createDate1);
         return builder.body(ResponseUtils.getResponseBody(pageInfo));
     }
- @Scheduled(cron = "0/5 * * * * ? ")
+// @Scheduled(cron = "0/5 * * * * ? ")
     @RequestMapping(value = "/qqq", method = RequestMethod.GET)
     @ApiOperation(value = "时间检查查询查询", notes = "时间检查查询查询")
     public ResponseEntity<JSONObject> qqq() throws Exception {
@@ -145,6 +139,20 @@ public class testController {
 //        System.out.println(str);
 //        return str;
 //    }
+@GetMapping(value = "/jiema")
+@ApiOperation("解码")
+    public ResponseEntity<JSONObject> getCode(String goodsId,String ordersId) throws Exception {
+    ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+    String key = "MIGfMA0GCSqGSIb3";
+    String decrypt = PageTool.decrypt(ordersId, key);
+    String decrypt1 = PageTool.decrypt(goodsId, key);
+    test ttt = new test();
+    ttt.setOrderId(Integer.valueOf(decrypt));
+    ttt.setGoodsId(Integer.valueOf(decrypt1));
+    List<test> list = new ArrayList<test>();
+    list.add(ttt);
+    return builder.body(ResponseUtils.getResponseBody(list));
+}
     /**
      *  生成二维码
      * @param ，
@@ -152,20 +160,65 @@ public class testController {
      * */
     @GetMapping(value = "/activity/create/activity-code")
     @ApiOperation("生成活动详情二维码")
-    public void getCode(HttpServletResponse response) throws Exception {
-
+    public void getCode(HttpServletResponse response,Integer orderId,Integer goodsId) throws Exception {
+            ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
             int type = 1;
+        //16位
+        String key = "MIGfMA0GCSqGSIb3";
+
+        //字符串
+        String orderId123 =String.valueOf(orderId);
+        String goodsId123 = String.valueOf(goodsId);
+
+            //加密
+            String encrypt = PageTool.encrypt(orderId123, key);
+            String encrypt1 = PageTool.encrypt(goodsId123, key);
+            //解密
+//            String decrypt = PageTool.decrypt(encrypt, key);
+//
+//            System.out.println("加密前：" + orderId123);
+//            System.out.println("加密后：" + encrypt);
+//            System.out.println("解密后：" + decrypt);
+            System.out.println("goodsId:"+encrypt1);
+            System.out.println("orderId:"+encrypt);
+
             // 设置响应流信息
+
+        String resultString = PageTool.stringToMD5(String.valueOf(orderId));
+        String resultString2 = PageTool.stringToMD5(String.valueOf(goodsId));
+        System.out.println(resultString);
+        System.out.println(resultString2);
+        final Base64.Decoder decoder = Base64.getDecoder();
+        final Base64.Encoder encoder = Base64.getEncoder();
+        final String text = String.valueOf(orderId);
+        final String text1 = String.valueOf(goodsId);
+        final byte[] textByte = text.getBytes("UTF-8");
+        final byte[] textByte1 = text1.getBytes("UTF-8");
+//编码
+        final String encodedText = encoder.encodeToString(textByte);
+        final String encodedText1 = encoder.encodeToString(textByte1);
+        System.out.println("OrdersId:"+encodedText);
+        System.out.println("GoodsId:"+encodedText1);
             response.setContentType("image/jpg");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             OutputStream stream = response.getOutputStream();
             //type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
-            String content = (type == 1 ? "http://www.baidu.com" : "核销失败");
-            //获取一个二维码图片
-            BitMatrix bitMatrix = com.example.order.Test.QRCodeUtils.createCode(content);
+                test111 t = new test111();
+                    t.setGoodsId(encrypt1);
+                    t.setOrderId(encrypt);
+        List<test111> list = new ArrayList<test111>();
+        list.add(t);
+        String str1 = JSON.toJSONString(list);
+        System.out.println(str1);
+//        String content ="http://192.168.1.125:9901/testCancel?goodsId%E5%95%86%E5%93%81Id="+goodsId+"&orderId%E8%AE%A2%E5%8D%95Id="+orderId+"&%E7%94%A8%E6%88%B7%E5%94%AF%E4%B8%80%E6%A0%87%E8%AF%86=1";
+        String content =str1;
+        //            //获取一个二维码图片
+            BitMatrix bitMatrix = com.hanfu.cancel.controller.QRCodeUtils.createCode(content);
+//                BitMatrix bitMatrix = com.hanfu.cancel.controller.QRCodeUtils.createCode(content);
             //以流的形式输出到前端
             MatrixToImageWriter.writeToStream(bitMatrix , "jpg" , stream);
     }
+
 }

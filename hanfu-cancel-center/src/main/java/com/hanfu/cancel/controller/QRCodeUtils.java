@@ -1,5 +1,6 @@
-package com.example.order.Test;
+package com.hanfu.cancel.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -7,12 +8,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.hanfu.cancel.model.test;
+import com.hanfu.utils.response.handler.ResponseEntity;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +34,7 @@ public class QRCodeUtils {
      * @param content 二维码的内容
      * @return BitMatrix对象
      * */
+    //ResponseEntity<JSONObject>
     public static BitMatrix createCode(String content) throws IOException {
         //二维码的宽高
         int width = 200;
@@ -46,7 +51,7 @@ public class QRCodeUtils {
         BitMatrix bitMatrix = null;
         try {
             //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
-            bitMatrix = new MultiFormatWriter().encode(content,
+            bitMatrix = new MultiFormatWriter().encode(String.valueOf(content),
                     BarcodeFormat.QR_CODE, width, height, hints);
 
             //bitMatrix = deleteWhite(bitMatrix);
