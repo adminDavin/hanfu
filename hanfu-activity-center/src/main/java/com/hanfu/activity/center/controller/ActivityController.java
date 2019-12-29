@@ -1054,6 +1054,7 @@ public class ActivityController {
 			}else {
 				records.setRemarks("0");
 			}
+			activityVoteRecordsMapper.updateByPrimaryKey(records);
 		}
 		double reportScore = 0.00;
 		double deedScore = 0.00;
