@@ -42,7 +42,7 @@
 	</resultMap>
 	
 	<resultMap type="com.hanfu.user.center.manual.model.ActivityUserInfo"
-		id="ActivityUserInfo">
+		id="ActivityUserInfoMap">
 		<result column="id" jdbcType="VARCHAR" property="userId" />
 		<result column="phone" jdbcType="VARCHAR" property="Jobposition" />
 		<result column="nick_name" jdbcType="VARCHAR"
@@ -52,10 +52,9 @@
 		<result column="address" jdbcType="VARCHAR" property="avatar" />
 		<result column="create_date" jdbcType="TIMESTAMP"
 			property="createtime" />
-		<result column="department_id" jdbcType="TIMESTAMP"
+		<result column="department_id" jdbcType="INTEGER"
 			property="departmentId" />
-		<result column="file_id" jdbcType="TIMESTAMP"
-			property="fileId" />
+		<result column="file_id" jdbcType="INTEGER" property="fileId" />
 	</resultMap>
 	
 	<select id="selectAuthList" resultMap="BaseResultMap">
@@ -83,7 +82,7 @@
 			h.id = a.user_id
 	</select> -->
 	
-	 <select id="findActivityUserInfo" resultMap="ActivityUserInfo">
+	 <select id="findActivityUserInfo" resultMap="ActivityUserInfoMap">
                 SELECT 
                         h.address,h.nick_name,
                         h.real_name,h.phone,
@@ -110,12 +109,12 @@
         </select>
 	
 	
-	<select id="findActivityUserInfoTP" resultMap="ActivityUserInfo">
+	<select id="findActivityUserInfoTP" resultMap="ActivityUserInfoMap">
                 SELECT
                         h.address,h.nick_name,
                         h.real_name,h.phone,
                         h.create_date,a.department_id,
-                        h.id
+                        h.id, h.file_id
                 FROM
                         hf_user h
                 LEFT JOIN
