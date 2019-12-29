@@ -3,12 +3,16 @@ package com.hanfu.activity.center.manual.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.github.pagehelper.PageInfo;
+import com.hanfu.activity.center.model.ActivityVoteRecords;
+
 public class VoteEntity implements Serializable{
 
 	private String voteName;
 	private Integer count;
 	private List<VoteRecordsEntity> voteRecordsEntity;
 	private List<Evaluate> evaluate;
+	private PageInfo<ActivityVoteRecords> pageInfo;
 	public String getVoteName() {
 		return voteName;
 	}
@@ -32,5 +36,11 @@ public class VoteEntity implements Serializable{
 	}
 	public void setEvaluate(List<Evaluate> evaluate) {
 		this.evaluate = evaluate;
+	}
+	public PageInfo<ActivityVoteRecords> getPageInfo() {
+		return pageInfo;
+	}
+	public void setPageInfo(PageInfo<ActivityVoteRecords> pageInfo) {
+		this.pageInfo = pageInfo;
 	}
 }
