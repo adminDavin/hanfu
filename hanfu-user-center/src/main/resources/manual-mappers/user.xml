@@ -88,7 +88,7 @@
                         h.address,h.nick_name,
                         h.real_name,h.phone,
                         h.create_date,a.department_id,
-                        h.id, file_id
+                        h.id, h.file_id
                 FROM 
                         hf_user h
                 LEFT JOIN
