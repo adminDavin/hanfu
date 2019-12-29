@@ -1,8 +1,6 @@
 package com.hanfu.user.center.service.impl;
 
-import com.hanfu.user.center.dao.HUserBalanceMapper;
 import com.hanfu.user.center.dao.HfUserMemberMapper;
-import com.hanfu.user.center.model.HUserBalance;
 import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
 import org.springframework.beans.factory.annotation.Autowired;

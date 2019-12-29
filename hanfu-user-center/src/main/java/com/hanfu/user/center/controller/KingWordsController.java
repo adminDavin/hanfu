@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -134,9 +137,21 @@ public class KingWordsController {
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
 	public ResponseEntity<JSONObject> code(String phone) throws Exception{
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Integer code = GetMessageCode.sendSms(phone);
-		redisTemplate.opsForValue().set(phone, String.valueOf(code));
-		return builder.body(ResponseUtils.getResponseBody(code));
+		if(!StringUtils.isEmpty(phone)) {
+			String s2 = "^[1](([3|5|8][\\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\\d]{8}$";
+			Pattern p = Pattern.compile(s2);
+			Matcher m= p.matcher(phone);
+			boolean  b = m.matches();
+			if(b) {
+				Integer code = GetMessageCode.sendSms(phone);
+				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				return builder.body(ResponseUtils.getResponseBody(code));
+			}
+			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
+		}
+		else {
+			return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
+		}
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
