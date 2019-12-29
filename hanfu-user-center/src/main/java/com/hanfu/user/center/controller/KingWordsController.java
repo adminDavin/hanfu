@@ -52,6 +52,8 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -277,30 +279,40 @@ public class KingWordsController {
 	}
 	
 	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
-	@ApiOperation(value = "用户列表", notes = "用户列表")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
-	})
-	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		if(!StringUtils.isEmpty(userId)) {
-			HfUserExample hfUserExample = new HfUserExample();
-			hfUserExample.createCriteria().andIdNotEqualTo(userId);
-			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
-		}	
-		List<ActivityUserInfo> list = userDao.findActivityUserInfo();
-		for (int i = 0; i < list.size(); i++) {
-			ActivityUserInfo info = list.get(i);
-			if(info != null) {
-				if(info.getDepartmentId() != null) {
-					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
-					info.setDepartmentName(departmentName);
-				}
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(list));
-	}
-	
+    @ApiOperation(value = "用户列表", notes = "用户列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> userList(Integer userId,Integer pageNum,Integer pageSize) throws Exception{
+            BodyBuilder builder = ResponseUtils.getBodyBuilder();
+            if(pageNum==null) {
+            	pageNum=0;
+            }if(pageSize==null) {
+            	pageSize=0;
+            }
+            if(!StringUtils.isEmpty(userId)) {
+                    HfUserExample hfUserExample = new HfUserExample();
+                    hfUserExample.createCriteria().andIdNotEqualTo(userId);
+                    return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+            }
+            PageHelper.startPage(pageNum,pageSize);
+            List<ActivityUserInfo> list = userDao.findActivityUserInfo();
+            System.out.println(list);
+            for (int i = 0; i < list.size(); i++) {
+                    ActivityUserInfo info = list.get(i);
+                    if(info != null) {
+                            if(info.getDepartmentId() != null) {
+                                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+                                    info.setDepartmentName(departmentName);
+                                    System.out.println(departmentName);
+                            }
+                    }
+            }
+
+            PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+            System.out.println(page);
+            return builder.body(ResponseUtils.getResponseBody(page));
+    }
 	
 	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)
 	@ApiOperation(value = "删除人", notes = "删除人")
@@ -366,7 +378,7 @@ public class KingWordsController {
 			if(list.isEmpty()) {
 				HfUser hfUser = new HfUser();
 				hfUser.setAddress(avatarUrl);
-				hfUser.setNickName(nickName);
+//				hfUser.setNickName(nickName);
 				hfUser.setUsername(unionId);
 				hfUser.setCreateDate(LocalDateTime.now());
 				hfUser.setModifyDate(LocalDateTime.now());
@@ -376,7 +388,7 @@ public class KingWordsController {
 			}else {
 				HfUser hfUser = list.get(0);
 				hfUser.setAddress(avatarUrl);
-				hfUser.setNickName(nickName);
+//				hfUser.setNickName(nickName);
 				hfUserMapper.updateByPrimaryKey(hfUser);
 				userId = hfUser.getId();
 			}

@@ -1,11 +1,14 @@
 package com.hanfu.activity.center.manual.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class VoteEntity implements Serializable{
 
 	private String voteName;
 	private Integer count;
+	private List<VoteRecordsEntity> voteRecordsEntity;
+	private List<Evaluate> evaluate;
 	public String getVoteName() {
 		return voteName;
 	}
@@ -18,5 +21,16 @@ public class VoteEntity implements Serializable{
 	public void setCount(Integer count) {
 		this.count = count;
 	}
-	
+	public List<VoteRecordsEntity> getVoteRecordsEntity() {
+		return voteRecordsEntity;
+	}
+	public void setVoteRecordsEntity(List<VoteRecordsEntity> voteRecordsEntity) {
+		this.voteRecordsEntity = voteRecordsEntity;
+	}
+	public List<Evaluate> getEvaluate() {
+		return evaluate;
+	}
+	public void setEvaluate(List<Evaluate> evaluate) {
+		this.evaluate = evaluate;
+	}
 }

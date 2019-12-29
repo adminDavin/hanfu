@@ -1,5 +1,6 @@
 package com.hanfu.activity.center.controller;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -27,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
+import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
@@ -37,6 +39,7 @@ import com.hanfu.activity.center.dao.StrategyRuleRelateMapper;
 import com.hanfu.activity.center.manual.dao.ActivityDao;
 import com.hanfu.activity.center.manual.dao.VoteRecordsDao;
 import com.hanfu.activity.center.manual.model.ActivityInfo;
+import com.hanfu.activity.center.manual.model.Evaluate;
 import com.hanfu.activity.center.manual.model.TimeTime;
 import com.hanfu.activity.center.manual.model.VoteEntity;
 import com.hanfu.activity.center.manual.model.VoteRecordsEntity;
@@ -46,6 +49,8 @@ import com.hanfu.activity.center.model.ActivitiStrategy;
 import com.hanfu.activity.center.model.ActivitiStrategyExample;
 import com.hanfu.activity.center.model.Activity;
 import com.hanfu.activity.center.model.ActivityDepartment;
+import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
+import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
@@ -114,6 +119,9 @@ public class ActivityController {
 	
 	@Autowired
 	private VoteRecordsDao voteRecordsDao;
+	
+	@Autowired
+	private ActivityEvaluateTemplateMapper activityEvaluateTemplateMapper;
 
 	@ApiOperation(value = "查询参加该活动参与人员", notes = "查询参加该活动参与人员")
 	@RequestMapping(value = "/listActivityUser", method = RequestMethod.GET)
@@ -826,42 +834,258 @@ public class ActivityController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
+		List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
 		if("praise".equals(activity.getActiviyType())) {
-			List<VoteEntity> entities = new ArrayList<VoteEntity>();
-			List<Integer> userIds = new ArrayList<Integer>(); 
 			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
 			example.setOrderByClause("user_ticket_count DESC");
 			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
 			for (int i = 0; i < list.size(); i++) {
+				VoteRecordsEntity entity = new VoteRecordsEntity();
 				ActivitiRuleInstance instance = list.get(i);
 				HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
-				ActivityVoteRecordsExample example2 = new ActivityVoteRecordsExample();
-				example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId());
-				List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example2);
-				for (int j = 0; j < list2.size(); j++) {
-					ActivityVoteRecords records = list2.get(j);
-					if(!userIds.contains(records.getUserId())) {
-						userIds.add(records.getUserId());
-					}
-				}
-				for (int j = 0; j < userIds.size(); j++) {
-					example2.clear();
-					example2.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId())
-					.andUserIdEqualTo(userIds.get(j));
-					List<ActivityVoteRecords> list3 = activityVoteRecordsMapper.selectByExample(example2);
-				}
-				VoteRecordsEntity entity = new VoteRecordsEntity();
 				if(StringUtils.isEmpty(hfUser.getRealName())) {
 					entity.setEceltedName(hfUser.getNickName());
 				}else {
 					entity.setEceltedName(hfUser.getRealName());
 				}
 				entity.setTotalScore(instance.getUserTicketCount());
-				
+				entity.setUserId(instance.getUserId());
+				result.add(entity);
 			}
 		}
 		
+		if("score".equals(activity.getActiviyType())) {
+			Integer count = 0;
+			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
+			example.setOrderByClause("remarks DESC");
+			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
+			for (int i = 0; i < list.size(); i++) {
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				ActivitiRuleInstance instance = list.get(i);
+				HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+				if(StringUtils.isEmpty(hfUser.getRealName())) {
+					entity.setEceltedName(hfUser.getNickName());
+				}else {
+					entity.setEceltedName(hfUser.getRealName());
+				}
+				entity.setTotalScore(Double.valueOf(instance.getRemarks()));
+				entity.setUserId(instance.getUserId());
+				double reportScore = 0.00;
+				double deedScore = 0.00;
+				ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
+				example4.createCriteria().andActivityIdEqualTo(activityId)
+						.andElectedUserIdEqualTo(instance.getUserId()).andVoteTimesEqualTo(0);
+				List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example4);
+				count = list2.size();
+				for (int j = 0; j < list2.size(); j++) {
+					ActivityVoteRecords records = list2.get(j);
+					deedScore = Double.valueOf(records.getRemarks()) + deedScore;
+				}
+				if (list2.isEmpty()) {
+					deedScore = 0.00;
+				} else {
+					deedScore = (deedScore / list2.size()) * 0.5;
+				}
+				example4.clear();
+				example4.createCriteria().andActivityIdEqualTo(activityId)
+						.andElectedUserIdEqualTo(instance.getUserId()).andVoteTimesEqualTo(1);
+				list2 = activityVoteRecordsMapper.selectByExample(example4);
+				for (int j = 0; j < list2.size(); j++) {
+					ActivityVoteRecords records = list2.get(j);
+					reportScore = Double.valueOf(records.getRemarks()) + reportScore;
+				}
+				if (list2.isEmpty()) {
+					reportScore = 0.00;
+				} else {
+					reportScore = (reportScore / list2.size()) * 0.5;
+				}
+				DecimalFormat df = new DecimalFormat("0.000"); 
+				entity.setOnlineScore(Double.valueOf(df.format(deedScore)));
+				entity.setOfflineScore(Double.valueOf(df.format(reportScore)));
+				if(count>=list2.size()) {
+					entity.setVoteCount(count);
+				}else {
+					entity.setVoteCount(list2.size());
+				}
+				result.add(entity);
+			}
+		}
 		
+		if("election".equals(activity.getActiviyType())) {
+			ActivityVoteRecordsExample example2 = new ActivityVoteRecordsExample();
+			example2.createCriteria().andActivityIdEqualTo(activityId);
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example2);
+			for (int i = 0; i < list.size(); i++) {
+				ActivityVoteRecords records = list.get(i);
+				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+				HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				if(votePerson != null) {
+					if(votePerson.getRealName() != null) {
+						entity.setVoteName(votePerson.getRealName());
+					}else {
+						entity.setVoteName(votePerson.getNickName());
+					}
+				}
+				if(electedPeson != null) {
+					if(electedPeson.getRealName() != null) {
+						entity.setEceltedName(electedPeson.getRealName());
+					}else {
+						entity.setEceltedName(electedPeson.getNickName());
+					}
+				}
+				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
+				result.add(entity);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "后台活动投票记录详情查询", notes = "后台活动投票记录详情查询")
+	@RequestMapping(value = "/ActivityvoteRecordsDetail", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam Integer userId,@RequestParam Integer activityId,@RequestParam(required = false) String type)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Activity activity  = activityMapper.selectByPrimaryKey(activityId);
+		List<VoteRecordsEntity> result = new ArrayList<VoteRecordsEntity>();
+		if("praise".equals(activity.getActiviyType())) {
+			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+			example.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(userId);
+			List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+			for (int i = 0; i < list.size(); i++) {
+				VoteRecordsEntity entity = new VoteRecordsEntity();
+				ActivityVoteRecords records = list.get(i);
+				HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+				if(!StringUtils.isEmpty(votePerson.getRealName())) {
+					entity.setVoteRealName(votePerson.getRealName());
+				}else {
+					entity.setVoteRealName("");
+				}
+				if(!StringUtils.isEmpty(votePerson.getNickName())) {
+					entity.setVoteNickName(votePerson.getNickName());
+				}else {
+					entity.setVoteNickName("");
+				}
+				entity.setTotalScore(1);
+				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
+				result.add(entity);
+			}
+		}
+		
+		if("score".equals(activity.getActiviyType())) {
+			VoteEntity voteEntity = new VoteEntity();
+			List<Object> object = new ArrayList<Object>();
+			ActivityEvaluateTemplateExample example2 = new ActivityEvaluateTemplateExample();
+			example2.createCriteria().andParentTemplateIdEqualTo(activityId).andIsDeletedEqualTo(Short.valueOf(type));
+			List<ActivityEvaluateTemplate> list2 = activityEvaluateTemplateMapper.selectByExample(example2);
+			List<Evaluate> userEvaluateInfo = new ArrayList<Evaluate>();
+			int index = 65;
+				for (int i = 0; i < list2.size(); i++) {
+					Evaluate evaluate = new Evaluate();
+					ActivityEvaluateTemplate template = list2.get(i);
+					evaluate.setEvaluateTemplateId(template.getId());
+					evaluate.setEvaluateType(template.getEvaluateType());
+					evaluate.setRemarks(template.getRemarks());
+					evaluate.setEvaluateWeight(template.getEvaluateWeight());
+					evaluate.setEvaluateContent(template.getEvaluateContent());
+					evaluate.setZimu((char) index);
+					index++;
+					userEvaluateInfo.add(evaluate);
+				}
+				object.add(userEvaluateInfo);
+			VoteRecordsEntity entity = new VoteRecordsEntity();
+			ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+			entity.setActivityId(activityId);
+			entity.setType(Integer.valueOf(type));
+			entity.setElectedId(userId);
+			List<Integer> list = voteRecordsDao.distinctUserIdvote(entity);
+			for (int i = 0; i < list.size(); i++) {
+				DecimalFormat df = new DecimalFormat("0.000");
+				double totalScore = 0.000;
+				List<Double> score = new ArrayList<Double>();
+				VoteRecordsEntity entity2 = new VoteRecordsEntity();
+				HfUser votePerson = hfUserMapper.selectByPrimaryKey(list.get(i));
+				example.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(userId).andVoteTimesEqualTo(Integer.valueOf(type))
+				.andUserIdEqualTo(votePerson.getId());
+				for (int j = 0; j < activityVoteRecordsMapper.selectByExample(example).size(); j++) {
+					totalScore = totalScore + Double.valueOf(activityVoteRecordsMapper.selectByExample(example).get(j).getRemarks())*Double.valueOf(userEvaluateInfo.get(j).getEvaluateWeight());
+					score.add(Double.valueOf(df.format(Double.valueOf(activityVoteRecordsMapper.selectByExample(example).get(j).getRemarks()))));
+				}
+				if(!StringUtils.isEmpty(votePerson.getRealName())) {
+					entity2.setVoteRealName(votePerson.getRealName());
+				}else {
+					entity2.setVoteRealName("");
+				}
+				if(!StringUtils.isEmpty(votePerson.getNickName())) {
+					entity2.setVoteNickName(votePerson.getNickName());
+				}else {
+					entity2.setVoteNickName("");
+				}
+				example.clear();
+				entity2.setSocre(score);
+				entity2.setTotalScore(Double.valueOf(df.format(totalScore)));
+				entity2.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(activityVoteRecordsMapper.selectByExample(example).get(0).getCreateTime().plusHours(8L)));
+				result.add(entity2);
+			}
+			object.add(result);
+			return builder.body(ResponseUtils.getResponseBody(object));
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "后台修改投票分数", notes = "后台整个活动投票记录")
+	@RequestMapping(value = "/ActivityvoteRecordsUpdate", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam Integer userId,@RequestParam Integer activityId,
+			@RequestParam String[] score,@RequestParam String type,@RequestParam Integer electedId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ActivitiRuleInstanceExample instanceExample = new ActivitiRuleInstanceExample();
+		instanceExample.createCriteria().andActivityIdEqualTo(activityId).andUserIdEqualTo(electedId);
+		List<ActivitiRuleInstance> list3 = activitiRuleInstanceMapper.selectByExample(instanceExample);
+		ActivitiRuleInstance userElect = list3.get(0);
+		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
+		example.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(electedId)
+		.andUserIdEqualTo(userId).andVoteTimesEqualTo(Integer.valueOf(type));
+		List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			ActivityVoteRecords records = list.get(i);
+			if(!StringUtils.isEmpty(score[i])) {
+				records.setRemarks(score[i]);
+			}else {
+				records.setRemarks("0");
+			}
+		}
+		double reportScore = 0.00;
+		double deedScore = 0.00;
+		ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
+		example4.createCriteria().andActivityIdEqualTo(activityId)
+				.andElectedUserIdEqualTo(electedId).andVoteTimesEqualTo(0);
+		List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example4);
+		for (int i = 0; i < list2.size(); i++) {
+			ActivityVoteRecords records = list2.get(i);
+			deedScore = Double.valueOf(records.getRemarks()) + deedScore;
+		}
+		if (list2.isEmpty()) {
+			deedScore = 0.00;
+		} else {
+			deedScore = (deedScore / list2.size()) * 0.5;
+		}
+		example4.clear();
+		example4.createCriteria().andActivityIdEqualTo(activityId)
+				.andElectedUserIdEqualTo(electedId).andVoteTimesEqualTo(1);
+		list2 = activityVoteRecordsMapper.selectByExample(example4);
+		for (int i = 0; i < list2.size(); i++) {
+			ActivityVoteRecords records = list2.get(i);
+			reportScore = Double.valueOf(records.getRemarks()) + reportScore;
+		}
+		if (list2.isEmpty()) {
+			reportScore = 0.00;
+		} else {
+			reportScore = (reportScore / list2.size()) * 0.5;
+		}
+		DecimalFormat df = new DecimalFormat("0.000");  
+		userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
+		activitiRuleInstanceMapper.updateByPrimaryKey(userElect);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	

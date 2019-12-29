@@ -13,11 +13,19 @@ public class VoteRecordsEntity implements Serializable{
 	
 	private Integer activityId;
 	private Integer userId;
+	private Integer electedId;
 	private String voteName;
+	private String voteRealName;
+	private String voteNickName;
 	private String eceltedName;
 	private String voteTimes;
 	private List<VoteEntity> voteEntity;
 	private double totalScore;
+	private double onlineScore;
+	private double offlineScore;
+	private Integer voteCount;
+	private List<Double> socre;
+	private Integer type;
 	
 	public Integer getActivityId() {
 		return activityId;
@@ -60,5 +68,61 @@ public class VoteRecordsEntity implements Serializable{
 	}
 	public void setVoteEntity(List<VoteEntity> voteEntity) {
 		this.voteEntity = voteEntity;
+	}
+	public double getOnlineScore() {
+		return onlineScore;
+	}
+	public void setOnlineScore(double onlineScore) {
+		this.onlineScore = onlineScore;
+	}
+	public double getOfflineScore() {
+		return offlineScore;
+	}
+	public void setOfflineScore(double offlineScore) {
+		this.offlineScore = offlineScore;
+	}
+	public Integer getVoteCount() {
+		return voteCount;
+	}
+	public void setVoteCount(Integer voteCount) {
+		this.voteCount = voteCount;
+	}
+	public String getVoteRealName() {
+		return voteRealName;
+	}
+	public void setVoteRealName(String voteRealName) {
+		this.voteRealName = voteRealName;
+	}
+	public String getVoteNickName() {
+		return voteNickName;
+	}
+	public void setVoteNickName(String voteNickName) {
+		this.voteNickName = voteNickName;
+	}
+	public List<Double> getSocre() {
+		return socre;
+	}
+	public void setSocre(List<Double> socre) {
+		this.socre = socre;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	public Integer getElectedId() {
+		return electedId;
+	}
+	public void setElectedId(Integer electedId) {
+		this.electedId = electedId;
+	}
+	@Override
+	public String toString() {
+		return "VoteRecordsEntity [activityId=" + activityId + ", userId=" + userId + ", electedId=" + electedId
+				+ ", voteName=" + voteName + ", voteRealName=" + voteRealName + ", voteNickName=" + voteNickName
+				+ ", eceltedName=" + eceltedName + ", voteTimes=" + voteTimes + ", voteEntity=" + voteEntity
+				+ ", totalScore=" + totalScore + ", onlineScore=" + onlineScore + ", offlineScore=" + offlineScore
+				+ ", voteCount=" + voteCount + ", socre=" + socre + ", type=" + type + "]";
 	}
 }
