@@ -452,7 +452,10 @@ public class KingWordsController {
 					hfUserMapper.insert(hfUser);
 				} catch (Exception e) {
 					hfUser.setAddress(avatarUrl);
-					hfUser.setNickName("未知昵称");
+					HfUserExample example2 = new HfUserExample();
+					example2.createCriteria().andNickNameLike("未知昵称%");
+					List<HfUser> list2 = hfUserMapper.selectByExample(example2);
+					hfUser.setNickName("未知昵称"+list2.size()+1);
 					hfUser.setUsername(unionId);
 					hfUser.setCreateDate(LocalDateTime.now());
 					hfUser.setModifyDate(LocalDateTime.now());
@@ -468,7 +471,7 @@ public class KingWordsController {
 					hfUserMapper.updateByPrimaryKey(hfUser);
 				} catch (Exception e) {
 					hfUser.setAddress(avatarUrl);
-					hfUser.setNickName("未知昵称");
+					hfUser.setNickName(list.get(0).getNickName());
 					hfUser.setUsername(unionId);
 					hfUser.setCreateDate(LocalDateTime.now());
 					hfUser.setModifyDate(LocalDateTime.now());
@@ -478,7 +481,7 @@ public class KingWordsController {
 				userId = hfUser.getId();
 			}
 		}
-//		map.put("userId", userId);
+		map.put("userId", userId);
 		map.put( "userInfo",userInfo ); 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(map));
