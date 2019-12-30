@@ -11,8 +11,8 @@ import com.hanfu.payment.center.utils.PayUtil;
 import com.hanfu.payment.center.utils.RandomStringGenerator;
 import com.hanfu.payment.center.utils.Signature;
 import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseUtils;
 import com.thoughtworks.xstream.XStream;
-import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,19 +27,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import com.hanfu.utils.response.handler.ResponseUtils;
 import java.util.Map;
-
 /**
- * @description: 支付
- * @author: ningcs
- * @create: 2019-06-25 14:51
+ * @ClassName PayController
+ * @Date 2019/12/30 14:56
+ * @Author CONSAK
  **/
-
 @Api
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/payment")
+@RequestMapping("/pay")
 public class PayController {
 
     private static final long serialVersionUID = 1L;
@@ -60,7 +57,7 @@ public class PayController {
     @RequestMapping(value = "/wxpay",method = RequestMethod.GET)
     public ResponseEntity<JSONObject> payment(@Valid @RequestBody NewWXOrderRequest request, HttpServletRequest httpServletRequest) {
         Map map = new HashMap();
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
         try {
             OrderInfo order = new OrderInfo();
@@ -70,7 +67,7 @@ public class PayController {
             order.setBody(request.getBody());
             order.setOut_trade_no(request.getOut_trade_no());
 
-            order.setTotal_fee(request.getTotal_fee()*100);//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
+            order.setTotal_fee(request.getTotal_fee());//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 
             order.setSpbill_create_ip("127.0.0.1");
             order.setNotify_url(notify_url);
