@@ -79,6 +79,42 @@
 			activity_user_info a
 		ON 
 			h.id = a.user_id
+			<if test="time==1">
+			order by h.create_date desc
+			</if>
+		<if test="time==2">
+			order by h.create_date asc
+		</if>
+		<if test="time==3">
+			order by h.nick_name desc
+		</if>
+		<if test="time==4">
+			order by h.nick_name asc
+		</if>
+	</select>
+
+	<select id="findActivityUserInfoTP" resultMap="ActivityUserInfo">
+		SELECT
+			h.address,h.nick_name,
+			h.real_name,h.phone,
+			h.create_date,a.department_id,
+			h.id
+		FROM
+			hf_user h
+		LEFT JOIN
+			activity_user_info a
+		ON
+			h.id = a.user_id
+			WHERE 1=1
+			<if test="wxName!=null">
+				AND h.nick_name LIKE concat('%',#{wxName},'%')
+			</if>
+			<if test="phone!=null">
+				AND h.phone LIKE concat('%',#{phone},'%')
+			</if>
+			<if test="realName!=null">
+				AND h.real_name LIKE concat('%',#{realName},'%')
+			</if>
 	</select>
 	
 	<select id="findDepartmentName" resultType="String">

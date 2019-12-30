@@ -25,6 +25,9 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.hanfu.user.center.model.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -56,11 +59,6 @@ import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
-import com.hanfu.user.center.model.FileDesc;
-import com.hanfu.user.center.model.HfAuth;
-import com.hanfu.user.center.model.HfAuthExample;
-import com.hanfu.user.center.model.HfUser;
-import com.hanfu.user.center.model.HfUserExample;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
@@ -265,28 +263,63 @@ public class KingWordsController {
 	@RequestMapping(path = "/userList",  method = RequestMethod.GET)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer")
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "time", value = "排序方式1降序2升序,3微信名降序4升序", required = false, type = "Integer")
 	})
-	public ResponseEntity<JSONObject> userList(Integer userId) throws Exception{
+	public ResponseEntity<JSONObject> userList(Integer userId,Integer pageNum,Integer pageSize,Integer time) throws Exception{
+		if (pageNum==null){
+			pageNum=0;
+		}if (pageSize==null){
+			pageSize=0;
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if(!StringUtils.isEmpty(userId)) {
 			HfUserExample hfUserExample = new HfUserExample();
 			hfUserExample.createCriteria().andIdNotEqualTo(userId);
 			return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
-		}	
-		List<ActivityUserInfo> list = userDao.findActivityUserInfo();
+		}
+		PageHelper.startPage(pageNum,pageSize);
+		List<ActivityUserInfo> list = userDao.findActivityUserInfo(time);
+		System.out.println(list);
 		for (int i = 0; i < list.size(); i++) {
 			ActivityUserInfo info = list.get(i);
 			if(info != null) {
 				if(info.getDepartmentId() != null) {
 					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
 					info.setDepartmentName(departmentName);
+					System.out.println(departmentName);
 				}
 			}
 		}
-		return builder.body(ResponseUtils.getResponseBody(list));
+
+		PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+		System.out.println(page);
+		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-	
+
+	@RequestMapping(path = "/userListTP",  method = RequestMethod.GET)
+	@ApiOperation(value = "用户列表查询", notes = "用户列表查询")
+	public ResponseEntity<JSONObject> userListTP(UserQuery userQuery, Integer pageNum, Integer pageSize) throws Exception{
+		System.out.println(userQuery);
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		PageHelper.startPage(pageNum,pageSize);
+		List<ActivityUserInfo> list = userDao.findActivityUserInfoTP(userQuery);
+		System.out.println(list+"list-----");
+		for (int i = 0; i < list.size(); i++) {
+			ActivityUserInfo info = list.get(i);
+			if(info != null) {
+				if(info.getDepartmentId() != null) {
+					String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+					info.setDepartmentName(departmentName);
+					System.out.println(departmentName);
+				}
+			}
+		}
+
+		PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+		System.out.println(page);
+		return builder.body(ResponseUtils.getResponseBody(page));
+	}
 	
 	@RequestMapping(path = "/deleteUser",  method = RequestMethod.GET)
 	@ApiOperation(value = "删除人", notes = "删除人")

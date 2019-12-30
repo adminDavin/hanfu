@@ -1,8 +1,11 @@
 server:
   port: 8082
 
-spring:  datasource:    name: dataSource
-    type: com.zaxxer.hikari.HikariDataSource    url: jdbc:mysql://47.105.72.216:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true  
+spring:
+  datasource:
+    name: dataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://39.100.86.77/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
     username: hanfu_admin
     password: Davin1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,10 +18,20 @@ spring:  datasource:    name: dataSource
     host: 47.105.72.216
     port: 6379
     timeout: 10000
-    jedis:      pool:        max-active: 16
+    jedis:
+      pool:
+        max-active: 16
         max-idle: 4
-  task:    execution:      pool:        max-size: 16        queue-capacity: 100
+  task:
+    execution:
+      pool:
+        max-size: 16
+        queue-capacity: 100
         keep-alive: 3600s
+#pageHelper插件配置
+pagehelper:
+  helper-dialect: mysql   #数据库连接
+  reasonable: true        #分页合理化参数
 
 info:
   head: head
@@ -39,6 +52,7 @@ management:
 logging:
   file: ./logs/king-words.log  
   
-mybatis:  mapper-locations: 
+mybatis:
+  mapper-locations: 
     - mappers/*.xml
     - manual-mappers/*.xml
