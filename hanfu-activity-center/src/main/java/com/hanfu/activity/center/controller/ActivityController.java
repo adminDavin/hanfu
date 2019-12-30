@@ -1051,7 +1051,8 @@ public class ActivityController {
 				} else {
 					entity2.setVoteNickName("");
 				}
-				entity2.setElectedId(votePerson.getId());
+				entity2.setElectedId(userId);
+				entity2.setUserId(votePerson.getId());
 				entity2.setSocre(score);
 				entity2.setTotalScore(Double.valueOf(df.format(totalScore)));
 				entity2.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(
