@@ -20,9 +20,9 @@ public class VoteRecordsEntity implements Serializable{
 	private String eceltedName;
 	private String voteTimes;
 	private List<VoteEntity> voteEntity;
-	private double totalScore;
-	private double onlineScore;
-	private double offlineScore;
+	private String totalScore;
+	private String onlineScore;
+	private String offlineScore;
 	private Integer voteCount;
 	private List<Double> socre;
 	private Integer type;
@@ -57,10 +57,10 @@ public class VoteRecordsEntity implements Serializable{
 	public void setVoteTimes(String voteTimes) {
 		this.voteTimes = voteTimes;
 	}
-	public double getTotalScore() {
+	public String getTotalScore() {
 		return totalScore;
 	}
-	public void setTotalScore(double totalScore) {
+	public void setTotalScore(String totalScore) {
 		this.totalScore = totalScore;
 	}
 	public List<VoteEntity> getVoteEntity() {
@@ -69,16 +69,16 @@ public class VoteRecordsEntity implements Serializable{
 	public void setVoteEntity(List<VoteEntity> voteEntity) {
 		this.voteEntity = voteEntity;
 	}
-	public double getOnlineScore() {
+	public String getOnlineScore() {
 		return onlineScore;
 	}
-	public void setOnlineScore(double onlineScore) {
+	public void setOnlineScore(String onlineScore) {
 		this.onlineScore = onlineScore;
 	}
-	public double getOfflineScore() {
+	public String getOfflineScore() {
 		return offlineScore;
 	}
-	public void setOfflineScore(double offlineScore) {
+	public void setOfflineScore(String offlineScore) {
 		this.offlineScore = offlineScore;
 	}
 	public Integer getVoteCount() {

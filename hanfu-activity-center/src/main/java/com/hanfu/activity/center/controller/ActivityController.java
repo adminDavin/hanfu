@@ -851,7 +851,7 @@ public class ActivityController {
 				} else {
 					entity.setEceltedName(hfUser.getRealName());
 				}
-				entity.setTotalScore(instance.getUserTicketCount());
+				entity.setTotalScore(String.valueOf(instance.getUserTicketCount()));
 				entity.setUserId(instance.getUserId());
 				result.add(entity);
 			}
@@ -871,7 +871,8 @@ public class ActivityController {
 				} else {
 					entity.setEceltedName(hfUser.getRealName());
 				}
-				entity.setTotalScore(Double.valueOf(instance.getRemarks()));
+				DecimalFormat df = new DecimalFormat("0.000");
+				entity.setTotalScore(df.format(Double.valueOf(instance.getRemarks())));
 				entity.setUserId(instance.getUserId());
 				double reportScore = 0.00;
 				double deedScore = 0.00;
@@ -910,9 +911,8 @@ public class ActivityController {
 				} else {
 					reportScore = (reportScore / list2.size()) * 0.5;
 				}
-				DecimalFormat df = new DecimalFormat("0.000");
-				entity.setOnlineScore(Double.valueOf(df.format(deedScore)));
-				entity.setOfflineScore(Double.valueOf(df.format(reportScore)));
+				entity.setOnlineScore(df.format(deedScore));
+				entity.setOfflineScore(df.format(reportScore));
 				if (count.size() >= voteRecordsDao.distinctUserIdvote(entity2).size()) {
 					entity.setVoteCount(count.size());
 				} else {
@@ -988,7 +988,7 @@ public class ActivityController {
 				} else {
 					entity.setVoteNickName("");
 				}
-				entity.setTotalScore(1);
+				entity.setTotalScore("1");
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss")
 						.format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);
@@ -1041,6 +1041,7 @@ public class ActivityController {
 					score.add(Double.valueOf(df.format(
 							Double.valueOf(activityVoteRecordsMapper.selectByExample(example).get(j).getRemarks()))));
 				}
+				
 				if (!StringUtils.isEmpty(votePerson.getRealName())) {
 					entity2.setVoteRealName(votePerson.getRealName());
 				} else {
@@ -1054,7 +1055,7 @@ public class ActivityController {
 				entity2.setElectedId(userId);
 				entity2.setUserId(votePerson.getId());
 				entity2.setSocre(score);
-				entity2.setTotalScore(Double.valueOf(df.format(totalScore)));
+				entity2.setTotalScore(df.format(totalScore));
 				entity2.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(
 						activityVoteRecordsMapper.selectByExample(example).get(0).getCreateTime().plusHours(8L)));
 				result.add(entity2);
