@@ -690,7 +690,7 @@ public class ActivityController {
 				if (activity != null) {
 					if ("score".equals(activity.getActiviyType())) {
 						if (StringUtils.isEmpty(list.get(j).getRemarks())) {
-							total.setTotalScore(0.00);
+							total.setTotalScore(0.000);
 						} else {
 							total.setTotalScore(Double.valueOf(list.get(j).getRemarks()));
 						}
@@ -1051,7 +1051,7 @@ public class ActivityController {
 				} else {
 					entity2.setVoteNickName("");
 				}
-				example.clear();
+//				example.clear();
 				entity2.setElectedId(votePerson.getId());
 				entity2.setSocre(score);
 				entity2.setTotalScore(Double.valueOf(df.format(totalScore)));
