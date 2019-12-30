@@ -1051,13 +1051,13 @@ public class ActivityController {
 				} else {
 					entity2.setVoteNickName("");
 				}
-//				example.clear();
 				entity2.setElectedId(votePerson.getId());
 				entity2.setSocre(score);
 				entity2.setTotalScore(Double.valueOf(df.format(totalScore)));
 				entity2.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(
 						activityVoteRecordsMapper.selectByExample(example).get(0).getCreateTime().plusHours(8L)));
 				result.add(entity2);
+				example.clear();
 			}
 			object.add(result);
 			object.add(page);
