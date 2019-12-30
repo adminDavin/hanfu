@@ -858,7 +858,7 @@ public class ActivityController {
 		}
 
 		if ("score".equals(activity.getActiviyType())) {
-			Integer count = 0;
+			List<Integer> count = new ArrayList<Integer>();
 			example.createCriteria().andActivityIdEqualTo(activityId).andIsElectedEqualTo(true);
 			example.setOrderByClause("remarks DESC");
 			List<ActivitiRuleInstance> list = activitiRuleInstanceMapper.selectByExample(example);
@@ -879,7 +879,11 @@ public class ActivityController {
 				example4.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId())
 						.andVoteTimesEqualTo(0);
 				List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example4);
-				count = list2.size();
+				VoteRecordsEntity entity2 = new VoteRecordsEntity();
+				entity2.setActivityId(activityId);
+				entity2.setType(Integer.valueOf(0));
+				entity2.setElectedId(instance.getUserId());
+				count = voteRecordsDao.distinctUserIdvote(entity2);
 				for (int j = 0; j < list2.size(); j++) {
 					ActivityVoteRecords records = list2.get(j);
 					deedScore = Double.valueOf(records.getRemarks()) + deedScore;
@@ -893,6 +897,10 @@ public class ActivityController {
 				example4.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(instance.getUserId())
 						.andVoteTimesEqualTo(1);
 				list2 = activityVoteRecordsMapper.selectByExample(example4);
+				entity2.setActivityId(activityId);
+				entity2.setType(Integer.valueOf(0));
+				entity2.setElectedId(instance.getUserId());
+				voteRecordsDao.distinctUserIdvote(entity2);
 				for (int j = 0; j < list2.size(); j++) {
 					ActivityVoteRecords records = list2.get(j);
 					reportScore = Double.valueOf(records.getRemarks()) + reportScore;
@@ -905,10 +913,10 @@ public class ActivityController {
 				DecimalFormat df = new DecimalFormat("0.000");
 				entity.setOnlineScore(Double.valueOf(df.format(deedScore)));
 				entity.setOfflineScore(Double.valueOf(df.format(reportScore)));
-				if (count >= list2.size()) {
-					entity.setVoteCount(count);
+				if (count.size() >= voteRecordsDao.distinctUserIdvote(entity2).size()) {
+					entity.setVoteCount(count.size());
 				} else {
-					entity.setVoteCount(list2.size());
+					entity.setVoteCount(voteRecordsDao.distinctUserIdvote(entity2).size());
 				}
 				result.add(entity);
 			}
