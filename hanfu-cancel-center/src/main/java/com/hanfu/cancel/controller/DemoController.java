@@ -17,9 +17,9 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
+@Controller
 @Api
-@RequestMapping("/cancel")
+@RequestMapping("/Demo")
 @CrossOrigin
 public class DemoController {
     @Autowired
@@ -35,19 +35,11 @@ public class DemoController {
     @Autowired
     private HfPriceMapper hfPriceMapper;
     @RequestMapping(value = "/demo",method = RequestMethod.GET)
-    public Double demo(Double d){
-        DecimalFormat df = new DecimalFormat("########.000");
-        String dff = df.format(23.2);
-        Double a= Double.valueOf(dff);
-        System.out.println(a);
+    public String demo(){
 
-        Double retValue = null;
-        int newScale=5;
-        BigDecimal bd = new BigDecimal(d);
-        retValue = bd.setScale(newScale,BigDecimal.ROUND_HALF_UP).doubleValue();
-        System.out.println(retValue);
-        return retValue;
+        return "http://www.baidu.com";
     }
+    @ResponseBody
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
     public ResponseEntity<JSONObject> testCancel(
