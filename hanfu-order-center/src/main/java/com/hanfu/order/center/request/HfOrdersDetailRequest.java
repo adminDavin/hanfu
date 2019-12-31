@@ -6,25 +6,25 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrdersDetailRequest implements Serializable {
-	@ApiModelProperty(required = true, value = "订单详情id")
+	@ApiModelProperty(required = false, value = "订单详情id")
 	private Integer id;
-	@ApiModelProperty(required = true, value = "订单id")
+	@ApiModelProperty(required = false, value = "订单id")
 	private Integer ordersId;
-	@ApiModelProperty(required = true, value = "仓库id")
+	@ApiModelProperty(required = false, value = "仓库id")
 	private Integer respId;
-	@ApiModelProperty(required = true, value = "订单详情状况")
+	@ApiModelProperty(required = false, value = "订单详情状况")
 	private String orderDetailStatus;
-	@ApiModelProperty(required = true, value = "物品id")
-	private Integer googsId;
-	@ApiModelProperty(required = true, value = "税金")
+	@ApiModelProperty(required = false, value = "物品id")
+	private Integer[] googsId;
+	@ApiModelProperty(required = false, value = "税金")
 	private Integer hfTax;
-	@ApiModelProperty(required = true, value = "购买价格")
+	@ApiModelProperty(required = false, value = "购买价格")
 	private Integer purchasePrice;
-	@ApiModelProperty(required = true, value = "购买数量")
+	@ApiModelProperty(required = false, value = "购买数量")
 	private Integer purchaseQuantity;
-	@ApiModelProperty(required = true, value = "配送方式")
+	@ApiModelProperty(required = false, value = "配送方式")
 	private String distribution;
-	@ApiModelProperty(required = true, value = "订单描述")
+	@ApiModelProperty(required = false, value = "订单描述")
 	private String hfDesc;
 	@ApiModelProperty(required = false, value = "创建时间")
 	private LocalDateTime createTime;
@@ -53,10 +53,11 @@ public class HfOrdersDetailRequest implements Serializable {
 	public void setOrderDetailStatus(String orderDetailStatus) {
 		this.orderDetailStatus = orderDetailStatus;
 	}
-	public Integer getGoogsId() {
+	
+	public Integer[] getGoogsId() {
 		return googsId;
 	}
-	public void setGoogsId(Integer googsId) {
+	public void setGoogsId(Integer[] googsId) {
 		this.googsId = googsId;
 	}
 	public Integer getHfTax() {

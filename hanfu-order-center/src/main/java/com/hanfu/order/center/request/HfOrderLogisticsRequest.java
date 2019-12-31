@@ -7,29 +7,29 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrderLogisticsRequest implements Serializable{
-	@ApiModelProperty(required = true, value = "id")
+	@ApiModelProperty(required = false, value = "id")
 	private Integer id;
-	@ApiModelProperty(required = true, value = "订单id")
+	@ApiModelProperty(required = false, value = "订单id")
 	private Integer ordersId;
-	@ApiModelProperty(required = true, value = "订单详情id")
+	@ApiModelProperty(required = false, value = "订单详情id")
 	private Integer orderDetailId ;
-	@ApiModelProperty(required = true, value = "用户地址id")
+	@ApiModelProperty(required = false, value = "用户地址id")
 	private Integer userAddressId;
-	@ApiModelProperty(required = true, value = "物品id")
+	@ApiModelProperty(required = false, value = "物品id")
 	private Integer  googsId;
-	@ApiModelProperty(required = true, value = "物流名称")
+	@ApiModelProperty(required = false, value = "物流名称")
 	private String logisticsOrderName;
-	@ApiModelProperty(required = true, value = "仓库id")
+	@ApiModelProperty(required = false, value = "仓库id")
 	private Integer  respId ;
-	@ApiModelProperty(required = true, value = "物流订单号")
+	@ApiModelProperty(required = false, value = "物流订单号")
 	private String logisticsOrdersId;
-	@ApiModelProperty(required = true, value = "物流公司")
+	@ApiModelProperty(required = false, value = "物流公司")
 	private String logisticsCompany;
-	@ApiModelProperty(required = true, value = "物流描述")
+	@ApiModelProperty(required = false, value = "物流描述")
 	private String hfDesc;
 	@ApiModelProperty(required = false, value = "添加时间")
 	private LocalDateTime createTime;
-	@ApiModelProperty(required = true, value = "用户Id")
+	@ApiModelProperty(required = false, value = "用户Id")
 	private Integer userId;	
 	
 	public Integer getUserId() {
