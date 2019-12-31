@@ -236,6 +236,7 @@ public class GoodsController {
 		record.setHfName(hfGoodsInfo.getGoodName());
 		record.setStoneId(hfGoodsInfo.getHfStoreId());
 		record.setBrandId(hfGoodsInfo.getBrandId());
+		
 		record.setCreateTime(LocalDateTime.now());
 		record.setModifyTime(LocalDateTime.now());
 		record.setIsDeleted((short) 0);

@@ -30,10 +30,10 @@ public class QueryLogisticsController {
 		@ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
 		})
 	public ResponseEntity<JSONObject> logistics(String expCode,String expNo)
-			throws JSONException {
+			throws JSONException { 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		try {
+		try { 
 			String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expCode, expNo);
 			return builder.body(ResponseUtils.getResponseBody(result));
 		} catch (Exception e) {

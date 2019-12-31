@@ -27,7 +27,7 @@ public class HfOrderLogisticsRequest implements Serializable{
 	private String logisticsCompany;
 	@ApiModelProperty(required = true, value = "物流描述")
 	private String hfDesc;
-	@ApiModelProperty(required = true, value = "添加时间")
+	@ApiModelProperty(required = false, value = "添加时间")
 	private LocalDateTime createTime;
 	@ApiModelProperty(required = true, value = "用户Id")
 	private Integer userId;	

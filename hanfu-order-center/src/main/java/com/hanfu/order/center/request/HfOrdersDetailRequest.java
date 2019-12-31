@@ -26,7 +26,7 @@ public class HfOrdersDetailRequest implements Serializable {
 	private String distribution;
 	@ApiModelProperty(required = true, value = "订单描述")
 	private String hfDesc;
-	@ApiModelProperty(required = true, value = "创建时间")
+	@ApiModelProperty(required = false, value = "创建时间")
 	private LocalDateTime createTime;
 	
 	public Integer getId() {

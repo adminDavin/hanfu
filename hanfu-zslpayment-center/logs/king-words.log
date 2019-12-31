@@ -40,3 +40,17 @@
 2019-12-30 09:28:04.821  INFO 39368 --- [http-nio-9099-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2019-12-30 09:28:04.822  INFO 39368 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2019-12-30 09:28:04.852  INFO 39368 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 30 ms
+2019-12-31 09:17:22.860  INFO 46988 --- [main] c.h.p.center.AppletNewPayApplication     : Starting AppletNewPayApplication on DESKTOP-43SKEQG with PID 46988 (D:\hanfu\hanfu\hanfu-zslpayment-center\target\classes started by 123 in D:\hanfu\hanfu\hanfu-zslpayment-center)
+2019-12-31 09:17:22.863  INFO 46988 --- [main] c.h.p.center.AppletNewPayApplication     : No active profile set, falling back to default profiles: default
+2019-12-31 09:17:25.358  INFO 46988 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-31 09:17:25.411  INFO 46988 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-31 09:17:25.411  INFO 46988 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-31 09:17:25.714  INFO 46988 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-31 09:17:25.717  INFO 46988 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2770 ms
+2019-12-31 09:17:26.197  INFO 46988 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-31 09:17:26.447  INFO 46988 --- [main] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2019-12-31 09:17:26.626  INFO 46988 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-31 09:17:26.630  INFO 46988 --- [main] c.h.p.center.AppletNewPayApplication     : Started AppletNewPayApplication in 4.502 seconds (JVM running for 5.161)
+2019-12-31 09:17:58.250  INFO 46988 --- [http-nio-9099-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-31 09:17:58.253  INFO 46988 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-12-31 09:17:58.280  INFO 46988 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 24 ms
