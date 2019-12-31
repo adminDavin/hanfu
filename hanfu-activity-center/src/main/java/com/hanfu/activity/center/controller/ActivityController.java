@@ -872,7 +872,7 @@ public class ActivityController {
 					entity.setEceltedName(hfUser.getRealName());
 				}
 				DecimalFormat df = new DecimalFormat("0.000");
-				entity.setTotalScore(df.format(Double.valueOf(instance.getRemarks())));
+//				entity.setTotalScore(df.format(Double.valueOf(instance.getRemarks())));
 				entity.setUserId(instance.getUserId());
 				double reportScore = 0.00;
 				double deedScore = 0.00;
@@ -913,6 +913,13 @@ public class ActivityController {
 				}
 				entity.setOnlineScore(df.format(deedScore));
 				entity.setOfflineScore(df.format(reportScore));
+				if(!entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
+					entity.setTotalScore(df.format(deedScore + reportScore));
+				}else if(!entity.getOnlineScore().equals("0.000") && entity.getOfflineScore().equals("0.000")){
+					entity.setTotalScore(df.format(deedScore));
+				}else if(entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
+					entity.setTotalScore(df.format(reportScore));
+				}
 				if (count.size() >= voteRecordsDao.distinctUserIdvote(entity2).size()) {
 					entity.setVoteCount(count.size());
 				} else {
