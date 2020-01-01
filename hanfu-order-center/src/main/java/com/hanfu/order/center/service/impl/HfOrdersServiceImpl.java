@@ -63,7 +63,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setLastModifier("1");
 		hfOrdersMapper.insert(hfOrders);
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-		hfOrdersDetail.setGoogsId(request.getGoogsId()); 
+		for (Integer s : request.getGoogsId()) {
+			hfOrdersDetail.setGoogsId(s); 
+		}
 		hfOrdersDetail.setHfDesc(request.getHfDesc());
 		hfOrdersDetail.setHfTax(request.getHfTax());
 		hfOrdersDetail.setDistribution(request.getDistribution());
@@ -78,7 +80,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setLastModifier("1");
 		hfOrdersDetailMapper.insert(hfOrdersDetail); 
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
-		hfOrderLogistic.setGoogsId(request.getGoogsId());
+		for (Integer s : request.getGoogsId()) {
+			hfOrderLogistic.setGoogsId(s); 
+		}
 		hfOrderLogistic.setCreateTime(LocalDateTime.now());
 		hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
 		hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
@@ -126,7 +130,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 			hfOrdersDetail.setHfDesc(request.getHfDesc());
 		}
 		if(!StringUtils.isEmpty(request.getGoogsId())) {
-			hfOrdersDetail.setGoogsId(request.getGoogsId());
+			for (Integer s : request.getGoogsId()) {
+				hfOrdersDetail.setGoogsId(s);
+			}
 		}
 		if(!StringUtils.isEmpty(request.getDistribution())) {
 			hfOrdersDetail.setDistribution(request.getDistribution());

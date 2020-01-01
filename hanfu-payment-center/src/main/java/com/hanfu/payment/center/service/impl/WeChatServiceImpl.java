@@ -5,6 +5,11 @@ package com.hanfu.payment.center.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.hanfu.payment.center.manual.dao.ManualDao;
+import com.hanfu.payment.center.service.WeChatService;
+import com.hanfu.payment.center.util.WXConfigUtil;
+import com.hanfu.payment.center.util.WxMD5Util;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
-import com.hanfu.payment.center.manual.dao.ManualDao;
-import com.hanfu.payment.center.service.WeChatService;
-import com.hanfu.payment.center.util.WXConfigUtil;
-import com.hanfu.payment.center.util.WxMD5Util;
 
 @Service("weChatService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")

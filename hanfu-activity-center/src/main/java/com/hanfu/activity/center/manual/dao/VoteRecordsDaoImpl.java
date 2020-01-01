@@ -23,4 +23,16 @@ public class VoteRecordsDaoImpl implements VoteRecordsDao{
 		return result;
 	}
 	
+	@Override
+	public List<Integer> distinctElectedId(Integer activityId) {
+		List<Integer> result = sqlSessionTemplate.selectList("distinctElectedId",activityId);
+		return result;
+	}
+	
+	@Override
+	public List<Integer> distinctUserIdvote(VoteRecordsEntity entity) {
+		List<Integer> result = sqlSessionTemplate.selectList("distinctUserIdvote", entity);
+		return result;
+	}
+	
 }

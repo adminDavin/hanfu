@@ -1,3 +1,4 @@
+.idea/*
 hanfu-user-center/target/*
 hanfu-product-center/target/*
 hanfu-user-center/.settings/*
@@ -73,10 +74,11 @@ hanfu-referral-center/target/*
 hanfu-payment-client/bin/*
 hanfu-inner-sdk/bin/*  
 hanfu-user-center/bin/*
-hanfu-common/.project
+hanfu-common/.projectgit 
 hanfu-inner-sdk/.classpath
 hanfu-order-center/.classpath
 hanfu-web-utils/.classpath
 hanfu-user-center/logs/*
 hanfu-chat/.*
 hanfu-chat/target/*
+*/*.class

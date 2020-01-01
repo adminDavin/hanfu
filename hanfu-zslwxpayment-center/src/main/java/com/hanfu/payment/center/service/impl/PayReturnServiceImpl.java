@@ -79,7 +79,6 @@ public class PayReturnServiceImpl implements PayReturnService {
 
             if (entity != null) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
-
                 String str;
                 while ((str = bufferedReader.readLine()) != null) {
                     text.append(str);
@@ -120,4 +119,5 @@ public class PayReturnServiceImpl implements PayReturnService {
             return builder.body(ResponseUtils.getResponseBody("退款失败"));
         }
     }
+
 }

@@ -102,7 +102,6 @@ public class HfUserMemberController {
 
 
 
-
     @ApiOperation(value = "购买会员",notes = "购买会员")
     @RequestMapping(value = "buyMember",method = RequestMethod.GET)
     @ApiImplicitParams({

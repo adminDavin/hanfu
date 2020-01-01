@@ -1,0 +1,356 @@
+2019-12-18 14:25:15.539  INFO 18976 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-18 14:25:15.548  INFO 18976 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+2019-12-18 14:25:15.879  INFO 18976 --- [main] com.hanfu.message.center.Application     : Starting Application on DESKTOP-43SKEQG with PID 18976 (D:\hanfu\hanfu\hanfu-message-center\target\classes started by 123 in D:\hanfu\hanfu\hanfu-message-center)
+2019-12-18 14:25:15.880  INFO 18976 --- [main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-18 14:25:19.092  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-18 14:25:19.095  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-18 14:25:19.095  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-18 14:25:19.095  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-18 14:25:19.096  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-18 14:25:19.096  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-18 14:25:19.098  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-18 14:25:19.099  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-18 14:25:19.100  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-18 14:25:19.100  INFO 18976 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-18 14:25:19.383  INFO 18976 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-18 14:25:19.399  INFO 18976 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-18 14:25:19.530  INFO 18976 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80ms. Found 0 repository interfaces.
+2019-12-18 14:25:19.992  WARN 18976 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-18 14:25:20.760  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$2b36e95f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:20.950  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$e9e53795] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:20.982  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:20.998  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:21.005  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:21.014  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:21.021  INFO 18976 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:25:25.412  INFO 18976 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-18 14:25:25.545  INFO 18976 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-18 14:25:25.546  INFO 18976 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-18 14:25:26.033  INFO 18976 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-18 14:25:26.034  INFO 18976 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 10006 ms
+2019-12-18 14:25:28.478  INFO 18976 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-18 14:25:29.949  INFO 18976 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-18 14:25:30.317  INFO 18976 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-18 14:25:30.336  INFO 18976 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-18 14:25:30.352  INFO 18976 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-18 14:25:30.395  INFO 18976 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-18 14:25:30.410  INFO 18976 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-18 14:25:39.044  INFO 18976 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-18 14:25:39.286  INFO 18976 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-18 14:25:39.466  INFO 18976 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-18 14:25:40.016  INFO 18976 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-18 14:25:40.033  INFO 18976 --- [main] com.hanfu.message.center.Application     : Started Application in 26.063 seconds (JVM running for 27.188)
+2019-12-18 14:26:26.170  INFO 18976 --- [http-nio-9099-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-18 14:26:26.176  INFO 18976 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-12-18 14:26:26.311  INFO 18976 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 133 ms
+2019-12-18 14:26:26.550  INFO 18976 --- [http-nio-9099-exec-1] c.h.m.c.i.AuthorityInterceptor           : /swagger-ui.html{}
+2019-12-18 14:26:26.987  INFO 18976 --- [http-nio-9099-exec-2] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:26:27.004  INFO 18976 --- [http-nio-9099-exec-4] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:26:27.010  INFO 18976 --- [http-nio-9099-exec-3] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-bundle.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:26:27.016  INFO 18976 --- [http-nio-9099-exec-6] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:26:27.023  INFO 18976 --- [http-nio-9099-exec-5] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:26:28.654  INFO 18976 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/ui{}
+2019-12-18 14:26:29.433  INFO 18976 --- [http-nio-9099-exec-8] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/security{}
+2019-12-18 14:26:29.480  INFO 18976 --- [http-nio-9099-exec-9] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources{}
+2019-12-18 14:26:29.783  INFO 18976 --- [http-nio-9099-exec-1] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-regular.woff2{}
+2019-12-18 14:26:29.817  INFO 18976 --- [http-nio-9099-exec-4] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-700.woff2{}
+2019-12-18 14:26:30.633  INFO 18976 --- [http-nio-9099-exec-2] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-700.woff2{}
+2019-12-18 14:26:30.664  INFO 18976 --- [http-nio-9099-exec-6] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/source-code-pro-v7-latin-300.woff2{}
+2019-12-18 14:32:00.617  INFO 22876 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-18 14:32:00.649  INFO 22876 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+2019-12-18 14:32:00.897  INFO 22876 --- [main] com.hanfu.message.center.Application     : Starting Application on DESKTOP-43SKEQG with PID 22876 (D:\hanfu\hanfu\hanfu-message-center\target\classes started by 123 in D:\hanfu\hanfu\hanfu-message-center)
+2019-12-18 14:32:00.898  INFO 22876 --- [main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-18 14:32:03.348  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-18 14:32:03.349  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-18 14:32:03.350  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-18 14:32:03.351  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-18 14:32:03.351  INFO 22876 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-18 14:32:03.521  INFO 22876 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-18 14:32:03.533  INFO 22876 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-18 14:32:03.665  INFO 22876 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65ms. Found 0 repository interfaces.
+2019-12-18 14:32:04.066  WARN 22876 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-18 14:32:04.530  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$c5c5c8b8] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.762  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$97d19f52] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.866  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$567fed88] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.898  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.923  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.930  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.932  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:04.937  INFO 22876 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:32:07.043  INFO 22876 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-18 14:32:07.159  INFO 22876 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-18 14:32:07.160  INFO 22876 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-18 14:32:07.663  INFO 22876 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-18 14:32:07.664  INFO 22876 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 6632 ms
+2019-12-18 14:32:09.617  INFO 22876 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-18 14:32:10.583  INFO 22876 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-18 14:32:10.999  INFO 22876 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-18 14:32:11.016  INFO 22876 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-18 14:32:11.034  INFO 22876 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-18 14:32:11.078  INFO 22876 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-18 14:32:11.089  INFO 22876 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-18 14:32:13.959  INFO 22876 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-18 14:32:14.033  INFO 22876 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-18 14:32:14.141  INFO 22876 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-18 14:32:14.284  INFO 22876 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-18 14:32:14.298  INFO 22876 --- [main] com.hanfu.message.center.Application     : Started Application in 14.722 seconds (JVM running for 15.689)
+2019-12-18 14:32:38.500  INFO 22876 --- [http-nio-9099-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-18 14:32:38.505  INFO 22876 --- [http-nio-9099-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-12-18 14:32:38.614  INFO 22876 --- [http-nio-9099-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 107 ms
+2019-12-18 14:32:38.721  INFO 22876 --- [http-nio-9099-exec-4] c.h.m.c.i.AuthorityInterceptor           : /swagger-ui.html{}
+2019-12-18 14:32:38.816  INFO 22876 --- [http-nio-9099-exec-10] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:32:38.816  INFO 22876 --- [http-nio-9099-exec-1] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:32:38.816  INFO 22876 --- [http-nio-9099-exec-5] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:32:38.816  INFO 22876 --- [http-nio-9099-exec-6] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-bundle.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:32:38.829  INFO 22876 --- [http-nio-9099-exec-2] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:32:39.436  INFO 22876 --- [http-nio-9099-exec-3] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/ui{}
+2019-12-18 14:32:39.817  INFO 22876 --- [http-nio-9099-exec-3] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/security{}
+2019-12-18 14:32:39.843  INFO 22876 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources{}
+2019-12-18 14:32:40.008  INFO 22876 --- [http-nio-9099-exec-9] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-regular.woff2{}
+2019-12-18 14:32:40.034  INFO 22876 --- [http-nio-9099-exec-9] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-700.woff2{}
+2019-12-18 14:32:40.283  INFO 22876 --- [http-nio-9099-exec-5] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-700.woff2{}
+2019-12-18 14:32:40.298  INFO 22876 --- [http-nio-9099-exec-10] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/source-code-pro-v7-latin-300.woff2{}
+2019-12-18 14:33:37.788  INFO 35256 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-18 14:33:37.800  INFO 35256 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+2019-12-18 14:33:38.100  INFO 35256 --- [main] com.hanfu.message.center.Application     : Starting Application on DESKTOP-43SKEQG with PID 35256 (D:\hanfu\hanfu\hanfu-message-center\target\classes started by 123 in D:\hanfu\hanfu\hanfu-message-center)
+2019-12-18 14:33:38.100  INFO 35256 --- [main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-18 14:33:40.911  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-18 14:33:40.912  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-18 14:33:40.912  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-18 14:33:40.912  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-18 14:33:40.912  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-18 14:33:40.913  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-18 14:33:40.913  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-18 14:33:40.913  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-18 14:33:40.913  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-18 14:33:40.913  INFO 35256 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-18 14:33:41.100  INFO 35256 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-18 14:33:41.114  INFO 35256 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-18 14:33:41.213  INFO 35256 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 48ms. Found 0 repository interfaces.
+2019-12-18 14:33:41.701  WARN 35256 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-18 14:33:42.179  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$e8a3b264] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.465  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$baaf88fe] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.599  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$795dd734] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.617  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.633  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.639  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.647  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:42.649  INFO 35256 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:33:43.927  INFO 35256 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-18 14:33:43.982  INFO 35256 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-18 14:33:43.982  INFO 35256 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-18 14:33:44.399  INFO 35256 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-18 14:33:44.400  INFO 35256 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 6167 ms
+2019-12-18 14:33:46.379  INFO 35256 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-18 14:33:47.314  INFO 35256 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-18 14:33:47.667  INFO 35256 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-18 14:33:47.687  INFO 35256 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-18 14:33:47.709  INFO 35256 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-18 14:33:47.753  INFO 35256 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-18 14:33:47.770  INFO 35256 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-18 14:33:50.714  INFO 35256 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-18 14:33:50.767  INFO 35256 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-18 14:33:50.852  INFO 35256 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-18 14:33:51.414  INFO 35256 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-18 14:33:51.425  INFO 35256 --- [main] com.hanfu.message.center.Application     : Started Application in 14.751 seconds (JVM running for 15.779)
+2019-12-18 14:45:46.344  INFO 19280 --- [main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-18 14:45:46.352  INFO 19280 --- [main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+2019-12-18 14:45:46.599  INFO 19280 --- [main] com.hanfu.message.center.Application     : Starting Application on DESKTOP-43SKEQG with PID 19280 (D:\hanfu\hanfu\hanfu-message-center\target\classes started by 123 in D:\hanfu\hanfu\hanfu-message-center)
+2019-12-18 14:45:46.600  INFO 19280 --- [main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-18 14:45:49.009  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-18 14:45:49.013  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-18 14:45:49.014  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-18 14:45:49.015  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-18 14:45:49.015  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-18 14:45:49.015  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-18 14:45:49.016  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-18 14:45:49.016  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-18 14:45:49.016  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-18 14:45:49.016  INFO 19280 --- [main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-18 14:45:49.172  INFO 19280 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-18 14:45:49.182  INFO 19280 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-18 14:45:49.264  INFO 19280 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 48ms. Found 0 repository interfaces.
+2019-12-18 14:45:49.583  WARN 19280 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-18 14:45:50.008  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$432f9520] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.300  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$153b6bba] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.398  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$d3e9b9f0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.418  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.436  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.446  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.448  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:50.450  INFO 19280 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-18 14:45:52.533  INFO 19280 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-18 14:45:52.629  INFO 19280 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-18 14:45:52.629  INFO 19280 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-18 14:45:53.117  INFO 19280 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-18 14:45:53.117  INFO 19280 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 6403 ms
+2019-12-18 14:45:54.831  INFO 19280 --- [main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-18 14:45:55.749  INFO 19280 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-18 14:45:56.078  INFO 19280 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-18 14:45:56.099  INFO 19280 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-18 14:45:56.116  INFO 19280 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-18 14:45:56.151  INFO 19280 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-18 14:45:56.166  INFO 19280 --- [main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-18 14:45:58.554  INFO 19280 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-18 14:45:58.632  INFO 19280 --- [main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-18 14:45:58.714  INFO 19280 --- [main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-18 14:45:59.352 ERROR 19280 --- [main] org.apache.catalina.util.LifecycleBase   : Failed to start component [Connector[HTTP/1.1-9099]]
+
+org.apache.catalina.LifecycleException: Protocol handler start failed
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1008) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardService.addConnector(StandardService.java:227) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.addPreviouslyRemovedConnectors(TomcatWebServer.java:263) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.start(TomcatWebServer.java:195) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.startWebServer(ServletWebServerApplicationContext.java:297) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.finishRefresh(ServletWebServerApplicationContext.java:163) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:552) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:141) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:743) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:390) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:312) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1214) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1203) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at com.hanfu.message.center.Application.main(Application.java:17) ~[classes/:na]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.bind(Net.java:461) ~[na:na]
+	at java.base/sun.nio.ch.Net.bind(Net.java:453) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:227) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:80) ~[na:na]
+	at org.apache.tomcat.util.net.NioEndpoint.initServerSocket(NioEndpoint.java:230) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint.bind(NioEndpoint.java:213) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.AbstractEndpoint.bindWithCleanup(AbstractEndpoint.java:1124) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.AbstractEndpoint.start(AbstractEndpoint.java:1210) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol.start(AbstractProtocol.java:585) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1005) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	... 14 common frames omitted
+
+2019-12-18 14:45:59.380  INFO 19280 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2019-12-18 14:45:59.403  INFO 19280 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2019-12-18 14:45:59.413 ERROR 19280 --- [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The Tomcat connector configured to listen on port 9099 failed to start. The port may already be in use or the connector may be misconfigured.
+
+Action:
+
+Verify the connector's configuration, identify and stop any process that's listening on port 9099, or configure this application to listen on another port.
+
+2019-12-18 14:45:59.415  INFO 19280 --- [main] .b.c.e.AwaitingNonWebApplicationListener :  [Dubbo] Current Spring Boot Application is about to shutdown...
+2019-12-18 14:45:59.505  INFO 19280 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2019-12-18 14:45:59.511  INFO 19280 --- [main] f.a.ReferenceAnnotationBeanPostProcessor : class org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor was destroying!
+2019-12-18 14:46:29.541  INFO 35256 --- [http-nio-9099-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-12-18 14:46:29.546  INFO 35256 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-12-18 14:46:29.657  INFO 35256 --- [http-nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 110 ms
+2019-12-18 14:46:29.697  INFO 35256 --- [http-nio-9099-exec-1] c.h.m.c.i.AuthorityInterceptor           : /swagger-ui.html{}
+2019-12-18 14:46:29.824  INFO 35256 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:46:29.846  INFO 35256 --- [http-nio-9099-exec-5] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-bundle.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:46:29.849  INFO 35256 --- [http-nio-9099-exec-6] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:46:29.859  INFO 35256 --- [http-nio-9099-exec-4] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/springfox.css{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:46:29.859  INFO 35256 --- [http-nio-9099-exec-2] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js{"v":["2.8.0-SNAPSHOT"]}
+2019-12-18 14:46:30.534  INFO 35256 --- [http-nio-9099-exec-8] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/ui{}
+2019-12-18 14:46:30.866  INFO 35256 --- [http-nio-9099-exec-3] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources/configuration/security{}
+2019-12-18 14:46:30.881  INFO 35256 --- [http-nio-9099-exec-9] c.h.m.c.i.AuthorityInterceptor           : /swagger-resources{}
+2019-12-18 14:46:31.033  INFO 35256 --- [http-nio-9099-exec-1] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-regular.woff2{}
+2019-12-18 14:46:31.034  INFO 35256 --- [http-nio-9099-exec-5] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-700.woff2{}
+2019-12-18 14:46:31.717  INFO 35256 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/source-code-pro-v7-latin-600.woff2{}
+2019-12-18 14:46:31.803  INFO 35256 --- [http-nio-9099-exec-6] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-600.woff2{}
+2019-12-18 14:46:31.824  INFO 35256 --- [http-nio-9099-exec-2] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/source-code-pro-v7-latin-300.woff2{}
+2019-12-18 14:46:31.828  INFO 35256 --- [http-nio-9099-exec-4] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/open-sans-v15-latin-700.woff2{}
+2019-12-18 14:46:34.851  INFO 35256 --- [http-nio-9099-exec-8] c.h.m.c.i.AuthorityInterceptor           : /webjars/springfox-swagger-ui/fonts/titillium-web-v6-latin-regular.woff2{}
+2019-12-18 14:48:23.384  INFO 35256 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /message/sendMessage{"defeated":["1"],"instructions":["1"],"openid":["1"],"title":["1"]}
+2019-12-18 14:48:25.134 ERROR 35256 --- [http-nio-9099-exec-7] c.h.m.c.r.h.GlobalExceptionHandler       : unknow exception:
+
+java.lang.NullPointerException: null
+	at java.base/java.lang.String.replace(String.java:2143) ~[na:na]
+	at com.hanfu.message.center.controller.MessageController.sendTemplateMsg(MessageController.java:62) ~[classes/:na]
+	at com.hanfu.message.center.controller.MessageController.sendMessage(MessageController.java:47) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:104) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:892) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1039) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:882) ~[spring-webmvc-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:92) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:93) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:118) ~[spring-web-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:490) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:853) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1587) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.22.jar:9.0.22]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+2019-12-18 14:48:25.166  INFO 35256 --- [http-nio-9099-exec-7] c.h.m.c.i.AuthorityInterceptor           : /error{"defeated":["1"],"instructions":["1"],"openid":["1"],"title":["1"]}

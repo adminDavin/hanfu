@@ -152,7 +152,6 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
-
 	}
 	
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
@@ -236,6 +235,7 @@ public class GoodsController {
 		record.setHfName(hfGoodsInfo.getGoodName());
 		record.setStoneId(hfGoodsInfo.getHfStoreId());
 		record.setBrandId(hfGoodsInfo.getBrandId());
+		
 		record.setCreateTime(LocalDateTime.now());
 		record.setModifyTime(LocalDateTime.now());
 		record.setIsDeleted((short) 0);
@@ -526,7 +526,9 @@ public class GoodsController {
 	@PostMapping(value = "/addPicture")
 	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println(request.getGoodsId());
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
+		
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
