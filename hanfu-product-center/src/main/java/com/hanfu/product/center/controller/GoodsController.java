@@ -235,6 +235,7 @@ public class GoodsController {
 		record.setHfName(hfGoodsInfo.getGoodName());
 		record.setStoneId(hfGoodsInfo.getHfStoreId());
 		record.setBrandId(hfGoodsInfo.getBrandId());
+		
 		record.setCreateTime(LocalDateTime.now());
 		record.setModifyTime(LocalDateTime.now());
 		record.setIsDeleted((short) 0);
@@ -525,7 +526,9 @@ public class GoodsController {
 	@PostMapping(value = "/addPicture")
 	public ResponseEntity<JSONObject> addGoodsPicture(GoodsPictrueRequest request) throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println(request.getGoodsId());
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
+		
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();

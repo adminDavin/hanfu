@@ -12,7 +12,4 @@ public interface AlipayService {
 
 	Object refund(Integer orderId, Double amount, String refundReason);
 
-
-
-
 }

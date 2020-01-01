@@ -1,0 +1,91 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-cancel-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 111, column 21
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apache.maven:maven-core:jar -> duplicate declaration of version 3.0 @ line 174, column 21
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 51, column 21
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 51, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] -----------------< com.hanfu.base:hanfu-cancel-center >-----------------
+[INFO] Building hanfu-cancel-center 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) > test-compile @ hanfu-cancel-center >>>
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:build-info (default) @ hanfu-cancel-center ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hanfu-cancel-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hanfu-cancel-center ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 23 source files to /home/hanfu/project/hanfu/hanfu-cancel-center/target/classes
+[WARNING] /home/hanfu/project/hanfu/hanfu-cancel-center/src/main/java/com/hanfu/cancel/controller/CancelController.java: /home/hanfu/project/hanfu/hanfu-cancel-center/src/main/java/com/hanfu/cancel/controller/CancelController.java uses or overrides a deprecated API.
+[WARNING] /home/hanfu/project/hanfu/hanfu-cancel-center/src/main/java/com/hanfu/cancel/controller/CancelController.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hanfu-cancel-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/hanfu/project/hanfu/hanfu-cancel-center/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hanfu-cancel-center ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /home/hanfu/project/hanfu/hanfu-cancel-center/target/test-classes
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) < test-compile @ hanfu-cancel-center <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) @ hanfu-cancel-center ---
+[INFO] Attaching agents: []
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.11.2/log4j-slf4j-impl-2.11.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.7.RELEASE)
+
+2019-12-24 10:01:28.286  INFO 4800 --- [           main] c.h.cancel.HanfuCancelCenterApplication  : Starting HanfuCancelCenterApplication on iZ8vb5lq7zcx56jn12h1ugZ with PID 4800 (/home/hanfu/project/hanfu/hanfu-cancel-center/target/classes started by hanfu in /home/hanfu/project/hanfu/hanfu-cancel-center)
+2019-12-24 10:01:28.290  INFO 4800 --- [           main] c.h.cancel.HanfuCancelCenterApplication  : No active profile set, falling back to default profiles: default
+2019-12-24 10:01:29.444  INFO 4800 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-24 10:01:29.445  INFO 4800 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-24 10:01:29.468  INFO 4800 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15ms. Found 0 repository interfaces.
+2019-12-24 10:01:29.566  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'cancelMapper' and 'com.hanfu.cancel.dao.CancelMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.566  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'cancelRecordMapper' and 'com.hanfu.cancel.dao.CancelRecordMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.566  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'cancelsMapper' and 'com.hanfu.cancel.dao.CancelsMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfGoodsMapper' and 'com.hanfu.cancel.dao.HfGoodsMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfLogMapper' and 'com.hanfu.cancel.dao.HfLogMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfOrdersDetailMapper' and 'com.hanfu.cancel.dao.HfOrdersDetailMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfOrdersMapper' and 'com.hanfu.cancel.dao.HfOrdersMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfPriceMapper' and 'com.hanfu.cancel.dao.HfPriceMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hfUserMapper' and 'com.hanfu.cancel.dao.HfUserMapper' mapperInterface. Bean already defined with the same name!
+2019-12-24 10:01:29.567  WARN 4800 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.cancel]' package. Please check your configuration.
+2019-12-24 10:01:29.857  INFO 4800 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$5280424a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-24 10:01:30.116  INFO 4800 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9901 (http)
+2019-12-24 10:01:30.147  INFO 4800 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-24 10:01:30.148  INFO 4800 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-24 10:01:30.279  INFO 4800 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-24 10:01:30.280  INFO 4800 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1947 ms
+2019-12-24 10:01:31.626  INFO 4800 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 16 endpoint(s) beneath base path '/actuator'
+2019-12-24 10:01:31.691  INFO 4800 --- [           main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-24 10:01:31.916  INFO 4800 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-24 10:01:31.990  WARN 4800 --- [           main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2019-12-24 10:01:32.218  INFO 4800 --- [           main] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2019-12-24 10:01:32.325  INFO 4800 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-24 10:01:32.336  INFO 4800 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-24 10:01:32.359  INFO 4800 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-24 10:01:32.526  INFO 4800 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9901 (http) with context path ''
+2019-12-24 10:01:32.530  INFO 4800 --- [           main] c.h.cancel.HanfuCancelCenterApplication  : Started HanfuCancelCenterApplication in 4.663 seconds (JVM running for 5.118)

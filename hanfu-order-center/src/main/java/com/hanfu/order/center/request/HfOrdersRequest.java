@@ -7,25 +7,25 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrdersRequest implements Serializable{
-	@ApiModelProperty(required = true, value = "订单id")
+	@ApiModelProperty(required = false, value = "订单id")
 	private Integer Id;
-	@ApiModelProperty(required = true, value = "用户id")
+	@ApiModelProperty(required = false, value = "用户id")
 	private Integer userId;
-	@ApiModelProperty(required = true, value = "支付状态")
+	@ApiModelProperty(required = false, value = "支付状态")
 	private Integer payStatus ;
-	@ApiModelProperty(required = true, value = "订单类型")
+	@ApiModelProperty(required = false, value = "订单类型")
 	private String orderType ;
-	@ApiModelProperty(required = true, value = "支付金额")
+	@ApiModelProperty(required = false, value = "支付金额")
 	private Integer amount;
-	@ApiModelProperty(required = true, value = "支付方式类型")
+	@ApiModelProperty(required = false, value = "支付方式类型")
 	private Integer payMethodType;
-	@ApiModelProperty(required = true, value = "支付附言")
+	@ApiModelProperty(required = false, value = "支付附言")
 	private String hfMemo;
-	@ApiModelProperty(required = true, value = "备注")
+	@ApiModelProperty(required = false, value = "备注")
 	private String hfRemark;
-	@ApiModelProperty(required = true, value = "支付方式名称")
+	@ApiModelProperty(required = false, value = "支付方式名称")
 	private String payMethodName;
-	@ApiModelProperty(required = true, value = "创建时间")
+	@ApiModelProperty(required = false, value = "创建时间")
 	private LocalDateTime createTime ;
 	
 	public Integer getId() {
