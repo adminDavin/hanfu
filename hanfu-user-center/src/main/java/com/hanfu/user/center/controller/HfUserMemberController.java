@@ -162,6 +162,8 @@ public class HfUserMemberController {
         }
     }
 
+//
+//
 //    @ApiOperation(value = "设置购买会员钱数月份",notes = "设置会员钱数月份")
 //    @RequestMapping(value = "/setbuyMember",method = RequestMethod.GET)
 //    @ApiImplicitParams({
@@ -181,9 +183,8 @@ public class HfUserMemberController {
 //            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
 //    })
 //    public ResponseEntity<JSONObject> setrechargeMember(@RequestParam(required = true,defaultValue = "") Integer total,
-//                                                        @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
+//                                                   @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
 //        BodyBuilder builder = ResponseUtils.getBodyBuilder();
 //        return builder.body(ResponseUtils.getResponseBody("金额是:"+total+",金额对应的会员月份是"+number));
 //    }
-
 }

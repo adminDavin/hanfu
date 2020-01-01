@@ -1,6 +1,5 @@
 server:
   port: 8082
-  address: 0.0.0.0
 
 spring:
   datasource:
@@ -50,6 +49,6 @@ logging:
   file: ./logs/king-words.log  
   
 mybatis:
-  mapper-locations:
+  mapper-locations: 
     - mappers/*.xml
     - manual-mappers/*.xml

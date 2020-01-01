@@ -7,18 +7,18 @@ package com.hanfu.payment.center.returnutil;
 public class WXPayConstants {
 
     //请同时修改  androidmanifest.xml里面 .PayActivityd里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid
-    public static final String APP_ID = "你们自己的";
+    public static final String APP_ID = "wxfa188a42d843a0b0";
 
     //商户号
-    public static final String MCH_ID = "你们自己的";
+    public static final String MCH_ID = "1508952911";
 
     //API密钥，在商户平台设置
-    public static final  String API_KEY="你们自己的";
+    public static final  String API_KEY="271217yz";
 
     //商户号 微信小程序使用
-    public static final String APPLET_MCHID = "你们自己的";
+    public static final String APPLET_MCHID = "1508952911";
     //appid 微信小程序使用
-    public static final String APPLET_APPID = "你们自己的";
+    public static final String APPLET_APPID = "wxfa188a42d843a0b0";
 
 }
 
