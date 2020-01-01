@@ -16,6 +16,9 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
+    <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
+    <result column="claim" jdbcType="INTEGER" property="claim" />
+    <result column="frames" jdbcType="INTEGER" property="frames" />
    </resultMap>
    
 	<resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
@@ -153,7 +156,7 @@
 				h.price_id,h1.hf_name productCategoryName,
 				h1.id categoryId,p.id productId,
 				h3.sell_price,h.create_time,
-				h.modify_time,h.is_deleted
+				h.modify_time,h.is_deleted,h.cancel_id,h.claim,h.frames
 			FROM 
 				hf_goods h 
 			JOIN 
@@ -168,6 +171,10 @@
 		    	hf_price h3
 		    ON
 		    	h.price_id = h3.id
+		    JOIN
+		        cancel h4
+		    ON 
+		        h.cancel_id = h4.id	
 		    WHERE
 		        h.id=#{goodsId}
 	</select>
@@ -178,7 +185,7 @@
 				h.hf_name,h.resp_id,
 				h.price_id,h1.hf_name productCategoryName,
 				h1.id categoryId,p.id productId,
-				h.create_time,h.modify_time,
+				h.create_time,h.modify_time,h.cancel_id,h.claim,h.frames,
 				h.is_deleted
 			FROM 
 				hf_goods h 
@@ -190,6 +197,10 @@
 		    	hf_category h1 
 		    ON 
 		    	h.category_id = h1.id
+		    JOIN
+		        cancel h4
+		    ON 
+		        h.cancel_id = h4.id	
 		    WHERE
 		        h.id=#{goodsId}
 	</select>
