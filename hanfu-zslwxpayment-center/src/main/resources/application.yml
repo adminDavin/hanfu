@@ -2,15 +2,6 @@ server:
   port: 9099
 wxapplet.config.weixinpay.notifyurl: http://localhost:9099/api/v1/weixin/wxappletpaycallback
 
-####swagger相关配置
-swagger:
-  base-package: com.hanfu.payment.center.controller
-  title: 支付接口
-  version: 1.1
-  contact:
-    name: CONSAK
-    email: 2802901757@qq.com
-
 spring:
   datasource:
     name: dataSource

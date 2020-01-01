@@ -1,9 +1,7 @@
 package com.hanfu.payment.center.entity;
 
-import io.swagger.models.auth.In;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
