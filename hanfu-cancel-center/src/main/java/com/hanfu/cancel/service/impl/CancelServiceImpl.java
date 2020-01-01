@@ -46,6 +46,4 @@ public class CancelServiceImpl implements CancelService {
         List<record> recordList=cancelMapper.Test(site, createData, createDate1);
         return recordList;
     }
-
-
 }

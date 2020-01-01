@@ -28,9 +28,10 @@ import java.util.Random;
 
 public class PageTool {
     public static void num(Paging paging){
-        if (paging.getPageNum()==null||paging.getPageSize()==null){
-            paging.setPageNum(1);
-            paging.setPageSize(10000000);
+        if (paging.getPageNum()==null){
+            paging.setPageNum(0);
+        }if (paging.getPageSize()==null){
+            paging.setPageSize(0);
         }
         PageHelper.startPage(paging.getPageNum(), paging.getPageSize());
     }

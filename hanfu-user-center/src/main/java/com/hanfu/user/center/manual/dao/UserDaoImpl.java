@@ -3,6 +3,7 @@ package com.hanfu.user.center.manual.dao;
 
 import java.util.List;
 
+import com.hanfu.user.center.model.UserQuery;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

@@ -152,7 +152,6 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
-
 	}
 	
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")

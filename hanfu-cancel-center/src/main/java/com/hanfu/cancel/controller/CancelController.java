@@ -160,7 +160,28 @@ public class CancelController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         return builder.body(ResponseUtils.getResponseBody(hfLogMapper.deleteByPrimaryKey(id)));
     }
-
+    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
+    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
+    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Example example = new Example(HfGoods.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("cancelId",id);
+        List<HfGoods> hfGoodsList=hfGoodsMapper.selectByExample(example);
+        List<HfGoods> list = new ArrayList<>();
+        if (hfGoodsList.size()!=0){
+            for (int i=0;i<hfGoodsList.size();i++){
+                if (hfGoodsList.get(i).getClaim()!=0){
+                    if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId())!=null){
+                        list.add(hfGoodsList.get(i));
+                    }
+                }
+            }
+            return builder.body(ResponseUtils.getResponseBody(list));
+        }
+        deleteCancel(id);
+        return builder.body(ResponseUtils.getResponseBody("该核销员没有对应的核销商品,已删除"));
+    }
     @RequestMapping(value = "/deleteCancel", method = RequestMethod.GET)
     @ApiOperation(value = "删除核销员", notes = "删除核销员")
     @ApiImplicitParam(paramType = "query", name = "id", value = "核销id", required = true, type = "Integer")
@@ -172,6 +193,7 @@ public class CancelController {
             return builder.body(ResponseUtils.getResponseBody("核销员不存在"));
         }
         HfUser hfUser = new HfUser();
+        hfUser.setModifyDate(LocalDateTime.now());
         hfUser.setId(cancel.getUserId());
         hfUser.setCancelId(0);
         hfUserMapper.updateByPrimaryKeySelective(hfUser);
@@ -207,7 +229,7 @@ public class CancelController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String")
+            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = true, type = "String")
     })
     public ResponseEntity<JSONObject> insertCancel(Integer UserId, String site, String RealName) throws Exception {
         System.out.println(UserId);
@@ -234,7 +256,8 @@ public class CancelController {
         cancel1.setModifyDate(LocalDateTime.now());
         cancel1.setUserId(UserId);
         cancel1.setSite(site);
-        cancelsMapper.insertSelective(cancel1);
+        int a= cancelsMapper.insertSelective(cancel1);
+        System.out.println(a);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
@@ -244,10 +267,13 @@ public class CancelController {
             @ApiImplicitParam(paramType = "query", name = "Id", value = "核销id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否默认0,1是", required = true, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否,1是,不填为1", required = false, type = "Integer")
     })
     public ResponseEntity<JSONObject> updateCancelUser(int Id, String site, Integer cancel2, String RealName) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (cancel2==null){
+            cancel2=1;
+        }
         cancel cancel = cancelsMapper.selectByPrimaryKey(Id);
         cancel cancel1 = new cancel();
         cancel1.setSite(site);
@@ -272,11 +298,14 @@ public class CancelController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否默认0,1是", required = true, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "RealName", value = "核销员姓名", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "cancel2", value = "是否为核销员0否,1是，不填为1", required = false, type = "Integer")
     })
-    public ResponseEntity<JSONObject> updateCancel(int UserId, String site, int cancel2, String RealName) throws Exception {
+    public ResponseEntity<JSONObject> updateCancel(int UserId, String site, Integer cancel2, String RealName) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (cancel2==null){
+            cancel2=1;
+        }
         HfUser hfUser = new HfUser();
         hfUser.setId(UserId);
         hfUser.setCancelId(cancel2);
@@ -296,7 +325,7 @@ public class CancelController {
             cancelsMapper.deleteByExample(example);
             return builder.body(ResponseUtils.getResponseBody("已取消此人的核销资格"));
         }
-        return builder.body(ResponseUtils.getResponseBody(cancelService.select()));
+        return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
     @RequestMapping(path = "/wxLogin", method = RequestMethod.GET)
@@ -426,7 +455,7 @@ public class CancelController {
         cancelRecord.setModifyDate(LocalDateTime.now());
         cancelRecord.setGoodsId(goodsId);
         cancelRecord.setCancelId(cancel1.getId());
-        System.out.println(cancel1.getId() + "123456789");//123456789
+        System.out.println(cancel1.getId() + "--cancel1.getId()--");//123456789
         Example example3 = new Example(HfPrice.class);
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("googsId",goodsId);

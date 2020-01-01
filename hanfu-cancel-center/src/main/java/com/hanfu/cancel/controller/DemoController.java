@@ -12,12 +12,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RestController
+@Controller
 @Api
-@RequestMapping("/cancel")
+@RequestMapping("/Demo")
 @CrossOrigin
 public class DemoController {
     @Autowired
@@ -32,10 +34,12 @@ public class DemoController {
     private HfLogMapper hfLogMapper;
     @Autowired
     private HfPriceMapper hfPriceMapper;
-    @RequestMapping("/demo")
+    @RequestMapping(value = "/demo",method = RequestMethod.GET)
     public String demo(){
-        return "redirect:https://www.baidu.com";
+
+        return "http://www.baidu.com";
     }
+    @ResponseBody
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
     public ResponseEntity<JSONObject> testCancel(
@@ -85,15 +89,11 @@ public class DemoController {
             return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
         }
         //判断订单的商品与核销商品是否一致
-
         //价格，根据订单id，设置订单状态
         Example example2 = new Example(HfOrdersDetail.class);
         Example.Criteria criteria2 = example2.createCriteria();
-        System.out.println(1);
         criteria2.andEqualTo("ordersId", orderId);
-        System.out.println(12);
         List<HfOrdersDetail> hfPriceList = hfOrdersDetailMapper.selectByExample(example2);
-        System.out.println(123);
         if(hfPriceList==null){
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
         }
@@ -119,13 +119,13 @@ public class DemoController {
         cancelRecord.setModifyDate(LocalDateTime.now());
         cancelRecord.setGoodsId(goodsId);
         cancelRecord.setCancelId(cancel1.getId());
-        System.out.println(cancel1.getId() + "123456789");//123456789
+        System.out.println(cancel1.getId() + "---cancel1.getId():");
         Example example3 = new Example(HfPrice.class);
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("googsId",goodsId);
         List<HfPrice> hfPriceList1= hfPriceMapper.selectByExample(example3);
         System.out.println("hfPriceList1:"+hfPriceList1);
-        System.out.println(hfPriceList1.get(0).getSellPrice());//1234564865
+        System.out.println(hfPriceList1.get(0).getSellPrice());
         cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity());
         hfLogMapper.insert(cancelRecord);
         //添加核销员核销额记录

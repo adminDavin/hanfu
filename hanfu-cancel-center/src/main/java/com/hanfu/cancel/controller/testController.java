@@ -81,8 +81,8 @@ public class testController {
             @ApiImplicitParam(paramType = "query", name = "createData", value = "开始时间", required = false, type = "Date"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "createDate1", value = "结束时间", required = false, type = "Date"),
-            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "第几页", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页的数量", required = true, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "第几页", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页的数量", required = false, type = "Integer")
     })
     public ResponseEntity<JSONObject> login(String site, Date createData, Date createDate1,Paging paging) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -96,12 +96,12 @@ public class testController {
     @ApiOperation(value = "时间检查查询查询", notes = "时间检查查询查询")
     public ResponseEntity<JSONObject> qqq() throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-     List<Integer> list = new ArrayList<Integer>();
+     List<HfGoods> list = new ArrayList<>();
         List<HfGoods> hfGoodsList=hfGoodsMapper.selectAll();
         for (int i=0;i<hfGoodsList.size();i++){
             if (hfGoodsList.get(i).getClaim()!=0){
                 if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId())==null){
-                    list.add(hfGoodsList.get(i).getId());
+                    list.add(hfGoodsList.get(i));
                 }
             }
         }
@@ -144,6 +144,8 @@ public class testController {
     public ResponseEntity<JSONObject> getCode(String goodsId,String ordersId) throws Exception {
     ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
     String key = "MIGfMA0GCSqGSIb3";
+    goodsId = goodsId.replace("思维创造","");
+    ordersId = ordersId.replace("思维创造","");
     String decrypt = PageTool.decrypt(ordersId, key);
     String decrypt1 = PageTool.decrypt(goodsId, key);
     test ttt = new test();
@@ -155,14 +157,12 @@ public class testController {
 }
     /**
      *  生成二维码
-     * @param ，
+     *
 
      * */
     @GetMapping(value = "/activity/create/activity-code")
     @ApiOperation("生成活动详情二维码")
     public void getCode(HttpServletResponse response,Integer orderId,Integer goodsId) throws Exception {
-            ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-            int type = 1;
         //16位
         String key = "MIGfMA0GCSqGSIb3";
 
@@ -184,21 +184,21 @@ public class testController {
 
             // 设置响应流信息
 
-        String resultString = PageTool.stringToMD5(String.valueOf(orderId));
-        String resultString2 = PageTool.stringToMD5(String.valueOf(goodsId));
-        System.out.println(resultString);
-        System.out.println(resultString2);
-        final Base64.Decoder decoder = Base64.getDecoder();
-        final Base64.Encoder encoder = Base64.getEncoder();
-        final String text = String.valueOf(orderId);
-        final String text1 = String.valueOf(goodsId);
-        final byte[] textByte = text.getBytes("UTF-8");
-        final byte[] textByte1 = text1.getBytes("UTF-8");
-//编码
-        final String encodedText = encoder.encodeToString(textByte);
-        final String encodedText1 = encoder.encodeToString(textByte1);
-        System.out.println("OrdersId:"+encodedText);
-        System.out.println("GoodsId:"+encodedText1);
+//        String resultString = PageTool.stringToMD5(String.valueOf(orderId));
+//        String resultString2 = PageTool.stringToMD5(String.valueOf(goodsId));
+//        System.out.println(resultString);
+//        System.out.println(resultString2);
+//        final Base64.Decoder decoder = Base64.getDecoder();
+//        final Base64.Encoder encoder = Base64.getEncoder();
+//        final String text = String.valueOf(orderId);
+//        final String text1 = String.valueOf(goodsId);
+//        final byte[] textByte = text.getBytes("UTF-8");
+//        final byte[] textByte1 = text1.getBytes("UTF-8");
+////编码
+//        final String encodedText = encoder.encodeToString(textByte);
+//        final String encodedText1 = encoder.encodeToString(textByte1);
+//        System.out.println("OrdersId:"+encodedText);
+//        System.out.println("GoodsId:"+encodedText1);
             response.setContentType("image/jpg");
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
@@ -206,9 +206,9 @@ public class testController {
             OutputStream stream = response.getOutputStream();
             //type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
                 test111 t = new test111();
-                    t.setGoodsId(encrypt1);
-                    t.setOrderId(encrypt);
-        List<test111> list = new ArrayList<test111>();
+                    t.setGoodsId(encrypt1+"思维创造");
+                    t.setOrderId(encrypt+"思维创造");
+        List<test111> list = new ArrayList<>();
         list.add(t);
         String str1 = JSON.toJSONString(list);
         System.out.println(str1);
@@ -220,5 +220,4 @@ public class testController {
             //以流的形式输出到前端
             MatrixToImageWriter.writeToStream(bitMatrix , "jpg" , stream);
     }
-
 }

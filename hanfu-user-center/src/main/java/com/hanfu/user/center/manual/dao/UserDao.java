@@ -7,6 +7,7 @@ import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.UserQuery;
 
 public interface UserDao {
 

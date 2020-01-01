@@ -24,8 +24,8 @@ import java.util.Map;
  *      生成二维码的工具类
  *  </p>
  *
- * @author 秋枫艳梦
- * @date 2019-08-22
+ * @author 皓月千里
+ * @date 2019-12-25
  * */
 public class QRCodeUtils {
 
