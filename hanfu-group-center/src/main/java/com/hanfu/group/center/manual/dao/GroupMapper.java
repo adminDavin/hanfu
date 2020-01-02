@@ -28,4 +28,8 @@ public interface GroupMapper {
     void updateRrepertory(@Param("id") Integer id,@Param("repertory")Integer repertory);
     void updateState(Integer id);
     List<Group> seleteAll(Integer bossId);
+
+    List<Group>selectCategory(Integer id);
+    List<String>selectCategoryName();
+    Group selectDate(Integer id);
 }

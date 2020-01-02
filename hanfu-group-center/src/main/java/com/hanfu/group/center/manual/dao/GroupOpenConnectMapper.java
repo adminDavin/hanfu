@@ -10,7 +10,7 @@ public interface GroupOpenConnectMapper {
     int deleteByPrimaryKey(Integer id);
     void deleteByGroupOpenId(Integer id);
 
-    int insert(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId);
+    int insert(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId,@Param("ordersId") Integer ordersId);
 
     int insertSelective(GroupOpenConnect record);
 

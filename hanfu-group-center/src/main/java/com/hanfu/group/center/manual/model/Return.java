@@ -2,55 +2,48 @@ package com.hanfu.group.center.manual.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.Max;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Group implements Serializable {
+/**
+ * @author:gyj
+ * @date: 2019/12/26
+ * @time: 17:35
+ */
+public class Return implements Serializable {
     private Integer id;
-
-    private Integer bossId;
-
-    private Integer goodsId;
-
+    private String name;
+    private String picture;
     private Double price;
-
+    private String goodsName;
     private Integer number;
+    private Integer numberFew;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date startTime;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date stopTime;
-    private Short isDeleted;
-    private Integer Repertory;
-    private HfGoods hfGoods;
-    private List<FileDesc> fileDesc;
+    private HfUser hfUser;
+    private List<HfUser> user;
 
-    private List<HfGoodsSpec> hfGoodsSpec;
-
-    public List<HfGoodsSpec> getHfGoodsSpec() {
-        return hfGoodsSpec;
-    }
-    public void setHfGoodsSpec(List<HfGoodsSpec> hfGoodsSpec) {
-        this.hfGoodsSpec = hfGoodsSpec;
+    public List<HfUser> getUser() {
+        return user;
     }
 
-
-    public List<FileDesc> getFileDesc() {
-        return fileDesc;
+    public void setUser(List<HfUser> user) {
+        this.user = user;
     }
 
-    public void setFileDesc(List<FileDesc> fileDesc) {
-        this.fileDesc = fileDesc;
+    public HfUser getHfUser() {
+        return hfUser;
     }
 
-    public HfGoods getHfGoods() {
-        return hfGoods;
-    }
-
-    public void setHfGoods(HfGoods hfGoods) {
-        this.hfGoods = hfGoods;
+    public void setHfUser(HfUser hfUser) {
+        this.hfUser = hfUser;
     }
 
     public Integer getId() {
@@ -61,28 +54,20 @@ public class Group implements Serializable {
         this.id = id;
     }
 
-    public Integer getRepertory() {
-        return Repertory;
+    public String getName() {
+        return name;
     }
 
-    public void setRepertory(Integer repertory) {
-        Repertory = repertory;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Integer getBossId() {
-        return bossId;
+    public String getPicture() {
+        return picture;
     }
 
-    public void setBossId(Integer bossId) {
-        this.bossId = bossId;
-    }
-
-    public Integer getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(Integer goodsId) {
-        this.goodsId = goodsId;
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public Double getPrice() {
@@ -93,12 +78,28 @@ public class Group implements Serializable {
         this.price = price;
     }
 
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
     public Integer getNumber() {
         return number;
     }
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public Integer getNumberFew() {
+        return numberFew;
+    }
+
+    public void setNumberFew(Integer numberFew) {
+        this.numberFew = numberFew;
     }
 
     public Date getStartTime() {
@@ -116,14 +117,4 @@ public class Group implements Serializable {
     public void setStopTime(Date stopTime) {
         this.stopTime = stopTime;
     }
-
-    public Short getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(Short isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-
 }

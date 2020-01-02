@@ -76,4 +76,19 @@ class GroupServiceImpl implements GroupService {
     public List<Group> seleteAll(Integer bossId) {
         return groupMapper.seleteAll(bossId);
     }
+
+    @Override
+    public List<Group> selectCategory(Integer id) {
+        return groupMapper.selectCategory( id);
+    }
+
+    @Override
+    public  Group selectDate(Integer id) {
+        return groupMapper.selectDate(id);
+    }
+
+    @Override
+    public List<String> selectCategoryName() {
+        return  groupMapper.selectCategoryName();
+    }
 }

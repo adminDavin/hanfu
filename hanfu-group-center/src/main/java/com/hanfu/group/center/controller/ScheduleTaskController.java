@@ -1,10 +1,10 @@
 package com.hanfu.group.center.controller;
 
 
-import ch.qos.logback.classic.spi.EventArgUtil;
 import com.hanfu.group.center.manual.model.GroupOpen;
 import com.hanfu.group.center.service.GroupOpenConnectService;
 import com.hanfu.group.center.service.GroupOpenService;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +28,6 @@ public class ScheduleTaskController {
     GroupOpenService groupOpenService;
     @Autowired
     GroupOpenConnectService groupOpenConnectService;
-
     @Scheduled(cron = "0 0/30 * * * ?")
     public void executeCorpTask1(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMddHHmmss");
@@ -50,15 +49,12 @@ public class ScheduleTaskController {
             if(in2>stop){
                GroupOpen groupOpen  = groupOpenService.selectStopTime(startTime1);
                 Integer groupOpenId = groupOpen.getId();
-                List<Integer> user = groupOpenService.selectUserId(groupOpen.getGroupId());
+                List<Integer> user = groupOpenService.selectUserId(groupOpen.getId());
                 for (Integer  id:user) {
+                    System.out.println(id);
                     groupOpenConnectService.updateState(id,groupOpenId);
                 }
                 groupOpenService.updateByIsDeleted(groupOpenId);
-
-
-
-//                调退款接口
             }
 
         }

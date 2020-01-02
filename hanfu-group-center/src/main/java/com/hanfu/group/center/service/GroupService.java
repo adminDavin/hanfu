@@ -31,4 +31,9 @@ public interface GroupService {
 //    更改状态
     void updateState(Integer id);
     List<Group> seleteAll(Integer bossId);
+    List<Group>selectCategory(Integer id);
+
+     Group selectDate(Integer id);
+
+    List<String>selectCategoryName();
 }

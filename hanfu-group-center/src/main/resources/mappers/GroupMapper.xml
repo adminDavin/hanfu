@@ -29,6 +29,54 @@
     </association>
   </resultMap>
 
+  <resultMap id="Date" type="com.hanfu.group.center.manual.model.Group" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="aprice" property="price" jdbcType="DOUBLE" />
+    <result column="anumber" property="number" jdbcType="INTEGER" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+    <association property="hfGoods" javaType="com.hanfu.group.center.manual.model.HfGoods">
+      <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+      <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
+    </association>
+    <collection  property="fileDesc" ofType="com.hanfu.group.center.manual.model.FileDesc">
+      <result column="dremote_filename" property="remoteFilename" jdbcType="VARCHAR" />
+    </collection >
+  </resultMap>
+
+
+  <select id="selectDate"  parameterType="Integer"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.remote_filename dremote_filename
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id} and a.is_deleted=0
+    </select>
+
+  <select id="selectCategory"  parameterType="Integer"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.remote_filename dremote_filename
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE b.category_id =#{id} and a.is_deleted=0
+    </select>
+
+
+  <select id="selectCategoryName"   resultType="java.lang.String" >
+        SELECT distinct c.hf_name
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_category c  on   b.category_id =c.id WHERE a.is_deleted=0
+    </select>
+
+
+
+
   <sql id="Base_Column_List" >
     id,  boss_id, goods_id, price, number, start_time, stop_time,
     is_deleted,repertory

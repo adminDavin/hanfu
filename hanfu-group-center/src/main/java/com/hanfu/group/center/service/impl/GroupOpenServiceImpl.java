@@ -58,7 +58,7 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     }
 
     @Override
-    public GroupOpenMapper selectByPrimaryKey(Integer id) {
+    public GroupOpen selectByPrimaryKey(Integer id) {
         return groupOpen.selectByPrimaryKey(id);
     }
 
@@ -83,7 +83,12 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     }
 
     @Override
-    public GroupOpen selectByGroupOpen(Integer groupId) {
+    public GroupOpen selectById(Integer id) {
+        return groupOpen.selectById(id);
+    }
+
+    @Override
+    public  List<GroupOpen> selectByGroupOpen(Integer groupId) {
         return groupOpen.selectByGroupOpen(groupId);
     }
 
@@ -95,5 +100,10 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     @Override
     public void updateByIsDeleted(Integer id) {
         groupOpen.updateByIsDeleted(id);
+    }
+
+    @Override
+    public List<Integer> selectByGroupOpenId(Integer groupId) {
+        return groupOpen.selectByGroupOpenId(groupId);
     }
 }
