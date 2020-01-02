@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Mapper
 public interface SeckillDao {
-    Integer getRepertory(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId);
+    Integer getRepertory(Integer id);
     void updateRepertory(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId, @Param("repertory") Integer repertory);
     void insertSeckill(@Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime,@Param("stopTime") Date stopTime,   @Param("categoryId") Integer categoryId, @Param("price") Double price,
                        @Param("repertory") Integer repertory, @Param("isDeleted") Short isDeleted);
@@ -27,4 +27,7 @@ public interface SeckillDao {
      void updateState(Integer id);
     Seckill selectId(Integer id);
     List<Seckill> selectAll(Integer bossId);
+    List<Seckill> selectDate(Date startTime);
+    Seckill seletById(Integer id);
+    List<Date> selectByDate(String time);
 }

@@ -19,6 +19,8 @@ dubbo:
     server: netty4
 
 spring:
+  jackson:
+    time-zone: GMT+8
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource

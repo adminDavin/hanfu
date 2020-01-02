@@ -20,7 +20,7 @@ import java.util.List;
  * @time: 10:41
  */
 public interface SeckillService {
-    Integer getRepertory(Integer goodsId, Integer bossId);
+    Integer getRepertory(Integer id);
     void updateRepertory(Integer goodsId, Integer bossId, Integer repertory);
     void insertSeckill(Integer bossId, Integer goodsId, Date startTime,Date stopTime,  Integer categoryId, Double price, Integer repertory);
     void updateIsDeleted(Integer goodsId,Short isDeleted, Integer bossId);
@@ -32,5 +32,8 @@ public interface SeckillService {
     void updateState(Integer id);
     Seckill selectId(Integer id);
     List<Seckill> selectAll(Integer bossId);
+    List<Seckill> selectDate(Date startTime);
+    Seckill seletById(Integer id);
+    List<Date> selectByDate(String time);
 
 }

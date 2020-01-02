@@ -19,8 +19,8 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private SeckillDao seckillDao;
     @Override
-    public Integer getRepertory(Integer goodsId, Integer bossId) {
-        return seckillDao.getRepertory(goodsId,bossId);
+    public Integer getRepertory(Integer id) {
+        return seckillDao.getRepertory(id);
     }
 
     @Override
@@ -73,6 +73,21 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     public List<Seckill> selectAll(Integer bossId) {
         return seckillDao.selectAll(bossId);
+    }
+
+    @Override
+    public List<Seckill> selectDate(Date startTime) {
+        return seckillDao.selectDate(startTime);
+    }
+
+    @Override
+    public Seckill seletById(Integer id) {
+        return seckillDao.seletById(id);
+    }
+
+    @Override
+    public List<Date> selectByDate(String time) {
+        return seckillDao.selectByDate(time);
     }
 
 
