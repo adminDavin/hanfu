@@ -21,6 +21,7 @@ public class IpAddress {
     static {
         load();
     }
+
     public static String getRemortIP(HttpServletRequest request) {
 
         String ip = request.getHeader("x-forwarded-for");
@@ -81,7 +82,7 @@ public class IpAddress {
         // 读取数据库内容
         try {
             reader = new DatabaseReader.Builder(database).build();
-        } catch (IOException e) {	
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             lock.unlock();

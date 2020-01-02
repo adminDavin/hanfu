@@ -25,25 +25,26 @@ public class ScheduleTask {
     GroupOpenService groupOpenService;
     @Autowired
     GroupOpenConnectService groupOpenConnectService;
+
     @Scheduled(cron = "0 0/30 * * * ?")
     public void executeCorpTask1() throws ParseException {
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMddHHmmss");
-        SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         String format1 = formatter.format(date);
         Long in2 = Long.valueOf(format1);
         List<Date> stopTime = groupOpenService.getStopTime();
-        for (Date  time:stopTime) {
+        for (Date time : stopTime) {
             String format = formatter.format(time);
             String timestamp = formatter1.format(time);
             Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(timestamp);
             Long stop = Long.valueOf(format);
-            if(in2>stop){
-               GroupOpen groupOpen  = groupOpenService.selectStopTime(startTime);
+            if (in2 > stop) {
+                GroupOpen groupOpen = groupOpenService.selectStopTime(startTime);
                 Integer groupOpenId = groupOpen.getId();
                 List<Integer> user = groupOpenService.selectUserId(groupOpen.getGroupId());
-                for (Integer  id:user) {
-                    groupOpenConnectService.updateState(id,groupOpenId);
+                for (Integer id : user) {
+                    groupOpenConnectService.updateState(id, groupOpenId);
                 }
                 groupOpenService.updateByIsDeleted(groupOpenId);
 //                调退款接口

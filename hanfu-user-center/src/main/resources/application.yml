@@ -50,9 +50,9 @@ management:
       enabled: false
 
 logging:
-  file: ./logs/king-words.log  
-  
+  file: ./logs/king-words.log
+
 mybatis:
-  mapper-locations: 
+  mapper-locations:
     - mappers/*.xml
     - manual-mappers/*.xml

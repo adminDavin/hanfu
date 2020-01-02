@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,11 +32,13 @@ public class DemoController {
     private HfLogMapper hfLogMapper;
     @Autowired
     private HfPriceMapper hfPriceMapper;
-    @RequestMapping(value = "/demo",method = RequestMethod.GET)
-    public String demo(){
 
-        return "http://www.baidu.com";
+    @RequestMapping(value = "/demo", method = RequestMethod.GET)
+    public String demo() {
+
+        return "login";
     }
+
     @ResponseBody
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
@@ -47,15 +47,15 @@ public class DemoController {
             @RequestParam(value = "goodsId", required = true) Integer goodsId,
             @RequestParam(value = "orderId", required = true) Integer orderId
     ) throws Exception {
-        HfUser hfUser= hfUserMapper.selectByPrimaryKey(userId);
+        HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
         System.out.println(hfUser.getUsername());
-        String unionId=hfUser.getUsername();
+        String unionId = hfUser.getUsername();
         System.out.println(userId + goodsId + orderId);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        if (goodsId==null){
+        if (goodsId == null) {
             return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
         }
-        if (orderId==null){
+        if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("orderId为空"));
         }
         Example example = new Example(HfUser.class);
@@ -94,7 +94,7 @@ public class DemoController {
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("ordersId", orderId);
         List<HfOrdersDetail> hfPriceList = hfOrdersDetailMapper.selectByExample(example2);
-        if(hfPriceList==null){
+        if (hfPriceList == null) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
         }
         System.out.println(hfPriceList);
@@ -122,9 +122,9 @@ public class DemoController {
         System.out.println(cancel1.getId() + "---cancel1.getId():");
         Example example3 = new Example(HfPrice.class);
         Example.Criteria criteria3 = example3.createCriteria();
-        criteria3.andEqualTo("googsId",goodsId);
-        List<HfPrice> hfPriceList1= hfPriceMapper.selectByExample(example3);
-        System.out.println("hfPriceList1:"+hfPriceList1);
+        criteria3.andEqualTo("googsId", goodsId);
+        List<HfPrice> hfPriceList1 = hfPriceMapper.selectByExample(example3);
+        System.out.println("hfPriceList1:" + hfPriceList1);
         System.out.println(hfPriceList1.get(0).getSellPrice());
         cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity());
         hfLogMapper.insert(cancelRecord);

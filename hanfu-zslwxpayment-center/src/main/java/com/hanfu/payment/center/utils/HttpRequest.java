@@ -76,14 +76,13 @@ public class HttpRequest {
     }
 
 
-
     /**
      * 发送https请求
      *
      * @param requestUrl    请求地址
      * @param requestMethod 请求方式（GET、POST）
      * @param outputStr     提交的数据
-     * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值)
+     * @return JSONObject(通过JSONObject.get ( key)的方式获取json对象的属性值)
      */
     public static JSONObject httpsRequest(String requestUrl, String requestMethod, String outputStr) {
         JSONObject jsonObject = null;

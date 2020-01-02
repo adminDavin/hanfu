@@ -16,26 +16,28 @@ import java.util.Date;
 public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private SeckillDao seckillDao;
+
     @Override
     public Integer getRepertory(Integer goodsId, Integer bossId) {
-        return seckillDao.getRepertory(goodsId,bossId);
+        return seckillDao.getRepertory(goodsId, bossId);
     }
 
     @Override
-    public void updateRepertory(Integer goodsId, Integer bossId,Integer repertory) {
-        seckillDao.updateRepertory(goodsId,bossId,repertory);
+    public void updateRepertory(Integer goodsId, Integer bossId, Integer repertory) {
+        seckillDao.updateRepertory(goodsId, bossId, repertory);
     }
-  @Override
+
+    @Override
     public void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Integer categoryId, Double price, Integer repertory) {
-      Short isDeleted=0;
-      seckillDao.insertSeckill(bossId,goodsId,startTime,categoryId,price, repertory,isDeleted);
+        Short isDeleted = 0;
+        seckillDao.insertSeckill(bossId, goodsId, startTime, categoryId, price, repertory, isDeleted);
     }
 
 
     @Override
     public void updateIsDeleted(Integer goodsId, Integer bossId) {
-        Short isDeleted=0;
-      seckillDao.updateIsDeleted(goodsId,bossId,isDeleted);
+        Short isDeleted = 0;
+        seckillDao.updateIsDeleted(goodsId, bossId, isDeleted);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Override
     public void updateByPrimaryKey(Integer id, Integer bossId, Integer goodsId, Date startTime, Integer categoryId, Double price, Integer repertory) {
-        seckillDao.updateByPrimaryKey(id,  bossId,  goodsId,  startTime,  categoryId,  price,  repertory);
+        seckillDao.updateByPrimaryKey(id, bossId, goodsId, startTime, categoryId, price, repertory);
     }
 
 

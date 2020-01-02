@@ -1,7 +1,6 @@
 package com.hanfu.seckill.center.cache;
 
 
-
 import com.hanfu.seckill.center.util.SerializeUtils;
 import com.hanfu.seckill.center.util.SpringContextUtil;
 import org.apache.ibatis.cache.Cache;
@@ -10,11 +9,11 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import java.util.concurrent.locks.ReadWriteLock;
 
 public class MybatisCache implements Cache {
-            //id就是namespace,也就是咱们的service类
-            private String id;
+    //id就是namespace,也就是咱们的service类
+    private String id;
 
     public MybatisCache(String id) {
-                this.id = id;
+        this.id = id;
     }
 
     @Override
@@ -26,19 +25,19 @@ public class MybatisCache implements Cache {
     public void putObject(Object key, Object value) {
 //        System.out.println("向缓存中添加值");
         StringRedisTemplate stringRedisTemplate = (StringRedisTemplate) SpringContextUtil.getBean(StringRedisTemplate.class);
-        stringRedisTemplate.opsForHash().put(id,key.toString(), SerializeUtils.serialize(value));
+        stringRedisTemplate.opsForHash().put(id, key.toString(), SerializeUtils.serialize(value));
     }
 
     @Override
     public Object getObject(Object key) {
         //首先进入这里
-       //"来缓存中查询"
+        //"来缓存中查询"
         StringRedisTemplate stringRedisTemplate = (StringRedisTemplate) SpringContextUtil.getBean(StringRedisTemplate.class);
         String value = (String) stringRedisTemplate.opsForHash().get(id, key.toString());
-        if (value == null){
+        if (value == null) {
 //         没有从缓存中取到值
             return null;
-        }else{
+        } else {
 //         从缓存中取到了值
             return SerializeUtils.serializeToObject(value);
         }
@@ -52,7 +51,7 @@ public class MybatisCache implements Cache {
     @Override
     public void clear() {
         //修改会进入这个方法
-      //修改了数据库,清空当前namespace缓存
+        //修改了数据库,清空当前namespace缓存
         StringRedisTemplate stringRedisTemplate = (StringRedisTemplate) SpringContextUtil.getBean(StringRedisTemplate.class);
         stringRedisTemplate.delete(id);
     }

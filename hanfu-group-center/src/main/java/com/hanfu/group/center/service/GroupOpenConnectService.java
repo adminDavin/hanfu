@@ -11,8 +11,10 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface GroupOpenConnectService {
     int deleteByPrimaryKey(Integer id);
+
     void deleteByGroupOpenId(Integer id);
-    void  insert(Integer userId,Integer groupOpenId);
+
+    void insert(Integer userId, Integer groupOpenId);
 
     int insertSelective(GroupOpenConnect groupOpenConnect);
 
@@ -20,6 +22,7 @@ public interface GroupOpenConnectService {
 
     int updateByPrimaryKeySelective(GroupOpenConnect groupOpenConnect);
 
-    void updateIsDeleted( Integer userId,Integer groupOpenId);
-    void updateState(Integer userId,Integer groupOpenId) ;
+    void updateIsDeleted(Integer userId, Integer groupOpenId);
+
+    void updateState(Integer userId, Integer groupOpenId);
 }

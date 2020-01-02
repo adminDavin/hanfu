@@ -20,18 +20,22 @@
 
 
     <select id="select" resultMap="BaseResultMap">
-select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2 on h1.user_id=h2.id
+        select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2
+        on h1.user_id=h2.id
     </select>
     <select id="selectDate" resultMap="BaseResultMap">
-select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2 on h1.user_id=h2.id where h1.create_date between #{createData} and #{createDate1}
+        select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2
+        on h1.user_id=h2.id where h1.create_date between #{createData} and #{createDate1}
     </select>
 
     <select id="selectRegion" resultMap="BaseResultMap">
-select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2 on h1.user_id=h2.id WHERE h1.site LIKE concat('%',#{site},'%')
+        select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2
+        on h1.user_id=h2.id WHERE h1.site LIKE concat('%',#{site},'%')
     </select>
 
     <select id="selectCancelId" resultMap="BaseResultMap">
-select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2 on h1.user_id=h2.id where h1.id=#{cancelId}
+        select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from cancel h1 left join hf_user h2
+        on h1.user_id=h2.id where h1.id=#{cancelId}
     </select>
 
     <select id="Test" resultMap="BaseResultMap">
@@ -43,7 +47,7 @@ select h1.present_money,h1.id,h1.money,h1.create_date,h2.real_name,h1.site from 
             AND
             h1.site LIKE concat('%',#{site},'%')
         </if>
-          /*CONCAT(h1.site,h1.money)*/
+        /*CONCAT(h1.site,h1.money)*/
         <if test="site!=null">
             AND h1.site LIKE concat('%',#{site},'%')
         </if>

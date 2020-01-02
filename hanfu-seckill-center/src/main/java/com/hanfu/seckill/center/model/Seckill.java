@@ -13,15 +13,15 @@ import java.util.Date;
  * @time: 17:50
  */
 @SuppressWarnings("serial")
-public class Seckill implements Serializable{
+public class Seckill implements Serializable {
     private Integer id;
     private Integer bossId;
     private Integer goodsId;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss", timezone = "GMT+8")
     private Date startTime;
     private Integer categoryId;
-    private Double   price;
+    private Double price;
     private Integer repertory;
     private Short isDeleted;
 
@@ -88,5 +88,5 @@ public class Seckill implements Serializable{
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
-     
+
 }

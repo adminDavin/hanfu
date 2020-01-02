@@ -1,7 +1,7 @@
 package com.hanfu.user.center.manual.model;
 
 public class UserQuery {
-	private String wxName;
+    private String wxName;
     private String phone;
     private String realName;
 

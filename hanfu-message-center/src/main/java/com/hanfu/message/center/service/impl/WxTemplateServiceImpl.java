@@ -17,7 +17,8 @@ public class WxTemplateServiceImpl implements WxTemplateService {
 
     /**
      * 接口描述：向用户发送消息模板
-     * @throws JSONException 
+     *
+     * @throws JSONException
      */
     @Override
     public void sendTemplateToUsers(String message01, String message02) throws JSONException {
@@ -36,7 +37,7 @@ public class WxTemplateServiceImpl implements WxTemplateService {
         // 模板ID
         wxTemplateDTO.setTemplate_id("NkcLCSJf_wIsp9xON1X2Rb-7o3YsXROz8KklPZ3eEXw");
         // 跳转页面设置（仅限上线后的小程序，测试时可以忽略此属性）
-        wxTemplateDTO.setPage("pages/****/****");
+        wxTemplateDTO.setPage("templates/****/****");
 
         Map<String, TemplateDataDTO> data = new HashMap<>();
         data.put("keyword1", new TemplateDataDTO(message01, "#173177"));

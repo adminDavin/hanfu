@@ -13,7 +13,7 @@ import java.util.Date;
 public interface GroupService {
     void deleteByPrimaryKey(Integer id);
 
-    void insert(Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
+    void insert(Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory);
 
     int insertSelective(Group record);
 
@@ -21,9 +21,10 @@ public interface GroupService {
 
     int updateByPrimaryKeySelective(Group record);
 
-    void updateByPrimaryKey(Integer groupId,Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
+    void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory);
 
-    void updateRrepertory(Integer id,Integer repertory);
-//    更改状态
+    void updateRrepertory(Integer id, Integer repertory);
+
+    //    更改状态
     void updateState(Integer id);
 }

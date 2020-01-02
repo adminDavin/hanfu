@@ -27,40 +27,40 @@ import io.swagger.annotations.ApiOperation;
 @CrossOrigin
 public class HfUserBalanceController {
 
-	@Autowired
-	HUserBalanceMapper hUserBalanceMapper;
+    @Autowired
+    HUserBalanceMapper hUserBalanceMapper;
 
-	@Autowired
-	HfUserBalanceService hfUserBalanceService;
-	
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true,type = "Integer"),
-	})
-	public ResponseEntity<JSONObject> query(@RequestParam Integer userId) throws Exception {
-		HUserBalanceExample example = new HUserBalanceExample();
-		example.createCriteria().andUserIdEqualTo(userId);
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(hUserBalanceMapper.selectByExample(example)));
-	}
+    @Autowired
+    HfUserBalanceService hfUserBalanceService;
 
-	@RequestMapping(value = "/balancePay",method = RequestMethod.GET)
-	@ApiOperation(value = "小程序用户余额支付",notes = "小程序用户余额支付")
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "total", value = "总额", required = true, type = "Integer")
-	})
-	public ResponseEntity<JSONObject> balancePay(@RequestParam(required = true,defaultValue = "") Integer userId,
-												 @RequestParam(required = true,defaultValue = "") Integer hfBalance,
-												 @RequestParam(required = true,defaultValue = "") Integer total)throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		if(hfBalance>=total){
-			hfUserBalanceService.balanceCutTotal(userId,hfBalance,total);
-			return builder.body(ResponseUtils.getResponseBody("支付成功"));
-		}else{
-			return builder.body(ResponseUtils.getResponseBody("余额不足,请充值"));
-		}
-	}
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> query(@RequestParam Integer userId) throws Exception {
+        HUserBalanceExample example = new HUserBalanceExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        return builder.body(ResponseUtils.getResponseBody(hUserBalanceMapper.selectByExample(example)));
+    }
+
+    @RequestMapping(value = "/balancePay", method = RequestMethod.GET)
+    @ApiOperation(value = "小程序用户余额支付", notes = "小程序用户余额支付")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "total", value = "总额", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> balancePay(@RequestParam(required = true, defaultValue = "") Integer userId,
+                                                 @RequestParam(required = true, defaultValue = "") Integer hfBalance,
+                                                 @RequestParam(required = true, defaultValue = "") Integer total) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (hfBalance >= total) {
+            hfUserBalanceService.balanceCutTotal(userId, hfBalance, total);
+            return builder.body(ResponseUtils.getResponseBody("支付成功"));
+        } else {
+            return builder.body(ResponseUtils.getResponseBody("余额不足,请充值"));
+        }
+    }
 }

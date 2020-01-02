@@ -4,5 +4,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface HfUserBalanceService {
 
-    void balanceCutTotal(@Param("userId") Integer userId,@Param("hfBalance") Integer hfBalance,@Param("total") Integer total);
+    void balanceCutTotal(@Param("userId") Integer userId, @Param("hfBalance") Integer hfBalance, @Param("total") Integer total);
 }

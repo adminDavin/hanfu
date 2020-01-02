@@ -2,7 +2,9 @@ package com.hanfu.product.center.dao;
 
 import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfPriceExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface HfPriceMapper {

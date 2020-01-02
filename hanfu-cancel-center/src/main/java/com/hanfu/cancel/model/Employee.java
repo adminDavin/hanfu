@@ -1,4 +1,4 @@
-package com.hanfu.user.center.model;
+package com.hanfu.cancel.model;
 
 public class Employee {
     private String id;

@@ -14,7 +14,7 @@ import com.hanfu.base.chat.model.HfUser;
 import com.hanfu.base.chat.service.ChatSessionService;
 
 public class ScheduleTaskConfig {
-	private static final Long MINUTE_30 = 1000 * 60 * 30L;
+    private static final Long MINUTE_30 = 1000 * 60 * 30L;
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

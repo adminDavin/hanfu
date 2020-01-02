@@ -28,8 +28,8 @@ public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
     }
 
     @Override
-    public void insert(Integer userId,Integer groupOpenId) {
-        groupOpenConnectMapper.insert(userId,groupOpenId);
+    public void insert(Integer userId, Integer groupOpenId) {
+        groupOpenConnectMapper.insert(userId, groupOpenId);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
 
     @Override
     public void updateIsDeleted(Integer userId, Integer groupOpenId) {
-        groupOpenConnectMapper.updateisDeleted(userId,groupOpenId);
+        groupOpenConnectMapper.updateisDeleted(userId, groupOpenId);
     }
 
     @Override
     public void updateState(Integer userId, Integer groupOpenId) {
-        groupOpenConnectMapper.updateState(userId,groupOpenId);
+        groupOpenConnectMapper.updateState(userId, groupOpenId);
     }
 
 

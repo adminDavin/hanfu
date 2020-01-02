@@ -2,8 +2,9 @@ package com.hanfu.user.center.dao;
 
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.HfUserExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface HfUserMapper {
     /**

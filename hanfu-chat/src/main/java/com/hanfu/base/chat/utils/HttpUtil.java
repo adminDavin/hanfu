@@ -15,9 +15,9 @@ public class HttpUtil {
 
     public static final String RES_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=";
 
-    public static JSONObject httpsRequest(JSONObject jsonParam){
+    public static JSONObject httpsRequest(JSONObject jsonParam) {
         String aToken = "****";
-        StringBuffer sb=new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         try {
             ;
             // 创建url资源
@@ -44,7 +44,7 @@ public class HttpUtil {
             conn.setRequestProperty("contentType", "application/json");
             // 开始连接请求
             conn.connect();
-            OutputStream out = new DataOutputStream(conn.getOutputStream()) ;
+            OutputStream out = new DataOutputStream(conn.getOutputStream());
             // 写入请求的字符串
             out.write((jsonParam.toString()).getBytes());
             out.flush();
@@ -53,14 +53,14 @@ public class HttpUtil {
             System.out.println(conn.getResponseCode());
 
             // 请求返回的状态
-            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()){
+            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
                 System.out.println("连接成功");
                 // 请求返回的数据
                 InputStream in1 = conn.getInputStream();
                 try {
-                    String readLine=new String();
-                    BufferedReader responseReader=new BufferedReader(new InputStreamReader(in1,"UTF-8"));
-                    while((readLine=responseReader.readLine())!=null){
+                    String readLine = new String();
+                    BufferedReader responseReader = new BufferedReader(new InputStreamReader(in1, "UTF-8"));
+                    while ((readLine = responseReader.readLine()) != null) {
                         sb.append(readLine).append("\n");
                     }
                     responseReader.close();
@@ -78,13 +78,12 @@ public class HttpUtil {
         } catch (Exception e) {
             log.info("error3++" + e);
         }
-        log.info(sb+"sb");
+        log.info(sb + "sb");
         return JSONObject.parseObject(sb.toString());
     }
 
 
-
-    public static JSONObject httpsRequest(JSONObject jsonParam,String requestSource){
+    public static JSONObject httpsRequest(JSONObject jsonParam, String requestSource) {
         String aToken = "****";
         log.info("HttpUtil.getAccess_token  " + requestSource);
         log.info("HttpUtil.getAccess_token  aToken:   " + aToken);
@@ -115,7 +114,7 @@ public class HttpUtil {
             conn.setRequestProperty("contentType", "application/json");
             // 开始连接请求
             conn.connect();
-            OutputStream out = new DataOutputStream(conn.getOutputStream()) ;
+            OutputStream out = new DataOutputStream(conn.getOutputStream());
             // 写入请求的字符串
             out.write((jsonParam.toString()).getBytes());
             out.flush();
@@ -124,14 +123,14 @@ public class HttpUtil {
             System.out.println(conn.getResponseCode());
 
             // 请求返回的状态
-            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()){
+            if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
                 System.out.println("连接成功");
                 // 请求返回的数据
                 InputStream in1 = conn.getInputStream();
                 try {
                     String readLine = new String();
-                    BufferedReader responseReader=new BufferedReader(new InputStreamReader(in1,"UTF-8"));
-                    while((readLine=responseReader.readLine())!=null){
+                    BufferedReader responseReader = new BufferedReader(new InputStreamReader(in1, "UTF-8"));
+                    while ((readLine = responseReader.readLine()) != null) {
                         sb.append(readLine).append("\n");
                     }
                     responseReader.close();
@@ -149,11 +148,12 @@ public class HttpUtil {
         } catch (Exception e) {
             log.info("error3++" + e);
         }
-        log.info(sb+"sb");
+        log.info(sb + "sb");
         return JSONObject.parseObject(sb.toString());
     }
+
     //传入URL
-    public static  String getAccess_token(String url) {
+    public static String getAccess_token(String url) {
         String accessToken = null;
         try {
             URL urlGet = new URL(url);
@@ -180,9 +180,9 @@ public class HttpUtil {
 
         }
         JSONObject result = JSONObject.parseObject(accessToken);
-        Map<String,String> map = JSONObject.toJavaObject(result, Map.class);
+        Map<String, String> map = JSONObject.toJavaObject(result, Map.class);
         System.out.println(map.get("accessToken"));
-        log.info("accessToken    "  +  map.get("accessToken"));
+        log.info("accessToken    " + map.get("accessToken"));
         return map.get("accessToken");
 
     }

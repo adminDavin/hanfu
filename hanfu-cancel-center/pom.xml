@@ -94,6 +94,7 @@
             <artifactId>hanfu-common</artifactId>
             <version>0.0.1</version>
         </dependency>
+
         <dependency>
             <artifactId>hanfu-web-utils</artifactId>
             <groupId>com.hanfu.utils</groupId>
@@ -206,23 +207,68 @@
             <artifactId>javase</artifactId>
             <version>3.0.0</version>
         </dependency>
-<!--        视图解析-->
+        <!--        视图解析-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+<!--        dubbo-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-remoting-netty4</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-autoconfigure</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+<!--       security 权限-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-web</artifactId>-->
+<!--            <artifactId>spring-security-core</artifactId>-->
+<!--            <version>4.2.3.RELEASE</version>-->
+<!--        </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.security</groupId>-->
+<!--                    <artifactId>spring-security-web</artifactId>-->
+<!--                    <version>4.2.3.RELEASE</version>-->
+<!--                </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.security</groupId>-->
+<!--                    <artifactId>spring-security-config</artifactId>-->
+<!--                    <version>4.2.3.RELEASE</version>-->
+<!--                </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-taglibs</artifactId>-->
 <!--            <version>4.2.3.RELEASE</version>-->
 <!--        </dependency>-->
 <!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-config</artifactId>-->
-<!--            <version>4.2.3.RELEASE</version>-->
+<!--            <groupId>org.mybatis</groupId>-->
+<!--            <artifactId>mybatis-spring</artifactId>-->
+<!--            <version>2.0.3</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.hanfu.base</groupId>-->
+<!--            <artifactId>hanfu-user-center</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
 <!--        </dependency>-->
     </dependencies>
-
 
 
 </project>

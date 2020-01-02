@@ -13,11 +13,16 @@ import java.util.Date;
 @Mapper
 public interface SeckillDao {
     Integer getRepertory(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId);
+
     void updateRepertory(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId, @Param("repertory") Integer repertory);
+
     void insertSeckill(@Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime, @Param("categoryId") Integer categoryId, @Param("price") Double price,
                        @Param("repertory") Integer repertory, @Param("isDeleted") Short isDeleted);
+
     void updateIsDeleted(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId, @Param("isDeleted") Short isDeleted);
+
     void deleteByPrimaryKey(Integer id);
-    void updateByPrimaryKey(@Param("id") Integer id,@Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime, @Param("categoryId") Integer categoryId, @Param("price") Double price,
+
+    void updateByPrimaryKey(@Param("id") Integer id, @Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime, @Param("categoryId") Integer categoryId, @Param("price") Double price,
                             @Param("repertory") Integer repertory);
 }

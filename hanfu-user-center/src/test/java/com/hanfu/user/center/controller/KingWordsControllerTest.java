@@ -1,5 +1,5 @@
 package com.hanfu.user.center.controller;
- 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 public class KingWordsControllerTest {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-	private MockMvc mvc;
-    
+    private MockMvc mvc;
+
 //    @Test
 //    public void home() throws Exception {
 //		this.mvc.perform(get("/kw/users").accept(MediaType.TEXT_PLAIN)).andExpect(status().isOk());

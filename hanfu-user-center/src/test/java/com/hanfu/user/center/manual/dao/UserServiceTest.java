@@ -10,10 +10,10 @@ import com.hanfu.user.center.manual.dao.ManualDao;
 
 @SpringBootTest(classes = Application.class)
 public class UserServiceTest {
-	
-	@Autowired
-	private ManualDao dbDao;
-	
+
+    @Autowired
+    private ManualDao dbDao;
+
 //	@Test
 //	public void getSimpleUserInfo() {
 //		System.out.println(JSON.toJSON(dbDao.getSimpleUserInfo()));

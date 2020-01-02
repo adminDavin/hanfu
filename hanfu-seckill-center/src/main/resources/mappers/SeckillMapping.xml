@@ -3,16 +3,16 @@
 <mapper namespace="com.hanfu.seckill.center.dao.SeckillDao">
     <cache type="com.hanfu.seckill.center.cache.MybatisCache">
     </cache>
-    <select id="getRepertory"  parameterType="com.hanfu.seckill.center.model.Seckill" resultType="Integer" >
-          SELECT repertory
-    FROM
-    seckill  WHERE goods_id=#{goodsId} and boss_id=#{bossId} and is_deleted=1
+    <select id="getRepertory" parameterType="com.hanfu.seckill.center.model.Seckill" resultType="Integer">
+        SELECT repertory
+        FROM
+        seckill WHERE goods_id=#{goodsId} and boss_id=#{bossId} and is_deleted=1
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from seckill
-    where id = #{id}
-  </delete>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from seckill
+        where id = #{id}
+    </delete>
 
     <insert id="insertSeckill" parameterType="com.hanfu.seckill.center.model.Seckill">
         insert into seckill (boss_id,googs_id,start_time,category_id,price,repertory,is_deleted)
@@ -23,21 +23,21 @@
         repertory=#{repertory}
         where goods_id=#{goodsId} and boss_id=#{bossId}
     </update>
-    <update id="updateIsDeleted" >
+    <update id="updateIsDeleted">
         update seckill set
-       is_deleted=#{isDeleted}
+        is_deleted=#{isDeleted}
         where goods_id=#{goodsId} and boss_id=#{bossId}
     </update>
-    <update id="updateByPrimaryKey" >
-    update seckill
-    set boss_id = #{bossId},
-      goods_id = #{goodsId},
-      start_time = #{startTime,},
-      category_id = #{categoryId},
-      price = #{price},
-      repertory = #{repertory},
-      is_deleted = 0
-    where id = #{id}
-  </update>
+    <update id="updateByPrimaryKey">
+        update seckill
+        set boss_id = #{bossId},
+        goods_id = #{goodsId},
+        start_time = #{startTime,},
+        category_id = #{categoryId},
+        price = #{price},
+        repertory = #{repertory},
+        is_deleted = 0
+        where id = #{id}
+    </update>
 
 </mapper>

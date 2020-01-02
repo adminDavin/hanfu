@@ -8,11 +8,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 @SpringBootApplication
 @EnableScheduling
 @MapperScans(@MapperScan("com.hanfu.group.center.manual.dao"))
 public class GroupApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(GroupApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GroupApplication.class, args);
+    }
 }

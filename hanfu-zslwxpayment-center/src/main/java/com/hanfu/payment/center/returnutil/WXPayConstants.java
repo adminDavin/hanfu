@@ -1,4 +1,5 @@
 package com.hanfu.payment.center.returnutil;
+
 /**
  * @Author: HONGLINCHEN
  * @Description:微信支付参数
@@ -13,7 +14,7 @@ public class WXPayConstants {
     public static final String MCH_ID = "1508952911";
 
     //API密钥，在商户平台设置
-    public static final  String API_KEY="271217yz";
+    public static final String API_KEY = "271217yz";
 
     //商户号 微信小程序使用
     public static final String APPLET_MCHID = "1508952911";

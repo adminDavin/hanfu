@@ -16,10 +16,10 @@ public class ScheduleComponent {
 
     @Autowired
     private AsyncTasksComponent taskExecutor;
-    
-//	@Scheduled(cron="0/10 * * * * ?")
-//	public void taskClear() throws InterruptedException {
-//		logger.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")));
-//		taskExecutor.task4();
-//	}
+
+    @Scheduled(cron = "0/10 * * * * ?")
+    public void taskClear() throws InterruptedException {
+        logger.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")));
+        taskExecutor.task4();
+    }
 }

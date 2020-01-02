@@ -2,7 +2,9 @@ package com.hanfu.activity.center.dao;
 
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
 import com.hanfu.activity.center.model.ActivityUserEvaluateExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ActivityUserEvaluateMapper {
