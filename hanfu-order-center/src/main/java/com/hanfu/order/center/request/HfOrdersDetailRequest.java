@@ -53,7 +53,6 @@ public class HfOrdersDetailRequest implements Serializable {
 	public void setOrderDetailStatus(String orderDetailStatus) {
 		this.orderDetailStatus = orderDetailStatus;
 	}
-	
 	public Integer[] getGoogsId() {
 		return googsId;
 	}

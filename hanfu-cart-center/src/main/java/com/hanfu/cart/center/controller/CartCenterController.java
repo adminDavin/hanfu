@@ -32,7 +32,7 @@ public class CartCenterController {
 	
 	@RequestMapping(path = "/add",  method = RequestMethod.GET)
     @ApiOperation(value = "添加购物车", notes = "添加购物车")
-    @ApiImplicitParams({
+    @ApiImplicitParams({  
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
@@ -107,8 +107,22 @@ public class CartCenterController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         int effectNum = cartService.delCart(userId.toString());
         if (effectNum <=0){
-            return builder.body(ResponseUtils.getResponseBody("清空购物车失败"));
+            return builder.body(ResponseUtils.getResponseBody("清空购物车失败")); 
         }
         return builder.body(ResponseUtils.getResponseBody("清空购物车成功"));
-    }
+    } 
+    @RequestMapping(path = "/delGoods",  method = RequestMethod.GET)
+    @ApiOperation(value = "删除商品", notes = "删除商品")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品Id", required = false, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> delGoods( Integer userId,Integer productId) throws Exception{
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        int effectNum = cartService.delCartProduct(userId.toString(), productId.toString());
+        if (effectNum <=0){
+            return builder.body(ResponseUtils.getResponseBody("删除商品失败")); 
+        }
+        return builder.body(ResponseUtils.getResponseBody("删除商品成功"));
+    } 
 }

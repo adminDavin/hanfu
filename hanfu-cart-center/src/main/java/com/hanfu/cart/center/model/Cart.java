@@ -10,11 +10,11 @@ public class Cart implements Serializable{
     /*是否勾选*/
     private String check;
     private String productName;
-    /** 状态, 0正常1下架. */
+    /** 状态, 0正常1下架. */	
     private Integer productStatus;
 
     /* 商品小图*/
-    private String productIcon;
+    private Integer productIcon;
     public String getCheck() {
         return check;
     }
@@ -64,11 +64,11 @@ public class Cart implements Serializable{
         this.productStatus = productStatus;
     }
 
-    public String getProductIcon() {
+    public Integer getProductIcon() {
         return productIcon;
     }
 
-    public void setProductIcon(String productIcon) {
+    public void setProductIcon(Integer productIcon) {
         this.productIcon = productIcon;
     }
 }

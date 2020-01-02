@@ -149,9 +149,12 @@ public class GoodsController {
 	@RequestMapping(value = "/byGoodsId", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
+	public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer[] goodsId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
+		for (Integer goodId : goodsId) {
+			return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodId)));
+		}
+		return builder.body(ResponseUtils.getResponseBody("没有物品Id"));
 	}
 	
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
@@ -234,8 +237,7 @@ public class GoodsController {
 		record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 		record.setHfName(hfGoodsInfo.getGoodName());
 		record.setStoneId(hfGoodsInfo.getHfStoreId());
-		record.setBrandId(hfGoodsInfo.getBrandId());
-		
+		record.setBrandId(hfGoodsInfo.getBrandId());		
 		record.setCreateTime(LocalDateTime.now());
 		record.setModifyTime(LocalDateTime.now());
 		record.setIsDeleted((short) 0);
@@ -255,7 +257,6 @@ public class GoodsController {
 		}
 		if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodsDesc())) {
 			hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
-			;
 		}
 		hfGoods.setModifyTime(LocalDateTime.now());
 //        if(hfGoods.getPriceId()==null) {

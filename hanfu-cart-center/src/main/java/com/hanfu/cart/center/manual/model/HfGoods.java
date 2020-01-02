@@ -32,11 +32,17 @@ public class HfGoods implements Serializable {
     @ApiModelProperty(required = false, value = "商品id")
     private Integer productId;
     @ApiModelProperty(required = true, value = "物品图片id")
-    private Integer hfGoodsPictureId;
+    private Integer fileId;
     @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
     private String username;
     @ApiModelProperty(required = true, value = "店铺id")
     private Integer stoneId;
+	@ApiModelProperty(required = true, value = "核销id")
+	private Integer cancelId;
+	@ApiModelProperty(required = true, value = "是否自提")
+	private Integer claim;
+	@ApiModelProperty(required = true, value = "上下架")
+	private Integer frames;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
@@ -142,16 +148,35 @@ public class HfGoods implements Serializable {
     public void setWarehouseName(String warehouseName) {
         this.warehouseName = warehouseName;
     }
-    public Integer getHfGoodsPictureId() {
-        return hfGoodsPictureId;
-    }
-    public void setHfGoodsPictureId(Integer hfGoodsPictureId) {
-        this.hfGoodsPictureId = hfGoodsPictureId;
-    }
-    public Integer getStoneId() {
+    public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+	public Integer getStoneId() {
         return stoneId;
     }
     public void setStoneId(Integer stoneId) {
         this.stoneId = stoneId;
     }
+	public Integer getCancelId() {
+		return cancelId;
+	}
+	public void setCancelId(Integer cancelId) {
+		this.cancelId = cancelId;
+	}
+	public Integer getClaim() {
+		return claim;
+	}
+	public void setClaim(Integer claim) {
+		this.claim = claim;
+	}
+	public Integer getFrames() {
+		return frames;
+	}
+	public void setFrames(Integer frames) {
+		this.frames = frames;
+	}
+    
 }
