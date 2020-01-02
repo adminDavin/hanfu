@@ -23,7 +23,7 @@ public class HfOrdersRequest implements Serializable{
 	private String hfMemo;
 	@ApiModelProperty(required = false, value = "备注")
 	private String hfRemark;
-	@ApiModelProperty(required = false, value = "支付方式名称")
+	@ApiModelProperty(required = false, value = "支付方式名称")  
 	private String payMethodName;
 	@ApiModelProperty(required = false, value = "创建时间")
 	private LocalDateTime createTime ;
