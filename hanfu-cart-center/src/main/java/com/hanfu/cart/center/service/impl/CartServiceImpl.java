@@ -47,8 +47,10 @@ public class CartServiceImpl implements CartService{
 	        cart.setProductId(productId);
 	        cart.setProductName(hfGoods.getGoodName());
 	        cart.setProductPrice(hfGoods.getSellPrice());
+	        cart.setProductStatus(hfGoods.getFrames());
 	        cart.setProductNum(num);
-	        cart.setCheck("1");
+	        cart.setCheck("0");
+	        cart.setProductIcon(hfGoods.getFileId());
 	        redisService.hset(CartPrefix.getCartList,userId,productId,JSON.toJSON(cart).toString());
 	        return 1;
 	    }

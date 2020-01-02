@@ -48,6 +48,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setUserId(hfOrder.getUserId());
 		Integer price = request.getPurchasePrice();
 		Integer quantity = request.getPurchaseQuantity();
+		System.out.println(price);
+		System.out.println(quantity);
 		Integer amount = price*quantity;
 		hfOrders.setAmount(amount);
 		hfOrders.setHfMemo(hfOrder.getHfMemo());
@@ -63,9 +65,12 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrders.setLastModifier("1");
 		hfOrdersMapper.insert(hfOrders);
 		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-		for (Integer s : request.getGoogsId()) {
-			hfOrdersDetail.setGoogsId(s); 
+		for (int i = 0; i < request.getGoogsId().length; i++) {
+			hfOrdersDetail.setGoogsId(request.getGoogsId()[i]);
 		}
+//		for (Integer s : request.getGoogsId()) {
+//			hfOrdersDetail.setGoogsId(s); 
+//		}
 		hfOrdersDetail.setHfDesc(request.getHfDesc());
 		hfOrdersDetail.setHfTax(request.getHfTax());
 		hfOrdersDetail.setDistribution(request.getDistribution());
@@ -80,9 +85,12 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		hfOrdersDetail.setLastModifier("1");
 		hfOrdersDetailMapper.insert(hfOrdersDetail); 
 		HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
-		for (Integer s : request.getGoogsId()) {
-			hfOrderLogistic.setGoogsId(s); 
+		for (int i = 0; i < request.getGoogsId().length; i++) {
+			hfOrderLogistic.setGoogsId(request.getGoogsId()[i]);
 		}
+//		for (Integer s : request.getGoogsId()) {
+//			hfOrderLogistic.setGoogsId(s); 
+//		}
 		hfOrderLogistic.setCreateTime(LocalDateTime.now());
 		hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
 		hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
@@ -203,7 +211,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 			hfOrderLogistic.setHfDesc(request.getHfDesc());
 		}
 		if(!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
-			hfOrderLogistic.setGoogsId(hfOrderLogistics.getGoogsId());
+			for (Integer s : request.getGoogsId()) {
+				hfOrderLogistic.setGoogsId(s);
+			}
 		}
 		hfOrderLogistic.setModifyTime(LocalDateTime.now());
 		hfOrderLogistic.setIsDeleted((short) 0);

@@ -77,6 +77,7 @@ public class OrderController {
 	public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request,HfOrdersRequest hfOrder,HfOrderLogisticsRequest hfOrderLogistics)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println(request.getGoogsId()[0]);
 		List  list = hfOrdersService.creatOrder(request,hfOrder,hfOrderLogistics);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
