@@ -22,17 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/message")
 @Api
 public class MessageController {
-@Autowired
-WxTemplateService wxTemplateService;
-    @RequestMapping(path = "/sendMessage",  method = RequestMethod.GET)
-    @ApiOperation(value = "发送模板消息", notes = "发送消息")
-    public ResponseEntity<JSONObject> sendMessage(String message01 , String message02) throws Exception {
-    	BodyBuilder builder = ResponseUtils.getBodyBuilder();  
-    	 if (StringUtils.isEmpty(message01) || StringUtils.isEmpty(message02)) {
-    		 builder.body(ResponseUtils.getResponseBody("参数确实"));
-         }
+    @Autowired
+    WxTemplateService wxTemplateService;
 
-         wxTemplateService.sendTemplateToUsers(message01, message02);
+    @RequestMapping(path = "/sendMessage", method = RequestMethod.GET)
+    @ApiOperation(value = "发送模板消息", notes = "发送消息")
+    public ResponseEntity<JSONObject> sendMessage(String message01, String message02) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (StringUtils.isEmpty(message01) || StringUtils.isEmpty(message02)) {
+            builder.body(ResponseUtils.getResponseBody("参数确实"));
+        }
+
+        wxTemplateService.sendTemplateToUsers(message01, message02);
         return builder.body(ResponseUtils.getResponseBody("消息发送成功"));
     }
 }

@@ -59,6 +59,7 @@ public class HfGoods {
     }
 
     private Short isDeleted;
+
     public Integer getId() {
         return id;
     }

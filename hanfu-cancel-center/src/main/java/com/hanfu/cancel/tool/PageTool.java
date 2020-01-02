@@ -27,10 +27,11 @@ import java.util.Random;
 
 
 public class PageTool {
-    public static void num(Paging paging){
-        if (paging.getPageNum()==null){
+    public static void num(Paging paging) {
+        if (paging.getPageNum() == null) {
             paging.setPageNum(0);
-        }if (paging.getPageSize()==null){
+        }
+        if (paging.getPageSize() == null) {
             paging.setPageSize(0);
         }
         PageHelper.startPage(paging.getPageNum(), paging.getPageSize());
@@ -50,7 +51,6 @@ public class PageTool {
         }
         return md5code;
     }
-
 
 
     /**
@@ -117,7 +117,7 @@ public class PageTool {
      */
     public static String encrypt(String content, String encryptKey) throws Exception {
         //设置Cipher对象
-        Cipher cipher = Cipher.getInstance(ALGORITHMS,new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance(ALGORITHMS, new BouncyCastleProvider());
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), KEY_ALGORITHM));
 
         //调用doFinal
@@ -139,7 +139,7 @@ public class PageTool {
         byte[] decodeBase64 = Base64.decodeBase64(encryptStr);
 
         //设置Cipher对象
-        Cipher cipher = Cipher.getInstance(ALGORITHMS,new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance(ALGORITHMS, new BouncyCastleProvider());
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), KEY_ALGORITHM));
 
         //调用doFinal解密

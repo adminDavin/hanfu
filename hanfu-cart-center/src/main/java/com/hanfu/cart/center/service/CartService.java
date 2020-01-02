@@ -6,16 +6,16 @@ import com.hanfu.cart.center.model.Cart;
 
 public interface CartService {
 
-	List<Cart> getCartList(String string);
+    List<Cart> getCartList(String string);
 
-	int delCartProduct(String string, String string2);
+    int delCartProduct(String string, String string2);
 
-	int checkAll(String string, String string2);
+    int checkAll(String string, String string2);
 
-	int delCart(String string);
+    int delCart(String string);
 
-	int updateCartNum(String userId, String productId, int num);
+    int updateCartNum(String userId, String productId, int num);
 
-	int addCart(String userId, String productId, int num);
+    int addCart(String userId, String productId, int num);
 
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import com.hanfu.base.chat.model.Message;
 
 public class CoreUtil {
-	public static void sort(List<Message> list) {
+    public static void sort(List<Message> list) {
         list.sort(Comparator.comparing(Message::getTime));
     }
 

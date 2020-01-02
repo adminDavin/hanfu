@@ -89,63 +89,63 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user/weChat")
 @CrossOrigin
 public class FileUploadController {
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
-	FileDescMapper fileDescMapper;
-	@Autowired
-	private HfUserMapper hfUserMapper;
-	@Resource
-	private RedisTemplate<String, Object> redisTemplate;
-	@Autowired
-	HfAuthMapper hfAuthMapper;
-	@Autowired
-	UserDao userDao;
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    FileDescMapper fileDescMapper;
+    @Autowired
+    private HfUserMapper hfUserMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    HfAuthMapper hfAuthMapper;
+    @Autowired
+    UserDao userDao;
 
-	@RequestMapping(value = "/uploadImage", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("进入get方法！");
+    @RequestMapping(value = "/uploadImage", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("进入get方法！");
 
-		MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
-		MultipartFile multipartFile = req.getFile("file");
+        MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
+        MultipartFile multipartFile = req.getFile("file");
 
-		logger.info(JSONObject.toJSONString(multipartFile));
-		return null;
-	}
+        logger.info(JSONObject.toJSONString(multipartFile));
+        return null;
+    }
 
-	@RequestMapping(value = "/upload_avatar",method = RequestMethod.POST)
-	@ApiOperation(value = "上传头像", notes = "上传头像")
-	public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
-			@RequestParam(value = "userId", required = false) Integer userId) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-		if (file != null) {
-			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-			FileDescExample example = new FileDescExample();
-			example.createCriteria().andUserIdEqualTo(userId);
-			List<FileDesc> list = fileDescMapper.selectByExample(example);
-			if (list.isEmpty()) {
-				FileDesc fileDesc = new FileDesc();
-				fileDesc.setFileName(file.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(userId);
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				fileDescMapper.insert(fileDesc);
-				HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
-				hfUser.setFileId(fileDesc.getId());
-				hfUserMapper.updateByPrimaryKey(hfUser);
-			} else {
-				FileDesc fileDesc = list.get(0);
-				fileDesc.setFileName(file.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDescMapper.updateByPrimaryKey(fileDesc);
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(null));
-	}
+    @RequestMapping(value = "/upload_avatar", method = RequestMethod.POST)
+    @ApiOperation(value = "上传头像", notes = "上传头像")
+    public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
+                                                   @RequestParam(value = "userId", required = false) Integer userId) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        FileMangeService fileMangeService = new FileMangeService();
+        String arr[];
+        if (file != null) {
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+            FileDescExample example = new FileDescExample();
+            example.createCriteria().andUserIdEqualTo(userId);
+            List<FileDesc> list = fileDescMapper.selectByExample(example);
+            if (list.isEmpty()) {
+                FileDesc fileDesc = new FileDesc();
+                fileDesc.setFileName(file.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setUserId(userId);
+                fileDesc.setCreateTime(LocalDateTime.now());
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDesc.setIsDeleted((short) 0);
+                fileDescMapper.insert(fileDesc);
+                HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+                hfUser.setFileId(fileDesc.getId());
+                hfUserMapper.updateByPrimaryKey(hfUser);
+            } else {
+                FileDesc fileDesc = list.get(0);
+                fileDesc.setFileName(file.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDescMapper.updateByPrimaryKey(fileDesc);
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody(null));
+    }
 }

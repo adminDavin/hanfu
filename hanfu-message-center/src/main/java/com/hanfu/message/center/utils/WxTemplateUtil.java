@@ -36,9 +36,10 @@ public class WxTemplateUtil {
 
     /**
      * 接口描述：请求工具
+     *
+     * @return net.sf.json.JSONObject
      * @date 2018/10/8 15:30
      * @params [requestUrl, requestMethod, outputStr]
-     * @return net.sf.json.JSONObject
      */
     public static JSONObject httpRequest(String requestUrl, String requestMethod, String outputStr) {
         JSONObject jsonObject = null;
@@ -61,12 +62,12 @@ public class WxTemplateUtil {
             // 设置请求方式（GET/POST）
             httpUrlConn.setRequestMethod(requestMethod);
 
-            if(RequestMethod.GET.equals(requestMethod)){
+            if (RequestMethod.GET.equals(requestMethod)) {
                 httpUrlConn.connect();
             }
 
             // 当有数据需要提交时
-            if(null != outputStr) {
+            if (null != outputStr) {
                 OutputStream outputStream = httpUrlConn.getOutputStream();
                 // 注意编码格式，防止中文乱码
                 outputStream.write(outputStr.getBytes("UTF-8"));
@@ -89,7 +90,7 @@ public class WxTemplateUtil {
             inputStream = null;
             httpUrlConn.disconnect();
             jsonObject = (JSONObject) JSONObject.parse(buffer.toString());
-            
+
         } catch (ConnectException ce) {
             System.out.println("Weixin server connection timed out.");
         } catch (Exception e) {
@@ -100,9 +101,10 @@ public class WxTemplateUtil {
 
     /**
      * 接口描述：获取access_token
+     *
+     * @return com.gzschool.prismtestcms.model.vo.WxAccessTokenVO
      * @date 2018/10/8 15:35
      * @params [appId, appSecret]
-     * @return com.gzschool.prismtestcms.model.vo.WxAccessTokenVO
      */
     public static WxAccessTokenVO getAccessToken(String appId, String appSecret) throws JSONException {
 
@@ -113,17 +115,18 @@ public class WxTemplateUtil {
         // 如果请求成功
         if (null != jsonObject) {
             wxAccessTokenVO = new WxAccessTokenVO();
-			wxAccessTokenVO.setAccessToken(jsonObject.getString("access_token"));
-			wxAccessTokenVO.setExpiresIn(jsonObject.getInteger("expires_in"));
+            wxAccessTokenVO.setAccessToken(jsonObject.getString("access_token"));
+            wxAccessTokenVO.setExpiresIn(jsonObject.getInteger("expires_in"));
         }
         return wxAccessTokenVO;
     }
 
     /**
      * 接口描述：消息模板发送
+     *
+     * @return net.sf.json.JSONObject
      * @date 2018/10/8 15:44
      * @params [wxTemplateDTO, accessToken]
-     * @return net.sf.json.JSONObject
      */
     public static JSONObject sendTemplateMsg(WxTemplateDTO wxTemplateDTO, String accessToken) {
 
@@ -135,7 +138,7 @@ public class WxTemplateUtil {
 
         if (result != null) {
             return result;
-        } else{
+        } else {
             return null;
         }
     }

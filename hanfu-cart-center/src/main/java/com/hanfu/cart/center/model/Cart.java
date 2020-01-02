@@ -3,18 +3,21 @@ package com.hanfu.cart.center.model;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public class Cart implements Serializable{
+public class Cart implements Serializable {
     private String productId;
     private Integer productPrice;
     private Integer productNum;
     /*是否勾选*/
     private String check;
     private String productName;
-    /** 状态, 0正常1下架. */	
+    /**
+     * 状态, 0正常1下架.
+     */
     private Integer productStatus;
 
     /* 商品小图*/
-    private Integer productIcon;
+    private String productIcon;
+
     public String getCheck() {
         return check;
     }

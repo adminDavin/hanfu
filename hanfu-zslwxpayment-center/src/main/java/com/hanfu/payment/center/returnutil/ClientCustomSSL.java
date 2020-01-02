@@ -27,32 +27,32 @@ import java.security.KeyStore;
  */
 public class ClientCustomSSL {
     /**
-     * @Author: HONGLINCHEN
-     * @Description:微信退款方法封装   注意：：微信金额的单位是分 所以这里要X100 转成int是因为 退款的时候不能有小数点
-     * @param merchantNumber 商户这边的订单号
+     * @param merchantNumber      商户这边的订单号
      * @param wxTransactionNumber 微信那边的交易单号
-     * @param totalFee 订单的金额
+     * @param totalFee            订单的金额
+     * @Author: HONGLINCHEN
+     * @Description:微信退款方法封装 注意：：微信金额的单位是分 所以这里要X100 转成int是因为 退款的时候不能有小数点
      * @Date: 2017-9-12 11:18
      */
-    public static Object setUrl(String merchantNumber,String wxTransactionNumber,double totalFee) {
-        try{
+    public static Object setUrl(String merchantNumber, String wxTransactionNumber, double totalFee) {
+        try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
             FileInputStream instream = new FileInputStream(new File("D:\\微信商户平台支付证书\\apiclient_cert.p12"));
             try {
                 keyStore.load(instream, WXPayConstants.MCH_ID.toCharArray());
-            }finally {
+            } finally {
                 instream.close();
             }
             // Trust own CA and all self-signed certs
             SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, WXPayConstants.MCH_ID.toCharArray()).build();
             // Allow TLSv1 protocol only
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                    sslcontext, new String[] { "TLSv1" }, null,
+                    sslcontext, new String[]{"TLSv1"}, null,
                     SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             CloseableHttpClient httpclient = HttpClients.custom()
                     .setSSLSocketFactory(sslsf).build();
             HttpPost httppost = new HttpPost("https://api.mch.weixin.qq.com/secapi/pay/refund");
-            String xml = com.hanfu.payment.center.returnutil.WXPayUtil.wxPayRefund(merchantNumber,wxTransactionNumber,String.valueOf((int)(totalFee*100)));
+            String xml = com.hanfu.payment.center.returnutil.WXPayUtil.wxPayRefund(merchantNumber, wxTransactionNumber, String.valueOf((int) (totalFee * 100)));
             try {
                 StringEntity se = new StringEntity(xml);
                 httppost.setEntity(se);
@@ -68,41 +68,39 @@ public class ClientCustomSSL {
                         Document document = saxReader.read(entity.getContent());
                         Element rootElt = document.getRootElement();
                         System.out.println("根节点：" + rootElt.getName());
-                        System.out.println("==="+rootElt.elementText("result_code"));
-                        System.out.println("==="+rootElt.elementText("return_msg"));
+                        System.out.println("===" + rootElt.elementText("result_code"));
+                        System.out.println("===" + rootElt.elementText("return_msg"));
                         String resultCode = rootElt.elementText("result_code");
                         JSONObject result = new JSONObject();
 
                         Document documentXml = DocumentHelper.parseText(xml);
                         Element rootEltXml = documentXml.getRootElement();
-                        if(resultCode.equals("SUCCESS")){
-                            System.out.println("=================prepay_id===================="+ rootElt.elementText("prepay_id"));
-                            System.out.println("=================sign===================="+ rootEltXml.elementText("sign"));
+                        if (resultCode.equals("SUCCESS")) {
+                            System.out.println("=================prepay_id====================" + rootElt.elementText("prepay_id"));
+                            System.out.println("=================sign====================" + rootEltXml.elementText("sign"));
                             result.put("weixinPayUrl", rootElt.elementText("code_url"));
                             result.put("prepayId", rootElt.elementText("prepay_id"));
-                            result.put("status","success");
-                            result.put("msg","success");
-                        }else{
-                            result.put("status","false");
-                            result.put("msg",rootElt.elementText("err_code_des"));
+                            result.put("status", "success");
+                            result.put("msg", "success");
+                        } else {
+                            result.put("status", "false");
+                            result.put("msg", rootElt.elementText("err_code_des"));
                         }
                         return result;
                     }
                     EntityUtils.consume(entity);
-                }
-                finally {
+                } finally {
                     responseEntry.close();
                 }
-            }
-            finally {
+            } finally {
                 httpclient.close();
             }
             return null;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             JSONObject result = new JSONObject();
-            result.put("status","error");
-            result.put("msg",e.getMessage());
+            result.put("status", "error");
+            result.put("msg", e.getMessage());
             return result;
         }
     }

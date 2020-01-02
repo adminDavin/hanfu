@@ -19,11 +19,16 @@ import java.util.Date;
  */
 public interface SeckillService {
     Integer getRepertory(Integer goodsId, Integer bossId);
+
     void updateRepertory(Integer goodsId, Integer bossId, Integer repertory);
+
     void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Integer categoryId, Double price, Integer repertory);
+
     void updateIsDeleted(Integer goodsId, Integer bossId);
+
     void deleteByPrimaryKey(Integer id);
-    void updateByPrimaryKey( Integer id, Integer bossId, Integer goodsId,  Date startTime, Integer categoryId, Double price,
-                             Integer repertory);
+
+    void updateByPrimaryKey(Integer id, Integer bossId, Integer goodsId, Date startTime, Integer categoryId, Double price,
+                            Integer repertory);
 
 }

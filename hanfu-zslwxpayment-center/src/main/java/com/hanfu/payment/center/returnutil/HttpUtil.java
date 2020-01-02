@@ -38,8 +38,7 @@ public class HttpUtil {
     /**
      * 发送HttpGet请求
      *
-     * @param url
-     *            请求地址
+     * @param url 请求地址
      * @return 返回字符串
      */
     public static String sendGet(String url) {
@@ -71,10 +70,8 @@ public class HttpUtil {
     /**
      * 发送HttpPost请求，参数为map
      *
-     * @param url
-     *            请求地址
-     * @param map
-     *            请求参数
+     * @param url 请求地址
+     * @param map 请求参数
      * @return 返回字符串
      */
     public static String sendPost(String url, Map<String, String> map) {
@@ -117,10 +114,8 @@ public class HttpUtil {
     /**
      * 发送HttpPost请求，参数为文件，适用于微信上传素材
      *
-     * @param url
-     *            请求地址
-     * @param file
-     *            上传的文件
+     * @param url  请求地址
+     * @param file 上传的文件
      * @return 返回字符串
      * @throws IOException
      * @throws ClientProtocolException

@@ -23,23 +23,23 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/query")
 @Api
 public class QueryLogisticsController {
-	@ApiOperation(value = "查询物流", notes = "查询物流")
-	@RequestMapping(value = "/logistics", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "expCode", value = "快递名称", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
-		})
-	public ResponseEntity<JSONObject> logistics(String expCode,String expNo)
-			throws JSONException { 
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-		try { 
-			String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expCode, expNo);
-			return builder.body(ResponseUtils.getResponseBody(result));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return builder.body(ResponseUtils.getResponseBody("查询失败"));
-		}
-		
-	}
+    @ApiOperation(value = "查询物流", notes = "查询物流")
+    @RequestMapping(value = "/logistics", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "expCode", value = "快递名称", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
+    })
+    public ResponseEntity<JSONObject> logistics(String expCode, String expNo)
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+        try {
+            String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expCode, expNo);
+            return builder.body(ResponseUtils.getResponseBody(result));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return builder.body(ResponseUtils.getResponseBody("查询失败"));
+        }
+
+    }
 }

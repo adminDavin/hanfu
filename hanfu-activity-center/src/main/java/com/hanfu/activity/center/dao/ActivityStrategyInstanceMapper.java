@@ -2,7 +2,9 @@ package com.hanfu.activity.center.dao;
 
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ActivityStrategyInstanceMapper {

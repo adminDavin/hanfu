@@ -2,6 +2,7 @@ package com.hanfu.group.center.manual.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,10 +19,10 @@ public class Group implements Serializable {
 
     private Integer number;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss", timezone = "GMT+8")
     private Date startTime;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss", timezone = "GMT+8")
     private Date stopTime;
     private Short isDeleted;
 

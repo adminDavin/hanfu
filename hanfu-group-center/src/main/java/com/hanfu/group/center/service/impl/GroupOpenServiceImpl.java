@@ -20,6 +20,7 @@ import java.util.List;
 public class GroupOpenServiceImpl implements GroupOpenService {
     @Autowired
     GroupOpenMapper groupOpen;
+
     @Override
     public int deleteByPrimaryKey(Integer id) {
         return groupOpen.deleteByPrimaryKey(id);
@@ -32,18 +33,18 @@ public class GroupOpenServiceImpl implements GroupOpenService {
 
     @Override
     public List<Integer> selectId(Integer groupId) {
-        return groupOpen.selectId( groupId);
+        return groupOpen.selectId(groupId);
     }
 
     @Override
     public void insert(Integer groupId, Date startTime, Date stopTime) {
-        groupOpen.insert( groupId,startTime, stopTime);
+        groupOpen.insert(groupId, startTime, stopTime);
 
     }
 
     @Override
     public List<Date> getStopTime() {
-       return groupOpen.getStopTime();
+        return groupOpen.getStopTime();
     }
 
     @Override
@@ -88,8 +89,8 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     }
 
     @Override
-    public GroupOpen selectByStopTime(Integer groupId,Date stopTime) {
-        return  groupOpen.selectByStopTime( groupId,stopTime);
+    public GroupOpen selectByStopTime(Integer groupId, Date stopTime) {
+        return groupOpen.selectByStopTime(groupId, stopTime);
     }
 
     @Override

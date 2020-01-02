@@ -11,10 +11,10 @@ import com.hanfu.user.center.model.UsersExample;
 
 @SpringBootTest(classes = Application.class)
 public class UsersMapperTest {
-	
-	@Autowired
-	private UsersMapper usersMapper;
-	
+
+    @Autowired
+    private UsersMapper usersMapper;
+
 //	@Test
 //    void runTest() {
 //		long count = usersMapper.countByExample(new UsersExample());

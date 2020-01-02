@@ -20,12 +20,12 @@ import java.util.List;
 /**
  * Swagger2API文档的配置
  * Created by macro on 2018/4/26.
- */ 
+ */
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
     @Bean
-    public Docket createRestApi(){
+    public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
@@ -45,7 +45,7 @@ public class Swagger2Config {
                 .build();
     }
 
-    private List<ApiKey> securitySchemes() { 
+    private List<ApiKey> securitySchemes() {
         //设置请求头信息
         List<ApiKey> result = new ArrayList<>();
         ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
@@ -62,7 +62,7 @@ public class Swagger2Config {
         return result;
     }
 
-    private SecurityContext getContextByPath(String pathRegex){
+    private SecurityContext getContextByPath(String pathRegex) {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .forPaths(PathSelectors.regex(pathRegex))

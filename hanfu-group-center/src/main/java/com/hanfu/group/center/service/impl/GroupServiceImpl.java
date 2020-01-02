@@ -19,21 +19,23 @@ import java.util.Date;
 class GroupServiceImpl implements GroupService {
     @Autowired
     GroupMapper groupMapper;
+
     @Override
     public void deleteByPrimaryKey(Integer id) {
         groupMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public void insert(Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory) {
-        groupMapper.insert(  bossId,  goodsId, price, number, startTime,  stopTime,repertory);
+    public void insert(Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
+        groupMapper.insert(bossId, goodsId, price, number, startTime, stopTime, repertory);
     }
 
     @Override
     public int insertSelective(Group record) {
         return 0;
     }
-//    根据id查一个
+
+    //    根据id查一个
     @Override
     public Group selectByPrimaryKey(Integer id) {
         return groupMapper.selectByPrimaryKey(id);
@@ -46,13 +48,13 @@ class GroupServiceImpl implements GroupService {
 
     @Override
     public void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
-     groupMapper.updateByPrimaryKey( groupId,  bossId,  goodsId,  price,  number,  startTime,  stopTime,  repertory);
+        groupMapper.updateByPrimaryKey(groupId, bossId, goodsId, price, number, startTime, stopTime, repertory);
     }
 
 
     @Override
     public void updateRrepertory(Integer id, Integer repertory) {
-        groupMapper.updateRrepertory(id,repertory);
+        groupMapper.updateRrepertory(id, repertory);
     }
 
     @Override

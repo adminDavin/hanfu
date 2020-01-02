@@ -8,10 +8,10 @@ import com.hanfu.inner.model.product.center.Product;
 import com.hanfu.utils.response.handler.ResponseEntity;
 
 public interface ReferralProductService {
-	
+
     public List<Product> getAllProduct();
 
-	public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception;
+    public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId, Integer page, Integer size) throws Exception;
 
-	
+
 }
