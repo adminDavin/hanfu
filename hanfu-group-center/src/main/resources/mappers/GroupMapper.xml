@@ -111,133 +111,132 @@
     where goods_id = #{goodsId} order by id
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from group_id
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from group_id
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
 
 
-  <insert id="insert"  >
-    insert into  group_id ( boss_id, goods_id,price, number, start_time, stop_time,  repertory )
-    values ( #{bossId}, #{goodsId},#{price}, #{number}, #{startTime},#{stopTime}, #{repertory})
-  </insert>
+    <insert id="insert">
+        insert into group_id ( boss_id, goods_id,price, number, start_time, stop_time, repertory )
+        values ( #{bossId}, #{goodsId},#{price}, #{number}, #{startTime},#{stopTime}, #{repertory})
+    </insert>
 
 
-  <insert id="insertSelective" parameterType="com.hanfu.group.center.manual.model.Group" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into group_id
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="bossId != null" >
-        boss_id,
-      </if>
-      <if test="goodsId != null" >
-        goods_id,
-      </if>
-      <if test="price != null" >
-        price,
-      </if>
-      <if test="number != null" >
-        number,
-      </if>
-      <if test="startTime != null" >
-        start_time,
-      </if>
-      <if test="stopTime != null" >
-        stop_time,
-      </if>
-      <if test="repertory != null" >
-        repertory,
-      </if>
-      <if test="isDeleted != null" >
-        is_deleted,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="bossId != null" >
-        #{bossId,jdbcType=INTEGER},
-      </if>
-      <if test="goodsId != null" >
-        #{goodsId,jdbcType=INTEGER},
-      </if>
-      <if test="price != null" >
-        #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="number != null" >
-        #{number,jdbcType=INTEGER},
-      </if>
-      <if test="startTime != null" >
-        #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="stopTime != null" >
-        #{stopTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="repertory != null" >
-        #{repertory,jdbcType=INTEGER},
-      </if>
-      <if test="isDeleted != null" >
-        #{isDeleted,jdbcType=SMALLINT},
-      </if>
-    </trim>
-  </insert>
+    <insert id="insertSelective" parameterType="com.hanfu.group.center.manual.model.Group">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into group_id
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bossId != null">
+                boss_id,
+            </if>
+            <if test="goodsId != null">
+                goods_id,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="stopTime != null">
+                stop_time,
+            </if>
+            <if test="repertory != null">
+                repertory,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bossId != null">
+                #{bossId,jdbcType=INTEGER},
+            </if>
+            <if test="goodsId != null">
+                #{goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="number != null">
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="repertory != null">
+                #{repertory,jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=SMALLINT},
+            </if>
+        </trim>
+    </insert>
 
 
+    <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.group.center.manual.model.Group">
+        update group_id
+        <set>
+            <if test="bossId != null">
+                boss_id = #{bossId,jdbcType=INTEGER},
+            </if>
+            <if test="goodsId != null">
+                goods_id = #{goodsId,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="number != null">
+                number = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="stopTime != null">
+                stop_time = #{stopTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="repertory != null">
+                #{repertory,jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=SMALLINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.group.center.manual.model.Group" >
-    update group_id
-    <set >
-      <if test="bossId != null" >
+    <update id="updateByPrimaryKey">
+        update group_id
+        set
         boss_id = #{bossId,jdbcType=INTEGER},
-      </if>
-      <if test="goodsId != null" >
         goods_id = #{goodsId,jdbcType=INTEGER},
-      </if>
-      <if test="price != null" >
         price = #{price,jdbcType=DOUBLE},
-      </if>
-      <if test="number != null" >
         number = #{number,jdbcType=INTEGER},
-      </if>
-      <if test="startTime != null" >
         start_time = #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="stopTime != null" >
         stop_time = #{stopTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="repertory != null" >
-        #{repertory,jdbcType=INTEGER},
-      </if>
-      <if test="isDeleted != null" >
-        is_deleted = #{isDeleted,jdbcType=SMALLINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        repertory = #{repertory,jdbcType=INTEGER}
+        where id = #{groupId,jdbcType=INTEGER}
+    </update>
 
-  <update id="updateByPrimaryKey" >
-    update group_id
-    set
-      boss_id = #{bossId,jdbcType=INTEGER},
-      goods_id = #{goodsId,jdbcType=INTEGER},
-      price = #{price,jdbcType=DOUBLE},
-      number = #{number,jdbcType=INTEGER},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      stop_time = #{stopTime,jdbcType=TIMESTAMP},
-       repertory = #{repertory,jdbcType=INTEGER}
-      where id = #{groupId,jdbcType=INTEGER}
-  </update>
-
-  <update id="updateRrepertory" parameterType="java.lang.Integer" >
-    update group_id
-    set
-       repertory = #{repertory}
-    where id = #{id}
-  </update>
-  <update id="updateState" parameterType="java.lang.Integer" >
-    update group_id
-    set
-       is_deleted = 1
-    where id = #{id}
-  </update>
+    <update id="updateRrepertory" parameterType="java.lang.Integer">
+        update group_id
+        set
+        repertory = #{repertory}
+        where id = #{id}
+    </update>
+    <update id="updateState" parameterType="java.lang.Integer">
+        update group_id
+        set
+        is_deleted = 1
+        where id = #{id}
+    </update>
 </mapper>

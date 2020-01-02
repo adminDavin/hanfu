@@ -67,6 +67,7 @@ public class GroupController {
     }
         return false;
     }
+
     //团购商品
     @ApiOperation(value = "购买团购商品", notes = "购买团购商品")
     @RequestMapping(value = "/shopping", method = RequestMethod.POST)
@@ -93,7 +94,7 @@ public class GroupController {
     //        默认开团12小时没人集齐退钱
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
-            long time=30*60*1000*24;
+            long time = 30 * 60 * 1000 * 24;
             Date date2 = new Date(date.getTime() + time);
             String format1 = formatter.format(date);
             String format = formatter.format(date2);

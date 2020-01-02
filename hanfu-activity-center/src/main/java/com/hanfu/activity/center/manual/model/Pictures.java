@@ -4,32 +4,33 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hanfu.activity.center.request.CommonRequest;
 
-public class Pictures{
-	
-	private MultipartFile fileInfo;
-	private Integer activityId;
-	private Integer userId;
+public class Pictures {
 
-	public MultipartFile getFileInfo() {
-		return fileInfo;
-	}
+    private MultipartFile fileInfo;
+    private Integer activityId;
+    private Integer userId;
 
-	public void setFileInfo(MultipartFile fileInfo) {
-		this.fileInfo = fileInfo;
-	}
-	public Integer getActivityId() {
-		return activityId;
-	}
+    public MultipartFile getFileInfo() {
+        return fileInfo;
+    }
 
-	public void setActivityId(Integer activityId) {
-		this.activityId = activityId;
-	}
+    public void setFileInfo(MultipartFile fileInfo) {
+        this.fileInfo = fileInfo;
+    }
 
-	public Integer getUserId() {
-		return userId;
-	}
+    public Integer getActivityId() {
+        return activityId;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setActivityId(Integer activityId) {
+        this.activityId = activityId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

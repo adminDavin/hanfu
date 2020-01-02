@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.dao.HfUserMemberMapper">
+    <resultMap id="BaseResultMap" type="com.hanfu.user.center.model.HfUserMember">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="user_status" jdbcType="TINYINT" property="userStatus"/>
+    </resultMap>
+
+    <!-- 判断用户是不是第一次充钱 -->
+    <select id="itExistUserById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from hf_member
+        <where>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertthirtyTime">
+        insert into hf_member(user_id,create_date,modify_date,user_status)
+        values(#{userId,jdbcType=INTEGER},#{time,jdbcType=TIMESTAMP},#{thirtyTime,jdbcType=TIMESTAMP},1)
+    </insert>
+    <insert id="insertseasonTime">
+        insert into hf_member(user_id,create_date,modify_date,user_status)
+        values(#{userId,jdbcType=INTEGER},#{time,jdbcType=TIMESTAMP},#{seasonTime,jdbcType=TIMESTAMP},1)
+    </insert>
+    <insert id="insertyearTime">
+        insert into hf_member(user_id,create_date,modify_date,user_status)
+        values(#{userId,jdbcType=INTEGER},#{time,jdbcType=TIMESTAMP},#{yearTime,jdbcType=TIMESTAMP},1)
+    </insert>
+    <insert id="insertBalance">
+        insert into hf_user_balance (user_id, hf_balance)
+        values (#{userId,jdbcType=INTEGER},#{total,jdbcType=INTEGER})
+    </insert>
+
+
+    <!-- 看用户过期没有 -->
+    <select id="getModifyTime" resultType="java.lang.String">
+        select modify_date from hf_member where user_id=#{userId,jdbcType=INTEGER};
+    </select>
+
+    <!-- 过期重新开通会员的时间 -->
+    <update id="updateModify">
+        update hf_member
+        <set>
+            <if test="total == money and number==1">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
+            </if>
+            <if test="total == money and number==3">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
+            </if>
+            <if test="total == money and number==12">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+    <!--  会员过期重新开通  余额表的余额添加就好 -->
+    <update id="updateBalance">
+        update hf_user_balance
+        <set>
+            <if test="total != null ">
+                hf_balance = hf_balance+#{total,jdbcType=INTEGER}
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+
+    <!-- 没过期的  直接修改他的过期时间即可  -->
+    <update id="updateModifyTime">
+        update hf_member
+        <set>
+            <if test="total == money and number==1">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
+            </if>
+            <if test="total == money and number==3">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
+            </if>
+            <if test="total == money and number==12">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+
+    <!-- 购买会员  已经过期的  重新设置时间 -->
+    <update id="buyupdateModify">
+        update hf_member
+        <set>
+            <if test="total == money and number==1">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
+            </if>
+            <if test="total == money and number==3">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
+            </if>
+            <if test="total == money and number==12">
+                create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+    <!--购买会员的  没有过期的 -->
+    <update id="buyupdateModifyTime">
+        update hf_member
+        <set>
+            <if test="total == money and number==1">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
+            </if>
+            <if test="total == money and number==3">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
+            </if>
+            <if test="total == money and number==12">
+                user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -11,8 +11,8 @@ import com.hanfu.activity.center.manual.model.HfUser;
 import com.hanfu.activity.center.manual.model.UserFormInfo;
 
 public interface ActivityDao {
-	Integer updateActivityStart(Integer activityId);
-	
-	Integer updateActivityEnd(Integer activityId);
-	
+    Integer updateActivityStart(Integer activityId);
+
+    Integer updateActivityEnd(Integer activityId);
+
 }

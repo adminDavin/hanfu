@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class KillController {
     SeckillConnectService seckillConnectService;
 
     @ApiOperation(value = "添加秒杀业务", notes = "添加秒杀业务")
-    @RequestMapping(value = "/insert",method = RequestMethod.POST)
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
     @ResponseBody
     @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
@@ -63,6 +64,7 @@ public class KillController {
 //        }
         return "ok";
     }
+
     //删除团购商品
     @ApiOperation(value = "删除秒杀商品", notes = "删除团购商品")
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
@@ -73,6 +75,7 @@ public class KillController {
         seckillService.deleteByPrimaryKey(id);
         return "ok";
     }
+
     //    添加团购商品
     @ApiOperation(value = "修改秒杀商品", notes = "修改秒杀商品")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -101,8 +104,9 @@ public class KillController {
         }
         return false;
     }
+
     @ApiOperation(value = "秒杀业务", notes = "秒杀业务")
-    @RequestMapping(value = "/seckill",method = RequestMethod.POST)
+    @RequestMapping(value = "/seckill", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer")
 //            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer")

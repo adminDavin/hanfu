@@ -112,10 +112,10 @@
         seckill    WHERE   goods_id=#{goodsId}
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from seckill
-    where id = #{id}
-  </delete>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from seckill
+        where id = #{id}
+    </delete>
 
     <insert id="insertSeckill" parameterType="com.hanfu.seckill.center.model.Seckill">
         insert into seckill (boss_id,goods_id,start_time,stop_time,category_id,price,repertory,is_deleted)

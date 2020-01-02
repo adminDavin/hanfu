@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@ExceptionHandler(value = Exception.class)
-    @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="unknow exception")
-	public void exceptionHandler(HttpServletRequest req, Exception e) {
-		logger.error("unknow exception:", e);
-	}
-	
-	@ExceptionHandler(value = LoginException.class)
-    @ResponseStatus(value=HttpStatus.FORBIDDEN, reason="login failed")
-	public void loginExceptionHandler(HttpServletRequest req, Exception e) {
-		logger.error("login failed:", e);
-	}
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "unknow exception")
+    public void exceptionHandler(HttpServletRequest req, Exception e) {
+        logger.error("unknow exception:", e);
+    }
+
+    @ExceptionHandler(value = LoginException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "login failed")
+    public void loginExceptionHandler(HttpServletRequest req, Exception e) {
+        logger.error("login failed:", e);
+    }
 }

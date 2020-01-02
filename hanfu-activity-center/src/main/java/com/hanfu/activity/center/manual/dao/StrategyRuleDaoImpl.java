@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class StrategyRuleDaoImpl implements StrategyRuleDao{
+public class StrategyRuleDaoImpl implements StrategyRuleDao {
 
-	@Autowired
+    @Autowired
     SqlSessionTemplate sqlSessionTemplate;
-	
-	@Override
-	public List<String> findRuleType() {
-		List<String> result = sqlSessionTemplate.selectList("findRuleType");
-		return result;
-	}
-	
+
+    @Override
+    public List<String> findRuleType() {
+        List<String> result = sqlSessionTemplate.selectList("findRuleType");
+        return result;
+    }
+
 }

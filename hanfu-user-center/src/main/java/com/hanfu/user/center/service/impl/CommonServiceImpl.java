@@ -15,15 +15,15 @@ import com.hanfu.user.center.service.CommonService;
 
 @Service("commonService")
 public class CommonServiceImpl implements CommonService {
- 
-	@Autowired
-	private UsersMapper usersMapper;
-	
-	
-	@Override
-	public List<Users> getUserList() {
-		UsersExample example = new UsersExample();
-		return usersMapper.selectByExample(example);
-	}
+
+    @Autowired
+    private UsersMapper usersMapper;
+
+
+    @Override
+    public List<Users> getUserList() {
+        UsersExample example = new UsersExample();
+        return usersMapper.selectByExample(example);
+    }
 
 }

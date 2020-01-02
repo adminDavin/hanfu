@@ -13,7 +13,8 @@ import java.util.List;
  * @date: 2019/12/10
  * @time: 17:50
  */
-public class Seckill implements Serializable{
+@SuppressWarnings("serial")
+public class Seckill implements Serializable {
     private Integer id;
     private Integer bossId;
     private Integer goodsId;
@@ -24,7 +25,7 @@ public class Seckill implements Serializable{
     @JsonFormat(timezone="GMT+8" ,pattern = "yyyy-mm-dd hh:mm:ss" )
     private Date stopTime;
     private Integer categoryId;
-    private Double   price;
+    private Double price;
     private Integer repertory;
     private Short isDeleted;
     private HfGoods hfGoods;
@@ -126,5 +127,5 @@ public class Seckill implements Serializable{
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
-     
+
 }

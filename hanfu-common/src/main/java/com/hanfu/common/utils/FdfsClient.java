@@ -13,7 +13,7 @@ import org.csource.fastdfs.TrackerServer;
 
 
 public class FdfsClient {
-	
+
 //	public static void main(String[] args) throws IOException, MyException {
 //		ClientGlobal.init("fdfs_client.conf");
 //		TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
@@ -21,7 +21,7 @@ public class FdfsClient {
 //   	 	File file = new  File("C:\\Users\\123\\Desktop\\timg.jpg");
 //   		FileInputStream fis = new  FileInputStream(file);
 //   		TrackerServer trackerServer = trackerClient.getConnection();
-//   		StorageServer storage = new StorageServer("47.105.72.216", 23000, 0);
+//   		StorageServer storage = new StorageServer("172.26.16.97", 23000, 0);
 //   		System.out.println(storage.getInetSocketAddress());
 //   		StorageClient client = new StorageClient(trackerServer, storage);
 //	   	byte[] file_buff = null;
@@ -37,44 +37,48 @@ public class FdfsClient {
 //		System.out.println(client.get_file_info(fileid[0], fileid[1]));
 //		System.out.println(JSON.toJSON(fileid));
 //	}
-	
-	private static StorageClient client = null;
-	
-	static {
-		try {
-			ClientGlobal.init("fdfs_client.conf");
-			TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
-	        TrackerClient trackerClient = new TrackerClient(trackerGroup);
-	        TrackerServer trackerServer = trackerClient.getConnection();
-	   		StorageServer storage = new StorageServer("47.105.72.216", 23000, 0);
-	        client = new StorageClient(trackerServer, storage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
-	}
-	public static String[] uploadFile(FileInputStream fis, String userId) throws IOException, MyException {
-		return client.upload_file(FdfsClient.streamToByte(fis), userId, null);
-	}
-	public static String[] uploadFile(byte[] fis, String userId) throws IOException, MyException {
-		return client.upload_file(fis, userId, null);
-	}
-	public static byte[] downloadFile(String group_name, String remoteFilename) throws IOException, MyException {
-		return client.download_file(group_name, remoteFilename);
-	}
-	public static void deleteFile(String group_name, String remoteFilename) throws IOException, MyException {
-		client.delete_file(group_name, remoteFilename);
-	}
-	
-	public static byte[] streamToByte(FileInputStream fis) throws IOException {
-		byte[] file_buff = null;
+
+    private static StorageClient client = null;
+
+    static {
+        try {
+            ClientGlobal.init("fdfs_client.conf");
+            TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
+            TrackerClient trackerClient = new TrackerClient(trackerGroup);
+            TrackerServer trackerServer = trackerClient.getConnection();
+            StorageServer storage = new StorageServer("172.26.16.97", 23000, 0);
+            client = new StorageClient(trackerServer, storage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String[] uploadFile(FileInputStream fis, String userId) throws IOException, MyException {
+        return client.upload_file(FdfsClient.streamToByte(fis), userId, null);
+    }
+
+    public static String[] uploadFile(byte[] fis, String userId) throws IOException, MyException {
+        return client.upload_file(fis, userId, null);
+    }
+
+    public static byte[] downloadFile(String group_name, String remoteFilename) throws IOException, MyException {
+        return client.download_file(group_name, remoteFilename);
+    }
+
+    public static void deleteFile(String group_name, String remoteFilename) throws IOException, MyException {
+        client.delete_file(group_name, remoteFilename);
+    }
+
+    public static byte[] streamToByte(FileInputStream fis) throws IOException {
+        byte[] file_buff = null;
         if (fis != null) {
             int len = fis.available();
             file_buff = new byte[len];
             fis.read(file_buff);
         }
         return file_buff;
-	}
-	
+    }
+
 }

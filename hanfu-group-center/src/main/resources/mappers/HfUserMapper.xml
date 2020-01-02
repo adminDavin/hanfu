@@ -173,74 +173,21 @@
       </if>
       <if test="phone != null" >
         phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
         email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="sourceType != null" >
         source_type = #{sourceType,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null" >
         nick_name = #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="realName != null" >
         real_name = #{realName,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null" >
         sex = #{sex,jdbcType=TINYINT},
-      </if>
-      <if test="birthDay != null" >
         birth_day = #{birthDay,jdbcType=TIMESTAMP},
-      </if>
-      <if test="userStatus != null" >
         user_status = #{userStatus,jdbcType=TINYINT},
-      </if>
-      <if test="fileId != null" >
         file_id = #{fileId,jdbcType=INTEGER},
-      </if>
-      <if test="address != null" >
         address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="userLevel != null" >
         user_level = #{userLevel,jdbcType=TINYINT},
-      </if>
-      <if test="lastAuthTime != null" >
         last_auth_time = #{lastAuthTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="region != null" >
         region = #{region,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifyDate != null" >
         modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="idDeleted != null" >
-        id_deleted = #{idDeleted,jdbcType=TINYINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hanfu.group.center.manual.model.HfUser" >
-    update hf_user
-    set username = #{username,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      source_type = #{sourceType,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      real_name = #{realName,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=TINYINT},
-      birth_day = #{birthDay,jdbcType=TIMESTAMP},
-      user_status = #{userStatus,jdbcType=TINYINT},
-      file_id = #{fileId,jdbcType=INTEGER},
-      address = #{address,jdbcType=VARCHAR},
-      user_level = #{userLevel,jdbcType=TINYINT},
-      last_auth_time = #{lastAuthTime,jdbcType=TIMESTAMP},
-      region = #{region,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      modify_date = #{modifyDate,jdbcType=TIMESTAMP},
-      id_deleted = #{idDeleted,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        id_deleted = #{idDeleted,jdbcType=TINYINT}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

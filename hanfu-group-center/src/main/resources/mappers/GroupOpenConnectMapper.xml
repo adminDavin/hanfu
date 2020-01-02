@@ -17,10 +17,10 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
-  <delete id="deleteByGroupOpenId"  >
-    delete from group_open_connect
-    where group_open_id = #{id,jdbcType=INTEGER}
-  </delete>
+    <delete id="deleteByGroupOpenId">
+        delete from group_open_connect
+        where group_open_id = #{id,jdbcType=INTEGER}
+    </delete>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -36,54 +36,53 @@
   </insert>
 
 
-  <insert id="insertSelective" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into group_open_connect
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="userId != null" >
-        user_id,
-      </if>
-      <if test="groupOpenId != null" >
-        group_open_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="userId != null" >
-        #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="groupOpenId != null" >
-        #{groupOpenId,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
+    <insert id="insertSelective" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into group_open_connect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="groupOpenId != null">
+                group_open_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="groupOpenId != null">
+                #{groupOpenId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
 
 
+    <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect">
+        update group_open_connect
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="groupOpenId != null">
+                group_open_id = #{groupOpenId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.group.center.manual.model.GroupOpenConnect" >
-    update group_open_connect
-    <set >
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="groupOpenId != null" >
-        group_open_id = #{groupOpenId,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
-  <update id="updateisDeleted" parameterType="java.lang.Integer" >
-    update group_open_connect
-    set is_deleted =1
-    where user_id = #{userId} and   group_open_id = #{groupOpenId}
-  </update>
+    <update id="updateisDeleted" parameterType="java.lang.Integer">
+        update group_open_connect
+        set is_deleted =1
+        where user_id = #{userId} and group_open_id = #{groupOpenId}
+    </update>
 
 
-  <update id="updateState" parameterType="java.lang.Integer" >
-    update group_open_connect
-    set is_deleted =2
-    where user_id = #{userId} and   group_open_id = #{groupOpenId}
-  </update>
+    <update id="updateState" parameterType="java.lang.Integer">
+        update group_open_connect
+        set is_deleted =2
+        where user_id = #{userId} and group_open_id = #{groupOpenId}
+    </update>
 </mapper>

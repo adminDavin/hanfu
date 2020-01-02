@@ -18,22 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
- 
+
 
 @RestController
 @RequestMapping("/")
 public class ComonController extends BasicErrorController {
-   public ComonController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
-       super(errorAttributes, errorProperties);
-   }
+    public ComonController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
+        super(errorAttributes, errorProperties);
+    }
 
-   protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-   
-   @RequestMapping(path = "/error", method = RequestMethod.GET)
-   public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) {
-       BodyBuilder builder = ResponseUtils.getBodyBuilder(getStatus(request));
-       Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
-       return builder.body(body);
-   }
+
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(getStatus(request));
+        Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
+        return builder.body(body);
+    }
 }

@@ -28,6 +28,7 @@ public class ScheduleTaskController {
     GroupOpenService groupOpenService;
     @Autowired
     GroupOpenConnectService groupOpenConnectService;
+
     @Scheduled(cron = "0 0/30 * * * ?")
     public void executeCorpTask1(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMddHHmmss");
@@ -36,7 +37,7 @@ public class ScheduleTaskController {
         String format1 = formatter.format(date);
         Long in2 = Long.valueOf(format1);
         List<Date> stopTime = groupOpenService.getStopTime();
-        for (Date  time:stopTime) {
+        for (Date time : stopTime) {
             String format = formatter.format(time);
             String timestamp = formatter1.format(time);
             Date startTime1 = null;
