@@ -8,6 +8,15 @@ public class GroupOpenConnect implements Serializable {
     private Integer userId;
 
     private Integer groupOpenId;
+    private  Integer ordersId;
+
+    public Integer getOrdersId() {
+        return ordersId;
+    }
+
+    public void setOrdersId(Integer ordersId) {
+        this.ordersId = ordersId;
+    }
 
     public Short getIsDeleted() {
         return isDeleted;

@@ -4,6 +4,7 @@ package com.hanfu.group.center.service;
 import com.hanfu.group.center.manual.model.Group;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author:gyj
@@ -17,6 +18,9 @@ public interface GroupService {
 
     int insertSelective(Group record);
 
+    List<Group> seleteId(Integer groupId);
+
+    List<Group> seleteGroup(Integer bossId);
     Group selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Group record);
@@ -27,4 +31,10 @@ public interface GroupService {
 
     //    更改状态
     void updateState(Integer id);
+    List<Group> seleteAll(Integer bossId);
+    List<Group>selectCategory(Integer id);
+
+     Group selectDate(Integer id);
+
+    List<String>selectCategoryName();
 }

@@ -13,8 +13,7 @@ public interface GroupOpenConnectService {
     int deleteByPrimaryKey(Integer id);
 
     void deleteByGroupOpenId(Integer id);
-
-    void insert(Integer userId, Integer groupOpenId);
+    void  insert(Integer userId,Integer groupOpenId,Integer ordersId);
 
     int insertSelective(GroupOpenConnect groupOpenConnect);
 

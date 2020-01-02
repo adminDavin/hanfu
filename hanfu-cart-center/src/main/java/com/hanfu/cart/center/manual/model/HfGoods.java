@@ -48,6 +48,7 @@ public class HfGoods implements Serializable {
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
+    private Integer hfGoodsPictureId;
 
     public Integer getId() {
         return id;

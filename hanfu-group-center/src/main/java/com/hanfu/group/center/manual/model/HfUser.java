@@ -1,8 +1,9 @@
 package com.hanfu.group.center.manual.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class HfUser {
+public class HfUser implements Serializable {
     private Integer id;
 
     private String username;

@@ -19,33 +19,55 @@
         where id = #{id} and is_deleted=0;
     </select>
 
-    <select id="selectByGroupOpen" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select
-        <include refid="Base_Column_List"/>
-        from group_open
-        where group_id = #{groupId} and is_deleted=0;
-    </select>
+  <select id="selectByGroupOpen" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where group_id = #{groupId} and is_deleted=0 order by id;
+  </select>
 
 
-    <select id="selectNumber" resultType="int">
+
+  <select id="selectByGroupOpenId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    id
+    from group_open
+    where group_id = #{groupId} and is_deleted=0;
+  </select>
+
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where id = #{id} and is_deleted=0;
+  </select>
+
+
+
+  <select id="selectNumber" resultType="int">
         select count(*)
         from
         group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
-        where a.group_id=#{groupId} and b.is_deleted=0
+		where a.id=#{groupId} and b.is_deleted=0
     </select>
 
-    <select id="selectUserId" parameterType="java.lang.Integer" resultType="int">
+
+
+  <select id="selectUserId" parameterType="java.lang.Integer" resultType="int">
         select b.user_id
         from
         group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
-        where a.group_id=#{groupId} and b.is_deleted=0
+		where a.id=#{groupId} and b.is_deleted=0 order by b.id
     </select>
 
-    <select id="selectByStopTime" resultType="com.hanfu.group.center.manual.model.GroupOpen">
-        select
-        <include refid="Base_Column_List"/>
-        from group_open
-        where group_id=#{groupId} and stop_time=#{stopTime} and is_deleted=0;
+
+
+  <select id="selectByStopTime"  resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+		where group_id=#{groupId} and stop_time=#{stopTime} and is_deleted=0;
     </select>
 
     <select id="getStopTime" resultType="Date">

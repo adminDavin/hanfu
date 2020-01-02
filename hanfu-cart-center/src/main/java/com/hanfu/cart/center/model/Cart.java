@@ -16,7 +16,7 @@ public class Cart implements Serializable {
     private Integer productStatus;
 
     /* 商品小图*/
-    private String productIcon;
+    private Integer productIcon;
 
     public String getCheck() {
         return check;

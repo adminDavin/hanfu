@@ -33,7 +33,7 @@ public interface GroupOpenService {
 
     int insertSelective(GroupOpenMapper groupOpen);
 
-    GroupOpenMapper selectByPrimaryKey(Integer id);
+    GroupOpen selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(GroupOpenMapper groupOpen);
 
@@ -45,12 +45,15 @@ public interface GroupOpenService {
     //    查询参团用户id
     List<Integer> selectUserId(Integer groupId);
 
-    //    查看开团信息
-    GroupOpen selectByGroupOpen(Integer groupId);
+    GroupOpen selectById(Integer id);
 
+//    查看开团信息
+List<GroupOpen> selectByGroupOpen(Integer groupId);
     //查一个
     GroupOpen selectByStopTime(Integer groupId, Date stopTime);
 
     //    更改开团转态
     void updateByIsDeleted(Integer id);
+
+    List<Integer> selectByGroupOpenId(Integer groupId);
 }

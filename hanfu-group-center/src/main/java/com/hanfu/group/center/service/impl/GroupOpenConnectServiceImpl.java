@@ -28,8 +28,8 @@ public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
     }
 
     @Override
-    public void insert(Integer userId, Integer groupOpenId) {
-        groupOpenConnectMapper.insert(userId, groupOpenId);
+    public void insert(Integer userId,Integer groupOpenId,Integer ordersId) {
+        groupOpenConnectMapper.insert(userId,groupOpenId, ordersId);
     }
 
     @Override
