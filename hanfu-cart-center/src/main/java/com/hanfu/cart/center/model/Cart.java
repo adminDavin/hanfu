@@ -67,11 +67,11 @@ public class Cart implements Serializable {
         this.productStatus = productStatus;
     }
 
-    public String getProductIcon() {
+    public Integer getProductIcon() {
         return productIcon;
     }
 
-    public void setProductIcon(String productIcon) {
+    public void setProductIcon(Integer productIcon) {
         this.productIcon = productIcon;
     }
 }
