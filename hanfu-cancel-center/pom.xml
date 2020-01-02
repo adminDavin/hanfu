@@ -206,6 +206,23 @@
             <artifactId>javase</artifactId>
             <version>3.0.0</version>
         </dependency>
+<!--        视图解析-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-web</artifactId>-->
+<!--            <version>4.2.3.RELEASE</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-config</artifactId>-->
+<!--            <version>4.2.3.RELEASE</version>-->
+<!--        </dependency>-->
     </dependencies>
+
+
 
 </project>

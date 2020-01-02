@@ -21,9 +21,9 @@
 		<module>hanfu-activity-center</module>
     <module>hanfu-seckill-center</module>
 		<module>hanfu-cart-center</module>
-
-
-	</modules>
+		<module>hanfu-zslpayment-center</module>
+    <module>hanfu-zslpayment-center</module>
+    </modules>
 	<profiles>
 		<profile>
 			<id>jdk11</id>

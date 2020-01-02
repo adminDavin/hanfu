@@ -11,4 +11,6 @@ public interface VoteRecordsDao {
 	List<Integer> distinctUserId(VoteRecordsEntity entity);
 	
 	List<Integer> distinctElectedId(Integer activityId);
+	
+	List<Integer> distinctUserIdvote(VoteRecordsEntity entity);
 }
