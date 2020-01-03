@@ -341,6 +341,11 @@ public class KingWordsController {
     @ApiOperation(value = "用户列表查询", notes = "用户列表查询")
     public ResponseEntity<JSONObject> userListTP(UserQuery userQuery, Integer pageNum, Integer pageSize) throws Exception {
         System.out.println(userQuery);
+        if (pageNum==null){
+            pageNum=0;
+        }if (pageSize==null){
+            pageSize=0;
+        }
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         PageHelper.startPage(pageNum, pageSize);
         List<ActivityUserInfo> list = userDao.findActivityUserInfoTP(userQuery);

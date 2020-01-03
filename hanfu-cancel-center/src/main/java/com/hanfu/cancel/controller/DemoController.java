@@ -92,7 +92,7 @@ public class DemoController {
         //价格，根据订单id，设置订单状态
         Example example2 = new Example(HfOrdersDetail.class);
         Example.Criteria criteria2 = example2.createCriteria();
-        criteria2.andEqualTo("ordersId", orderId);
+        criteria2.andEqualTo("ordersId", orderId).andEqualTo("googsId",goodsId);
         List<HfOrdersDetail> hfPriceList = hfOrdersDetailMapper.selectByExample(example2);
         if (hfPriceList == null) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));

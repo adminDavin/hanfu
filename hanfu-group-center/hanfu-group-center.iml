@@ -20,6 +20,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.hanfu.base:hanfu-order-center:0.0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="hanfu-inner-sdk" />
     <orderEntry type="module" module-name="hanfu-web-utils" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.1.7.RELEASE" level="project" />
@@ -138,6 +139,10 @@
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.62" level="project" />
     <orderEntry type="library" name="Maven: com.github.wxpay:wxpay-sdk:0.0.3" level="project" />
     <orderEntry type="module" module-name="hanfu-seckill-center" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper-spring-boot-autoconfigure:1.2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.1.4" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-data-redis:2.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.lettuce:lettuce-core:5.1.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.38.Final" level="project" />
