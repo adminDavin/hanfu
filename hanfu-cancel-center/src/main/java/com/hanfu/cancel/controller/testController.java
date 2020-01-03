@@ -90,7 +90,7 @@ public class testController {
 
     // @Scheduled(cron = "0/5 * * * * ? ")
     @RequestMapping(value = "/qqq", method = RequestMethod.GET)
-    @ApiOperation(value = "时间检查查询查询", notes = "时间检查查询查询")
+    @ApiOperation(value = "时间检查查询没有核销员的物品", notes = "时间检查查询没有核销员的物品")
     public ResponseEntity<JSONObject> qqq() throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         List<HfGoods> list = new ArrayList<>();
@@ -159,6 +159,12 @@ public class testController {
     @GetMapping(value = "/activity/create/activity-code")
     @ApiOperation("生成活动详情二维码")
     public void getCode(HttpServletResponse response, Integer orderId, Integer goodsId) throws Exception {
+        //uuid生成不重复主键
+//        String uuid1=UUID.randomUUID().toString();
+//        String uuid=UUID.randomUUID().toString().replace("-", "");
+//        System.out.println(uuid1);
+//        System.out.println(uuid);
+
         //16位
         String key = "MIGfMA0GCSqGSIb3";
 
