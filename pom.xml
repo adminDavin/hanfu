@@ -22,6 +22,8 @@
 		<module>hanfu-activity-center</module>
         <module>hanfu-zslpayment-center</module>
         <module>hanfu-zslwxpayment-center</module>
+        <module>hanfu-wxfkmpayment-center</module>
+        <module>hanfu-wxpayment-center</module>
     </modules>
 	<profiles>
 		<profile>
