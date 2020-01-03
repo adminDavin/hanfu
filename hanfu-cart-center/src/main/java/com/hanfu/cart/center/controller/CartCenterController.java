@@ -2,9 +2,12 @@ package com.hanfu.cart.center.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +32,8 @@ public class CartCenterController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	CartService cartService;
-	
+	@Resource
+    private RedisTemplate<String, Object> redisTemplate;
 	@RequestMapping(path = "/add",  method = RequestMethod.GET)
     @ApiOperation(value = "添加购物车", notes = "添加购物车")
     @ApiImplicitParams({  
@@ -124,5 +128,16 @@ public class CartCenterController {
             return builder.body(ResponseUtils.getResponseBody("删除商品失败")); 
         }
         return builder.body(ResponseUtils.getResponseBody("删除商品成功"));
+    } 
+    @RequestMapping(path = "/Settlemen",  method = RequestMethod.GET)
+    @ApiOperation(value = "结算", notes = "结算")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "productMessage", value = "商品信息", required = false, type = "String[]"),
+    })
+    public ResponseEntity<JSONObject> Settlemen( Integer userId,String[] productMessage) throws Exception{
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        redisTemplate.opsForValue().set(userId.toString(), productMessage);
+        return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
     } 
 }
