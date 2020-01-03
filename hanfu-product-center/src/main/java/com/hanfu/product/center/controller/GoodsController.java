@@ -1,25 +1,20 @@
 package com.hanfu.product.center.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,10 +38,7 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
-import com.hanfu.product.center.manual.dao.ProductInstanceDao;
-//import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
-import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
@@ -55,7 +47,6 @@ import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
@@ -65,14 +56,10 @@ import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.ProductSpec;
 import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.model.Warehouse;
-import com.hanfu.product.center.request.DeleteGoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
 import com.hanfu.product.center.request.HfGoodsInfo;
-import com.hanfu.product.center.request.HfGoodsRequest;
-import com.hanfu.product.center.request.HfRespRequest;
-import com.hanfu.product.center.request.ProductInstanceRequest;
 import com.hanfu.product.center.request.RespInfo;
 import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -597,43 +584,105 @@ public class GoodsController {
 //			
 //		}
 //	}
-
-    @ApiOperation(value = "删除图片", notes = "删除图片根据物品")
-    @RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer")})
-    public void deleteFile(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-        example.createCriteria().andGoodsIdEqualTo(goodsId);
-        List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example);
-        for (int i = 0; i < list.size(); i++) {
-            FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(i).getFileId());
-            FileMangeService fileManageService = new FileMangeService();
-            if (fileDesc != null) {
-                fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-            }
-            hfGoodsPictrueMapper.deleteByPrimaryKey(list.get(i).getId());
-            fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-        }
-    }
-
-    @ApiOperation(value = "删除单张图片", notes = "删除单张图片")
-    @RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "物品图片id", required = true, type = "Integer")})
-    public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
-        if (hfGoodsPictrue != null) {
-            FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
-            FileMangeService fileMangeService = new FileMangeService();
-            fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-            fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-            hfGoodsPictrueMapper.deleteByPrimaryKey(id);
-        }
-    }
-
+	
+	@ApiOperation(value = "删除图片", notes = "删除图片根据物品")
+	@RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public void deleteFile(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
+		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+		example.createCriteria().andGoodsIdEqualTo(goodsId);
+		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example);
+		for(int i=0;i<list.size();i++) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(i).getFileId());
+			FileMangeService fileManageService = new FileMangeService();
+			if(fileDesc!=null) {
+				fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			}
+			hfGoodsPictrueMapper.deleteByPrimaryKey(list.get(i).getId());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+		}
+	}
+	
+	@ApiOperation(value = "删除单张图片", notes = "删除单张图片")
+	@RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "id", value = "物品图片id", required = true, type = "Integer") })
+	public void deletePicture(@RequestParam(name = "id") Integer id) throws Exception {
+		HfGoodsPictrue hfGoodsPictrue = hfGoodsPictrueMapper.selectByPrimaryKey(id);
+		if(hfGoodsPictrue!=null) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfGoodsPictrue.getFileId());
+			FileMangeService fileMangeService = new FileMangeService();
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
+		}
+	}
+	@ApiOperation(value = "设为常买", notes = "设为常买")
+	@RequestMapping(value = "/OftenBuy", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+	    @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> OftenBuy(Integer userId,Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		redisTemplate.opsForValue().set(userId.toString(), goodsId);
+		return builder.body(ResponseUtils.getResponseBody("设置成功"));
+	}
+	@ApiOperation(value = "取消常买", notes = "取消常买")
+	@RequestMapping(value = "/delOftenbuy", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> delOftenbuy(Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(!StringUtils.isEmpty(redisTemplate.opsForValue().get(userId.toString()))) {
+			return builder.body(ResponseUtils.getResponseBody("没有数据"));
+		}
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(userId.toString())));
+	}
+	@ApiOperation(value = "设置关注", notes = "设置关注")
+	@RequestMapping(value = "/Concern", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String"), 
+	    @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> Concern(String openId,Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		redisTemplate.opsForValue().set(openId, goodsId);
+		return builder.body(ResponseUtils.getResponseBody("关注成功"));
+	}
+	@ApiOperation(value = "取消关注", notes = "取消关注")
+	@RequestMapping(value = "/delConcern", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String") })
+	public ResponseEntity<JSONObject> delConcern(String openId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(StringUtils.isEmpty(redisTemplate.opsForValue().get(openId))) {
+			return builder.body(ResponseUtils.getResponseBody("没有关注商品"));
+		}		
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(openId)));
+	}
+	@ApiOperation(value = "批量上下架", notes = "批量上下架")
+	@RequestMapping(value = "/racking", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = true, type = "Integer[]"),
+		@ApiImplicitParam(paramType = "query", name = "frames", value = "上下架", required = true, type = "Integer")})
+	public ResponseEntity<JSONObject> racking(Integer[] goodsId,Integer frames)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+		for (Integer goods : goodsId) {
+			HfGoodsExample hfGoodsExample = new HfGoodsExample();
+			hfGoodsExample.createCriteria().andIdNotEqualTo(goods);
+			HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goods);
+			if(!StringUtils.isEmpty(hfGoods.getFrames())) {
+				hfGoods.setFrames(frames);
+			}
+			return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKeySelective(hfGoods)));
+		}
+		return builder.body(ResponseUtils.getResponseBody("修改成功"));
+	}
 //	@ApiOperation(value = "添加活动奖项", notes = "添加活动奖项")
 //	@RequestMapping(value = "/addAwardInfo", method = RequestMethod.POST)
 //	public ResponseEntity<JSONObject> addAwardInfo(AwardInfo awardInfo) throws JSONException{
