@@ -25,8 +25,11 @@
     <module>hanfu-cancel-center</module>
 		<module>hanfu-message-center</module>
 		<module>hanfu-group-center</module>
-		<module>hanfu-zslpayment-center</module>
 		<module>hanfu-address-center</module>
+		<module>hanfu-zslpayment-center</module>
+    <module>hanfu-zslwxpayment-center</module>
+        <module>hanfu-wxfkmpayment-center</module>
+        <module>hanfu-wxpayment-center</module>
 	</modules>
 	<profiles>
 		<profile>
