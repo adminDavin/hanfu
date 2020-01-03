@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * @ClassName PayController
  * @Date 2019/12/30 14:56
@@ -53,8 +54,8 @@ public class PayController {
      * @return
      * @throws UnsupportedEncodingException
      */
-    @ApiOperation(value = "统一下单",notes = "统一下单")
-    @RequestMapping(value = "/wxpay",method = RequestMethod.GET)
+    @ApiOperation(value = "统一下单", notes = "统一下单")
+    @RequestMapping(value = "/wxpay", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> payment(@Valid @RequestBody NewWXOrderRequest request, HttpServletRequest httpServletRequest) {
         Map map = new HashMap();
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -107,7 +108,7 @@ public class PayController {
 
                 Map payInfo = new HashMap();
 
-                payInfo.put("appid",signInfo.getAppId());
+                payInfo.put("appid", signInfo.getAppId());
                 payInfo.put("timeStamp", signInfo.getTimeStamp());
                 payInfo.put("nonceStr", signInfo.getNonceStr());
                 payInfo.put("package", signInfo.getPrepay_id());
@@ -129,6 +130,7 @@ public class PayController {
         }
         return null;
     }
+
     /**
      * 微信小程序支付成功回调函数
      *

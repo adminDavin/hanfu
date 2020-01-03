@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
- 
+
 @MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao")})
 @EnableTransactionManagement
 @SpringBootApplication
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableDubbo(scanBasePackages = "com.hanfu.payment.center.service.impl")
 @ComponentScan("com.hanfu.payment.center")
 public class Application {
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);	
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 }

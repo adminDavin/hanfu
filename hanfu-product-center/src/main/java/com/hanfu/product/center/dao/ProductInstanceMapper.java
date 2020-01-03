@@ -2,7 +2,9 @@ package com.hanfu.product.center.dao;
 
 import com.hanfu.product.center.model.ProductInstance;
 import com.hanfu.product.center.model.ProductInstanceExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ProductInstanceMapper {

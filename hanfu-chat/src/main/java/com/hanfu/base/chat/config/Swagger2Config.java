@@ -25,11 +25,11 @@ import java.util.List;
 @EnableSwagger2
 public class Swagger2Config {
     @Bean
-    public Docket createRestApi(){
+    public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.hanfu.order.center.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.hanfu.base.chat.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(securitySchemes())
@@ -62,7 +62,7 @@ public class Swagger2Config {
         return result;
     }
 
-    private SecurityContext getContextByPath(String pathRegex){
+    private SecurityContext getContextByPath(String pathRegex) {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .forPaths(PathSelectors.regex(pathRegex))

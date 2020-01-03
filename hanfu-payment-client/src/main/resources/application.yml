@@ -16,7 +16,7 @@ dubbo:
     name: dubbo
   consumer:
     client: netty4
-#
-                                                                
+    #
+
 logging:
   file: ./target/king-words.log  

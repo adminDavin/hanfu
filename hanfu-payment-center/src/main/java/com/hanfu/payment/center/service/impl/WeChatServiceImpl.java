@@ -1,9 +1,13 @@
 package com.hanfu.payment.center.service.impl;
 
 
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.hanfu.payment.center.manual.dao.ManualDao;
+import com.hanfu.payment.center.service.WeChatService;
+import com.hanfu.payment.center.util.WXConfigUtil;
+import com.hanfu.payment.center.util.WxMD5Util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,89 +16,85 @@ import org.springframework.stereotype.Service;
 
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
-import com.hanfu.payment.center.manual.dao.ManualDao;
-import com.hanfu.payment.center.service.WeChatService;
-import com.hanfu.payment.center.util.WXConfigUtil;
-import com.hanfu.payment.center.util.WxMD5Util;
 
 @Service("weChatService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class WeChatServiceImpl implements WeChatService {
-	protected final Logger logger = LoggerFactory.getLogger("MainLogger");
+    protected final Logger logger = LoggerFactory.getLogger("MainLogger");
     public static final String SPBILL_CREATE_IP = "你的服务器ip地址";
     public static final String NOTIFY_URL = "http://你的域名/v1/weixin/notify.json";
     public static final String TRADE_TYPE_APP = "APP";
-	@Autowired
-	private ManualDao manualDao;
+    @Autowired
+    private ManualDao manualDao;
 
-	@Override
-	public void getProductByStone(Integer stoneId) {
-		manualDao.selectProductByStone(stoneId);
-		System.out.println("hello word");
-	}
+    @Override
+    public void getProductByStone(Integer stoneId) {
+        manualDao.selectProductByStone(stoneId);
+        System.out.println("hello word");
+    }
 
-	@Override
-	public Map<String, String> dounifiedOrder(String attach, String totalFee) throws Exception {
-		 WxMD5Util md5Util = new WxMD5Util();
-	        Map<String, String> returnMap = new HashMap<>();
-	        WXConfigUtil config = new WXConfigUtil();
-	        WXPay wxpay = new WXPay(config);
-	        Map<String, String> data = new HashMap<>();
-	        //生成商户订单号，不可重复
-	        String out_trade_no = "wxpay" + System.currentTimeMillis();
+    @Override
+    public Map<String, String> dounifiedOrder(String attach, String totalFee) throws Exception {
+        WxMD5Util md5Util = new WxMD5Util();
+        Map<String, String> returnMap = new HashMap<>();
+        WXConfigUtil config = new WXConfigUtil();
+        WXPay wxpay = new WXPay(config);
+        Map<String, String> data = new HashMap<>();
+        //生成商户订单号，不可重复
+        String out_trade_no = "wxpay" + System.currentTimeMillis();
 
-	        data.put("appid", config.getAppID());
-	        data.put("mch_id", config.getMchID());
-	        data.put("nonce_str", WXPayUtil.generateNonceStr());
-	        String body = "订单支付";
-	        data.put("body", body);
-	        data.put("out_trade_no", out_trade_no);
-	        data.put("total_fee", totalFee);
-	        //自己的服务器IP地址
-	        data.put("spbill_create_ip", SPBILL_CREATE_IP);
-	        //异步通知地址（请注意必须是外网）
-	        data.put("notify_url", NOTIFY_URL);
-	        //交易类型
-	        data.put("trade_type", TRADE_TYPE_APP);
-	        //附加数据，在查询API和支付通知中原样返回，该字段主要用于商户携带订单的自定义数据
-	        data.put("attach", attach);
-	        String sign1 = md5Util.getSign(data);
-	        data.put("sign", sign1);
+        data.put("appid", config.getAppID());
+        data.put("mch_id", config.getMchID());
+        data.put("nonce_str", WXPayUtil.generateNonceStr());
+        String body = "订单支付";
+        data.put("body", body);
+        data.put("out_trade_no", out_trade_no);
+        data.put("total_fee", totalFee);
+        //自己的服务器IP地址
+        data.put("spbill_create_ip", SPBILL_CREATE_IP);
+        //异步通知地址（请注意必须是外网）
+        data.put("notify_url", NOTIFY_URL);
+        //交易类型
+        data.put("trade_type", TRADE_TYPE_APP);
+        //附加数据，在查询API和支付通知中原样返回，该字段主要用于商户携带订单的自定义数据
+        data.put("attach", attach);
+        String sign1 = md5Util.getSign(data);
+        data.put("sign", sign1);
 
-	        try {
-	            //使用官方API请求预付订单
-	            Map<String, String> response = wxpay.unifiedOrder(data);
-	            System.out.println(response);
-	            String returnCode = response.get("return_code");    //获取返回码
-	            //若返回码为SUCCESS，则会返回一个result_code,再对该result_code进行判断
-	            if (returnCode.equals("SUCCESS")) {//主要返回以下5个参数
-	                String resultCode = response.get("result_code");
-	                returnMap.put("appid", response.get("appid"));
-	                returnMap.put("mch_id", response.get("mch_id"));
-	                returnMap.put("nonce_str", response.get("nonce_str"));
-	                returnMap.put("sign", response.get("sign"));
-	                if ("SUCCESS".equals(resultCode)) {//resultCode 为SUCCESS，才会返回prepay_id和trade_type
-	                    //获取预支付交易回话标志
-	                    returnMap.put("trade_type", response.get("trade_type"));
-	                    returnMap.put("prepay_id", response.get("prepay_id"));
-	                    return returnMap;
-	                } else {
-	                    //此时返回没有预付订单的数据
-	                    return returnMap;
-	                }
-	            } else {
-	                return returnMap;
-	            }
-	        } catch (Exception e) {
-	            System.out.println(e);
-	            //系统等其他错误的时候
-	        }
-	        return returnMap;
-	}
+        try {
+            //使用官方API请求预付订单
+            Map<String, String> response = wxpay.unifiedOrder(data);
+            System.out.println(response);
+            String returnCode = response.get("return_code");    //获取返回码
+            //若返回码为SUCCESS，则会返回一个result_code,再对该result_code进行判断
+            if (returnCode.equals("SUCCESS")) {//主要返回以下5个参数
+                String resultCode = response.get("result_code");
+                returnMap.put("appid", response.get("appid"));
+                returnMap.put("mch_id", response.get("mch_id"));
+                returnMap.put("nonce_str", response.get("nonce_str"));
+                returnMap.put("sign", response.get("sign"));
+                if ("SUCCESS".equals(resultCode)) {//resultCode 为SUCCESS，才会返回prepay_id和trade_type
+                    //获取预支付交易回话标志
+                    returnMap.put("trade_type", response.get("trade_type"));
+                    returnMap.put("prepay_id", response.get("prepay_id"));
+                    return returnMap;
+                } else {
+                    //此时返回没有预付订单的数据
+                    return returnMap;
+                }
+            } else {
+                return returnMap;
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            //系统等其他错误的时候
+        }
+        return returnMap;
+    }
 
-	@Override
-	public String payBack(String notifyData) {
-	    WXConfigUtil config = null;
+    @Override
+    public String payBack(String notifyData) {
+        WXConfigUtil config = null;
         try {
             config = new WXConfigUtil();
         } catch (Exception e) {

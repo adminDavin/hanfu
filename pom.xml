@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.hanfu.base</groupId>
 	<artifactId>hanfu-system</artifactId>
@@ -12,19 +12,25 @@
 		<module>hanfu-common</module>
 		<module>hanfu-product-client</module>
 		<module>hanfu-web-utils</module>
-		<module>hanfu-order-center</module>
-		<module>hanfu-order-client</module>
+
 		<module>hanfu-inner-sdk</module>
+		<module>hanfu-group-center</module>
+		<module>hanfu-group-client</module>
 		<module>hanfu-payment-center</module>
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
-		<module>hanfu-chat</module>
 		<module>hanfu-activity-center</module>
-        <module>hanfu-zslpayment-center</module>
-        <module>hanfu-zslwxpayment-center</module>
+    <module>hanfu-seckill-center</module>
+		<module>hanfu-cart-center</module>
+    <module>hanfu-cancel-center</module>
+		<module>hanfu-message-center</module>
+		<module>hanfu-group-center</module>
+		<module>hanfu-address-center</module>
+		<module>hanfu-zslpayment-center</module>
+    <module>hanfu-zslwxpayment-center</module>
         <module>hanfu-wxfkmpayment-center</module>
         <module>hanfu-wxpayment-center</module>
-    </modules>
+	</modules>
 	<profiles>
 		<profile>
 			<id>jdk11</id>
@@ -56,18 +62,18 @@
 	</dependencyManagement>
 
 	<dependencies>
-	
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-	
+
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -91,14 +97,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
 
 			</exclusions>
 			<scope>test</scope>

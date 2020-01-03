@@ -11,16 +11,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -34,16 +32,16 @@ import java.util.*;
 public class WXPayUtil {
     public static String PostRequest(String url, String data) throws IOException {
         HttpClient client = new HttpClient();
-        PostMethod post=new PostMethod(url);
+        PostMethod post = new PostMethod(url);
         String result = "";
         post.addRequestHeader("Content-Type", "text/html; charset=utf-8");
         post.addRequestHeader("content", "text/html; charset=utf-8");
         post.setRequestBody(data);
         try {
-            int status=client.executeMethod(post);
+            int status = client.executeMethod(post);
             result = post.getResponseBodyAsString();
             result = new String(result.getBytes(post.getResponseCharSet()), "utf-8");
-        } catch (IOException e){
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -69,21 +67,22 @@ public class WXPayUtil {
         String sign = MD5Util.MD5Encode(sb.toString(), "UTF-8").toUpperCase();
         return sign;
     }
+
     /**
-     * @Author: HONGLINCHEN
-     * @Description:微信支付 统一下单
      * @param out_trade_no
      * @param body
      * @param detail
      * @param total_fee
      * @param ip_address
+     * @Author: HONGLINCHEN
+     * @Description:微信支付 统一下单
      * @Date: 2017-9-11 14:35
      * @return:
      */
-    public static String unifiedOrder(String out_trade_no, String body, String detail, int total_fee,String ip_address) {
+    public static String unifiedOrder(String out_trade_no, String body, String detail, int total_fee, String ip_address) {
         StringBuffer xml = new StringBuffer();
         String data = null;
-        try{
+        try {
             xml.append("</xml>");
             if (body.length() > 32) {
                 body = body.substring(0, 32);
@@ -101,27 +100,28 @@ public class WXPayUtil {
             parameters.put("total_fee", String.valueOf(total_fee));
             parameters.put("trade_type", "APP");
             parameters.put("sign", createSign(parameters, WXPayConstants.API_KEY));
-            data = PostRequest("https://api.mch.weixin.qq.com/pay/unifiedorder",SortedMaptoXml(parameters));
-        }catch (Exception e){
+            data = PostRequest("https://api.mch.weixin.qq.com/pay/unifiedorder", SortedMaptoXml(parameters));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return data;
     }
+
     /**
-     * @Author: HONGLINCHEN
-     * @Description:微信退款
      * @param out_trade_no
      * @param total_fee
+     * @Author: HONGLINCHEN
+     * @Description:微信退款
      * @Date: 2017-9-11 14:35
      * @return:
      */
-    public static String wxPayRefund(String out_trade_no, String transaction_id,String total_fee) {
+    public static String wxPayRefund(String out_trade_no, String transaction_id, String total_fee) {
         StringBuffer xml = new StringBuffer();
         String data = null;
         try {
             String nonceStr = genNonceStr();
             xml.append("</xml>");
-            SortedMap<String,String> parameters = new TreeMap<String,String>();
+            SortedMap<String, String> parameters = new TreeMap<String, String>();
             parameters.put("appid", WXPayConstants.APP_ID);
             parameters.put("mch_id", WXPayConstants.MCH_ID);
             parameters.put("nonce_str", nonceStr);
@@ -133,21 +133,22 @@ public class WXPayUtil {
             parameters.put("refund_fee", total_fee);
             parameters.put("op_user_id", WXPayConstants.MCH_ID);
             parameters.put("sign", createSign(parameters, WXPayConstants.API_KEY));
-            data =SortedMaptoXml(parameters);
+            data = SortedMaptoXml(parameters);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return null;
         }
         return data;
     }
+
     /**
      * 证书使用
      * 微信退款
      */
     public static String wxPayBack(String url, String data) throws Exception {
-        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
         FileInputStream instream = new FileInputStream(new File("D:\\微信商户平台支付证书\\apiclient_cert.p12"));
-        String result="";
+        String result = "";
         try {
             keyStore.load(instream, WXPayConstants.MCH_ID.toCharArray());
         } finally {
@@ -161,7 +162,7 @@ public class WXPayUtil {
         // Allow TLSv1 protocol only
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                 sslcontext,
-                new String[] { "TLSv1" },
+                new String[]{"TLSv1"},
                 null,
                 SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
         CloseableHttpClient httpclient = HttpClients.custom()
@@ -177,14 +178,14 @@ public class WXPayUtil {
 
                 if (entity != null) {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
-                    String text="";
-                    String t="";
-                    while ((text=bufferedReader.readLine()) != null) {
-                        t+=text;
+                    String text = "";
+                    String t = "";
+                    while ((text = bufferedReader.readLine()) != null) {
+                        t += text;
                     }
-                    byte[] temp=t.getBytes("gbk");//这里写原编码方式
-                    String newStr=new String(temp,"utf-8");//这里写转换后的编码方式
-                    result=newStr;
+                    byte[] temp = t.getBytes("gbk");//这里写原编码方式
+                    String newStr = new String(temp, "utf-8");//这里写转换后的编码方式
+                    result = newStr;
                 }
                 EntityUtils.consume(entity);
             } finally {
@@ -199,6 +200,7 @@ public class WXPayUtil {
     /**
      * XML格式字符串转换为Map
      * 微信支付 解析xml xml转map  获取prepay_id
+     *
      * @param strXML XML字符串
      * @return XML数据转换后的Map
      * @throws Exception
@@ -206,29 +208,46 @@ public class WXPayUtil {
     public static Map<String, String> xmlToMap(String strXML) throws Exception {
         try {
             Map<String, String> data = new HashMap<String, String>();
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
-            org.w3c.dom.Document doc = documentBuilder.parse(stream);
-            doc.getDocumentElement().normalize();
-            NodeList nodeList = doc.getDocumentElement().getChildNodes();
-            for (int idx = 0; idx < nodeList.getLength(); ++idx) {
-                Node node = nodeList.item(idx);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    org.w3c.dom.Element element = (org.w3c.dom.Element) node;
-                    data.put(element.getNodeName(), element.getTextContent());
-                }
+            org.dom4j.Document document = DocumentHelper.parseText(strXML);
+            org.dom4j.Element nodeElement = document.getRootElement();
+            List node = nodeElement.elements();
+            for (Iterator it = node.iterator(); it.hasNext(); ) {
+                org.dom4j.Element elm = (Element) it.next();
+                data.put(elm.getName(), elm.getText());
             }
-            try {
-                stream.close();
-            } catch (Exception ex) {
-                // do nothing
-            }
+            node = null;
+            nodeElement = null;
+            document = null;
             return data;
-        } catch (Exception ex) {
-            WXPayUtil.getLogger().warn("Invalid XML, can not convert to map. Error message: {}. XML content: {}", ex.getMessage(), strXML);
-            throw ex;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
+//        try {
+//            Map<String, String> data = new HashMap<String, String>();
+//            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+//            InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
+//            org.w3c.dom.Document doc = documentBuilder.parse(stream);
+//            doc.getDocumentElement().normalize();
+//            NodeList nodeList = doc.getDocumentElement().getChildNodes();
+//            for (int idx = 0; idx < nodeList.getLength(); ++idx) {
+//                Node node = nodeList.item(idx);
+//                if (node.getNodeType() == Node.ELEMENT_NODE) {
+//                    org.w3c.dom.Element element = (org.w3c.dom.Element) node;
+//                    data.put(element.getNodeName(), element.getTextContent());
+//                }
+//            }
+//            try {
+//                stream.close();
+//            } catch (Exception ex) {
+//                // do nothing
+//            }
+//            return data;
+//        } catch (Exception ex) {
+//            WXPayUtil.getLogger().warn("Invalid XML, can not convert to map. Error message: {}. XML content: {}", ex.getMessage(), strXML);
+//            throw ex;
+//        }
 
     }
 
@@ -259,8 +278,9 @@ public class WXPayUtil {
 
     /**
      * 生成 HMACSHA256
+     *
      * @param data 待处理数据
-     * @param key 密钥
+     * @param key  密钥
      * @return 加密结果
      * @throws Exception
      */
@@ -277,46 +297,49 @@ public class WXPayUtil {
     }
 
     /**
+     * @param prepay_id
      * @Author: HONGLINCHEN
      * @Description:通过prepay_id 生成微信支付参数
-     * @param prepay_id
      * @Date: 2017-9-8 10:17
      */
-    public static  SortedMap<Object,Object> genPayRequest(String prepay_id) {
-        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+    public static SortedMap<Object, Object> genPayRequest(String prepay_id) {
+        SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
         parameters.put("appid", WXPayConstants.APP_ID);
         parameters.put("noncestr", genNonceStr());
         parameters.put("package", "Sign=WXPay");
         parameters.put("partnerid", WXPayConstants.MCH_ID);
         parameters.put("prepayid", prepay_id);
-        parameters.put("timestamp",getCurrentTimestamp());
+        parameters.put("timestamp", getCurrentTimestamp());
         parameters.put("sign", MD5.createSign("utf-8", parameters).toUpperCase());
         return parameters;
     }
+
     /**
+     * @param params
      * @Author: HONGLINCHEN
      * @Description:请求值转换为xml格式 SortedMap转xml
-     * @param params
      * @Date: 2017-9-7 17:18
      */
-    private static String SortedMaptoXml(SortedMap<String,String> params) {
+    private static String SortedMaptoXml(SortedMap<String, String> params) {
         StringBuilder sb = new StringBuilder();
         Set es = params.entrySet();
         Iterator it = es.iterator();
         sb.append("<xml>\n");
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String k = (String) entry.getKey();
             Object v = entry.getValue();
-            sb.append("<"+k+">");
+            sb.append("<" + k + ">");
             sb.append(v);
-            sb.append("</"+k+">\n");
+            sb.append("</" + k + ">\n");
         }
         sb.append("</xml>");
         return sb.toString();
     }
+
     /**
      * 日志
+     *
      * @return
      */
     public static Logger getLogger() {
@@ -331,17 +354,20 @@ public class WXPayUtil {
         Random random = new Random();
         return MD5.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes());
     }
+
     /**
      * 获取当前时间戳，单位秒
+     *
      * @return
      */
     public static long getCurrentTimestamp() {
-        return System.currentTimeMillis()/1000;
+        return System.currentTimeMillis() / 1000;
     }
 
 
     /**
      * 生成 uuid， 即用来标识一笔单，也用做 nonce_str
+     *
      * @return
      */
     public static String generateUUID() {

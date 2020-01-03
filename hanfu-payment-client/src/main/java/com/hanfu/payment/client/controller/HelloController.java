@@ -25,8 +25,8 @@ import io.swagger.annotations.Api;
 public class HelloController {
     @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.HelloTestService")
     private HelloTestService helloTestService;
-    
-    
+
+
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

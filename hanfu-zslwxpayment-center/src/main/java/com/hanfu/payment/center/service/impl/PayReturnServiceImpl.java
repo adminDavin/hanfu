@@ -60,14 +60,14 @@ public class PayReturnServiceImpl implements PayReturnService {
              */// 这里也是写密码的
             SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, key.toCharArray()).build();
             // Allow TLSv1 protocol only
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[]{"TLSv1"}, null, SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
             httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
 
             //=======================证书配置完成========================
 
             HttpPost httpPost = new HttpPost(url);
 
-            String xmlstring = WXPayUtil.wxPayRefund(out_trade_no,transaction_id,String.valueOf((int)(total_fee*100)));
+            String xmlstring = WXPayUtil.wxPayRefund(out_trade_no, transaction_id, String.valueOf((int) (total_fee * 100)));
 
             httpPost.setEntity(new StringEntity(xmlstring));
             httpPost.setHeader("Accept", "application/json");
@@ -79,24 +79,23 @@ public class PayReturnServiceImpl implements PayReturnService {
 
             if (entity != null) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
-
                 String str;
                 while ((str = bufferedReader.readLine()) != null) {
                     text.append(str);
                 }
             }
             EntityUtils.consume(entity);
-        }catch(Exception e){
+        } catch (Exception e) {
 
-        }finally {
-            if(instream != null){
+        } finally {
+            if (instream != null) {
                 try {
                     instream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if(response != null){
+            if (response != null) {
                 try {
                     response.close();
                 } catch (IOException e) {
@@ -104,7 +103,7 @@ public class PayReturnServiceImpl implements PayReturnService {
                 }
             }
 
-            if(httpclient != null){
+            if (httpclient != null) {
                 try {
                     httpclient.close();
                 } catch (IOException e) {
@@ -112,12 +111,13 @@ public class PayReturnServiceImpl implements PayReturnService {
                 }
             }
         }
-        Map<String,String> map = WXPayUtil.xmlToMap(text.toString());
+        Map<String, String> map = WXPayUtil.xmlToMap(text.toString());
         String return_msg = map.get("return_msg");
         if ("OK".equals(return_msg) && "SUCCESS".equals(map.get("return_code"))) {
             return builder.body(ResponseUtils.getResponseBody("退款成功"));
-        }else {
+        } else {
             return builder.body(ResponseUtils.getResponseBody("退款失败"));
         }
     }
+
 }

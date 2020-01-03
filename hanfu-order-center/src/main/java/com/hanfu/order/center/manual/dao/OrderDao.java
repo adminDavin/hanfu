@@ -4,18 +4,20 @@ import java.util.List;
 
 import com.hanfu.order.center.manual.model.OrderFindValue;
 import com.hanfu.order.center.manual.model.OrderInfo;
-import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
 
 public interface OrderDao {
 
-	List<HfOrderLogistics> selectOrderList();
+    List<OrderInfo> selectOrderList();
 
-	List<HfOrderStatus> selectOrderStatus();
+    List<HfOrderStatus> selectOrderStatus();
 
-	List<HfOrdersDetail> selectOrderDetail(Integer id);
+    List<HfOrdersDetail> selectOrderDetail(Integer id);
 
-	List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
+    List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
+
+    List<OrderInfo> selectOrderByUserId(Integer userId);
+
 
 }

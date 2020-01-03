@@ -19,12 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+
 @Component
-public class ChatSessionServiceImpl implements ChatSessionService{
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+public class ChatSessionServiceImpl implements ChatSessionService {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
     private StringRedisTemplate redisTemplate;
-	@Override
+
+    @Override
     public HfUser findById(String id) {
         if (id != null) {
             String value = null;
@@ -40,9 +42,10 @@ public class ChatSessionServiceImpl implements ChatSessionService{
         }
         return null;
     }
-	@Override
-	public void pushMessage(String fromId, String toId, String message) {
-		Message entity = new Message();
+
+    @Override
+    public void pushMessage(String fromId, String toId, String message) {
+        Message entity = new Message();
         entity.setMessage(message);
         entity.setFrom(this.findById(fromId));
         entity.setTime(CoreUtil.format(new Date()));
@@ -56,10 +59,11 @@ public class ChatSessionServiceImpl implements ChatSessionService{
             entity.setTo(null);
             push(entity, CommonConstant.CHAT_COMMON_PREFIX + fromId);
         }
-		
-	}
-	private void push(Message entity, String key) {
-		 //这里按照 PREFIX_ID 格式，作为KEY储存消息记录
+
+    }
+
+    private void push(Message entity, String key) {
+        //这里按照 PREFIX_ID 格式，作为KEY储存消息记录
         //但一个用户可能推送很多消息，VALUE应该是数组
         List<Message> list = new ArrayList<>();
         String value = redisTemplate.boundValueOps(key).get();
@@ -72,62 +76,66 @@ public class ChatSessionServiceImpl implements ChatSessionService{
             list.add(entity);
         }
         redisTemplate.boundValueOps(key).set(JSONObject.toJSONString(list));
-		
-	}
-	@Override
-	public List<HfUser> onlineList() {
-		  List<HfUser> list = new ArrayList<>();
-	        Set<String> keys = redisTemplate.keys(CommonConstant.USER_PREFIX + CommonConstant.REDIS_MATCH_PREFIX);
-	        if (keys != null && keys.size() > 0) {
-	            keys.forEach(key -> {
-	                list.add(this.findById(key));
-	            });
-	        }
-	        return list;
-	}
-	@Override
-	public List<Message> commonList() {
-		  List<Message> list = new ArrayList<>();
-	        Set<String> keys = redisTemplate.keys(CommonConstant.CHAT_COMMON_PREFIX + CommonConstant.REDIS_MATCH_PREFIX);
-	        if (keys != null && keys.size() > 0) {
-	            keys.forEach(key -> {
-	                String value = redisTemplate.boundValueOps(key).get();
-	                List<Message> messageList = Objects.requireNonNull(JSONObject.parseArray(value)).toJavaList(Message.class);
-	                list.addAll(messageList);
-	            });
-	        }
-	        CoreUtil.sort(list);
-	        return list;
-	}
-	@Override
-	public List<Message> selfList(String fromId, String toId) {
-		 List<Message> list = new ArrayList<>();
-	        //A -> B
-	        String fromTo = redisTemplate.boundValueOps(CommonConstant.CHAT_FROM_PREFIX + fromId + CommonConstant.CHAT_TO_PREFIX + toId).get();
-	        //B -> A
-	        String toFrom = redisTemplate.boundValueOps(CommonConstant.CHAT_FROM_PREFIX + toId + CommonConstant.CHAT_TO_PREFIX + fromId).get();
 
-	        JSONArray fromToObject = JSONObject.parseArray(fromTo);
-	        JSONArray toFromObject = JSONObject.parseArray(toFrom);
-	        if (fromToObject != null) {
-	            list.addAll(fromToObject.toJavaList(Message.class));
-	        }
-	        if (toFromObject != null) {
-	            list.addAll(toFromObject.toJavaList(Message.class));
-	        }
+    }
 
-	        if (list.size() > 0) {
-	            CoreUtil.sort(list);
-	            return list;
-	        } else {
-	            return new ArrayList<>();
-	        }
-	}
-	@Override
-	public void delete(String id) {
-		  if (id != null) {
-	            logger.info("从Redis中删除此Key: " + id);
-	            redisTemplate.delete(CommonConstant.USER_PREFIX + id);
-	        }
-	    }
+    @Override
+    public List<HfUser> onlineList() {
+        List<HfUser> list = new ArrayList<>();
+        Set<String> keys = redisTemplate.keys(CommonConstant.USER_PREFIX + CommonConstant.REDIS_MATCH_PREFIX);
+        if (keys != null && keys.size() > 0) {
+            keys.forEach(key -> {
+                list.add(this.findById(key));
+            });
+        }
+        return list;
+    }
+
+    @Override
+    public List<Message> commonList() {
+        List<Message> list = new ArrayList<>();
+        Set<String> keys = redisTemplate.keys(CommonConstant.CHAT_COMMON_PREFIX + CommonConstant.REDIS_MATCH_PREFIX);
+        if (keys != null && keys.size() > 0) {
+            keys.forEach(key -> {
+                String value = redisTemplate.boundValueOps(key).get();
+                List<Message> messageList = Objects.requireNonNull(JSONObject.parseArray(value)).toJavaList(Message.class);
+                list.addAll(messageList);
+            });
+        }
+        CoreUtil.sort(list);
+        return list;
+    }
+
+    @Override
+    public List<Message> selfList(String fromId, String toId) {
+        List<Message> list = new ArrayList<>();
+        //A -> B
+        String fromTo = redisTemplate.boundValueOps(CommonConstant.CHAT_FROM_PREFIX + fromId + CommonConstant.CHAT_TO_PREFIX + toId).get();
+        //B -> A
+        String toFrom = redisTemplate.boundValueOps(CommonConstant.CHAT_FROM_PREFIX + toId + CommonConstant.CHAT_TO_PREFIX + fromId).get();
+
+        JSONArray fromToObject = JSONObject.parseArray(fromTo);
+        JSONArray toFromObject = JSONObject.parseArray(toFrom);
+        if (fromToObject != null) {
+            list.addAll(fromToObject.toJavaList(Message.class));
+        }
+        if (toFromObject != null) {
+            list.addAll(toFromObject.toJavaList(Message.class));
+        }
+
+        if (list.size() > 0) {
+            CoreUtil.sort(list);
+            return list;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void delete(String id) {
+        if (id != null) {
+            logger.info("从Redis中删除此Key: " + id);
+            redisTemplate.delete(CommonConstant.USER_PREFIX + id);
+        }
+    }
 }

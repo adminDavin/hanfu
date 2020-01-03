@@ -34,23 +34,11 @@ import java.io.OutputStream;
 @CrossOrigin
 public class HfUserBalanceController {
 
-	@Autowired
-	HUserBalanceMapper hUserBalanceMapper;
+    @Autowired
+    HUserBalanceMapper hUserBalanceMapper;
 
-	@Autowired
-	HfUserBalanceService hfUserBalanceService;
-	
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true,type = "Integer"),
-	})
-	public ResponseEntity<JSONObject> query(@RequestParam Integer userId) throws Exception {
-		HUserBalanceExample example = new HUserBalanceExample();
-		example.createCriteria().andUserIdEqualTo(userId);
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(hUserBalanceMapper.selectByExample(example)));
-	}
+    @Autowired
+    HfUserBalanceService hfUserBalanceService;
 
 	@RequestMapping(value = "/setCode",method = RequestMethod.GET)
 	@ApiOperation(value = "生成二维码",notes = "生成二维码")
