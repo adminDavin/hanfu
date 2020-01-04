@@ -130,7 +130,7 @@ public class KingWordsController {
 //			}		
 //		}
 //		list.put(token, hfAuth.getUserId());
-		return builder.body(ResponseUtils.getResponseBody("成功"));
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId()))));
 	}
 	@RequestMapping(path = "/code",  method = RequestMethod.GET)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")

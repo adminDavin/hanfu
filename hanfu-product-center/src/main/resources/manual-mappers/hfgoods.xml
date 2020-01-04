@@ -19,6 +19,7 @@
     <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
     <result column="claim" jdbcType="INTEGER" property="claim" />
     <result column="frames" jdbcType="INTEGER" property="frames" />
+    <result column="brandName" jdbcType="INTEGER" property="brandName" />
    </resultMap>
    
 	<resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
@@ -84,6 +85,27 @@
 		        h.stone_id=#{stoneId}
     	    </if>
 		    
+	</select>
+	<select id="selectList" resultMap="EntityHfGoodDispaly">
+	        SELECT * 
+	        FROM 
+	            hf_goods h 
+	        JOIN 
+	            hf_category h1
+	        ON 
+	            h.category_id = h1.id
+	        JOIN 
+	            hf_brand h2
+	        ON 
+	            h.brand_id = h2.id
+	         WHERE 1=1
+        <if test="productCategoryName!=null and ''!=productCategoryName">
+          AND h1.hf_name=#{productCategoryName}
+        </if>
+        <if test="brandName!=null and ''!=brandName">
+         AND  h2.hf_name=#{brandName}
+        </if>
+	
 	</select>
    
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
@@ -247,5 +269,56 @@
 				award(award_name,emp_num) 
 		values(#{awardName},#{empNum})
 	</insert>
+	<select id="selectPrice" resultMap="EntityHfGoodDispaly">
+	     SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h3.sell_price,h.create_time,
+				h.modify_time,h.is_deleted
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+		    JOIN
+		    	hf_price h3
+		    ON
+		    	h.price_id = h3.id
+	        ORDER BY 
+	            sell_price
 	
+	</select>
+		<select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
+	     SELECT
+				h.goods_desc,h.id,
+				h.hf_name,h.resp_id,
+				h.price_id,h1.hf_name productCategoryName,
+				h1.id categoryId,p.id productId,
+				h3.sell_price,h.create_time,
+				h.modify_time,h.is_deleted
+			FROM 
+				hf_goods h 
+			JOIN 
+				product p 
+			ON
+		    	h.product_id = p.id 
+		    JOIN 
+		    	hf_category h1 
+		    ON 
+		    	h.category_id = h1.id
+		    JOIN
+		    	hf_price h3
+		    ON
+		    	h.price_id = h3.id
+	        ORDER BY 
+	            sell_price   DESC
+	
+	</select>
 </mapper>

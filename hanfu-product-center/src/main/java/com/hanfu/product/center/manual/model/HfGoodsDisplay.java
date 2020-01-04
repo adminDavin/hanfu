@@ -48,9 +48,18 @@ public class HfGoodsDisplay extends CommonRequest{
 	private Integer claim;
 	@ApiModelProperty(required = true, value = "上下架")
 	private Integer frames;
+	@ApiModelProperty(required = true, value = "品牌名称")
+	private String brandName;
 	private LocalDateTime createTime;
 	private LocalDateTime modifyTime;
 	private short isDeleted;
+	
+	public String getBrandName() {
+		return brandName;
+	}
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
 	public Integer getId() {
 		return id;
 	}

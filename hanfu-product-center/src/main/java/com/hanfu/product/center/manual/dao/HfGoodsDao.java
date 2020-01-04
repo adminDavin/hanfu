@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 //import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfGoods;
 
@@ -27,6 +28,12 @@ public interface HfGoodsDao {
 	public Integer updateGoods(HfGoods hfGoods);
 	
 	public List<HfGoodsDisplay> selectProductBycategoryIdOrProductName(HfGoodsDisplay hfGoodsDisplay);
+
+	public List<HfGoodsDisplay> selectList(ProductForValue productForValue);
+
+	public List<HfGoodsDisplay> selectPrice();
+
+	public List<HfGoodsDisplay> selectPriceDec();
 	
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }

@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 
-public class GroupOpen  implements Serializable {
+public class GroupOpen implements Serializable {
     private Integer id;
 
     private Integer groupId;
@@ -15,10 +15,10 @@ public class GroupOpen  implements Serializable {
 
     private Short isDeleted;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss", timezone = "GMT+8")
     private Date startTime;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss", timezone = "GMT+8")
     private Date stopTime;
 
     public Integer getId() {
@@ -69,15 +69,5 @@ public class GroupOpen  implements Serializable {
         this.stopTime = stopTime;
     }
 
-    @Override
-    public String toString() {
-        return "GroupOpen{" +
-                "id=" + id +
-                ", groupId=" + groupId +
-                ", connectId=" + connectId +
-                ", isDeleted=" + isDeleted +
-                ", startTime=" + startTime +
-                ", stopTime=" + stopTime +
-                '}';
-    }
+
 }
