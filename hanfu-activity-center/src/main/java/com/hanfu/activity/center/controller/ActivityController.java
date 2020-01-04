@@ -276,6 +276,7 @@ public class ActivityController {
 		List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			ActivitiRuleInstance instance = list.get(i);
+			System.out.println(instance.getActivityId());
 			Activity activity = activityMapper.selectByPrimaryKey(instance.getActivityId());
 			ActivityInfo info = new ActivityInfo();
 			info.setActivityName(activity.getActivityName());
@@ -872,7 +873,7 @@ public class ActivityController {
 					entity.setEceltedName(hfUser.getRealName());
 				}
 				DecimalFormat df = new DecimalFormat("0.000");
-//				entity.setTotalScore(df.format(Double.valueOf(instance.getRemarks())));
+				entity.setTotalScore(df.format(Double.valueOf(instance.getRemarks())));
 				entity.setUserId(instance.getUserId());
 				double reportScore = 0.00;
 				double deedScore = 0.00;
@@ -913,13 +914,16 @@ public class ActivityController {
 				}
 				entity.setOnlineScore(df.format(deedScore));
 				entity.setOfflineScore(df.format(reportScore));
-				if(!entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
-					entity.setTotalScore(df.format(deedScore + reportScore));
-				}else if(!entity.getOnlineScore().equals("0.000") && entity.getOfflineScore().equals("0.000")){
-					entity.setTotalScore(df.format(deedScore));
-				}else if(entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
-					entity.setTotalScore(df.format(reportScore));
-				}
+				System.out.println(instance.getRemarks());
+				System.out.println(deedScore);
+//				if(!entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
+//					entity.setTotalScore(df.format(deedScore + reportScore));
+//				}else if(!entity.getOnlineScore().equals("0.000") && entity.getOfflineScore().equals("0.000")){
+//					entity.setTotalScore(df.format(deedScore));
+//				}else if(entity.getOnlineScore().equals("0.000") && !entity.getOfflineScore().equals("0.000")) {
+//					entity.setTotalScore(df.format(reportScore));
+//				}
+				
 				if (count.size() >= voteRecordsDao.distinctUserIdvote(entity2).size()) {
 					entity.setVoteCount(count.size());
 				} else {
@@ -1098,8 +1102,8 @@ public class ActivityController {
 			}
 			activityVoteRecordsMapper.updateByPrimaryKey(records);
 		}
-		double reportScore = 0.00;
-		double deedScore = 0.00;
+		double reportScore = 0.000;
+		double deedScore = 0.000;
 		ActivityVoteRecordsExample example4 = new ActivityVoteRecordsExample();
 		example4.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(electedId)
 				.andVoteTimesEqualTo(0);

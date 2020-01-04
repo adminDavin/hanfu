@@ -970,6 +970,7 @@ public class ActivityManagerController {
 					.setRuleValue(String.valueOf(Integer.valueOf(activityStrategyInstance.getRuleValue()) + 1));
 			activityStrategyInstanceMapper.updateByPrimaryKey(activityStrategyInstance);
 			activitiRuleInstanceMapper.deleteByExample(example);
+			example.clear();
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
