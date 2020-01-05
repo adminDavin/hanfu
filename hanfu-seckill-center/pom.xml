@@ -70,7 +70,7 @@
         </dependency>
         
       <dependency>
-          <groupId>com.hanfu.base</groupId>
+          <groupId>com.hanfu.order.center</groupId>
           <artifactId>hanfu-order-center</artifactId>
           <version>0.0.1</version>
       </dependency>
