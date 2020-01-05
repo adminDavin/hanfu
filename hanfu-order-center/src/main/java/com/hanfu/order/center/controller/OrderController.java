@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,7 @@ import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.manual.model.OrderFindValue;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrdersDetail;
+import com.hanfu.order.center.model.HfOrdersDetailExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -161,13 +163,15 @@ public class OrderController {
     @RequestMapping(value = "/forDrawback", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
     })
-    public ResponseEntity<JSONObject> forDrawback(OrderFindValue orderFindValue)
+    public ResponseEntity<JSONObject> forDrawback(Integer orderId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
+        HfOrdersDetailExample hfOrdersDetailExample = new HfOrdersDetailExample();
+        hfOrdersDetailExample.createCriteria().andOrdersIdNotEqualTo(orderId);
+        if(StringUtils.isEmpty(hfOrdersDetailMapper.selectByPrimaryKey(orderId))) {
+        	return builder.body(ResponseUtils.getResponseBody("订单不存在"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
     }
 }

@@ -691,5 +691,63 @@ public class GoodsController {
 //		Integer row = goodsService.insertAwardInfo(awardInfo);
 //		return builder.body(ResponseUtils.getResponseBody(null));
 //	}
-
+//	@ApiOperation(value = "根据条件查询", notes = "根据条件查询")
+//	@RequestMapping(value = "/selectByValue", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//		@ApiImplicitParam(paramType = "query", name = "categoryName", value = "类目名称", required = true, type = "String"),
+//		@ApiImplicitParam(paramType = "query", name = "brandName", value = "品牌名称", required = true, type = "String")})
+//	public ResponseEntity<JSONObject> selectByValue(ProductForValue productForValue)
+//			throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+//		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectList(productForValue)));
+//	}
+	@ApiOperation(value = "价格升序", notes = "价格的升序")
+	@RequestMapping(value = "/Price", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> Price()
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectPrice()));
+	}
+	@ApiOperation(value = "价格降序", notes = "价格降序")
+	@RequestMapping(value = "/desPrice", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> Pricedec()
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectPriceDec()));
+	}
+	@ApiOperation(value = "添加收藏", notes = "添加收藏")
+	@RequestMapping(value = "/collect", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> collect(Integer userId,Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+		redisTemplate.opsForValue().set(userId.toString(), goodsId);
+		return builder.body(ResponseUtils.getResponseBody("添加成功"));
+	}
+	@ApiOperation(value = "取消收藏", notes = "取消收藏")
+	@RequestMapping(value = "/delcollect", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> delCollect(Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
+		if(StringUtils.isEmpty(redisTemplate.opsForValue().get(userId.toString()))) {
+			return builder.body(ResponseUtils.getResponseBody("没有收藏商品"));
+		}		
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(userId.toString())));
+	}
+	@ApiOperation(value = "查看收藏", notes = "查看收藏")
+	@RequestMapping(value = "/selectcollect", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> selectcollect(Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
+	}
+	@ApiOperation(value = "出售中", notes = "出售中")
+	@RequestMapping(value = "/selectFrames", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectFrames(Integer frames)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+              
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}
 }

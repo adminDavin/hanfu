@@ -20,9 +20,9 @@ public class HfOrdersDetailRequest implements Serializable {
     @ApiModelProperty(required = false, value = "税金")
     private Integer hfTax;
     @ApiModelProperty(required = false, value = "购买价格")
-    private Integer purchasePrice;
+    private Integer[] purchasePrice;
     @ApiModelProperty(required = false, value = "购买数量")
-    private Integer purchaseQuantity;
+    private Integer[] purchaseQuantity;
     @ApiModelProperty(required = false, value = "配送方式")
     private String distribution;
     @ApiModelProperty(required = false, value = "订单描述")
@@ -78,19 +78,19 @@ public class HfOrdersDetailRequest implements Serializable {
         this.hfTax = hfTax;
     }
 
-    public Integer getPurchasePrice() {
+    public Integer[] getPurchasePrice() {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(Integer purchasePrice) {
+    public void setPurchasePrice(Integer[] purchasePrice) {
         this.purchasePrice = purchasePrice;
     }
 
-    public Integer getPurchaseQuantity() {
+    public Integer[] getPurchaseQuantity() {
         return purchaseQuantity;
     }
 
-    public void setPurchaseQuantity(Integer purchaseQuantity) {
+    public void setPurchaseQuantity(Integer[] purchaseQuantity) {
         this.purchaseQuantity = purchaseQuantity;
     }
 

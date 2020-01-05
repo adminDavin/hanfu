@@ -47,10 +47,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         String logisticsOrdersId = UUID.randomUUID().toString();
         HfOrders hfOrders = new HfOrders();
         hfOrders.setUserId(hfOrder.getUserId());
-        Integer price = request.getPurchasePrice();
-        Integer quantity = request.getPurchaseQuantity();
-        Integer amount = price * quantity;
-        hfOrders.setAmount(amount);
+        hfOrders.setAmount(hfOrder.getAmount());
         hfOrders.setHfMemo(hfOrder.getHfMemo());
         hfOrders.setHfRemark(hfOrder.getHfRemark());
         hfOrders.setId(hfOrder.getId());
@@ -71,8 +68,12 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         hfOrdersDetail.setHfTax(request.getHfTax());
         hfOrdersDetail.setDistribution(request.getDistribution());
         hfOrdersDetail.setRespId(request.getRespId());
-        hfOrdersDetail.setPurchasePrice(request.getPurchasePrice());
-        hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
+        for (Integer s : request.getPurchasePrice()) {
+        	hfOrdersDetail.setPurchasePrice(s);
+        }
+        for (Integer s : request.getPurchaseQuantity()) {
+            hfOrdersDetail.setPurchaseQuantity(s);
+        }
         hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
         hfOrdersDetail.setCreateTime(LocalDateTime.now());
         hfOrdersDetail.setModifyTime(LocalDateTime.now());
@@ -117,10 +118,14 @@ public class HfOrdersServiceImpl implements HfOrdersService {
             hfOrdersDetail.setRespId(request.getRespId());
         }
         if (!StringUtils.isEmpty(request.getPurchaseQuantity())) {
-            hfOrdersDetail.setPurchaseQuantity(request.getPurchaseQuantity());
+        	for (Integer s : request.getPurchaseQuantity()) {
+                hfOrdersDetail.setPurchaseQuantity(s);
+			}
         }
         if (!StringUtils.isEmpty(request.getPurchasePrice())) {
-            hfOrdersDetail.setPurchasePrice(request.getPurchasePrice());
+        	for (Integer s : request.getPurchasePrice()) {
+                hfOrdersDetail.setPurchasePrice(s);
+			}
         }
         if (!StringUtils.isEmpty(request.getOrderDetailStatus())) {
             hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
@@ -205,7 +210,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
             hfOrderLogistic.setHfDesc(request.getHfDesc());
         }
         if (!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
-            hfOrderLogistic.setGoogsId(hfOrderLogistics.getGoogsId());
+        	for (Integer s : hfOrderLogistics.getGoogsId()) {
+                hfOrderLogistic.setGoogsId(s);
+			}
         }
         hfOrderLogistic.setModifyTime(LocalDateTime.now());
         hfOrderLogistic.setIsDeleted((short) 0);

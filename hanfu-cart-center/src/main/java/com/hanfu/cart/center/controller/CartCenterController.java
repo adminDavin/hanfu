@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.cart.center.model.Cart;
 import com.hanfu.cart.center.service.CartService;
+import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -33,6 +35,7 @@ public class CartCenterController {
     @Autowired
     CartService cartService;
     @Autowired
+    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService")
     ProductService productService;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

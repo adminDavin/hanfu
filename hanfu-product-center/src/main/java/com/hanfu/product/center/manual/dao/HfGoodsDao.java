@@ -32,7 +32,7 @@ public interface HfGoodsDao {
 
 	public List<HfGoodsDisplay> selectPriceDec();
 
-	public List<HfGoodsDisplay> selectList(ProductForValue productForValue);
+//	public List<HfGoodsDisplay> selectList(ProductForValue productForValue);
 
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }
