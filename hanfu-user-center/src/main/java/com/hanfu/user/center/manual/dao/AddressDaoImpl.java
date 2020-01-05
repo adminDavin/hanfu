@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class AddressDaoImpl implements AddressDao{
-	@Autowired
+public class AddressDaoImpl implements AddressDao {
+    @Autowired
     SqlSessionTemplate sqlSessionTemplate;
-	@Override
-	public Integer updateAddress(Integer id) {
-			int result = sqlSessionTemplate.update("updateAddress", id);
-			return result;
-		}
+
+    @Override
+    public Integer updateAddress(Integer id) {
+        int result = sqlSessionTemplate.update("updateAddress", id);
+        return result;
+    }
 }

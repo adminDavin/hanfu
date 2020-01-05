@@ -34,10 +34,10 @@ public class KillController {
     SeckillService seckillService;
     @Autowired
     HfGoodsService hfGoodsService;
-    @Autowired
-    HfGoodsSpecService hfGoodsSpecService;
-    @Autowired
-    HfOrdersSerice hfOrdersSerice;
+//    @Autowired
+//    HfGoodsSpecService hfGoodsSpecService;
+//    @Autowired
+//    HfOrdersSerice hfOrdersSerice;
     @Autowired
     SeckillConnectService seckillConnectService;
 
@@ -105,37 +105,37 @@ public class KillController {
         return false;
     }
 
-    @ApiOperation(value = "秒杀业务", notes = "秒杀业务")
-    @RequestMapping(value = "/seckill", method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer")
-//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer")
-    })
-    @ResponseBody
-    public synchronized   List<Object> execute( Integer id,Integer userId) throws ParseException {
-        List<Object> objects = new ArrayList<>();
-        if (seckillConnectService.selectBySeckillId(userId,id)!=null){
-            objects.add("已结束");
-            return objects;
-        }
-//        判断是不是有库存
-        Integer bossId=1;
-        Integer repertory = seckillService.getRepertory(id);
-        if(repertory==0){
-            Short isDeleted=1;
-            seckillService.updateIsDeleted(id,isDeleted,bossId);
-            objects.add("已结束");
-            return objects;
-        }
-//        秒杀成功
-        int repertory1=repertory-1;
-        seckillService.updateRepertory(id,bossId,repertory1);
-        Seckill seckills = seckillService.selectId(id);
-        seckillConnectService.insert(userId,seckills.getId());
-        List<Object> insert = hfOrdersSerice.insert(seckills, userId);
-        objects.add(insert);
-        return objects;
-    }
+//    @ApiOperation(value = "秒杀业务", notes = "秒杀业务")
+//    @RequestMapping(value = "/seckill", method = RequestMethod.POST)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer")
+////            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer")
+//    })
+//    @ResponseBody
+//    public synchronized   List<Object> execute( Integer id,Integer userId) throws ParseException {
+//        List<Object> objects = new ArrayList<>();
+//        if (seckillConnectService.selectBySeckillId(userId,id)!=null){
+//            objects.add("已结束");
+//            return objects;
+//        }
+////        判断是不是有库存
+//        Integer bossId=1;
+//        Integer repertory = seckillService.getRepertory(id);
+//        if(repertory==0){
+//            Short isDeleted=1;
+//            seckillService.updateIsDeleted(id,isDeleted,bossId);
+//            objects.add("已结束");
+//            return objects;
+//        }
+////        秒杀成功
+//        int repertory1=repertory-1;
+//        seckillService.updateRepertory(id,bossId,repertory1);
+//        Seckill seckills = seckillService.selectId(id);
+//        seckillConnectService.insert(userId,seckills.getId());
+//        List<Object> insert = hfOrdersSerice.insert(seckills, userId);
+//        objects.add(insert);
+//        return objects;
+//    }
 
     @ApiOperation(value = "查询所有的秒杀商品", notes = "查询秒杀")
     @RequestMapping(value = "/select",method = RequestMethod.GET)
@@ -248,39 +248,39 @@ public class KillController {
         return seckillService.selectDate(time);
     }
 
-    @ApiOperation(value = "根据id 查秒杀商品详情", notes = "查秒杀商品详情")
-    @RequestMapping(value = "/seletById", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer"),
-    })
-    public  Seckill seletById(Integer id)  {
-        Seckill seckill = seckillService.seletById(id);
-        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpecService.selectByPrimaryKey(seckill.getGoodsId());
-        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
-            seckill.setHfGoodsSpec(hfGoodsSpecs);
-        }
-        return seckill;
-    }
-    @ApiOperation(value = "秒杀业务判断支付成功没有", notes = "秒杀业务判断支付成功没有")
-    @RequestMapping(value = "/seckillByPay",method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "用户id", required = true, type = "Integer")
-    })
-    @ResponseBody
-    public boolean seckillByPay(Integer id){
-        boolean b = hfOrdersSerice.seckillByPay(id);
-        if (!b){
-            SeckillConnect seckillConnect = seckillConnectService.selectByUserId(id);
-            Seckill seckill = seckillService.selectId(seckillConnect.getSeckillId());
-            Integer repertory = seckill.getRepertory();
-            int a=repertory+1;
-            seckillService.updateRepertory(seckill.getId(),1,a);
-            seckillConnectService.updateIsDeleted(id);
-            return false;
-        }
-        seckillConnectService.updateIsDeleted(id);
-        return true;
-    }
+//    @ApiOperation(value = "根据id 查秒杀商品详情", notes = "查秒杀商品详情")
+//    @RequestMapping(value = "/seletById", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = true, type = "Integer"),
+//    })
+//    public  Seckill seletById(Integer id)  {
+//        Seckill seckill = seckillService.seletById(id);
+//        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpecService.selectByPrimaryKey(seckill.getGoodsId());
+//        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
+//            seckill.setHfGoodsSpec(hfGoodsSpecs);
+//        }
+//        return seckill;
+//    }
+//    @ApiOperation(value = "秒杀业务判断支付成功没有", notes = "秒杀业务判断支付成功没有")
+//    @RequestMapping(value = "/seckillByPay",method = RequestMethod.POST)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "id", value = "用户id", required = true, type = "Integer")
+//    })
+//    @ResponseBody
+//    public boolean seckillByPay(Integer id){
+//        boolean b = hfOrdersSerice.seckillByPay(id);
+//        if (!b){
+//            SeckillConnect seckillConnect = seckillConnectService.selectByUserId(id);
+//            Seckill seckill = seckillService.selectId(seckillConnect.getSeckillId());
+//            Integer repertory = seckill.getRepertory();
+//            int a=repertory+1;
+//            seckillService.updateRepertory(seckill.getId(),1,a);
+//            seckillConnectService.updateIsDeleted(id);
+//            return false;
+//        }
+//        seckillConnectService.updateIsDeleted(id);
+//        return true;
+//    }
 
     @ApiOperation(value = "查询秒杀今天的秒杀时间点", notes = "查询秒杀今天的秒杀时间点")
     @RequestMapping(value = "/selectByDate",method = RequestMethod.GET)

@@ -28,5 +28,11 @@ public interface HfGoodsDao {
 
     public List<HfGoodsDisplay> selectProductBycategoryIdOrProductName(HfGoodsDisplay hfGoodsDisplay);
 
+	public List<HfGoodsDisplay> selectPrice();
+
+	public List<HfGoodsDisplay> selectPriceDec();
+
+	public List<HfGoodsDisplay> selectList(ProductForValue productForValue);
+
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }

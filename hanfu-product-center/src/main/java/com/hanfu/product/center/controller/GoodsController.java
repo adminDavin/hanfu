@@ -112,10 +112,7 @@ public class GoodsController {
 
     @Autowired
     private ProductInstanceMapper productInstanceMapper;
-
-    @Autowired
-    private ProductInstanceDao productInstanceDao;
-
+    
     @Autowired
     private WarehouseMapper warehouseMapper;
 
@@ -123,6 +120,8 @@ public class GoodsController {
     private GoodsService goodsService;
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
+    
+    
     @ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
     @RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
     @ApiImplicitParams({

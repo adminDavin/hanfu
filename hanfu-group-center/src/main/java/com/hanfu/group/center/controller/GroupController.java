@@ -4,6 +4,8 @@ import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.*;
 import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.seckill.center.model.Seckill;
+//import com.hanfu.seckill.center.service.HfGoodsSpecService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,8 +42,8 @@ public class GroupController {
     HfCategoryService hfCategoryService;
     @Autowired
     HfUserService hfUserService;
-    @Autowired
-    HfGoodsSpecService hfGoodsSpec;
+//    @Autowired
+//    HfGoodsSpecService hfGoodsSpec;
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -295,19 +297,19 @@ public class GroupController {
         return "ok";
     }
 
-    @ApiOperation(value = "根据团购表id查团购商品详情", notes = "根据团购表id查团购商品详情")
-    @RequestMapping(value = "/seleteDate", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
-    })
-    public  Group seletDate(Integer id){
-        Group group = groupService.selectDate(id);
-        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpec.selectByPrimaryKey(group.getGoodsId());
-        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
-            group.setHfGoodsSpec(hfGoodsSpecs);
-        }
-        return group;
-    }
+//    @ApiOperation(value = "根据团购表id查团购商品详情", notes = "根据团购表id查团购商品详情")
+//    @RequestMapping(value = "/seleteDate", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+//    })
+//    public  Group seletDate(Integer id){
+//        Group group = groupService.selectDate(id);
+//        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpec.selectByPrimaryKey(group.getGoodsId());
+//        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
+//            group.setHfGoodsSpec(hfGoodsSpecs);
+//        }
+//        return group;
+//    }
 
 // 自己开团
     @ApiOperation(value = "开团 团购商品", notes = "开团 团购商品")
