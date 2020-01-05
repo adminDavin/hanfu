@@ -18,7 +18,7 @@ public class AuthorityInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         logger.info(request.getRequestURI() + JSON.toJSONString(request.getParameterMap()));
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
 }
