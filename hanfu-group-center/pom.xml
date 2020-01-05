@@ -163,8 +163,7 @@
         <dependency>
             <groupId>com.hanfu.seckill.center</groupId>
             <artifactId>hanfu-seckill-center</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>0.0.1</version>
         </dependency>
 
     </dependencies>
