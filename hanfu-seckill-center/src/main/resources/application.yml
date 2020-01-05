@@ -24,7 +24,7 @@ spring:
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://47.105.72.216:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
     username: hanfu_admin
     password: Davin1234!
     driver-class-name: com.mysql.cj.jdbc.Driver

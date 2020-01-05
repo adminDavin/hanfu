@@ -9,33 +9,33 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel
 public class CategoryRequest extends CommonRequest {
     @ApiModelProperty(required = true, value = "类目名称")
-    private String category;
+    private String[] category;
     @ApiModelProperty(required = true, value = "上级类目id, 如果顶级类目, 上级类目ID, 设置为-1", example = "-1")
-    private Integer parentCategoryId;
+    private Integer[] parentCategoryId;
     @ApiModelProperty(required = true, value = "类目级别, 是指当前类目至顶层类目的间隔,  顶层类目的类目级别是0, 紧跟顶层类目的类目级别是1, 以此类推", example = "0")
-    private Integer levelId;
+    private Integer[] levelId;
 
-    public String getCategory() {
+    public String[] getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(String[] category) {
         this.category = category;
     }
 
-    public Integer getParentCategoryId() {
+    public Integer[] getParentCategoryId() {
         return parentCategoryId;
     }
 
-    public void setParentCategoryId(Integer parentCategoryId) {
+    public void setParentCategoryId(Integer[] parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
     }
 
-    public Integer getLevelId() {
+    public Integer[] getLevelId() {
         return levelId;
     }
 
-    public void setLevelId(Integer levelId) {
+    public void setLevelId(Integer[] levelId) {
         this.levelId = levelId;
     }
 

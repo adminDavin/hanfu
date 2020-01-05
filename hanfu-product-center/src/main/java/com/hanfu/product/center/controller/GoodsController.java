@@ -730,4 +730,12 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
 	}
+	@ApiOperation(value = "出售中", notes = "出售中")
+	@RequestMapping(value = "/selectFrames", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectFrames(Integer frames)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+              
+		return builder.body(ResponseUtils.getResponseBody(""));
+	}
 }

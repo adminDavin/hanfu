@@ -63,8 +63,28 @@ public class OrderInfo implements Serializable {
     private String phone;
     @ApiModelProperty(required = true, value = "用户名")
     private String userName;
+    @ApiModelProperty(required = true, value = "图片Id")
+    private Integer fileId;
+    @ApiModelProperty(required = true, value = "运费")
+    private Integer fare;
+    
+    public Integer getFare() {
+		return fare;
+	}
 
-    public String getUserName() {
+	public void setFare(Integer fare) {
+		this.fare = fare;
+	}
+
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+
+	public String getUserName() {
         return userName;
     }
 

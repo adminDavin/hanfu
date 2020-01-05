@@ -376,7 +376,12 @@ public class KingWordsController {
         }
         return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
     }
-
+    @RequestMapping(path = "/selectList", method = RequestMethod.GET)
+    @ApiOperation(value = "用户列表", notes = "用户列表")
+    public ResponseEntity<JSONObject> selectList() throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+    }
 
     @RequestMapping(path = "/wxLogin", method = RequestMethod.GET)
     @ApiOperation(value = "微信登录", notes = "微信登录")

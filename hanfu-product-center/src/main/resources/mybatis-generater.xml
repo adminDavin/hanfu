@@ -18,7 +18,7 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://47.105.72.216:3306/user_center?serverTimezone=UTC"
+                        connectionURL="jdbc:mysql://39.98.126.20:3306/user_center?serverTimezone=UTC"
                         userId="hanfu_admin" password="Davin1234!">
         </jdbcConnection>
 

@@ -147,9 +147,9 @@ public class ProductController {
             @RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfCategoryExample example = new HfCategoryExample();
+        HfCategoryExample example = new HfCategoryExample();	
         example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-        if (categoryId != null) {
+        if (categoryId != null) {   
             example.clear();
             example.createCriteria().andIdEqualTo(categoryId);
         }
@@ -158,13 +158,19 @@ public class ProductController {
     }
 
     @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
-    @RequestMapping(value = "/addCategory", method = RequestMethod.POST)
+    @RequestMapping(value = "/addCategory", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> AddCategory(CategoryRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfCategory category = new HfCategory();
-        category.setLevelId(request.getLevelId());
-        category.setHfName(request.getCategory());
-        category.setParentCategoryId(request.getParentCategoryId());
+        for (Integer s : request.getLevelId()) {
+            category.setLevelId(s);
+		}
+        for (String s : request.getCategory()) {
+            category.setHfName(s);
+		}
+        for (Integer s : request.getParentCategoryId()) {
+            category.setParentCategoryId(s);
+		}
         category.setCreateTime(LocalDateTime.now());
         category.setModifyTime(LocalDateTime.now());
         category.setIsDeleted((short) 0);
