@@ -14,6 +14,7 @@
 		<module>hanfu-web-utils</module>
 
 		<module>hanfu-inner-sdk</module>
+		<module>hanfu-order-center</module>
 		<module>hanfu-group-center</module>
 		<module>hanfu-group-client</module>
 		<module>hanfu-payment-center</module>
@@ -28,8 +29,8 @@
 		<module>hanfu-address-center</module>
 		<module>hanfu-zslpayment-center</module>
     <module>hanfu-zslwxpayment-center</module>
-        <module>hanfu-wxfkmpayment-center</module>
-        <module>hanfu-wxpayment-center</module>
+    <module>hanfu-wxfkmpayment-center</module>
+    <module>hanfu-wxpayment-center</module>
 	</modules>
 	<profiles>
 		<profile>
