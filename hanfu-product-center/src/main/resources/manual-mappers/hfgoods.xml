@@ -19,6 +19,7 @@
         <result column="cancel_id" jdbcType="INTEGER" property="cancelId"/>
         <result column="claim" jdbcType="INTEGER" property="claim"/>
         <result column="frames" jdbcType="INTEGER" property="frames"/>
+        <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
     </resultMap>
 
     <resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
@@ -230,7 +231,68 @@
             AND h1.id = #{categoryId}
         </if>
     </select>
-
+    <select id="selectList" resultMap="EntityHfGoodDispaly">
+          SELECT
+        h.goods_desc,h.id,
+        h.hf_name,h.resp_id,
+        h.price_id,h1.hf_name productCategoryName,
+        h1.id categoryId,p.id productId,
+        h.create_time,h.modify_time,h.cancel_id,h.claim,h.frames,
+        h.is_deleted,h2.hf_name brandName,
+        FROM
+        hf_goods h
+        JOIN
+        product p
+        ON
+        h.product_id = p.id
+        JOIN
+        hf_category h1
+        ON
+        h.category_id = h1.id
+        JOIN
+        cancel h4
+        ON
+        h.cancel_id = h4.id
+        JOIN 
+        hf_brand h2
+        ON 
+        h.brand_id = h2.id
+        WHERE   1=1
+        <if test="productCategoryName!=null and ''!=productCategoryName">
+            AND h1.hf_name like '%${productCategoryName}%'
+        </if>
+        <if test="brandName!=null and ''!=brandName">
+            AND h2.hf_name=#{brandName}
+        </if>
+    </select>
+    <select id="selectPrice" resultMap="EntityHfGoodDispaly">
+        SELECT *
+        FROM
+        hf_goods h
+        JOIN
+        product p
+        ON
+        h.product_id = p.id
+        JOIN
+        hf_category h1
+        ON
+        h.category_id = h1.id
+        order by sellPrice
+    </select>
+    <select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
+            SELECT *
+        FROM
+        hf_goods h
+        JOIN
+        product p
+        ON
+        h.product_id = p.id
+        JOIN
+        hf_category h1
+        ON
+        h.category_id = h1.id
+        order by sellPrice desc
+    </select>
     <update id="updateGoods">
         UPDATE
         hf_goods

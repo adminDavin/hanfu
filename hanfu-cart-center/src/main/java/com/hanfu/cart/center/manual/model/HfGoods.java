@@ -50,7 +50,15 @@ public class HfGoods implements Serializable {
     private short isDeleted;
     private Integer hfGoodsPictureId;
 
-    public Integer getId() {
+    public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getId() {
         return id;
     }
 

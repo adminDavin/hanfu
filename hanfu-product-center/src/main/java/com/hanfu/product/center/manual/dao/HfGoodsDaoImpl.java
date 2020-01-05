@@ -69,6 +69,24 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
         return list;
     }
 
+	@Override
+	public List<HfGoodsDisplay> selectPrice() {
+		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectOne("selectPrice");
+		return list;
+	}
+
+	@Override
+	public List<HfGoodsDisplay> selectPriceDec() {
+		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectOne("selectPriceDec");
+		return list;
+	}
+
+	@Override
+	public List<HfGoodsDisplay> selectList(ProductForValue productForValue) {
+		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectOne("selectList");
+		return list;
+	}
+
 //	@Override
 //	public Integer insertAwardInfo(AwardInfo awardInfo) {
 //		Integer row = sqlSessionTemplate.insert("insertAwardInfo", awardInfo);

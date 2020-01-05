@@ -157,4 +157,17 @@ public class OrderController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
     }
+    @ApiOperation(value = "申请退款", notes = "申请退款")
+    @RequestMapping(value = "/forDrawback", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
+    })
+    public ResponseEntity<JSONObject> forDrawback(OrderFindValue orderFindValue)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
+    }
 }

@@ -36,7 +36,10 @@ public class CartCenterController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     CartService cartService;
-
+    @Autowired
+    ProductService productService;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     @RequestMapping(path = "/add", method = RequestMethod.GET)
     @ApiOperation(value = "添加购物车", notes = "添加购物车")
     @ApiImplicitParams({  
