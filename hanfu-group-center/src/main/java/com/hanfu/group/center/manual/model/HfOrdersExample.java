@@ -1,4 +1,4 @@
-package com.hanfu.order.center.model;
+package com.hanfu.group.center.manual.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

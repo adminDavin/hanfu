@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 //import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
-import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfGoods;
 
@@ -81,11 +80,11 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		return list;
 	}
 
-	@Override
-	public List<HfGoodsDisplay> selectList(ProductForValue productForValue) {
-		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectOne("selectList");
-		return list;
-	}
+//	@Override
+//	public List<HfGoodsDisplay> selectList(ProductForValue productForValue) {
+//		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectOne("selectList");
+//		return list;
+//	}
 
 //	@Override
 //	public Integer insertAwardInfo(AwardInfo awardInfo) {
