@@ -38,6 +38,7 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
+import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.model.FileDesc;
@@ -114,6 +115,10 @@ public class GoodsController {
     private ProductInstanceMapper productInstanceMapper;
 
 
+    @Autowired
+    private RedisTemplate<Object, Object> redisTemplate;
+
+    
     @Autowired
     private WarehouseMapper warehouseMapper;
 
