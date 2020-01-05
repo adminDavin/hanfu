@@ -17,15 +17,16 @@ public class HanfuCancelCenterApplication {
     public static void main(String[] args) {
         SpringApplication.run(HanfuCancelCenterApplication.class, args);
     }
+
     @Bean
-    public PageHelper pageHelper(){
+    public PageHelper pageHelper() {
         PageHelper pageHelper = new PageHelper();
         Properties properties = new Properties();
-        properties.setProperty("offsetAsPageNum","true");
-        properties.setProperty("rowBoundsWithCount","true");
-        properties.setProperty("reasonable","true");
+        properties.setProperty("offsetAsPageNum", "true");
+        properties.setProperty("rowBoundsWithCount", "true");
+        properties.setProperty("reasonable", "true");
         //配置mysql数据库的方言
-        properties.setProperty("dialect","mysql");
+        properties.setProperty("dialect", "mysql");
         pageHelper.setProperties(properties);
         return pageHelper;
     }

@@ -137,8 +137,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.xmlunit:xmlunit-core:2.6.3" level="project" />
-    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-client:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-recipes:4.2.0" level="project" />

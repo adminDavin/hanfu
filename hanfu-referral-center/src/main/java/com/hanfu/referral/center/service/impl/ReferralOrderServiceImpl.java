@@ -14,7 +14,7 @@ import com.hanfu.referral.center.service.ReferralOrderService;
 public class ReferralOrderServiceImpl implements ReferralOrderService {
     @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.order.center.HfOrderService")
     private HfOrderService hfOrderService;
-    
+
     @Override
     public List<HfOrders> getOrderByUserId(Integer userId) {
         return hfOrderService.getOrderByUserId(userId);

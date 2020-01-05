@@ -36,71 +36,71 @@ import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.Warehouse;
-import com.hanfu.product.center.service.GoodsService; 
+import com.hanfu.product.center.service.GoodsService;
 
 
 @Service("GoodsService")
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
-public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsService,GoodsService{
-	
-	private static final String LOCK = "LOCK";
-	
-	@Autowired
-	private HfGoodsMapper hfGoodsMapper;
-	
-	@Autowired
-	private HfGoodsDao hfGoodsDao;
-	
-	@Autowired
-	private HfPriceMapper hfPriceMapper;
-	
-	@Autowired
-	private HfRespMapper hfRespMapper;
-	
-	@Autowired
-	private FileDescMapper fileDescMapper;
-	
-	@Autowired
-	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
-	
-	@Autowired
-	private WarehouseMapper warehouseMapper;
-	
-	@Override
-    public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods(Integer page,Integer size) {
-		if(!StringUtils.isEmpty(page)) {
-			if(!StringUtils.isEmpty(size)) {
-				PageHelper.startPage(page, size);
-			}
-		}
-		List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoodsInfo();
-		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).getPriceId() != null) {
-					HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
-					if(hfPrice != null) {
-						list.get(i).setSellPrice(hfPrice.getSellPrice());
-					}
-				}
-				if (list.get(i).getRespId() != null) {
-					HfResp hfResp = hfRespMapper.selectByPrimaryKey(list.get(i).getRespId());
-					if(hfResp != null) {
-						list.get(i).setQuantity(hfResp.getQuantity());
-					}
-				}
-				HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-				example.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
-				List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example);
-				if(!hfGoodsPictrue.isEmpty()) {
-					list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
-				}
-			}
-		}
+public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsService, GoodsService {
+
+    private static final String LOCK = "LOCK";
+
+    @Autowired
+    private HfGoodsMapper hfGoodsMapper;
+
+    @Autowired
+    private HfGoodsDao hfGoodsDao;
+
+    @Autowired
+    private HfPriceMapper hfPriceMapper;
+
+    @Autowired
+    private HfRespMapper hfRespMapper;
+
+    @Autowired
+    private FileDescMapper fileDescMapper;
+
+    @Autowired
+    private HfGoodsPictrueMapper hfGoodsPictrueMapper;
+
+    @Autowired
+    private WarehouseMapper warehouseMapper;
+
+    @Override
+    public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> findAllGoods(Integer page, Integer size) {
+        if (!StringUtils.isEmpty(page)) {
+            if (!StringUtils.isEmpty(size)) {
+                PageHelper.startPage(page, size);
+            }
+        }
+        List<HfGoodsDisplay> list = hfGoodsDao.selectAllGoodsInfo();
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getPriceId() != null) {
+                    HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
+                    if (hfPrice != null) {
+                        list.get(i).setSellPrice(hfPrice.getSellPrice());
+                    }
+                }
+                if (list.get(i).getRespId() != null) {
+                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(list.get(i).getRespId());
+                    if (hfResp != null) {
+                        list.get(i).setQuantity(hfResp.getQuantity());
+                    }
+                }
+                HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+                example.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
+                List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example);
+                if (!hfGoodsPictrue.isEmpty()) {
+                    list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
+                }
+            }
+        }
         return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
     }
-	
-	@Override
-	public List<HfGoodsDisplay> getGoodsInfoApp(Integer goodsId) {
+
+    @Override
+    public List<HfGoodsDisplay> getGoodsInfoApp(Integer goodsId) {
 //		List<HfGoodsDisplay> list = new ArrayList<HfGoodsDisplay>();
 //		com.hanfu.product.center.manual.model.HfGoodsDisplay display = getGoodsInfoUtil(goodsId);
 //		HfGoodsDisplay record = new HfGoodsDisplay();
@@ -128,71 +128,71 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 //			record.setQuantity(display.getQuantity());
 //		}
 //		return JSON.parse(JSONObject.toJSONString(getGoodsInfoUtil(goodsId)), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
-		return JSONArray.parseArray(JSONObject.toJSONString(getGoodsInfoUtil(goodsId)), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
-	}
-	
-	@Override
-	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfo(Integer goodsId) {
-		return getGoodsInfoUtil(goodsId);
-	}
-	
-	public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId){
-		com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
-		System.out.println(hfGoodsDao.selectGoodsPartInfo(goodsId));
-		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-		if(hfGoods!=null) {
-			hfGoodsDisplay.setStoneId(hfGoods.getStoneId());
-		}
-		if (hfGoodsDisplay.getPriceId() != null) {
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
-			hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
-		}
-		HfRespExample example = new HfRespExample();
-		example.createCriteria().andGoogsIdEqualTo(goodsId);
-		List<HfResp> hfResp = hfRespMapper.selectByExample(example);
-		if (!hfResp.isEmpty()) {
-			hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
-			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
-			if(warehouse !=null) {
-				hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
-			}
-		}
-		return hfGoodsDisplay;
-	}
-	
-	@Override
-	public List<com.hanfu.inner.model.product.center.HfGoodsPictrue> findAllPicture() {
-		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(null);
-		return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
-	}
-	
+        return JSONArray.parseArray(JSONObject.toJSONString(getGoodsInfoUtil(goodsId)), com.hanfu.inner.model.product.center.HfGoodsDisplay.class);
+    }
+
+    @Override
+    public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfo(Integer goodsId) {
+        return getGoodsInfoUtil(goodsId);
+    }
+
+    public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId) {
+        com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
+        System.out.println(hfGoodsDao.selectGoodsPartInfo(goodsId));
+        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+        if (hfGoods != null) {
+            hfGoodsDisplay.setStoneId(hfGoods.getStoneId());
+        }
+        if (hfGoodsDisplay.getPriceId() != null) {
+            HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
+            hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
+        }
+        HfRespExample example = new HfRespExample();
+        example.createCriteria().andGoogsIdEqualTo(goodsId);
+        List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+        if (!hfResp.isEmpty()) {
+            hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
+            Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
+            if (warehouse != null) {
+                hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
+            }
+        }
+        return hfGoodsDisplay;
+    }
+
+    @Override
+    public List<com.hanfu.inner.model.product.center.HfGoodsPictrue> findAllPicture() {
+        List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(null);
+        return JSONArray.parseArray(JSONObject.toJSONString(list), com.hanfu.inner.model.product.center.HfGoodsPictrue.class);
+    }
+
 //	@Override
 //	public void getPicture(Integer FileDescId,HttpServletResponse response) throws Exception {
 //		picture(FileDescId, response);
 //	}
-	
-	@Override
-	public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {
-		picture(FileDescId,response);
-	}
-	
-	public void picture(Integer FileDescId,HttpServletResponse response) throws Exception {
-		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(FileDescId);
-		if (fileDesc == null) {
-			throw new Exception("file not exists");
-		}
-		FileMangeService fileManageService = new FileMangeService();
-		synchronized(LOCK) {
-			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-			ByteArrayInputStream stream = new ByteArrayInputStream(file);
-			BufferedImage readImg = ImageIO.read(stream);
-			stream.reset();
-			OutputStream outputStream = response.getOutputStream();
-			ImageIO.write(readImg, "png", outputStream);
-			outputStream.close();
-		}
-	}
-	
+
+    @Override
+    public void getFile(Integer FileDescId, HttpServletResponse response) throws Exception {
+        picture(FileDescId, response);
+    }
+
+    public void picture(Integer FileDescId, HttpServletResponse response) throws Exception {
+        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(FileDescId);
+        if (fileDesc == null) {
+            throw new Exception("file not exists");
+        }
+        FileMangeService fileManageService = new FileMangeService();
+        synchronized (LOCK) {
+            byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+            ByteArrayInputStream stream = new ByteArrayInputStream(file);
+            BufferedImage readImg = ImageIO.read(stream);
+            stream.reset();
+            OutputStream outputStream = response.getOutputStream();
+            ImageIO.write(readImg, "png", outputStream);
+            outputStream.close();
+        }
+    }
+
 //	@Override
 //	public Integer insertAwardInfo(AwardInfo awardInfo) {
 //		Integer row = hfGoodsDao.insertAwardInfo(awardInfo);

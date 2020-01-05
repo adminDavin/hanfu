@@ -40,7 +40,7 @@ public class Swagger2Config {
         return new ApiInfoBuilder()
                 .title("核销接口文档")
                 .description("核销相关接口的文档")
-                .termsOfServiceUrl("http://www.xxx.com")
+                .termsOfServiceUrl("http://www.baudu.com")
                 .version("1.0")
                 .build();
     }

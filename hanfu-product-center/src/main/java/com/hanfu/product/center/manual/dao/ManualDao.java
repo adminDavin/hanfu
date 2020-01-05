@@ -6,9 +6,9 @@ import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
 
 public interface ManualDao {
-	public List<UserInfo> getSimpleUserInfo();
+    public List<UserInfo> getSimpleUserInfo();
 
-	public void selectProductByStone(Integer stoneId);
+    public void selectProductByStone(Integer stoneId);
 
-	public List<Categories> selectCategories();
+    public List<Categories> selectCategories();
 }

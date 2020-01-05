@@ -17,48 +17,62 @@ public class HfGoodsInfo extends CommonRequest {
     @ApiModelProperty(required = false, value = "品牌id")
     private Integer brandId;
     @ApiModelProperty(name = "username", required = true, value = "商家名称")
-	private String username;
+    private String username;
+
     public Integer getProductId() {
         return productId;
     }
+
     public void setProductId(Integer productId) {
         this.productId = productId;
     }
+
     public String getGoodName() {
-		return goodName;
-	}
-	public void setGoodName(String goodName) {
-		this.goodName = goodName;
-	}
+        return goodName;
+    }
+
+    public void setGoodName(String goodName) {
+        this.goodName = goodName;
+    }
+
     public String getGoodsDesc() {
-		return goodsDesc;
-	}
-	public void setGoodsDesc(String goodDesc) {
-		this.goodsDesc = goodDesc;
-	}
-	public Integer getBossId() {
+        return goodsDesc;
+    }
+
+    public void setGoodsDesc(String goodDesc) {
+        this.goodsDesc = goodDesc;
+    }
+
+    public Integer getBossId() {
         return bossId;
     }
+
     public void setBossId(Integer bossId) {
         this.bossId = bossId;
     }
+
     public Integer getBrandId() {
         return brandId;
     }
+
     public void setBrandId(Integer brandId) {
         this.brandId = brandId;
     }
-	public Integer getHfStoreId() {
-		return hfStoreId;
-	}
-	public void setHfStoreId(Integer hfStoreId) {
-		this.hfStoreId = hfStoreId;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-    
+
+    public Integer getHfStoreId() {
+        return hfStoreId;
+    }
+
+    public void setHfStoreId(Integer hfStoreId) {
+        this.hfStoreId = hfStoreId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }

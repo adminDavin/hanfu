@@ -8,10 +8,10 @@ import com.hanfu.inner.model.product.center.HfGoodsPictrue;
 
 public interface GoodsService {
 
-    public List<HfGoodsDisplay> findAllGoods(Integer page,Integer size);
-    
+    public List<HfGoodsDisplay> findAllGoods(Integer page, Integer size);
+
     public List<HfGoodsPictrue> findAllPicture();
-    
+
 
     public List<HfGoodsDisplay> getGoodsInfoApp(Integer goodsId);
 

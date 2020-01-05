@@ -6,23 +6,23 @@ public class BasePrefix implements KeyPrefix {
     private String prefix;
 
     // 0表示不过期
-    public BasePrefix(String prefix){
-        this(0,prefix);
+    public BasePrefix(String prefix) {
+        this(0, prefix);
     }
 
-    public BasePrefix(int expireSeconds,String prefix){
+    public BasePrefix(int expireSeconds, String prefix) {
         this.expireSeconds = expireSeconds;
         this.prefix = prefix;
     }
 
     @Override
-    public int expireSeconds(){
+    public int expireSeconds() {
         return expireSeconds;
     }
 
     @Override
-    public String getPrefix(){
+    public String getPrefix() {
         String className = getClass().getSimpleName();//拿到参数类类名
-        return className+":"+prefix;
+        return className + ":" + prefix;
     }
 }

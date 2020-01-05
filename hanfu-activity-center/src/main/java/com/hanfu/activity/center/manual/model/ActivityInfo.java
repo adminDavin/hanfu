@@ -24,24 +24,31 @@ public class ActivityInfo implements Serializable {
     private String strategyName;
     private String type;
     private static final long serialVersionUID = 1L;
+
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getActivityName() {
         return activityName;
     }
+
     public void setActivityName(String activityName) {
         this.activityName = activityName == null ? null : activityName.trim();
     }
+
     public String getActivityDesc() {
         return activityDesc;
     }
+
     public void setActivityDesc(String activityDesc) {
         this.activityDesc = activityDesc == null ? null : activityDesc.trim();
     }
+
     public String getActiviyType() {
         return activiyType;
     }
@@ -49,6 +56,7 @@ public class ActivityInfo implements Serializable {
     public void setActiviyType(String activiyType) {
         this.activiyType = activiyType == null ? null : activiyType.trim();
     }
+
     public String getActivityStatus() {
         return activityStatus;
     }
@@ -64,6 +72,7 @@ public class ActivityInfo implements Serializable {
     public void setActivityResult(String activityResult) {
         this.activityResult = activityResult == null ? null : activityResult.trim();
     }
+
     public Integer getStrategyId() {
         return strategyId;
     }
@@ -71,12 +80,15 @@ public class ActivityInfo implements Serializable {
     public void setStrategyId(Integer strategyId) {
         this.strategyId = strategyId;
     }
+
     public Integer getUserId() {
         return userId;
     }
+
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
     public Short getIsTimingStart() {
         return isTimingStart;
     }
@@ -84,50 +96,64 @@ public class ActivityInfo implements Serializable {
     public void setIsTimingStart(Short isTimingStart) {
         this.isTimingStart = isTimingStart;
     }
-	public String getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-	public String getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-	public String getModifyTime() {
-		return modifyTime;
-	}
-	public void setModifyTime(String modifyTime) {
-		this.modifyTime = modifyTime;
-	}
-	public String getCreateTime() {
-		return createTime;
-	}
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
-	public Short getIsDeleted() {
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(String modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public Short getIsDeleted() {
         return isDeleted;
     }
 
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
+
     public String getStrategyName() {
-		return strategyName;
-	}
-	public void setStrategyName(String strategyName) {
-		this.strategyName = strategyName;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	@Override
+        return strategyName;
+    }
+
+    public void setStrategyName(String strategyName) {
+        this.strategyName = strategyName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
