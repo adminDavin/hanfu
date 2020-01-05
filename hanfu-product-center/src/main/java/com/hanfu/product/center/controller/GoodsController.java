@@ -40,7 +40,6 @@ import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
-import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
@@ -113,17 +112,16 @@ public class GoodsController {
 
     @Autowired
     private ProductInstanceMapper productInstanceMapper;
-
-
-    @Autowired
-    private RedisTemplate<Object, Object> redisTemplate;
-
     
     @Autowired
     private WarehouseMapper warehouseMapper;
 
     @Autowired
     private GoodsService goodsService;
+	@Resource
+	private RedisTemplate<String, Object> redisTemplate;
+    
+    
     @ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
     @RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -621,6 +619,29 @@ public class GoodsController {
 			hfGoodsPictrueMapper.deleteByPrimaryKey(id);
 		}
 	}
+	@ApiOperation(value = "设为常买", notes = "设为常买")
+	@RequestMapping(value = "/OftenBuy", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+	    @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> OftenBuy(Integer userId,Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		redisTemplate.opsForValue().set(userId.toString(), goodsId);
+		return builder.body(ResponseUtils.getResponseBody("设置成功"));
+	}
+	@ApiOperation(value = "取消常买", notes = "取消常买")
+	@RequestMapping(value = "/delOftenbuy", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> delOftenbuy(Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(!StringUtils.isEmpty(redisTemplate.opsForValue().get(userId.toString()))) {
+			return builder.body(ResponseUtils.getResponseBody("没有数据"));
+		}
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(userId.toString())));
+	}
 	@ApiOperation(value = "设置关注", notes = "设置关注")
 	@RequestMapping(value = "/Concern", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -643,15 +664,6 @@ public class GoodsController {
 			return builder.body(ResponseUtils.getResponseBody("没有关注商品"));
 		}		
 		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(openId)));
-	}
-	@ApiOperation(value = "查看关注", notes = "查看关注")
-	@RequestMapping(value = "/selectConcern", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "openId", value = "openId", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> selectConcern(Integer openId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(openId)));
 	}
 	@ApiOperation(value = "批量上下架", notes = "批量上下架")
 	@RequestMapping(value = "/racking", method = RequestMethod.GET)
@@ -679,55 +691,5 @@ public class GoodsController {
 //		Integer row = goodsService.insertAwardInfo(awardInfo);
 //		return builder.body(ResponseUtils.getResponseBody(null));
 //	}
-	@ApiOperation(value = "根据条件查询", notes = "根据条件查询")
-	@RequestMapping(value = "/selectByValue", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "categoryName", value = "类目名称", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "brandName", value = "品牌名称", required = true, type = "String")})
-	public ResponseEntity<JSONObject> selectByValue(ProductForValue productForValue)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectList(productForValue)));
-	}
-	@ApiOperation(value = "价格升序", notes = "价格的升序")
-	@RequestMapping(value = "/Price", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> Price()
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectPrice()));
-	}
-	@ApiOperation(value = "价格降序", notes = "价格降序")
-	@RequestMapping(value = "/desPrice", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> Pricedec()
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectPriceDec()));
-	}
-	@ApiOperation(value = "添加收藏", notes = "添加收藏")
-	@RequestMapping(value = "/collect", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> collect(Integer userId,Integer goodsId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
-		redisTemplate.opsForValue().set(userId.toString(), goodsId);
-		return builder.body(ResponseUtils.getResponseBody("添加成功"));
-	}
-	@ApiOperation(value = "取消收藏", notes = "取消收藏")
-	@RequestMapping(value = "/delcollect", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> delCollect(Integer userId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);	
-		if(StringUtils.isEmpty(redisTemplate.opsForValue().get(userId.toString()))) {
-			return builder.body(ResponseUtils.getResponseBody("没有收藏商品"));
-		}		
-		return builder.body(ResponseUtils.getResponseBody(redisTemplate.delete(userId.toString())));
-	}
-	@ApiOperation(value = "查看收藏", notes = "查看收藏")
-	@RequestMapping(value = "/selectcollect", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> selectcollect(Integer userId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
-	}
+
 }
