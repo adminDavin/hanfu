@@ -68,6 +68,13 @@
             <artifactId>hanfu-inner-sdk</artifactId>
             <version>0.0.1</version>
         </dependency>
+        
+      <dependency>
+          <groupId>com.hanfu.base</groupId>
+          <artifactId>hanfu-order-center</artifactId>
+          <version>0.0.1</version>
+      </dependency>
+        
         <dependency>
             <artifactId>hanfu-web-utils</artifactId>
             <groupId>com.hanfu.utils</groupId>
@@ -171,12 +178,5 @@
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-redis</artifactId>
     </dependency>
-      <dependency>
-          <groupId>com.hanfu.base</groupId>
-          <artifactId>hanfu-order-center</artifactId>
-          <version>0.0.1-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-
     </dependencies>
 </project>
