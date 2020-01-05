@@ -4,7 +4,7 @@ import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.*;
 import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.seckill.center.model.Seckill;
-import com.hanfu.seckill.center.service.HfGoodsSpecService;
+//import com.hanfu.seckill.center.service.HfGoodsSpecService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -42,8 +42,8 @@ public class GroupController {
     HfCategoryService hfCategoryService;
     @Autowired
     HfUserService hfUserService;
-    @Autowired
-    HfGoodsSpecService hfGoodsSpec;
+//    @Autowired
+//    HfGoodsSpecService hfGoodsSpec;
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
