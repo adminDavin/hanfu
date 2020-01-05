@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.hanfu.seckill.center</groupId>
     <artifactId>hanfu-seckill-center</artifactId>
-
+    <version>0.0.1</version>
 
     <build>
         <finalName>hanfu-seckill-center</finalName>
