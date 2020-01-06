@@ -10,7 +10,7 @@ import java.util.List;
  * @date: 2019/12/30
  * @time: 16:37
  */
-public interface HfOrdersSerice {
+public interface HfOrdersService {
     List<Object> insert (Seckill seckill, Integer userId) throws ParseException;
     boolean seckillByPay(Integer id);
 }

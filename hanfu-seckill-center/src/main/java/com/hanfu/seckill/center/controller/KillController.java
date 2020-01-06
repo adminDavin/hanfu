@@ -1,17 +1,13 @@
 package com.hanfu.seckill.center.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.hanfu.seckill.center.model.*;
 import com.hanfu.seckill.center.service.*;
-import io.lettuce.core.ScriptOutputType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +32,7 @@ public class KillController {
     @Autowired
     HfGoodsSpecService hfGoodsSpecService;
     @Autowired
-    HfOrdersSerice hfOrdersSerice;
+    HfOrdersService hfOrdersSerice;
     @Autowired
     SeckillConnectService seckillConnectService;
 
