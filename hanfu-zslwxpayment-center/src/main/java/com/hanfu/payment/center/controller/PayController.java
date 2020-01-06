@@ -41,8 +41,7 @@ public class PayController {
 
     private static final long serialVersionUID = 1L;
 
-    @Value("${wxapplet.config.weixinpay.notifyurl}")
-    private String notify_url;
+    private String notify_url = "https://localhost:9099/pay/weixin/callback";
     //交易类型
     private final String trade_type = "JSAPI";
     //统一下单API接口链接
@@ -54,7 +53,7 @@ public class PayController {
      * @throws UnsupportedEncodingException
      */
     @ApiOperation(value = "统一下单",notes = "统一下单")
-    @RequestMapping(value = "/wxpay",method = RequestMethod.GET)
+    @RequestMapping(value = "/wxpay",method = RequestMethod.POST)
     public ResponseEntity<JSONObject> payment(@Valid @RequestBody NewWXOrderRequest request, HttpServletRequest httpServletRequest) {
         Map map = new HashMap();
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -65,7 +64,7 @@ public class PayController {
             order.setMch_id(Configure.getMch_id());
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
             order.setBody(request.getBody());
-            order.setOut_trade_no(request.getOut_trade_no());
+            order.setOut_trade_no(RandomStringGenerator.getRandomStringByLength(32));
 
             order.setTotal_fee(request.getTotal_fee());//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 
@@ -131,7 +130,6 @@ public class PayController {
     }
     /**
      * 微信小程序支付成功回调函数
-     *
      * @param request
      * @param response
      * @throws Exception

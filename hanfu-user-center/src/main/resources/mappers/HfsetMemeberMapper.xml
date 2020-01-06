@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.dao.HfsetMemeberMapper">
+
+        <resultMap id="BaseResultMap" type="com.hanfu.user.center.model.HfSetBuyMember">
+            <id column="id" jdbcType="INTEGER" property="id" />
+            <result column="money" jdbcType="INTEGER" property="money" />
+        </resultMap>
+
+    <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from hf_set_buymember
+        <where>
+            <if test="number != null">
+                id = #{number,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert">
+        insert into hf_set_buymember(id,money)
+        values(#{number,jdbcType=INTEGER},#{total,jdbcType=INTEGER})
+    </insert>
+
+    <update id="update">
+        update hf_set_buymember
+        <set>
+            <if test="number != null">
+                money = #{total,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{number,jdbcType=INTEGER}
+    </update>
+
+
+    <!-- 下面是充值会员的数据库 -->
+    <select id="newselect" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from hf_set_remember
+        <where>
+            <if test="number != null">
+                id = #{number,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <insert id="newinsert">
+        insert into hf_set_remember(id,money)
+        values(#{number,jdbcType=INTEGER},#{total,jdbcType=INTEGER})
+    </insert>
+
+    <update id="newupdate">
+        update hf_set_remember
+        <set>
+            <if test="number != null">
+                money = #{total,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id = #{number,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="selectBuy" resultType="com.hanfu.user.center.model.HfSetBuyMember">
+            select * from hf_set_buymember
+    </select>
+
+    <select id="selectRe" resultType="com.hanfu.user.center.model.HfSetBuyMember">
+            select * from hf_set_remember
+    </select>
+
+</mapper>

@@ -67,7 +67,7 @@ public class PayReturnServiceImpl implements PayReturnService {
 
             HttpPost httpPost = new HttpPost(url);
 
-            String xmlstring = WXPayUtil.wxPayRefund(out_trade_no,transaction_id,String.valueOf((int)(total_fee*100)));
+            String xmlstring = WXPayUtil.wxPayRefund(out_trade_no,transaction_id,String.valueOf((int)(total_fee)));
 
             httpPost.setEntity(new StringEntity(xmlstring));
             httpPost.setHeader("Accept", "application/json");
