@@ -48,4 +48,5 @@ List<GroupOpen> selectByGroupOpen(Integer groupId);
     void updateByIsDeleted(Integer id);
 
     List<Integer> selectByGroupOpenId(Integer groupId);
+    GroupOpen selectByGroup(Integer groupId,Integer userId);
 }

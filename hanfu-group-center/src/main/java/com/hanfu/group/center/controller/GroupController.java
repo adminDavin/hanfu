@@ -2,8 +2,6 @@ package com.hanfu.group.center.controller;
 
 import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.*;
-import com.hanfu.inner.sdk.product.center.ProductService;
-import com.hanfu.seckill.center.model.Seckill;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -11,11 +9,11 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.ClientInfoStatus;
+;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.DoubleToIntFunction;
+
 
 /**
  * @author:gyj
@@ -488,6 +486,36 @@ public class GroupController {
         aReturn.setStopTime(group1.getStopTime());
         aReturn.setPrice(group1.getPrice());
 
+        int i = groupOpenService.selectNumber(id);
+        int a1=number1-i;
+        aReturn.setNumberFew(a1);
+        List <Integer>  urId =groupOpenService.selectUserId(id);
+        ArrayList<HfUser> hfUsers = new ArrayList<>();
+        for (Integer a:urId) {
+            hfUsers.add(hfUserService.selectByPrimaryKey(a));
+        }
+        aReturn.setUser(hfUsers);
+        return aReturn;
+    }
+    @ApiOperation(value = "查询参加详情", notes = "查询参加详情")
+    @RequestMapping(value = "/selectByGroup", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+
+    })
+    public  Object  selectByGroup(Integer groupId,Integer userId)  {
+        GroupOpen groupOpen1 = groupOpenService.selectByGroup(groupId, userId);
+        Return aReturn = new Return();
+        Integer id = groupOpen1.getId();
+        aReturn.setId(id );
+        Group group1 = groupService.selectDate(groupOpen1.getGroupId());
+        Integer number1 = group1.getNumber();
+        aReturn.setNumber(number1);
+        aReturn.setGoodsName(group1.getHfGoods().getHfName());
+        aReturn.setStartTime(group1.getStartTime());
+        aReturn.setStopTime(group1.getStopTime());
+        aReturn.setPrice(group1.getPrice());
         int i = groupOpenService.selectNumber(id);
         int a1=number1-i;
         aReturn.setNumberFew(a1);

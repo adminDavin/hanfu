@@ -9,6 +9,14 @@
     <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
     <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="Base" type="com.hanfu.group.center.manual.model.GroupOpen" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="agroup_id" property="groupId" jdbcType="INTEGER" />
+    <result column="aconnect_id" property="connectId" jdbcType="INTEGER" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, group_id, connect_id, is_deleted, start_time, stop_time
   </sql>
@@ -59,6 +67,15 @@
         from
         group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
 		where a.id=#{groupId} and b.is_deleted=0 order by b.id
+    </select>
+
+
+  <select id="selectByGroup" parameterType="java.lang.Integer" resultMap="Base">
+        select
+         a.id aid, a.group_id  agroup_id,  a.connect_id aconnect_id,  a.is_deleted ais_deleted,  a.start_time astart_time,  a.stop_time astop_time
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.group_id=#{groupId} and b.user_id=#{userId}
     </select>
 
 
