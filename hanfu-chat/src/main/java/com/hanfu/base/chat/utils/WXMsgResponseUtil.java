@@ -15,7 +15,6 @@ public class WXMsgResponseUtil {
     private static Logger log = Logger.getLogger(WXMsgResponseUtil.class.getSimpleName());
 
 
-
     private static String RES_RESULT =
             "你好，很高兴为你服务。";
 
@@ -47,7 +46,7 @@ public class WXMsgResponseUtil {
     }
 
 
-    public static JSONObject sendCustomerMessage(String touser,String oldId,String keyWord) {
+    public static JSONObject sendCustomerMessage(String touser, String oldId, String keyWord) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(5000);// 设置超时
         requestFactory.setReadTimeout(5000);
@@ -92,7 +91,7 @@ public class WXMsgResponseUtil {
         return jsonObject;
     }
 
-    public static String sendFirstMessage(String appId,String index, String touser) {
+    public static String sendFirstMessage(String appId, String index, String touser) {
 
 
         JSONObject obj = new JSONObject();
@@ -108,7 +107,7 @@ public class WXMsgResponseUtil {
 
         obj.put("text", text);
 
-        JSONObject jsonObject = HttpUtil.httpsRequest(obj,"accessToken");
+        JSONObject jsonObject = HttpUtil.httpsRequest(obj, "accessToken");
 
         return jsonObject.toString();
     }

@@ -1,25 +1,26 @@
 package com.hanfu.user.center.manual.dao;
 
 
-import java.util.List;
-
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
+import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfUser;
 
+import java.util.List;
+
 public interface UserDao {
 
-	HfAuth selectAuthList(String authKey);
+    HfAuth selectAuthList(String authKey);
 
-	List<HfUser> selectUserList();
-	
+    List<HfUser> selectUserList();
+
 //	List<ActivityUserInfo> findActivityUserInfo();
-	
-	String findDepartmentName(Integer departmentId);
-	
-	List<ActivityUserInfo> findActivityUserInfo(Integer time);
-	
-	List<ActivityUserInfo> findActivityUserInfoTP(UserQuery userQuery);
+
+    String findDepartmentName(Integer departmentId);
+
+    List<ActivityUserInfo> findActivityUserInfo(test test);
+
+    List<ActivityUserInfo> findActivityUserInfoTP(UserQuery userQuery);
 
 }

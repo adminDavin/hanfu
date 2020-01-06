@@ -2,7 +2,9 @@ package com.hanfu.activity.center.dao;
 
 import com.hanfu.activity.center.model.FileDesc;
 import com.hanfu.activity.center.model.FileDescExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface FileDescMapper {

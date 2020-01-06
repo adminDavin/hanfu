@@ -3,85 +3,85 @@ package com.hanfu.activity.center.manual.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class FileDesc implements Serializable{
-	private Integer id;
-	
-	private String fileName;
-	
-	private Integer userId;
+public class FileDesc implements Serializable {
+    private Integer id;
 
-	private String groupName;
+    private String fileName;
 
-	private String remoteFilename;
+    private Integer userId;
 
-	private LocalDateTime createTime;
+    private String groupName;
 
-	private LocalDateTime modifyTime;
+    private String remoteFilename;
 
-	private Short isDeleted;
+    private LocalDateTime createTime;
 
-	public Integer getId() {
-		return id;
-	}
+    private LocalDateTime modifyTime;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    private Short isDeleted;
 
-	public String getFileName() {
-		return fileName;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getUserId() {
-		return userId;
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
-	public String getGroupName() {
-		return groupName;
-	}
+    public Integer getUserId() {
+        return userId;
+    }
 
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public String getRemoteFilename() {
-		return remoteFilename;
-	}
+    public String getGroupName() {
+        return groupName;
+    }
 
-	public void setRemoteFilename(String remoteFilename) {
-		this.remoteFilename = remoteFilename;
-	}
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
-	public LocalDateTime getCreateTime() {
-		return createTime;
-	}
+    public String getRemoteFilename() {
+        return remoteFilename;
+    }
 
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
+    public void setRemoteFilename(String remoteFilename) {
+        this.remoteFilename = remoteFilename;
+    }
 
-	public LocalDateTime getModifyTime() {
-		return modifyTime;
-	}
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
 
-	public void setModifyTime(LocalDateTime modifyTime) {
-		this.modifyTime = modifyTime;
-	}
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
-	public Short getIsDeleted() {
-		return isDeleted;
-	}
+    public LocalDateTime getModifyTime() {
+        return modifyTime;
+    }
 
-	public void setIsDeleted(Short isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    public void setModifyTime(LocalDateTime modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public Short getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Short isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
 }

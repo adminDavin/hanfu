@@ -13,7 +13,7 @@ import org.csource.fastdfs.TrackerServer;
 
 
 public class FdfsClient {
-	
+
 //	public static void main(String[] args) throws IOException, MyException {
 //		ClientGlobal.init("fdfs_client.conf");
 //		TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
@@ -75,6 +75,6 @@ public class FdfsClient {
             fis.read(file_buff);
         }
         return file_buff;
-	}
-	
+    }
+
 }

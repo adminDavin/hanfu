@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author:gyj
@@ -13,17 +14,55 @@ import java.util.Date;
  * @time: 17:50
  */
 @SuppressWarnings("serial")
-public class Seckill implements Serializable{
+public class Seckill implements Serializable {
     private Integer id;
     private Integer bossId;
     private Integer goodsId;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat( timezone="GMT+8",pattern = "yyyy-mm-dd hh:mm:ss")
     private Date startTime;
+    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(timezone="GMT+8" ,pattern = "yyyy-mm-dd hh:mm:ss" )
+    private Date stopTime;
     private Integer categoryId;
-    private Double   price;
+    private Double price;
     private Integer repertory;
     private Short isDeleted;
+    private HfGoods hfGoods;
+    private List<FileDesc> fileDesc;
+    private List<HfGoodsSpec> hfGoodsSpec;
+
+    public List<HfGoodsSpec> getHfGoodsSpec() {
+        return hfGoodsSpec;
+    }
+
+    public void setHfGoodsSpec(List<HfGoodsSpec> hfGoodsSpec) {
+        this.hfGoodsSpec = hfGoodsSpec;
+    }
+
+    public List<FileDesc> getFileDesc() {
+        return fileDesc;
+    }
+
+    public void setFileDesc(List<FileDesc> fileDesc) {
+        this.fileDesc = fileDesc;
+    }
+
+    public Date getStopTime() {
+        return stopTime;
+    }
+
+    public void setStopTime(Date stopTime) {
+        this.stopTime = stopTime;
+    }
+
+    public HfGoods getHfGoods() {
+        return hfGoods;
+    }
+
+    public void setHfGoods(HfGoods hfGoods) {
+        this.hfGoods = hfGoods;
+    }
 
     public Integer getId() {
         return id;
@@ -88,5 +127,5 @@ public class Seckill implements Serializable{
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
-     
+
 }

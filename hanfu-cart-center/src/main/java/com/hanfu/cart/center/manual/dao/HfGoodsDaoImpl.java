@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 import com.hanfu.cart.center.manual.model.HfGoods;
 
 @Repository
-public class HfGoodsDaoImpl implements HfGoodsDao{
-	@Autowired
+public class HfGoodsDaoImpl implements HfGoodsDao {
+    @Autowired
     SqlSessionTemplate sqlSessionTemplate;
+
     @Override
     public HfGoods findProductById(String productId) {
-        HfGoods result = sqlSessionTemplate.selectOne("selectGoods",productId);
+        HfGoods result = sqlSessionTemplate.selectOne("selectGoods", productId);
         return result;
     }
 }

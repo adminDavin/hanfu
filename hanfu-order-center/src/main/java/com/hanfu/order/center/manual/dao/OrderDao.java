@@ -9,15 +9,15 @@ import com.hanfu.order.center.model.HfOrdersDetail;
 
 public interface OrderDao {
 
-	List<OrderInfo> selectOrderList();
+    List<OrderInfo> selectOrderList();
 
-	List<HfOrderStatus> selectOrderStatus();
+    List<HfOrderStatus> selectOrderStatus();
 
-	List<HfOrdersDetail> selectOrderDetail(Integer id);
+    List<HfOrdersDetail> selectOrderDetail(Integer id);
 
-	List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
+    List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
 
-	List<OrderInfo> selectOrderByUserId(Integer userId);
+    List<OrderInfo> selectOrderByUserId(Integer userId);
 
 
 }

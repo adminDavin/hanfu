@@ -18,18 +18,18 @@ import com.hanfu.product.center.request.ProductInstanceRequest;
 @Repository
 public class ProductInstanceDaoImpl implements ProductInstanceDao {
 
-	@Autowired
+    @Autowired
     SqlSessionTemplate sqlSessionTemplate;
-	
-	@Override
-	public Integer deleteProductInstance(ProductInstance example) {
-		Integer row = sqlSessionTemplate.delete("deleteProductInstance", example);
-		return row;
-	}
-	
-	@Override
-	public ProductInstance selectProductInstance(ProductInstanceRequest productInstanceRequest) {
-		ProductInstance instances = sqlSessionTemplate.selectOne("selectProductInstance", productInstanceRequest);
-		return instances;
-	}
+
+    @Override
+    public Integer deleteProductInstance(ProductInstance example) {
+        Integer row = sqlSessionTemplate.delete("deleteProductInstance", example);
+        return row;
+    }
+
+    @Override
+    public ProductInstance selectProductInstance(ProductInstanceRequest productInstanceRequest) {
+        ProductInstance instances = sqlSessionTemplate.selectOne("selectProductInstance", productInstanceRequest);
+        return instances;
+    }
 }

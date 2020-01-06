@@ -2,7 +2,9 @@ package com.hanfu.activity.center.dao;
 
 import com.hanfu.activity.center.model.ActivityDepartment;
 import com.hanfu.activity.center.model.ActivityDepartmentExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ActivityDepartmentMapper {
