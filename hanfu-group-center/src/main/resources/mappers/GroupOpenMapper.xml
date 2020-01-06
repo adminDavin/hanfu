@@ -69,6 +69,13 @@
 		where a.id=#{groupId} and b.is_deleted=0 order by b.id
     </select>
 
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultType="int">
+        select b.user_id
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.id=#{groupId}  order by b.id
+    </select>
+
 
   <select id="selectByGroup" parameterType="java.lang.Integer" resultMap="Base">
         select

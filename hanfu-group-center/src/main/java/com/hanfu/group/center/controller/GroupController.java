@@ -508,7 +508,7 @@ public class GroupController {
         GroupOpen groupOpen1 = groupOpenService.selectByGroup(groupId, userId);
         Return aReturn = new Return();
         Integer id = groupOpen1.getId();
-        aReturn.setId(id );
+        aReturn.setId(id);
         Group group1 = groupService.selectDate(groupOpen1.getGroupId());
         Integer number1 = group1.getNumber();
         aReturn.setNumber(number1);
@@ -519,7 +519,7 @@ public class GroupController {
         int i = groupOpenService.selectNumber(id);
         int a1=number1-i;
         aReturn.setNumberFew(a1);
-        List <Integer>  urId =groupOpenService.selectUserId(id);
+        List <Integer>  urId =groupOpenService.selectByUserId(id);
         ArrayList<HfUser> hfUsers = new ArrayList<>();
         for (Integer a:urId) {
             hfUsers.add(hfUserService.selectByPrimaryKey(a));
