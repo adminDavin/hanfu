@@ -67,8 +67,18 @@ public class OrderInfo implements Serializable {
     private Integer fileId;
     @ApiModelProperty(required = true, value = "运费")
     private Integer fare;
+    @ApiModelProperty(required = true, value = "评价")
+    private String evaluate;
     
-    public Integer getFare() {
+    public String getEvaluate() {
+		return evaluate;
+	}
+
+	public void setEvaluate(String evaluate) {
+		this.evaluate = evaluate;
+	}
+
+	public Integer getFare() {
 		return fare;
 	}
 

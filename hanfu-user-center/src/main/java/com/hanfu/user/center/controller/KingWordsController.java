@@ -534,7 +534,7 @@ public class KingWordsController {
     private JSONObject getSessionKeyOrOpenId(String code) {
         //微信端登录code
         //String wxCode = code;
-        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42&js_code=" + code + "&grant_type=authorization_code";
+        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code=" + code + "&grant_type=authorization_code";
         //Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );

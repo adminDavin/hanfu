@@ -1,6 +1,5 @@
 package com.hanfu.order.center.controller;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +29,13 @@ public class QueryLogisticsController {
             @ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
     })
     public ResponseEntity<JSONObject> logistics(String expCode, String expNo)
-            throws JSONException {
+            throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
         try {
             String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expCode, expNo);
-            return builder.body(ResponseUtils.getResponseBody(result));
+            JSONObject json = JSONObject.parseObject(result);
+            return builder.body(ResponseUtils.getResponseBody(json));
         } catch (Exception e) {
             e.printStackTrace();
             return builder.body(ResponseUtils.getResponseBody("查询失败"));
