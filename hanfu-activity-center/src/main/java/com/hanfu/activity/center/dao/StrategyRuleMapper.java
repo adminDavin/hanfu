@@ -2,7 +2,9 @@ package com.hanfu.activity.center.dao;
 
 import com.hanfu.activity.center.model.StrategyRule;
 import com.hanfu.activity.center.model.StrategyRuleExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface StrategyRuleMapper {

@@ -1,0 +1,73 @@
+server:
+  port: 9010
+
+dubbo:
+  registry:
+    address: 47.105.72.216:2181
+    protocol: zookeeper
+    id: dubboProductServer
+    client: curator
+  metadata-report:
+    address: zookeeper://47.105.72.216:2181
+  application:
+    name: hanfu-product-center
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 1901
+  provider:
+    server: netty4
+
+
+spring:
+  datasource:
+    name: dataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    username: hanfu_admin
+    password: Davin1234!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select now()
+      idle-timeout: 3000000
+      auto-commit: true
+  task:
+    execution:
+      pool:
+        max-size: 16
+        queue-capacity: 100
+        keep-alive: 3600s
+  redis:
+    database: 0
+    host: 47.105.72.216
+    port: 6379
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 16
+        max-idle: 4
+#
+#info:
+#  head: head
+#  body: body
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        #\u52A0\u8F7D\u6240\u6709\u7684\u7AEF\u70B9\uFF0C\u9ED8\u8BA4\u53EA\u52A0\u8F7D\u4E86info\u3001health
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always
+#    #\u53EF\u4EE5\u5173\u95ED\u6307\u5B9A\u7684\u7AEF\u70B9
+#    shutdown:
+#      enabled: false
+
+logging:
+  file: ./target/king-words.log
+
+mybatis:
+  mapper-locations:
+    - manual-mappers/*.xml
+    - manual-manual-mappers/*.xml
+

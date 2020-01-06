@@ -22,7 +22,7 @@ spring:
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://47.105.72.216:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true  
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
     username: hanfu_admin
     password: Davin1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -39,7 +39,15 @@ spring:
   servlet:
     multipart:
       enabled: true
-
+  redis:
+    database: 0
+    host: 47.105.72.216
+    port: 6379
+    timeout: 3000000
+    jedis:
+      pool:
+        max-active: 1000
+        max-idle: 4
 
 #
 #info:
@@ -59,9 +67,9 @@ spring:
 #      enabled: false
 
 logging:
-  file: ./target/king-words.log  
-  
+  file: ./target/king-words.log
+
 mybatis:
-  mapper-locations: 
+  mapper-locations:
     - mappers/*.xml
     - manual-mappers/*.xml

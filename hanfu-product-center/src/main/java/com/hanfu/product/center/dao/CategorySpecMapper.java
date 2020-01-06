@@ -2,7 +2,9 @@ package com.hanfu.product.center.dao;
 
 import com.hanfu.product.center.model.CategorySpec;
 import com.hanfu.product.center.model.CategorySpecExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface CategorySpecMapper {

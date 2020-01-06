@@ -23,9 +23,9 @@ public class RefferralProductServiceImpl implements ReferralProductService {
     public List<Product> getAllProduct() {
         return productService.getProduct();
     }
-    
+
     @Override
-    public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId,Integer page ,Integer size) throws Exception {
-    	return productService.listCategoryApp(parentCategoryId, categoryId, levelId,page,size);
+    public List<HfCategory> listCategory(Integer parentCategoryId, Integer categoryId, Integer levelId, Integer page, Integer size) throws Exception {
+        return productService.listCategoryApp(parentCategoryId, categoryId, levelId, page, size);
     }
 }

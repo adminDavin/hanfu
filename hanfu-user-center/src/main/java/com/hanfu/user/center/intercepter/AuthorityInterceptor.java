@@ -13,12 +13,12 @@ import com.alibaba.fastjson.JSON;
 @Component
 public class AuthorityInterceptor extends HandlerInterceptorAdapter {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-		logger.info(request.getRequestURI() + JSON.toJSONString(request.getParameterMap()));
-		return super.preHandle(request, response, handler);
-	}
-	
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        logger.info(request.getRequestURI() + JSON.toJSONString(request.getParameterMap()));
+        return true;
+    }
+
 }

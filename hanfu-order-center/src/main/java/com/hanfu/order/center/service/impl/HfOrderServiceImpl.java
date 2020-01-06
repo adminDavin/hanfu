@@ -17,7 +17,7 @@ import com.hanfu.order.center.model.HfOrders;
 public class HfOrderServiceImpl implements HfOrderService {
     @Autowired
     HfOrdersMapper hfOrdersMapper;
-    
+
     @Override
     public List<com.hanfu.inner.model.product.center.HfOrders> getOrderByUserId(Integer userId) {
         List<HfOrders> hfOrders = hfOrdersMapper.selectByExample(null);

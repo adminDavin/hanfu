@@ -10,20 +10,20 @@ import com.hanfu.activity.center.manual.model.HfUser;
 import com.hanfu.activity.center.manual.model.UserFormInfo;
 
 @Repository
-public class ActivityDaoImpl implements ActivityDao{
+public class ActivityDaoImpl implements ActivityDao {
 
-	@Autowired
+    @Autowired
     SqlSessionTemplate sqlSessionTemplate;
-	
-	@Override
-	public Integer updateActivityEnd(Integer activityId) {
-		Integer row = sqlSessionTemplate.update("updateActivityEnd", activityId);
-		return row;
-	}
-	
-	@Override
-	public Integer updateActivityStart(Integer activityId) {
-		Integer row = sqlSessionTemplate.update("updateActivityStart", activityId);
-		return row;
-	}
+
+    @Override
+    public Integer updateActivityEnd(Integer activityId) {
+        Integer row = sqlSessionTemplate.update("updateActivityEnd", activityId);
+        return row;
+    }
+
+    @Override
+    public Integer updateActivityStart(Integer activityId) {
+        Integer row = sqlSessionTemplate.update("updateActivityStart", activityId);
+        return row;
+    }
 }

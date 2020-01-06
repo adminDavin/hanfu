@@ -26,8 +26,9 @@ import org.springframework.stereotype.Component;
 import com.hanfu.inner.model.product.center.Product;
 import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.order.center.manual.model.OrderInfo;
+
 @Component
-public class MyPrint implements Printable{
+public class MyPrint implements Printable {
     @Autowired
     private ProductService productService;
     private static MyPrint myPrint;
@@ -73,11 +74,12 @@ public class MyPrint implements Printable{
     public void setTotalPageCount(int totalPageCount) {
         this.totalPageCount = totalPageCount;
     }
-	@SuppressWarnings("null")
-	@Override
-	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-		OrderInfo orderInfo = null;
-		System.out.println("pageIndex为:" + pageIndex);
+
+    @SuppressWarnings("null")
+    @Override
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+        OrderInfo orderInfo = null;
+        System.out.println("pageIndex为:" + pageIndex);
         Graphics2D g2 = (Graphics2D) graphics;
         g2.setColor(Color.black);
         if (pageIndex > totalPageCount - 1) {
@@ -114,12 +116,12 @@ public class MyPrint implements Printable{
             g2.drawString("页    次: 第 1 页,共 2 页", (float) x + 2 * filedW, (float) y + line);
 
             line += height;
-            g2.drawString("收 货 人: "+orderInfo.getRealName(), (float) x, (float) y + line);
-            g2.drawString("移动电话: "+orderInfo.getPhone(), (float) x + filedW, (float) y + line);
-            g2.drawString("订购客户: "+orderInfo.getRealName(), (float) x + 2 * filedW, (float) y + line);
+            g2.drawString("收 货 人: " + orderInfo.getRealName(), (float) x, (float) y + line);
+            g2.drawString("移动电话: " + orderInfo.getPhone(), (float) x + filedW, (float) y + line);
+            g2.drawString("订购客户: " + orderInfo.getRealName(), (float) x + 2 * filedW, (float) y + line);
 
             line += height;
-            g2.drawString("收货地址: "+orderInfo.getAddress(), (float) x, (float) y + line);
+            g2.drawString("收货地址: " + orderInfo.getAddress(), (float) x, (float) y + line);
             g2.drawString("出货仓库: ", (float) x + 2 * filedW, (float) y + line);
 
             //表格线微调值
@@ -189,20 +191,20 @@ public class MyPrint implements Printable{
             //g2.drawLine((int) x, (int) (y + line), (int) x + 500, (int) (y + line));
 
             line += height;
-            g2.drawString("备注: "+orderInfo.getHfDesc(), (float) x, (float) y + line);
+            g2.drawString("备注: " + orderInfo.getHfDesc(), (float) x, (float) y + line);
 
             line += height;
             g2.drawString("服务电话: ", (float) x, (float) y + line);
-            g2.drawString("订单编号: "+orderInfo.getOrdersId(), (float) x + filedW, (float) y + line);
+            g2.drawString("订单编号: " + orderInfo.getOrdersId(), (float) x + filedW, (float) y + line);
             g2.drawString("制表日期:" + sdf.format(new Date()), (float) x + 2 * filedW, (float) y + line);
 
             return PAGE_EXISTS;
         }
-	}
+    }
 
-	private Object getValueByKey(Object obj, String key) {
-		@SuppressWarnings("rawtypes")
-		Class userCla = (Class) obj.getClass();
+    private Object getValueByKey(Object obj, String key) {
+        @SuppressWarnings("rawtypes")
+        Class userCla = (Class) obj.getClass();
         /* 得到类中的所有属性集合 */
         Field[] fs = userCla.getDeclaredFields();
         for (int i = 0; i < fs.length; i++) {
@@ -220,45 +222,46 @@ public class MyPrint implements Printable{
         }
         // 没有查到时返回空字符串
         return "";
-	}
+    }
 
-	private double getlistFieldWidthTotal() {
-		   float widthTotal = 0;
-	        for (int i = 0; i < listFieldWidths.size(); i++) {
-	            widthTotal += listFieldWidths.get(i);
-	        }
-	        return widthTotal;
-	}
+    private double getlistFieldWidthTotal() {
+        float widthTotal = 0;
+        for (int i = 0; i < listFieldWidths.size(); i++) {
+            widthTotal += listFieldWidths.get(i);
+        }
+        return widthTotal;
+    }
 
-	private double getlistFieldWidthTotal(int index) {
-		float widthTotal = 0;
+    private double getlistFieldWidthTotal(int index) {
+        float widthTotal = 0;
         for (int i = 0; i <= index; i++) {
             widthTotal += listFieldWidths.get(i);
         }
         return widthTotal;
-	}
-	 public void doPrint(Printable order) {
-	        try {
-	            //Book 类提供文档的表示形式，该文档的页面可以使用不同的页面格式和页面 painter
-	            Book book = new Book(); //要打印的文档
-	            //PageFormat类描述要打印的页面大小和方向
-	            PageFormat pf = new PageFormat();  //初始化一个页面打印对象
-	            pf.setOrientation(PageFormat.PORTRAIT); //设置页面打印方向，从上往下，从左往右
-	            //设置打印纸页面信息。通过Paper设置页面的空白边距和可打印区域。必须与实际打印纸张大小相符。
-	            Paper paper = new Paper();
-	            // 纸张大小
-	            //paper.setSize(683, 793.7);
-	            paper.setSize(683, 500);
-	            // A4(595 X 842)设置打印区域 A4纸的默认X,Y边距是72
-	            //paper.setImageableArea(20, 20, 683, 793.7);
-	            paper.setImageableArea(20, 20, 683, 500);
-	            pf.setPaper(paper);
-	            book.append(order, pf, this.totalPageCount);
-	            PrinterJob job = PrinterJob.getPrinterJob();   //获取打印服务对象
-	            job.setPageable(book);  //设置打印类
-	            job.print();
-	        } catch (PrinterException e) {
-	            e.printStackTrace();
-	        }
-	    }
+    }
+
+    public void doPrint(Printable order) {
+        try {
+            //Book 类提供文档的表示形式，该文档的页面可以使用不同的页面格式和页面 painter
+            Book book = new Book(); //要打印的文档
+            //PageFormat类描述要打印的页面大小和方向
+            PageFormat pf = new PageFormat();  //初始化一个页面打印对象
+            pf.setOrientation(PageFormat.PORTRAIT); //设置页面打印方向，从上往下，从左往右
+            //设置打印纸页面信息。通过Paper设置页面的空白边距和可打印区域。必须与实际打印纸张大小相符。
+            Paper paper = new Paper();
+            // 纸张大小
+            //paper.setSize(683, 793.7);
+            paper.setSize(683, 500);
+            // A4(595 X 842)设置打印区域 A4纸的默认X,Y边距是72
+            //paper.setImageableArea(20, 20, 683, 793.7);
+            paper.setImageableArea(20, 20, 683, 500);
+            pf.setPaper(paper);
+            book.append(order, pf, this.totalPageCount);
+            PrinterJob job = PrinterJob.getPrinterJob();   //获取打印服务对象
+            job.setPageable(book);  //设置打印类
+            job.print();
+        } catch (PrinterException e) {
+            e.printStackTrace();
+        }
+    }
 }

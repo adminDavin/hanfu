@@ -18,6 +18,6 @@ public class HfUserBalanceServiceImpl implements HfUserBalanceService {
 
     @Override
     public void balanceCutTotal(Integer userId, Integer hfBalance, Integer total) {
-        hUserBalanceMapper.balanceCutTotal(userId,hfBalance,total);
+        hUserBalanceMapper.balanceCutTotal(userId, hfBalance, total);
     }
 }

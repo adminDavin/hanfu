@@ -9,10 +9,10 @@ import com.hanfu.order.center.request.HfOrdersRequest;
 
 public interface HfOrdersService {
 
-	@SuppressWarnings("rawtypes")
-	List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics);
+    @SuppressWarnings("rawtypes")
+    List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics);
 
-	@SuppressWarnings("rawtypes")
-	List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics) throws Exception;
+    @SuppressWarnings("rawtypes")
+    List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics) throws Exception;
 
 }
