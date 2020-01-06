@@ -66,7 +66,12 @@
         auth_key=#{authKey}
     </select>
     <select id="selectUserList" resultMap="ResultMap">
-        SELECT * FROM hf_user
+        SELECT * FROM
+        hf_user h
+        JOIN 
+        hf_user_balance h1
+        ON
+        h.user_id = h1.id
     </select>
     <!-- <select id="findActivityUserInfo" resultMap="ActivityUserInfo">
         SELECT

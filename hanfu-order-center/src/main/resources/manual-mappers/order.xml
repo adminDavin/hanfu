@@ -90,6 +90,9 @@
         <if test="orderDetailStatus!=null and ''!=orderDetailStatus">
             AND h3.order_detail_status=#{orderDetailStatus}
         </if>
+        <if test="orderDetailId!=null and ''!=orderDetailId">
+            AND h1.order_detail_id=#{orderDetailId}
+        </if>
     </select>
     <select id="selectOrderByUserId" resultMap="BaseResultMap">
         SELECT *
