@@ -277,6 +277,7 @@
         hf_category h1
         ON
         h.category_id = h1.id
+        JOIN
         hf_price h2
         ON
         h.price_id = h2.id
@@ -284,7 +285,7 @@
         h2.sell_price
     </select>
     <select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
-             SELECT *
+        SELECT *
         FROM
         hf_goods h
         JOIN
@@ -295,6 +296,7 @@
         hf_category h1
         ON
         h.category_id = h1.id
+        JOIN
         hf_price h2
         ON
         h.price_id = h2.id
