@@ -4,19 +4,16 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.cart.center.model.Cart;
-import com.hanfu.cart.center.model.Product;
 import com.hanfu.cart.center.service.CartService;
 import com.hanfu.cart.center.service.ProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -151,82 +148,4 @@ public class CartCenterController {
         redisTemplate.opsForValue().set(userId.toString(), productMessage);
         return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
     } 
-    @RequestMapping(path = "/selSettlemen",  method = RequestMethod.GET)
-    @ApiOperation(value = "查看结算", notes = "查看结算")
-    public ResponseEntity<JSONObject> selSettlemen( Integer userId) throws Exception{
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
-    } 
-	@ApiOperation(value = "设为常买", notes = "设为常买")
-	@RequestMapping(value = "/OftenBuy", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-	    @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> OftenBuy(Integer userId,Integer goodsId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		   int effectNum = productService.addCart(userId.toString(),goodsId.toString());
-	        if (effectNum<=0){ 
-	            return builder.body(ResponseUtils.getResponseBody("设置失败"));
-	        }
-	        return builder.body(ResponseUtils.getResponseBody("设置成功"));
-	}
-	@ApiOperation(value = "查看常买", notes = "查看常买")
-	@RequestMapping(value = "/selectOftenBuy", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> selectOftenBuy(Integer userId,Integer goodsId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<Product> cartDtoList = productService.getCartList(userId.toString());
-        return builder.body(ResponseUtils.getResponseBody(cartDtoList));
-	}
-	@ApiOperation(value = "取消常买", notes = "取消常买")
-	@RequestMapping(value = "/delOftenbuy", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer"),})
-	public ResponseEntity<JSONObject> delOftenbuy(Integer userId,Integer goodsId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		int effectNum = cartService.delCartProduct(userId.toString(), goodsId.toString());
-		   if (effectNum <=0){
-	            return builder.body(ResponseUtils.getResponseBody("取消失败")); 
-	        }
-		return builder.body(ResponseUtils.getResponseBody("取消成功"));
-	}
-	@ApiOperation(value = "设置关注", notes = "设置关注")
-	@RequestMapping(value = "/Concern", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String"), 
-	    @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> Concern(String openId,Integer goodsId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		redisTemplate.opsForValue().set(openId, goodsId);
-		return builder.body(ResponseUtils.getResponseBody("关注成功"));
-	}
-	@ApiOperation(value = "取消关注", notes = "取消关注")
-	@RequestMapping(value = "/delConcern", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "goodsId", required = true, type = "Integer"),})
-	public ResponseEntity<JSONObject> delConcern(String openId,Integer goodsId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		int effectNum = cartService.delCartProduct(openId, goodsId.toString());
-		   if (effectNum <=0){
-	            return builder.body(ResponseUtils.getResponseBody("取消失败")); 
-	        } 
-		return builder.body(ResponseUtils.getResponseBody("取消成功"));
-	}
-	@ApiOperation(value = "查看关注", notes = "查看关注")
-	@RequestMapping(value = "/selectConcern", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "openId", value = "openId", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> selectConcern(Integer openId)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(openId)));
-	}
 }
