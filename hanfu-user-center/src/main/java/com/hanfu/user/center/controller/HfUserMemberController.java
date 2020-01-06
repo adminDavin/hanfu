@@ -1,8 +1,10 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.user.center.model.HfSetBuyMember;
 import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
+import com.hanfu.user.center.service.HfsetMemeberService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -12,11 +14,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName HfUserMemberController
@@ -32,8 +37,14 @@ public class HfUserMemberController {
     @Autowired
     private HfUserMemberService hfUserMemberService;
 
-    @RequestMapping(value = "/rechargeMember", method = RequestMethod.GET)
-    @ApiOperation(value = "充值会员", notes = "充值会员")
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private HfsetMemeberService hfsetMemeberService;
+
+    @RequestMapping(value = "/rechargeMember",method = RequestMethod.GET)
+    @ApiOperation(value = "充值会员",notes = "充值会员")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "money", value = "会员月数对应的金额", required = true, type = "Integer"),
@@ -101,8 +112,8 @@ public class HfUserMemberController {
     }
 
 
-    @ApiOperation(value = "购买会员", notes = "购买会员")
-    @RequestMapping(value = "buyMember", method = RequestMethod.GET)
+    @ApiOperation(value = "购买会员",notes = "购买会员")
+    @RequestMapping(value = "buyMember",method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "money", value = "会员月数对应的金额", required = true, type = "Integer"),
@@ -163,29 +174,86 @@ public class HfUserMemberController {
         }
     }
 
-//
-//
-//    @ApiOperation(value = "设置购买会员钱数月份",notes = "设置会员钱数月份")
-//    @RequestMapping(value = "/setbuyMember",method = RequestMethod.GET)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
-//    })
-//    public ResponseEntity<JSONObject> setbuyMember(@RequestParam(required = true,defaultValue = "") Integer total,
-//                                                @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//        return builder.body(ResponseUtils.getResponseBody("金额是:"+total+",金额对应的会员月份是"+number));
-//    }
-//
-//    @ApiOperation(value = "设置充值会员钱数月份",notes = "设置会员钱数月份")
-//    @RequestMapping(value = "/setrechargeMember",method = RequestMethod.GET)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
-//    })
-//    public ResponseEntity<JSONObject> setrechargeMember(@RequestParam(required = true,defaultValue = "") Integer total,
-//                                                   @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//        return builder.body(ResponseUtils.getResponseBody("金额是:"+total+",金额对应的会员月份是"+number));
-//    }
+
+    @ApiOperation(value = "设置购买会员钱数月份",notes = "设置会员钱数月份")
+    @RequestMapping(value = "/setbuyMember",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> setbuyMember(@RequestParam(required = true,defaultValue = "") Integer total,
+                                                   @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        HfSetBuyMember hfSetBuyMember = hfsetMemeberService.select(number);
+        if (null==hfSetBuyMember){
+            System.out.println("没有");
+            hfsetMemeberService.insert(number,total);
+            return builder.body(ResponseUtils.getResponseBody("设置成功"));
+        }else{
+            System.out.println("有");
+            hfsetMemeberService.update(number,total);
+            return builder.body(ResponseUtils.getResponseBody("设置成功"));
+        }
+
+    }
+
+    @ApiOperation(value = "设置充值会员钱数月份",notes = "设置会员钱数月份")
+    @RequestMapping(value = "/setrechargeMember",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> setrechargeMember(@RequestParam(required = true,defaultValue = "") Integer total,
+                                                        @RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        HfSetBuyMember hfSetBuyMember = hfsetMemeberService.newselect(number);
+        if (null==hfSetBuyMember){
+            System.out.println("没有");
+            hfsetMemeberService.newinsert(number,total);
+            return builder.body(ResponseUtils.getResponseBody("设置成功"));
+        }else{
+            System.out.println("有");
+            hfsetMemeberService.newupdate(number,total);
+            return builder.body(ResponseUtils.getResponseBody("设置成功"));
+        }
+
+    }
+
+    @ApiOperation(value = "查询购买会员",notes = "查询购买会员")
+    @RequestMapping(value = "/selectBuy",method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectBuy() throws JSONException {
+
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        List<HfSetBuyMember> list = hfsetMemeberService.selectBuy();
+
+        String string[] = new String[list.size()];
+
+        Object[] objects = list.toArray();
+        for(Object a:objects){
+            System.out.println(a);
+        }
+
+        return builder.body(ResponseUtils.getResponseBody(objects));
+    }
+
+    @ApiOperation(value = "查询充值会员",notes = "查询充值会员")
+    @RequestMapping(value = "/selectRe",method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectRe() throws JSONException {
+
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        List<HfSetBuyMember> list = hfsetMemeberService.selectRe();
+
+        String string[] = new String[list.size()];
+
+        Object[] objects = list.toArray();
+        for(Object a:objects){
+            System.out.println(a);
+        }
+
+        return builder.body(ResponseUtils.getResponseBody(objects));
+    }
 }

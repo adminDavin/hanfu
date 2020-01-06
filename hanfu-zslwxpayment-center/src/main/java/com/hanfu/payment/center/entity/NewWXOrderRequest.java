@@ -19,10 +19,6 @@ public class NewWXOrderRequest {
     @NotNull
     private String body;//描述
     @NotNull
-    private String out_trade_no;//商户订单号
-    @NotNull
-    private Integer user_id;//用户id
-    @NotNull
     private Integer id;//订单的id
 
     public String getOpenId() {
@@ -47,22 +43,6 @@ public class NewWXOrderRequest {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public String getOut_trade_no() {
-        return out_trade_no;
-    }
-
-    public void setOut_trade_no(String out_trade_no) {
-        this.out_trade_no = out_trade_no;
-    }
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
     }
 
     public Integer getId() {
