@@ -236,9 +236,9 @@
         h.goods_desc,h.id,
         h.hf_name,h.resp_id,
         h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
+        h1.id categoryId,p.id productId,h2.hf_name brandName,
         h.create_time,h.modify_time,h.cancel_id,h.claim,h.frames,
-        h.is_deleted,h2.hf_name brandName,
+        h.is_deleted
         FROM
         hf_goods h
         JOIN
@@ -277,10 +277,14 @@
         hf_category h1
         ON
         h.category_id = h1.id
-        order by sellPrice
+        hf_price h2
+        ON
+        h.price_id = h2.id
+        ORDER BY 
+        h2.sell_price
     </select>
     <select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
-            SELECT *
+             SELECT *
         FROM
         hf_goods h
         JOIN
@@ -291,7 +295,11 @@
         hf_category h1
         ON
         h.category_id = h1.id
-        order by sellPrice desc
+        hf_price h2
+        ON
+        h.price_id = h2.id
+        ORDER BY 
+        h2.sell_price  DESC
     </select>
     <update id="updateGoods">
         UPDATE
@@ -309,5 +317,7 @@
         award(award_name,emp_num)
         values(#{awardName},#{empNum})
     </insert>
-
+    <select id="queryGoods" resultMap="EntityHfGoodDispaly">
+        select  count(*) from hf_goods
+    </select>
 </mapper>

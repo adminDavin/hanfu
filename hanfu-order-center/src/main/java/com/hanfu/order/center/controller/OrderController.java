@@ -21,6 +21,7 @@ import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.manual.model.OrderFindValue;
 import com.hanfu.order.center.model.HfOrderStatus;
+import com.hanfu.order.center.model.HfOrderStatusExample;
 import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.model.HfOrdersDetailExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
@@ -152,7 +153,7 @@ public class OrderController {
             @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
-            //@ApiImplicitParam(paramType = "query", name = "creatTime", value = "下单时间", required = false, type = "LocalDateTime")
+            @ApiImplicitParam(paramType = "query", name = "orderDetailId", value = "订单详情Id", required = false, type = "Integer")
     })
     public ResponseEntity<JSONObject> queryOrder(OrderFindValue orderFindValue)
             throws Exception {
@@ -172,6 +173,9 @@ public class OrderController {
         if(StringUtils.isEmpty(hfOrdersDetailMapper.selectByPrimaryKey(orderId))) {
         	return builder.body(ResponseUtils.getResponseBody("订单不存在"));
         }
+        HfOrdersDetail hfOrderDetail = new HfOrdersDetail();
+        hfOrderDetail.setOrderDetailStatus("退款中");
+        hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrderDetail);
         return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
     }
 }

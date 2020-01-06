@@ -8,8 +8,17 @@ public class OrderFindValue implements Serializable {
     private String hfName;
     private String payMethodType;
     private String orderDetailStatus;
+    private Integer orderDetailId;
+    
+    public Integer getOrderDetailId() {
+		return orderDetailId;
+	}
 
-    public Integer getOrderId() {
+	public void setOrderDetailId(Integer orderDetailId) {
+		this.orderDetailId = orderDetailId;
+	}
+
+	public Integer getOrderId() {
         return orderId;
     }
 
