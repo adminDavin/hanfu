@@ -118,3 +118,115 @@ log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more in
 2019-12-24 10:06:05.261  INFO 5342 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
 2019-12-24 10:06:05.383  INFO 5342 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
 2019-12-24 10:06:05.387  INFO 5342 --- [           main] com.hanfu.message.center.Application     : Started Application in 3.83 seconds (JVM running for 4.169)
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-message-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 130, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 50, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 50, column 12
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ----------------< com.hanfu.base:hanfu-message-center >-----------------
+[INFO] Building hanfu-message-center 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) > test-compile @ hanfu-message-center >>>
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:build-info (default) @ hanfu-message-center ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hanfu-message-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hanfu-message-center ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 12 source files to /home/hanfu/project/hanfu/hanfu-message-center/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hanfu-message-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/hanfu/project/hanfu/hanfu-message-center/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hanfu-message-center ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) < test-compile @ hanfu-message-center <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) @ hanfu-message-center ---
+[INFO] Attaching agents: []
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.11.2/log4j-slf4j-impl-2.11.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+log4j:WARN No appenders could be found for logger (org.apache.dubbo.common.logger.LoggerFactory).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+2019-12-31 09:53:50.421  INFO 28886 --- [           main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-31 09:53:50.427  INFO 28886 --- [           main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.7.RELEASE)
+
+2019-12-31 09:53:50.614  INFO 28886 --- [           main] com.hanfu.message.center.Application     : Starting Application on iZ8vb5lq7zcx56jn12h1ugZ with PID 28886 (/home/hanfu/project/hanfu/hanfu-message-center/target/classes started by hanfu in /home/hanfu/project/hanfu/hanfu-message-center)
+2019-12-31 09:53:50.614  INFO 28886 --- [           main] com.hanfu.message.center.Application     : No active profile set, falling back to default profiles: default
+2019-12-31 09:53:51.875  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-31 09:53:51.876  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-31 09:53:51.876  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-31 09:53:51.876  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-31 09:53:51.877  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-31 09:53:51.877  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-31 09:53:51.877  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-31 09:53:51.877  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-31 09:53:51.878  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-31 09:53:51.878  INFO 28886 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-31 09:53:51.942  INFO 28886 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-31 09:53:51.944  INFO 28886 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-31 09:53:51.975  INFO 28886 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18ms. Found 0 repository interfaces.
+2019-12-31 09:53:52.101  WARN 28886 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.hanfu.message.center.dao]' package. Please check your configuration.
+2019-12-31 09:53:52.322  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration$$EnhancerBySpringCGLIB$$c0c360af] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.426  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$92cf3749] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.481  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$517d857f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.491  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.500  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.504  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.508  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.512  INFO 28886 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:53:52.937  INFO 28886 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9010 (http)
+2019-12-31 09:53:52.970  INFO 28886 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-31 09:53:52.971  INFO 28886 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-31 09:53:53.077  INFO 28886 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-31 09:53:53.078  INFO 28886 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2374 ms
+2019-12-31 09:53:53.847  INFO 28886 --- [           main] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2019-12-31 09:53:54.115  INFO 28886 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-31 09:53:54.279  INFO 28886 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-31 09:53:54.288  INFO 28886 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-31 09:53:54.299  INFO 28886 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubbo] have been binding by prefix of configuration properties : dubbo.protocol
+2019-12-31 09:53:54.323  INFO 28886 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ProviderConfig#0] have been binding by prefix of configuration properties : dubbo.provider
+2019-12-31 09:53:54.332  INFO 28886 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-31 09:53:55.471  INFO 28886 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-31 09:53:55.489  INFO 28886 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-31 09:53:55.525  INFO 28886 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-31 09:53:55.717  INFO 28886 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9010 (http) with context path ''
+2019-12-31 09:53:55.723  INFO 28886 --- [           main] com.hanfu.message.center.Application     : Started Application in 5.878 seconds (JVM running for 6.409)
+2020-01-03 06:44:50.407  INFO 28886 --- [       Thread-2] .b.c.e.AwaitingNonWebApplicationListener :  [Dubbo] Current Spring Boot Application is about to shutdown...
+2020-01-03 06:44:50.691  INFO 28886 --- [       Thread-2] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-01-03 06:44:50.694  INFO 28886 --- [       Thread-2] f.a.ReferenceAnnotationBeanPostProcessor : class org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor was destroying!
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------

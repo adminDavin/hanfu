@@ -1,0 +1,72 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-zslpayment-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 156, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ---------------< com.hanfu.base:hanfu-zslpayment-center >---------------
+[INFO] Building hanfu-zslpayment-center 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) > test-compile @ hanfu-zslpayment-center >>>
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hanfu-zslpayment-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hanfu-zslpayment-center ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hanfu-zslpayment-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/hanfu/project/hanfu/hanfu-zslpayment-center/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hanfu-zslpayment-center ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) < test-compile @ hanfu-zslpayment-center <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) @ hanfu-zslpayment-center ---
+[INFO] Attaching agents: []
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.11.2/log4j-slf4j-impl-2.11.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+2019-12-31 09:54:26.006 DEBUG 29087 --- [kground-preinit] .h.v.m.ResourceBundleMessageInterpolator : Loaded expression factory via original TCCL
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.7.RELEASE)
+
+2019-12-31 09:54:26.071  INFO 29087 --- [           main] c.h.p.center.AppletNewPayApplication     : Starting AppletNewPayApplication on iZ8vb5lq7zcx56jn12h1ugZ with PID 29087 (/home/hanfu/project/hanfu/hanfu-zslpayment-center/target/classes started by hanfu in /home/hanfu/project/hanfu/hanfu-zslpayment-center)
+2019-12-31 09:54:26.074  INFO 29087 --- [           main] c.h.p.center.AppletNewPayApplication     : No active profile set, falling back to default profiles: default
+2019-12-31 09:54:27.326  INFO 29087 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9099 (http)
+2019-12-31 09:54:27.350  INFO 29087 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-31 09:54:27.351  INFO 29087 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-31 09:54:27.623  INFO 29087 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-31 09:54:27.623  INFO 29087 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1505 ms
+2019-12-31 09:54:28.936  INFO 29087 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2019-12-31 09:54:29.381  INFO 29087 --- [           main] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2019-12-31 09:54:29.604  INFO 29087 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2019-12-31 09:54:29.625  INFO 29087 --- [           main] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2019-12-31 09:54:29.634  INFO 29087 --- [           main] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2019-12-31 09:54:30.313  INFO 29087 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 9099 (http) with context path ''
+2019-12-31 09:54:30.336  INFO 29087 --- [           main] c.h.p.center.AppletNewPayApplication     : Started AppletNewPayApplication in 4.751 seconds (JVM running for 5.118)
+2020-01-02 12:55:00.303  INFO 29087 --- [nio-9099-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-01-02 12:55:00.305  INFO 29087 --- [nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-01-02 12:55:00.314  INFO 29087 --- [nio-9099-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+2020-01-03 06:44:50.386  INFO 29087 --- [       Thread-2] o.s.s.c.ThreadPoolTaskScheduler          : Shutting down ExecutorService 'taskScheduler'
+2020-01-03 06:44:50.462  INFO 29087 --- [       Thread-2] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------

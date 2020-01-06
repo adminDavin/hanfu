@@ -21,7 +21,7 @@ public class FdfsClient {
 //   	 	File file = new  File("C:\\Users\\123\\Desktop\\timg.jpg");
 //   		FileInputStream fis = new  FileInputStream(file);
 //   		TrackerServer trackerServer = trackerClient.getConnection();
-//   		StorageServer storage = new StorageServer("172.26.16.97", 23000, 0);
+//   		StorageServer storage = new StorageServer("172.26.16.96", 23000, 0);
 //   		System.out.println(storage.getInetSocketAddress());
 //   		StorageClient client = new StorageClient(trackerServer, storage);
 //	   	byte[] file_buff = null;
@@ -46,7 +46,7 @@ public class FdfsClient {
 			TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
 	        TrackerClient trackerClient = new TrackerClient(trackerGroup);
 	        TrackerServer trackerServer = trackerClient.getConnection();
-	   		StorageServer storage = new StorageServer("172.26.16.97", 23000, 0);
+	   		StorageServer storage = new StorageServer("172.26.16.96", 23000, 0);
 	        client = new StorageClient(trackerServer, storage);
 		} catch (IOException e) {
 			e.printStackTrace();

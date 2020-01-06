@@ -1,0 +1,288 @@
+internal/modules/cjs/loader.js:800
+    throw err;
+    ^
+
+Error: Cannot find module '/home/hanfu/project/hanfu/build/webpack.dev.conf.js'
+Require stack:
+- /usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js
+- /usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:797:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:690:27)
+    at Module.require (internal/modules/cjs/loader.js:852:19)
+    at require (internal/modules/cjs/helpers.js:74:18)
+    at WEBPACK_OPTIONS (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:114:13)
+    at requireConfig (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:116:6)
+    at /usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:123:17
+    at Array.forEach (<anonymous>)
+    at module.exports (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:121:15)
+    at Object.<anonymous> (/usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js:84:40) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js',
+    '/usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js'
+  ]
+}
+internal/modules/cjs/loader.js:800
+    throw err;
+    ^
+
+Error: Cannot find module '/home/hanfu/project/hanfu/build/webpack.dev.conf.js'
+Require stack:
+- /usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js
+- /usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:797:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:690:27)
+    at Module.require (internal/modules/cjs/loader.js:852:19)
+    at require (internal/modules/cjs/helpers.js:74:18)
+    at WEBPACK_OPTIONS (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:114:13)
+    at requireConfig (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:116:6)
+    at /usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:123:17
+    at Array.forEach (<anonymous>)
+    at module.exports (/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js:121:15)
+    at Object.<anonymous> (/usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js:84:40) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/usr/lib/node_modules/webpack-cli/bin/utils/convert-argv.js',
+    '/usr/lib/node_modules/webpack-dev-server/bin/webpack-dev-server.js'
+  ]
+}
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-user-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> version 1.3.2 vs 2.1.0 @ line 91, column 15
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> version 1.3.2 vs 2.1.0 @ line 129, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 58, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 58, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.product.center:hanfu-product-center:jar:0.0.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 150, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.group.center:hanfu-group-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 124, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 51, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 51, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.payment.center:hanfu-payment-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 126, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-referral-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: com.hanfu.utils:hanfu-web-utils:jar -> duplicate declaration of version 0.0.1 @ line 51, column 15
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 15, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.activity:hanfu-activity-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 142, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 52, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 52, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.seckill.center:hanfu-seckill-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 137, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-cart-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 130, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 50, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 50, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-zslpayment-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 156, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hanfu-system                                                       [pom]
+[INFO] hanfu-common                                                       [jar]
+[INFO] hanfu-web-utils                                                    [jar]
+[INFO] hanfu-user-center                                                  [jar]
+[INFO] hanfu-inner-sdk                                                    [jar]
+[INFO] hanfu-product-center                                               [jar]
+[INFO] hanfu-product-client                                               [jar]
+[INFO] hanfu-group-center                                                 [jar]
+[INFO] hanfu-payment-center                                               [jar]
+[INFO] hanfu-payment-client                                               [jar]
+[INFO] hanfu-referral-center                                              [jar]
+[INFO] hanfu-activity-center                                              [jar]
+[INFO] hanfu-seckill-center                                               [jar]
+[INFO] hanfu-cart-center                                                  [jar]
+[INFO] hanfu-zslpayment-center                                            [jar]
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Progress (1): 2.2/20 kBProgress (1): 5.0/20 kBProgress (2): 5.0/20 kB | 2.2/14 kBProgress (2): 5.0/20 kB | 5.0/14 kBProgress (2): 5.0/20 kB | 7.8/14 kBProgress (2): 5.0/20 kB | 11/14 kB Progress (2): 7.8/20 kB | 11/14 kBProgress (2): 11/20 kB | 11/14 kB Progress (2): 13/20 kB | 11/14 kBProgress (2): 16/20 kB | 11/14 kBProgress (2): 19/20 kB | 11/14 kBProgress (2): 20 kB | 11/14 kB   Progress (2): 20 kB | 13/14 kBProgress (2): 20 kB | 14 kB                              Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (20 kB at 6.1 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 4.0 kB/s)
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] hanfu-system 0.0.1-SNAPSHOT ........................ SKIPPED
+[INFO] hanfu-common 0.0.1 ................................. SKIPPED
+[INFO] hanfu-web-utils 0.0.1 .............................. SKIPPED
+[INFO] hanfu-user-center 0.0.1-SNAPSHOT ................... SKIPPED
+[INFO] hanfu-inner-sdk 0.0.1 .............................. SKIPPED
+[INFO] hanfu-product-center 0.0.1 ......................... SKIPPED
+[INFO] hanfu-product-client 0.0.1-SNAPSHOT ................ SKIPPED
+[INFO] hanfu-group-center 0.0.1-SNAPSHOT .................. SKIPPED
+[INFO] hanfu-payment-center 0.0.1-SNAPSHOT ................ SKIPPED
+[INFO] hanfu-payment-client 0.0.1-SNAPSHOT ................ SKIPPED
+[INFO] hanfu-referral-center 0.0.1-SNAPSHOT ............... SKIPPED
+[INFO] hanfu-activity-center 0.0.1-SNAPSHOT ............... SKIPPED
+[INFO] hanfu-seckill-center 0.0.1-SNAPSHOT ................ SKIPPED
+[INFO] hanfu-cart-center 0.0.1-SNAPSHOT ................... SKIPPED
+[INFO] hanfu-zslpayment-center 0.0.1-SNAPSHOT ............. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.532 s
+[INFO] Finished at: 2019-12-31T11:33:38+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] No plugin found for prefix 'spring-boot' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/home/hanfu/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/NoPluginFoundForPrefixException
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-user-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> version 1.3.2 vs 2.1.0 @ com.hanfu.base:hanfu-user-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-user-center/pom.xml, line 91, column 15
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> version 1.3.2 vs 2.1.0 @ com.hanfu.base:hanfu-user-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-user-center/pom.xml, line 129, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.base:hanfu-user-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-user-center/pom.xml, line 58, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.base:hanfu-user-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-user-center/pom.xml, line 58, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.product.center:hanfu-product-center:jar:0.0.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 150, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.group.center:hanfu-group-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ com.hanfu.group.center:hanfu-group-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-group-center/pom.xml, line 124, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.group.center:hanfu-group-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-group-center/pom.xml, line 51, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.group.center:hanfu-group-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-group-center/pom.xml, line 51, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.payment.center:hanfu-payment-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ com.hanfu.payment.center:hanfu-payment-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-payment-center/pom.xml, line 126, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.payment.center:hanfu-payment-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-payment-center/pom.xml, line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.payment.center:hanfu-payment-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-payment-center/pom.xml, line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-referral-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: com.hanfu.utils:hanfu-web-utils:jar -> duplicate declaration of version 0.0.1 @ com.hanfu.base:hanfu-referral-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-referral-center/pom.xml, line 51, column 15
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.base:hanfu-referral-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-referral-center/pom.xml, line 15, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.activity:hanfu-activity-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ com.hanfu.activity:hanfu-activity-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-activity-center/pom.xml, line 142, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.activity:hanfu-activity-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-activity-center/pom.xml, line 52, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.activity:hanfu-activity-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-activity-center/pom.xml, line 52, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.seckill.center:hanfu-seckill-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ com.hanfu.seckill.center:hanfu-seckill-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-seckill-center/pom.xml, line 137, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.seckill.center:hanfu-seckill-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-seckill-center/pom.xml, line 53, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.seckill.center:hanfu-seckill-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-seckill-center/pom.xml, line 53, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-cart-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ com.hanfu.base:hanfu-cart-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-cart-center/pom.xml, line 130, column 15
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ com.hanfu.base:hanfu-cart-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-cart-center/pom.xml, line 50, column 12
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.base:hanfu-cart-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-cart-center/pom.xml, line 50, column 12
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.base:hanfu-zslpayment-center:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ com.hanfu.base:hanfu-zslpayment-center:[unknown-version], /home/hanfu/project/hanfu/hanfu-zslpayment-center/pom.xml, line 156, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] hanfu-system                                                       [pom]
+[INFO] hanfu-common                                                       [jar]
+[INFO] hanfu-web-utils                                                    [jar]
+[INFO] hanfu-user-center                                                  [jar]
+[INFO] hanfu-inner-sdk                                                    [jar]
+[INFO] hanfu-product-center                                               [jar]
+[INFO] hanfu-product-client                                               [jar]
+[INFO] hanfu-group-center                                                 [jar]
+[INFO] hanfu-payment-center                                               [jar]
+[INFO] hanfu-payment-client                                               [jar]
+[INFO] hanfu-referral-center                                              [jar]
+[INFO] hanfu-activity-center                                              [jar]
+[INFO] hanfu-seckill-center                                               [jar]
+[INFO] hanfu-cart-center                                                  [jar]
+[INFO] hanfu-zslpayment-center                                            [jar]
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom
+Progress (1): 2.2/3.9 kBProgress (1): 3.9 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom (3.9 kB at 2.6 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.jar
+Progress (1): 2.2/25 kBProgress (1): 5.0/25 kBProgress (1): 7.7/25 kBProgress (1): 10/25 kB Progress (1): 13/25 kBProgress (1): 16/25 kBProgress (1): 19/25 kBProgress (1): 21/25 kBProgress (1): 24/25 kBProgress (1): 25 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.jar (25 kB at 37 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.pom
+Progress (1): 2.2/5.6 kBProgress (1): 5.0/5.6 kBProgress (1): 5.6 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.pom (5.6 kB at 13 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.jar
+Progress (1): 2.2/27 kBProgress (1): 5.0/27 kBProgress (1): 7.7/27 kBProgress (1): 10/27 kB Progress (1): 13/27 kBProgress (1): 16/27 kBProgress (1): 19/27 kBProgress (1): 21/27 kBProgress (1): 24/27 kBProgress (1): 27 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-deploy-plugin/2.7/maven-deploy-plugin-2.7.jar (27 kB at 65 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.pom
+Progress (1): 2.2/21 kBProgress (1): 5.0/21 kBProgress (1): 7.8/21 kBProgress (1): 11/21 kB Progress (1): 13/21 kBProgress (1): 16/21 kBProgress (1): 19/21 kBProgress (1): 21 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.pom (21 kB at 49 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.jar
+Progress (1): 2.2/124 kBProgress (1): 5.0/124 kBProgress (1): 7.7/124 kBProgress (1): 10/124 kB Progress (1): 13/124 kBProgress (1): 16/124 kBProgress (1): 19/124 kBProgress (1): 21/124 kBProgress (1): 24/124 kBProgress (1): 27/124 kBProgress (1): 30/124 kBProgress (1): 32/124 kBProgress (1): 36/124 kBProgress (1): 40/124 kBProgress (1): 45/124 kBProgress (1): 49/124 kBProgress (1): 53/124 kBProgress (1): 57/124 kBProgress (1): 61/124 kBProgress (1): 65/124 kBProgress (1): 69/124 kBProgress (1): 73/124 kBProgress (1): 77/124 kBProgress (1): 81/124 kBProgress (1): 85/124 kBProgress (1): 90/124 kBProgress (1): 94/124 kBProgress (1): 98/124 kBProgress (1): 102/124 kBProgress (1): 106/124 kBProgress (1): 110/124 kBProgress (1): 114/124 kBProgress (1): 118/124 kBProgress (1): 122/124 kBProgress (1): 124 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-site-plugin/3.3/maven-site-plugin-3.3.jar (124 kB at 194 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-antrun-plugin/1.3/maven-antrun-plugin-1.3.pom
+Progress (1): 4.1/4.7 kBProgress (1): 4.7 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-antrun-plugin/1.3/maven-antrun-plugin-1.3.pom (4.7 kB at 11 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/12/maven-plugins-12.pom
+Progress (1): 2.2/12 kBProgress (1): 5.0/12 kBProgress (1): 7.8/12 kBProgress (1): 11/12 kB Progress (1): 12 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/12/maven-plugins-12.pom (12 kB at 27 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/9/maven-parent-9.pom
+Progress (1): 2.2/33 kBProgress (1): 5.0/33 kBProgress (1): 7.8/33 kBProgress (1): 11/33 kB Progress (1): 13/33 kBProgress (1): 16/33 kBProgress (1): 19/33 kBProgress (1): 21/33 kBProgress (1): 24/33 kBProgress (1): 27/33 kBProgress (1): 30/33 kBProgress (1): 32/33 kBProgress (1): 33 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-parent/9/maven-parent-9.pom (33 kB at 77 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-antrun-plugin/1.3/maven-antrun-plugin-1.3.jar
+Progress (1): 2.2/24 kBProgress (1): 5.0/24 kBProgress (1): 7.7/24 kBProgress (1): 10/24 kB Progress (1): 13/24 kBProgress (1): 16/24 kBProgress (1): 19/24 kBProgress (1): 21/24 kBProgress (1): 24 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-antrun-plugin/1.3/maven-antrun-plugin-1.3.jar (24 kB at 56 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-5/maven-assembly-plugin-2.2-beta-5.pom
+Progress (1): 2.2/15 kBProgress (1): 5.0/15 kBProgress (1): 7.8/15 kBProgress (1): 11/15 kB Progress (1): 13/15 kBProgress (1): 15 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-5/maven-assembly-plugin-2.2-beta-5.pom (15 kB at 36 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/16/maven-plugins-16.pom
+Progress (1): 2.2/13 kBProgress (1): 5.0/13 kBProgress (1): 7.8/13 kBProgress (1): 11/13 kB Progress (1): 13 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-plugins/16/maven-plugins-16.pom (13 kB at 29 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-5/maven-assembly-plugin-2.2-beta-5.jar
+Progress (1): 2.2/209 kBProgress (1): 5.0/209 kBProgress (1): 7.7/209 kBProgress (1): 10/209 kB Progress (1): 13/209 kBProgress (1): 16/209 kBProgress (1): 19/209 kBProgress (1): 21/209 kBProgress (1): 24/209 kBProgress (1): 27/209 kBProgress (1): 30/209 kBProgress (1): 32/209 kBProgress (1): 36/209 kBProgress (1): 40/209 kBProgress (1): 45/209 kBProgress (1): 49/209 kBProgress (1): 53/209 kBProgress (1): 57/209 kBProgress (1): 61/209 kBProgress (1): 65/209 kBProgress (1): 69/209 kBProgress (1): 73/209 kBProgress (1): 77/209 kBProgress (1): 81/209 kBProgress (1): 85/209 kBProgress (1): 90/209 kBProgress (1): 94/209 kBProgress (1): 98/209 kBProgress (1): 102/209 kBProgress (1): 106/209 kBProgress (1): 110/209 kBProgress (1): 114/209 kBProgress (1): 118/209 kBProgress (1): 122/209 kBProgress (1): 126/209 kBProgress (1): 131/209 kBProgress (1): 135/209 kBProgress (1): 139/209 kBProgress (1): 143/209 kBProgress (1): 147/209 kBProgress (1): 151/209 kBProgress (1): 155/209 kBProgress (1): 159/209 kBProgress (1): 163/209 kBProgress (1): 167/209 kBProgress (1): 171/209 kBProgress (1): 176/209 kBProgress (1): 180/209 kBProgress (1): 184/209 kBProgress (1): 188/209 kBProgress (1): 192/209 kBProgress (1): 196/209 kBProgress (1): 200/209 kBProgress (1): 204/209 kBProgress (1): 208/209 kBProgress (1): 209 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-assembly-plugin/2.2-beta-5/maven-assembly-plugin-2.2-beta-5.jar (209 kB at 316 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-dependency-plugin/2.8/maven-dependency-plugin-2.8.pom
+Progress (1): 4.1/11 kBProgress (1): 7.7/11 kBProgress (1): 11 kB                       Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-dependency-plugin/2.8/maven-dependency-plugin-2.8.pom (11 kB at 27 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-dependency-plugin/2.8/maven-dependency-plugin-2.8.jar
+Progress (1): 4.1/153 kBProgress (1): 7.7/153 kBProgress (1): 12/153 kB Progress (1): 16/153 kBProgress (1): 20/153 kBProgress (1): 24/153 kBProgress (1): 28/153 kBProgress (1): 32/153 kBProgress (1): 36/153 kBProgress (1): 40/153 kBProgress (1): 45/153 kBProgress (1): 49/153 kBProgress (1): 53/153 kBProgress (1): 57/153 kBProgress (1): 61/153 kBProgress (1): 65/153 kBProgress (1): 69/153 kBProgress (1): 73/153 kBProgress (1): 77/153 kBProgress (1): 81/153 kBProgress (1): 85/153 kBProgress (1): 90/153 kBProgress (1): 94/153 kBProgress (1): 98/153 kBProgress (1): 102/153 kBProgress (1): 106/153 kBProgress (1): 110/153 kBProgress (1): 114/153 kBProgress (1): 118/153 kBProgress (1): 122/153 kBProgress (1): 126/153 kBProgress (1): 131/153 kBProgress (1): 135/153 kBProgress (1): 139/153 kBProgress (1): 143/153 kBProgress (1): 147/153 kBProgress (1): 151/153 kBProgress (1): 153 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-dependency-plugin/2.8/maven-dependency-plugin-2.8.jar (153 kB at 334 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-release-plugin/2.5.3/maven-release-plugin-2.5.3.pom
+Progress (1): 4.1/11 kBProgress (1): 7.7/11 kBProgress (1): 11 kB                       Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-release-plugin/2.5.3/maven-release-plugin-2.5.3.pom (11 kB at 24 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/release/maven-release/2.5.3/maven-release-2.5.3.pom
+Progress (1): 4.1/5.0 kBProgress (1): 5.0 kB                        Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/release/maven-release/2.5.3/maven-release-2.5.3.pom (5.0 kB at 11 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-release-plugin/2.5.3/maven-release-plugin-2.5.3.jar
+Progress (1): 2.2/53 kBProgress (1): 5.0/53 kBProgress (1): 7.7/53 kBProgress (1): 10/53 kB Progress (1): 13/53 kBProgress (1): 16/53 kBProgress (1): 19/53 kBProgress (1): 21/53 kBProgress (1): 24/53 kBProgress (1): 27/53 kBProgress (1): 30/53 kBProgress (1): 32/53 kBProgress (1): 36/53 kBProgress (1): 40/53 kBProgress (1): 45/53 kBProgress (1): 49/53 kBProgress (1): 53/53 kBProgress (1): 53 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-release-plugin/2.5.3/maven-release-plugin-2.5.3.jar (53 kB at 113 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Progress (1): 4.1/20 kBProgress (1): 7.7/20 kBProgress (1): 12/20 kB Progress (1): 16/20 kBProgress (1): 20/20 kBProgress (1): 20 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (20 kB at 44 kB/s)
+Progress (1): 2.2/14 kBProgress (1): 5.0/14 kBProgress (1): 7.8/14 kBProgress (1): 11/14 kB Progress (1): 13/14 kBProgress (1): 14 kB                      Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 13 kB/s)
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] hanfu-system 0.0.1-SNAPSHOT ........................ SKIPPED
+[INFO] hanfu-common 0.0.1 ................................. SKIPPED
+[INFO] hanfu-web-utils 0.0.1 .............................. SKIPPED
+[INFO] hanfu-user-center .................................. SKIPPED
+[INFO] hanfu-inner-sdk 0.0.1 .............................. SKIPPED
+[INFO] hanfu-product-center 0.0.1 ......................... SKIPPED
+[INFO] hanfu-product-client ............................... SKIPPED
+[INFO] hanfu-group-center ................................. SKIPPED
+[INFO] hanfu-payment-center ............................... SKIPPED
+[INFO] hanfu-payment-client ............................... SKIPPED
+[INFO] hanfu-referral-center .............................. SKIPPED
+[INFO] hanfu-activity-center .............................. SKIPPED
+[INFO] hanfu-seckill-center ............................... SKIPPED
+[INFO] hanfu-cart-center .................................. SKIPPED
+[INFO] hanfu-zslpayment-center 0.0.1-SNAPSHOT ............. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 11.890 s
+[INFO] Finished at: 2020-01-03T16:10:17+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] No plugin found for prefix 'spring-boot' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/home/hanfu/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/NoPluginFoundForPrefixException

@@ -253,3 +253,210 @@
 [ERROR] 
 [ERROR] For more information about the errors and possible solutions, please read the following articles:
 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.hanfu.order.center:hanfu-order-center:jar:0.0.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.mybatis.spring.boot:mybatis-spring-boot-starter:jar -> duplicate declaration of version 2.1.0 @ line 139, column 15
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 19, column 12
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] -------------< com.hanfu.order.center:hanfu-order-center >--------------
+[INFO] Building hanfu-order-center 0.0.1
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) > test-compile @ hanfu-order-center >>>
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hanfu-order-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 10 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hanfu-order-center ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 55 source files to /home/hanfu/project/hanfu/hanfu-order-center/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hanfu-order-center ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /home/hanfu/project/hanfu/hanfu-order-center/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hanfu-order-center ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) < test-compile @ hanfu-order-center <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) @ hanfu-order-center ---
+[INFO] Attaching agents: []
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/slf4j/slf4j-log4j12/1.7.26/slf4j-log4j12-1.7.26.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/hanfu/.m2/repository/org/apache/logging/log4j/log4j-slf4j-impl/2.11.2/log4j-slf4j-impl-2.11.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+log4j:WARN No appenders could be found for logger (org.apache.dubbo.common.logger.LoggerFactory).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+2019-12-31 09:52:08.539  INFO 28430 --- [           main] d.s.b.c.e.WelcomeLogoApplicationListener : 
+
+ :: Dubbo Spring Boot (v2.7.3) : https://github.com/apache/dubbo-spring-boot-project
+ :: Dubbo (v2.7.3) : https://github.com/apache/incubator-dubbo
+ :: Discuss group : dev@dubbo.apache.org
+
+2019-12-31 09:52:08.543  INFO 28430 --- [           main] e.OverrideDubboConfigApplicationListener : Dubbo Config was overridden by externalized configuration {dubbo.application.name=hanfu-product-center, dubbo.application.qos-enable=false, dubbo.config.multiple=true, dubbo.metadata-report.address=zookeeper://47.105.72.216:2181, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1901, dubbo.provider.server=netty4, dubbo.registry.address=47.105.72.216:2181, dubbo.registry.client=curator, dubbo.registry.id=dubboProductServer, dubbo.registry.protocol=zookeeper}
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.7.RELEASE)
+
+2019-12-31 09:52:08.630  INFO 28430 --- [           main] com.hanfu.order.center.Application       : Starting Application on iZ8vb5lq7zcx56jn12h1ugZ with PID 28430 (/home/hanfu/project/hanfu/hanfu-order-center/target/classes started by hanfu in /home/hanfu/project/hanfu/hanfu-order-center)
+2019-12-31 09:52:08.633  INFO 28430 --- [           main] com.hanfu.order.center.Application       : No active profile set, falling back to default profiles: default
+2019-12-31 09:52:09.470  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ApplicationConfig#0, class : org.apache.dubbo.config.ApplicationConfig] has been registered.
+2019-12-31 09:52:09.470  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ApplicationConfig#0] has been registered.
+2019-12-31 09:52:09.471  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubboProductServer, class : org.apache.dubbo.config.RegistryConfig] has been registered.
+2019-12-31 09:52:09.471  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubboProductServer] has been registered.
+2019-12-31 09:52:09.471  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : dubbo, class : org.apache.dubbo.config.ProtocolConfig] has been registered.
+2019-12-31 09:52:09.471  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2019-12-31 09:52:09.471  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.ProviderConfig#0, class : org.apache.dubbo.config.ProviderConfig] has been registered.
+2019-12-31 09:52:09.472  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.ProviderConfig#0] has been registered.
+2019-12-31 09:52:09.472  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The dubbo config bean definition [name : org.apache.dubbo.config.MetadataReportConfig#0, class : org.apache.dubbo.config.MetadataReportConfig] has been registered.
+2019-12-31 09:52:09.472  INFO 28430 --- [           main] .a.d.c.s.c.a.DubboConfigBindingRegistrar : The BeanPostProcessor bean definition [org.apache.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : org.apache.dubbo.config.MetadataReportConfig#0] has been registered.
+2019-12-31 09:52:09.501  INFO 28430 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-12-31 09:52:09.503  INFO 28430 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-12-31 09:52:09.530  INFO 28430 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18ms. Found 0 repository interfaces.
+2019-12-31 09:52:09.823  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$db4c0d2b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.861  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration' of type [org.apache.dubbo.spring.boot.autoconfigure.DubboRelaxedBinding2AutoConfiguration$$EnhancerBySpringCGLIB$$99fa5b61] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.867  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.873  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.875  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.878  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:09.881  INFO 28430 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'relaxedDubboConfigBinder' of type [org.apache.dubbo.spring.boot.autoconfigure.BinderDubboConfigBinder] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-12-31 09:52:10.147  INFO 28430 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 9097 (http)
+2019-12-31 09:52:10.178  INFO 28430 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2019-12-31 09:52:10.179  INFO 28430 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-12-31 09:52:10.255  INFO 28430 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2019-12-31 09:52:10.256  INFO 28430 --- [           main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1586 ms
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by javassist.ClassPool (file:/home/hanfu/.m2/repository/org/javassist/javassist/3.20.0-GA/javassist-3.20.0-GA.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+WARNING: Please consider reporting this to the maintainers of javassist.ClassPool
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2019-12-31 09:52:11.016  INFO 28430 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : dubboProductServer] have been binding by prefix of configuration properties : dubbo.registry
+2019-12-31 09:52:11.036  INFO 28430 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.ApplicationConfig#0] have been binding by prefix of configuration properties : dubbo.application
+2019-12-31 09:52:11.046  INFO 28430 --- [           main] .f.a.DubboConfigBindingBeanPostProcessor : The properties of bean [name : org.apache.dubbo.config.MetadataReportConfig#0] have been binding by prefix of configuration properties : dubbo.metadata-report
+2019-12-31 09:52:11.052  INFO 28430 --- [           main] o.a.d.c.s.b.f.a.ReferenceBeanBuilder     : The configBean[type:ReferenceBean] has been built.
+2019-12-31 09:52:11.210  WARN 28430 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderController': Unsatisfied dependency expressed through field 'hfOrdersService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'hfOrdersDetailService': Injection of @Reference dependencies is failed; nested exception is org.apache.dubbo.rpc.RpcException: Fail to create remoting client for service(dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false): client(url: dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false) failed to connect to server /127.0.0.1:1900, error message is:Connection refused: /172.26.16.96:1900
+2019-12-31 09:52:11.221  INFO 28430 --- [           main] f.a.ReferenceAnnotationBeanPostProcessor : class org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor was destroying!
+2019-12-31 09:52:11.224  INFO 28430 --- [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2019-12-31 09:52:11.238  INFO 28430 --- [           main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2019-12-31 09:52:11.245 ERROR 28430 --- [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderController': Unsatisfied dependency expressed through field 'hfOrdersService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'hfOrdersDetailService': Injection of @Reference dependencies is failed; nested exception is org.apache.dubbo.rpc.RpcException: Fail to create remoting client for service(dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false): client(url: dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false) failed to connect to server /127.0.0.1:1900, error message is:Connection refused: /172.26.16.96:1900
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:596) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:374) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1411) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:592) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:845) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:877) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:549) ~[spring-context-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:141) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:743) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:390) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:312) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1214) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1203) ~[spring-boot-2.1.7.RELEASE.jar:2.1.7.RELEASE]
+	at com.hanfu.order.center.Application.main(Application.java:19) ~[classes/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'hfOrdersDetailService': Injection of @Reference dependencies is failed; nested exception is org.apache.dubbo.rpc.RpcException: Fail to create remoting client for service(dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false): client(url: dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false) failed to connect to server /127.0.0.1:1900, error message is:Connection refused: /172.26.16.96:1900
+	at org.apache.dubbo.config.spring.beans.factory.annotation.AnnotationInjectedBeanPostProcessor.postProcessPropertyValues(AnnotationInjectedBeanPostProcessor.java:151) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1416) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:592) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:515) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1251) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1171) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:593) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	... 19 common frames omitted
+Caused by: org.apache.dubbo.rpc.RpcException: Fail to create remoting client for service(dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false): client(url: dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false) failed to connect to server /127.0.0.1:1900, error message is:Connection refused: /172.26.16.96:1900
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.initClient(DubboProtocol.java:599) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.buildReferenceCountExchangeClient(DubboProtocol.java:563) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.buildReferenceCountExchangeClientList(DubboProtocol.java:550) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.getSharedClient(DubboProtocol.java:475) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.getClients(DubboProtocol.java:430) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.protocolBindingRefer(DubboProtocol.java:407) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.AbstractProtocol.refer(AbstractProtocol.java:91) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.ProtocolListenerWrapper.refer(ProtocolListenerWrapper.java:71) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.qos.protocol.QosProtocolWrapper.refer(QosProtocolWrapper.java:72) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.ProtocolFilterWrapper.refer(ProtocolFilterWrapper.java:130) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.Protocol$Adaptive.refer(Protocol$Adaptive.java) ~[dubbo-common-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.ReferenceConfig.createProxy(ReferenceConfig.java:396) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.ReferenceConfig.init(ReferenceConfig.java:329) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.ReferenceConfig.get(ReferenceConfig.java:250) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor$ReferenceBeanInvocationHandler.init(ReferenceAnnotationBeanPostProcessor.java:269) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor$ReferenceBeanInvocationHandler.access$100(ReferenceAnnotationBeanPostProcessor.java:242) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor.buildInvocationHandler(ReferenceAnnotationBeanPostProcessor.java:236) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor.buildProxy(ReferenceAnnotationBeanPostProcessor.java:219) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor.doGetInjectedBean(ReferenceAnnotationBeanPostProcessor.java:134) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.AnnotationInjectedBeanPostProcessor.getInjectedObject(AnnotationInjectedBeanPostProcessor.java:360) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.AnnotationInjectedBeanPostProcessor$AnnotatedFieldElement.inject(AnnotationInjectedBeanPostProcessor.java:540) ~[dubbo-2.7.3.jar:2.7.3]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90) ~[spring-beans-5.1.9.RELEASE.jar:5.1.9.RELEASE]
+	at org.apache.dubbo.config.spring.beans.factory.annotation.AnnotationInjectedBeanPostProcessor.postProcessPropertyValues(AnnotationInjectedBeanPostProcessor.java:147) ~[dubbo-2.7.3.jar:2.7.3]
+	... 30 common frames omitted
+Caused by: org.apache.dubbo.remoting.RemotingException: client(url: dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService?application=hanfu-product-center&codec=dubbo&heartbeat=60000&interface=com.hanfu.inner.sdk.product.center.ProductService&lazy=false&pid=28430&qos.enable=false&register.ip=172.26.16.96&remote.application=&revision=0.0.1&side=consumer&sticky=false) failed to connect to server /127.0.0.1:1900, error message is:Connection refused: /172.26.16.96:1900
+	at org.apache.dubbo.remoting.transport.netty4.NettyClient.doConnect(NettyClient.java:166) ~[dubbo-remoting-netty4-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.transport.AbstractClient.connect(AbstractClient.java:190) ~[dubbo-remoting-api-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.transport.AbstractClient.<init>(AbstractClient.java:69) ~[dubbo-remoting-api-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.transport.netty4.NettyClient.<init>(NettyClient.java:80) ~[dubbo-remoting-netty4-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.transport.netty4.NettyTransporter.connect(NettyTransporter.java:40) ~[dubbo-remoting-netty4-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.Transporter$Adaptive.connect(Transporter$Adaptive.java) ~[dubbo-common-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.Transporters.connect(Transporters.java:75) ~[dubbo-remoting-api-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.exchange.support.header.HeaderExchanger.connect(HeaderExchanger.java:39) ~[dubbo-remoting-api-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.remoting.exchange.Exchangers.connect(Exchangers.java:109) ~[dubbo-remoting-api-2.7.3.jar:2.7.3]
+	at org.apache.dubbo.rpc.protocol.dubbo.DubboProtocol.initClient(DubboProtocol.java:595) ~[dubbo-2.7.3.jar:2.7.3]
+	... 52 common frames omitted
+Caused by: io.netty.channel.AbstractChannel$AnnotatedConnectException: Connection refused: /172.26.16.96:1900
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.SocketChannelImpl.checkConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:779) ~[na:na]
+	at io.netty.channel.socket.nio.NioSocketChannel.doFinishConnect(NioSocketChannel.java:327) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.channel.nio.AbstractNioChannel$AbstractNioUnsafe.finishConnect(AbstractNioChannel.java:336) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:685) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:632) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:549) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:511) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:918) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-all-4.1.38.Final.jar:4.1.38.Final]
+	at java.base/java.lang.Thread.run(Thread.java:834) ~[na:na]
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.579 s
+[INFO] Finished at: 2019-12-31T09:52:11+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.2.1.RELEASE:run (default-cli) on project hanfu-order-center: Application finished with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
