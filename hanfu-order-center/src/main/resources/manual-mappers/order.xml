@@ -34,6 +34,7 @@
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
         <result column="fare" jdbcType="INTEGER" property="fare"/>
+        <result column="evaluate" jdbcType="VARCHAR" property="evaluate"/>
     </resultMap>
     <select id="selectOrderList" resultMap="BaseResultMap">
         SELECT *
