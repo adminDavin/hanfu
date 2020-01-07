@@ -270,15 +270,18 @@ public class GroupController {
 
 
 
-    @ApiOperation(value = "下架团购商品", notes = "下架团购商品")
+    @ApiOperation(value = "下架上架团购商品", notes = "下架上架团购商品")
     @RequestMapping(value = "/updateIsDeleted", method = RequestMethod.GET)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "isDeleted", value = "团购表状态", required = false, type = "Integer"),
     })
-    public  String  updateIsDeleted(Integer id){
-        groupService.updateState(id);
+    public  String  updateIsDeleted(Integer id,Integer isDeleted){
+        groupService.updateIsDeleted(isDeleted,id);
         return "ok";
     }
+
+
 
     @ApiOperation(value = "批量下架团购商品", notes = "批量下架团购商品")
     @RequestMapping(value = "/updateMulti", method = RequestMethod.GET)

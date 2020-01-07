@@ -2,6 +2,7 @@ package com.hanfu.group.center.service;
 
 
 import com.hanfu.group.center.manual.model.Group;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -36,4 +37,5 @@ public interface GroupService {
      Group selectDate(Integer id);
 
     List<String>selectCategoryName();
+    void  updateIsDeleted(Integer isDeleted, Integer id);
 }

@@ -32,4 +32,5 @@ public interface GroupMapper {
     List<Group>selectCategory(Integer id);
     List<String>selectCategoryName();
     Group selectDate(Integer id);
+    void  updateIsDeleted(@Param("isDeleted")Integer isDeleted,@Param("id")Integer id);
 }

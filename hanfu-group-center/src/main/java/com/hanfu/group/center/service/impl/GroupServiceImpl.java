@@ -91,4 +91,9 @@ class GroupServiceImpl implements GroupService {
     public List<String> selectCategoryName() {
         return  groupMapper.selectCategoryName();
     }
+
+    @Override
+    public void updateIsDeleted(Integer isDeleted, Integer id) {
+        groupMapper.updateIsDeleted(isDeleted,id);
+    }
 }

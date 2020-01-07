@@ -240,4 +240,11 @@
        is_deleted = 1
     where id = #{id}
   </update>
+
+  <update id="updateIsDeleted" parameterType="java.lang.Integer" >
+    update group_id
+    set
+       is_deleted = #{isDeleted}
+    where id = #{id}
+  </update>
 </mapper>
