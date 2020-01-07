@@ -36,9 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -59,7 +63,7 @@ import java.util.regex.Pattern;
 
 //import com.hanfu.user.center.service.UserCenterService;
 
-@RestController
+@Controller
 @Api
 @RequestMapping("/user")
 @CrossOrigin
@@ -85,21 +89,21 @@ public class KingWordsController {
             @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
     })
-    public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
+    public String login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfAuth hfAuth = userDao.selectAuthList(authKey);
         if (hfAuth == null) {
-            return builder.body(ResponseUtils.getResponseBody("还未注册"));
+            return "还未注册";
         }
         System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId()));
         if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
             String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
             redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
         } else {
-            return builder.body(ResponseUtils.getResponseBody("1"));
+            return "1";
         }
         if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
-            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+            return "验证码不正确";
         }
 //		Map<String , Integer> list = new HashMap<>();
 
@@ -116,7 +120,7 @@ public class KingWordsController {
 //			}		
 //		}
 //		list.put(token, hfAuth.getUserId());
-        return builder.body(ResponseUtils.getResponseBody("成功"));
+        return "login";
     }
 
     @RequestMapping(path = "/code", method = RequestMethod.GET)

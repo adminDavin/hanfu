@@ -2,6 +2,10 @@ server:
   port: 8082
 
 spring:
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource

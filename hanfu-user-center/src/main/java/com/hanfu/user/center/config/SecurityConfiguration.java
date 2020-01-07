@@ -1,4 +1,4 @@
-//package com.hanfu.cancel.config;
+//package com.hanfu.user.center.config;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Bean;
@@ -49,7 +49,7 @@
 //                .anyRequest().permitAll()//其他没有限定的请求，允许访问
 //                .and().anonymous()//对于没有配置权限的其他请求允许匿名访问
 //                .and().formLogin()//使用 spring security 默认登录页面
-//                .loginPage("http://39.100.237.144:3000")
+//                .loginPage("http://192.168.1.125:9901/Demo/demo")
 //                .usernameParameter("authKey")	//自定义用户名请求参数名
 //                .passwordParameter("passwd")	//自定义密码请求参数名
 ////                .loginProcessingUrl("/employee/greeting")
