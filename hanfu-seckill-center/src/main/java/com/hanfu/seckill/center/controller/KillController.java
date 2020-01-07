@@ -163,13 +163,15 @@ public class KillController {
         }
         return "ok";
     }
-    @ApiOperation(value = "下架秒杀商品", notes = "下架秒杀商品")
+    @ApiOperation(value = "下架上架秒杀商品", notes = "下架上架秒杀商品")
     @RequestMapping(value = "/updateIsDeleted", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "seckillId", value = "秒杀表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "isDeleted", value = "秒杀表状态", required = false, type = "Integer"),
     })
-    public  String  updateIsDeleted(Integer seckillId){
-        seckillService.updateState(seckillId);
+    public  String  updateIsDeleted(Integer seckillId,short isDeleted){
+        Integer boosId=1;
+        seckillService.updateIsDeleted(seckillId,isDeleted ,boosId);
         return "ok";
     }
 
