@@ -30,6 +30,15 @@ public class Seckill implements Serializable{
     private HfGoods hfGoods;
     private List<FileDesc> fileDesc;
     private List<HfGoodsSpec> hfGoodsSpec;
+    private List<Product> product;
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
 
     public List<HfGoodsSpec> getHfGoodsSpec() {
         return hfGoodsSpec;

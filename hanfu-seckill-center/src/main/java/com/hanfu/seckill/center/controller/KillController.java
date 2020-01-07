@@ -35,7 +35,8 @@ public class KillController {
     HfOrdersService hfOrdersSerice;
     @Autowired
     SeckillConnectService seckillConnectService;
-
+    @Autowired
+    ProductService productService;
     @ApiOperation(value = "添加秒杀业务", notes = "添加秒杀业务")
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
     @ResponseBody
@@ -250,11 +251,16 @@ public class KillController {
     public  Seckill seletById(Integer id)  {
         Seckill seckill = seckillService.seletById(id);
         List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpecService.selectByPrimaryKey(seckill.getGoodsId());
-        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
+        if(hfGoodsSpecs!=null ){
             seckill.setHfGoodsSpec(hfGoodsSpecs);
         }
+        List<Product> products = productService.selectByPrimaryKey(seckill.getGoodsId());
+        seckill.setProduct(products);
         return seckill;
     }
+
+
+
     @ApiOperation(value = "秒杀业务判断支付成功没有", notes = "秒杀业务判断支付成功没有")
     @RequestMapping(value = "/seckillByPay",method = RequestMethod.POST)
     @ApiImplicitParams({
