@@ -8,8 +8,6 @@ public interface CartService {
 
     List<Cart> getCartList(String string);
 
-    int delCartProduct(String string, String string2);
-
     int checkAll(String string, String string2);
 
     int delCart(String string);
@@ -17,5 +15,7 @@ public interface CartService {
     int updateCartNum(String userId, String productId, int num);
 
     int addCart(String userId, String productId, int num);
+
+	int delCartProduct(String userId, String productId);
 
 }

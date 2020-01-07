@@ -153,7 +153,8 @@ public class OrderController {
             @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "orderDetailId", value = "订单详情Id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "orderDetailId", value = "订单详情Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
     })
     public ResponseEntity<JSONObject> queryOrder(OrderFindValue orderFindValue)
             throws Exception {

@@ -51,6 +51,8 @@ public class CartServiceImpl implements CartService {
         cart.setProductPrice(hfGoods.getSellPrice());
         cart.setProductNum(num);
         cart.setCheck("1");
+        cart.setProductStatus(hfGoods.getIsDeleted());
+        cart.setProductIcon(hfGoods.getFileId());
         redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cart).toString());
         return 1;
     }
@@ -126,8 +128,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public int delCartProduct(String userId, String productId) {
-        redisService.hdel(CartPrefix.getCartList, userId, productId);
-        return 1;
+            redisService.hdel(CartPrefix.getCartList, userId, productId);
+            return 1;
     }
 
     /**

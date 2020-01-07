@@ -94,6 +94,9 @@
         <if test="orderDetailId!=null and ''!=orderDetailId">
             AND h1.order_detail_id=#{orderDetailId}
         </if>
+        <if test="userId!=null and ''!=userId">
+            AND h1.user_id=#{userId}
+        </if>
     </select>
     <select id="selectOrderByUserId" resultMap="BaseResultMap">
         SELECT *
