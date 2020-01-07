@@ -26,6 +26,15 @@ public class Group implements Serializable {
     private Integer Repertory;
     private HfGoods hfGoods;
     private List<FileDesc> fileDesc;
+    private List<Product> product;
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
 
     private List<HfGoodsSpec> hfGoodsSpec;
 

@@ -40,6 +40,8 @@ public class GroupController {
     HfUserService hfUserService;
     @Autowired
     HfGoodsSpecService hfGoodsSpec;
+    @Autowired
+    ProductService productService;
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -306,6 +308,8 @@ public class GroupController {
         if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
             group.setHfGoodsSpec(hfGoodsSpecs);
         }
+        List<Product> products = productService.selectByPrimaryKey(group.getGoodsId());
+        group.setProduct(products);
         return group;
     }
 
@@ -471,6 +475,10 @@ public class GroupController {
        }
         return open ;
     }
+
+
+
+
     @ApiOperation(value = "查询开团 详情", notes = "查询开团 详情")
     @RequestMapping(value = "/selectOpenGroup", method = RequestMethod.GET)
     @ApiImplicitParams({

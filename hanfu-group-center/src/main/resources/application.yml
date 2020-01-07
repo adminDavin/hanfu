@@ -30,15 +30,7 @@ spring:
       connection-test-query: select now()
       idle-timeout: 3000000
       auto-commit: true
-  redis:
-    database: 0
-    host: 39.98.126.20
-    port: 6379
-    timeout: 10000
-    jedis:
-      pool:
-        max-active: 16
-        max-idle: 4
+
   task:
     execution:
       pool:
