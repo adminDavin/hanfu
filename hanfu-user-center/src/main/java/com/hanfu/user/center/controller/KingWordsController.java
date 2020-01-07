@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
@@ -17,6 +18,7 @@ import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
+import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.user.center.utils.GetMessageCode;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -118,7 +120,7 @@ public class KingWordsController {
 //		list.put(token, hfAuth.getUserId());
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
-
+    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/code", method = RequestMethod.GET)
     @ApiOperation(value = "发送验证码", notes = "发送验证码")
     public ResponseEntity<JSONObject> code(String phone) throws Exception {
