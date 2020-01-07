@@ -1,6 +1,5 @@
 package com.hanfu.product.center.manual.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.hanfu.product.center.request.CommonRequest;
@@ -10,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 @SuppressWarnings("serial")
 public class HfGoodsDisplay extends CommonRequest {
 
-    @ApiModelProperty(required = true, value = "物品id")
+    @ApiModelProperty(required = false, value = "物品id")
     private Integer id;
     @ApiModelProperty(required = false, value = "物品名称")
     private String goodName;
@@ -28,39 +27,88 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer sellPrice;
     @ApiModelProperty(required = false, value = "规格值")
     private String specValue;
-    @ApiModelProperty(required = false, value = "商品规格id")
-    private Integer productSpecId;
+//    @ApiModelProperty(required = false, value = "商品规格id")
+//    private Integer productSpecId;
     @ApiModelProperty(required = false, value = "价格id")
     private Integer priceId;
     @ApiModelProperty(required = false, value = "库存id")
     private Integer respId;
-    @ApiModelProperty(required = false, value = "商品id")
-    private Integer productId;
-    @ApiModelProperty(required = true, value = "物品图片id")
+//    @ApiModelProperty(required = false, value = "商品id")
+//    private Integer productId;
+    @ApiModelProperty(required = false, value = "物品图片id")
     private Integer hfGoodsPictureId;
-    @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
-    private String username;
-    @ApiModelProperty(required = true, value = "店铺id")
+//    @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+//    private String username;
+    @ApiModelProperty(required = false, value = "店铺id")
     private Integer stoneId;
-    @ApiModelProperty(required = true, value = "核销id")
+    @ApiModelProperty(required = false, value = "核销id")
     private Integer cancelId;
-    @ApiModelProperty(required = true, value = "是否自提")
+    @ApiModelProperty(required = false, value = "是否自提")
     private Integer claim;
-    @ApiModelProperty(required = true, value = "上下架")
+    @ApiModelProperty(required = false, value = "上下架")
     private Integer frames;
-    @ApiModelProperty(required = true, value = "品牌名称")
-    private String brandName;
-    private LocalDateTime createTime;
+//    @ApiModelProperty(required = true, value = "品牌名称")
+//    private String brandName;
+    @ApiModelProperty(required = false, value = "图片描述")
+    private String prictureDesc;
+    @ApiModelProperty(required = false, value = "会员")
+    private Integer memeber;
+    @ApiModelProperty(required = false, value = "价格")
+    private Integer sellPrice1;
+    @ApiModelProperty(required = false, value = "价格")
+    private Integer sellPrice2;
+    @ApiModelProperty(required = false, value = "评价")
+    private String evaluate;
+	private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
-
-    public String getBrandName() {
-		return brandName;
+    
+    public String getEvaluate() {
+		return evaluate;
 	}
 
-	public void setBrandName(String brandName) {
-		this.brandName = brandName;
+	public void setEvaluate(String evaluate) {
+		this.evaluate = evaluate;
 	}
+
+	public Integer getMemeber() {
+		return memeber;
+	}
+
+	public void setMemeber(Integer memeber) {
+		this.memeber = memeber;
+	}
+
+	public Integer getSellPrice1() {
+		return sellPrice1;
+	}
+
+	public void setSellPrice1(Integer sellPrice1) {
+		this.sellPrice1 = sellPrice1;
+	}
+
+	public Integer getSellPrice2() {
+		return sellPrice2;
+	}
+
+	public void setSellPrice2(Integer sellPrice2) {
+		this.sellPrice2 = sellPrice2;
+	}
+
+	public String getPrictureDesc() {
+		return prictureDesc;
+	}
+
+	public void setPrictureDesc(String prictureDesc) {
+		this.prictureDesc = prictureDesc;
+	}
+//    public String getBrandName() {
+//		return brandName;
+//	}
+//
+//	public void setBrandName(String brandName) {
+//		this.brandName = brandName;
+//	}
 
 	public Integer getId() {
         return id;
@@ -126,13 +174,13 @@ public class HfGoodsDisplay extends CommonRequest {
         this.specValue = specValue;
     }
 
-    public Integer getProductSpecId() {
-        return productSpecId;
-    }
-
-    public void setProductSpecId(Integer productSpecId) {
-        this.productSpecId = productSpecId;
-    }
+//    public Integer getProductSpecId() {
+//        return productSpecId;
+//    }
+//
+//    public void setProductSpecId(Integer productSpecId) {
+//        this.productSpecId = productSpecId;
+//    }
 
     public Integer getPriceId() {
         return priceId;
@@ -150,21 +198,21 @@ public class HfGoodsDisplay extends CommonRequest {
         this.respId = respId;
     }
 
-    public Integer getProductId() {
-        return productId;
-    }
+//    public Integer getProductId() {
+//        return productId;
+//    }
+//
+//    public void setProductId(Integer productId) {
+//        this.productId = productId;
+//    }
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public String getUsername() {
+//        return username;
+//    }
+//
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public LocalDateTime getCreateTime() {
         return createTime;

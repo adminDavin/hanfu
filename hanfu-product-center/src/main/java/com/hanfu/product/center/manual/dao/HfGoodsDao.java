@@ -37,5 +37,7 @@ public interface HfGoodsDao {
 
 	public Long queryGoods();
 
+	public List<HfGoodsDisplay> updateFrames(Integer frames, Integer goodsId);
+
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }

@@ -93,6 +93,12 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 		return count;
 	}
 
+	@Override
+	public List<HfGoodsDisplay> updateFrames(Integer frames, Integer goodsId) {
+		sqlSessionTemplate.update("updateFrames", frames);
+		return null;
+	}
+
 //	@Override
 //	public Integer insertAwardInfo(AwardInfo awardInfo) {
 //		Integer row = sqlSessionTemplate.insert("insertAwardInfo", awardInfo);
