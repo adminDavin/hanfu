@@ -305,7 +305,7 @@ public class GroupController {
     public  Group seletDate(Integer id){
         Group group = groupService.selectDate(id);
         List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpec.selectByPrimaryKey(group.getGoodsId());
-        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
+        if(hfGoodsSpecs!=null ){
             group.setHfGoodsSpec(hfGoodsSpecs);
         }
         List<Product> products = productService.selectByPrimaryKey(group.getGoodsId());
