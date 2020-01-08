@@ -24,8 +24,8 @@ public class HfGoodsInfo extends CommonRequest {
     private String username;
     @ApiModelProperty(required = false, value = "类目规格id")
     private Integer catrgorySpecId[];
-    @ApiModelProperty(required = false, value = "商品规格id")
-    private Integer productSpecId;
+    @ApiModelProperty(required = false, value = "物品规格id")
+    private Integer goodsSpecId;
     @ApiModelProperty(required = true, value = "规格值")
     private String[] specValue;
     @ApiModelProperty(required = true, value = "是否为会员 0 非会员 1会员")
@@ -34,8 +34,68 @@ public class HfGoodsInfo extends CommonRequest {
     private String prictureDesc;
     @ApiModelProperty(required = true, value = "核销员Id")
     private Integer cancelId;
+    @ApiModelProperty(required = true, value = "上下架")
+    private Integer frames;
+    @ApiModelProperty(required = false, value = "类目Id")
+    private Integer catrgoryId;
+    @ApiModelProperty(required = false, value = "是否自提")
+    private Integer claim;
+    @ApiModelProperty(required = false, value = "规格单位")
+    private String  specUnit;
+    @ApiModelProperty(required = false, value = "类目名称")
+    private String categoryName;
+    @ApiModelProperty(required = false, value = "库存量")
+    private String quantity;
     
-    public String getPrictureDesc() {
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getSpecUnit() {
+		return specUnit;
+	}
+
+	public void setSpecUnit(String specUnit) {
+		this.specUnit = specUnit;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public Integer getClaim() {
+		return claim;
+	}
+
+	public void setClaim(Integer claim) {
+		this.claim = claim;
+	}
+
+	public Integer getCatrgoryId() {
+		return catrgoryId;
+	}
+
+	public void setCatrgoryId(Integer catrgoryId) {
+		this.catrgoryId = catrgoryId;
+	}
+
+	public Integer getFrames() {
+		return frames;
+	}
+
+	public void setFrames(Integer frames) {
+		this.frames = frames;
+	}
+
+	public String getPrictureDesc() {
 		return prictureDesc;
 	}
 
@@ -75,12 +135,12 @@ public class HfGoodsInfo extends CommonRequest {
 		this.catrgorySpecId = catrgorySpecId;
 	}
 
-	public Integer getProductSpecId() {
-		return productSpecId;
+	public Integer getGoodsSpecId() {
+		return goodsSpecId;
 	}
 
-	public void setProductSpecId(Integer productSpecId) {
-		this.productSpecId = productSpecId;
+	public void setGoodsSpecId(Integer goodsSpecId) {
+		this.goodsSpecId = goodsSpecId;
 	}
 
 	public String[] getSpecValue() {
@@ -146,5 +206,6 @@ public class HfGoodsInfo extends CommonRequest {
     public void setUsername(String username) {
         this.username = username;
     }
+
 
 }

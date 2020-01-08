@@ -16,10 +16,13 @@ public class CancelServiceImpl implements CancelService {
     private CancelMapper cancelMapper;
     @Autowired
     private HfOrdersDetailMapper hfOrdersDetailMapper;
-
+//    @Autowired
+//    private PermissionService permissionService;
 
     @Override
     public List<record> select() {
+//        permissionService.test();//7889789798798798798789
+//        permissionService.test();
         return cancelMapper.select();
     }
 
