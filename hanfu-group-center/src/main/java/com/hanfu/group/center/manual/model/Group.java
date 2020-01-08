@@ -17,7 +17,7 @@ public class Group implements Serializable {
 
     private Integer number;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
@@ -109,7 +109,8 @@ public class Group implements Serializable {
     public void setNumber(Integer number) {
         this.number = number;
     }
-
+    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     public Date getStartTime() {
         return startTime;
     }
@@ -134,5 +135,22 @@ public class Group implements Serializable {
         this.isDeleted = isDeleted;
     }
 
-
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", bossId=" + bossId +
+                ", goodsId=" + goodsId +
+                ", price=" + price +
+                ", number=" + number +
+                ", startTime=" + startTime +
+                ", stopTime=" + stopTime +
+                ", isDeleted=" + isDeleted +
+                ", Repertory=" + Repertory +
+                ", hfGoods=" + hfGoods +
+                ", fileDesc=" + fileDesc +
+                ", product=" + product +
+                ", hfGoodsSpec=" + hfGoodsSpec +
+                '}';
+    }
 }

@@ -55,17 +55,18 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
     public  boolean  insertGroup( @RequestParam("goodsId") Integer goodsId,@RequestParam("price")Double price,@RequestParam("number")Integer number,
-                                  @RequestParam("startTime")String startTime, @RequestParam("stopTime") String stopTime, @RequestParam("repertory")Integer repertory){
+                                  @RequestParam("startTime")Date startTime, @RequestParam("stopTime") Date stopTime, @RequestParam("repertory")Integer repertory){
         Integer bossId=1;
-    try {
-        Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
-        Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
-        groupService.insert( bossId,  goodsId, price, number, startTime1,stopTime1,repertory);
+        System.out.println(goodsId+"11111");
+//    try {
+//        Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+//        Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+        groupService.insert( bossId,  goodsId, price, number, startTime,stopTime,repertory);
         return true;
-    } catch (ParseException e) {
-        e.printStackTrace();
-    }
-        return false;
+//    } catch (ParseException e) {
+//        e.printStackTrace();
+//    }
+//        return false;
     }
     //团购商品
     @ApiOperation(value = "购买团购商品", notes = "购买团购商品")
