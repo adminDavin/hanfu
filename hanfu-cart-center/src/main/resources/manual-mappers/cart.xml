@@ -24,15 +24,11 @@
         h.goods_desc,h.id,
         h.hf_name,h.resp_id,
         h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
+        h1.id categoryId,
         h3.sell_price,h.create_time,
-        h.modify_time,h.is_deleted,h.is_deleted,h4.file_id
+        h.modify_time,h.is_deleted,h4.file_id
         FROM
         hf_goods h
-        JOIN
-        product p
-        ON
-        h.product_id = p.id
         JOIN
         hf_category h1
         ON

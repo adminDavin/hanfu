@@ -1,6 +1,7 @@
 package com.hanfu.cart.center.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,10 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.cart.center.model.Cart;
 import com.hanfu.cart.center.model.Product;
+import com.hanfu.cart.center.model.ProductMessage;
 import com.hanfu.cart.center.service.CartService;
 import com.hanfu.cart.center.service.ProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -141,10 +146,12 @@ public class CartCenterController {
       
     @RequestMapping(path = "/Settlemen",  method = RequestMethod.GET)
     @ApiOperation(value = "结算", notes = "结算")
-    public ResponseEntity<JSONObject> Settlemen( Integer userId,String[] productMessage) throws Exception{
+    public ResponseEntity<JSONObject> Settlemen(String p) throws Exception{
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        redisTemplate.opsForValue().set(userId.toString(), productMessage);
-        return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));
+        List<Object> list = JSONArray.parseArray(p);
+        System.out.println(p);
+//            redisTemplate.opsForValue().set(userId.toString(), productMessage);redisTemplate.opsForValue().get(userId.toString())
+            return builder.body(ResponseUtils.getResponseBody(""));
     } 
     @RequestMapping(path = "/selSettlemen",  method = RequestMethod.GET)
     @ApiOperation(value = "查看结算", notes = "查看结算")
