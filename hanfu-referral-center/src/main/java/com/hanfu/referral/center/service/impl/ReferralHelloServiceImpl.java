@@ -13,6 +13,7 @@ public class ReferralHelloServiceImpl implements ReferralHelloService {
     @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.HelloTestService")
     private HelloTestService helloTestService;
 
+
     public void hello() {
         helloTestService.test();
     }

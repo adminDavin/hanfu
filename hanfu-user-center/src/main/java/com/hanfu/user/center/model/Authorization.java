@@ -1,11 +1,12 @@
 package com.hanfu.user.center.model;
 
+import io.swagger.annotations.ApiParam;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Authorization {
     @KeySql(useGeneratedKeys = true)
@@ -14,36 +15,36 @@ public class Authorization {
     private Integer id;
 
     private Integer fileId;
-
+    @ApiParam(required = false, value = "真实姓名")
     private String realName;
-
+    @ApiParam(required = false, value = "员工工号")
     private String employeeCode;
-
+    @ApiParam(required = false, value = "电话号码")
     private String phone;
-
+    @ApiParam(required = false, value = "身份证号码")
     private String idCard;
-
+    @ApiParam(required = false, value = "邮箱")
     private String employeeEmail;
-
+    @ApiParam(required = false, value = "职位")
     private String position;
-
+    @ApiParam(required = false, value = "性别")
     private Integer employeeSex;
-
+    @ApiParam(required = false, value = "用户名")
     private String employeeName;
-
+    @ApiParam(required = false, value = "地址")
     private String employeeSite;
-
+    @ApiParam(required = false, value = "部门")
     private String employeeDepartment;
-
+    @ApiParam(required = false, value = "状态")
     private Integer state;
-
+    @ApiParam(required = false, value = "备注")
     private String remark;
-
+    @ApiParam(required = false, value = "是否失效")
     private Byte idDeleted;
-
-    private Date createDate;
-
-    private Date modifyDate;
+    @ApiParam(required = false, value = "创建时间")
+    private LocalDateTime createDate;
+    @ApiParam(required = false, value = "修改时间")
+    private LocalDateTime modifyDate;
 
     public Integer getId() {
         return id;
@@ -165,19 +166,19 @@ public class Authorization {
         this.idDeleted = idDeleted;
     }
 
-    public Date getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
-    public Date getModifyDate() {
+    public LocalDateTime getModifyDate() {
         return modifyDate;
     }
 
-    public void setModifyDate(Date modifyDate) {
+    public void setModifyDate(LocalDateTime modifyDate) {
         this.modifyDate = modifyDate;
     }
 }
