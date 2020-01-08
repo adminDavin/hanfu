@@ -44,12 +44,12 @@ public class accreditController {
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
-    @RequestMapping(path = "/selectAccredit", method = RequestMethod.GET)
-    @ApiOperation(value = "员工查询", notes = "员工查询")
-    public ResponseEntity<JSONObject> selectAccredit() throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(authorizationMapper.selectAll()));
-    }
+//    @RequestMapping(path = "/selectAccredit", method = RequestMethod.GET)
+//    @ApiOperation(value = "员工查询", notes = "员工查询")
+//    public ResponseEntity<JSONObject> selectAccredit() throws Exception {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        return builder.body(ResponseUtils.getResponseBody(authorizationMapper.selectAll()));
+//    }
 
     @RequestMapping(path = "/deleteAccredit", method = RequestMethod.GET)
     @ApiOperation(value = "员工删除", notes = "员工删除")

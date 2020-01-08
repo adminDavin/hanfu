@@ -187,7 +187,7 @@ public class GoodsController {
             example1.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
             List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example1);
             if (!hfGoodsPictrue.isEmpty()) {
-                list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
+                list.get(i).setFileId(hfGoodsPictrue.get(0).getFileId());
             }
         }
         return builder.body(ResponseUtils.getResponseBody(list));
@@ -198,8 +198,7 @@ public class GoodsController {
     public ResponseEntity<JSONObject> createGood(@RequestParam("fileInfo1")MultipartFile[] fileInfo1,HfGoodsInfo hfGoodsInfo) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods record = new HfGoods();
-        for (Integer CatrgoryId : hfGoodsInfo.getCatrgoryId()) {
-        	record.setCategoryId(CatrgoryId);
+        	record.setCategoryId(hfGoodsInfo.getCatrgoryId());
             record.setBossId(hfGoodsInfo.getBossId());
             record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
             record.setHfName(hfGoodsInfo.getGoodName());
@@ -255,7 +254,6 @@ public class GoodsController {
                        pictures.add(picture);
     		}
     		}
-		}
         return builder.body(ResponseUtils.getResponseBody(""));
     }
 
@@ -295,8 +293,8 @@ public class GoodsController {
         if (hfGoods == null) {
             throw new Exception("物品不存在");
         }
-        if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodName())) {
-            hfGoods.setHfName(hfGoodsDisplay.getGoodName());
+        if (!StringUtils.isEmpty(hfGoodsDisplay.getHfName())) {
+            hfGoods.setHfName(hfGoodsDisplay.getHfName());
         }
         if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodsDesc())) {
             hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
@@ -349,10 +347,10 @@ public class GoodsController {
 
 
     @ApiOperation(value = "获取物品规格", notes = "获取物品规格")
-    @RequestMapping(value = "/specifies", method = RequestMethod.GET)
+    @RequestMapping(value = "/specifiess", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecForSell(@RequestParam(name = "goodsId") Integer goodsId)
+    public ResponseEntity<JSONObject> getGoodsSpecFo(@RequestParam(name = "goodsId") Integer goodsId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
