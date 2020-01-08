@@ -553,7 +553,7 @@ public class GoodsController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         System.out.println(request.getGoodsId());
         HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
-
+        System.out.println("111111111111111111111111");
         if (goods == null) {
         }
         List<HfGoodsPictrue> pictures = Lists.newArrayList();

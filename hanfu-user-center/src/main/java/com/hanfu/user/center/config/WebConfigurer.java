@@ -1,6 +1,11 @@
 package com.hanfu.user.center.config;
 
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.hanfu.user.center.intercepter.AuthorityInterceptor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -8,23 +13,27 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktr
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.hanfu.user.center.intercepter.AuthorityInterceptor;
-
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 @Configuration
-public class WebConfigurer implements WebMvcConfigurer {
+public class WebConfigurer extends WebMvcConfigurationSupport {
 
     @Autowired
     private AuthorityInterceptor authorityInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorityInterceptor);
-        WebMvcConfigurer.super.addInterceptors(registry);
+        registry.addInterceptor(authorityInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");;
+        super.addInterceptors(registry);
+    }
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Bean
@@ -51,5 +60,6 @@ public class WebConfigurer implements WebMvcConfigurer {
         fastConverter.setFastJsonConfig(fastJsonConfig);
         return new HttpMessageConverters(fastConverter);
     }
+
 
 }
