@@ -12,6 +12,7 @@ import java.util.Properties;
 @SpringBootApplication
 @EnableScheduling
 @MapperScan(value = "com.hanfu.cancel.dao")
+
 public class HanfuCancelCenterApplication {
 
     public static void main(String[] args) {

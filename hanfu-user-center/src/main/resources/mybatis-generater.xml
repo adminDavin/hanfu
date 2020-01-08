@@ -60,6 +60,42 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
+        <table schema="user_center" tableName="jurisdiction_module"
+               domainObjectName="JurisdictionModule">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="jurisdiction"
+               domainObjectName="Jurisdiction">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="role"
+               domainObjectName="Role">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="role_jurisdiction"
+               domainObjectName="RoleJurisdiction">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="user_role"
+               domainObjectName="UserRole">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="authorization"
+               domainObjectName="Authorization">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
 
     </context>
 </generatorConfiguration>

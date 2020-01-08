@@ -12,7 +12,7 @@ public class HfGoodsDisplay extends CommonRequest {
     @ApiModelProperty(required = false, value = "物品id")
     private Integer id;
     @ApiModelProperty(required = false, value = "物品名称")
-    private String goodName;
+    private String HfName;
     @ApiModelProperty(required = false, value = "仓库名称")
     private String warehouseName;
     @ApiModelProperty(required = false, value = "商品类目名称")
@@ -27,18 +27,18 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer sellPrice;
     @ApiModelProperty(required = false, value = "规格值")
     private String specValue;
-//    @ApiModelProperty(required = false, value = "商品规格id")
-//    private Integer productSpecId;
+    @ApiModelProperty(required = false, value = "商品规格id")
+    private Integer productSpecId;
     @ApiModelProperty(required = false, value = "价格id")
     private Integer priceId;
     @ApiModelProperty(required = false, value = "库存id")
     private Integer respId;
-//    @ApiModelProperty(required = false, value = "商品id")
-//    private Integer productId;
+    @ApiModelProperty(required = false, value = "商品id")
+    private Integer productId;
     @ApiModelProperty(required = false, value = "物品图片id")
-    private Integer hfGoodsPictureId;
-//    @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
-//    private String username;
+    private Integer fileId;
+    @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+    private String username;
     @ApiModelProperty(required = false, value = "店铺id")
     private Integer stoneId;
     @ApiModelProperty(required = false, value = "核销id")
@@ -47,8 +47,8 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer claim;
     @ApiModelProperty(required = false, value = "上下架")
     private Integer frames;
-//    @ApiModelProperty(required = true, value = "品牌名称")
-//    private String brandName;
+    @ApiModelProperty(required = true, value = "品牌名称")
+    private String brandName;
     @ApiModelProperty(required = false, value = "图片描述")
     private String prictureDesc;
     @ApiModelProperty(required = false, value = "会员")
@@ -102,13 +102,13 @@ public class HfGoodsDisplay extends CommonRequest {
 	public void setPrictureDesc(String prictureDesc) {
 		this.prictureDesc = prictureDesc;
 	}
-//    public String getBrandName() {
-//		return brandName;
-//	}
-//
-//	public void setBrandName(String brandName) {
-//		this.brandName = brandName;
-//	}
+    public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
 
 	public Integer getId() {
         return id;
@@ -118,12 +118,12 @@ public class HfGoodsDisplay extends CommonRequest {
         this.id = id;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getHfName() {
+        return HfName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setHfName(String HfName) {
+        this.HfName = HfName;
     }
 
     public String getProductCategoryName() {
@@ -174,13 +174,13 @@ public class HfGoodsDisplay extends CommonRequest {
         this.specValue = specValue;
     }
 
-//    public Integer getProductSpecId() {
-//        return productSpecId;
-//    }
-//
-//    public void setProductSpecId(Integer productSpecId) {
-//        this.productSpecId = productSpecId;
-//    }
+    public Integer getProductSpecId() {
+        return productSpecId;
+    }
+
+    public void setProductSpecId(Integer productSpecId) {
+        this.productSpecId = productSpecId;
+    }
 
     public Integer getPriceId() {
         return priceId;
@@ -198,21 +198,21 @@ public class HfGoodsDisplay extends CommonRequest {
         this.respId = respId;
     }
 
-//    public Integer getProductId() {
-//        return productId;
-//    }
-//
-//    public void setProductId(Integer productId) {
-//        this.productId = productId;
-//    }
+    public Integer getProductId() {
+        return productId;
+    }
 
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public LocalDateTime getCreateTime() {
         return createTime;
@@ -246,12 +246,12 @@ public class HfGoodsDisplay extends CommonRequest {
         this.warehouseName = warehouseName;
     }
 
-    public Integer getHfGoodsPictureId() {
-        return hfGoodsPictureId;
+    public Integer getFileId() {
+        return fileId;
     }
 
-    public void setHfGoodsPictureId(Integer hfGoodsPictureId) {
-        this.hfGoodsPictureId = hfGoodsPictureId;
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 
     public Integer getStoneId() {
@@ -285,5 +285,4 @@ public class HfGoodsDisplay extends CommonRequest {
     public void setFrames(Integer frames) {
         this.frames = frames;
     }
-
 }

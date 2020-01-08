@@ -37,14 +37,24 @@ public class HfGoodsInfo extends CommonRequest {
     @ApiModelProperty(required = true, value = "上下架")
     private Integer frames;
     @ApiModelProperty(required = false, value = "类目Id")
-    private Integer[] catrgoryId;
+    private Integer catrgoryId;
     @ApiModelProperty(required = false, value = "是否自提")
     private Integer claim;
     @ApiModelProperty(required = false, value = "规格单位")
     private String  specUnit;
     @ApiModelProperty(required = false, value = "类目名称")
     private String categoryName;
+    @ApiModelProperty(required = false, value = "库存量")
+    private String quantity;
     
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
 	public String getSpecUnit() {
 		return specUnit;
 	}
@@ -69,11 +79,11 @@ public class HfGoodsInfo extends CommonRequest {
 		this.claim = claim;
 	}
 
-	public Integer[] getCatrgoryId() {
+	public Integer getCatrgoryId() {
 		return catrgoryId;
 	}
 
-	public void setCatrgoryId(Integer[] catrgoryId) {
+	public void setCatrgoryId(Integer catrgoryId) {
 		this.catrgoryId = catrgoryId;
 	}
 

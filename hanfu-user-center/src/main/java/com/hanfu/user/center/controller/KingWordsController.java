@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.user.center.dao.AuthorizationMapper;
 import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -50,6 +51,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpSession;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
@@ -79,6 +85,8 @@ public class KingWordsController {
     HfAuthMapper hfAuthMapper;
     @Autowired
     UserDao userDao;
+    @Autowired
+    private AuthorizationMapper authorizationMapper;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ApiOperation(value = "用户登录", notes = "用户登录")
@@ -87,13 +95,17 @@ public class KingWordsController {
             @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
     })
-    public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
+    public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
+        Cookie cookie = new Cookie("autologin", authKey);
+        response.addCookie(cookie);
+
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfAuth hfAuth = userDao.selectAuthList(authKey);
         if (hfAuth == null) {
             return builder.body(ResponseUtils.getResponseBody("还未注册"));
         }
-        System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId()));
+        System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId())+"qqq");
+        System.out.println(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId()))+"ppp");
         if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
             String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
             redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
@@ -120,7 +132,32 @@ public class KingWordsController {
 //		list.put(token, hfAuth.getUserId());
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
-    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
+    
+    
+    @RequestMapping(value = "/guangdongLogin", method = RequestMethod.GET)
+    @ApiOperation(value = "广东单商户用户登录", notes = "广东单商户用户登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
+    })
+    public ResponseEntity<JSONObject> guangdongLogin(@RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd
+    		,HttpSession session) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        AuthorizationExample example = new AuthorizationExample();
+        example.createCriteria().andPhoneEqualTo(authKey);
+        List<Authorization> list = authorizationMapper.selectByExample(example);
+        if (list.isEmpty()) {
+            return builder.body(ResponseUtils.getResponseBody("还未注册"));
+        }
+        System.out.println(redisTemplate.opsForValue().get(authKey));
+        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+        }
+        session.setAttribute("uid",list.get(0).getId());
+        return builder.body(ResponseUtils.getResponseBody(list.get(0).getId()));
+    }
+    
+
     @RequestMapping(path = "/code", method = RequestMethod.GET)
     @ApiOperation(value = "发送验证码", notes = "发送验证码")
     public ResponseEntity<JSONObject> code(String phone) throws Exception {
@@ -298,7 +335,7 @@ public class KingWordsController {
 //            System.out.println(page);
 //            return builder.body(ResponseUtils.getResponseBody(page));
 //    }
-
+    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/userList",  method = RequestMethod.GET)
     @ApiOperation(value = "用户列表", notes = "用户列表")
     @ApiImplicitParams({

@@ -9,5 +9,6 @@
     <groupId>com.hanfu.inner.sdk</groupId>
     <artifactId>hanfu-inner-sdk</artifactId>
     <version>0.0.1</version>
-
+    <dependencies>
+    </dependencies>
 </project>
