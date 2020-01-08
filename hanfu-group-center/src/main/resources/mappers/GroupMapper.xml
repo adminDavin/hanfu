@@ -218,15 +218,17 @@
   <update id="updateByPrimaryKey" >
     update group_id
     set
-      boss_id = #{bossId,jdbcType=INTEGER},
-      goods_id = #{goodsId,jdbcType=INTEGER},
-      price = #{price,jdbcType=DOUBLE},
-      number = #{number,jdbcType=INTEGER},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      stop_time = #{stopTime,jdbcType=TIMESTAMP},
-       repertory = #{repertory,jdbcType=INTEGER}
-      where id = #{groupId,jdbcType=INTEGER}
+      boss_id = #{bossId},
+      goods_id = #{goodsId},
+      price = #{price},
+      number = #{number},
+      start_time = #{startTime},
+      stop_time = #{stopTime},
+       repertory = #{repertory}
+      where id = #{groupId}
   </update>
+
+
 
   <update id="updateRrepertory" parameterType="java.lang.Integer" >
     update group_id

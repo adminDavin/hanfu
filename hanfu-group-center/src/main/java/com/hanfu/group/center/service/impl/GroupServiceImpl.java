@@ -52,11 +52,6 @@ class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public int updateByPrimaryKeySelective(Group group) {
-        return 0;
-    }
-
-    @Override
     public void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
      groupMapper.updateByPrimaryKey( groupId,  bossId,  goodsId,  price,  number,  startTime,  stopTime,  repertory);
     }

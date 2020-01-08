@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 ;
+import javax.management.ValueExp;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,6 +44,8 @@ public class GroupController {
     HfGoodsSpecService hfGoodsSpec;
     @Autowired
     ProductService productService;
+    @Autowired
+    HfOrdersService hfOrdersService;
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -136,15 +140,17 @@ public class GroupController {
             groupOpenConnectService.insert(userId,groupOpenId,orderId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
+            Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(groupId);
             for (Integer  id:urId) {
                 groupOpenConnectService.updateIsDeleted(id,groupOpenId);
+                hfOrdersService.insert(group1,id);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
             Return aReturn = new Return();
             aReturn.setId(groupOpenId);
-            Group group1 = groupService.selectDate(groupId);
+
             Integer number1 = group1.getNumber();
             aReturn.setNumber(number1);
             aReturn.setGoodsName(group1.getHfGoods().getHfName());
@@ -218,7 +224,6 @@ public class GroupController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "price", value = "团购价格", required = false, type = "Double"),
             @ApiImplicitParam(paramType = "query", name = "number", value = "成团人数", required = false, type = "Integer"),
@@ -226,7 +231,7 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "团购结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup(Integer  groupId, Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+    public  boolean  insertGroup(@RequestParam(value="id")Integer  groupId,  Integer goodsId, Double price, Integer number, String startTime, String stopTime, Integer repertory) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
@@ -375,7 +380,7 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
 
     })
-    public  Object  joinGroup(Integer id,Integer userId)  {
+    public  Object  joinGroup(Integer id,Integer userId) throws ParseException {
         Integer orderId=0;
         GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
         Integer groupId = groupOpen.getGroupId();
@@ -391,15 +396,17 @@ public class GroupController {
             groupOpenConnectService.insert(userId,groupOpenId,orderId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
+            Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(id);
             for (Integer  id1:urId) {
                 groupOpenConnectService.updateIsDeleted(id1,groupOpenId);
+                hfOrdersService.insert(group1,id1);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
             Return aReturn = new Return();
             aReturn.setId(id);
-            Group group1 = groupService.selectDate(groupId);
+
             Integer number1 = group1.getNumber();
             aReturn.setNumber(number1);
             aReturn.setGoodsName(group1.getHfGoods().getHfName());

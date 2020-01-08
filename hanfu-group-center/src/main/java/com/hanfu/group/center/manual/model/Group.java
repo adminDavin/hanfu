@@ -109,8 +109,7 @@ public class Group implements Serializable {
     public void setNumber(Integer number) {
         this.number = number;
     }
-    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
+
     public Date getStartTime() {
         return startTime;
     }

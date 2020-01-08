@@ -24,7 +24,6 @@ public interface GroupService {
     List<Group> seleteGroup(Integer bossId);
     Group selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Group record);
 
     void updateByPrimaryKey(Integer groupId,Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
 
