@@ -20,7 +20,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.hanfu.base:hanfu-order-center:0.0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="hanfu-inner-sdk" />
     <orderEntry type="module" module-name="hanfu-web-utils" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.1.7.RELEASE" level="project" />
@@ -143,6 +142,10 @@
     <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper-spring-boot-autoconfigure:1.2.5" level="project" />
     <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:1.0" level="project" />
+    <orderEntry type="module" module-name="hanfu-order-center" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.26" level="project" />
+    <orderEntry type="module" module-name="hanfu-common" />
+    <orderEntry type="library" name="Maven: cn.bestwu:fastdfs-client-java:1.27" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-data-redis:2.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.lettuce:lettuce-core:5.1.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.38.Final" level="project" />
@@ -159,7 +162,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-oxm:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:5.1.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: com.hanfu.base:hanfu-order-center:0.0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.59" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:2.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-log4j2:2.1.7.RELEASE" level="project" />

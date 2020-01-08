@@ -75,6 +75,12 @@ public class HfGoods implements Serializable {
     @ApiModelProperty(required = true, value = "店铺id")
 
     private Integer stoneId;
+    @ApiModelProperty(required = true, value = "上下架")
+
+    private Integer frames;
+    @ApiModelProperty(required = true, value = "图片Id")
+
+    private Integer fileId;
 
     private LocalDateTime createTime;
 
@@ -82,7 +88,23 @@ public class HfGoods implements Serializable {
 
     private short isDeleted;
 
-    public Integer getId() {
+    public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getFrames() {
+		return frames;
+	}
+
+	public void setFrames(Integer frames) {
+		this.frames = frames;
+	}
+
+	public Integer getId() {
 
         return id;
 

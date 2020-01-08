@@ -90,17 +90,18 @@ public class MessageController {
     @ApiOperation(value = "添加评价", notes = "添加评价")
     @RequestMapping(value = "/insertReply", method = RequestMethod.GET)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = false, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> insertReply(@RequestParam String evaluate, Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> insertReply(@RequestParam String evaluate, Integer orderId, Integer userId,Integer goodsId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
         }
-        String key = orderId.toString() + userId.toString();
+        String key = orderId.toString() + userId.toString()+goodsId.toString();
         redisTemplate.opsForValue().set(key, evaluate);
         return builder.body(ResponseUtils.getResponseBody(""));
     }
@@ -110,14 +111,15 @@ public class MessageController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> SeekReply(Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> SeekReply(Integer orderId, Integer userId,Integer goodsId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有评价"));
         }
-        String key = orderId.toString() + userId.toString();
+        String key = orderId.toString() + userId.toString()+goodsId.toString();
         return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(key)));
     }
 
@@ -127,10 +129,11 @@ public class MessageController {
             @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> queryReply(@RequestParam String evaluate, Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> queryReply(@RequestParam String evaluate, Integer orderId, Integer userId,Integer goodsId)
             throws JSONException {
-        String key = orderId.toString();
+        String key = orderId.toString()+orderId.toString()+goodsId.toString();
         redisTemplate.opsForValue().set(key, evaluate);
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(""));

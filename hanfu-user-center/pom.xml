@@ -213,5 +213,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--通用mapper-->
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper</artifactId>
+            <!-- 建议使用最新版本,最新版本请从项目首页查找 -->
+            <version>4.1.4</version>
+        </dependency>
+
     </dependencies>
 </project>

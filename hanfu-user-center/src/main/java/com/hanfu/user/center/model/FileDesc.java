@@ -1,5 +1,10 @@
 package com.hanfu.user.center.model;
 
+import tk.mybatis.mapper.annotation.KeySql;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -10,6 +15,9 @@ public class FileDesc implements Serializable {
      *
      * @mbg.generated Sat Oct 19 15:49:41 CST 2019
      */
+    @KeySql(useGeneratedKeys = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Integer id;
 
     /**
