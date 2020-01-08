@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -79,27 +80,48 @@ public class accreditController {
 
     @RequestMapping(path = "/insertAccredit", method = RequestMethod.POST)
     @ApiOperation(value = "新增人员", notes = "新增人员")
-    public ResponseEntity<JSONObject> insertAccredit(Authorization authorization, MultipartFile file) throws Exception {
-        System.out.println(file.getBytes());
+    public ResponseEntity<JSONObject> insertAccredit(Authorization authorization, MultipartFile fileInfo) throws Exception {
+//        System.out.println(file.getBytes());
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         String uuid = UUID.randomUUID().toString(); //转化为String对象
             System.out.println(uuid); //打印UUID
             uuid = uuid.replace("-", "");//因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
                 System.out.println(uuid);
-            FileMangeService fileMangeService = new FileMangeService();
-            String arr[];
-            arr = fileMangeService.uploadFile(file.getBytes(), uuid);
+        Integer fileId = null;
+        FileMangeService fileMangeService = new FileMangeService();
+        String arr[];
+        arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+        Example example = new Example(FileDesc.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("fileName",authorization.getEmployeeCode());
+        List<FileDesc> list = fileMapper.selectByExample(example);
+        System.out.println(list+"1231111111");
             FileDesc fileDesc = new FileDesc();
-            fileDesc.setFileName(file.getName());
+            fileDesc.setFileName(authorization.getEmployeeCode());
             fileDesc.setGroupName(arr[0]);
             fileDesc.setRemoteFilename(arr[1]);
+            fileDesc.setUserId(-1);
             fileDesc.setCreateTime(LocalDateTime.now());
             fileDesc.setModifyTime(LocalDateTime.now());
             fileDesc.setIsDeleted((short) 0);
             fileMapper.insert(fileDesc);
-            int fileId=fileDesc.getId();
+            fileId = fileDesc.getId();
+            System.out.println(fileDesc.getId()+"-------"+"1234567890");
+
+//        else {
+//            FileDesc fileDesc = list.get(0);
+//            fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+//            fileDesc.setGroupName(arr[0]);
+//            fileDesc.setRemoteFilename(arr[1]);
+//            fileDesc.setModifyTime(LocalDateTime.now());
+//            fileMapper.updateByPrimaryKey(fileDesc);
+//            fileId = fileDesc.getId();
+//        }
             authorization.setFileId(fileId);
+        authorization.setModifyDate(LocalDateTime.now());
+        authorization.setCreateDate(LocalDateTime.now());
             authorizationMapper.insert(authorization);
+
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
@@ -126,6 +148,7 @@ public class accreditController {
         int fileId=fileDesc.getId();
         authorization.setId(authorization.getId());
         authorization.setFileId(fileId);
+        authorization.setModifyDate(LocalDateTime.now());
         authorizationMapper.updateByPrimaryKeySelective(authorization);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }

@@ -50,6 +50,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
@@ -87,13 +90,17 @@ public class KingWordsController {
             @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
     })
-    public ResponseEntity<JSONObject> login(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
+    public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
+        Cookie cookie = new Cookie("autologin", authKey);
+        response.addCookie(cookie);
+
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfAuth hfAuth = userDao.selectAuthList(authKey);
         if (hfAuth == null) {
             return builder.body(ResponseUtils.getResponseBody("还未注册"));
         }
-        System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId()));
+        System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId())+"qqq");
+        System.out.println(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId()))+"ppp");
         if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
             String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
             redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
@@ -298,7 +305,7 @@ public class KingWordsController {
 //            System.out.println(page);
 //            return builder.body(ResponseUtils.getResponseBody(page));
 //    }
-
+    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/userList",  method = RequestMethod.GET)
     @ApiOperation(value = "用户列表", notes = "用户列表")
     @ApiImplicitParams({

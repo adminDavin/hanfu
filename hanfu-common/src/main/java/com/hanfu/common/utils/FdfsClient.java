@@ -1,15 +1,10 @@
 package com.hanfu.common.utils;
 
+import org.csource.common.MyException;
+import org.csource.fastdfs.*;
+
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.csource.common.MyException;
-import org.csource.fastdfs.ClientGlobal;
-import org.csource.fastdfs.StorageClient;
-import org.csource.fastdfs.StorageServer;
-import org.csource.fastdfs.TrackerClient;
-import org.csource.fastdfs.TrackerGroup;
-import org.csource.fastdfs.TrackerServer;
 
 
 public class FdfsClient {
@@ -46,7 +41,7 @@ public class FdfsClient {
             TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
             TrackerClient trackerClient = new TrackerClient(trackerGroup);
             TrackerServer trackerServer = trackerClient.getConnection();
-            StorageServer storage = new StorageServer("172.26.16.97", 23000, 0);
+            StorageServer storage = new StorageServer("39.100.237.144", 23000, 0);
             client = new StorageClient(trackerServer, storage);
         } catch (IOException e) {
             e.printStackTrace();
