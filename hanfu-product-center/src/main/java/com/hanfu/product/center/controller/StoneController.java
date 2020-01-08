@@ -144,7 +144,6 @@ public class StoneController {
         HfPriceExample example4 = new HfPriceExample();
         example4.createCriteria().andGoogsIdEqualTo(hfGoodsId);
         hfPriceMapper.deleteByExample(example4);
-
         return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.deleteByPrimaryKey(hfGoodsId)));
     }
 

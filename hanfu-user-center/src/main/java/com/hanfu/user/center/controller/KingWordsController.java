@@ -120,7 +120,7 @@ public class KingWordsController {
 //		list.put(token, hfAuth.getUserId());
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
-    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
+//    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/code", method = RequestMethod.GET)
     @ApiOperation(value = "发送验证码", notes = "发送验证码")
     public ResponseEntity<JSONObject> code(String phone) throws Exception {

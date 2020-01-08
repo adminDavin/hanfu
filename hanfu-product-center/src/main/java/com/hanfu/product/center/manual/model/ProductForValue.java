@@ -12,8 +12,15 @@ public class ProductForValue implements Serializable{
     private Integer sellPrice1;
     @ApiModelProperty(required = false, value = "价格2")
     private Integer sellPrice2;
-    
+    @ApiModelProperty(required = false, value = "商品名称")
+    private String goodsName;
 
+	public String getGoodsName() {
+		return goodsName;
+	}
+	public void setGoodName(String goodsName) {
+		this.goodsName = goodsName;
+	}
 	public Integer getSellPrice1() {
 		return sellPrice1;
 	}

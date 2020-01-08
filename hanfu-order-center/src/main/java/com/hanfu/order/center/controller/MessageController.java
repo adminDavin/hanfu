@@ -1,6 +1,10 @@
 package com.hanfu.order.center.controller;
 
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -14,9 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.hanfu.common.service.FileMangeService;
+import com.hanfu.order.center.dao.FileDescMapper;
 import com.hanfu.order.center.manual.dao.MessageDao;
+import com.hanfu.order.center.manual.model.Evaluate;
+import com.hanfu.order.center.model.FileDesc;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -34,6 +44,8 @@ public class MessageController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     MessageDao messageDao;
+    @Autowired
+    FileDescMapper fileDescMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -95,13 +107,31 @@ public class MessageController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = false, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> insertReply(@RequestParam String evaluate, Integer orderId, Integer userId,Integer goodsId)
+    public ResponseEntity<JSONObject> insertReply(Evaluate evaluate, Integer orderId, Integer userId,Integer goodsId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
         }
         String key = orderId.toString() + userId.toString()+goodsId.toString();
+        MultipartFile fileInfo = evaluate.getMultipartFile();
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		try {
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(userId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         redisTemplate.opsForValue().set(key, evaluate);
         return builder.body(ResponseUtils.getResponseBody(""));
     }
