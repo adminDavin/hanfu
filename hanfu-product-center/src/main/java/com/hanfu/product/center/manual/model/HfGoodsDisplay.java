@@ -316,5 +316,4 @@ public class HfGoodsDisplay extends CommonRequest {
     public void setFrames(Integer frames) {
         this.frames = frames;
     }
-
 }
