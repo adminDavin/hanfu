@@ -29,6 +29,7 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.CategorySpecMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
+import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
@@ -46,6 +47,7 @@ import com.hanfu.product.center.model.CategorySpec;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
 import com.hanfu.product.center.model.GoodsSpecExample;
+import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
@@ -81,344 +83,52 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/goods")
 @Api
 public class GoodsController {
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private HfGoodsMapper hfGoodsMapper;
+	@Autowired
+	private HfGoodsMapper hfGoodsMapper;
 
-    @Autowired
-    private HfGoodsDao hfGoodsDao;
+	@Autowired
+	private HfGoodsDao hfGoodsDao;
 
-    @Autowired
-    private GoodsSpecMapper goodsSpecMapper;
+	@Autowired
+	private GoodsSpecMapper goodsSpecMapper;
 
-    @Autowired
-    private HfGoodsPictrueMapper hfGoodsPictrueMapper;
+	@Autowired
+	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
 
-    @Autowired
-    private FileDescMapper fileDescMapper;
+	@Autowired
+	private FileDescMapper fileDescMapper;
 
-    @Autowired
-    private HfPriceMapper hfPriceMapper;
+	@Autowired
+	private HfPriceMapper hfPriceMapper;
 
-    @Autowired
-    private HfRespMapper hfRespMapper;
+	@Autowired
+	private HfRespMapper hfRespMapper;
 
-    @Autowired
-    private ProductMapper productMapper;
+	@Autowired
+	private ProductMapper productMapper;
 
-    @Autowired
-    private ProductSpecMapper productSpecMapper;
+	@Autowired
+	private ProductSpecMapper productSpecMapper;
 
-    @Autowired
-    private HfStoneMapper hfStoneMapper;
+	@Autowired
+	private HfStoneMapper hfStoneMapper;
 
-    @Autowired
-    private ProductInstanceMapper productInstanceMapper;
-    
-    @Autowired
-    private WarehouseMapper warehouseMapper;
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
 
-    @Autowired
-    private GoodsService goodsService;
-    @Autowired
-    private CategorySpecMapper categorySpecMapper;
+	@Autowired
+	private WarehouseMapper warehouseMapper;
+
+	@Autowired
+	private GoodsService goodsService;
+	@Autowired
+	private CategorySpecMapper categorySpecMapper;
+	@Autowired
+	private HfCategoryMapper hfCategoryMapper;
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
-    
-    
-    @ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
-    @RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "instanceId", value = "商品实体id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> listProduct(@RequestParam Integer instanceId) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoodsExample example = new HfGoodsExample();
-        example.createCriteria().andInstanceIdEqualTo(instanceId);
-        return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
-    }
-
-    @ApiOperation(value = "根据物品id获取物品详情", notes = "即某物品的详细信息")
-    @RequestMapping(value = "/byGoodsId", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> listGoodsInfo(@RequestParam Integer goodsId) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(goodsService.getGoodsInfo(goodsId)));
-    }
-    @ApiOperation(value = "获取物品列表", notes = "获取物品列表")
-    @RequestMapping(value = "/listGoods", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> listGoods(Integer stoneId) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(stoneId)));
-    }
-    @ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
-    @RequestMapping(value = "/categoryId", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectProductBycategoryIdOrProductName(
-            @RequestParam(name = "goodsDisplay", required = false) HfGoodsDisplay goodsDisplay,
-            @RequestParam(name = "page", required = false) Integer page,
-            @RequestParam(name = "size", required = false) Integer size) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        if (!StringUtils.isEmpty(page)) {
-            if (!StringUtils.isEmpty(size)) {
-                PageHelper.startPage(page, size);
-            }
-        }
-        List<HfGoodsDisplay> list = hfGoodsDao.selectProductBycategoryIdOrProductName(goodsDisplay);
-        if (list.isEmpty()) {
-            return builder.body(ResponseUtils.getResponseBody(null));
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getPriceId() != null) {
-                HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(list.get(i).getPriceId());
-                list.get(i).setSellPrice(hfPrice.getSellPrice());
-            }
-            HfRespExample example = new HfRespExample();
-            example.createCriteria().andGoogsIdEqualTo(list.get(i).getId());
-            List<HfResp> hfResp = hfRespMapper.selectByExample(example);
-            if (!hfResp.isEmpty()) {
-                list.get(i).setQuantity(hfResp.get(0).getQuantity());
-                Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
-                if (warehouse != null) {
-                    list.get(i).setWarehouseName(warehouse.getHfName());
-                }
-            }
-            HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
-            example1.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
-            List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example1);
-            if (!hfGoodsPictrue.isEmpty()) {
-                list.get(i).setFileId(hfGoodsPictrue.get(0).getFileId());
-            }
-        }
-        return builder.body(ResponseUtils.getResponseBody(list));
-    }
-
-    @ApiOperation(value = "添加物品", notes = "添加物品")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> createGood(@RequestParam("fileInfo1")MultipartFile[] fileInfo1,HfGoodsInfo hfGoodsInfo) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoods record = new HfGoods();
-        	record.setCategoryId(hfGoodsInfo.getCatrgoryId());
-            record.setBossId(hfGoodsInfo.getBossId());
-            record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
-            record.setHfName(hfGoodsInfo.getGoodName());
-            record.setStoneId(hfGoodsInfo.getHfStoreId());
-            record.setBrandId(hfGoodsInfo.getBrandId());
-            record.setCreateTime(LocalDateTime.now());
-            record.setModifyTime(LocalDateTime.now());
-            record.setMember(hfGoodsInfo.getMember());
-            record.setFrames(hfGoodsInfo.getFrames());
-            record.setClaim(hfGoodsInfo.getClaim());
-            record.setIsDeleted((short) 0);
-            hfGoodsMapper.insert(record);
-            GoodsSpec item1 = new GoodsSpec();
-            item1.setGoodsId(record.getId());
-            item1.setLastModifier(hfGoodsInfo.getUsername());
-            for (String SpecValue : hfGoodsInfo.getSpecValue()) {
-                item1.setHfValue(SpecValue);
-                item1.setCreateTime(LocalDateTime.now());
-                item1.setModifyTime(LocalDateTime.now());
-                item1.setIsDeleted((short) 0);
-                goodsSpecMapper.insert(item1);
-                CategorySpec categorySpec = new CategorySpec();
-                for (String specValue : hfGoodsInfo.getSpecValue()) {
-                	categorySpec.setSpecValue(specValue);
-                    categorySpec.setHfName(hfGoodsInfo.getCategoryName());
-                    categorySpec.setSpecUnit(hfGoodsInfo.getSpecUnit());
-                    categorySpecMapper.insert(categorySpec);
-    			}
-                List<HfGoodsPictrue> pictures = Lists.newArrayList();
-                FileMangeService fileMangeService = new FileMangeService();
-                String arr[];
-                for (MultipartFile fileInfo : fileInfo1) {
-                	   arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsInfo.getUserId()));
-                       FileDesc fileDesc = new FileDesc();
-                       fileDesc.setFileName(fileInfo.getName());
-                       fileDesc.setGroupName(arr[0]);
-                       fileDesc.setRemoteFilename(arr[1]);
-                       fileDesc.setUserId(hfGoodsInfo.getUserId());
-                       fileDesc.setCreateTime(LocalDateTime.now());
-                       fileDesc.setModifyTime(LocalDateTime.now());
-                       fileDesc.setIsDeleted((short) 0);
-                       fileDescMapper.insert(fileDesc);
-                       HfGoodsPictrue picture = new HfGoodsPictrue();
-                       picture.setFileId(fileDesc.getId());
-                       picture.setGoodsId(record.getId());
-                       picture.setHfName(fileInfo.getName());
-                       picture.setSpecDesc(hfGoodsInfo.getPrictureDesc());
-                       picture.setCreateTime(LocalDateTime.now());
-                       picture.setModifyTime(LocalDateTime.now());
-                       picture.setLastModifier(hfGoodsInfo.getUsername());
-                       picture.setIsDeleted((short) 0);
-                       hfGoodsPictrueMapper.insert(picture);
-                       pictures.add(picture);
-    		}
-    		}
-        return builder.body(ResponseUtils.getResponseBody(""));
-    }
-
-    @ApiOperation(value = "编辑物品", notes = "编辑物品")
-    @RequestMapping(value = "/updategood", method = RequestMethod.POST)
-    
-    public ResponseEntity<JSONObject> updateGood(HfGoodsDisplay hfGoodsDisplay) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        @RequestParam("fileInfo1")MultipartFile[] fileInfo1
-//        List<HfGoodsPictrue> pictures = Lists.newArrayList();
-//        FileMangeService fileMangeService = new FileMangeService();
-//        String arr[];
-//        for (MultipartFile fileInfo : fileInfo1) {
-//        	   arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsDisplay.getUserId()));
-//               FileDesc fileDesc = new FileDesc();
-//               fileDesc.setFileName(fileInfo.getName());
-//               fileDesc.setGroupName(arr[0]);
-//               fileDesc.setRemoteFilename(arr[1]);
-//               fileDesc.setUserId(hfGoodsDisplay.getUserId());
-//               fileDesc.setCreateTime(LocalDateTime.now());
-//               fileDesc.setModifyTime(LocalDateTime.now());
-//               fileDesc.setIsDeleted((short) 0);
-//               fileDescMapper.insert(fileDesc);
-//               HfGoodsPictrue picture = new HfGoodsPictrue();
-//               picture.setFileId(fileDesc.getId());
-//               picture.setGoodsId(hfGoodsDisplay.getId());
-//               picture.setHfName(fileInfo.getName());
-//               picture.setSpecDesc(hfGoodsDisplay.getPrictureDesc());
-//               picture.setCreateTime(LocalDateTime.now());
-//               picture.setModifyTime(LocalDateTime.now());
-////               picture.setLastModifier(hfGoodsDisplay.getUsername());
-//               picture.setIsDeleted((short) 0);
-//               hfGoodsPictrueMapper.insert(picture);
-//               pictures.add(picture);
-//		}
-        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
-        if (hfGoods == null) {
-            throw new Exception("物品不存在");
-        }
-        if (!StringUtils.isEmpty(hfGoodsDisplay.getHfName())) {
-            hfGoods.setHfName(hfGoodsDisplay.getHfName());
-        }
-        if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodsDesc())) {
-            hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
-            ;
-        }
-        hfGoods.setModifyTime(LocalDateTime.now());
-        if(hfGoods.getPriceId()==null) {
-        	GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
-        	goodsPriceInfo.setHfGoodsId(hfGoods.getId());
-        	goodsPriceInfo.setSellPrice(hfGoodsDisplay.getSellPrice());
-//        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
-        	setGoodsPrice(goodsPriceInfo);
-        }else {
-        	 HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-             if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
-             	hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-             }
-             hfPriceMapper.updateByPrimaryKey(hfPrice);
-        }
-        HfResp hfResp = new HfResp();
-        GoodsSpec goodsSpec = new GoodsSpec();
-        goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
-        goodsSpec.setGoodsId(hfGoodsDisplay.getId());
-//        goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
-        hfRespMapper.insert(hfResp);
-        return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
-    }
-
-    @ApiOperation(value = "获取物品规格", notes = "获取物品规格")
-    @RequestMapping(value = "/specifies", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId)
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-        ProductSpecExample pExample = new ProductSpecExample();
-        pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
-        List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
-        productSpecs.stream().forEach(spec -> {
-            GoodsSpecExample example = new GoodsSpecExample();
-            example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
-            List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
-            if (!items.isEmpty()) {
-                spec.setSpecValue(items.get(0).getHfValue());
-            }
-        });
-        return builder.body(ResponseUtils.getResponseBody(productSpecs));
-    }
-
-
-    @ApiOperation(value = "获取物品规格", notes = "获取物品规格")
-    @RequestMapping(value = "/specifiess", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecFo(@RequestParam(name = "goodsId") Integer goodsId)
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-        ProductSpecExample pExample = new ProductSpecExample();
-        pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
-        List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
-        productSpecs.stream().forEach(spec -> {
-            GoodsSpecExample example = new GoodsSpecExample();
-            example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
-            List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
-            if (!items.isEmpty()) {
-                spec.setSpecValue(items.get(0).getHfValue());
-            }
-        });
-        return builder.body(ResponseUtils.getResponseBody(productSpecs));
-    }
-    
-    @ApiOperation(value = "添加物品规格", notes = "添加物品规格")
-    @RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws Exception {
-        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
-        if (hfGoods == null) {
-            throw new Exception("物品不存在");
-        }
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(request.getProductSpecId());
-        GoodsSpec item = new GoodsSpec();
-        item.setGoodsId(request.getGoodsId());
-        item.setLastModifier(request.getUsername());
-        item.setHfSpecId(String.valueOf(productSpec.getId()));
-        item.setHfValue(request.getSpecValue());
-        item.setCategorySpecId(request.getCatrgorySpecId());
-        item.setCreateTime(LocalDateTime.now());
-        item.setModifyTime(LocalDateTime.now());
-        item.setIsDeleted((short) 0);
-        return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.insert(item)));
-    }
-
-    @ApiOperation(value = "更新物品规格", notes = "更新物品规格")
-    @RequestMapping(value = "/spec/update", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        GoodsSpecExample example = new GoodsSpecExample();
-        example.createCriteria().andGoodsIdEqualTo(request.getGoodsId())
-                .andHfSpecIdEqualTo(String.valueOf(request.getProductSpecId()));
-        List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
-        if (items.isEmpty()) {
-            addGoodsSpec(request);
-        } else {
-            GoodsSpec item = items.get(0);
-            item.setHfValue(request.getSpecValue());
-            item.setModifyTime(LocalDateTime.now());
-            item.setLastModifier(request.getUsername());
-            goodsSpecMapper.updateByPrimaryKey(item);
-        }
-        return builder.body(ResponseUtils.getResponseBody(goodsSpecMapper.selectByExample(example)));
-    }
-
-//	@ApiOperation(value = "获取物品图片", notes = "获取物品图片")
-//	@RequestMapping(value = "/resp/list", method = RequestMethod.GET)
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> listResp(@RequestParam(name = "goodsId") Integer goodsId) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfRespExample example = new HfRespExample();
-//		example.createCriteria().andGoogsIdEqualTo(goodsId);
-//		return builder.body(ResponseUtils.getResponseBody(hfRespMapper.selectByExample(example)));
-//	}
 
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
@@ -607,7 +317,7 @@ public class GoodsController {
 		List<HfGoodsDisplay> hfGoodsDisplay = hfGoodsDao.selectGoodsSpec(goods.getProductId());
 		for (HfGoodsDisplay hfGoodsDisplay2 : hfGoodsDisplay) {
 			hfGoodsDisplay2.getProductSpecName();
-			hfGoodsDisplay2.getHfValue();
+			hfGoodsDisplay2.getHfValue();  
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsSpec(goods.getProductId())));
 	}
@@ -680,27 +390,23 @@ public class GoodsController {
 //	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
 //	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
 //	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-//	public void getFileByGoods(@RequestParam(name = "goodsId") Integer goodsId, HttpServletResponse response) throws Exception {
+//		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId)
+//			throws JSONException {
 //		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-//		example.createCriteria().andGoodsIdEqualTo(goodsId);
-//		List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example);
-//		for(int i=0;i<list.size();i++) {
-//		if(!list.isEmpty()) {
-//			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(list.get(0).getFileId());
-//			if (fileDesc == null) {
-//				throw new Exception("file not exists");
+//		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+//		ProductSpecExample pExample = new ProductSpecExample();
+//		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
+//		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
+//		productSpecs.stream().forEach(spec -> {
+//			GoodsSpecExample example = new GoodsSpecExample();
+//			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
+//			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
+//			if (!items.isEmpty()) {
+//				spec.setSpecValue(items.get(0).getHfValue());
 //			}
-//			FileMangeService fileManageService = new FileMangeService();
-//			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-//			if(file!=null) {
-//				BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
-//				ImageIO.write(readImg, "png", response.getOutputStream());
-//			}
-//		}
-//			
-//		}
+//		});
+//		return builder.body(ResponseUtils.getResponseBody(productSpecs));
 //	}
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")
 	@RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
@@ -846,10 +552,10 @@ public class GoodsController {
 			goods.setPriceId(price.getId());
 			goods.setModifyTime(LocalDateTime.now());
 			hfGoodsMapper.updateByPrimaryKey(goods);
-		} else {
+		} else { 
 			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
 			if (!StringUtils.isEmpty(request.getSellPrice())) {
-				hfPrice.setSellPrice(request.getSellPrice());
+				hfPrice.setSellPrice(request.getSellPrice()); 
 			}
 			hfPrice.setModifyTime(LocalDateTime.now());
 			if (!StringUtils.isEmpty(request.getUsername())) {
@@ -1026,7 +732,7 @@ public class GoodsController {
 	@ApiOperation(value = "删除图片", notes = "删除图片根据物品")
 	@RequestMapping(value = "/deleteFile", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
 	public void deleteFile(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
 		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
 		example.createCriteria().andGoodsIdEqualTo(goodsId);
@@ -1041,7 +747,7 @@ public class GoodsController {
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
 	}
-	
+
 	@ApiOperation(value = "删除单张图片", notes = "删除单张图片")
 	@RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -1108,13 +814,13 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
-//	@ApiOperation(value = "添加活动奖项", notes = "添加活动奖项")
-//	@RequestMapping(value = "/addAwardInfo", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addAwardInfo(AwardInfo awardInfo) throws JSONException{
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		Integer row = goodsService.insertAwardInfo(awardInfo);
-//		return builder.body(ResponseUtils.getResponseBody(null));
-//	}
+	//	@ApiOperation(value = "添加活动奖项", notes = "添加活动奖项")
+	//	@RequestMapping(value = "/addAwardInfo", method = RequestMethod.POST)
+	//	public ResponseEntity<JSONObject> addAwardInfo(AwardInfo awardInfo) throws JSONException{
+	//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//		Integer row = goodsService.insertAwardInfo(awardInfo);
+	//		return builder.body(ResponseUtils.getResponseBody(null));
+	//	}
 	@ApiOperation(value = "根据条件查询", notes = "根据条件查询")
 	@RequestMapping(value = "/selectByValue", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectByValue(ProductForValue productForValue)
@@ -1168,11 +874,19 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> selectFrames(Short frames)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfGoodsExample example = new HfGoodsExample();
-        example.createCriteria().andIsDeletedEqualTo(frames);
-        Long count = hfGoodsMapper.countByExample(example);
-        System.out.println(count);
-        return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
+		HfGoodsExample example = new HfGoodsExample();
+		example.createCriteria().andIsDeletedEqualTo(frames);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.selectByExample(example)));
+	}
+	@ApiOperation(value = "查询数量", notes = "查询数量")
+	@RequestMapping(value = "/selectQ", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectQ(Short frames)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoodsExample example = new HfGoodsExample();
+		example.createCriteria().andIsDeletedEqualTo(frames);
+		Long count = hfGoodsMapper.countByExample(example);
+			return builder.body(ResponseUtils.getResponseBody(count));
 	}
 	@ApiOperation(value = "查询商品总数", notes = "查询商品总数")
 	@RequestMapping(value = "/queryGoods", method = RequestMethod.GET)
@@ -1180,5 +894,12 @@ public class GoodsController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.countByExample(null)));
+	}
+	@ApiOperation(value = "查询", notes = "查询")
+	@RequestMapping(value = "/queryList", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> queryList(ProductForValue productForValue)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectQueryList(productForValue)));
 	}
 }

@@ -211,7 +211,7 @@ public class ProductController {
         	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
         }
 
-        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(bossId)));
+        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(1)));
     }
 
     @ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
@@ -248,38 +248,6 @@ public class ProductController {
         productSpecMapper.deleteByExample(example);
         productInfoMapper.deleteByExample(example2);
         return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
-    }
-
-    @ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
-    @RequestMapping(value = "/deleteSelectProductId", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> deleteAllProduct(@RequestParam(name = "productId") Integer[] productId)
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ProductSpecExample example = new ProductSpecExample();
-        ProductInfoExample example2 = new ProductInfoExample();
-        for (int i = 0; i < productId.length; i++) {
-            example.createCriteria().andProductIdEqualTo(productId[i]);
-            example2.createCriteria().andProductIdEqualTo(productId[i]);
-            productSpecMapper.deleteByExample(example);
-            productInfoMapper.deleteByExample(example2);
-        }
-        return builder.body(ResponseUtils.getResponseBody(productDao.deleteSelectProduct(productId)));
-    }
-
-    @ApiOperation(value = "修改商品列表", notes = "根据商品修改商品列表")
-    @RequestMapping(value = "/updateProductId", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateProductId(ProductRequest request) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Product product = productMapper.selectByPrimaryKey(request.getId());
-        if (product == null) {
-            throw new Exception("商品不存在");
-        }
-        if(levelId == 1) {
-        	hfCategoryMapper.selectByExample(null);
-        }
-        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
     }
 
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
@@ -463,39 +431,6 @@ public class ProductController {
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(bossId)));
-	}
-
-	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
-	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Product product = new Product();
-		product.setBossId(request.getBossId());
-		product.setBrandId(request.getBrandId());
-		product.setCategoryId(request.getCategoryId());
-		product.setHfName(request.getHfName());
-		product.setLastModifier(request.getLastModifier());
-		product.setCreateTime(LocalDateTime.now());
-		product.setModifyTime(LocalDateTime.now());
-		product.setIsDeleted((short) 0);
-		product.setProductDesc(request.getProductDesc());
-		return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
-	}
-
-	@ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
-	@RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> deleteProduct(@RequestParam(name = "productId") Integer productId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		ProductSpecExample example = new ProductSpecExample();
-		example.createCriteria().andProductIdEqualTo(productId);
-		ProductInfoExample example2 = new ProductInfoExample();
-		example2.createCriteria().andProductIdEqualTo(productId);
-		productSpecMapper.deleteByExample(example);
-		productInfoMapper.deleteByExample(example2);
-		return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
 	}
 
 	@ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
