@@ -1,5 +1,6 @@
 package com.hanfu.user.center.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiParam;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -42,8 +43,10 @@ public class Authorization {
     @ApiParam(required = false, value = "是否失效")
     private Byte idDeleted;
     @ApiParam(required = false, value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime createDate;
     @ApiParam(required = false, value = "修改时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime modifyDate;
 
     public Integer getId() {

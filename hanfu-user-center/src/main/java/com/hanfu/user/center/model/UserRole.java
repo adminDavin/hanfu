@@ -5,7 +5,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class UserRole {
     @KeySql(useGeneratedKeys = true)
@@ -19,9 +19,9 @@ public class UserRole {
 
     private Short isDeleted;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    private Date modifyTime;
+    private LocalDateTime modifyTime;
 
     public Integer getId() {
         return id;
@@ -55,19 +55,19 @@ public class UserRole {
         this.isDeleted = isDeleted;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Date getModifyTime() {
+    public LocalDateTime getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(LocalDateTime modifyTime) {
         this.modifyTime = modifyTime;
     }
 }

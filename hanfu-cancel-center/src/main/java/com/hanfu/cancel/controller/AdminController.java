@@ -1,6 +1,7 @@
 package com.hanfu.cancel.controller;
 
-import com.hanfu.user.center.service.impl.Permission;
+import com.hanfu.user.center.config.PermissionConstants;
+import com.hanfu.user.center.service.RequiredPermission;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,10 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class AdminController {
 
-    Permission permission = new Permission();
+    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @GetMapping("/greeting")
     public String greeting() {
-        permission.test();
         return "Hello,World!";
     }
 

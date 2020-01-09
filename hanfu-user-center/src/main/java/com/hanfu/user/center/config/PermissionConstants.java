@@ -47,82 +47,82 @@ public class PermissionConstants {
     /**
      * 管理员-查看类目列表
      */
-    public static final String ADMIN_CATRGORY_LIST = "admin_ category_list";
+    public static final String ADMIN_CATRGORY_LIST = "admin_category_list";
     /**
      * 管理员-增加类目列表
      */
-    public static final String ADMIN_CATRGORY_INSERT = "admin_ category_insert";
+    public static final String ADMIN_CATRGORY_INSERT = "admin_category_insert";
     /**
      * 管理员-修改类目列表
      */
-    public static final String ADMIN_CATRGORY_UPDATE = "admin_ category_update";
+    public static final String ADMIN_CATRGORY_UPDATE = "admin_category_update";
     /**
      * 管理员-删除类目列表
      */
-    public static final String ADMIN_CATRGORY_DELETE = "admin_ category_delete";
+    public static final String ADMIN_CATRGORY_DELETE = "admin_category_delete";
     //会员管理---------------------权限
     /**
      * 管理员-查看会员列表
      */
-    public static final String ADMIN_MEMBER_LIST = "admin_ member_list";
+    public static final String ADMIN_MEMBER_LIST = "admin_member_list";
     /**
      * 管理员-删除会员列表
      */
-    public static final String ADMIN_MEMBER_DELETE = "admin_ member_delete";
+    public static final String ADMIN_MEMBER_DELETE = "admin_member_delete";
     /**
      * 管理员-增加会员列表
      */
-    public static final String ADMIN_MEMBER_INSERT = "admin_ member_insert";
+    public static final String ADMIN_MEMBER_INSERT = "admin_member_insert";
     /**
      * 管理员-修改会员列表
      */
-    public static final String ADMIN_MEMBER_UPDATE = "admin_ member_update";
+    public static final String ADMIN_MEMBER_UPDATE = "admin_member_update";
     //资产权限----------------------------------------------------------------
     /**
      * 管理员-查看资产列表
      */
-    public static final String ADMIN_PROPERTY_LIST = "admin_ property_list";
+    public static final String ADMIN_PROPERTY_LIST = "admin_property_list";
     /**
      * 管理员-查看资产详情
      */
-    public static final String ADMIN_PROPERTY_DETAILS = "admin_ property_details";
+    public static final String ADMIN_PROPERTY_DETAILS = "admin_property_details";
     /**
      * 管理员-提现
      */
-    public static final String ADMIN_PROPERTY_MONEY = "admin_ property_money";
+    public static final String ADMIN_PROPERTY_MONEY = "admin_property_money";
     //活动权限---------------------------------------------------------------------------------------
 
     /**
      * 管理员-查看活动列表
      */
-    public static final String ADMIN_ACTIVITY_LIST = "admin_ activity_list";
+    public static final String ADMIN_ACTIVITY_LIST = "admin_activity_list";
     /**
      * 管理员-查看活动详情
      */
-    public static final String ADMIN_ACTIVITY_DETAILS = "admin_ activity_details";
+    public static final String ADMIN_ACTIVITY_DETAILS = "admin_activity_details";
     /**
      * 管理员-开启活动
      */
-    public static final String ADMIN_ACTIVITY_OPEN = "admin_ activity_open";
+    public static final String ADMIN_ACTIVITY_OPEN = "admin_activity_open";
     /**
      * 管理员-添加活动
      */
-    public static final String ADMIN_ACTIVITY_INSERT = "admin_ activity_insert";
+    public static final String ADMIN_ACTIVITY_INSERT = "admin_activity_insert";
     /**
      * 管理员-编辑活动
      */
-    public static final String ADMIN_ACTIVITY_UPDATE = "admin_ activity_update";
+    public static final String ADMIN_ACTIVITY_UPDATE = "admin_activity_update";
     /**
      * 管理员-删除活动
      */
-    public static final String ADMIN_ACTIVITY_DELETE = "admin_ activity_delete";
+    public static final String ADMIN_ACTIVITY_DELETE = "admin_activity_delete";
     //-------------------管理员权限-----------------------------------
     /**
      * 管理员-查看管理员
      */
-    public static final String ADMIN_ADMINISTRATOR_LIST = "admin_ Administrator_list";
+    public static final String ADMIN_ADMINISTRATOR_LIST = "admin_Administrator_list";
     /**
      * 管理员-编辑权限管理员
      */
-    public static final String ADMIN_ADMINISTRATOR_update = "admin_ Administrator_update";
+    public static final String ADMIN_ADMINISTRATOR_update = "admin_Administrator_update";
 }

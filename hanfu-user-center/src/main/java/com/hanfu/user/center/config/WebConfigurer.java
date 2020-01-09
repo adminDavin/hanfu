@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -30,7 +31,7 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         registry.addInterceptor(authorityInterceptor);
         registry.addInterceptor(myInterceptor()).addPathPatterns("/**")
                 .addPathPatterns("/user/**")
-                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/user/login");
         super.addInterceptors(registry);
     }
     @Override
@@ -76,5 +77,13 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         resolver.setMaxUploadSize(5 * 1024 * 1024);
         return resolver;
     }
-
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //所有请求都允许跨域
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowCredentials(true);// 允许跨域带上cookies;
+    }
 }

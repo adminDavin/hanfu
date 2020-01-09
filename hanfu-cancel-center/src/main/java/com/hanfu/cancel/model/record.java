@@ -1,5 +1,6 @@
 package com.hanfu.cancel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -7,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-
 public class record {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @ApiModelProperty(value = "核销记录id")
     private Integer id;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime createDate;
     private String realName;
     private Integer purchasePrice;
@@ -63,7 +64,7 @@ public class record {
     public void setRental(Integer rental) {
         this.rental = rental;
     }
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public LocalDateTime getCreateDate() {
         return createDate;
     }

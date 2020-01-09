@@ -61,7 +61,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 //import com.hanfu.user.center.service.UserCenterService;
 
 @RestController
@@ -82,7 +81,6 @@ public class KingWordsController {
     HfAuthMapper hfAuthMapper;
     @Autowired
     UserDao userDao;
-
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ApiOperation(value = "用户登录", notes = "用户登录")
     @ApiImplicitParams({
@@ -92,6 +90,7 @@ public class KingWordsController {
     })
     public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") Integer passwd) throws Exception {
         Cookie cookie = new Cookie("autologin", authKey);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         BodyBuilder builder = ResponseUtils.getBodyBuilder();

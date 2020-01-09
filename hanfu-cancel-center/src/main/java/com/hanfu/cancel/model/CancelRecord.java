@@ -1,5 +1,6 @@
 package com.hanfu.cancel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,9 @@ public class CancelRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime createDate;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime modifyDate;
     private Integer cancelId;
     private Integer goodsId;

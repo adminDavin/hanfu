@@ -72,7 +72,6 @@ public class CancelController {
     @Autowired
     private HfPriceMapper hfPriceMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @RequestMapping(value = "/selectCancel", method = RequestMethod.GET)
     @ApiOperation(value = "核销员信息", notes = "核销员信息")
     @ApiImplicitParams({
@@ -115,12 +114,14 @@ public class CancelController {
         cancelsMapper.updateByPrimaryKeySelective(cancel);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
-
     @RequestMapping(value = "/selectCancelId", method = RequestMethod.GET)
     @ApiOperation(value = "核销员Id查询", notes = "核销员Id查询")
     public ResponseEntity<JSONObject> selectCancelId(HttpServletResponse response, int cancelId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(cancelService.selectCancelId(cancelId)));
+        List<record> cancel= cancelService.selectCancelId(cancelId);
+        cancel.get(0).setCreateDate(cancelService.selectCancelId(cancelId).get(0).getCreateDate());
+        System.out.println(cancelService.selectCancelId(cancelId).get(0).getCreateDate());
+        return builder.body(ResponseUtils.getResponseBody(cancel));
     }
 
     @RequestMapping(value = "/selectDate", method = RequestMethod.GET)

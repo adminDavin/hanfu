@@ -2,15 +2,15 @@ package com.hanfu.user.center.service.impl;
 
 
 import com.hanfu.user.center.service.PermissionService;
-//import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.RequiredPermission;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+//import com.hanfu.user.center.service.PermissionService;
 @Service
 //@org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class Permission implements PermissionService {
@@ -22,6 +22,20 @@ public class Permission implements PermissionService {
      */
  @Override
     public boolean hasPermission(HttpServletRequest request, HttpServletResponse response, Object handler) {
+//     System.out.println("进入了uesrserviceImpl");
+//     String userId="123";
+//     Cookie[] cookies = request.getCookies();
+//     if (cookies==null){
+//         return false;
+//     }
+//     System.out.println(cookies);
+//     for(Cookie cookie1 : cookies){
+//         if (cookie1.getName().equals("autologin")) {
+//             System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
+//             userId=cookie1.getValue();
+//         }
+//     }
+//     System.out.println(userId);
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             // 获取方法上的注解
@@ -33,18 +47,8 @@ public class Permission implements PermissionService {
             }
             // 如果标记了注解，则判断权限
             if (requiredPermission != null && StringUtils.isNotBlank(requiredPermission.value())) {
-                Cookie[] cookies = request.getCookies();
-                if (cookies==null){
-                    return false;
-                }
-                System.out.println(cookies);
-                for(Cookie cookie1 : cookies){
-                    if (cookie1.getName().equals("autologin")) {
-                        System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-                    }
-                }
                 // redis或数据库 中获取该用户的权限信息 并判断是否有权限
-                String permissionSet = "admin_product_list";
+                String permissionSet = "admin_product_list1";
                 System.out.println(requiredPermission.value());
                 System.out.println(permissionSet);
                 if (!requiredPermission.value().equals(permissionSet)){
