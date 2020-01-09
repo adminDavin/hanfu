@@ -44,6 +44,7 @@
       <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
     </association>
     <collection  property="fileDesc" ofType="com.hanfu.group.center.manual.model.FileDesc">
+      <result column="did" property="id" jdbcType="INTEGER" />
       <result column="dremote_filename" property="remoteFilename" jdbcType="VARCHAR" />
     </collection >
   </resultMap>
@@ -52,7 +53,7 @@
   <select id="selectDate"  parameterType="Integer"  resultMap="Date" >
         SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
          a.repertory arepertory,a.is_deleted ais_deleted,
-         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.remote_filename dremote_filename
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
         FROM
         group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
         left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id} and a.is_deleted=0
@@ -61,7 +62,7 @@
   <select id="selectCategory"  parameterType="Integer"  resultMap="Date" >
         SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
          a.repertory arepertory,a.is_deleted ais_deleted,
-         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.remote_filename dremote_filename
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
         FROM
         group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
         left join file_desc d   on c.file_id =d.id   WHERE b.category_id =#{id} and a.is_deleted=0

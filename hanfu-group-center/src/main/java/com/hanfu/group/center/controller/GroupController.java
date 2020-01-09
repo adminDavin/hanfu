@@ -314,6 +314,7 @@ public class GroupController {
         if(hfGoodsSpecs!=null ){
             group.setHfGoodsSpec(hfGoodsSpecs);
         }
+
         List<Product> products = productService.selectByPrimaryKey(group.getGoodsId());
         group.setProduct(products);
         return group;
@@ -463,25 +464,29 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
     })
-    public  List<Open>  selectGroup(Integer id)  {
+    public  OpenDetails  selectGroup(Integer id)  {
+        OpenDetails openDetails = new OpenDetails();
         Group group = groupService.selectByPrimaryKey(id);
         int number = group.getNumber();
 //        获取开团表id
         List<Integer>  id1 = groupOpenService.selectByGroupOpenId(id);
-        Map<Integer, Object> map = new HashMap<Integer, Object>();
         List<Open> open=new ArrayList<>();
+        int a1=0;
        for (int i=0;i<id1.size();i++){
            Open open1 = new Open();
 //           获取开团对应的用户id
            open1.setId(id1.get(i));
            List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+           a1= a1+integers.size();
            HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
            open1.setName(hfUser.getNickName());
            int a=groupOpenService.selectNumber(id1.get(i));
             open1.setNumber(number-a);
            open.add(open1);
        }
-        return open ;
+        openDetails.setSum(a1);
+        openDetails.setOpen(open);
+        return openDetails ;
     }
 
 
