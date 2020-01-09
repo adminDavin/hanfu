@@ -254,7 +254,7 @@ public class GoodsController {
 						fileDesc.setIsDeleted((short) 0);
 						fileDescMapper.insert(fileDesc);
 						HfGoodsPictrue picture = new HfGoodsPictrue();
-						picture.setFileId(fileDesc.getId());
+						picture.setFileId(fileDesc.getId()); 
 						picture.setGoodsId(record.getId());
 						picture.setHfName(fileInfo.getName());
 						picture.setSpecDesc(hfGoodsInfo.getPrictureDesc());
