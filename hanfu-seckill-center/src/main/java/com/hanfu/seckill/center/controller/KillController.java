@@ -1,6 +1,7 @@
 package com.hanfu.seckill.center.controller;
 
 
+import ch.qos.logback.classic.spi.EventArgUtil;
 import com.hanfu.seckill.center.model.*;
 import com.hanfu.seckill.center.service.*;
 import io.swagger.annotations.Api;
@@ -11,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author:gyj
@@ -196,7 +195,6 @@ public class KillController {
 
     @ResponseBody
     public Seckill selectByGoodsId(Integer id){
-
         return seckillService.selectId(id);
     }
 
@@ -238,8 +236,7 @@ public class KillController {
     @ApiOperation(value = "根据时间查秒杀商品", notes = "根据时间查秒杀商品")
     @RequestMapping(value = "/seleteDate", method = RequestMethod.GET)
     public  List<Seckill> seletDate(String startTime) throws ParseException {
-        String s = startTime+":00";
-        Date time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
+        Date time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
         return seckillService.selectDate(time);
     }
 
@@ -285,11 +282,20 @@ public class KillController {
     @ApiOperation(value = "查询秒杀今天的秒杀时间点", notes = "查询秒杀今天的秒杀时间点")
     @RequestMapping(value = "/selectByDate",method = RequestMethod.GET)
     @ResponseBody
-    public List<Date> selectByDate() {
+    public List<TodayDate> selectByDate() {
         Date date = new Date();
+        List<TodayDate> todayDates = new ArrayList<>(20);
         SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String  format1 = formatter1.format(date);
         String substring = format1.substring(0, 10);
-        return seckillService.selectByDate(substring);
+        HashMap<Object,Date > object = new HashMap<>();
+        List<Date> dates = seckillService.selectByDate(substring);
+
+        for(int i = 0;i<dates.size();i++){
+            TodayDate todayDate1 = new TodayDate();
+            todayDate1.setTime(dates.get(i).getTime());
+            todayDates.add(todayDate1);
+        }
+        return todayDates;
     }
 }
