@@ -10,7 +10,7 @@ public class GoodsPictrueRequest extends CommonRequest {
     private Integer goodsId;
     @ApiModelProperty(required = false, value = "图片描述")
     private String prictureDesc;
-    @ApiModelProperty(required = true, value = "图片路径")
+    @ApiModelProperty(required = false, value = "图片路径")
     private MultipartFile fileInfo;
     @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
     private String username;

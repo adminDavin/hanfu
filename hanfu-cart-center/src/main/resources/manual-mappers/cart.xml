@@ -15,6 +15,7 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
         <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
     </resultMap>
 
 
@@ -23,15 +24,11 @@
         h.goods_desc,h.id,
         h.hf_name,h.resp_id,
         h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
+        h1.id categoryId,
         h3.sell_price,h.create_time,
-        h.modify_time,h.is_deleted
+        h.modify_time,h.is_deleted,h4.file_id
         FROM
         hf_goods h
-        JOIN
-        product p
-        ON
-        h.product_id = p.id
         JOIN
         hf_category h1
         ON
@@ -40,6 +37,10 @@
         hf_price h3
         ON
         h.price_id = h3.id
+        JOIN
+        hf_goods_pictrue h4
+        ON
+        h4.goods_id = h.id
         WHERE
         h.id=#{goodsId}
     </select>

@@ -5,13 +5,14 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.hanfu.user.center.intercepter.AuthorityInterceptor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -20,7 +21,10 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
 
     @Autowired
     private AuthorityInterceptor authorityInterceptor;
-
+    @Bean
+    public MyInterceptor myInterceptor(){
+        return new MyInterceptor();
+    }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorityInterceptor)
@@ -43,7 +47,6 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         return properties;
     }
 
-
     /**
      * 使用@Bean注解注入第三方的解析框架（fastJson）
      *
@@ -61,5 +64,16 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         return new HttpMessageConverters(fastConverter);
     }
 
+    @Bean(name = "multipartResolver")
+    public MultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setDefaultEncoding("UTF-8");
+        //resolveLazily属性启用是为了推迟文件解析，以在在UploadAction中捕获文件大小异常
+        resolver.setResolveLazily(true);
+        resolver.setMaxInMemorySize(40960);
+        //上传文件大小 5M 5*1024*1024
+        resolver.setMaxUploadSize(5 * 1024 * 1024);
+        return resolver;
+    }
 
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
 
     <resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
-        <result column="hf_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
         <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
         <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName"/>
         <result column="categoryId" jdbcType="INTEGER" property="categoryId"/>
@@ -18,8 +18,16 @@
         <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
         <result column="cancel_id" jdbcType="INTEGER" property="cancelId"/>
         <result column="claim" jdbcType="INTEGER" property="claim"/>
-        <result column="frames" jdbcType="INTEGER" property="frames"/>
-        <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
+        <result column="memeber" jdbcType="INTEGER" property="member"/>
+        <result column="evaluate" jdbcType="VARCHAR" property="evaluate"/>
+        <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice1"/>
+        <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice2"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="hf_value" jdbcType="INTEGER" property="hfValue"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productSpecId" jdbcType="INTEGER" property="productSpecId"/>
+        <result column="productSpecName" jdbcType="VARCHAR" property="productSpecName"/>
     </resultMap>
 
     <resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
@@ -36,6 +44,11 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
         <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+        <result column="cancel_id" jdbcType="INTEGER" property="cancelId"/>
+        <result column="claim" jdbcType="INTEGER" property="claim"/>
+        <result column="memeber" jdbcType="INTEGER" property="member"/>
+        <result column="evaluate" jdbcType="VARCHAR" property="evaluate"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
     </resultMap>
 
     <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
@@ -67,15 +80,11 @@
         h.goods_desc,h.id,
         h.hf_name,h.resp_id,
         h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
-        h.create_time,h.modify_time,
+        h1.id categoryId,
+        h.create_time,h.modify_time,h.cancelId,h.claim,
         h.is_deleted
         FROM
         hf_goods h
-        JOIN
-        product p
-        ON
-        h.product_id = p.id
         JOIN
         hf_category h1
         ON
@@ -88,29 +97,26 @@
     </select>
 
     <select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
-        SELECT
-        h.goods_desc,h.id,
-        h.hf_name,h.resp_id,
-        h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
-        h3.sell_price,h.create_time,
-        h.modify_time,h.is_deleted
-        FROM
+        select * from 
         hf_goods h
+        join 
+        hf_goods_pictrue h1
+        on
+        h1.goods_id = h.id
         JOIN
         product p
         ON
         h.product_id = p.id
-        JOIN
-        hf_category h1
+                JOIN
+        hf_category h2
         ON
-        h.category_id = h1.id
-        JOIN
+        h.category_id = h2.id
+        join 
         hf_price h3
-        ON
-        h.price_id = h3.id
-        WHERE
-        h.stone_id=#{stoneId}
+        on
+        h3.googs_id = h.id
+        where
+        stone_id=#{stoneId}
     </select>
 
     <select id="selectAllGoodsPartInfo" resultMap="EntityHfGoodDispaly">
@@ -151,33 +157,31 @@
     </select>
 
     <select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
-        SELECT
-        h.goods_desc,h.id,
-        h.hf_name,h.resp_id,
-        h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
-        h3.sell_price,h.create_time,
-        h.modify_time,h.is_deleted,h.cancel_id,h.claim,h.frames
-        FROM
-        hf_goods h
-        JOIN
-        product p
-        ON
-        h.product_id = p.id
-        JOIN
-        hf_category h1
-        ON
-        h.category_id = h1.id
-        JOIN
-        hf_price h3
-        ON
-        h.price_id = h3.id
-        JOIN
-        cancel h4
-        ON
-        h.cancel_id = h4.id
-        WHERE
-        h.id=#{goodsId}
+SELECT
+	h.goods_desc,
+	h.id,
+	h.hf_name,
+	h.resp_id,
+	h.price_id,
+	h1.hf_name productCategoryName,
+	h1.id categoryId,
+	p.id productId,
+	h.stone_id,
+	h.create_time,
+	h.modify_time,
+	h.cancel_id,
+	h.claim,
+	h.is_deleted,
+	h2.file_id 
+FROM
+	hf_goods h
+	JOIN product p ON h.product_id = p.id
+	JOIN hf_category h1 ON h.category_id = h1.id
+	JOIN hf_price h3 ON h.price_id = h3.id
+	JOIN cancel h4 ON h.cancel_id = h4.id
+	JOIN hf_goods_pictrue h2 ON h2.goods_id = h.id 
+WHERE
+	h.id =#{goodsId}
     </select>
 
     <select id="selectGoodsPartInfo" resultMap="EntityHfGoodDispaly">
@@ -185,8 +189,8 @@
         h.goods_desc,h.id,
         h.hf_name,h.resp_id,
         h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,
-        h.create_time,h.modify_time,h.cancel_id,h.claim,h.frames,
+        h1.id categoryId,p.id productId,h.stone_id,
+        h.create_time,h.modify_time,h.cancel_id,h.claim,
         h.is_deleted
         FROM
         hf_goods h
@@ -232,38 +236,27 @@
         </if>
     </select>
     <select id="selectList" resultMap="EntityHfGoodDispaly">
-          SELECT
-        h.goods_desc,h.id,
-        h.hf_name,h.resp_id,
-        h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId,p.id productId,h2.hf_name brandName,
-        h.create_time,h.modify_time,h.cancel_id,h.claim,h.frames,
-        h.is_deleted
-        FROM
-        hf_goods h
-        JOIN
-        product p
-        ON
-        h.product_id = p.id
-        JOIN
-        hf_category h1
-        ON
-        h.category_id = h1.id
-        JOIN
-        cancel h4
-        ON
-        h.cancel_id = h4.id
-        JOIN 
-        hf_brand h2
-        ON 
-        h.brand_id = h2.id
-        WHERE   1=1
-        <if test="productCategoryName!=null and ''!=productCategoryName">
-            AND h1.hf_name like '%${productCategoryName}%'
-        </if>
-        <if test="brandName!=null and ''!=brandName">
-            AND h2.hf_name=#{brandName}
-        </if>
+       select 
+        b.goods_desc,b.id,
+        b.hf_name goodName,b.resp_id,
+        b.price_id,c.hf_name productCategoryName,
+        c.id categoryId,
+        a.sell_price,b.create_time,
+        b.modify_time,b.is_deleted,b.cancel_id,b.claim   
+       from   
+       hf_price a 
+       LEFT JOIN 
+       hf_goods b 
+       on  
+       a.googs_id=b.id
+       lEFT JOIN  
+       hf_category  c  
+       on   
+       b.category_id =c.id   
+       where 
+       c.hf_name= #{productCategoryName}  
+        and   #{sellPrice1} > a.sell_price  >#{sellPrice2}
+       
     </select>
     <select id="selectPrice" resultMap="EntityHfGoodDispaly">
         SELECT *
@@ -303,6 +296,36 @@
         ORDER BY 
         h2.sell_price  DESC
     </select>
+    <select id="selectQueryList" resultMap="EntityHfGoodDispaly">
+        SELECT
+        h.goods_desc,h.id,
+        h.hf_name,h.resp_id,h2.file_id,
+        h.price_id,h1.hf_name productCategoryName,
+        h1.id categoryId, h3.sell_price,h.create_time,
+        h.modify_time,h.is_deleted,h.cancel_id,h.claim,h.member,h.evaluate
+        FROM
+        hf_goods h  
+        JOIN
+        hf_category h1
+        ON
+        h.category_id = h1.id
+        JOIN
+        hf_price h3
+        ON
+        h.price_id = h3.id
+        JOIN
+        hf_goods_pictrue h2
+        ON
+        h.id = h2.goods_id
+        WHERE
+        1=1
+        <if test="goodsName != null and goodsName != ''">
+        and  h.hf_name like '%${goodsName}%'
+        </if>
+        <if test="productCategoryName != null and productCategoryName != ''">
+            AND h1.hf_name like '%${productCategoryName}%'
+        </if>
+    </select>
     <update id="updateGoods">
         UPDATE
         hf_goods
@@ -312,7 +335,6 @@
         WHERE
         id = #{id}
     </update>
-
     <insert id="insertAwardInfo" useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO
@@ -321,5 +343,14 @@
     </insert>
     <select id="queryGoods" resultMap="EntityHfGoodDispaly">
         select  count(*) from hf_goods
+    </select>
+    <select id="selectGoodsSpec" resultMap="EntityHfGoodDispaly">
+    select p.id productId, p.hf_name productName, 
+           s.id productSpecId, s.hf_name productSpecName,
+       gs.goods_id id, gs.hf_value
+        from product p 
+      left join product_spec s on p.id = s.product_id
+      left join hf_goods_spec gs on s.id = gs.hf_spec_id
+      where p.id=#{productId}
     </select>
 </mapper>

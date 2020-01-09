@@ -13,7 +13,7 @@ public class Cart implements Serializable {
     /**
      * 状态, 0正常1下架.
      */
-    private Integer productStatus;
+    private Short productStatus;
 
     /* 商品小图*/
     private Integer productIcon;
@@ -59,11 +59,11 @@ public class Cart implements Serializable {
         this.productName = productName;
     }
 
-    public Integer getProductStatus() {
+    public Short getProductStatus() {
         return productStatus;
     }
 
-    public void setProductStatus(Integer productStatus) {
+    public void setProductStatus(Short productStatus) {
         this.productStatus = productStatus;
     }
 
