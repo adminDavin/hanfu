@@ -14,8 +14,19 @@ public class GoodsSpecRequest extends CommonRequest {
     private String specValue;
     @ApiModelProperty(required = false, value = "店家名称, 登录修改的用户名称")
     private String username;
+    @ApiModelProperty(required = false, value = "商品描述")
+    private String prictureDesc;
+    
+    
+    public String getPrictureDesc() {
+		return prictureDesc;
+	}
 
-    public Integer getGoodsId() {
+	public void setPrictureDesc(String prictureDesc) {
+		this.prictureDesc = prictureDesc;
+	}
+
+	public Integer getGoodsId() {
         return goodsId;
     }
 

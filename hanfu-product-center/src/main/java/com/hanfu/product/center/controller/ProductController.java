@@ -232,6 +232,9 @@ public class ProductController {
         product.setModifyTime(LocalDateTime.now());
         product.setIsDeleted((short) 0);
         product.setProductDesc(request.getProductDesc());
+        product.setCancel_id(request.getCancelId());
+        product.setClaim(request.getClaim());
+        product.setMemeber(request.getMember());
         return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
     }
 

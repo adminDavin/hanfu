@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
@@ -150,17 +151,29 @@ public class StoneController {
 
     @ApiOperation(value = "修改商铺", notes = "修改商铺")
     @RequestMapping(value = "/updateStone", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateStone(HfStoneRequest request) throws Exception {
+    public ResponseEntity<JSONObject> updateStone(MultipartFile fileInfo, HfStoneRequest request) throws Exception {
         HfStone hfStone = hfStoneMapper.selectByPrimaryKey(request.getStoneId());
         if (hfStone == null) {
             throw new Exception("店铺不存在");
         }
-        if (!StringUtils.isEmpty(request.getHfDesc())) {
-            hfStone.setHfDesc(request.getHfDesc());
+        if (!StringUtils.isEmpty(request.getHfName())) {
+            hfStone.setHfName(request.getHfName());
         }
-        if (!StringUtils.isEmpty(request.getHfStatus())) {
-            hfStone.setHfStatus((request.getHfStatus()));
-        }
+        FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(request.getUserId());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+//        if (!StringUtils.isEmpty(request.getHfStatus())) {
+//            hfStone.setHfStatus((request.getHfStatus()));
+//        }
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByPrimaryKey(hfStone)));
     }
