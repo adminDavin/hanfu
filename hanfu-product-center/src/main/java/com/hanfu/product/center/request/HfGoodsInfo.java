@@ -46,7 +46,17 @@ public class HfGoodsInfo extends CommonRequest {
     private String categoryName;
     @ApiModelProperty(required = false, value = "库存量")
     private String quantity;
+    @ApiModelProperty(required = false, value = "价格")
+    private Integer sellPrice;
     
+	public Integer getSellPrice() {
+		return sellPrice;
+	}
+
+	public void setSellPrice(Integer sellPrice) {
+		this.sellPrice = sellPrice;
+	}
+
 	public String getQuantity() {
 		return quantity;
 	}

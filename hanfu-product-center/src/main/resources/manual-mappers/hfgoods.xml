@@ -24,6 +24,10 @@
         <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice2"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
         <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="hf_value" jdbcType="INTEGER" property="hfValue"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productSpecId" jdbcType="INTEGER" property="productSpecId"/>
+        <result column="productSpecName" jdbcType="VARCHAR" property="productSpecName"/>
     </resultMap>
 
     <resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
@@ -98,28 +102,26 @@
     
     
     <select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
-        SELECT
-        h.goods_desc,h.id,
-        h.hf_name,h.resp_id,h2.file_id,
-        h.price_id,h1.hf_name productCategoryName,
-        h1.id categoryId, h3.sell_price,h.create_time,
-        h.modify_time,h.is_deleted,h.cancel_id,h.claim,h.member,h.evaluate
-        FROM
+        select * from 
         hf_goods h
+        join 
+        hf_goods_pictrue h1
+        on
+        h1.goods_id = h.id
         JOIN
-        hf_category h1
+        product p
         ON
-        h.category_id = h1.id
-        JOIN
+        h.product_id = p.id
+                JOIN
+        hf_category h2
+        ON
+        h.category_id = h2.id
+        join 
         hf_price h3
-        ON
-        h.price_id = h3.id
-        JOIN
-        hf_goods_pictrue h2
-        ON
-        h.id = h2.goods_id
-        WHERE
-        h.stone_id=#{stoneId}
+        on
+        h3.googs_id = h.id
+        where
+        stone_id=#{stoneId}
     </select>
 
     <select id="selectAllGoodsPartInfo" resultMap="EntityHfGoodDispaly">
@@ -160,27 +162,31 @@
     </select>
 
     <select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
-        SELECT *
-        FROM
-        hf_goods h
-        JOIN
-        hf_category h1
-        ON
-        h.category_id = h1.id
-        JOIN
-        hf_price h3
-        ON
-        h.price_id = h3.id
-        JOIN
-        cancel h4
-        ON
-        h.cancel_id = h4.id
-        JOIN
-        hf_goods_pictrue h2
-        ON 
-        h2.goods_id = h.id
-        WHERE
-        h.id=#{goodsId}
+SELECT
+	h.goods_desc,
+	h.id,
+	h.hf_name,
+	h.resp_id,
+	h.price_id,
+	h1.hf_name productCategoryName,
+	h1.id categoryId,
+	p.id productId,
+	h.stone_id,
+	h.create_time,
+	h.modify_time,
+	h.cancel_id,
+	h.claim,
+	h.is_deleted,
+	h2.file_id 
+FROM
+	hf_goods h
+	JOIN product p ON h.product_id = p.id
+	JOIN hf_category h1 ON h.category_id = h1.id
+	JOIN hf_price h3 ON h.price_id = h3.id
+	JOIN cancel h4 ON h.cancel_id = h4.id
+	JOIN hf_goods_pictrue h2 ON h2.goods_id = h.id 
+WHERE
+	h.id =#{goodsId}
     </select>
 
     <select id="selectGoodsPartInfo" resultMap="EntityHfGoodDispaly">
@@ -343,5 +349,14 @@
     </insert>
     <select id="queryGoods" resultMap="EntityHfGoodDispaly">
         select  count(*) from hf_goods
+    </select>
+    <select id="selectGoodsSpec" resultMap="EntityHfGoodDispaly">
+    select p.id productId, p.hf_name productName, 
+           s.id productSpecId, s.hf_name productSpecName,
+       gs.goods_id id, gs.hf_value
+        from product p 
+      left join product_spec s on p.id = s.product_id
+      left join hf_goods_spec gs on s.id = gs.hf_spec_id
+      where p.id=#{productId}
     </select>
 </mapper>

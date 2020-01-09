@@ -43,5 +43,7 @@ public interface HfGoodsDao {
 
 	public List<HfGoodsDisplay> selectQueryList(ProductForValue productForValue);
 
+	public List<HfGoodsDisplay> selectGoodsSpec(Integer productId);
+
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }
