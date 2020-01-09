@@ -46,5 +46,4 @@ public class Categories implements Serializable {
         ChildCategories = childCategories;
     }
 
-
 }

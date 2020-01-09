@@ -239,6 +239,20 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
 	
+	@ApiOperation(value = "删除类目", notes = "删除类目")
+	@RequestMapping(value = "/deleteCategory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteCategory(Integer categoryId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.deleteByPrimaryKey(categoryId)));
+	}
+	
+	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
+	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findAllCategory() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfCategory> list = hfCategoryMapper.selectByExample(null);
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+	}
 	
 	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
     @ApiOperation(value = "更新类目图片", notes = "更新类目图片")
