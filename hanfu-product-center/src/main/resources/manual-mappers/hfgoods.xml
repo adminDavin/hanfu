@@ -49,7 +49,7 @@
 
     <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
         <id column="id" jdbcType="INTEGER" property="id"/>
-        <result column="hf_name" jdbcType="INTEGER" property="goodName"/>
+        <result column="hf_name" jdbcType="INTEGER" property="hfName"/>
         <result column="instance_id" jdbcType="INTEGER" property="instanceId"/>
         <result column="product_id" jdbcType="INTEGER" property="productId"/>
         <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
@@ -70,7 +70,6 @@
             <result column="award_name" property="awardName"/>
             <result column="emp_num" property="empNum"/>
         </resultMap> -->
-
     <select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly1">
         SELECT
         h.goods_desc,h.id,
@@ -91,7 +90,13 @@
         </if>
 
     </select>
-
+    
+    
+    <select id="selectFromHfGoods" resultMap="BaseResultMap">
+        SELECT *  FROM hf_goods WHERE id = #{goodsId}
+    </select>
+    
+    
     <select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
         SELECT
         h.goods_desc,h.id,
@@ -185,7 +190,8 @@
         h.price_id,h1.hf_name productCategoryName,
         h1.id categoryId,p.id productId,h.stone_id,
         h.create_time,h.modify_time,h.cancel_id,h.claim,
-        h.is_deleted
+        h.is_deleted,h.member,
+        h.evaluate
         FROM
         hf_goods h
         JOIN

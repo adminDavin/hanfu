@@ -14,6 +14,8 @@ import com.hanfu.product.center.model.HfGoods;
 public interface HfGoodsDao {
 
     public List<com.hanfu.inner.model.product.center.HfGoodsDisplay> selectAllGoodsInfo();
+    
+    public HfGoods selectFromHfGoods(Integer goodsId);
 
     public List<HfGoodsDisplay> selectAllGoods(Integer stoneId);
 

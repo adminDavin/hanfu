@@ -26,7 +26,13 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
         List<com.hanfu.inner.model.product.center.HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoodsInfo");
         return result;
     }
-
+    
+    @Override
+    public HfGoods selectFromHfGoods(Integer goodsId) {
+    	HfGoods hfGoods = sqlSessionTemplate.selectOne("selectFromHfGoods", goodsId);
+    	return null;
+    }
+    
     @Override
     public List<HfGoodsDisplay> selectAllGoods(Integer stoneId) {
         List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoods", stoneId);

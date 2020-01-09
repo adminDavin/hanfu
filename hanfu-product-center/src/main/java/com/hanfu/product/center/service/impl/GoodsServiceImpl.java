@@ -138,24 +138,31 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
 
     public com.hanfu.product.center.manual.model.HfGoodsDisplay getGoodsInfoUtil(Integer goodsId) {
         com.hanfu.product.center.manual.model.HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.selectGoodsPartInfo(goodsId);
-        System.out.println(hfGoodsDao.selectGoodsPartInfo(goodsId));
-        HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+        HfGoods hfGoods = hfGoodsDao.selectFromHfGoods(goodsId);
         if (hfGoods != null) {
             hfGoodsDisplay.setStoneId(hfGoods.getStoneId());
         }
-        if (hfGoodsDisplay.getPriceId() != null) {
-            HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
-            hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
-        }
-        HfRespExample example = new HfRespExample();
-        example.createCriteria().andGoogsIdEqualTo(goodsId);
-        List<HfResp> hfResp = hfRespMapper.selectByExample(example);
-        if (!hfResp.isEmpty()) {
-            hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
-            Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
-            if (warehouse != null) {
-                hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
-            }
+        HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
+        example2.createCriteria().andGoodsIdEqualTo(goodsId);
+        List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);
+        if(hfGoodsDisplay != null) {
+        	if(list != null) {
+        		hfGoodsDisplay.setFileId(list.get(0).getFileId());
+        	}
+        	 if (hfGoodsDisplay.getPriceId() != null) {
+                 HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoodsDisplay.getPriceId());
+                 hfGoodsDisplay.setSellPrice(hfPrice.getSellPrice());
+             }
+             HfRespExample example = new HfRespExample();
+             example.createCriteria().andGoogsIdEqualTo(goodsId);
+             List<HfResp> hfResp = hfRespMapper.selectByExample(example);
+             if (!hfResp.isEmpty()) {
+                 hfGoodsDisplay.setQuantity(hfResp.get(0).getQuantity());
+                 Warehouse warehouse = warehouseMapper.selectByPrimaryKey(hfResp.get(0).getWarehouseId());
+                 if (warehouse != null) {
+                     hfGoodsDisplay.setWarehouseName(warehouse.getHfName());
+                 }
+             }
         }
         return hfGoodsDisplay;
     }

@@ -13,6 +13,7 @@ public class Categories implements Serializable {
     private Integer levelId;
     private String hfName;
     private String ChildCategories;
+    private Integer fileId;
 
     public Integer getId() {
         return id;
@@ -46,5 +47,12 @@ public class Categories implements Serializable {
         ChildCategories = childCategories;
     }
 
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
 
 }

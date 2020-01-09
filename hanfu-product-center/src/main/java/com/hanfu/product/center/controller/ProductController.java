@@ -38,6 +38,7 @@ import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
+import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.CategoryInfo;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.ProductDispaly;
@@ -181,13 +182,11 @@ public class ProductController {
         HfCategoryExample example = new HfCategoryExample();
         if(type == 1) {
         	if(parentCategoryId != null) {
+        		List<Categories> categoriesList = new ArrayList<Categories>();
         		List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
             	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
             	List<HfCategory> list = hfCategoryMapper.selectByExample(example);
             	for (int i = 0; i < list.size(); i++) {
-            		List<String> ThreeLevelName = new ArrayList<String>();
-            		List<Integer> ThreeLevelId = new ArrayList<Integer>();
-            		List<Integer> ThreeLevelFileId = new ArrayList<Integer>();
             		HfCategory twoCategory = list.get(i);
             		CategoryInfo info = new CategoryInfo();
             		info.setTwoLevelName(twoCategory.getHfName());
@@ -196,14 +195,15 @@ public class ProductController {
             		example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
             		List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
             		for (int j = 0; j < list2.size(); j++) {
+            			Categories categories = new Categories();
             			HfCategory threeCategory = list2.get(j);
-            			ThreeLevelName.add(threeCategory.getHfName());
-            			ThreeLevelId.add(threeCategory.getId());
-            			ThreeLevelFileId.add(threeCategory.getFileId());
+            			categories.setFileId(threeCategory.getFileId());
+            			categories.setHfName(threeCategory.getHfName());
+            			categories.setId(threeCategory.getId());
+            			categories.setLevelId(threeCategory.getLevelId());
+            			categoriesList.add(categories);
 					}
-            		info.setThreeLevelId(ThreeLevelId);
-            		info.setThreeLevelName(ThreeLevelName);
-            		info.setThreeLevelFileId(ThreeLevelFileId);
+            		info.setCategories(categoriesList);
             		hfCategories.add(info);
 				}
             	return builder.body(ResponseUtils.getResponseBody(hfCategories));
@@ -239,6 +239,52 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
 	
+	@ApiOperation(value = "删除类目", notes = "删除类目")
+	@RequestMapping(value = "/deleteCategory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteCategory(Integer categoryId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		FileMangeService fileMangeService = new FileMangeService();
+		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(categoryId);
+		if(hfCategory.getFileId() != null) {
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDescMapper.deleteByPrimaryKey(hfCategory.getFileId());
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.deleteByPrimaryKey(categoryId)));
+	}
+	
+	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
+	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findAllCategory() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfCategory> list = hfCategoryMapper.selectByExample(null);
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+	}
+	
+	@ApiOperation(value = "编辑类目", notes = "编辑类目")
+	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateCategory(@RequestParam CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		
+		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
+		
+		String uuid = UUID.randomUUID().toString();
+		uuid = uuid.replace("-", "");
+		if(fileInfo != null) {
+			hfCategory.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+		}
+		if(StringUtils.isEmpty(request.getLevelId())) {
+			hfCategory.setLevelId(request.getLevelId());
+		}
+		if(StringUtils.isEmpty(request.getCategory())) {
+			hfCategory.setHfName(request.getCategory());
+		}
+		if(StringUtils.isEmpty(request.getParentCategoryId())) {
+			hfCategory.setParentCategoryId(request.getParentCategoryId());
+		}
+		hfCategory.setModifyTime(LocalDateTime.now());
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
+	}
 	
 	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
     @ApiOperation(value = "更新类目图片", notes = "更新类目图片")
