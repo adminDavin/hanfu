@@ -83,20 +83,20 @@ public class KillController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "秒杀结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup(Integer id, Integer goodsId,Double price,String startTime,String stopTime,Integer repertory){
+    public  boolean  insertGroup(Integer id, Integer goodsId,Double price,Date startTime,Date stopTime,Integer repertory){
         Integer bossId=1;
         Integer categoryId=0;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date time;
-        try {
-            time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
-            Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
-            seckillService.updateByPrimaryKey(id,  bossId,  goodsId,  time,time1,  categoryId,  price,  repertory);
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date time;
+//        try {
+//            time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+//            Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+            seckillService.updateByPrimaryKey(id,  bossId,  goodsId,  startTime,stopTime,  categoryId,  price,  repertory);
             return true;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return false;
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
     }
     @ApiOperation(value = "秒杀业务", notes = "秒杀业务")
     @RequestMapping(value = "/seckill",method = RequestMethod.POST)
@@ -289,7 +289,7 @@ public class KillController {
         Date date = new Date();
         SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String  format1 = formatter1.format(date);
-        String substring = format1.substring(0, 9);
+        String substring = format1.substring(0, 10);
         return seckillService.selectByDate(substring);
     }
 }
