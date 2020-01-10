@@ -6,6 +6,7 @@ import com.hanfu.group.center.manual.model.Group;
 import com.hanfu.group.center.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
  * @time: 10:58
  */
 @Service
+@Transactional
 class GroupServiceImpl implements GroupService {
     @Autowired
     GroupMapper groupMapper;

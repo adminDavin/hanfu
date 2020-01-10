@@ -6,6 +6,7 @@ import com.hanfu.group.center.service.GroupOpenConnectService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author:gyj
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @time: 11:04
  */
 @Service
+@Transactional
 public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
     @Autowired
     GroupOpenConnectMapper groupOpenConnectMapper;

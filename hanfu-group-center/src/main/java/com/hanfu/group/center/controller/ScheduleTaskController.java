@@ -29,7 +29,7 @@ public class ScheduleTaskController {
     @Autowired
     GroupOpenConnectService groupOpenConnectService;
     @Scheduled(cron = "0 0/30 * * * ?")
-    public void executeCorpTask1(){
+        public void executeCorpTask1(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat formatter1= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();

@@ -448,9 +448,23 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "name", value = "类目名字", required = false, type = "Sting"),
     })
-    public  List<Group>  selectCategory(String name)  {
+    public  List<GrouoDate>  selectCategory(String name)  {
+        ArrayList<GrouoDate> grouoDates = new ArrayList<>();
         Integer categoryId = hfCategoryService.selectByName(name);
-        return  groupService. selectCategory(categoryId);
+        List<Group> groups = groupService.selectCategory(categoryId);
+        for (int i = 0; i < groups.size(); i++) {
+            GrouoDate grouoDate = new GrouoDate();
+            grouoDate.setId(groups.get(i).getId());
+            grouoDate.setPrice(groups.get(i).getPrice());
+            grouoDate.setNumber(groups.get(i).getNumber());
+            grouoDate.setHfGoods(groups.get(i).getHfGoods());
+            grouoDate.setRepertory(groups.get(i).getRepertory());
+            grouoDate.setFileDesc(groups.get(i).getFileDesc());
+            grouoDate.setStartTime(groups.get(i).getStartTime().getTime());
+            grouoDate.setStopTime(groups.get(i).getStopTime().getTime());
+            grouoDates.add(grouoDate);
+        }
+        return  grouoDates;
     }
 
     @ApiOperation(value = "所有类目", notes = "所有类目")
@@ -472,18 +486,33 @@ public class GroupController {
         List<Integer>  id1 = groupOpenService.selectByGroupOpenId(id);
         List<Open> open=new ArrayList<>();
         int a1=0;
-       for (int i=0;i<id1.size();i++){
-           Open open1 = new Open();
+        if(id1.size()>2){
+            for (int i=0;i<2;i++){
+                Open open1 = new Open();
 //           获取开团对应的用户id
-           open1.setId(id1.get(i));
-           List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
-           a1= a1+integers.size();
-           HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
-           open1.setName(hfUser.getNickName());
-           int a=groupOpenService.selectNumber(id1.get(i));
-            open1.setNumber(number-a);
-           open.add(open1);
-       }
+                open1.setId(id1.get(i));
+                List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+                a1= a1+integers.size();
+                HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+                open1.setName(hfUser.getNickName());
+                int a=groupOpenService.selectNumber(id1.get(i));
+                open1.setNumber(number-a);
+                open.add(open1);
+            }
+        }else {
+            for (int i = 0; i < 1; i++) {
+                Open open1 = new Open();
+//           获取开团对应的用户id
+                open1.setId(id1.get(i));
+                List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+                a1 = a1 + integers.size();
+                HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+                open1.setName(hfUser.getNickName());
+                int a = groupOpenService.selectNumber(id1.get(i));
+                open1.setNumber(number - a);
+                open.add(open1);
+            }
+        }
         openDetails.setSum(a1);
         openDetails.setOpen(open);
         return openDetails ;
@@ -550,5 +579,33 @@ public class GroupController {
         }
         aReturn.setUser(hfUsers);
         return aReturn;
+    }
+
+
+    @ApiOperation(value = "查询更多正在开团", notes = "查询更多正在开团")
+    @RequestMapping(value = "/selectAllGroup", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+    })
+    public  List<Open>  selectAllGroup(Integer id)  {
+        Group group = groupService.selectByPrimaryKey(id);
+        int number = group.getNumber();
+//        获取开团表id
+        List<Integer>  id1 = groupOpenService.selectByGroupOpenId(id);
+        List<Open> open=new ArrayList<>();
+        int a1=0;
+        for (int i=0;i<id1.size();i++){
+            Open open1 = new Open();
+//           获取开团对应的用户id
+            open1.setId(id1.get(i));
+            List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+            a1= a1+integers.size();
+            HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+            open1.setName(hfUser.getNickName());
+            int a=groupOpenService.selectNumber(id1.get(i));
+            open1.setNumber(number-a);
+            open.add(open1);
+        }
+        return open ;
     }
 }

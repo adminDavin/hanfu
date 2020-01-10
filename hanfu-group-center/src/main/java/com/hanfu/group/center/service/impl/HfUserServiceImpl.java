@@ -6,6 +6,7 @@ import com.hanfu.group.center.manual.model.HfUser;
 import com.hanfu.group.center.service.HfUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author:gyj
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @time: 14:05
  */
 @Service
+@Transactional
 public class HfUserServiceImpl implements HfUserService {
     @Autowired
     HfUserMapper Mapper;

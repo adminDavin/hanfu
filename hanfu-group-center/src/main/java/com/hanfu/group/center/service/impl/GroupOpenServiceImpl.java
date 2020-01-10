@@ -7,6 +7,7 @@ import com.hanfu.group.center.service.GroupOpenService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @time: 11:06
  */
 @Service
+@Transactional
 public class GroupOpenServiceImpl implements GroupOpenService {
     @Autowired
     GroupOpenMapper groupOpen;
