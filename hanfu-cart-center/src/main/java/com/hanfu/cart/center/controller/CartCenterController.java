@@ -144,16 +144,14 @@ public class CartCenterController {
         return builder.body(ResponseUtils.getResponseBody(""));
 		}
       
-    @RequestMapping(path = "/Settlemen",  method = RequestMethod.GET)
+    @RequestMapping(path = "/Settlemen",  method = RequestMethod.POST)
     @ApiOperation(value = "结算", notes = "结算")
-    public ResponseEntity<JSONObject> Settlemen(String p) throws Exception{
+    public ResponseEntity<JSONObject> Settlemen(Integer userId,JSONObject productMessage) throws Exception{
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        List<Object> list = JSONArray.parseArray(p);
-        System.out.println(p);
-//            redisTemplate.opsForValue().set(userId.toString(), productMessage);redisTemplate.opsForValue().get(userId.toString())
+        redisTemplate.opsForValue().set(userId.toString(), productMessage);redisTemplate.opsForValue().get(userId.toString());
             return builder.body(ResponseUtils.getResponseBody(""));
     } 
-    @RequestMapping(path = "/selSettlemen",  method = RequestMethod.GET)
+    @RequestMapping(path = "/selSettlemen",  method = RequestMethod.POST)
     @ApiOperation(value = "查看结算", notes = "查看结算")
     public ResponseEntity<JSONObject> selSettlemen( Integer userId) throws Exception{
         BodyBuilder builder = ResponseUtils.getBodyBuilder();

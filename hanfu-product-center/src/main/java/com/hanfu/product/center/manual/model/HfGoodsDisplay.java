@@ -59,11 +59,42 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer sellPrice2;
     @ApiModelProperty(required = false, value = "评价")
     private String evaluate;
+    @ApiModelProperty(required = false, value = "规格")
+    private String hfValue;
+    @ApiModelProperty(required = false, value = "商品名称")
+    private String productName;
+    @ApiModelProperty(required = false, value = "商品规格名称")
+    private String productSpecName;
+    
 	private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
     
-    public String getEvaluate() {
+    public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductSpecName() {
+		return productSpecName;
+	}
+
+	public void setProductSpecName(String productSpecName) {
+		this.productSpecName = productSpecName;
+	}
+
+	public String getHfValue() {
+		return hfValue;
+	}
+
+	public void setHfValue(String hfValue) {
+		this.hfValue = hfValue;
+	}
+
+	public String getEvaluate() {
 		return evaluate;
 	}
 

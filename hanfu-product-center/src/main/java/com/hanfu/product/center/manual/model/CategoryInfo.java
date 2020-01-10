@@ -12,9 +12,7 @@ public class CategoryInfo implements Serializable{
 
 	private String TwoLevelName;
 	private Integer TwoLevelId;
-	private List<String> ThreeLevelName;
-	private List<Integer> ThreeLevelId;
-	private List<Integer> ThreeLevelFileId;
+	private List<Categories> categories;
 	public String getTwoLevelName() {
 		return TwoLevelName;
 	}
@@ -27,22 +25,10 @@ public class CategoryInfo implements Serializable{
 	public void setTwoLevelId(Integer twoLevelId) {
 		TwoLevelId = twoLevelId;
 	}
-	public List<String> getThreeLevelName() {
-		return ThreeLevelName;
+	public List<Categories> getCategories() {
+		return categories;
 	}
-	public void setThreeLevelName(List<String> threeLevelName) {
-		ThreeLevelName = threeLevelName;
-	}
-	public List<Integer> getThreeLevelId() {
-		return ThreeLevelId;
-	}
-	public void setThreeLevelId(List<Integer> threeLevelId) {
-		ThreeLevelId = threeLevelId;
-	}
-	public List<Integer> getThreeLevelFileId() {
-		return ThreeLevelFileId;
-	}
-	public void setThreeLevelFileId(List<Integer> threeLevelFileId) {
-		ThreeLevelFileId = threeLevelFileId;
+	public void setCategories(List<Categories> categories) {
+		this.categories = categories;
 	}
 }

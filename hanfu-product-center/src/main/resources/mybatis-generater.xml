@@ -18,7 +18,7 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://39.100.237.144:3306/user_center?serverTimezone=UTC"
+                        connectionURL="jdbc:mysql://39.98.126.20:3306/user_center?serverTimezone=UTC"
                         userId="hanfu_admin" password="Davin1234!">
         </jdbcConnection>
 
@@ -168,6 +168,18 @@
         </table>
         <table schema="user_center" tableName="hf_brand"
                domainObjectName="HfBrand">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_seniority"
+               domainObjectName="HfSeniority">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="seniority_instance"
+               domainObjectName="SeniorityInstance">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

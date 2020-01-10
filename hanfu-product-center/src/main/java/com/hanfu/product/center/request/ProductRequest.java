@@ -18,8 +18,39 @@ public class ProductRequest extends CommonRequest {
     private Integer bossId;
     @ApiModelProperty(name = "lastModifier", required = true, value = "商家名称")
     private String lastModifier;
+    @ApiModelProperty( required = true, value = "是否自提")
+    private Integer claim;
+    @ApiModelProperty(required = true, value = "核销Id")
+    private Integer cancelId;
+    @ApiModelProperty(required = true, value = "是否为会员商品")
+    private Integer member;
+    
+    public Integer getClaim() {
+		return claim;
+	}
 
-    public Integer getId() {
+	public void setClaim(Integer claim) {
+		this.claim = claim;
+	}
+
+
+	public Integer getCancelId() {
+		return cancelId;
+	}
+
+	public void setCancelId(Integer cancelId) {
+		this.cancelId = cancelId;
+	}
+
+	public Integer getMember() {
+		return member;
+	}
+
+	public void setMember(Integer member) {
+		this.member = member;
+	}
+
+	public Integer getId() {
         return id;
     }
 

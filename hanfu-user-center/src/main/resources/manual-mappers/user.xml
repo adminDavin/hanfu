@@ -10,7 +10,7 @@
     </resultMap>
     <resultMap type="com.hanfu.user.center.model.HfUser"
                id="ResultMap">
-        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
         <result column="username" jdbcType="VARCHAR"
                 property="username"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
@@ -71,7 +71,7 @@
         JOIN 
         hf_user_balance h1
         ON
-        h.user_id = h1.id
+        h.id = h1.user_id
     </select>
     <!-- <select id="findActivityUserInfo" resultMap="ActivityUserInfo">
         SELECT
