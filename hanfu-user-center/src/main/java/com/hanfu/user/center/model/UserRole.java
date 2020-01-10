@@ -6,7 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-
+/**
+ * 皓月千里
+ *
+ * @param
+ * @return
+ */
 public class UserRole {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +21,8 @@ public class UserRole {
     private Integer userId;
 
     private Integer roleId;
+
+    private Short state;
 
     private Short isDeleted;
 
@@ -45,6 +52,14 @@ public class UserRole {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
+    }
+
+    public Short getState() {
+        return state;
+    }
+
+    public void setState(Short state) {
+        this.state = state;
     }
 
     public Short getIsDeleted() {

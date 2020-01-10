@@ -81,6 +81,7 @@ public class CancelController {
     public ResponseEntity<JSONObject> selectCancel(Paging paging) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         PageTool.num(paging);
+        System.out.println("核销员信息");
         PageInfo<record> pageInfo = new PageInfo<>(cancelService.select());
         return builder.body(ResponseUtils.getResponseBody(pageInfo));
     }

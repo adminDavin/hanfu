@@ -1,13 +1,17 @@
 package com.hanfu.user.center.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
-
+import java.util.Date;
+/**
+ * 皓月千里
+ *
+ * @param
+ * @return
+ */
 public class Jurisdiction {
     @KeySql(useGeneratedKeys = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,33 +19,22 @@ public class Jurisdiction {
     private Integer id;
 
     private String jurisdictionName;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private LocalDateTime createTime;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    private LocalDateTime modifyTime;
+
+    private String jurisdictionModule;
+
+    private String parentInventoryId;
+
+    private Short inventoryStatus;
+
+    private Integer inventoryRankId;
+
+    private String accessCode;
+
+    private Date createTime;
+
+    private Date modifyTime;
 
     private Short isDeleted;
-
-    private String access_code;
-
-
-    private Integer module_id;
-
-    public Integer getModule_id() {
-        return module_id;
-    }
-
-    public void setModule_id(Integer module_id) {
-        this.module_id = module_id;
-    }
-
-    public String getAccess_code() {
-        return access_code;
-    }
-
-    public void setAccess_code(String access_code) {
-        this.access_code = access_code;
-    }
 
     public Integer getId() {
         return id;
@@ -59,19 +52,59 @@ public class Jurisdiction {
         this.jurisdictionName = jurisdictionName == null ? null : jurisdictionName.trim();
     }
 
-    public LocalDateTime getCreateTime() {
+    public String getJurisdictionModule() {
+        return jurisdictionModule;
+    }
+
+    public void setJurisdictionModule(String jurisdictionModule) {
+        this.jurisdictionModule = jurisdictionModule == null ? null : jurisdictionModule.trim();
+    }
+
+    public String getParentInventoryId() {
+        return parentInventoryId;
+    }
+
+    public void setParentInventoryId(String parentInventoryId) {
+        this.parentInventoryId = parentInventoryId == null ? null : parentInventoryId.trim();
+    }
+
+    public Short getInventoryStatus() {
+        return inventoryStatus;
+    }
+
+    public void setInventoryStatus(Short inventoryStatus) {
+        this.inventoryStatus = inventoryStatus;
+    }
+
+    public Integer getInventoryRankId() {
+        return inventoryRankId;
+    }
+
+    public void setInventoryRankId(Integer inventoryRankId) {
+        this.inventoryRankId = inventoryRankId;
+    }
+
+    public String getAccessCode() {
+        return accessCode;
+    }
+
+    public void setAccessCode(String accessCode) {
+        this.accessCode = accessCode == null ? null : accessCode.trim();
+    }
+
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
-    public LocalDateTime getModifyTime() {
+    public Date getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(LocalDateTime modifyTime) {
+    public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
 

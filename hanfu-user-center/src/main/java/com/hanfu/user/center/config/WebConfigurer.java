@@ -17,6 +17,12 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+/**
+ * 皓月千里
+ *
+ * @param
+ * @return
+ */
 @Configuration
 public class WebConfigurer extends WebMvcConfigurationSupport {
 
@@ -29,9 +35,9 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorityInterceptor);
-        registry.addInterceptor(myInterceptor()).addPathPatterns("/**")
-                .addPathPatterns("/user/**")
-                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/user/login");
+        registry.addInterceptor(myInterceptor())
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/user/login")
+                .addPathPatterns("/**");
         super.addInterceptors(registry);
     }
     @Override

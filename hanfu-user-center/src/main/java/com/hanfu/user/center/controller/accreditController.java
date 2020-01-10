@@ -4,7 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.dao.*;
+import com.hanfu.user.center.manual.dao.AuthMapper;
+import com.hanfu.user.center.manual.dao.UserAddressMapper;
+import com.hanfu.user.center.manual.model.AuthorizationUserAddress;
 import com.hanfu.user.center.model.*;
+import com.hanfu.user.center.service.AuthorizationUserService;
 import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -15,16 +19,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * 皓月千里
+ *
+ * @param
+ * @return
+ */
 @RestController
 @Api
 @RequestMapping("/accredit")
@@ -42,6 +48,14 @@ public class accreditController {
     private JurisdictionMapper jurisdictionMapper;
     @Autowired
     private RoleJurisdictionMapper roleJurisdictionMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private AuthorizationUserService authorizationUserService;
+    @Autowired
+    private UserAddressMapper userAddressMapper;
+    @Autowired
+    private AuthMapper authMapper;
     @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/insertTest", method = RequestMethod.GET)
     @ApiOperation(value = "insertTest", notes = "insertTest")
@@ -88,11 +102,11 @@ public class accreditController {
     }
     @RequestMapping(path = "/selectAccreditRole", method = RequestMethod.GET)
     @ApiOperation(value = "员工的角色查询", notes = "员工的角色查询")
-    public ResponseEntity<JSONObject> selectAccreditRole(Integer authorizationId) throws Exception {
+    public ResponseEntity<JSONObject> selectAccreditRole(Integer UserId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example = new Example(UserRole.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",authorizationId);
+        criteria.andEqualTo("userId",UserId);
         List<UserRole> userRole= userRoleMapper.selectByExample(example);
         List<Role> roleList = new ArrayList();
         if (userRole.size()==0){
@@ -105,61 +119,62 @@ public class accreditController {
         }
         return builder.body(ResponseUtils.getResponseBody(roleList));
     }
+    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
     @RequestMapping(path = "/selectAccredit", method = RequestMethod.GET)
     @ApiOperation(value = "员工查询", notes = "员工查询")
     public ResponseEntity<JSONObject> selectAccredit() throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(authorizationMapper.selectAll()));
+        return builder.body(ResponseUtils.getResponseBody(authorizationUserService.selectAuthorizationUser()));
     }
     @RequestMapping(path = "/deleteAccreditRole", method = RequestMethod.GET)
     @ApiOperation(value = "员工的角色删除", notes = "员工的角色删除")
-    public ResponseEntity<JSONObject> deleteAccreditRole(Integer authorizationId) throws Exception {
+    public ResponseEntity<JSONObject> deleteAccreditRole(Integer UserId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example1 = new Example(UserRole.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("userId",authorizationId);
+        criteria1.andEqualTo("userId",UserId);
         if (userRoleMapper.selectByExample(example1).size()==0){
             return builder.body(ResponseUtils.getResponseBody("此用户没有角色"));
         }
         Example example = new Example(UserRole.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",authorizationId);
+        criteria.andEqualTo("userId",UserId);
         userRoleMapper.deleteByExample(example);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
     @RequestMapping(path = "/updateAccreditRole", method = RequestMethod.GET)
     @ApiOperation(value = "员工的角色修改", notes = "员工的角色修改")
-    public ResponseEntity<JSONObject> updateAccreditRole(Integer authorizationId,Integer roleId) throws Exception {
+    public ResponseEntity<JSONObject> updateAccreditRole(Integer Userid,Integer roleId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example1 = new Example(UserRole.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("userId",authorizationId);
+        criteria1.andEqualTo("userId",Userid);
         if (userRoleMapper.selectByExample(example1).size()==0){
             return builder.body(ResponseUtils.getResponseBody("用户没有角色"));
         }
         UserRole userRole = new UserRole();
-        userRole.setUserId(authorizationId);
+        userRole.setUserId(Userid);
         userRole.setRoleId(roleId);
         userRole.setIsDeleted((short) 0);
         userRole.setModifyTime(LocalDateTime.now());
         Example example = new Example(UserRole.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",authorizationId);
+        criteria.andEqualTo("userId",Userid);
         userRoleMapper.updateByExampleSelective(userRole,example);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
     @RequestMapping(path = "/insertAccreditRole", method = RequestMethod.GET)
     @ApiOperation(value = "员工的角色添加", notes = "员工的角色添加")
-    public ResponseEntity<JSONObject> insertAccreditRole(Integer authorizationId,Integer roleId) throws Exception {
+    public ResponseEntity<JSONObject> insertAccreditRole(Integer UserId,Integer roleId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example = new Example(UserRole.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",authorizationId);
+        criteria.andEqualTo("userId",UserId);
         if (userRoleMapper.selectByExample(example).size()!=0){
             return builder.body(ResponseUtils.getResponseBody("改用户已有角色"));
         }
         UserRole userRole = new UserRole();
-        userRole.setUserId(authorizationId);
+        userRole.setUserId(UserId);
         userRole.setRoleId(roleId);
         userRole.setIsDeleted((short) 0);
         userRole.setCreateTime(LocalDateTime.now());
@@ -208,26 +223,42 @@ public class accreditController {
 
     @RequestMapping(path = "/deleteAccredit", method = RequestMethod.GET)
     @ApiOperation(value = "员工删除", notes = "员工删除")
-    public ResponseEntity<JSONObject> deleteAccredit(int id) throws Exception {
+    public ResponseEntity<JSONObject> deleteAccredit(int UserId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        authorizationMapper.deleteByPrimaryKey(id);
+        Example example = new Example(Authorization.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",UserId);
+        authorizationMapper.deleteByExample(example);
+        Example example1 = new Example(UserRole.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("userId",UserId);
+        userRoleMapper.deleteByExample(example1);
+        userMapper.deleteByPrimaryKey(UserId);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
     @RequestMapping(value = "/deleteBatchCancel", method = RequestMethod.GET)
     @ApiOperation(value = "批量删除", notes = "批量删除")
-    public ResponseEntity<JSONObject> deleteBatchCancel(@RequestParam("id") List id) throws Exception {
+    public ResponseEntity<JSONObject> deleteBatchCancel(@RequestParam("UserId") List UserId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        System.out.println(id);
-        if (id == null) {
+        System.out.println(UserId);
+        if (UserId.size()== 0) {
             builder.body(ResponseUtils.getResponseBody("请选择"));
         }
-        for (int i = 0; i < id.size(); i++) {
-            int cancelID = Integer.parseInt(id.get(i).toString());
-            System.out.println(cancelID);
-            Authorization authorization = authorizationMapper.selectByPrimaryKey(cancelID);
-            System.out.println(authorization);
-            authorizationMapper.deleteByPrimaryKey(cancelID);
+        for (int i = 0; i < UserId.size(); i++) {
+            int UserID = Integer.parseInt(UserId.get(i).toString());
+            System.out.println(UserID);
+            Example example = new Example(Authorization.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("userId",UserID);
+            List<Authorization> authorization = authorizationMapper.selectByExample(example);
+            System.out.println(authorization+"authorization");
+            authorizationMapper.deleteByExample(example);
+            Example example1 = new Example(UserRole.class);
+            Example.Criteria criteria1 = example1.createCriteria();
+            criteria1.andEqualTo("userId",UserID);
+            userRoleMapper.deleteByExample(example1);
+            userMapper.deleteByPrimaryKey(UserID);
         }
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
@@ -235,7 +266,7 @@ public class accreditController {
 
     @RequestMapping(path = "/insertAccredit", method = RequestMethod.POST)
     @ApiOperation(value = "新增人员", notes = "新增人员")
-    public ResponseEntity<JSONObject> insertAccredit(Authorization authorization, MultipartFile fileInfo) throws Exception {
+    public ResponseEntity<JSONObject> insertAccredit(AuthorizationUserAddress authorizationUserAddress, MultipartFile fileInfo) throws Exception {
 //        System.out.println(file.getBytes());
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         String uuid = UUID.randomUUID().toString(); //转化为String对象
@@ -248,14 +279,14 @@ public class accreditController {
         arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
         Example example = new Example(FileDesc.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("fileName",authorization.getEmployeeCode());
+        criteria.andEqualTo("fileName",authorizationUserAddress.getId());
         List<FileDesc> list = fileMapper.selectByExample(example);
         System.out.println(list+"1231111111");
         FileDesc fileDesc = new FileDesc();
-        fileDesc.setFileName(authorization.getEmployeeCode());
+        fileDesc.setFileName(fileInfo.getName());
         fileDesc.setGroupName(arr[0]);
         fileDesc.setRemoteFilename(arr[1]);
-        fileDesc.setUserId(-1);
+        fileDesc.setUserId(authorizationUserAddress.getId());
         fileDesc.setCreateTime(LocalDateTime.now());
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
@@ -272,53 +303,87 @@ public class accreditController {
 //            fileMapper.updateByPrimaryKey(fileDesc);
 //            fileId = fileDesc.getId();
 //        }
-        authorization.setFileId(fileId);
-        authorization.setModifyDate(LocalDateTime.now());
+        HfUser hfUser = new HfUser();
+        hfUser.setRealName(authorizationUserAddress.getRealName());
+        hfUser.setNickName(authorizationUserAddress.getNickName());
+        hfUser.setEmail(authorizationUserAddress.getEmail());
+        hfUser.setFileId(fileId);
+        hfUser.setPhone(authorizationUserAddress.getPhone());
+        hfUser.setModifyDate(LocalDateTime.now());
+        hfUser.setCreateDate(LocalDateTime.now());
+        userMapper.insert(hfUser);
+        System.out.println(hfUser.getId()+"77777777777777777777777");
+        Authorization authorization = new Authorization();
         authorization.setCreateDate(LocalDateTime.now());
-        authorizationMapper.insert(authorization);
-
-        return builder.body(ResponseUtils.getResponseBody("成功"));
-    }
-
-    @RequestMapping(path = "/updateAccredit", method = RequestMethod.POST)
-    @ApiOperation(value = "修改人员", notes = "修改人员")
-    public ResponseEntity<JSONObject> updateAccredit(Authorization authorization, MultipartFile file) throws Exception {
-        System.out.println(file.getBytes());
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        String uuid = UUID.randomUUID().toString(); //转化为String对象
-        System.out.println(uuid); //打印UUID
-        uuid = uuid.replace("-", "");//因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
-        System.out.println(uuid);
-        FileMangeService fileMangeService = new FileMangeService();
-        String arr[];
-        arr = fileMangeService.uploadFile(file.getBytes(), uuid);
-        FileDesc fileDesc = new FileDesc();
-        fileDesc.setFileName(file.getName());
-        fileDesc.setGroupName(arr[0]);
-        fileDesc.setRemoteFilename(arr[1]);
-        fileDesc.setCreateTime(LocalDateTime.now());
-        fileDesc.setModifyTime(LocalDateTime.now());
-        fileDesc.setIsDeleted((short) 0);
-        fileMapper.insert(fileDesc);
-        int fileId=fileDesc.getId();
-        authorization.setId(authorization.getId());
-        authorization.setFileId(fileId);
         authorization.setModifyDate(LocalDateTime.now());
-        authorizationMapper.updateByPrimaryKeySelective(authorization);
+        authorization.setUserId(hfUser.getId());
+        authorization.setEmployeeCode(authorizationUserAddress.getEmployeeCode());
+        authorization.setEmployeeDepartment(authorizationUserAddress.getEmployeeDepartment());
+        authorization.setIdDeleted((byte) 0);
+        authorization.setState((byte) 0);
+        authorization.setEmployeeCode(authorizationUserAddress.getEmployeeCode());
+        authorizationMapper.insert(authorization);
+        HfUserAddress hfUserAddress = new HfUserAddress();
+        hfUserAddress.setUserId(hfUser.getId());
+        hfUserAddress.setCreateTime(LocalDateTime.now());
+        hfUserAddress.setModifyTime(LocalDateTime.now());
+        hfUserAddress.setHfAddressDetail(authorizationUserAddress.getHfAddressDetail());
+        hfUserAddress.setContact(authorizationUserAddress.getConty());
+        hfUserAddress.setIsDeleted((short) 0);
+        hfUserAddress.setPhoneNumber(authorizationUserAddress.getPhone());
+        hfUserAddress.setHfCity(authorizationUserAddress.getHfCity());
+        hfUserAddress.setHfProvince(authorizationUserAddress.getHfProvince());
+        userAddressMapper.insert(hfUserAddress);
+        HfAuth hfAuth = new HfAuth();
+        hfAuth.setAuthKey(authorizationUserAddress.getPhone());
+        hfAuth.setUserId(hfUser.getId());
+        hfAuth.setAuthType("2");
+        hfAuth.setCreateDate(LocalDateTime.now());
+        hfAuth.setModifyDate(LocalDateTime.now());
+        hfAuth.setIdDeleted((byte) 0);
+        authMapper.insert(hfAuth);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
-    @RequestMapping(path = "/select", method = RequestMethod.GET)
-    @ApiOperation(value = "图片查询", notes = "图片查询")
-    public void select(int id, HttpServletResponse response) throws Exception {
-        Authorization authorization =authorizationMapper.selectByPrimaryKey(id);
-        System.out.println(authorization.getFileId());
-        FileDesc fileDesc = fileMapper.selectByPrimaryKey(authorization.getFileId());
-        System.out.println(fileDesc);
-        FileMangeService fileManageService = new FileMangeService();
-        byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-        if (file != null) {
-            BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
-            ImageIO.write(readImg, "png", response.getOutputStream());
-        }
-    }
+
+//    @RequestMapping(path = "/updateAccredit", method = RequestMethod.POST)
+//    @ApiOperation(value = "修改人员", notes = "修改人员")
+//    public ResponseEntity<JSONObject> updateAccredit(Authorization authorization, MultipartFile file) throws Exception {
+//        System.out.println(file.getBytes());
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        String uuid = UUID.randomUUID().toString(); //转化为String对象
+//        System.out.println(uuid); //打印UUID
+//        uuid = uuid.replace("-", "");//因为UUID本身为32位只是生成时多了“-”，所以将它们去点就可
+//        System.out.println(uuid);
+//        FileMangeService fileMangeService = new FileMangeService();
+//        String arr[];
+//        arr = fileMangeService.uploadFile(file.getBytes(), uuid);
+//        FileDesc fileDesc = new FileDesc();
+//        fileDesc.setFileName(file.getName());
+//        fileDesc.setGroupName(arr[0]);
+//        fileDesc.setRemoteFilename(arr[1]);
+//        fileDesc.setCreateTime(LocalDateTime.now());
+//        fileDesc.setModifyTime(LocalDateTime.now());
+//        fileDesc.setIsDeleted((short) 0);
+//        fileMapper.insert(fileDesc);
+//        int fileId=fileDesc.getId();
+//        authorization.setId(authorization.getId());
+//        authorization.setFileId(fileId);
+//        authorization.setModifyDate(LocalDateTime.now());
+//        authorizationMapper.updateByPrimaryKeySelective(authorization);
+//        return builder.body(ResponseUtils.getResponseBody("成功"));
+//    }
+//    @RequestMapping(path = "/select", method = RequestMethod.GET)
+//    @ApiOperation(value = "图片查询", notes = "图片查询")
+//    public void select(int id, HttpServletResponse response) throws Exception {
+//        Authorization authorization =authorizationMapper.selectByPrimaryKey(id);
+//        System.out.println(authorization.getFileId());
+//        FileDesc fileDesc = fileMapper.selectByPrimaryKey(authorization.getFileId());
+//        System.out.println(fileDesc);
+//        FileMangeService fileManageService = new FileMangeService();
+//        byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+//        if (file != null) {
+//            BufferedImage readImg = ImageIO.read(new ByteArrayInputStream(file));
+//            ImageIO.write(readImg, "png", response.getOutputStream());
+//        }
+//    }
 }

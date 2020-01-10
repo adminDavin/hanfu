@@ -82,6 +82,8 @@ public class testController {
     })
     public ResponseEntity<JSONObject> login(String site, Date createData, Date createDate1, Paging paging) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        System.out.println(createData);
+        System.out.println(createDate1);
         PageTool.num(paging);
         PageInfo<record> pageInfo = new PageInfo<>(cancelService.Test(site, createData, createDate1));
         System.out.println(site + "-------" + createData + "---------" + createDate1);

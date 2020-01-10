@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.Properties;
 
 @MapperScans({@MapperScan("com.hanfu.user.center.dao")})
-@tk.mybatis.spring.annotation.MapperScan(value = "com.hanfu.user.center.dao")
+@tk.mybatis.spring.annotation.MapperScan(value = {"com.hanfu.user.center.dao","com.hanfu.user.center.manual.dao"})
 @SpringBootApplication
 @EnableScheduling
 @EnableAutoConfiguration(exclude = {MultipartAutoConfiguration.class})
