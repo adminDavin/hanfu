@@ -59,262 +59,194 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer sellPrice2;
     @ApiModelProperty(required = false, value = "评价")
     private String evaluate;
-    @ApiModelProperty(required = false, value = "规格")
-    private String hfValue;
     @ApiModelProperty(required = false, value = "商品名称")
     private String productName;
-    @ApiModelProperty(required = false, value = "商品规格名称")
-    private String productSpecName;
+    @ApiModelProperty(required = false, value = "规格")
+    private String hfValue;
     
 	private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
-    
-    public String getProductName() {
-		return productName;
+	public Integer getId() {
+		return id;
 	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setId(Integer id) {
+		this.id = id;
 	}
-
-	public String getProductSpecName() {
-		return productSpecName;
+	public String getHfName() {
+		return HfName;
 	}
-
-	public void setProductSpecName(String productSpecName) {
-		this.productSpecName = productSpecName;
+	public void setHfName(String hfName) {
+		HfName = hfName;
 	}
-
-	public String getHfValue() {
-		return hfValue;
+	public String getWarehouseName() {
+		return warehouseName;
 	}
-
-	public void setHfValue(String hfValue) {
-		this.hfValue = hfValue;
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
 	}
-
-	public String getEvaluate() {
-		return evaluate;
+	public String getProductCategoryName() {
+		return productCategoryName;
 	}
-
-	public void setEvaluate(String evaluate) {
-		this.evaluate = evaluate;
+	public void setProductCategoryName(String productCategoryName) {
+		this.productCategoryName = productCategoryName;
 	}
-
-	public Integer getMemeber() {
-		return memeber;
+	public String getGoodsDesc() {
+		return goodsDesc;
 	}
-
-	public void setMemeber(Integer memeber) {
-		this.memeber = memeber;
+	public void setGoodsDesc(String goodsDesc) {
+		this.goodsDesc = goodsDesc;
 	}
-
-	public Integer getSellPrice1() {
-		return sellPrice1;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
-
-	public void setSellPrice1(Integer sellPrice1) {
-		this.sellPrice1 = sellPrice1;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
-
-	public Integer getSellPrice2() {
-		return sellPrice2;
+	public String getQuantity() {
+		return quantity;
 	}
-
-	public void setSellPrice2(Integer sellPrice2) {
-		this.sellPrice2 = sellPrice2;
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
 	}
-
-	public String getPrictureDesc() {
-		return prictureDesc;
+	public Integer getSellPrice() {
+		return sellPrice;
 	}
-
-	public void setPrictureDesc(String prictureDesc) {
-		this.prictureDesc = prictureDesc;
+	public void setSellPrice(Integer sellPrice) {
+		this.sellPrice = sellPrice;
 	}
-    public String getBrandName() {
+	public String getSpecValue() {
+		return specValue;
+	}
+	public void setSpecValue(String specValue) {
+		this.specValue = specValue;
+	}
+	public Integer getProductSpecId() {
+		return productSpecId;
+	}
+	public void setProductSpecId(Integer productSpecId) {
+		this.productSpecId = productSpecId;
+	}
+	public Integer getPriceId() {
+		return priceId;
+	}
+	public void setPriceId(Integer priceId) {
+		this.priceId = priceId;
+	}
+	public Integer getRespId() {
+		return respId;
+	}
+	public void setRespId(Integer respId) {
+		this.respId = respId;
+	}
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public Integer getStoneId() {
+		return stoneId;
+	}
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
+	}
+	public Integer getCancelId() {
+		return cancelId;
+	}
+	public void setCancelId(Integer cancelId) {
+		this.cancelId = cancelId;
+	}
+	public Integer getClaim() {
+		return claim;
+	}
+	public void setClaim(Integer claim) {
+		this.claim = claim;
+	}
+	public Integer getFrames() {
+		return frames;
+	}
+	public void setFrames(Integer frames) {
+		this.frames = frames;
+	}
+	public String getBrandName() {
 		return brandName;
 	}
-
 	public void setBrandName(String brandName) {
 		this.brandName = brandName;
 	}
-
-	public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getHfName() {
-        return HfName;
-    }
-
-    public void setHfName(String HfName) {
-        this.HfName = HfName;
-    }
-
-    public String getProductCategoryName() {
-        return productCategoryName;
-    }
-
-    public void setProductCategoryName(String productCategoryName) {
-        this.productCategoryName = productCategoryName;
-    }
-
-    public String getGoodsDesc() {
-        return goodsDesc;
-    }
-
-    public void setGoodsDesc(String goodsDesc) {
-        this.goodsDesc = goodsDesc;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public Integer getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(Integer sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-
-    public String getSpecValue() {
-        return specValue;
-    }
-
-    public void setSpecValue(String specValue) {
-        this.specValue = specValue;
-    }
-
-    public Integer getProductSpecId() {
-        return productSpecId;
-    }
-
-    public void setProductSpecId(Integer productSpecId) {
-        this.productSpecId = productSpecId;
-    }
-
-    public Integer getPriceId() {
-        return priceId;
-    }
-
-    public void setPriceId(Integer priceId) {
-        this.priceId = priceId;
-    }
-
-    public Integer getRespId() {
-        return respId;
-    }
-
-    public void setRespId(Integer respId) {
-        this.respId = respId;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public short getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(short isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    public String getWarehouseName() {
-        return warehouseName;
-    }
-
-    public void setWarehouseName(String warehouseName) {
-        this.warehouseName = warehouseName;
-    }
-
-    public Integer getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(Integer fileId) {
-        this.fileId = fileId;
-    }
-
-    public Integer getStoneId() {
-        return stoneId;
-    }
-
-    public void setStoneId(Integer stoneId) {
-        this.stoneId = stoneId;
-    }
-
-    public Integer getCancelId() {
-        return cancelId;
-    }
-
-    public void setCancelId(Integer cancelId) {
-        this.cancelId = cancelId;
-    }
-
-    public Integer getClaim() {
-        return claim;
-    }
-
-    public void setClaim(Integer claim) {
-        this.claim = claim;
-    }
-
-    public Integer getFrames() {
-        return frames;
-    }
-
-    public void setFrames(Integer frames) {
-        this.frames = frames;
-    }
+	public String getPrictureDesc() {
+		return prictureDesc;
+	}
+	public void setPrictureDesc(String prictureDesc) {
+		this.prictureDesc = prictureDesc;
+	}
+	public Integer getMemeber() {
+		return memeber;
+	}
+	public void setMemeber(Integer memeber) {
+		this.memeber = memeber;
+	}
+	public Integer getSellPrice1() {
+		return sellPrice1;
+	}
+	public void setSellPrice1(Integer sellPrice1) {
+		this.sellPrice1 = sellPrice1;
+	}
+	public Integer getSellPrice2() {
+		return sellPrice2;
+	}
+	public void setSellPrice2(Integer sellPrice2) {
+		this.sellPrice2 = sellPrice2;
+	}
+	public String getEvaluate() {
+		return evaluate;
+	}
+	public void setEvaluate(String evaluate) {
+		this.evaluate = evaluate;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public String getHfValue() {
+		return hfValue;
+	}
+	public void setHfValue(String hfValue) {
+		this.hfValue = hfValue;
+	}
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+	public LocalDateTime getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(LocalDateTime modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public short getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(short isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+    
 
 }

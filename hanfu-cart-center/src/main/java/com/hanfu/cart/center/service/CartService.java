@@ -12,9 +12,9 @@ public interface CartService {
 
     int delCart(String string);
 
-    int updateCartNum(String userId, String productId, int num);
+    int updateCartNum(String userId, String productId, int num,String goodsSpec);
 
-    int addCart(String userId, String productId, int num);
+    int addCart(String userId, String productId, int num,String goodsSpec);
 
 	int delCartProduct(String userId, String productId);
 

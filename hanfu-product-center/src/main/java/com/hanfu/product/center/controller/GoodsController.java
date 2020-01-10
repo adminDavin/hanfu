@@ -314,11 +314,6 @@ public class GoodsController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-		List<HfGoodsDisplay> hfGoodsDisplay = hfGoodsDao.selectGoodsSpec(goods.getProductId());
-		for (HfGoodsDisplay hfGoodsDisplay2 : hfGoodsDisplay) {
-			hfGoodsDisplay2.getProductSpecName();
-			hfGoodsDisplay2.getHfValue();
-		}
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsSpec(goods.getProductId())));
 	}
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")

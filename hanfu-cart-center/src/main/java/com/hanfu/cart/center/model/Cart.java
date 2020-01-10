@@ -17,8 +17,17 @@ public class Cart implements Serializable {
 
     /* 商品小图*/
     private Integer productIcon;
+    private String goodsSpec;
+    
+    public String getGoodsSpec() {
+		return goodsSpec;
+	}
 
-    public String getCheck() {
+	public void setGoodsSpec(String goodsSpec) {
+		this.goodsSpec = goodsSpec;
+	}
+
+	public String getCheck() {
         return check;
     }
 

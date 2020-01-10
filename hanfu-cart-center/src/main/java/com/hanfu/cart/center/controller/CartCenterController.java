@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.cart.center.model.Cart;
 import com.hanfu.cart.center.model.Product;
+import com.hanfu.cart.center.model.ProductCart;
 import com.hanfu.cart.center.model.ProductMessage;
 import com.hanfu.cart.center.service.CartService;
 import com.hanfu.cart.center.service.ProductService;
@@ -51,9 +52,9 @@ public class CartCenterController {
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num) throws Exception {
+    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num,String goodsSpec) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num);
+        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num,goodsSpec);
         if (effectNum <= 0) {
             return builder.body(ResponseUtils.getResponseBody("添加购物车失败"));
         }
@@ -72,19 +73,20 @@ public class CartCenterController {
     }
 
     @RequestMapping(path = "/updateCartNum", method = RequestMethod.GET)
-    @ApiOperation(value = "修改购物车数量", notes = "修改购物车数量")
+    @ApiOperation(value = "修改购物车", notes = "修改购物车")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "goodsSpec", value = "商品规格", required = true, type = "String"),
     })
-    public ResponseEntity<JSONObject> updateCartNum(Integer userId, Integer goodsId, Integer num) throws Exception {
+    public ResponseEntity<JSONObject> updateCartNum(Integer userId, Integer goodsId, Integer num,String goodsSpec) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.updateCartNum(userId.toString(), goodsId.toString(), num);
+        int effectNum = cartService.updateCartNum(userId.toString(), goodsId.toString(), num,goodsSpec);
         if (effectNum <= 0) {
-            return builder.body(ResponseUtils.getResponseBody("修改数量失败"));
+            return builder.body(ResponseUtils.getResponseBody("修改失败"));
         }
-        return builder.body(ResponseUtils.getResponseBody("修改数量成功"));
+        return builder.body(ResponseUtils.getResponseBody("修改成功"));
     }
 
     @RequestMapping(path = "/delCartProduct", method = RequestMethod.GET)
@@ -143,12 +145,13 @@ public class CartCenterController {
           } 
         return builder.body(ResponseUtils.getResponseBody(""));
 		}
-      
     @RequestMapping(path = "/Settlemen",  method = RequestMethod.POST)
     @ApiOperation(value = "结算", notes = "结算")
-    public ResponseEntity<JSONObject> Settlemen(Integer userId,JSONObject productMessage) throws Exception{
+    public ResponseEntity<JSONObject> Settlemen(ProductCart productCart) throws Exception{
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        redisTemplate.opsForValue().set(userId.toString(), productMessage);redisTemplate.opsForValue().get(userId.toString());
+        System.out.println(productCart);
+        redisTemplate.opsForValue().set(productCart.getUserid().toString(), productCart.getProductMessageList());
+        redisTemplate.opsForValue().get(productCart.getUserid().toString());
             return builder.body(ResponseUtils.getResponseBody(""));
     } 
     @RequestMapping(path = "/selSettlemen",  method = RequestMethod.POST)

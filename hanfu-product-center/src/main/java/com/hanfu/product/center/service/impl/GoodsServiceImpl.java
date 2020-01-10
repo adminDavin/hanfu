@@ -92,7 +92,7 @@ public class GoodsServiceImpl implements com.hanfu.inner.sdk.goods.center.GoodsS
                 example.createCriteria().andGoodsIdEqualTo(list.get(i).getId());
                 List<HfGoodsPictrue> hfGoodsPictrue = hfGoodsPictrueMapper.selectByExample(example);
                 if (!hfGoodsPictrue.isEmpty()) {
-                    list.get(i).setHfGoodsPictureId(hfGoodsPictrue.get(0).getFileId());
+                    list.get(i).setFileId(hfGoodsPictrue.get(0).getFileId());
                 }
             }
         }

@@ -232,10 +232,19 @@ public class ProductController {
         product.setModifyTime(LocalDateTime.now());
         product.setIsDeleted((short) 0);
         product.setProductDesc(request.getProductDesc());
-        product.setCancel_id(request.getCancelId());
-        product.setClaim(request.getClaim());
-        product.setMemeber(request.getMember());
-        return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
+        productMapper.insert(product);
+        ProductSpec item = new ProductSpec();
+        for (String specName : request.getSpecName()) {
+            item.setProductId(product.getId());
+            item.setHfName(specName);
+            item.setSpecUnit(request.getSpecUnit());
+            item.setSpecValue(request.getSpecValue());
+            item.setCreateTime(LocalDateTime.now());
+            item.setModifyTime(LocalDateTime.now());
+            item.setIsDeleted((short) 0);
+            productSpecMapper.insert(item);
+		}
+        return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
     }
 
     @ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")

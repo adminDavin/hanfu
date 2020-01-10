@@ -1,5 +1,6 @@
 package com.hanfu.order.center.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,10 +21,12 @@ import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.manual.model.OrderFindValue;
+import com.hanfu.order.center.manual.model.OrderInfo;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrderStatusExample;
 import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.model.HfOrdersDetailExample;
+import com.hanfu.order.center.model.HfOrdersExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -65,7 +68,15 @@ public class OrderController {
     public ResponseEntity<JSONObject> query()
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderList()));
+        List<OrderInfo> orderInfo = orderDao.selectOrderList();
+        return builder.body(ResponseUtils.getResponseBody(orderInfo));
+    }    @ApiOperation(value = "查询订单总数", notes = "查询订单总数")
+    @RequestMapping(value = "/queryQ", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> queryQ()
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Long count = hfOrdersMapper.countByExample(null);
+        return builder.body(ResponseUtils.getResponseBody(count));
     }
 
     @ApiOperation(value = "根据用户Id查询订单", notes = "根据用户Id查询订单")
@@ -179,4 +190,14 @@ public class OrderController {
         hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrderDetail);
         return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
     }
+    @ApiOperation(value = "详情订单数量", notes = "详情订单数量")
+    @RequestMapping(value = "/orderQ", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> orderQ(String orderDetailStatus)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrdersDetailExample example = new HfOrdersDetailExample();
+        example.createCriteria().andOrderDetailStatusEqualTo(orderDetailStatus);
+        return builder.body(ResponseUtils.getResponseBody(hfOrdersDetailMapper.countByExample(example)));
+    }
+
 }

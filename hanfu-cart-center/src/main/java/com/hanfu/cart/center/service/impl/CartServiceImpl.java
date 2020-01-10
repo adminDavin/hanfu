@@ -23,7 +23,7 @@ public class CartServiceImpl implements CartService {
     HfGoodsDao hfGoodsDao;
 
     @Override
-    public int addCart(String userId, String productId, int num) {
+    public int addCart(String userId, String productId, int num,String goodsSpec) {
         //key为 userId_cart,校验是否已存在
         Boolean exists = redisService.existsValue(CartPrefix.getCartList, userId, productId);
         if (exists) {
@@ -53,6 +53,7 @@ public class CartServiceImpl implements CartService {
         cart.setCheck("1");
         cart.setProductStatus(hfGoods.getIsDeleted());
         cart.setProductIcon(hfGoods.getFileId());
+        cart.setGoodsSpec(null);
         redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cart).toString());
         return 1;
     }
@@ -83,13 +84,14 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public int updateCartNum(String userId, String productId, int num) {
+    public int updateCartNum(String userId, String productId, int num,String goodsSpec) {
         String json = redisService.hget(CartPrefix.getCartList, userId, productId);
         if (json == null) {
             return 0;
         }
         Cart cartDto = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
         cartDto.setProductNum(num);
+        cartDto.setGoodsSpec(goodsSpec);
         redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cartDto).toString());
         return 1;
     }

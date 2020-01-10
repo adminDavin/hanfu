@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
-
-    <resultMap id="EntityHfGoodDispaly" type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
+<resultMap type="com.hanfu.product.center.manual.model.GoodsSpec" id="EntityHfGoodDispaly">
+        <result column="productSpecName" jdbcType="VARCHAR" property="productSpecName"/>
+<collection property="HfGoodsDisplayList" ofType="com.hanfu.product.center.manual.model.HfGoodsDisplay">
         <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
         <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
         <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName"/>
@@ -24,14 +25,13 @@
         <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice2"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
         <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
-        <result column="hf_value" jdbcType="INTEGER" property="hfValue"/>
         <result column="productName" jdbcType="VARCHAR" property="productName"/>
         <result column="productSpecId" jdbcType="INTEGER" property="productSpecId"/>
-        <result column="productSpecName" jdbcType="VARCHAR" property="productSpecName"/>
-    </resultMap>
-
+        <result column="hf_value" jdbcType="INTEGER" property="hfValue"/>
+</collection>
+</resultMap>
     <resultMap id="EntityHfGoodDispaly1" type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
-        <result column="hf_name" jdbcType="VARCHAR" property="goodName"/>
+ <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
         <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
         <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName"/>
         <result column="categoryId" jdbcType="INTEGER" property="categoryId"/>
@@ -48,7 +48,13 @@
         <result column="claim" jdbcType="INTEGER" property="claim"/>
         <result column="memeber" jdbcType="INTEGER" property="member"/>
         <result column="evaluate" jdbcType="VARCHAR" property="evaluate"/>
+        <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice1"/>
+        <result column="sellPrice1" jdbcType="INTEGER" property="sellPrice2"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productSpecId" jdbcType="INTEGER" property="productSpecId"/>
+        <result column="hf_value" jdbcType="INTEGER" property="hfValue"/>
     </resultMap>
 
     <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfGoods">
@@ -96,7 +102,7 @@
 
     </select>
 
-    <select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
+    <select id="selectAllGoods" resultMap="EntityHfGoodDispaly1">
         select * from 
         hf_goods h
         join 
@@ -156,7 +162,7 @@
         stone_id = #{stoneId}
     </select>
 
-    <select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
+    <select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly1">
 SELECT
 	h.goods_desc,
 	h.id,
@@ -172,7 +178,8 @@ SELECT
 	h.cancel_id,
 	h.claim,
 	h.is_deleted,
-	h2.file_id 
+	h2.file_id, 
+	h3.sell_price
 FROM
 	hf_goods h
 	JOIN product p ON h.product_id = p.id
