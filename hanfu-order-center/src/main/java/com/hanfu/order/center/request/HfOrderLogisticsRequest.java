@@ -15,8 +15,8 @@ public class HfOrderLogisticsRequest implements Serializable {
     private Integer orderDetailId;
     @ApiModelProperty(required = false, value = "用户地址id")
     private Integer userAddressId;
-    @ApiModelProperty(required = false, value = "物品id")
-    private Integer[] googsId;
+//    @ApiModelProperty(required = false, value = "物品id")
+//    private Integer[] googsId;
     @ApiModelProperty(required = false, value = "物流名称")
     private String logisticsOrderName;
     @ApiModelProperty(required = false, value = "仓库id")
@@ -71,14 +71,14 @@ public class HfOrderLogisticsRequest implements Serializable {
     public void setUserAddressId(Integer userAddressId) {
         this.userAddressId = userAddressId;
     }
-
-    public Integer[] getGoogsId() {
-        return googsId;
-    }
-
-    public void setGoogsId(Integer[] googsId) {
-        this.googsId = googsId;
-    }
+//
+//    public Integer[] getGoogsId() {
+//        return googsId;
+//    }
+//
+//    public void setGoogsId(Integer[] googsId) {
+//        this.googsId = googsId;
+//    }
 
     public String getLogisticsOrderName() {
         return logisticsOrderName;
