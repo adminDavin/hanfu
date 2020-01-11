@@ -15,6 +15,8 @@ public class Total {
 	private boolean isRecord;
 	private String activityName;
 	private String activityType;
+	private String avatarUrl;
+	private Integer victoryCount;
 	
 	public Integer getPosition() {
 		return position;
@@ -93,6 +95,18 @@ public class Total {
 	}
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
+	}
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+	public Integer getVictoryCount() {
+		return victoryCount;
+	}
+	public void setVictoryCount(Integer victoryCount) {
+		this.victoryCount = victoryCount;
 	}
 	@Override
 	public String toString() {

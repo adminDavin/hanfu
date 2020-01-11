@@ -66,7 +66,6 @@ public class FdfsClient {
 	public static void deleteFile(String group_name, String remoteFilename) throws IOException, MyException {
 		client.delete_file(group_name, remoteFilename);
 	}
-	
 	public static byte[] streamToByte(FileInputStream fis) throws IOException {
 		byte[] file_buff = null;
         if (fis != null) {

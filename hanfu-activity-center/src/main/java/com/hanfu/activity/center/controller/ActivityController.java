@@ -291,7 +291,11 @@ public class ActivityController {
 			activityInfo.setActivityName(list.get(i).getActivityName());
 			activityInfo.setActivityDesc(list.get(i).getActivityDesc());
 			activityInfo.setActivityResult(list.get(i).getActivityResult());
-			activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			if(StringUtils.isEmpty(list.get(i).getActivityStatus())) {
+				activityInfo.setActivityStatus("0");
+			}else {
+				activityInfo.setActivityStatus(list.get(i).getActivityStatus());
+			}
 			activityInfo.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getCreateTime().plusHours(8L)));
 //			activityInfo.setEndTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(list.get(i).getEndTime().plusHours(8L)));
 			activityInfo.setIsDeleted(list.get(i).getIsDeleted());
@@ -458,6 +462,7 @@ public class ActivityController {
 	@RequestMapping(value = "/findActivityResult", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findActivityResult(@RequestParam Integer activityId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		String victoryCount = "";
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		if ("ticket_count".equals(activity.getActiviyType())) {
 			ActivityStrategyInstanceExample activityStrategyInstanceExample = new ActivityStrategyInstanceExample();
@@ -535,6 +540,7 @@ public class ActivityController {
 						total.setUsername(hfUser.getRealName());
 					}
 				}
+//				total.setVictoryCount(Integer.valueOf(activity.getActivityStatus()));
 				total.setPosition(index);
 				total.setUserId(list1.get(j).getUserId());
 				total.setActivityId(list1.get(j).getActivityId());
@@ -555,6 +561,9 @@ public class ActivityController {
 					}
 				}
 			}
+//			if(!StringUtils.isEmpty(victoryCount)) {
+//				victoryCount = activity.getActivityStatus();
+//			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
@@ -676,7 +685,9 @@ public class ActivityController {
 					total.setActivityName(activity.getActivityName());
 					total.setActivityType(activity.getActiviyType());
 				}
-				result.add(total);
+				if(!StringUtils.isEmpty(total.getActivityName())) {
+					result.add(total);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -763,6 +774,7 @@ public class ActivityController {
 	public ResponseEntity<JSONObject> ActivityvoteRecords(@RequestParam(required = false) Integer userId,@RequestParam Integer activityId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+
 		Activity activity = activityMapper.selectByPrimaryKey(activityId);
 		ActivityVoteRecordsExample example = new ActivityVoteRecordsExample();
 		if(userId == null) {
@@ -788,9 +800,13 @@ public class ActivityController {
 						entity.setEceltedName(electedPeson.getNickName());
 					}
 				}
-//				if("score".equals(activity.getActiviyType())) {
-//					entity.setTotalScore(Double.valueOf(records.getRemarks()));
-//				}
+				if("score".equals(activity.getActiviyType())) {
+					if(!StringUtils.isEmpty(records.getRemarks())) {
+						entity.setTotalScore(Double.valueOf(records.getRemarks()));
+					}else {
+						entity.setTotalScore(0);
+					}
+				}
 				entity.setVoteTimes(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss").format(records.getCreateTime().plusHours(8L)));
 				result.add(entity);
 			}

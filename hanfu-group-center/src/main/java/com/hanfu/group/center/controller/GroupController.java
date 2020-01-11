@@ -9,9 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-;
-import javax.management.ValueExp;
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -489,7 +486,7 @@ public class GroupController {
         if(id1.size()>2){
             for (int i=0;i<2;i++){
                 Open open1 = new Open();
-//           获取开团对应的用户id
+//              获取开团对应的用户id
                 open1.setId(id1.get(i));
                 List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
                 a1= a1+integers.size();

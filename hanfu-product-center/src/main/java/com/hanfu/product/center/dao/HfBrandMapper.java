@@ -2,7 +2,9 @@ package com.hanfu.product.center.dao;
 
 import com.hanfu.product.center.model.HfBrand;
 import com.hanfu.product.center.model.HfBrandExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface HfBrandMapper {

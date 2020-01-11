@@ -363,4 +363,115 @@
       is_deleted = #{isDeleted,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="balanceCutTotal">
+        update hf_user_balance
+            <set>
+                    <if test="hfBalance != null ">
+                      hf_balance = #{hfBalance,jdbcType=INTEGER}-#{total,jdbcType=INTEGER}
+                    </if>
+            </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 判断用户是不是第一次充钱 -->
+  <select id="itExistUserById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from hf_user_balance
+    <where>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER}
+            </if>
+    </where>
+  </select>
+  <!-- 成为会员的时间 -->
+  <update id="memberTime">
+    update hf_user
+    <set>
+      <if test="total == 200">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
+      </if>
+      <if test="total == 580">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
+      </if>
+      <if test="total == 1500">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
+  <!-- 把用户冲的钱放入余额表 -->
+  <insert id="insertBalance">
+    insert into hf_user_balance (user_id, hf_balance)
+    values (#{userId,jdbcType=INTEGER},#{total,jdbcType=INTEGER})
+  </insert>
+
+  <select id="getModifyTime" resultType="java.lang.String">
+    select modify_date from hf_user where id=#{userId,jdbcType=INTEGER};
+  </select>
+
+  <!-- 如果不是第一次开会员  直接添加余额表里面对于用户的余额即可 -->
+  <update id="updateBalance">
+    update hf_user_balance
+    <set>
+      <if test="total != null ">
+        hf_balance = hf_balance+#{total,jdbcType=INTEGER}
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateModifyTime">
+    update hf_user
+    <set>
+      <if test="total == 200">
+            user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
+      </if>
+      <if test="total == 580">
+            user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
+      </if>
+      <if test="total == 1500">
+            user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
+      </if>
+    </set>
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 获取用户的会员开通时间  用来判断用户是不是第一次开通会员 -->
+  <select id="getCreateTime" resultType="java.lang.String">
+    select create_date from hf_user where id=#{userId,jdbcType=INTEGER};
+  </select>
+
+  <!-- 第一次购买会员 -->
+  <update id="buymemberTime">
+    update hf_user
+    <set>
+      <if test="total == 99">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{thirtyTime,jdbcType=VARCHAR}
+      </if>
+      <if test="total == 199">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{seasonTime,jdbcType=VARCHAR}
+      </if>
+      <if test="total == 699">
+        create_date = #{time,jdbcType=VARCHAR},user_status=1,modify_date=#{yearTime,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <!-- 购买会员  没有过期的添加时间 -->
+  <update id="updateTime">
+    update hf_user
+    <set>
+      <if test="total == 99">
+        user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -1 month)
+      </if>
+      <if test="total == 199">
+        user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -3 month)
+      </if>
+      <if test="total == 699">
+        user_status=1,modify_date=DATE_SUB(modify_date,INTERVAL -12 month)
+      </if>
+    </set>
+    where id = #{userId,jdbcType=INTEGER}
+  </update>
 </mapper>

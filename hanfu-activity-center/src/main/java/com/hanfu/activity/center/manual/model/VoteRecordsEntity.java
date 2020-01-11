@@ -16,6 +16,7 @@ public class VoteRecordsEntity implements Serializable{
 	private String eceltedName;
 	private String voteTimes;
 	private double totalScore;
+	
 	public Integer getActivityId() {
 		return activityId;
 	}

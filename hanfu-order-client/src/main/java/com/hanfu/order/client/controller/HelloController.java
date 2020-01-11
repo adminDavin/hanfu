@@ -22,7 +22,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/product")
 @Api
 public class HelloController {
-    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.HelloTestService")
+    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.")
     private HelloTestService helloTestService;
     
     

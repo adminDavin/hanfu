@@ -14,7 +14,7 @@ spring:  datasource:    name: dataSource
     database: 0
     host: 47.105.72.216
     port: 6379
-    timeout: 10000
+    timeout: 10011
     jedis:      pool:        max-active: 16
         max-idle: 4
   task:    execution:      pool:        max-size: 16        queue-capacity: 100

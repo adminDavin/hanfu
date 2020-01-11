@@ -255,6 +255,8 @@
       </if>
     </trim>
   </insert>
+
+
   <select id="countByExample" parameterType="com.hanfu.order.center.model.HfOrdersExample" resultType="java.lang.Long">
     <!--
       WARNING - @mbg.generated

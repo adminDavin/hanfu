@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
@@ -25,7 +24,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.security.auth.Subject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -52,8 +50,6 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.domain.Activity;
-import com.google.api.client.util.SecurityUtils;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -69,9 +65,8 @@ import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
-import com.hanfu.user.center.service.UserCenterService;
+//import com.hanfu.user.center.service.UserCenterService;
 import com.hanfu.user.center.utils.GetMessageCode;
-import com.hanfu.user.center.utils.UrlUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -83,13 +78,14 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 @CrossOrigin
 public class KingWordsController {
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	FileDescMapper fileDescMapper;
 	@Autowired
 	private HfUserMapper hfUserMapper;
-	@Autowired
-	private UserCenterService userCenterService;
+//	@Autowired
+//	private UserCenterService userCenterService;
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
 	@Autowired 
@@ -350,25 +346,27 @@ public class KingWordsController {
 			nickName = 	userInfo.getString("nickName");
 			avatarUrl = userInfo.getString("avatarUrl");
 		}
-		HfUserExample example = new HfUserExample();
-		example.createCriteria().andUsernameEqualTo(unionId);
-		List<HfUser> list = hfUserMapper.selectByExample(example);
-		if(list.isEmpty()) {
-			HfUser hfUser = new HfUser();
-			hfUser.setAddress(avatarUrl);
-			hfUser.setNickName(nickName);
-			hfUser.setUsername(unionId);
-			hfUser.setCreateDate(LocalDateTime.now());
-			hfUser.setModifyDate(LocalDateTime.now());
-			hfUser.setIdDeleted((byte) 0);
-			hfUserMapper.insert(hfUser);
-			userId = hfUser.getId();
-		}else {
-			HfUser hfUser = list.get(0);
-			hfUser.setAddress(avatarUrl);
-			hfUser.setNickName(nickName);
-			hfUserMapper.updateByPrimaryKey(hfUser);
-			userId = hfUser.getId();
+		if(!StringUtils.isEmpty(unionId)) {
+			HfUserExample example = new HfUserExample();
+			example.createCriteria().andUsernameEqualTo(unionId);
+			List<HfUser> list = hfUserMapper.selectByExample(example);
+			if(list.isEmpty()) {
+				HfUser hfUser = new HfUser();
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				hfUser.setUsername(unionId);
+				hfUser.setCreateDate(LocalDateTime.now());
+				hfUser.setModifyDate(LocalDateTime.now());
+				hfUser.setIdDeleted((byte) 0);
+				hfUserMapper.insert(hfUser);
+				userId = hfUser.getId();
+			}else {
+				HfUser hfUser = list.get(0);
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				hfUserMapper.updateByPrimaryKey(hfUser);
+				userId = hfUser.getId();
+			}
 		}
 		map.put("userId", userId);
 		map.put( "userInfo",userInfo ); 
@@ -430,9 +428,9 @@ public class KingWordsController {
 
 	private JSONObject getSessionKeyOrOpenId(String code) {
 		//微信端登录code
-		String wxCode = code;
+		//String wxCode = code;
 		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42&js_code="+code+"&grant_type=authorization_code";
-		Map<String,String> requestUrlParam = new HashMap<String, String>(  );
+		//Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
 //		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
@@ -456,7 +454,6 @@ public class KingWordsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-		
         return jsonObject;
 	}
 }
