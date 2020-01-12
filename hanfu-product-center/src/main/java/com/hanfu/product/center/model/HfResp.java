@@ -38,7 +38,7 @@ public class HfResp implements Serializable {
      *
      * @mbg.generated Thu Jan 09 14:56:41 CST 2020
      */
-    private String quantity;
+    private Integer quantity;
 
     /**
      *
@@ -182,7 +182,7 @@ public class HfResp implements Serializable {
      *
      * @mbg.generated Thu Jan 09 14:56:41 CST 2020
      */
-    public String getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
@@ -194,8 +194,8 @@ public class HfResp implements Serializable {
      *
      * @mbg.generated Thu Jan 09 14:56:41 CST 2020
      */
-    public void setQuantity(String quantity) {
-        this.quantity = quantity == null ? null : quantity.trim();
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity ;
     }
 
     /**

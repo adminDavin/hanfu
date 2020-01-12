@@ -19,5 +19,7 @@ public interface OrderDao {
 
     List<OrderInfo> selectOrderByUserId(Integer userId);
 
+	List<OrderInfo> selectOrders(Integer id);
+
 
 }

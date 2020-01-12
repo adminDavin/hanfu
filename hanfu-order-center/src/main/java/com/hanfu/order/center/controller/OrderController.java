@@ -1,5 +1,6 @@
 package com.hanfu.order.center.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,8 +21,11 @@ import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.manual.model.OrderFindValue;
+import com.hanfu.order.center.manual.model.OrdersInfo;
+import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderStatus;
 import com.hanfu.order.center.model.HfOrderStatusExample;
+import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
 import com.hanfu.order.center.model.HfOrdersDetailExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
@@ -78,14 +82,48 @@ public class OrderController {
         return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderByUserId(userId)));
     }
 
-    @SuppressWarnings("rawtypes")
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/creat", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics)
+    public ResponseEntity<JSONObject> creatOrder(OrdersInfo ordersInfo)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        List list = hfOrdersService.creatOrder(request, hfOrder, hfOrderLogistics);
-        return builder.body(ResponseUtils.getResponseBody(list));
+        HfOrders hfOrders = new HfOrders();
+		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+		hfOrders.setUserId(ordersInfo.getUserId());
+		hfOrders.setAmount(ordersInfo.getAmount());
+		hfOrders.setHfMemo(ordersInfo.getHfMemo());
+		hfOrders.setHfRemark(ordersInfo.getHfRemark());
+		hfOrders.setPayMethodName(ordersInfo.getPayMethodName());
+		hfOrders.setPayMethodType(ordersInfo.getPayMethodType());
+		hfOrders.setPayStatus(ordersInfo.getPayStatus());
+		hfOrders.setCreateTime(LocalDateTime.now());
+		hfOrders.setOrderType(ordersInfo.getOrderType());
+		hfOrders.setModifyTime(LocalDateTime.now());
+		hfOrders.setIsDeleted((short) 0);
+		hfOrders.setLastModifier("1");
+		hfOrdersMapper.insert(hfOrders);
+		for (Integer googsId : ordersInfo.getGoogsId()) {
+			for (Integer purchasePrice : ordersInfo.getPurchasePrice()) {
+				for (Integer purchaseQuantity : ordersInfo.getPurchaseQuantity()) {
+					hfOrdersDetail.setOrdersId(hfOrders.getId());
+					hfOrdersDetail.setGoogsId(googsId);
+					hfOrdersDetail.setHfDesc(ordersInfo.getHfDesc());
+					hfOrdersDetail.setHfTax(ordersInfo.getHfTax());
+					hfOrdersDetail.setDistribution(ordersInfo.getDistribution());
+					hfOrdersDetail.setRespId(ordersInfo.getRespId());
+					hfOrdersDetail.setPurchasePrice(purchasePrice);
+					hfOrdersDetail.setPurchaseQuantity(purchaseQuantity);
+					hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
+					hfOrdersDetail.setCreateTime(LocalDateTime.now());
+					hfOrdersDetail.setModifyTime(LocalDateTime.now());
+					hfOrdersDetail.setIsDeleted((short) 0);
+					hfOrdersDetail.setOrdersId(hfOrders.getId());
+					hfOrdersDetail.setLastModifier("1");
+					hfOrdersDetailMapper.insert(hfOrdersDetail);
+				}
+			}
+		}
+        return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrders(hfOrders.getId())));
     }
 
     @ApiOperation(value = "获取订单状态", notes = "获取订单状态")
@@ -178,5 +216,26 @@ public class OrderController {
         hfOrderDetail.setOrderDetailStatus("退款中");
         hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrderDetail);
         return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
+    }
+    @ApiOperation(value = "填写物流信息", notes = "填写物流信息")
+    @RequestMapping(value = "/insertLogistics", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> insertLogistics(HfOrderLogisticsRequest request)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
+        for (Integer goodsId : request.getGoogsId()) {
+        	hfOrderLogistics.setGoogsId(goodsId);
+        	hfOrderLogistics.setLogisticsCompany(request.getLogisticsCompany());
+        	hfOrderLogistics.setLogisticsOrderName(request.getLogisticsOrderName());
+        	hfOrderLogistics.setLastModifier("");
+        	hfOrderLogistics.setModifyTime(LocalDateTime.now());
+        	hfOrderLogistics.setCreateTime(LocalDateTime.now());
+        	hfOrderLogistics.setIsDeleted((short) 0 );
+        	hfOrderLogistics.setOrderDetailId(request.getOrderDetailId());
+        	hfOrderLogistics.setOrdersId(request.getOrdersId());
+        	hfOrderLogistics.setUserId(request.getUserId());
+        	hfOrderLogistics.setUserAddressId(request.getUserAddressId());
+		}
+        return builder.body(ResponseUtils.getResponseBody(hfOrderLogisticsMapper.insert(hfOrderLogistics)));
     }
 }

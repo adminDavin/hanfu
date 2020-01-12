@@ -359,4 +359,21 @@ WHERE
       left join hf_goods_spec gs on s.id = gs.hf_spec_id
       where p.id=#{productId}
     </select>
+    <select id="checkResp" resultMap="EntityHfGoodDispaly">
+       SELECT
+	h1.id,
+	h3.sell_price,
+	h2.quantity 
+FROM
+	hf_goods h1
+	JOIN product p ON h1.product_id = p.id
+	JOIN product_spec p1 ON p1.product_id = p.id
+	JOIN hf_resp h2 ON h2.googs_id = h1.id
+	JOIN hf_price h3 ON h3.googs_id = h1.id
+	JOIN hf_goods_spec h4 ON h4.goods_id = h1.id 
+WHERE
+	p.id = #{productId}
+	AND p1.hf_name = #{name}
+	AND h4.hf_value = #{value}
+    </select>
 </mapper>

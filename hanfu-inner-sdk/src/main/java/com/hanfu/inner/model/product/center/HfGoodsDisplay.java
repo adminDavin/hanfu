@@ -16,7 +16,7 @@ public class HfGoodsDisplay implements Serializable {
     private String productCategoryName;
     private String goodsDesc;
     private Integer categoryId;
-    private String quantity;
+    private Integer quantity;
     private Integer sellPrice;
     private String specValue;
     private Integer productSpecId;
@@ -70,11 +70,11 @@ public class HfGoodsDisplay implements Serializable {
         this.categoryId = categoryId;
     }
 
-    public String getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

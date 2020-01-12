@@ -21,8 +21,8 @@ public class HfGoodsDisplay extends CommonRequest {
     private String goodsDesc;
     @ApiModelProperty(required = false, value = "类目id")
     private Integer categoryId;
-    @ApiModelProperty(required = false, value = "数量")
-    private String quantity;
+    @ApiModelProperty(required = false, value = "库存")
+    private Integer quantity;
     @ApiModelProperty(required = false, value = "销售价格")
     private Integer sellPrice;
     @ApiModelProperty(required = false, value = "规格值")
@@ -181,11 +181,11 @@ public class HfGoodsDisplay extends CommonRequest {
         this.categoryId = categoryId;
     }
 
-    public String getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 

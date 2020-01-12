@@ -49,4 +49,10 @@ public class OrderDaoImpl implements OrderDao {
         return result;
     }
 
+	@Override
+	public List<OrderInfo> selectOrders(Integer id) {
+		List<OrderInfo> result = sqlSessionTemplate.selectList("selectOrders", id);
+		return result;
+	}
+
 }
