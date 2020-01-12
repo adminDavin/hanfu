@@ -140,115 +140,129 @@ public class ProductController {
 	@Autowired
 	private FileDescMapper fileDescMapper;
 
-//    @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
-//    @RequestMapping(value = "/category", method = RequestMethod.GET)
-//    public ResponseEntity<JSONObject> listCategory(
-//            @RequestParam(name = "page", required = false) Integer page,
-//            @RequestParam(name = "size", required = false) Integer size,
-//            @RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
-//            @RequestParam(name = "categoryId", required = false) Integer categoryId,
-//            @RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
-//            throws Exception {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        HfCategoryExample example = new HfCategoryExample();	
-//        example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-//        if (categoryId != null) {   
-//            example.clear();
-//            example.createCriteria().andIdEqualTo(categoryId);
-//        }
-////		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
-//        return productService.listCategory(parentCategoryId, categoryId, levelId, page, size);
-//    }
+	//    @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
+	//    @ApiImplicitParams({
+	//            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
+	//            @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
+	//            @ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
+	//    @RequestMapping(value = "/category", method = RequestMethod.GET)
+	//    public ResponseEntity<JSONObject> listCategory(
+	//            @RequestParam(name = "page", required = false) Integer page,
+	//            @RequestParam(name = "size", required = false) Integer size,
+	//            @RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
+	//            @RequestParam(name = "categoryId", required = false) Integer categoryId,
+	//            @RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId)
+	//            throws Exception {
+	//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//        HfCategoryExample example = new HfCategoryExample();	
+	//        example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+	//        if (categoryId != null) {   
+	//            example.clear();
+	//            example.createCriteria().andIdEqualTo(categoryId);
+	//        }
+	////		return builder.body(ResponseUtils.getResponseBody(manualDao.selectCategories()));
+	//        return productService.listCategory(parentCategoryId, categoryId, levelId, page, size);
+	//    }
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
-    @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> listCategory(
-            @RequestParam(name = "page", required = false) Integer page,
-            @RequestParam(name = "size", required = false) Integer size,
-            @RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
-            @RequestParam(name = "categoryId", required = false) Integer categoryId,
-            @RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId,
-    		@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type)
-            throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfCategoryExample example = new HfCategoryExample();
-        if(type == 1) {
-        	if(parentCategoryId != null) {
-        		List<Categories> categoriesList = new ArrayList<Categories>();
-        		List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
-            	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-            	List<HfCategory> list = hfCategoryMapper.selectByExample(example);
-            	for (int i = 0; i < list.size(); i++) {
-            		HfCategory twoCategory = list.get(i);
-            		CategoryInfo info = new CategoryInfo();
-            		info.setTwoLevelName(twoCategory.getHfName());
-            		info.setTwoLevelId(twoCategory.getId());
-            		example.clear();
-            		example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
-            		List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
-            		for (int j = 0; j < list2.size(); j++) {
-            			Categories categories = new Categories();
-            			HfCategory threeCategory = list2.get(j);
-            			categories.setFileId(threeCategory.getFileId());
-            			categories.setHfName(threeCategory.getHfName());
-            			categories.setId(threeCategory.getId());
-            			categories.setLevelId(threeCategory.getLevelId());
-            			categoriesList.add(categories);
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
+		@ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
+	@RequestMapping(value = "/category", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> listCategory(
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size,
+			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
+			@RequestParam(name = "categoryId", required = false) Integer categoryId,
+			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId,
+			@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type)
+					throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategoryExample example = new HfCategoryExample();
+		if(type == 1) {
+			if(parentCategoryId != null) {
+				List<Categories> categoriesList = new ArrayList<Categories>();
+				List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
+				example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+				List<HfCategory> list = hfCategoryMapper.selectByExample(example);
+				for (int i = 0; i < list.size(); i++) {
+					HfCategory twoCategory = list.get(i);
+					CategoryInfo info = new CategoryInfo();
+					info.setTwoLevelName(twoCategory.getHfName());
+					info.setTwoLevelId(twoCategory.getId());
+					example.clear();
+					example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
+					List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
+					for (int j = 0; j < list2.size(); j++) {
+						Categories categories = new Categories();
+						HfCategory threeCategory = list2.get(j);
+						categories.setFileId(threeCategory.getFileId());
+						categories.setHfName(threeCategory.getHfName());
+						categories.setId(threeCategory.getId());
+						categories.setLevelId(threeCategory.getLevelId());
+						categoriesList.add(categories);
 					}
-            		info.setCategories(categoriesList);
-            		hfCategories.add(info);
+					info.setCategories(categoriesList);
+					hfCategories.add(info);
 				}
-            	return builder.body(ResponseUtils.getResponseBody(hfCategories));
-            }
-        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-        }
+				return builder.body(ResponseUtils.getResponseBody(hfCategories));
+			}
+			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+		}
+		if(parentCategoryId != null) {
+			example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
+		}
+		if(levelId == 1) {
+			hfCategoryMapper.selectByExample(null);
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+	}
 
-        return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(1)));
-    }
+	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
+	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Product product = new Product();
+		product.setBossId(request.getBossId());
+		product.setBrandId(request.getBrandId());
+		product.setCategoryId(request.getCategoryId());
+		product.setHfName(request.getHfName());
+		product.setLastModifier(request.getLastModifier());
+		product.setCreateTime(LocalDateTime.now());
+		product.setModifyTime(LocalDateTime.now());
+		product.setIsDeleted((short) 0);
+		product.setProductDesc(request.getProductDesc());
+		productMapper.insert(product);
+		ProductSpec item = new ProductSpec();
+		for (String specName : request.getSpecName()) {
+			item.setProductId(product.getId());
+			item.setHfName(specName);
+			item.setCreateTime(LocalDateTime.now());
+			item.setModifyTime(LocalDateTime.now());
+			item.setIsDeleted((short) 0);
+			productSpecMapper.insert(item);
+		}
+		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
 
-    @ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
-    @RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Product product = new Product();
-        product.setBossId(request.getBossId());
-        product.setBrandId(request.getBrandId());
-        product.setCategoryId(request.getCategoryId());
-        product.setHfName(request.getHfName());
-        product.setLastModifier(request.getLastModifier());
-        product.setCreateTime(LocalDateTime.now());
-        product.setModifyTime(LocalDateTime.now());
-        product.setIsDeleted((short) 0);
-        product.setProductDesc(request.getProductDesc());
-        product.setCancel_id(request.getCancelId());
-        product.setClaim(request.getClaim());
-        product.setMemeber(request.getMember());
-        return builder.body(ResponseUtils.getResponseBody(productMapper.insert(product)));
-    }
+	}
 
-    @ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
-    @RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> deleteProduct(@RequestParam(name = "productId") Integer productId)
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ProductSpecExample example = new ProductSpecExample();
-        example.createCriteria().andProductIdEqualTo(productId);
-        ProductInfoExample example2 = new ProductInfoExample();
-        example2.createCriteria().andProductIdEqualTo(productId);
-        productSpecMapper.deleteByExample(example);
-        productInfoMapper.deleteByExample(example2);
-        return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
-    }
+	@ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
+	@RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
+	@ApiImplicitParams({
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer")})
+	public ResponseEntity<JSONObject> deleteProduct(@RequestParam(name = "productId") Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductSpecExample example = new ProductSpecExample();
+		example.createCriteria().andProductIdEqualTo(productId);
+		ProductInfoExample example2 = new ProductInfoExample();
+		example2.createCriteria().andProductIdEqualTo(productId);
+		productSpecMapper.deleteByExample(example);
+		productInfoMapper.deleteByExample(example2);
+		return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
+	}
 
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -268,7 +282,7 @@ public class ProductController {
 		category.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
-	
+
 	@ApiOperation(value = "删除类目", notes = "删除类目")
 	@RequestMapping(value = "/deleteCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteCategory(Integer categoryId) throws Exception {
@@ -282,7 +296,7 @@ public class ProductController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.deleteByPrimaryKey(categoryId)));
 	}
-	
+
 	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
 	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findAllCategory() throws Exception {
@@ -290,14 +304,14 @@ public class ProductController {
 		List<HfCategory> list = hfCategoryMapper.selectByExample(null);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
 	}
-	
+
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateCategory(@RequestParam CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		
+
 		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
-		
+
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
@@ -315,54 +329,54 @@ public class ProductController {
 		hfCategory.setModifyTime(LocalDateTime.now());
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
 	}
-	
+
 	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
-    @ApiOperation(value = "更新类目图片", notes = "更新类目图片")
-    public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
+	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
+	public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
 		FileMangeService fileMangeService = new FileMangeService();
-        String arr[];
-        arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+		String arr[];
+		arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
 		if("类目页面图片".equals(type)) {
 			FileDesc fileDesc = new FileDesc();
-            fileDesc.setFileName("类目页面图片");
-            fileDesc.setGroupName(arr[0]);
-            fileDesc.setRemoteFilename(arr[1]);
-            fileDesc.setUserId(-1);
-            fileDesc.setCreateTime(LocalDateTime.now());
-            fileDesc.setModifyTime(LocalDateTime.now());
-            fileDesc.setIsDeleted((short) 0);
-            fileDescMapper.insert(fileDesc);
-            return -1;
+			fileDesc.setFileName("类目页面图片");
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(-1);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			return -1;
 		}
 		Integer fileId = null;
-        FileDescExample example = new FileDescExample();
-        example.createCriteria().andFileNameEqualTo(uuid);
-        List<FileDesc> list = fileDescMapper.selectByExample(example);
-        if (list.isEmpty()) {
-            FileDesc fileDesc = new FileDesc();
-            fileDesc.setFileName(uuid);
-            fileDesc.setGroupName(arr[0]);
-            fileDesc.setRemoteFilename(arr[1]);
-            fileDesc.setUserId(-1);
-            fileDesc.setCreateTime(LocalDateTime.now());
-            fileDesc.setModifyTime(LocalDateTime.now());
-            fileDesc.setIsDeleted((short) 0);
-            fileDescMapper.insert(fileDesc);
-            fileId = fileDesc.getId();
-        } else {
-            FileDesc fileDesc = list.get(0);
+		FileDescExample example = new FileDescExample();
+		example.createCriteria().andFileNameEqualTo(uuid);
+		List<FileDesc> list = fileDescMapper.selectByExample(example);
+		if (list.isEmpty()) {
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(uuid);
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(-1);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			fileId = fileDesc.getId();
+		} else {
+			FileDesc fileDesc = list.get(0);
 			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
-            fileDesc.setGroupName(arr[0]);
-            fileDesc.setRemoteFilename(arr[1]);
-            fileDesc.setModifyTime(LocalDateTime.now());
-            fileDescMapper.updateByPrimaryKey(fileDesc);
-            fileId = fileDesc.getId();
-        }
-        return fileId;
-    }
-	
-	
-	
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDescMapper.updateByPrimaryKey(fileDesc);
+			fileId = fileDesc.getId();
+		}
+		return fileId;
+	}
+
+
+
 	@ApiOperation(value = "查询类目页面图片", notes = "查询类目页面图片")
 	@RequestMapping(value = "/findCategoryPagePicture", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findCategoryPagePicture() throws Exception {
@@ -373,25 +387,25 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
-//    @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
-//    @RequestMapping(value = "/addCategory", method = RequestMethod.GET)
-//    public ResponseEntity<JSONObject> AddCategory(CategoryRequest request) throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        HfCategory category = new HfCategory();
-//        for (Integer s : request.getLevelId()) {
-//            category.setLevelId(s);
-//		}
-//        for (String s : request.getCategory()) {
-//            category.setHfName(s);
-//		}
-//        for (Integer s : request.getParentCategoryId()) {
-//            category.setParentCategoryId(s);
-//		}
-//        category.setCreateTime(LocalDateTime.now());
-//        category.setModifyTime(LocalDateTime.now());
-//        category.setIsDeleted((short) 0);
-//        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
-//    }
+	//    @ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
+	//    @RequestMapping(value = "/addCategory", method = RequestMethod.GET)
+	//    public ResponseEntity<JSONObject> AddCategory(CategoryRequest request) throws JSONException {
+	//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//        HfCategory category = new HfCategory();
+	//        for (Integer s : request.getLevelId()) {
+	//            category.setLevelId(s);
+	//		}
+	//        for (String s : request.getCategory()) {
+	//            category.setHfName(s);
+	//		}
+	//        for (Integer s : request.getParentCategoryId()) {
+	//            category.setParentCategoryId(s);
+	//		}
+	//        category.setCreateTime(LocalDateTime.now());
+	//        category.setModifyTime(LocalDateTime.now());
+	//        category.setIsDeleted((short) 0);
+	//        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
+	//    }
 
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
@@ -403,7 +417,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品列表", notes = "根据商家获取商家录入的商品列表")
 	@RequestMapping(value = "/byBossId", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listProduct(@RequestParam(name = "bossId") Integer bossId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductExample example = null;
@@ -417,7 +431,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品列表加类目名称", notes = "根据商家获取商家录入的商品列表及类目名称")
 	@RequestMapping(value = "/listProductAndCategoryName", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> listProductAndCategoryName(@RequestParam(name = "bossId") Integer bossId,
 			@RequestParam(name = "page", required = false) Integer page,
 			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
@@ -436,7 +450,7 @@ public class ProductController {
 	@ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/deleteSelectProductId", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteAllProduct(@RequestParam(name = "productId") Integer[] productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -472,7 +486,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品属性", notes = "根据商品id获取商品的属性值")
 	@RequestMapping(value = "/attributes", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getProductInfo(@RequestParam(name = "productId") Integer productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -501,7 +515,7 @@ public class ProductController {
 	@ApiOperation(value = "删除商品属性", notes = "根据商品属性id删除商品属性")
 	@RequestMapping(value = "/deleteattributes", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productInfoId", value = "商品属性ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "productInfoId", value = "商品属性ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteattributes(@RequestParam(name = "productInfoId") Integer productInfoId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -511,7 +525,7 @@ public class ProductController {
 	@ApiOperation(value = "获取商品规格", notes = "根据商品id获取商品的规格描述")
 	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getProductSpec(@RequestParam(name = "productId") Integer productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -545,18 +559,18 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.deleteByPrimaryKey(productSpecId)));
 	}
 
-//	@ApiOperation(value = "修改商品规格", notes = "根据规格id修改商品的规格描述")
-//	@RequestMapping(value = "/updateSpecifies", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> updateSpecifies(ProductSpec productSpec) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		ProductSpecExample example = new ProductSpecExample();
-//		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.updateByExample(productSpec, example)));
-//	}
+	//	@ApiOperation(value = "修改商品规格", notes = "根据规格id修改商品的规格描述")
+	//	@RequestMapping(value = "/updateSpecifies", method = RequestMethod.POST)
+	//	public ResponseEntity<JSONObject> updateSpecifies(ProductSpec productSpec) throws JSONException {
+	//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//		ProductSpecExample example = new ProductSpecExample();
+	//		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.updateByExample(productSpec, example)));
+	//	}
 
 	@ApiOperation(value = "获取物品所在店铺的信息", notes = "根据物品获取物品所在的店铺信息")
 	@RequestMapping(value = "/stones", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品ID", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getStones(@RequestParam(name = "goodsId") Integer goodsId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
@@ -569,7 +583,7 @@ public class ProductController {
 	@ApiOperation(value = "获取店铺所有物品", notes = "根據商鋪id獲取商鋪的所有物品")
 	@RequestMapping(value = "/byStoneId", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "stoneId", value = "商鋪id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getStoneProduct(@RequestParam(name = "stoneId") Integer stoneId)
 			throws Exception {
 		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
@@ -591,45 +605,45 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
-//	@ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
-//	@RequestMapping(value = "/addToStone", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		Product product = productMapper.selectByPrimaryKey(request.getProductId());
-//		if (product == null) {
-//			return builder.body(ResponseUtils.getResponseBody(new ProductNotExistException("product is invalid")));
-//		}
-//		ProductInstance item = new ProductInstance();
-//		item.setProductId(request.getProductId());
-//		item.setStoneId(request.getStoneId());
-//		item.setLastModifier(request.getLastModifier());
-//		HfPrice hfPrice = new HfPrice();
-//		HfResp hfResp = new HfResp();
-//		productInstanceMapper.insert(item);
-//		HfGoods record = new HfGoods();
-//		record.setInstanceId(item.getId());
-//		record.setProductId(request.getProductId());
-//		record.setStoneId(request.getStoneId());
-//		record.setBossId(product.getBossId());
-//		record.setBrandId(product.getBrandId());
-//		record.setCategoryId(product.getCategoryId());
-//		hfGoodsMapper.insert(record);
-//		hfPrice.setGoogsId(record.getId());
-//		hfResp.setGoogsId(record.getId());
-//		hfPriceMapper.insert(hfPrice);
-//		hfRespMapper.insert(hfResp);
-//		record.setPriceId(hfPrice.getId());
-//		record.setRespId(hfPrice.getId());
-//		record.setIsDeleted((short) 0);
-//		record.setCreateTime(LocalDateTime.now());
-//		hfGoodsMapper.updateByPrimaryKey(record);
-//		return builder.body(ResponseUtils.getResponseBody("product insert success"));
-//	}
+	//	@ApiOperation(value = "商品添加到店铺", notes = "将商品添加到某一个店铺")
+	//	@RequestMapping(value = "/addToStone", method = RequestMethod.POST)
+	//	public ResponseEntity<JSONObject> addStone(ProductInstanceRequest request) throws Exception {
+	//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//		Product product = productMapper.selectByPrimaryKey(request.getProductId());
+	//		if (product == null) {
+	//			return builder.body(ResponseUtils.getResponseBody(new ProductNotExistException("product is invalid")));
+	//		}
+	//		ProductInstance item = new ProductInstance();
+	//		item.setProductId(request.getProductId());
+	//		item.setStoneId(request.getStoneId());
+	//		item.setLastModifier(request.getLastModifier());
+	//		HfPrice hfPrice = new HfPrice();
+	//		HfResp hfResp = new HfResp();
+	//		productInstanceMapper.insert(item);
+	//		HfGoods record = new HfGoods();
+	//		record.setInstanceId(item.getId());
+	//		record.setProductId(request.getProductId());
+	//		record.setStoneId(request.getStoneId());
+	//		record.setBossId(product.getBossId());
+	//		record.setBrandId(product.getBrandId());
+	//		record.setCategoryId(product.getCategoryId());
+	//		hfGoodsMapper.insert(record);
+	//		hfPrice.setGoogsId(record.getId());
+	//		hfResp.setGoogsId(record.getId());
+	//		hfPriceMapper.insert(hfPrice);
+	//		hfRespMapper.insert(hfResp);
+	//		record.setPriceId(hfPrice.getId());
+	//		record.setRespId(hfPrice.getId());
+	//		record.setIsDeleted((short) 0);
+	//		record.setCreateTime(LocalDateTime.now());
+	//		hfGoodsMapper.updateByPrimaryKey(record);
+	//		return builder.body(ResponseUtils.getResponseBody("product insert success"));
+	//	}
 
 	@ApiOperation(value = "根据商品id查询此商品是否添加过", notes = "根据商品id查询此商品是否添加过")
 	@RequestMapping(value = "/selectProductIdIsExists", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> selectProductIdIsExists(@RequestParam(name = "productId") Integer productId)
 			throws Exception {
 		Integer result = 1;

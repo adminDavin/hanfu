@@ -24,8 +24,48 @@ public class ProductRequest extends CommonRequest {
     private Integer cancelId;
     @ApiModelProperty(required = true, value = "是否为会员商品")
     private Integer member;
+    @ApiModelProperty(required = true, value = "规格类型")
+    private String[] specType;
+    @ApiModelProperty(required = true, value = "规格单元")
+    private String specUnit;
+    @ApiModelProperty(required = true, value = "规格规格默认值")
+    private String specValue;
+    @ApiModelProperty(required = true, value = "规格名称")
+    private String[] SpecName;
     
-    public Integer getClaim() {
+    public String[] getSpecType() {
+		return specType;
+	}
+
+	public void setSpecType(String[] specType) {
+		this.specType = specType;
+	}
+
+	public String getSpecUnit() {
+		return specUnit;
+	}
+
+	public void setSpecUnit(String specUnit) {
+		this.specUnit = specUnit;
+	}
+
+	public String getSpecValue() {
+		return specValue;
+	}
+
+	public void setSpecValue(String specValue) {
+		this.specValue = specValue;
+	}
+
+	public String[] getSpecName() {
+		return SpecName;
+	}
+
+	public void setSpecName(String[] specName) {
+		SpecName = specName;
+	}
+
+	public Integer getClaim() {
 		return claim;
 	}
 

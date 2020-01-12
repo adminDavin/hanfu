@@ -16,6 +16,7 @@ import com.hanfu.order.center.dao.HfOrderStatusMapper;
 import com.hanfu.order.center.dao.HfOrdersDetailMapper;
 import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
+import com.hanfu.order.center.manual.model.OrdersInfo;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrders;
 import com.hanfu.order.center.model.HfOrdersDetail;
@@ -27,200 +28,175 @@ import com.hanfu.order.center.service.HfOrdersService;
 
 @Service("hfOrdersDetailService")
 public class HfOrdersServiceImpl implements HfOrdersService {
-    @Autowired
-    HfOrdersDetailMapper hfOrdersDetailMapper;
-    @Autowired
-    HfOrderLogisticsMapper hfOrderLogisticsMapper;
-    @Autowired
-    HfOrdersMapper hfOrdersMapper;
-    @Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService")
-    ProductService productService;
-    @Autowired
-    OrderDao orderDao;
-    @Autowired
-    HfOrderStatusMapper hfOrderStatusMapper;
+	@Autowired
+	HfOrdersDetailMapper hfOrdersDetailMapper;
+	@Autowired
+	HfOrderLogisticsMapper hfOrderLogisticsMapper;
+	@Autowired
+	HfOrdersMapper hfOrdersMapper;
+	@Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService")
+	ProductService productService;
+	@Autowired
+	OrderDao orderDao;
+	@Autowired
+	HfOrderStatusMapper hfOrderStatusMapper;
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @Override
-    public List creatOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
-                           HfOrderLogisticsRequest hfOrderLogistics) {
-        String logisticsOrdersId = UUID.randomUUID().toString();
-        HfOrders hfOrders = new HfOrders();
-        hfOrders.setUserId(hfOrder.getUserId());
-        hfOrders.setAmount(hfOrder.getAmount());
-        hfOrders.setHfMemo(hfOrder.getHfMemo());
-        hfOrders.setHfRemark(hfOrder.getHfRemark());
-        hfOrders.setId(hfOrder.getId());
-        hfOrders.setPayMethodName(hfOrder.getPayMethodName());
-        hfOrders.setPayMethodType(hfOrder.getPayMethodType());
-        hfOrders.setPayStatus(hfOrder.getPayStatus());
-        hfOrders.setCreateTime(LocalDateTime.now());
-        hfOrders.setOrderType(hfOrder.getOrderType());
-        hfOrders.setModifyTime(LocalDateTime.now());
-        hfOrders.setIsDeleted((short) 0);
-        hfOrders.setLastModifier("1");
-        hfOrdersMapper.insert(hfOrders);
-        HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-        for (Integer s : request.getGoogsId()) {
-            hfOrdersDetail.setGoogsId(s);
-        }
-        hfOrdersDetail.setHfDesc(request.getHfDesc());
-        hfOrdersDetail.setHfTax(request.getHfTax());
-        hfOrdersDetail.setDistribution(request.getDistribution());
-        hfOrdersDetail.setRespId(request.getRespId());
-        for (Integer s : request.getPurchasePrice()) {
-        	hfOrdersDetail.setPurchasePrice(s);
-        }
-        for (Integer s : request.getPurchaseQuantity()) {
-            hfOrdersDetail.setPurchaseQuantity(s);
-        }
-        hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
-        hfOrdersDetail.setCreateTime(LocalDateTime.now());
-        hfOrdersDetail.setModifyTime(LocalDateTime.now());
-        hfOrdersDetail.setIsDeleted((short) 0);
-        hfOrdersDetail.setOrdersId(hfOrders.getId());
-        hfOrdersDetail.setLastModifier("1");
-        hfOrdersDetailMapper.insert(hfOrdersDetail);
-        HfOrderLogistics hfOrderLogistic = new HfOrderLogistics();
-        for (Integer s : request.getGoogsId()) {
-            hfOrderLogistic.setGoogsId(s);
-        }
-        hfOrderLogistic.setCreateTime(LocalDateTime.now());
-        hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
-        hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
-        hfOrderLogistic.setLogisticsOrdersId(logisticsOrdersId);
-        hfOrderLogistic.setOrderDetailId(hfOrdersDetail.getId());
-        hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
-        hfOrderLogistic.setUserId(hfOrderLogistics.getUserId());
-        hfOrderLogistic.setOrdersId(hfOrders.getId());
-        hfOrderLogistic.setRespId(request.getRespId());
-        hfOrderLogistic.setModifyTime(LocalDateTime.now());
-        hfOrderLogistic.setIsDeleted((short) 0);
-        hfOrderLogistic.setLastModifier("1");
-        hfOrderLogistic.setHfDesc(hfOrderLogistics.getHfDesc());
-        hfOrderLogisticsMapper.insert(hfOrderLogistic);
-        List list = new ArrayList<>();
-        list.add(hfOrdersDetail);
-        list.add(hfOrderLogistic);
-        list.add(hfOrders);
-        return list;
-    }
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	@Override
+	public List<OrdersInfo> creatOrder(OrdersInfo ordersInfo) {
+		HfOrders hfOrders = new HfOrders();
+		HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+		hfOrders.setUserId(ordersInfo.getUserId());
+		hfOrders.setAmount(ordersInfo.getAmount());
+		hfOrders.setHfMemo(ordersInfo.getHfMemo());
+		hfOrders.setHfRemark(ordersInfo.getHfRemark());
+		hfOrders.setPayMethodName(ordersInfo.getPayMethodName());
+		hfOrders.setPayMethodType(ordersInfo.getPayMethodType());
+		hfOrders.setPayStatus(ordersInfo.getPayStatus());
+		hfOrders.setCreateTime(LocalDateTime.now());
+		hfOrders.setOrderType(ordersInfo.getOrderType());
+		hfOrders.setModifyTime(LocalDateTime.now());
+		hfOrders.setIsDeleted((short) 0);
+		hfOrders.setLastModifier("1");
+		hfOrdersMapper.insert(hfOrders);
+		for (Integer googsId : ordersInfo.getGoogsId()) {
+			for (Integer purchasePrice : ordersInfo.getPurchasePrice()) {
+				for (Integer purchaseQuantity : ordersInfo.getPurchaseQuantity()) {
+					hfOrdersDetail.setOrdersId(hfOrders.getId());
+					hfOrdersDetail.setGoogsId(googsId);
+					hfOrdersDetail.setHfDesc(ordersInfo.getHfDesc());
+					hfOrdersDetail.setHfTax(ordersInfo.getHfTax());
+					hfOrdersDetail.setDistribution(ordersInfo.getDistribution());
+					hfOrdersDetail.setRespId(ordersInfo.getRespId());
+					hfOrdersDetail.setPurchasePrice(purchasePrice);
+					hfOrdersDetail.setPurchaseQuantity(purchaseQuantity);
+					hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
+					hfOrdersDetail.setCreateTime(LocalDateTime.now());
+					hfOrdersDetail.setModifyTime(LocalDateTime.now());
+					hfOrdersDetail.setIsDeleted((short) 0);
+					hfOrdersDetail.setOrdersId(hfOrders.getId());
+					hfOrdersDetail.setLastModifier("1");
+					hfOrdersDetailMapper.insert(hfOrdersDetail);
+				}
+			}
+		}
+		return null;
+	}
 
-    @SuppressWarnings({"unused", "rawtypes", "unchecked"})
-    @Override
-    public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
-                            HfOrderLogisticsRequest hfOrderLogistics) throws Exception {
-        HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(request.getId());
-        if (hfOrdersDetail == null) {
-            throw new OrderIsExistException(String.valueOf(request.getId()));
-        }
-        if (!StringUtils.isEmpty(request.getRespId())) {
-            hfOrdersDetail.setRespId(request.getRespId());
-        }
-        if (!StringUtils.isEmpty(request.getPurchaseQuantity())) {
-        	for (Integer s : request.getPurchaseQuantity()) {
-                hfOrdersDetail.setPurchaseQuantity(s);
+	@Override
+	public List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder,
+			HfOrderLogisticsRequest hfOrderLogistics) throws Exception {
+		HfOrdersDetail hfOrdersDetail = hfOrdersDetailMapper.selectByPrimaryKey(request.getId());
+		if (hfOrdersDetail == null) {
+			throw new OrderIsExistException(String.valueOf(request.getId()));
+		}
+		if (!StringUtils.isEmpty(request.getRespId())) {
+			hfOrdersDetail.setRespId(request.getRespId());
+		}
+		if (!StringUtils.isEmpty(request.getPurchaseQuantity())) {
+			for (Integer s : request.getPurchaseQuantity()) {
+				hfOrdersDetail.setPurchaseQuantity(s);
 			}
-        }
-        if (!StringUtils.isEmpty(request.getPurchasePrice())) {
-        	for (Integer s : request.getPurchasePrice()) {
-                hfOrdersDetail.setPurchasePrice(s);
+		}
+		if (!StringUtils.isEmpty(request.getPurchasePrice())) {
+			for (Integer s : request.getPurchasePrice()) {
+				hfOrdersDetail.setPurchasePrice(s);
 			}
-        }
-        if (!StringUtils.isEmpty(request.getOrderDetailStatus())) {
-            hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
-        }
-        if (!StringUtils.isEmpty(request.getHfTax())) {
-            hfOrdersDetail.setHfTax(request.getHfTax());
-        }
-        if (!StringUtils.isEmpty(request.getHfDesc())) {
-            hfOrdersDetail.setHfDesc(request.getHfDesc());
-        }
-        if (!StringUtils.isEmpty(request.getGoogsId())) {
-            for (Integer s : request.getGoogsId()) {
-                hfOrdersDetail.setGoogsId(s);
-            }
-        }
-        if (!StringUtils.isEmpty(request.getDistribution())) {
-            hfOrdersDetail.setDistribution(request.getDistribution());
-        }
-        hfOrdersDetail.setModifyTime(LocalDateTime.now());
-        hfOrdersDetail.setIsDeleted((short) 0);
-        hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
-        HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(request.getId());
-        if (hfOrders == null) {
-            throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
-        }
-        if (!StringUtils.isEmpty(hfOrder.getUserId())) {
-            hfOrders.setUserId(hfOrder.getUserId());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getPayStatus())) {
-            hfOrders.setPayStatus(hfOrder.getPayStatus());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getPayMethodType())) {
-            hfOrders.setPayMethodType(hfOrder.getPayMethodType());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getPayMethodName())) {
-            hfOrders.setPayMethodName(hfOrder.getPayMethodName());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getOrderType())) {
-            hfOrders.setOrderType(hfOrder.getOrderType());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getHfRemark())) {
-            hfOrders.setHfRemark(hfOrder.getHfRemark());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getHfMemo())) {
-            hfOrders.setHfMemo(hfOrder.getHfMemo());
-        }
-        if (!StringUtils.isEmpty(hfOrder.getAmount())) {
-            hfOrders.setAmount(hfOrder.getAmount());
-        }
-        hfOrders.setModifyTime(LocalDateTime.now());
-        hfOrders.setIsDeleted((short) 0);
-        hfOrdersMapper.updateByPrimaryKeySelective(hfOrders);
-        HfOrderLogistics hfOrderLogistic = hfOrderLogisticsMapper.selectByPrimaryKey(request.getId());
-        if (hfOrderLogistic == null) {
-            throw new OrderIsExistException(String.valueOf(hfOrderLogistics.getId()));
-        }
-        if (!StringUtils.isEmpty(hfOrder.getUserId())) {
-            hfOrderLogistic.setUserId(hfOrder.getUserId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getUserAddressId())) {
-            hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getRespId())) {
-            hfOrderLogistic.setRespId(hfOrderLogistics.getRespId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getOrdersId())) {
-            hfOrderLogistic.setOrdersId(hfOrderLogistics.getOrdersId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getOrderDetailId())) {
-            hfOrderLogistic.setOrderDetailId(hfOrderLogistics.getOrderDetailId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrdersId())) {
-            hfOrderLogistic.setLogisticsOrdersId(hfOrderLogistics.getLogisticsOrdersId());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrderName())) {
-            hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsCompany())) {
-            hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getHfDesc())) {
-            hfOrderLogistic.setHfDesc(request.getHfDesc());
-        }
-        if (!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
-        	for (Integer s : hfOrderLogistics.getGoogsId()) {
-                hfOrderLogistic.setGoogsId(s);
+		}
+		if (!StringUtils.isEmpty(request.getOrderDetailStatus())) {
+			hfOrdersDetail.setOrderDetailStatus(request.getOrderDetailStatus());
+		}
+		if (!StringUtils.isEmpty(request.getHfTax())) {
+			hfOrdersDetail.setHfTax(request.getHfTax());
+		}
+		if (!StringUtils.isEmpty(request.getHfDesc())) {
+			hfOrdersDetail.setHfDesc(request.getHfDesc());
+		}
+		if (!StringUtils.isEmpty(request.getGoogsId())) {
+			for (Integer s : request.getGoogsId()) {
+				hfOrdersDetail.setGoogsId(s);
 			}
-        }
-        hfOrderLogistic.setModifyTime(LocalDateTime.now());
-        hfOrderLogistic.setIsDeleted((short) 0);
-        hfOrderLogisticsMapper.updateByPrimaryKeySelective(hfOrderLogistic);
-        List list = new ArrayList<>();
-        list.add(hfOrdersDetail);
-        list.add(hfOrderLogistic);
-        list.add(hfOrders);
-        return list;
-    }
+		}
+		if (!StringUtils.isEmpty(request.getDistribution())) {
+			hfOrdersDetail.setDistribution(request.getDistribution());
+		}
+		hfOrdersDetail.setModifyTime(LocalDateTime.now());
+		hfOrdersDetail.setIsDeleted((short) 0);
+		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
+		HfOrders hfOrders = hfOrdersMapper.selectByPrimaryKey(request.getId());
+		if (hfOrders == null) {
+			throw new OrderIsExistException(String.valueOf(hfOrder.getId()));
+		}
+		if (!StringUtils.isEmpty(hfOrder.getUserId())) {
+			hfOrders.setUserId(hfOrder.getUserId());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getPayStatus())) {
+			hfOrders.setPayStatus(hfOrder.getPayStatus());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getPayMethodType())) {
+			hfOrders.setPayMethodType(hfOrder.getPayMethodType());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getPayMethodName())) {
+			hfOrders.setPayMethodName(hfOrder.getPayMethodName());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getOrderType())) {
+			hfOrders.setOrderType(hfOrder.getOrderType());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getHfRemark())) {
+			hfOrders.setHfRemark(hfOrder.getHfRemark());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getHfMemo())) {
+			hfOrders.setHfMemo(hfOrder.getHfMemo());
+		}
+		if (!StringUtils.isEmpty(hfOrder.getAmount())) {
+			hfOrders.setAmount(hfOrder.getAmount());
+		}
+		hfOrders.setModifyTime(LocalDateTime.now());
+		hfOrders.setIsDeleted((short) 0);
+		hfOrdersMapper.updateByPrimaryKeySelective(hfOrders);
+		HfOrderLogistics hfOrderLogistic = hfOrderLogisticsMapper.selectByPrimaryKey(request.getId());
+		if (hfOrderLogistic == null) {
+			throw new OrderIsExistException(String.valueOf(hfOrderLogistics.getId()));
+		}
+		if (!StringUtils.isEmpty(hfOrder.getUserId())) {
+			hfOrderLogistic.setUserId(hfOrder.getUserId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getUserAddressId())) {
+			hfOrderLogistic.setUserAddressId(hfOrderLogistics.getUserAddressId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getRespId())) {
+			hfOrderLogistic.setRespId(hfOrderLogistics.getRespId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getOrdersId())) {
+			hfOrderLogistic.setOrdersId(hfOrderLogistics.getOrdersId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getOrderDetailId())) {
+			hfOrderLogistic.setOrderDetailId(hfOrderLogistics.getOrderDetailId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrdersId())) {
+			hfOrderLogistic.setLogisticsOrdersId(hfOrderLogistics.getLogisticsOrdersId());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsOrderName())) {
+			hfOrderLogistic.setLogisticsOrderName(hfOrderLogistics.getLogisticsOrderName());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getLogisticsCompany())) {
+			hfOrderLogistic.setLogisticsCompany(hfOrderLogistics.getLogisticsCompany());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getHfDesc())) {
+			hfOrderLogistic.setHfDesc(request.getHfDesc());
+		}
+		if (!StringUtils.isEmpty(hfOrderLogistics.getGoogsId())) {
+			for (Integer s : hfOrderLogistics.getGoogsId()) {
+				hfOrderLogistic.setGoogsId(s);
+			}
+		}
+		hfOrderLogistic.setModifyTime(LocalDateTime.now());
+		hfOrderLogistic.setIsDeleted((short) 0);
+		hfOrderLogisticsMapper.updateByPrimaryKeySelective(hfOrderLogistic);
+		List list = new ArrayList<>();
+		list.add(hfOrdersDetail);
+		list.add(hfOrderLogistic);
+		list.add(hfOrders);
+		return list;
+	}
 }

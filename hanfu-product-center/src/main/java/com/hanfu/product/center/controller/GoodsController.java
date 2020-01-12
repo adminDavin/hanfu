@@ -2,7 +2,9 @@ package com.hanfu.product.center.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -41,8 +43,10 @@ import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductInstanceDao;
+import com.hanfu.product.center.manual.model.CheckResp;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.ProductForValue;
+import com.hanfu.product.center.manual.model.Spec;
 import com.hanfu.product.center.model.CategorySpec;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.GoodsSpec;
@@ -582,7 +586,7 @@ public class GoodsController {
 		if (item.isEmpty()) {
 			resp.setGoogsId(goods.getId());
 			resp.setHfStatus(1);
-			resp.setQuantity(String.valueOf(request.getQuantity()));
+			resp.setQuantity(request.getQuantity());
 			resp.setHfDesc(request.getRespDesc());
 			if (!StringUtils.isEmpty(request.getWareHouseId())) {
 				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
@@ -600,7 +604,7 @@ public class GoodsController {
 		} else {
 			resp = item.get(0);
 			if (!StringUtils.isEmpty(request.getQuantity())) {
-				resp.setQuantity(String.valueOf(request.getQuantity()));
+				resp.setQuantity(request.getQuantity());
 			}
 			if (!StringUtils.isEmpty(request.getRespDesc())) {
 				resp.setHfDesc(request.getRespDesc());
@@ -899,5 +903,31 @@ public class GoodsController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectQueryList(productForValue)));
+	}
+	@ApiOperation(value = "校检库存", notes = "校检库存")
+	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		String[] spec =  StringUtils.split(checkResp.getRespList(), "||");
+		for (String string : spec) {
+			String[] spec2 = StringUtils.split(string, ":");
+			
+			for (String string2 : spec2) {
+				String name = string2;
+				String value = string2;
+				checkResp.setName(name);
+				checkResp.setValue(value);
+				HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.checkResp(checkResp);
+				if(checkResp.getGoodsNum()<hfGoodsDisplay.getQuantity()) {
+					Integer amount =  checkResp.getGoodsNum()*hfGoodsDisplay.getSellPrice();
+					List<Object> list = new ArrayList<Object>();
+					list.add(amount);
+					list.add(hfGoodsDisplay.getId());
+					return builder.body(ResponseUtils.getResponseBody(list));
+				}
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody("库存容量不足"));
 	}
 }
