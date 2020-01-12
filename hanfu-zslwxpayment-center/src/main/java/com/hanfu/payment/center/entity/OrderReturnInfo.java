@@ -18,6 +18,7 @@ public class OrderReturnInfo {
     private String sign;
     private String prepay_id;//预支付交易会话标识
     private String trade_type;//交易类型
+    private String err_code; //错误码
 
 
     public String getReturn_code() {
@@ -90,5 +91,13 @@ public class OrderReturnInfo {
 
     public void setTrade_type(String trade_type) {
         this.trade_type = trade_type;
+    }
+
+    public String getErr_code() {
+        return err_code;
+    }
+
+    public void setErr_code(String err_code) {
+        this.err_code = err_code;
     }
 }

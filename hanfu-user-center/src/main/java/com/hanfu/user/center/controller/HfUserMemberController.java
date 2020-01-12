@@ -249,7 +249,6 @@ public class HfUserMemberController {
         for(Object a:objects){
             System.out.println(a);
         }
-
         return builder.body(ResponseUtils.getResponseBody(objects));
     }
 }

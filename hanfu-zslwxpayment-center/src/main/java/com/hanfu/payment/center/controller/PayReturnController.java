@@ -30,18 +30,16 @@ public class PayReturnController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "out_trade_no", value = "商户订单号", required = true),
             @ApiImplicitParam(paramType = "query", name = "total_fee", value = "总额", required = true),
-            @ApiImplicitParam(paramType = "query", name = "refund_desc", value = "退款原因", required = true),
-            @ApiImplicitParam(paramType = "query", name = "body", value = "退款说明", required = false)
+            @ApiImplicitParam(paramType = "query", name = "refund_desc", value = "退款原因", required = true)
     })
     public ResponseEntity<JSONObject> refund(@RequestParam(required = true,defaultValue = "") String out_trade_no,
                                              @RequestParam(required = true,defaultValue = "") int total_fee,
-                                             @RequestParam(required = true,defaultValue = "") String refund_desc,
-                                             @RequestParam(required = false,defaultValue = "") String body) throws Exception {
+                                             @RequestParam(required = true,defaultValue = "") String refund_desc) throws Exception {
 
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
-        //ResponseEntity<JSONObject> result = payReturnService.refund(out_trade_no,,total_fee);
+        ResponseEntity<JSONObject> result = payReturnService.refund(out_trade_no,refund_desc,total_fee);
 
-        return builder.body(ResponseUtils.getResponseBody("aaa"));
+        return builder.body(ResponseUtils.getResponseBody(result));
     }
 }

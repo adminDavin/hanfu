@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @MapperScans({@MapperScan("com.hanfu.user.center.dao")})
-@EnableAutoConfiguration
 @SpringBootApplication
 @EnableScheduling
 public class Application {
