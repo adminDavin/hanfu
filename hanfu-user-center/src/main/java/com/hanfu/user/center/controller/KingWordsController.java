@@ -436,6 +436,7 @@ public class KingWordsController {
         Map<String, Object> map = new HashMap<String, Object>();
         //JSONObject rawDataJson = JSON.parseObject( rawData );
         JSONObject SessionKeyOpenId = getSessionKeyOrOpenId(code);
+        logger.info(JSONObject.toJSONString(SessionKeyOpenId));
         String openid = (String) SessionKeyOpenId.get("openid");
         String sessionKey = (String) SessionKeyOpenId.get("session_key");
         //uuid生成唯一key
