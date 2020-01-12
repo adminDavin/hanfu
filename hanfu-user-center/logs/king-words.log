@@ -17733,3 +17733,17 @@ java.lang.RuntimeException: Value for userId cannot be null
 2020-01-12 21:36:40.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:36:40:000
 2020-01-12 21:36:50.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:36:50:000
 2020-01-12 21:37:00.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:00:000
+2020-01-12 21:37:10.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:10:000
+2020-01-12 21:37:20.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:20:000
+2020-01-12 21:37:30.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:30:000
+2020-01-12 21:37:40.001  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:40:000
+2020-01-12 21:37:50.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:37:50:000
+2020-01-12 21:38:00.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:00:000
+2020-01-12 21:38:10.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:10:000
+2020-01-12 21:38:20.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:20:000
+2020-01-12 21:38:30.001  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:30:001
+2020-01-12 21:38:40.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:40:000
+2020-01-12 21:38:50.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:38:50:000
+2020-01-12 21:39:00.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:39:00:000
+2020-01-12 21:39:10.000  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:39:10:000
+2020-01-12 21:39:20.001  INFO 8035 --- [spring-task-scheduler-thread-9] c.h.u.c.schedules.ScheduleComponent      : 2020-01-12 21:39:20:001
