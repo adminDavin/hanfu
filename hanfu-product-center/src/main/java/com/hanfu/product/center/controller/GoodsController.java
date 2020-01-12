@@ -309,17 +309,15 @@ public class GoodsController {
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
 	@RequestMapping(value = "/specifiess", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getGoodsSpecs(@RequestParam(name = "goodsId") Integer goodsId)
-			throws JSONException {
+		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> getGoodsSpecs(@RequestParam(name = "productId") Integer productId)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-		List<HfGoodsDisplay> hfGoodsDisplay = hfGoodsDao.selectGoodsSpec(goods.getProductId());
-		for (HfGoodsDisplay hfGoodsDisplay2 : hfGoodsDisplay) {
-			hfGoodsDisplay2.getProductSpecName();
-			hfGoodsDisplay2.getHfValue();  
-		}
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsSpec(goods.getProductId())));
+		Product product = productMapper.selectByPrimaryKey(productId);
+        if (product == null) {
+            throw new Exception("该商品不存在");
+        }
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsSpec(product.getId())));
 	}
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")
 	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
