@@ -7,6 +7,6 @@ import java.util.List;
 
 
 public interface HfOrdersService {
-    List<Object> insert(Group group, Integer userId) throws ParseException;
+    List<Object> insert(Group group, Integer userId,Integer groupOpenId) throws ParseException;
     boolean seckillByPay(Integer id);
 }

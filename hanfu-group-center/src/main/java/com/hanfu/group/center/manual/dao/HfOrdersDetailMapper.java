@@ -17,4 +17,5 @@ public interface HfOrdersDetailMapper {
     int updateByPrimaryKeySelective(HfOrdersDetail record);
 
     int updateByPrimaryKey(HfOrdersDetail record);
+    HfOrdersDetail selectByOrdersId(Integer id);
 }

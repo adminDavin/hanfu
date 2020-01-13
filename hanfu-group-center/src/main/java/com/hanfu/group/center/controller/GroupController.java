@@ -61,7 +61,7 @@ public class GroupController {
     public  boolean  insertGroup( @RequestParam("goodsId") Integer goodsId,@RequestParam("price")Double price,@RequestParam("number")Integer number,
                                   @RequestParam("startTime")Date startTime, @RequestParam("stopTime") Date stopTime, @RequestParam("repertory")Integer repertory){
         Integer bossId=1;
-        System.out.println(goodsId+"11111");
+
 //    try {
 //        Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
 //        Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
@@ -77,9 +77,13 @@ public class GroupController {
     @RequestMapping(value = "/shopping", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
+
     })
-    public  Object  shoppingGroup(Integer groupId,Integer userId) throws ParseException {
+    public  Object  shoppingGroup(Integer groupId,Integer userId,String hfDesc,Integer addressId
+    ) throws ParseException {
         Integer orderId=0;
         Group group=groupService.selectByPrimaryKey(groupId);
         if (group==null||group.getNumber()==null){
@@ -107,7 +111,7 @@ public class GroupController {
             groupOpenService.insert(groupId,startTime, stopTime);
             GroupOpen groupOpen2 =  groupOpenService.selectByStopTime(groupId, stopTime);
             Integer id=groupOpen2.getId();
-            groupOpenConnectService.insert(userId,id,orderId);
+            groupOpenConnectService.insert(userId,id,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
 
@@ -137,14 +141,14 @@ public class GroupController {
         Integer groupOpenId=groupOpen1.get(0).getId();
         if(reality+1==number){
     //        成团
-            groupOpenConnectService.insert(userId,groupOpenId,orderId);
+            groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
             Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(groupId);
             for (Integer  id:urId) {
                 groupOpenConnectService.updateIsDeleted(id,groupOpenId);
-                hfOrdersService.insert(group1,id);
+                hfOrdersService.insert(group1,id,groupOpenId);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
@@ -165,7 +169,7 @@ public class GroupController {
 
             return aReturn;
         }
-        groupOpenConnectService.insert(userId,groupOpenId,orderId);
+        groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
 //        等待成团
@@ -325,9 +329,11 @@ public class GroupController {
     @RequestMapping(value = "/openGroup", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
     })
-    public  Object  openGroup(Integer groupId,Integer userId) throws ParseException {
+    public  Object  openGroup(Integer groupId,Integer userId,String hfDesc,Integer addressId) throws ParseException {
         Integer orderId=0;
         Group group = groupService.selectByPrimaryKey(groupId);
         if (group == null || group.getNumber() == null) {
@@ -367,7 +373,7 @@ public class GroupController {
             HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
             aReturn.setName(hfUser.getNickName());
 
-            groupOpenConnectService.insert(userId, id, orderId);
+            groupOpenConnectService.insert(userId, id, orderId,hfDesc, addressId);
             int newRrepertory = repertory - 1;
             groupService.updateRrepertory(groupId, newRrepertory);
             return aReturn ;
@@ -379,9 +385,11 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "开团购表id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
 
     })
-    public  Object  joinGroup(Integer id,Integer userId) throws ParseException {
+    public  Object  joinGroup(Integer id,Integer userId,String hfDesc,Integer addressId) throws ParseException {
         Integer orderId=0;
         GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
         Integer groupId = groupOpen.getGroupId();
@@ -394,14 +402,14 @@ public class GroupController {
         int repertory=group.getRepertory();
         if(reality+1==number){
             //        成团
-            groupOpenConnectService.insert(userId,groupOpenId,orderId);
+            groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
             Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(id);
             for (Integer  id1:urId) {
                 groupOpenConnectService.updateIsDeleted(id1,groupOpenId);
-                hfOrdersService.insert(group1,id1);
+                hfOrdersService.insert(group1,id1,groupOpenId);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
@@ -420,7 +428,7 @@ public class GroupController {
 
             return aReturn ;
         }
-        groupOpenConnectService.insert(userId,groupOpenId,orderId);
+        groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
 

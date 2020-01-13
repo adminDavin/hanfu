@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 public interface GroupOpenConnectService {
     int deleteByPrimaryKey(Integer id);
     void deleteByGroupOpenId(Integer id);
-    void  insert(Integer userId,Integer groupOpenId,Integer ordersId);
+    void  insert(Integer userId,Integer groupOpenId,Integer ordersId,String hfDesc,Integer addressId);
 
     int insertSelective(GroupOpenConnect groupOpenConnect);
 

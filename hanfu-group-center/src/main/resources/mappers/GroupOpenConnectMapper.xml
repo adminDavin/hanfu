@@ -6,9 +6,11 @@
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="group_open_id" property="groupOpenId" jdbcType="INTEGER" />
     <result column="orders_id" property="ordersId" jdbcType="INTEGER" />
+    <result column="hf_desc" property="Hfdesc" jdbcType="VARCHAR" />
+    <result column="address_id" property="addressId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, group_open_id,orders_id
+    id, user_id, group_open_id,orders_id,hf_desc,address_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,6 +25,13 @@
   </delete>
 
 
+  <select id="selectByGroup" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open_connect
+    where user_id = #{id,jdbcType=INTEGER} and  group_open_id=#{groupOpenId,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from group_open_connect
     where id = #{id,jdbcType=INTEGER}
@@ -31,8 +40,9 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into group_open_connect (user_id, group_open_id,orders_id)
-    values (#{userId,jdbcType=INTEGER},  #{groupOpenId,jdbcType=INTEGER}, #{ordersId,jdbcType=INTEGER} )
+    insert into group_open_connect (user_id, group_open_id,orders_id,hf_desc,address_id)
+    values (#{userId,jdbcType=INTEGER},  #{groupOpenId,jdbcType=INTEGER}, #{ordersId,jdbcType=INTEGER} ,
+    #{hfDesc,jdbcType=VARCHAR}, #{addressId,jdbcType=INTEGER})
   </insert>
 
 

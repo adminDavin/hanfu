@@ -39,11 +39,5 @@ public class WebConfigurer implements WebMvcConfigurer {
 	}
 
 
-	/**
-	 * 使用@Bean注解注入第三方的解析框架（fastJson）
-	 * @return
-	 */
-
-
 
 }

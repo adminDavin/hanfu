@@ -2,11 +2,11 @@ package com.hanfu.group.center.service.impl;
 
 
 
+import com.hanfu.group.center.manual.dao.GroupOpenConnectMapper;
+import com.hanfu.group.center.manual.dao.HfOrderLogisticsMapper;
 import com.hanfu.group.center.manual.dao.HfOrdersDetailMapper;
 import com.hanfu.group.center.manual.dao.HfOrdersMapper;
-import com.hanfu.group.center.manual.model.Group;
-import com.hanfu.group.center.manual.model.HfOrders;
-import com.hanfu.group.center.manual.model.HfOrdersDetail;
+import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.HfOrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +23,15 @@ import java.util.List;
 public class HfOrdersServiceImpl implements HfOrdersService {
      @Autowired
      HfOrdersMapper hfOrdersMapper;
-
-    HfOrdersDetailMapper hfOrdersDetailMapper;
+     @Autowired
+     HfOrdersDetailMapper hfOrdersDetailMapper;
+     @Autowired
+     HfOrderLogisticsMapper hfOrdersLogistcsMapper;
+    @Autowired
+    GroupOpenConnectMapper groupOpenConnectMapper;
     @Override
-    public List<Object> insert(Group group, Integer userId) throws ParseException {
+    public List<Object> insert(Group group, Integer userId,Integer groupOpenId ) throws ParseException {
+        GroupOpenConnect groupOpenConnect = groupOpenConnectMapper.selectByGroup(userId, groupOpenId);
         HfOrders hfOrders = new HfOrders();
         hfOrders.setUserId(userId);
         Integer a=0;
@@ -50,6 +55,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
         HfOrders orders = hfOrdersMapper.selectByUserId("团购", userId);
         hfOrdersDetail.setOrdersId(orders.getId());
+        hfOrdersDetail.setHfDesc(groupOpenConnect.getHfdesc());
         hfOrdersDetail.setGoogsId(group.getGoodsId());
         hfOrdersDetail.setPurchasePrice(price1);
         hfOrdersDetail.setPurchaseQuantity(1);
@@ -57,9 +63,21 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         hfOrdersDetail.setIsDeleted((short) 0);
         hfOrdersDetail.setLastModifier("1");
         hfOrdersDetailMapper.insertSelective(hfOrdersDetail);
+        HfOrdersDetail hfOrdersDetail1 = hfOrdersDetailMapper.selectByOrdersId(orders.getId());
+        HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
+        hfOrderLogistics.setOrderDetailId(hfOrdersDetail1.getId());
+        hfOrderLogistics.setOrdersId(orders.getId());
+        hfOrderLogistics.setUserId(userId);
+        hfOrderLogistics.setUserAddressId(groupOpenConnect.getAddressId());
+        hfOrderLogistics.setGoogsId(group.getGoodsId());
+        hfOrderLogistics.setCreateTime(startTime1);
+        hfOrderLogistics.setModifyTime(startTime1);
+        hfOrderLogistics.setIsDeleted((short) 0);
+        hfOrdersLogistcsMapper.insert(hfOrderLogistics);
         List<Object> objects = new ArrayList<>();
-        objects.add(hfOrders);
-        objects.add(hfOrdersDetail);
+        objects.add(hfOrderLogistics);
+        objects.add(orders);
+        objects.add(hfOrdersDetail1);
         return objects;
     }
 

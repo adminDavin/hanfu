@@ -26,8 +26,8 @@ public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
     }
 
     @Override
-    public void insert(Integer userId,Integer groupOpenId,Integer ordersId) {
-        groupOpenConnectMapper.insert(userId,groupOpenId, ordersId);
+    public void insert(Integer userId,Integer groupOpenId,Integer ordersId,String hfDesc,Integer addressId) {
+        groupOpenConnectMapper.insert(userId,groupOpenId, ordersId,hfDesc,addressId);
     }
 
     @Override
