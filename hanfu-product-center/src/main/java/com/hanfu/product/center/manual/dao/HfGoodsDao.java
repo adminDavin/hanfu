@@ -48,5 +48,7 @@ public interface HfGoodsDao {
 
 	public HfGoodsDisplay checkResp(CheckResp checkResp);
 
+	public List<HfGoodsDisplay> selectSlideshow();
+
 //	public Integer insertAwardInfo(AwardInfo awardInfo);
 }

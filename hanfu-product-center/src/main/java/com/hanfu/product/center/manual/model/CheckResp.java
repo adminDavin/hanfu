@@ -8,20 +8,20 @@ public class CheckResp implements Serializable{
 	private Integer productId;
 	private Integer goodsNum;
 	private String respList;
-	private String name;
-	private String value;
+	private String productSpecName;
+	private String hfValue;
 
-	public String getName() {
-		return name;
+	public String getProductSpecName() {
+		return productSpecName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setProductSpecName(String productSpecName) {
+		this.productSpecName = productSpecName;
 	}
-	public String getValue() {
-		return value;
+	public String getHfValue() {
+		return hfValue;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	public void setHfValue(String hfValue) {
+		this.hfValue = hfValue;
 	}
 	public Integer getProductId() {
 		return productId;

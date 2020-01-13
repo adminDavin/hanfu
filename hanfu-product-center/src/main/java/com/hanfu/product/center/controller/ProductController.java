@@ -182,11 +182,11 @@ public class ProductController {
 		HfCategoryExample example = new HfCategoryExample();
 		if(type == 1) {
 			if(parentCategoryId != null) {
-				List<Categories> categoriesList = new ArrayList<Categories>();
 				List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
 				example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
 				List<HfCategory> list = hfCategoryMapper.selectByExample(example);
 				for (int i = 0; i < list.size(); i++) {
+					List<Categories> categoriesList = new ArrayList<Categories>();
 					HfCategory twoCategory = list.get(i);
 					CategoryInfo info = new CategoryInfo();
 					info.setTwoLevelName(twoCategory.getHfName());
@@ -272,7 +272,7 @@ public class ProductController {
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			category.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 		}
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
@@ -315,7 +315,7 @@ public class ProductController {
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			hfCategory.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+			hfCategory.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 		}
 		if(StringUtils.isEmpty(request.getLevelId())) {
 			hfCategory.setLevelId(request.getLevelId());
@@ -663,4 +663,11 @@ public class ProductController {
 		}
 	}
 
+	@ApiOperation(value = "轮播图", notes = "轮播图")
+	@RequestMapping(value = "/slideshow", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> slideshow() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectSlideshow()));
+
+	}
 }

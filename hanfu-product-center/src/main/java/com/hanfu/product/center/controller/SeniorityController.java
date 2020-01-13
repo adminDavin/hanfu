@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
+import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfSeniorityMapper;
 import com.hanfu.product.center.dao.SeniorityInstanceMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
@@ -25,6 +27,9 @@ import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.FileDescExample;
 import com.hanfu.product.center.model.HfCategory;
+import com.hanfu.product.center.model.HfGoodsPictrue;
+import com.hanfu.product.center.model.HfGoodsPictrueExample;
+import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfSeniority;
 import com.hanfu.product.center.model.SeniorityInstance;
 import com.hanfu.product.center.model.SeniorityInstanceExample;
@@ -54,7 +59,11 @@ public class SeniorityController {
 	
 	@Autowired
 	private HfGoodsDao hfGoodsDao;
+	@Autowired
+	private HfPriceMapper    hfPriceMapper;
 	
+	@Autowired
+	private HfGoodsPictrueMapper hfGoodsPictrueMapper;
 	@ApiOperation(value = "添加排行相关信息", notes = "添加排行相关信息")
 	@RequestMapping(value = "/addSeniorityInfo", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
@@ -63,7 +72,7 @@ public class SeniorityController {
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			hfSeniority.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+			hfSeniority.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 		}
 		hfSeniority.setSeniorityName(request.getSeniorityName());
 		hfSeniority.setCreateTime(LocalDateTime.now());
@@ -87,24 +96,46 @@ public class SeniorityController {
 	}
 	
 	@ApiOperation(value = "修改排行相关信息", notes = "修改排行相关信息")
-	@RequestMapping(value = "/updateSeniorityInfo", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfSeniority hfSeniority = hfSeniorityMapper.selectByPrimaryKey(request.getId());
-		if(hfSeniority != null) {
-			String uuid = UUID.randomUUID().toString();
-			uuid = uuid.replace("-", "");
-			if(fileInfo != null) {
-				hfSeniority.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
-			}
-			if(StringUtils.isEmpty(request.getSeniorityName())) {
-				hfSeniority.setSeniorityName(request.getSeniorityName());
-			}
-			hfSeniority.setModifityTime(LocalDateTime.now());
-			hfSeniorityMapper.updateByPrimaryKey(hfSeniority);
-		}
-		return builder.body(ResponseUtils.getResponseBody(null));
-	}
+    @RequestMapping(value = "/updateSeniorityInfo", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> updateSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
+            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+            HfSeniority hfSeniority = hfSeniorityMapper.selectByPrimaryKey(request.getId());
+            if(hfSeniority != null) {
+                    String uuid = UUID.randomUUID().toString();
+                    uuid = uuid.replace("-", "");
+                    if(fileInfo != null) {
+                            FileMangeService fileMangeService = new FileMangeService();
+                    String arr[];
+                    arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+                            if(hfSeniority.getFileId() == null) {
+                            FileDesc fileDesc = new FileDesc();
+                        fileDesc.setFileName(uuid);
+                        fileDesc.setGroupName(arr[0]);
+                        fileDesc.setRemoteFilename(arr[1]);
+                        fileDesc.setUserId(-1);
+                        fileDesc.setCreateTime(LocalDateTime.now());
+                        fileDesc.setModifyTime(LocalDateTime.now());
+                        fileDesc.setIsDeleted((short) 0);
+                        fileDescMapper.insert(fileDesc);
+                        hfSeniority.setFileId(fileDesc.getId());
+                            }else {
+                                    FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfSeniority.getFileId());
+                                    fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+                        fileDesc.setGroupName(arr[0]);
+                        fileDesc.setRemoteFilename(arr[1]);
+                        fileDesc.setModifyTime(LocalDateTime.now());
+                        fileDescMapper.updateByPrimaryKey(fileDesc);
+                            }
+                            hfSeniority.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+                    }
+                    if(!StringUtils.isEmpty(request.getSeniorityName())) {
+                            hfSeniority.setSeniorityName(request.getSeniorityName());
+                    }
+                    hfSeniority.setModifityTime(LocalDateTime.now());
+                    hfSeniorityMapper.updateByPrimaryKey(hfSeniority);
+            }
+            return builder.body(ResponseUtils.getResponseBody(null));
+    }
 	
 	@ApiOperation(value = "查询排行相关信息", notes = "查询排行相关信息")
 	@RequestMapping(value = "/findSeniorityInfo", method = RequestMethod.GET)
@@ -193,18 +224,30 @@ public class SeniorityController {
 	
 	
 	@ApiOperation(value = "查询排行内容", notes = "查询排行内容")
-	@RequestMapping(value = "/findSeniorityContent", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findSeniorityContent(@RequestParam Integer seniorityId) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<HfGoodsDisplay> list = new ArrayList<HfGoodsDisplay>();
-		SeniorityInstanceExample example = new SeniorityInstanceExample();
-		example.createCriteria().andSeniorityIdEqualTo(seniorityId);
-		List<SeniorityInstance> list2 = seniorityInstanceMapper.selectByExample(example);
-		for (int i = 0; i < list2.size(); i++) {
-			SeniorityInstance instance = list2.get(i);
-			HfGoodsDisplay goodsDisplay = hfGoodsDao.selectGoodsPartInfo(instance.getGoodsId());
-			list.add(goodsDisplay);
-		}
-		return builder.body(ResponseUtils.getResponseBody(list));
-	}
+    @RequestMapping(value = "/findSeniorityContent", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> findSeniorityContent(@RequestParam Integer seniorityId) throws Exception {
+            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+            List<HfGoodsDisplay> list = new ArrayList<HfGoodsDisplay>();
+            SeniorityInstanceExample example = new SeniorityInstanceExample();
+            example.createCriteria().andSeniorityIdEqualTo(seniorityId);
+            List<SeniorityInstance> list2 = seniorityInstanceMapper.selectByExample(example);
+            for (int i = 0; i < list2.size(); i++) {
+                    SeniorityInstance instance = list2.get(i);
+                    HfGoodsDisplay goodsDisplay = hfGoodsDao.selectGoodsPartInfo(instance.getGoodsId());
+                    HfPrice price = hfPriceMapper.selectByPrimaryKey(goodsDisplay.getPriceId());
+                    if(price != null) {
+                            if(price.getSellPrice() != null) {
+                                    goodsDisplay.setSellPrice(price.getSellPrice());
+                            }
+                    }
+                    HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
+                    example2.createCriteria().andGoodsIdEqualTo(instance.getGoodsId());
+                    List<HfGoodsPictrue> hfGoodsPictrues = hfGoodsPictrueMapper.selectByExample(example2);
+                    if(!hfGoodsPictrues.isEmpty()) {
+                    	goodsDisplay.setFileId(hfGoodsPictrues.get(0).getFileId());
+                    }
+                    list.add(goodsDisplay);
+            }
+            return builder.body(ResponseUtils.getResponseBody(list));
+    }
 }
