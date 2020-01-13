@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.cart.center.manual.dao.HfGoodsDao">
+    <resultMap id="EntityHfGoodDispaly" type="com.hanfu.cart.center.manual.model.HfGoods">
+        <result column="hf_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
+        <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="categoryId" jdbcType="INTEGER" property="categoryId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+        <result column="resp_id" jdbcType="INTEGER" property="respId"/>
+        <result column="price_id" jdbcType="INTEGER" property="priceId"/>
+        <result column="productId" jdbcType="INTEGER" property="productId"/>
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+    </resultMap>
+
+
+    <select id="selectGoods" resultMap="EntityHfGoodDispaly">
+        SELECT
+        h.goods_desc,h.id,
+        h.hf_name,h.resp_id,
+        h.price_id,h1.hf_name productCategoryName,
+        h1.id categoryId,
+        h3.sell_price,h.create_time,
+        h.modify_time,h.is_deleted,h4.file_id
+        FROM
+        hf_goods h
+        JOIN
+        hf_category h1
+        ON
+        h.category_id = h1.id
+        JOIN
+        hf_price h3
+        ON
+        h.price_id = h3.id
+        JOIN
+        hf_goods_pictrue h4
+        ON
+        h4.goods_id = h.id
+        WHERE
+        h.id=#{goodsId}
+    </select>
+
+</mapper>
