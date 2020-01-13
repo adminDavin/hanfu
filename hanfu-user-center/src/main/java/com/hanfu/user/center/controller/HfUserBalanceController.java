@@ -106,7 +106,7 @@ public class HfUserBalanceController {
 			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer"),
 	})
-	public ResponseEntity<JSONObject> balancePay(@RequestParam(required = true,defaultValue = "") Integer userId,
+	public ResponseEntity<JSONObject> deduction(@RequestParam(required = true,defaultValue = "") Integer userId,
 												 @RequestParam(required = true,defaultValue = "") Integer hfBalance,
 												 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException, IOException {
 
@@ -128,6 +128,28 @@ public class HfUserBalanceController {
 
 		}else{
 			return builder.body(ResponseUtils.getResponseBody("该二维码已经失效"));
+		}
+	}
+
+
+	@RequestMapping(value = "/balancePay",method = RequestMethod.GET)
+	@ApiOperation(value = "余额支付",notes = "余额支付")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer"),
+	})
+	public ResponseEntity<JSONObject> balancePay(@RequestParam(required = true,defaultValue = "") Integer userId,
+												 @RequestParam(required = true,defaultValue = "") Integer hfBalance,
+												 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException, IOException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+		if(hfBalance>=total){
+			hfUserBalanceService.balanceCutTotal(userId,hfBalance,total);
+			return builder.body(ResponseUtils.getResponseBody("付款成功"));
+		}else{
+			return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
 		}
 	}
 }
