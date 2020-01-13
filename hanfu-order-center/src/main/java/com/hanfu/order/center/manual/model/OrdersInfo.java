@@ -2,6 +2,7 @@ package com.hanfu.order.center.manual.model;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -39,7 +40,39 @@ public class OrdersInfo implements Serializable{
     private String distribution;
     @ApiModelProperty(required = false, value = "订单描述")
     private String hfDesc;
-    
+    @ApiModelProperty(required = false, value = "用户地址id")
+    private Integer userAddressId;
+    @ApiModelProperty(required = false, value = "物流名称")
+    private String logisticsOrderName;
+    @ApiModelProperty(required = false, value = "物流订单号")
+    private String logisticsOrdersId;
+    @ApiModelProperty(required = false, value = "物流公司")
+    private String logisticsCompany;
+
+	public Integer getUserAddressId() {
+		return userAddressId;
+	}
+	public void setUserAddressId(Integer userAddressId) {
+		this.userAddressId = userAddressId;
+	}
+	public String getLogisticsOrderName() {
+		return logisticsOrderName;
+	}
+	public void setLogisticsOrderName(String logisticsOrderName) {
+		this.logisticsOrderName = logisticsOrderName;
+	}
+	public String getLogisticsOrdersId() {
+		return logisticsOrdersId;
+	}
+	public void setLogisticsOrdersId(String logisticsOrdersId) {
+		this.logisticsOrdersId = logisticsOrdersId;
+	}
+	public String getLogisticsCompany() {
+		return logisticsCompany;
+	}
+	public void setLogisticsCompany(String logisticsCompany) {
+		this.logisticsCompany = logisticsCompany;
+	}
 	public Integer getUserId() {
 		return userId;
 	}

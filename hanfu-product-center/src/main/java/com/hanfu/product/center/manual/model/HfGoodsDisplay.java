@@ -12,7 +12,7 @@ public class HfGoodsDisplay extends CommonRequest {
     @ApiModelProperty(required = false, value = "物品id")
     private Integer id;
     @ApiModelProperty(required = false, value = "物品名称")
-    private String HfName;
+    private String goodName;
     @ApiModelProperty(required = false, value = "仓库名称")
     private String warehouseName;
     @ApiModelProperty(required = false, value = "商品类目名称")
@@ -149,15 +149,15 @@ public class HfGoodsDisplay extends CommonRequest {
         this.id = id;
     }
 
-    public String getHfName() {
-        return HfName;
-    }
+    public String getGoodName() {
+		return goodName;
+	}
 
-    public void setHfName(String HfName) {
-        this.HfName = HfName;
-    }
+	public void setGoodName(String goodName) {
+		this.goodName = goodName;
+	}
 
-    public String getProductCategoryName() {
+	public String getProductCategoryName() {
         return productCategoryName;
     }
 

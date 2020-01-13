@@ -61,6 +61,7 @@ import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.ProductInstance;
 import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.ProductSpec;
@@ -206,87 +207,71 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> createGood(@RequestParam("fileInfo1")MultipartFile[] fileInfo1,HfGoodsInfo hfGoodsInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods record = new HfGoods();
-	    GoodsSpec item1 = new GoodsSpec();
-			for (String SpecValue : hfGoodsInfo.getSpecValue()) {
-				record.setBossId(hfGoodsInfo.getBossId());
-				record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
-				record.setProductId(hfGoodsInfo.getProductId());
-				record.setHfName(hfGoodsInfo.getGoodName());
-				record.setStoneId(hfGoodsInfo.getHfStoreId());
-				record.setBrandId(hfGoodsInfo.getBrandId());
-				record.setCreateTime(LocalDateTime.now());
-				record.setModifyTime(LocalDateTime.now());
-				record.setMember(hfGoodsInfo.getMember());
-				record.setClaim(hfGoodsInfo.getClaim());
-				record.setCategoryId(hfGoodsInfo.getCatrgoryId());
-				record.setIsDeleted((short) 0);
-				hfGoodsMapper.insert(record);
-				item1.setHfValue(SpecValue);
-				item1.setGoodsId(record.getId());
-				item1.setLastModifier(hfGoodsInfo.getUsername());
-				item1.setCreateTime(LocalDateTime.now());
-				item1.setModifyTime(LocalDateTime.now());
-				item1.setIsDeleted((short) 0);
-				goodsSpecMapper.insert(item1);
-				ProductSpec productSpec = new ProductSpec();
-				for (String specValue : hfGoodsInfo.getSpecValue()) {
-					productSpec.setHfName(hfGoodsInfo.getCategoryName());
-					productSpec.setSpecValue(specValue);
-					productSpec.setId(record.getId());
-					productSpec.setCreateTime(LocalDateTime.now());
-					productSpec.setModifyTime(LocalDateTime.now());
-					productSpec.setIsDeleted((short) 0);
-					productSpecMapper.insert(productSpec);
-					HfResp hfResp = new HfResp();
-					hfResp.setQuantity(hfGoodsInfo.getQuantity());
-					hfResp.setGoogsId(record.getId());
-					hfResp.setCreateTime(LocalDateTime.now());
-					hfResp.setModifyTime(LocalDateTime.now());
-					hfResp.setIsDeleted((short) 0);
-					System.out.println(fileInfo1);
-					for (MultipartFile fileInfo : fileInfo1) {
-						List<HfGoodsPictrue> pictures = Lists.newArrayList();
-						FileMangeService fileMangeService = new FileMangeService();
-						String arr[];
-						arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsInfo.getUserId()));
-						FileDesc fileDesc = new FileDesc();
-						fileDesc.setFileName(fileInfo.getName());
-						fileDesc.setGroupName(arr[0]);
-						fileDesc.setRemoteFilename(arr[1]);
-						fileDesc.setUserId(hfGoodsInfo.getUserId());
-						fileDesc.setCreateTime(LocalDateTime.now());
-						fileDesc.setModifyTime(LocalDateTime.now());
-						fileDesc.setIsDeleted((short) 0);
-						fileDescMapper.insert(fileDesc);
-						HfGoodsPictrue picture = new HfGoodsPictrue();
-						picture.setFileId(fileDesc.getId()); 
-						picture.setGoodsId(record.getId());
-						picture.setHfName(fileInfo.getName());
-						picture.setSpecDesc(hfGoodsInfo.getPrictureDesc());
-						picture.setCreateTime(LocalDateTime.now());
-						picture.setModifyTime(LocalDateTime.now());
-						picture.setLastModifier(hfGoodsInfo.getUsername());
-						picture.setIsDeleted((short) 0);
-						hfGoodsPictrueMapper.insert(picture);
-						pictures.add(picture);
-	                 }
-					HfPrice price = new HfPrice();
-					price.setGoogsId(record.getId());
-					price.setSellPrice(hfGoodsInfo.getSellPrice());
-					price.setCreateTime(LocalDateTime.now());
-					price.setModifyTime(LocalDateTime.now());
-					price.setLastModifier(hfGoodsInfo.getUsername());
-					price.setIsDeleted((short) 0);
-					hfPriceMapper.insert(price);
-					}
-					}
-//				CategorySpec categorySpec = new CategorySpec(); x
-//				for (String specValue : hfGoodsInfo.getSpecValue()) {
-//					categorySpec.setSpecValue(specValue);
-//					categorySpec.setHfName(hfGoodsInfo.getCategoryName());
-//					categorySpec.setSpecUnit(hfGoodsInfo.getSpecUnit());
-//					categorySpecMapper.insert(categorySpec);
-//				}
+		for (String SpecValue : hfGoodsInfo.getSpecValue()) {
+			record.setProductId(hfGoodsInfo.getProductId());
+			record.setBossId(hfGoodsInfo.getBossId());
+			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
+			record.setProductId(hfGoodsInfo.getProductId());
+			record.setHfName(hfGoodsInfo.getGoodName());
+			record.setStoneId(hfGoodsInfo.getHfStoreId());
+			record.setBrandId(hfGoodsInfo.getBrandId());
+			record.setCreateTime(LocalDateTime.now());
+			record.setModifyTime(LocalDateTime.now());
+			record.setMember(hfGoodsInfo.getMember());
+			record.setClaim(hfGoodsInfo.getClaim());
+			record.setCategoryId(hfGoodsInfo.getCatrgoryId());
+			record.setIsDeleted((short) 0);
+			hfGoodsMapper.insert(record);
+			GoodsSpec item1 = new GoodsSpec();
+			item1.setHfValue(SpecValue);
+			item1.setGoodsId(record.getId());
+			item1.setLastModifier(hfGoodsInfo.getUsername());
+			item1.setCreateTime(LocalDateTime.now());
+			item1.setModifyTime(LocalDateTime.now());
+			item1.setIsDeleted((short) 0);
+			goodsSpecMapper.insert(item1);
+			HfResp hfResp = new HfResp();
+			hfResp.setQuantity(hfGoodsInfo.getQuantity());
+			hfResp.setGoogsId(record.getId());
+			hfResp.setCreateTime(LocalDateTime.now());
+			hfResp.setModifyTime(LocalDateTime.now());
+			hfResp.setIsDeleted((short) 0);
+			System.out.println(fileInfo1);
+			for (MultipartFile fileInfo : fileInfo1) {
+				List<HfGoodsPictrue> pictures = Lists.newArrayList();
+				FileMangeService fileMangeService = new FileMangeService();
+				String arr[];
+				arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsInfo.getUserId()));
+				FileDesc fileDesc = new FileDesc();
+				fileDesc.setFileName(fileInfo.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setUserId(hfGoodsInfo.getUserId());
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				fileDescMapper.insert(fileDesc);
+				HfGoodsPictrue picture = new HfGoodsPictrue();
+				picture.setFileId(fileDesc.getId()); 
+				picture.setGoodsId(record.getId());
+				picture.setHfName(fileInfo.getName());
+				picture.setSpecDesc(hfGoodsInfo.getPrictureDesc());
+				picture.setCreateTime(LocalDateTime.now());
+				picture.setModifyTime(LocalDateTime.now());
+				picture.setLastModifier(hfGoodsInfo.getUsername());
+				picture.setIsDeleted((short) 0);
+				hfGoodsPictrueMapper.insert(picture);
+				pictures.add(picture);
+			}
+			HfPrice price = new HfPrice();
+			price.setGoogsId(record.getId());
+			price.setSellPrice(hfGoodsInfo.getSellPrice());
+			price.setCreateTime(LocalDateTime.now());
+			price.setModifyTime(LocalDateTime.now());
+			price.setLastModifier(hfGoodsInfo.getUsername());
+			price.setIsDeleted((short) 0);
+			hfPriceMapper.insert(price);
+		}
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
@@ -318,9 +303,9 @@ public class GoodsController {
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(productId);
-        if (product == null) {
-            throw new Exception("该商品不存在");
-        }
+		if (product == null) {
+			throw new Exception("该商品不存在");
+		}
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectGoodsSpec(product.getId())));
 	}
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")
@@ -359,8 +344,8 @@ public class GoodsController {
 		if (hfGoods == null) {
 			throw new Exception("物品不存在");
 		}
-		if (!StringUtils.isEmpty(hfGoodsDisplay.getHfName())) {
-			hfGoods.setHfName(hfGoodsDisplay.getHfName());
+		if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodName())) {
+			hfGoods.setHfName(hfGoodsDisplay.getGoodName());
 		}
 		if (!StringUtils.isEmpty(hfGoodsDisplay.getGoodsDesc())) {
 			hfGoods.setGoodsDesc(hfGoodsDisplay.getGoodsDesc());
@@ -388,28 +373,6 @@ public class GoodsController {
 		hfRespMapper.insert(hfResp);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
-
-//	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
-//	@RequestMapping(value = "/specifies", method = RequestMethod.GET)
-//	@ApiImplicitParams({
-//		@ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> getGoodsSpec(@RequestParam(name = "goodsId") Integer goodsId)
-//			throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-//		ProductSpecExample pExample = new ProductSpecExample();
-//		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
-//		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
-//		productSpecs.stream().forEach(spec -> {
-//			GoodsSpecExample example = new GoodsSpecExample();
-//			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
-//			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
-//			if (!items.isEmpty()) {
-//				spec.setSpecValue(items.get(0).getHfValue());
-//			}
-//		});
-//		return builder.body(ResponseUtils.getResponseBody(productSpecs));
-//	}
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")
 	@RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws Exception {
@@ -434,7 +397,7 @@ public class GoodsController {
 	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateGoodsSpec( @RequestParam("fileInfo1")MultipartFile[] fileInfo1, GoodsSpecRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		
+
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
@@ -888,7 +851,7 @@ public class GoodsController {
 		HfGoodsExample example = new HfGoodsExample();
 		example.createCriteria().andIsDeletedEqualTo(frames);
 		Long count = hfGoodsMapper.countByExample(example);
-			return builder.body(ResponseUtils.getResponseBody(count));
+		return builder.body(ResponseUtils.getResponseBody(count));
 	}
 	@ApiOperation(value = "查询商品总数", notes = "查询商品总数")
 	@RequestMapping(value = "/queryGoods", method = RequestMethod.GET)
@@ -909,25 +872,66 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfResp hfResp = new HfResp();
 		String[] spec =  StringUtils.split(checkResp.getRespList(), "||");
-		for (String string : spec) {
-			String[] spec2 = StringUtils.split(string, ":");
-			
-			for (String string2 : spec2) {
-				String name = string2;
-				String value = string2;
-				checkResp.setName(name);
-				checkResp.setValue(value);
-				HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.checkResp(checkResp);
-				if(checkResp.getGoodsNum()<hfGoodsDisplay.getQuantity()) {
-					Integer amount =  checkResp.getGoodsNum()*hfGoodsDisplay.getSellPrice();
-					List<Object> list = new ArrayList<Object>();
-					list.add(amount);
-					list.add(hfGoodsDisplay.getId());
-					return builder.body(ResponseUtils.getResponseBody(list));
+		String[] spec1 = StringUtils.split(spec[0], ":");
+		String name = spec1[0];
+		String value = spec1[1];
+		String[] spec2 = StringUtils.split(spec[1], ":");
+		String name1 = spec2[0];
+		String value1 = spec2[1];
+		checkResp.setName(name);
+		checkResp.setValue(value);
+		checkResp.setName1(name1);
+		checkResp.setValue1(value1);
+		HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.checkResp(checkResp);
+		if(checkResp.getGoodsNum()<hfGoodsDisplay.getQuantity()) {
+			Integer amount =  checkResp.getGoodsNum()*hfGoodsDisplay.getSellPrice();
+			List<Object> list = new ArrayList<Object>();
+			list.add(amount);
+			list.add(hfGoodsDisplay.getId());
+			hfResp.setQuantity(hfGoodsDisplay.getQuantity()-checkResp.getGoodsNum());
+			hfRespMapper.updateByPrimaryKeySelective(hfResp);
+			return builder.body(ResponseUtils.getResponseBody(list));
+
+		}
+		return builder.body(ResponseUtils.getResponseBody("库存容量不足"));
+	}
+	@ApiOperation(value = "根据类目id查询商品列表", notes = "根据类目id查询商品列表")
+	@RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findProductBycategoryId(
+			@RequestParam(name = "categoryId", required = false) Integer categoryId,
+			@RequestParam(name = "page", required = false) Integer page,
+			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfGoodsDisplay> hfGoodsDisplays = new ArrayList<HfGoodsDisplay>();
+		ProductExample example = new ProductExample();
+		example.createCriteria().andCategoryIdEqualTo(categoryId);
+		if (!StringUtils.isEmpty(page)) {
+			if (!StringUtils.isEmpty(size)) {
+				PageHelper.startPage(page, size);
+			}
+		}
+		List<Product> list = productMapper.selectByExample(example);
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				Product product = list.get(i);
+				HfGoodsDisplay display = new HfGoodsDisplay();
+				display.setCategoryId(categoryId);
+				display.setProductId(product.getId());
+				List<HfGoodsDisplay> goodsDisplay = hfGoodsDao.selectProductBycategoryIdOrProductName(display);
+				if(goodsDisplay != null) {
+					HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
+					example2.createCriteria().andGoodsIdEqualTo(goodsDisplay.get(0).getId());
+					List<HfGoodsPictrue> list2 = hfGoodsPictrueMapper.selectByExample(example2);
+					if(!list2.isEmpty()) {
+						HfGoodsPictrue hfGoodsPictrue = list2.get(0);
+						goodsDisplay.get(0).setFileId(hfGoodsPictrue.getFileId());
+					}
+					hfGoodsDisplays.add(goodsDisplay.get(0));
 				}
 			}
 		}
-		return builder.body(ResponseUtils.getResponseBody("库存容量不足"));
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplays));
 	}
 }
