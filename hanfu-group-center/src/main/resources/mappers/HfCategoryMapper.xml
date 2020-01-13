@@ -10,7 +10,7 @@
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
   </resultMap>
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List">
     id, hf_name, parent_category_id, level_id, create_time, modify_time, is_deleted
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

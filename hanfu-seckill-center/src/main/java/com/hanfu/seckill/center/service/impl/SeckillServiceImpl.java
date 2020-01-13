@@ -9,24 +9,19 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/11
- * @time: 10:43
- */
+
 @Service
 public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private SeckillDao seckillDao;
-
     @Override
     public Integer getRepertory(Integer id) {
         return seckillDao.getRepertory(id);
     }
 
     @Override
-    public void updateRepertory(Integer goodsId, Integer bossId, Integer repertory) {
-        seckillDao.updateRepertory(goodsId, bossId, repertory);
+    public void updateRepertory(Integer goodsId, Integer bossId,Integer repertory) {
+        seckillDao.updateRepertory(goodsId,bossId,repertory);
     }
   @Override
     public void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Date stopTime, Integer categoryId, Double price, Integer repertory) {

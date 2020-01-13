@@ -7,20 +7,16 @@ import com.hanfu.group.center.service.GroupOpenService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/13
- * @time: 11:06
- */
 @Service
+@Transactional
 public class GroupOpenServiceImpl implements GroupOpenService {
     @Autowired
     GroupOpenMapper groupOpen;
-
     @Override
     public int deleteByPrimaryKey(Integer id) {
         return groupOpen.deleteByPrimaryKey(id);
@@ -33,18 +29,18 @@ public class GroupOpenServiceImpl implements GroupOpenService {
 
     @Override
     public List<Integer> selectId(Integer groupId) {
-        return groupOpen.selectId(groupId);
+        return groupOpen.selectId( groupId);
     }
 
     @Override
     public void insert(Integer groupId, Date startTime, Date stopTime) {
-        groupOpen.insert(groupId, startTime, stopTime);
+        groupOpen.insert( groupId,startTime, stopTime);
 
     }
 
     @Override
     public List<Date> getStopTime() {
-        return groupOpen.getStopTime();
+       return groupOpen.getStopTime();
     }
 
     @Override
@@ -94,8 +90,8 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     }
 
     @Override
-    public GroupOpen selectByStopTime(Integer groupId, Date stopTime) {
-        return groupOpen.selectByStopTime(groupId, stopTime);
+    public GroupOpen selectByStopTime(Integer groupId,Date stopTime) {
+        return  groupOpen.selectByStopTime( groupId,stopTime);
     }
 
     @Override
@@ -106,5 +102,15 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     @Override
     public List<Integer> selectByGroupOpenId(Integer groupId) {
         return groupOpen.selectByGroupOpenId(groupId);
+    }
+
+    @Override
+    public GroupOpen selectByGroup(Integer groupId, Integer userId) {
+        return groupOpen.selectByGroup(groupId,userId);
+    }
+
+    @Override
+    public List<Integer> selectByUserId(Integer groupId) {
+        return groupOpen.selectByUserId(groupId);
     }
 }
