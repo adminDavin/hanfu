@@ -8,9 +8,23 @@ public class CheckResp implements Serializable{
 	private Integer productId;
 	private Integer goodsNum;
 	private String respList;
+	private String name1;
+	private String value1;
 	private String name;
 	private String value;
-
+	
+	public String getName1() {
+		return name1;
+	}
+	public void setName1(String name1) {
+		this.name1 = name1;
+	}
+	public String getValue1() {
+		return value1;
+	}
+	public void setValue1(String value1) {
+		this.value1 = value1;
+	}
 	public String getName() {
 		return name;
 	}

@@ -107,14 +107,13 @@ public class MessageController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = false, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> insertReply(Evaluate evaluate, Integer orderId, Integer userId,Integer goodsId)
+    public ResponseEntity<JSONObject> insertReply(MultipartFile fileInfo, Evaluate evaluate, Integer orderId, Integer userId,Integer goodsId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
         }
         String key = orderId.toString() + userId.toString()+goodsId.toString();
-        MultipartFile fileInfo = evaluate.getMultipartFile();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
 		try {

@@ -272,7 +272,7 @@ public class ProductController {
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			category.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 		}
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
@@ -306,29 +306,50 @@ public class ProductController {
 	}
 
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
-	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateCategory(@RequestParam CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+    @RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
+            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
-		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
+            HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
 
-		String uuid = UUID.randomUUID().toString();
-		uuid = uuid.replace("-", "");
-		if(fileInfo != null) {
-			hfCategory.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
-		}
-		if(StringUtils.isEmpty(request.getLevelId())) {
-			hfCategory.setLevelId(request.getLevelId());
-		}
-		if(StringUtils.isEmpty(request.getCategory())) {
-			hfCategory.setHfName(request.getCategory());
-		}
-		if(StringUtils.isEmpty(request.getParentCategoryId())) {
-			hfCategory.setParentCategoryId(request.getParentCategoryId());
-		}
-		hfCategory.setModifyTime(LocalDateTime.now());
-		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
-	}
+            String uuid = UUID.randomUUID().toString();
+            uuid = uuid.replace("-", "");
+            if(fileInfo != null) {
+                    FileMangeService fileMangeService = new FileMangeService();
+            String arr[];
+            arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+                    if(hfCategory.getFileId() == null) {
+                    FileDesc fileDesc = new FileDesc();
+                fileDesc.setFileName(uuid);
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setUserId(-1);
+                fileDesc.setCreateTime(LocalDateTime.now());
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDesc.setIsDeleted((short) 0);
+                fileDescMapper.insert(fileDesc);
+                hfCategory.setFileId(fileDesc.getId());
+                    }else {
+                            FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
+                            fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDescMapper.updateByPrimaryKey(fileDesc);
+                    }
+            }
+            if(!StringUtils.isEmpty(request.getLevelId())) {
+                    hfCategory.setLevelId(request.getLevelId());
+            }
+            if(!StringUtils.isEmpty(request.getCategory())) {
+                    hfCategory.setHfName(request.getCategory());
+            }
+            if(!StringUtils.isEmpty(request.getParentCategoryId())) {
+                    hfCategory.setParentCategoryId(request.getParentCategoryId());
+            }
+            hfCategory.setModifyTime(LocalDateTime.now());
+            return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
+    }
 
 	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
 	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
