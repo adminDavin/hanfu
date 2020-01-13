@@ -165,60 +165,63 @@ public class ProductController {
 	//    }
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
-	@RequestMapping(value = "/category", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listCategory(
-			@RequestParam(name = "page", required = false) Integer page,
-			@RequestParam(name = "size", required = false) Integer size,
-			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
-			@RequestParam(name = "categoryId", required = false) Integer categoryId,
-			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId,
-			@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type)
-					throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfCategoryExample example = new HfCategoryExample();
-		if(type == 1) {
-			if(parentCategoryId != null) {
-				List<Categories> categoriesList = new ArrayList<Categories>();
-				List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
-				example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-				List<HfCategory> list = hfCategoryMapper.selectByExample(example);
-				for (int i = 0; i < list.size(); i++) {
-					HfCategory twoCategory = list.get(i);
-					CategoryInfo info = new CategoryInfo();
-					info.setTwoLevelName(twoCategory.getHfName());
-					info.setTwoLevelId(twoCategory.getId());
-					example.clear();
-					example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
-					List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
-					for (int j = 0; j < list2.size(); j++) {
-						Categories categories = new Categories();
-						HfCategory threeCategory = list2.get(j);
-						categories.setFileId(threeCategory.getFileId());
-						categories.setHfName(threeCategory.getHfName());
-						categories.setId(threeCategory.getId());
-						categories.setLevelId(threeCategory.getLevelId());
-						categoriesList.add(categories);
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "levelId", value = "类目级别", required = false, type = "Integer")})
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> listCategory(
+            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "size", required = false) Integer size,
+            @RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
+            @RequestParam(name = "categoryId", required = false) Integer categoryId,
+            @RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId,
+    		@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfCategoryExample example = new HfCategoryExample();
+        if(type == 1) {
+        	if(parentCategoryId != null) {
+        		List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
+            	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+            	List<HfCategory> list = hfCategoryMapper.selectByExample(example);
+            	for (int i = 0; i < list.size(); i++) {
+            		List<Categories> categoriesList = new ArrayList<Categories>();
+            		HfCategory twoCategory = list.get(i);
+            		CategoryInfo info = new CategoryInfo();
+            		info.setTwoLevelName(twoCategory.getHfName());
+            		info.setTwoLevelId(twoCategory.getId());
+            		example.clear();
+            		example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
+            		List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
+            		for (int j = 0; j < list2.size(); j++) {
+            			Categories categories = new Categories();
+            			HfCategory threeCategory = list2.get(j);
+            			categories.setFileId(threeCategory.getFileId());
+            			categories.setHfName(threeCategory.getHfName());
+            			categories.setId(threeCategory.getId());
+            			categories.setLevelId(threeCategory.getLevelId());
+            			categoriesList.add(categories);
 					}
-					info.setCategories(categoriesList);
-					hfCategories.add(info);
+            		info.setCategories(categoriesList);
+            		System.out.println(info);
+            		hfCategories.add(info);
 				}
-				return builder.body(ResponseUtils.getResponseBody(hfCategories));
-			}
-			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-		}
-		if(parentCategoryId != null) {
-			example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
-		}
-		if(levelId == 1) {
-			hfCategoryMapper.selectByExample(null);
-		}
-		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-	}
+            	return builder.body(ResponseUtils.getResponseBody(hfCategories));
+            }
+        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+        }
+        if(parentCategoryId != null) {
+        	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
+        }
+        if(levelId == 1) {
+        	hfCategoryMapper.selectByExample(null);
+        }
+        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+    }
+
+
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
@@ -683,5 +686,10 @@ public class ProductController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}
 	}
-
+	@ApiOperation(value = "轮播图", notes = "轮播图")
+	@RequestMapping(value = "/slideshow", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> slideshow() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectSlideshow()));
+	}
 }

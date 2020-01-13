@@ -445,4 +445,7 @@
 		AND p1.hf_name = #{name1}
 		AND h4.hf_value = #{value1}
 	</select>
+	<select id="selectSlideshow" resultMap="EntityHfGoodDispaly">
+	    select * from product order by id limit 0,5
+	</select>
 </mapper>

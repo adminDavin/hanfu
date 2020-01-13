@@ -124,6 +124,12 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
 	        return hfGoodsDisplay;
 	}
 
+	@Override
+	public List<HfGoodsDisplay> selectSlideshow() {
+		List<HfGoodsDisplay> hfGoodsDisplay = sqlSessionTemplate.selectList("selectSlideshow");
+	        return hfGoodsDisplay;
+	}
+
 
 //	@Override
 //	public Integer insertAwardInfo(AwardInfo awardInfo) {
