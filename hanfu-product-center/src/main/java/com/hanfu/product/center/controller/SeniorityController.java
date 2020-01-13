@@ -87,46 +87,24 @@ public class SeniorityController {
 	}
 	
 	@ApiOperation(value = "修改排行相关信息", notes = "修改排行相关信息")
-    @RequestMapping(value = "/updateSeniorityInfo", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
-            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-            HfSeniority hfSeniority = hfSeniorityMapper.selectByPrimaryKey(request.getId());
-            if(hfSeniority != null) {
-                    String uuid = UUID.randomUUID().toString();
-                    uuid = uuid.replace("-", "");
-                    if(fileInfo != null) {
-                            FileMangeService fileMangeService = new FileMangeService();
-                    String arr[];
-                    arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
-                            if(hfSeniority.getFileId() == null) {
-                            FileDesc fileDesc = new FileDesc();
-                        fileDesc.setFileName(uuid);
-                        fileDesc.setGroupName(arr[0]);
-                        fileDesc.setRemoteFilename(arr[1]);
-                        fileDesc.setUserId(-1);
-                        fileDesc.setCreateTime(LocalDateTime.now());
-                        fileDesc.setModifyTime(LocalDateTime.now());
-                        fileDesc.setIsDeleted((short) 0);
-                        fileDescMapper.insert(fileDesc);
-                        hfSeniority.setFileId(fileDesc.getId());
-                            }else {
-                                    FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfSeniority.getFileId());
-                                    fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
-                        fileDesc.setGroupName(arr[0]);
-                        fileDesc.setRemoteFilename(arr[1]);
-                        fileDesc.setModifyTime(LocalDateTime.now());
-                        fileDescMapper.updateByPrimaryKey(fileDesc);
-                            }
-                            hfSeniority.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
-                    }
-                    if(!StringUtils.isEmpty(request.getSeniorityName())) {
-                            hfSeniority.setSeniorityName(request.getSeniorityName());
-                    }
-                    hfSeniority.setModifityTime(LocalDateTime.now());
-                    hfSeniorityMapper.updateByPrimaryKey(hfSeniority);
-            }
-            return builder.body(ResponseUtils.getResponseBody(null));
-    }
+	@RequestMapping(value = "/updateSeniorityInfo", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfSeniority hfSeniority = hfSeniorityMapper.selectByPrimaryKey(request.getId());
+		if(hfSeniority != null) {
+			String uuid = UUID.randomUUID().toString();
+			uuid = uuid.replace("-", "");
+			if(fileInfo != null) {
+				hfSeniority.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+			}
+			if(!StringUtils.isEmpty(request.getSeniorityName())) {
+				hfSeniority.setSeniorityName(request.getSeniorityName());
+			}
+			hfSeniority.setModifityTime(LocalDateTime.now());
+			hfSeniorityMapper.updateByPrimaryKey(hfSeniority);
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 	
 	@ApiOperation(value = "查询排行相关信息", notes = "查询排行相关信息")
 	@RequestMapping(value = "/findSeniorityInfo", method = RequestMethod.GET)
