@@ -66,7 +66,7 @@ public class PayController {
             order.setMch_id(Configure.getMch_id());
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
             order.setBody(request.getBody());
-            order.setOut_trade_no(request.getId()+"");
+            order.setOut_trade_no(request.getId());
 
             order.setTotal_fee(request.getTotal_fee());//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 

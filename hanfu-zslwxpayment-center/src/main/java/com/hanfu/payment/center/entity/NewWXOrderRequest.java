@@ -19,7 +19,7 @@ public class NewWXOrderRequest {
     @NotNull
     private String body;//描述
     @NotNull
-    private Integer id;//订单的id
+    private String id;//订单的id
 
     public String getOpenId() {
         return openId;
@@ -45,11 +45,11 @@ public class NewWXOrderRequest {
         this.body = body;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 }
