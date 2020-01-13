@@ -203,22 +203,25 @@ public class ProductController {
 						categories.setLevelId(threeCategory.getLevelId());
 						categoriesList.add(categories);
 					}
-					info.setCategories(categoriesList);
-					hfCategories.add(info);
+            		info.setCategories(categoriesList);
+            		System.out.println(info);
+            		hfCategories.add(info);
 				}
-				return builder.body(ResponseUtils.getResponseBody(hfCategories));
-			}
-			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-		}
-		if(parentCategoryId != null) {
-			example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
-		}
-		if(levelId == 1) {
-			hfCategoryMapper.selectByExample(null);
-		}
-		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-	}
+            	return builder.body(ResponseUtils.getResponseBody(hfCategories));
+            }
+        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+        }
+        if(parentCategoryId != null) {
+        	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
+        }
+        if(levelId == 1) {
+        	hfCategoryMapper.selectByExample(null);
+        }
+        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+    }
+
+
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
@@ -662,12 +665,10 @@ public class ProductController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}
 	}
-
 	@ApiOperation(value = "轮播图", notes = "轮播图")
 	@RequestMapping(value = "/slideshow", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> slideshow() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectSlideshow()));
-
 	}
 }
