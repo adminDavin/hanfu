@@ -49,22 +49,7 @@ spring:
         keep-alive: 3600s
 
 
-#
-#info:
-#  head: head
-#  body: body
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        #\u52A0\u8F7D\u6240\u6709\u7684\u7AEF\u70B9\uFF0C\u9ED8\u8BA4\u53EA\u52A0\u8F7D\u4E86info\u3001health
-#        include: '*'
-#  endpoint:
-#    health:
-#      show-details: always
-#    #\u53EF\u4EE5\u5173\u95ED\u6307\u5B9A\u7684\u7AEF\u70B9
-#    shutdown:
-#      enabled: false
+
 
 logging:
   file: ./target/king-words.log
@@ -72,7 +57,7 @@ logging:
 mybatis:
   mapper-locations:
     - mappers/*.xml
-    - manual-mappers/*.xml
+
 
 
 
