@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.cedarsoftware.util.io.JsonObject;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
@@ -227,8 +228,20 @@ public class ProductController {
 		HfCategory category = new HfCategory();
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
-		if(fileInfo != null) {
-			category.setFileId(updateCategoryPicture(fileInfo,"uuid","无"));
+         FileMangeService fileMangeService = new FileMangeService();
+         String arr[];
+         	   arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+                FileDesc fileDesc = new FileDesc();
+                fileDesc.setFileName(fileInfo.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setUserId(request.getUserId());
+                fileDesc.setCreateTime(LocalDateTime.now());
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDesc.setIsDeleted((short) 0);
+                fileDescMapper.insert(fileDesc);
+		if(fileDesc.getId() != null) {
+			category.setFileId(fileDesc.getId());
 		}
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
@@ -258,7 +271,7 @@ public class ProductController {
 	public ResponseEntity<JSONObject> findAllCategory() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfCategory> list = hfCategoryMapper.selectByExample(null);
-		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
