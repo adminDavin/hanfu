@@ -8,7 +8,28 @@ public class GroupOpenConnect implements Serializable {
     private Integer userId;
 
     private Integer groupOpenId;
+
     private  Integer ordersId;
+
+    private String Hfdesc;
+
+    private Integer addressId;
+
+    public String getHfdesc() {
+        return Hfdesc;
+    }
+
+    public void setHfdesc(String hfdesc) {
+        Hfdesc = hfdesc;
+    }
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
+    }
 
     public Integer getOrdersId() {
         return ordersId;

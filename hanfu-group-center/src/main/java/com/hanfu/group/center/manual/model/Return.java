@@ -8,11 +8,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/26
- * @time: 17:35
- */
 public class Return implements Serializable {
     private Integer id;
     private String name;

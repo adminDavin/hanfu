@@ -6,29 +6,25 @@ import com.hanfu.group.center.manual.model.Group;
 import com.hanfu.group.center.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/13
- * @time: 10:58
- */
 @Service
+@Transactional
 class GroupServiceImpl implements GroupService {
     @Autowired
     GroupMapper groupMapper;
-
     @Override
     public void deleteByPrimaryKey(Integer id) {
         groupMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public void insert(Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
-        groupMapper.insert(bossId, goodsId, price, number, startTime, stopTime, repertory);
+    public void insert(Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory) {
+        groupMapper.insert(  bossId,  goodsId, price, number, startTime,  stopTime,repertory);
     }
 
     @Override
@@ -53,19 +49,14 @@ class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public int updateByPrimaryKeySelective(Group group) {
-        return 0;
-    }
-
-    @Override
     public void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory) {
-        groupMapper.updateByPrimaryKey(groupId, bossId, goodsId, price, number, startTime, stopTime, repertory);
+     groupMapper.updateByPrimaryKey( groupId,  bossId,  goodsId,  price,  number,  startTime,  stopTime,  repertory);
     }
 
 
     @Override
     public void updateRrepertory(Integer id, Integer repertory) {
-        groupMapper.updateRrepertory(id, repertory);
+        groupMapper.updateRrepertory(id,repertory);
     }
 
     @Override
@@ -91,5 +82,10 @@ class GroupServiceImpl implements GroupService {
     @Override
     public List<String> selectCategoryName() {
         return  groupMapper.selectCategoryName();
+    }
+
+    @Override
+    public void updateIsDeleted(Integer isDeleted, Integer id) {
+        groupMapper.updateIsDeleted(isDeleted,id);
     }
 }
