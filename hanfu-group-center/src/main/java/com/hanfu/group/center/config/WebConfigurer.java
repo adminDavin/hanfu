@@ -44,16 +44,6 @@ public class WebConfigurer implements WebMvcConfigurer {
 	 * @return
 	 */
 
-	@Bean
-	public MappingJackson2HttpMessageConverter getMappingJackson2HttpMessageConverter() {
-		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-		//设置日期格式
-		ObjectMapper objectMapper = new ObjectMapper();
-		SimpleDateFormat smt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		objectMapper.setDateFormat(smt);
-		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-		return mappingJackson2HttpMessageConverter;
-	}
 
 
 }
