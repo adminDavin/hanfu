@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.dao.GoodsRespMapper">
+    <resultMap id="GoodsResp" type="com.hanfu.product.center.model.GoodsResp">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+    </resultMap>
+    <select id="selectGoodsResp" resultMap="GoodsResp">
+SELECT
+	h1.id,
+	h1.hf_name,
+	h1.goods_desc,
+	h2.quantity,
+	h3.sell_price
+FROM
+	hf_goods h1
+	LEFT JOIN hf_resp h2 ON h1.resp_id = h2.id
+	LEFT JOIN hf_price h3 ON h1.price_id = h3.id
+WHERE
+	h1.product_id = #{id}
+    </select>
+</mapper>
+

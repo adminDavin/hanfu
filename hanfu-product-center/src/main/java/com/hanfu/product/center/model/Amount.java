@@ -4,6 +4,7 @@ public class Amount {
     private Integer id;
     private Integer money;
     private Integer GoodsNum;
+    private Integer discountMoney;
 
     public Integer getId() {
         return id;
@@ -28,4 +29,13 @@ public class Amount {
     public void setGoodsNum(Integer goodsNum) {
         GoodsNum = goodsNum;
     }
+
+	public Integer getDiscountMoney() {
+		return discountMoney;
+	}
+
+	public void setDiscountMoney(Integer discountMoney) {
+		this.discountMoney = discountMoney;
+	}
+    
 }

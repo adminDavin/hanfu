@@ -31,15 +31,19 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.CategorySpecMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.GoodsSpecMapper;
+import com.hanfu.product.center.dao.GoodsSpecMapper1;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
+import com.hanfu.product.center.dao.HfPriceMapper1;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.HfRespMapper1;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.dao.ProductSpecMapper1;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.model.CheckResp;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
@@ -50,6 +54,7 @@ import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
 import com.hanfu.product.center.request.HfGoodsInfo;
 import com.hanfu.product.center.request.RespInfo;
+import com.hanfu.product.center.service.GoodsRespService;
 import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -125,6 +130,9 @@ public class GoodsController {
 
 	@Autowired
 	private HfPriceMapper1 hfPriceMapper1;
+	
+	@Autowired
+    private GoodsRespService goodsRespService;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -961,6 +969,7 @@ public class GoodsController {
 			amount.setId(goodsId);
 			amount.setGoodsNum(checkResp.getGoodsNum());
 			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
+			amount.setDiscountMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
 			return builder.body(ResponseUtils.getResponseBody(amount));
 		}
 		return builder.body(ResponseUtils.getResponseBody("ojbk"));
@@ -1003,4 +1012,10 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplays));
 	}
+    @ApiOperation(value = "获取商品对应物品库存", notes = "获取商品对应物品库存")
+    @RequestMapping(value = "/selectGoodsResp", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectGoodsResp(Integer ProductID) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(goodsRespService.selectGoodsResp(ProductID).get(0)));
+    }
 }

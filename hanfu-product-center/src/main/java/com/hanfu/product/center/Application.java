@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @MapperScans({@MapperScan("com.hanfu.product.center.dao")})
-@tk.mybatis.spring.annotation.MapperScan({"com.hanfu.product.center.manual.dao"})
+@tk.mybatis.spring.annotation.MapperScan({"com.hanfu.product.center.dao"})
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableDubbo(scanBasePackages = "com.hanfu.product.center.service.impl")
