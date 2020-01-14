@@ -42,7 +42,8 @@ public class PayController {
 
     private static final long serialVersionUID = 1L;
 
-    private String notify_url = "https://localhost:9099/pay/weixin/callback";
+    @Value("${wxapplet.config.weixinpay.notifyurl}")
+    private String notify_url;
     //交易类型
     private final String trade_type = "JSAPI";
     //统一下单API接口链接
@@ -65,11 +66,11 @@ public class PayController {
             order.setMch_id(Configure.getMch_id());
             order.setNonce_str(RandomStringGenerator.getRandomStringByLength(32));
             order.setBody(request.getBody());
-            order.setOut_trade_no(RandomStringGenerator.getRandomStringByLength(32));
+            order.setOut_trade_no(request.getId());
 
-            order.setTotal_fee(request.getTotal_fee());//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
+            order.setTotal_fee(request.getTotal_fee()*100);//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 
-            order.setSpbill_create_ip("127.0.0.1");
+            order.setSpbill_create_ip(RandomStringGenerator.getIp2(httpServletRequest));
             order.setNotify_url(notify_url);
             order.setTrade_type(trade_type);
             order.setOpenid(request.getOpenId());
@@ -90,6 +91,8 @@ public class PayController {
             //统一下单完成之后返回的结果 放到实体类里面
             OrderReturnInfo returnInfo = (OrderReturnInfo) xStream.fromXML(result);
 
+            System.out.println(returnInfo);
+
             // 二次签名
             if ("SUCCESS".equals(returnInfo.getReturn_code()) && returnInfo.getReturn_code().equals(returnInfo.getResult_code())) {
 
@@ -107,7 +110,6 @@ public class PayController {
 
                 Map payInfo = new HashMap();
 
-                payInfo.put("appid", signInfo.getAppId());
                 payInfo.put("timeStamp", signInfo.getTimeStamp());
                 payInfo.put("nonceStr", signInfo.getNonceStr());
                 payInfo.put("package", signInfo.getPrepay_id());
@@ -136,7 +138,7 @@ public class PayController {
      * @param response
      * @throws Exception
      */
-    @PostMapping(value = "/weixin/callback")
+    @RequestMapping(value = "/weixin/callback",method = RequestMethod.POST)
     public String wxNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
         String line = null;

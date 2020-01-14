@@ -21,8 +21,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="hanfu-inner-sdk" />
-    <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.3" level="project" />
-    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:4.0.1" level="project" />
     <orderEntry type="module" module-name="hanfu-web-utils" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.1.7.RELEASE" level="project" />
@@ -139,6 +137,8 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:5.1.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.xmlunit:xmlunit-core:2.6.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-client:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-recipes:4.2.0" level="project" />
