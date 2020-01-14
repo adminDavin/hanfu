@@ -2,15 +2,13 @@ package com.hanfu.product.center.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hanfu.product.center.manual.dao.*;
+import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,32 +41,10 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
-import com.hanfu.product.center.manual.dao.HfGoodsDao;
-import com.hanfu.product.center.manual.dao.ProductInstanceDao;
 import com.hanfu.product.center.manual.model.CheckResp;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.ProductForValue;
-import com.hanfu.product.center.manual.model.Spec;
-import com.hanfu.product.center.model.CategorySpec;
-import com.hanfu.product.center.model.FileDesc;
-import com.hanfu.product.center.model.GoodsSpec;
-import com.hanfu.product.center.model.GoodsSpecExample;
-import com.hanfu.product.center.model.HfCategory;
-import com.hanfu.product.center.model.HfGoods;
-import com.hanfu.product.center.model.HfGoodsExample;
-import com.hanfu.product.center.model.HfGoodsPictrue;
-import com.hanfu.product.center.model.HfGoodsPictrueExample;
-import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfResp;
-import com.hanfu.product.center.model.HfRespExample;
-import com.hanfu.product.center.model.HfStone;
-import com.hanfu.product.center.model.Product;
-import com.hanfu.product.center.model.ProductExample;
-import com.hanfu.product.center.model.ProductInstance;
-import com.hanfu.product.center.model.ProductInstanceExample;
-import com.hanfu.product.center.model.ProductSpec;
-import com.hanfu.product.center.model.ProductSpecExample;
-import com.hanfu.product.center.model.Warehouse;
+import com.hanfu.product.center.model.HfGoodsSpec;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
@@ -84,6 +60,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import tk.mybatis.mapper.entity.Example;
 
 @CrossOrigin
 @RestController
@@ -137,6 +114,17 @@ public class GoodsController {
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
 
+	@Autowired
+	private ProductSpecMapper1 productSpecMapper1;
+
+	@Autowired
+	private GoodsSpecMapper1 goodsSpecMapper1;
+
+	@Autowired
+	private HfRespMapper1 hfRespMapper1;
+
+	@Autowired
+	private HfPriceMapper1 hfPriceMapper1;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -224,7 +212,7 @@ public class GoodsController {
 			record.setCategoryId(hfGoodsInfo.getCatrgoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
-			GoodsSpec item1 = new GoodsSpec();
+			HfGoodsSpec item1 = new HfGoodsSpec();
 			item1.setHfValue(SpecValue);
 			item1.setGoodsId(record.getId());
 			item1.setLastModifier(hfGoodsInfo.getUsername());
@@ -290,7 +278,7 @@ public class GoodsController {
 		productSpecs.stream().forEach(spec -> {
 			GoodsSpecExample example = new GoodsSpecExample();
 			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
-			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
+			List<HfGoodsSpec> items = goodsSpecMapper.selectByExample(example);
 			if (!items.isEmpty()) {
 				spec.setSpecValue(items.get(0).getHfValue());
 			}
@@ -368,7 +356,7 @@ public class GoodsController {
 			hfPriceMapper.updateByPrimaryKey(hfPrice);
 		}
 		HfResp hfResp = new HfResp();
-		GoodsSpec goodsSpec = new GoodsSpec();
+		HfGoodsSpec goodsSpec = new HfGoodsSpec();
 		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
 		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
 		//        goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
@@ -384,7 +372,7 @@ public class GoodsController {
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(request.getProductSpecId());
-		GoodsSpec item = new GoodsSpec();
+		HfGoodsSpec item = new HfGoodsSpec();
 		item.setGoodsId(request.getGoodsId());
 		item.setLastModifier(request.getUsername());
 		item.setHfSpecId(String.valueOf(productSpec.getId()));
@@ -428,11 +416,11 @@ public class GoodsController {
 			GoodsSpecExample example = new GoodsSpecExample();
 			example.createCriteria().andGoodsIdEqualTo(request.getGoodsId())
 			.andHfSpecIdEqualTo(String.valueOf(request.getProductSpecId()));
-			List<GoodsSpec> items = goodsSpecMapper.selectByExample(example);
+			List<HfGoodsSpec> items = goodsSpecMapper.selectByExample(example);
 			if (items.isEmpty()) {
 				addGoodsSpec(request);
 			} else {
-				GoodsSpec item = items.get(0);
+				HfGoodsSpec item = items.get(0);
 				item.setHfValue(request.getSpecValue());
 				item.setModifyTime(LocalDateTime.now());
 				item.setLastModifier(request.getUsername());
@@ -874,6 +862,7 @@ public class GoodsController {
 	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer goodsId=null;
 //		String[] spec =  StringUtils.split(checkResp.getRespList(), "||");
 //		for (String string : spec) {
 //			String[] spec2 = StringUtils.split(string, ":");  
@@ -887,28 +876,95 @@ public class GoodsController {
 		
 //		        String[] spec = checkResp.getRespList();
 //						String[] spec = StringUtils.split(checkResp.getRespList(), ":");
+		System.out.println(checkResp.getRespList());
         JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
-        
-		        String productSpecName = specs.keySet().stream().findFirst().get();
-		        String hfValue = specs.getString(productSpecName);
-		        checkResp.setProductSpecName(productSpecName);
-		        checkResp.setHfValue(hfValue);
-				HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.checkResp(checkResp);
-				if(checkResp.getGoodsNum()<hfGoodsDisplay.getQuantity()) {
-					Integer amount =  checkResp.getGoodsNum()*hfGoodsDisplay.getSellPrice();
-					HfRespExample example = new HfRespExample();
-					example.createCriteria().andGoogsIdEqualTo(hfGoodsDisplay.getId());
-					HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
-					HfResp hfResp =  hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-					hfResp.setQuantity(hfResp.getQuantity()-checkResp.getGoodsNum());
-					hfRespMapper.updateByPrimaryKeySelective(hfResp);
-					List<Object> list = new ArrayList<Object>();
-					list.add(amount);
-					list.add(hfGoodsDisplay.getId());
-					return builder.body(ResponseUtils.getResponseBody(list));
+		Iterator<String> iterator = specs.keySet().iterator();
+		ArrayList<String> strings = new ArrayList<>();
+		while(iterator.hasNext()){
+// 获得key
+			String key = iterator.next();
+			String value = specs.getString(key);
+			strings.add(key);
+			System.out.println("key: "+key+",value:"+value);
+		}
+
+//		System.out.println();
+//        System.out.println(specs);
+//		        String productSpecName = specs.keySet().stream().findFirst().get();
+//		        System.out.println(productSpecName);
+//		        String hfValue = specs.getString(productSpecName);
+		ArrayList<Integer> productSpecList1 = new ArrayList<>();
+		ArrayList<String> hfValueList = new ArrayList<>();
+		for (int i=0;i<strings.size();i++){
+			Example example = new Example(ProductSpec.class);
+			Example.Criteria criteria = example.createCriteria();
+			criteria.andEqualTo("hfName",strings.get(i)).andEqualTo("productId",checkResp.getProductId());
+			List<ProductSpec> productSpecList = productSpecMapper1.selectByExample(example);
+			productSpecList1.add(productSpecList.get(0).getId());
+			System.out.println(productSpecList1+"qqqqq");
+			hfValueList.add(specs.getString(strings.get(i)));
+		}
+		int a;
+		int ifor;
+		List<Integer> numList = new ArrayList<Integer>();
+
+		for (ifor=0;ifor<productSpecList1.size();ifor++){
+			Example example2 = new Example(HfGoodsSpec.class);
+			Example.Criteria criteria2 = example2.createCriteria();
+			criteria2.andEqualTo("hfSpecId",productSpecList1.get(ifor)).andEqualTo("hfValue",hfValueList.get(ifor));
+			numList.add(goodsSpecMapper1.selectByExample(example2).size());
+		}
+		for (a=0;a<Collections.max(numList);a++){
+			System.out.println(productSpecList1.size());
+			System.out.println(a);
+
+
+			Example example1 = new Example(HfGoodsSpec.class);
+			Example.Criteria criteria1 = example1.createCriteria();
+			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
+			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a));
+			int d = 0;
+			for (int c=0;c<goodsSpecMapper1.selectByExample(example1).size();c++){
+				if (c==0){
+					d = goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId();
+					System.out.println(d);
 				}
-//		}
-		return builder.body(ResponseUtils.getResponseBody("库存容量不足"));
+				if (goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId()==d){
+					goodsId=d;
+				}
+			}
+
+			if (goodsSpecMapper1.selectByExample(example1).size()==0){
+				return builder.body(ResponseUtils.getResponseBody("不存在"));
+			}
+		}
+		if (goodsId==null){
+			return builder.body(ResponseUtils.getResponseBody("goods不存在"));
+		}
+		System.out.println("zzzzz");
+		System.out.println(a);
+		for (int x=0;x<a;x++){
+			System.out.println(goodsId);
+				System.out.println("aaaaaaaa");
+				Example exampleResp = new Example(HfResp.class);
+				Example.Criteria criteriaResp = exampleResp.createCriteria();
+				criteriaResp.andEqualTo("googsId",goodsId);
+			System.out.println(hfRespMapper1.selectByExample(exampleResp));
+				if (hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity()<checkResp.getGoodsNum()){
+					return builder.body(ResponseUtils.getResponseBody("库存不足"));
+			}
+			Example examplePrice= new Example(HfPrice.class);
+			Example.Criteria criteriaPrice = examplePrice.createCriteria();
+			criteriaPrice.andEqualTo("googsId",goodsId);
+			hfPriceMapper1.selectByExample(examplePrice);
+			Amount amount = new Amount();
+			amount.setId(goodsId);
+			amount.setGoodsNum(hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity());
+			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity());
+			return builder.body(ResponseUtils.getResponseBody(amount));
+		}
+		return builder.body(ResponseUtils.getResponseBody("ojbk"));
+
 	}
 	@ApiOperation(value = "根据类目id查询商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
@@ -933,7 +989,7 @@ public class GoodsController {
 				display.setCategoryId(categoryId);
 				display.setProductId(product.getId());
 				List<HfGoodsDisplay> goodsDisplay = hfGoodsDao.selectProductBycategoryIdOrProductName(display);
-				if(goodsDisplay != null) {
+				if(!goodsDisplay.isEmpty()) {
 					HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
 					example2.createCriteria().andGoodsIdEqualTo(goodsDisplay.get(0).getId());
 					List<HfGoodsPictrue> list2 = hfGoodsPictrueMapper.selectByExample(example2);

@@ -71,6 +71,7 @@ import com.hanfu.product.center.request.ProductRequest;
 import com.hanfu.product.center.request.ProductSpecRequest;
 import com.hanfu.product.center.response.handler.GoodsNotExistException;
 import com.hanfu.product.center.response.handler.ProductNotExistException;
+import com.hanfu.product.center.service.GoodsRespService;
 import com.hanfu.product.center.service.ProductService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -139,7 +140,8 @@ public class ProductController {
 
 	@Autowired
 	private FileDescMapper fileDescMapper;
-
+	  @Autowired
+	    private GoodsRespService goodsRespService;
 	//    @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	//    @ApiImplicitParams({
 	//            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
@@ -671,4 +673,10 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectSlideshow()));
 	}
+    @ApiOperation(value = "获取商品对应物品库存", notes = "获取商品对应物品库存")
+    @RequestMapping(value = "/selectGoodsResp", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectGoodsResp(Integer ProductID) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(goodsRespService.selectGoodsResp(ProductID).get(0)));
+    }
 }
