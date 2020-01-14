@@ -204,12 +204,12 @@
 	</select>
 
 	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
-SELECT 
+SELECT
     product_desc goods_desc,
     p.id,
     p.hf_name,
-    max(h.resp_id) resp_id,
-    min(h.price_id) price_id,
+    h.resp_id resp_id,
+    h.price_id price_id,
     h1.hf_name productCategoryName,
     h1.id categoryId,
     p.id productId,
@@ -219,7 +219,7 @@ SELECT
     h.cancel_id,
     h.claim,
     h.is_deleted,
-    max(h2.file_id) file_id
+    h2.file_id file_id
 FROM
     hf_goods h
         JOIN
@@ -233,8 +233,9 @@ FROM
         JOIN
     hf_goods_pictrue h2 ON h2.goods_id = h.id
     where p.id=#{goodsId}
-    group by p.id
+    limit 1
     ;
+
 	</select>
 
 	<select id="selectGoodsPartInfo" resultMap="EntityHfGoodDispaly">

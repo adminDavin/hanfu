@@ -38,6 +38,6 @@ public class PayReturnController {
 
         ResponseEntity<JSONObject> result = payReturnService.refund(out_trade_no, transaction_id, total_fee);
 
-        return builder.body(ResponseUtils.getResponseBody("aaa"));
+        return builder.body(ResponseUtils.getResponseBody(result));
     }
 }
