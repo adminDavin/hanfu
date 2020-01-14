@@ -204,35 +204,37 @@
 	</select>
 
 	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
-		SELECT
-		h.goods_desc,
-		h.id,
-		h.hf_name,
-		h.resp_id,
-		h.price_id,
-		h1.hf_name productCategoryName,
-		h1.id
-		categoryId,
-		p.id productId,
-		h.stone_id,
-		h.create_time,
-		h.modify_time,
-		h.cancel_id,
-		h.claim,
-		h.is_deleted,
-		h2.file_id
-		FROM
-		hf_goods h
-		JOIN product
-		p ON h.product_id = p.id
-		JOIN hf_category h1 ON h.category_id = h1.id
-		JOIN hf_price h3 ON h.price_id = h3.id
-		JOIN cancel h4 ON h.cancel_id =
-		h4.id
-		JOIN hf_goods_pictrue h2 ON h2.goods_id = h.id
-		WHERE
-		h.id
-		=#{goodsId}
+SELECT 
+    product_desc goods_desc,
+    p.id,
+    p.hf_name,
+    max(h.resp_id) resp_id,
+    min(h.price_id) price_id,
+    h1.hf_name productCategoryName,
+    h1.id categoryId,
+    p.id productId,
+    p.boss_id stone_id,
+    p.create_time,
+    p.modify_time,
+    h.cancel_id,
+    h.claim,
+    h.is_deleted,
+    max(h2.file_id) file_id
+FROM
+    hf_goods h
+        JOIN
+    product p ON h.product_id = p.id
+        JOIN
+    hf_category h1 ON h.category_id = h1.id
+        JOIN
+    hf_price h3 ON h.price_id = h3.id
+        left JOIN
+    cancel h4 ON h.cancel_id = h4.id
+        JOIN
+    hf_goods_pictrue h2 ON h2.goods_id = h.id
+    where p.id=#{goodsId}
+    group by p.id
+    ;
 	</select>
 
 	<select id="selectGoodsPartInfo" resultMap="EntityHfGoodDispaly">

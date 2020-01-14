@@ -3,8 +3,10 @@ package com.hanfu.product.center.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -884,9 +886,11 @@ public class GoodsController {
 //				}
 		
 //		        String[] spec = checkResp.getRespList();
-		        String[] spec = StringUtils.split(checkResp.getRespList(), ":");
-		        String productSpecName = spec[0];
-		        String hfValue = spec[1];
+//						String[] spec = StringUtils.split(checkResp.getRespList(), ":");
+        JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
+        
+		        String productSpecName = specs.keySet().stream().findFirst().get();
+		        String hfValue = specs.getString(productSpecName);
 		        checkResp.setProductSpecName(productSpecName);
 		        checkResp.setHfValue(hfValue);
 				HfGoodsDisplay hfGoodsDisplay = hfGoodsDao.checkResp(checkResp);
