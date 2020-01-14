@@ -62,17 +62,19 @@ public class HfUserBalanceController {
 	@ApiOperation(value = "生成二维码",notes = "生成二维码")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer")
+			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer")
 	})
 	public ResponseEntity<JSONObject> setCode(@RequestParam(required = true,defaultValue = "") Integer userId,
 											  @RequestParam(required = true,defaultValue = "") Integer hfBalance,
+											  @RequestParam(required = true,defaultValue = "") Integer total,
 											  HttpServletResponse response) throws JSONException, IOException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
 		int random = (int)((Math.random()*9+1)*100000);//六个随机数字
 
-		System.out.println(random);
+		//System.out.println(random);
 
 		stringRedisTemplate.opsForValue().set(userId+"",random+"",60, TimeUnit.SECONDS);
 
@@ -84,13 +86,12 @@ public class HfUserBalanceController {
 		OutputStream stream = response.getOutputStream();
 
 		//type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
-		String content = "用户的ID是:"+userId+",用户的余额是:"+hfBalance+",为保证每次请求生成的二维码不一样的随机字符串:"+random;
+		String content = "用户的ID是:"+userId+",用户的余额是:"+hfBalance+",商品价格:"+total;
 
-		//加密
-		String encode = MD5.encode(content);
+		//加密String encode = MD5.encode(content);
 
 		//获取一个二维码图片
-		BitMatrix bitMatrix = QRCodeUtils.createCode(encode);
+		BitMatrix bitMatrix = QRCodeUtils.createCode(content);
 
 		//以流的形式输出到前端
 		MatrixToImageWriter.writeToStream(bitMatrix , "jpg" , stream);

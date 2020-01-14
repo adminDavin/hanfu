@@ -18,6 +18,7 @@ import java.util.Properties;
 @EnableScheduling
 @EnableAutoConfiguration(exclude = {MultipartAutoConfiguration.class})
 public class Application {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
