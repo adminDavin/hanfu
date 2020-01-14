@@ -932,13 +932,14 @@ public class GoodsController {
 			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
 			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a));
 			int d = 0;
-			for (int c=0;c<goodsSpecMapper1.selectByExample(example1).size();c++){
+			for (int c=0;c<(goodsSpecMapper1.selectByExample(example1).size()-1);c++){
 				if (c==0){
 					d = goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId();
 					System.out.println(d);
 				}
 				if (goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId()==d){
-					goodsId=d;
+					goodsId=goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId();
+					System.out.println(goodsId);
 				}
 			}
 
