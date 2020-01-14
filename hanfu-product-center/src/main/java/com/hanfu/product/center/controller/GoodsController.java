@@ -959,8 +959,8 @@ public class GoodsController {
 			hfPriceMapper1.selectByExample(examplePrice);
 			Amount amount = new Amount();
 			amount.setId(goodsId);
-			amount.setGoodsNum(hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity());
-			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity());
+			amount.setGoodsNum(checkResp.getGoodsNum());
+			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
 			return builder.body(ResponseUtils.getResponseBody(amount));
 		}
 		return builder.body(ResponseUtils.getResponseBody("ojbk"));
