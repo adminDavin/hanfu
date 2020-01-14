@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.activity.center.manual.dao.HfUserDao">
+    <resultMap id="BaseResultMap" type="com.hanfu.activity.center.manual.model.HfUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="birth_day" jdbcType="TIMESTAMP" property="birthDay"/>
+        <result column="user_status" jdbcType="TINYINT" property="userStatus"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="user_level" jdbcType="TINYINT" property="userLevel"/>
+        <result column="last_auth_time" jdbcType="TIMESTAMP" property="lastAuthTime"/>
+        <result column="region" jdbcType="VARCHAR" property="region"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="id_deleted" jdbcType="TINYINT" property="idDeleted"/>
+    </resultMap>
+
+
+    <resultMap id="UserFormInfo" type="com.hanfu.activity.center.manual.model.UserFormInfo">
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="real_name" jdbcType="VARCHAR" property="username"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="hiredate" property="hiredate"/>
+        <result column="job_content" property="jobContent"/>
+        <result column="evaluation" jdbcType="VARCHAR" property="evaluation"/>
+        <result column="department_id" jdbcType="VARCHAR" property="departmentId"/>
+    </resultMap>
+    <select id="findAllUser" resultMap="BaseResultMap">
+        SELECT * FROM hf_user
+    </select>
+
+    <select id="findByUserId" resultMap="UserFormInfo">
+        SELECT
+        h1.file_id,h1.real_name,
+        a1.hiredate,a2.job_content,
+        a1.evaluation,h1.phone,
+        a1.department_id
+        FROM
+        hf_user h1
+        LEFT JOIN
+        activity_user_info a1
+        ON
+        h1.id = a1.user_id
+        LEFT JOIN
+        activity_user_experience a2
+        ON
+        h1.id = a2.user_id
+        WHERE
+        h1.id = #{userId}
+    </select>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry
+            location="C:\Users\administor\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+    <context id="MySQLTables" targetRuntime="MyBatis3">
+        <property name="xmlFormatter"
+                  value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+        <property name="javaFormatter"
+                  value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!-- 配置生成自定义的类序列化接口的插件 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://47.105.72.216:3306/user_center?serverTimezone=UTC"
+                        userId="hanfu_admin" password="Davin1234!">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="useJSR310Types" value="true"/>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator
+                targetPackage="com.hanfu.order.center.model"
+                targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mappers"
+                         targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.hanfu.order.center.dao"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <table schema="user_center" tableName="hf_order_logistics"
+               domainObjectName="HfOrderLogistics">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_orders"
+               domainObjectName="HfOrders">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_order_status"
+               domainObjectName="HfOrderStatus">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_orders_detail"
+               domainObjectName="HfOrdersDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>

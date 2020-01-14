@@ -1,0 +1,65 @@
+server:
+  port: 9200
+
+dubbo:
+  registry:
+    address: 47.105.72.216:2181
+    protocol: zookeeper
+    id: dubboProductServer
+    client: curator
+  metadata-report:
+    address: zookeeper://47.105.72.216:2181
+  application:
+    name: hanfu-product-center
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 1901
+  provider:
+    server: netty4
+
+
+spring:
+  datasource:
+    name: dataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://172.26.16.97:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    username: hanfu_admin
+    password: Davin1234!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select now()
+      idle-timeout: 3000000
+      auto-commit: true
+  task:
+    execution:
+      pool:
+        max-size: 16
+        queue-capacity: 100
+        keep-alive: 3600s
+
+
+#
+#info:
+#  head: head
+#  body: body
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        #加载所有的端点，默认只加载了info、health
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: always
+#    #可以关闭指定的端点
+#    shutdown:
+#      enabled: false
+
+logging:
+  file: ./target/king-words.log
+
+mybatis:
+  mapper-locations:
+    - mappers/*.xml
+    - manual-mappers/*.xml

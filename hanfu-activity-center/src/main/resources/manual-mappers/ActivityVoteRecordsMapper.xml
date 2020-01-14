@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.activity.center.manual.dao.VoteRecordsDao">
+    <resultMap id="BaseResultMap" type="com.hanfu.activity.center.model.ActivityVoteRecords">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="activity_id" jdbcType="INTEGER" property="activityId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="vote_times" jdbcType="INTEGER" property="voteTimes"/>
+        <result column="elected_user_id" jdbcType="INTEGER" property="electedUserId"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+    </resultMap>
+
+    <select id="distinctUserId" resultType="Integer">
+        SELECT DISTINCT(elected_user_id) FROM activity_vote_records WHERE activity_id = #{activityId} and user_id =
+        #{userId}
+    </select>
+    <select id="distinctUserIdvote" resultType="Integer">
+        SELECT DISTINCT(user_id) FROM activity_vote_records WHERE activity_id = #{activityId} and elected_user_id =
+        #{electedId} and vote_times = #{type}
+    </select>
+    <select id="distinctElectedId" resultType="Integer">
+        SELECT DISTINCT(elected_user_id) FROM activity_vote_records WHERE activity_id = #{activityId}
+    </select>
+</mapper>

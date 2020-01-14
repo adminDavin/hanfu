@@ -1,0 +1,54 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    name: dataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    username: hanfu_admin
+    password: Davin1234!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select now()
+      idle-timeout: 300
+      auto-commit: true
+  redis:
+    database: 0
+    host: 47.105.72.216
+    port: 6379
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 16
+        max-idle: 4
+  task:
+    execution:
+      pool:
+        max-size: 16
+        queue-capacity: 100
+        keep-alive: 3600s
+
+info:
+  head: head
+  body: body
+management:
+  endpoints:
+    web:
+      exposure:
+        #加载所有的端点，默认只加载了info、health
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    #可以关闭指定的端点
+    shutdown:
+      enabled: false
+
+logging:
+  file: ./logs/king-words.log  
+  
+mybatis:
+  mapper-locations: 
+    - mappers/*.xml
+    - manual-mappers/*.xml
