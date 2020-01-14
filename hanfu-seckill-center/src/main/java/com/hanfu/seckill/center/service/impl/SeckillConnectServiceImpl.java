@@ -6,11 +6,6 @@ import com.hanfu.seckill.center.service.SeckillConnectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * @author:gyj
- * @date: 2019/12/31
- * @time: 11:14
- */
 @Service
 public class SeckillConnectServiceImpl implements SeckillConnectService {
     @Autowired

@@ -8,13 +8,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/10
- * @time: 17:50
- */
-@SuppressWarnings("serial")
-public class Seckill implements Serializable {
+
+public class Seckill implements Serializable{
     private Integer id;
     private Integer bossId;
     private Integer goodsId;
@@ -25,12 +20,21 @@ public class Seckill implements Serializable {
     @JsonFormat(timezone="GMT+8" ,pattern = "yyyy-mm-dd hh:mm:ss" )
     private Date stopTime;
     private Integer categoryId;
-    private Double price;
+    private Double   price;
     private Integer repertory;
     private Short isDeleted;
     private HfGoods hfGoods;
     private List<FileDesc> fileDesc;
     private List<HfGoodsSpec> hfGoodsSpec;
+    private List<Product> product;
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
 
     public List<HfGoodsSpec> getHfGoodsSpec() {
         return hfGoodsSpec;
@@ -127,5 +131,5 @@ public class Seckill implements Serializable {
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
-
+     
 }

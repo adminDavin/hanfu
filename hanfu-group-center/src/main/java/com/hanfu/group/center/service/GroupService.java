@@ -2,19 +2,15 @@ package com.hanfu.group.center.service;
 
 
 import com.hanfu.group.center.manual.model.Group;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/13
- * @time: 10:57
- */
 public interface GroupService {
     void deleteByPrimaryKey(Integer id);
 
-    void insert(Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory);
+    void insert(Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
 
     int insertSelective(Group record);
 
@@ -23,13 +19,11 @@ public interface GroupService {
     List<Group> seleteGroup(Integer bossId);
     Group selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Group record);
 
-    void updateByPrimaryKey(Integer groupId, Integer bossId, Integer goodsId, Double price, Integer number, Date startTime, Date stopTime, Integer repertory);
+    void updateByPrimaryKey(Integer groupId,Integer bossId, Integer goodsId,Double price,Integer number,Date startTime, Date stopTime,Integer repertory);
 
-    void updateRrepertory(Integer id, Integer repertory);
-
-    //    更改状态
+    void updateRrepertory(Integer id,Integer repertory);
+//    更改状态
     void updateState(Integer id);
     List<Group> seleteAll(Integer bossId);
     List<Group>selectCategory(Integer id);
@@ -37,4 +31,5 @@ public interface GroupService {
      Group selectDate(Integer id);
 
     List<String>selectCategoryName();
+    void  updateIsDeleted(Integer isDeleted, Integer id);
 }

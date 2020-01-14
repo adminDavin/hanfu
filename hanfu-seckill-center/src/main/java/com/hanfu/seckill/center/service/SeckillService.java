@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/11
- * @time: 10:41
- */
+
 public interface SeckillService {
     Integer getRepertory(Integer id);
     void updateRepertory(Integer goodsId, Integer bossId, Integer repertory);

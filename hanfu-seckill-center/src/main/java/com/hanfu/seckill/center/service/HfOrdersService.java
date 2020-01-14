@@ -5,12 +5,8 @@ import com.hanfu.seckill.center.model.Seckill;
 import java.text.ParseException;
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/30
- * @time: 16:37
- */
-public interface HfOrdersSerice {
-    List<Object> insert (Seckill seckill, Integer userId) throws ParseException;
+
+public interface HfOrdersService {
+    List<Object> insert (Seckill seckill, Integer userId,String desc,Integer addressId) throws ParseException;
     boolean seckillByPay(Integer id);
 }

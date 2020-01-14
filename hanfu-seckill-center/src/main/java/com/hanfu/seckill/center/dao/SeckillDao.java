@@ -6,21 +6,16 @@ import org.mapstruct.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-/**
- * @author:gyj
- * @date: 2019/12/11
- * @time: 10:01
- */
+
 @Mapper
 public interface SeckillDao {
     Integer getRepertory(Integer id);
     void updateRepertory(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId, @Param("repertory") Integer repertory);
     void insertSeckill(@Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime,@Param("stopTime") Date stopTime,   @Param("categoryId") Integer categoryId, @Param("price") Double price,
                        @Param("repertory") Integer repertory, @Param("isDeleted") Short isDeleted);
-
     void updateIsDeleted(@Param("goodsId") Integer goodsId, @Param("bossId") Integer bossId, @Param("isDeleted") Short isDeleted);
-
     void deleteByPrimaryKey(Integer id);
     void updateByPrimaryKey(@Param("id") Integer id,@Param("bossId") Integer bossId, @Param("goodsId") Integer goodsId, @Param("startTime") Date startTime,@Param("stopTime") Date stopTime, @Param("categoryId") Integer categoryId, @Param("price") Double price,
                             @Param("repertory") Integer repertory);

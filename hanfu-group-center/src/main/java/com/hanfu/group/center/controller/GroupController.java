@@ -2,10 +2,6 @@ package com.hanfu.group.center.controller;
 
 import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.*;
-import com.hanfu.inner.sdk.product.center.ProductService;
-import com.hanfu.seckill.center.model.Seckill;
-//import com.hanfu.seckill.center.service.HfGoodsSpecService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,11 +9,13 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.ClientInfoStatus;
+;
+import javax.management.ValueExp;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.DoubleToIntFunction;
+
 
 /**
  * @author:gyj
@@ -42,8 +40,12 @@ public class GroupController {
     HfCategoryService hfCategoryService;
     @Autowired
     HfUserService hfUserService;
-//    @Autowired
-//    HfGoodsSpecService hfGoodsSpec;
+    @Autowired
+    HfGoodsSpecService hfGoodsSpec;
+    @Autowired
+    ProductService productService;
+    @Autowired
+    HfOrdersService hfOrdersService;
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -57,27 +59,31 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
     public  boolean  insertGroup( @RequestParam("goodsId") Integer goodsId,@RequestParam("price")Double price,@RequestParam("number")Integer number,
-                                  @RequestParam("startTime")String startTime, @RequestParam("stopTime") String stopTime, @RequestParam("repertory")Integer repertory){
+                                  @RequestParam("startTime")Date startTime, @RequestParam("stopTime") Date stopTime, @RequestParam("repertory")Integer repertory){
         Integer bossId=1;
-    try {
-        Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
-        Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
-        groupService.insert( bossId,  goodsId, price, number, startTime1,stopTime1,repertory);
-        return true;
-    } catch (ParseException e) {
-        e.printStackTrace();
-    }
-        return false;
-    }
 
+//    try {
+//        Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+//        Date stopTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+        groupService.insert( bossId,  goodsId, price, number, startTime,stopTime,repertory);
+        return true;
+//    } catch (ParseException e) {
+//        e.printStackTrace();
+//    }
+//        return false;
+    }
     //团购商品
     @ApiOperation(value = "购买团购商品", notes = "购买团购商品")
     @RequestMapping(value = "/shopping", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
+
     })
-    public  Object  shoppingGroup(Integer groupId,Integer userId) throws ParseException {
+    public  Object  shoppingGroup(Integer groupId,Integer userId,String hfDesc,Integer addressId
+    ) throws ParseException {
         Integer orderId=0;
         Group group=groupService.selectByPrimaryKey(groupId);
         if (group==null||group.getNumber()==null){
@@ -96,7 +102,7 @@ public class GroupController {
     //        默认开团12小时没人集齐退钱
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
-            long time = 30 * 60 * 1000 * 24;
+            long time=30*60*1000*24;
             Date date2 = new Date(date.getTime() + time);
             String format1 = formatter.format(date);
             String format = formatter.format(date2);
@@ -105,7 +111,7 @@ public class GroupController {
             groupOpenService.insert(groupId,startTime, stopTime);
             GroupOpen groupOpen2 =  groupOpenService.selectByStopTime(groupId, stopTime);
             Integer id=groupOpen2.getId();
-            groupOpenConnectService.insert(userId,id,orderId);
+            groupOpenConnectService.insert(userId,id,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
 
@@ -135,18 +141,20 @@ public class GroupController {
         Integer groupOpenId=groupOpen1.get(0).getId();
         if(reality+1==number){
     //        成团
-            groupOpenConnectService.insert(userId,groupOpenId,orderId);
+            groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
+            Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(groupId);
             for (Integer  id:urId) {
                 groupOpenConnectService.updateIsDeleted(id,groupOpenId);
+                hfOrdersService.insert(group1,id,groupOpenId);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
             Return aReturn = new Return();
             aReturn.setId(groupOpenId);
-            Group group1 = groupService.selectDate(groupId);
+
             Integer number1 = group1.getNumber();
             aReturn.setNumber(number1);
             aReturn.setGoodsName(group1.getHfGoods().getHfName());
@@ -161,7 +169,7 @@ public class GroupController {
 
             return aReturn;
         }
-        groupOpenConnectService.insert(userId,groupOpenId,orderId);
+        groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
 //        等待成团
@@ -220,7 +228,6 @@ public class GroupController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "price", value = "团购价格", required = false, type = "Double"),
             @ApiImplicitParam(paramType = "query", name = "number", value = "成团人数", required = false, type = "Integer"),
@@ -228,7 +235,7 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "团购结束时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
-    public  boolean  insertGroup(Integer  groupId, Integer goodsId,Double price,Integer number,String startTime, String stopTime,Integer repertory){
+    public  boolean  insertGroup(@RequestParam(value="id")Integer  groupId,  Integer goodsId, Double price, Integer number, String startTime, String stopTime, Integer repertory) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date startTime1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
@@ -275,15 +282,18 @@ public class GroupController {
 
 
 
-    @ApiOperation(value = "下架团购商品", notes = "下架团购商品")
+    @ApiOperation(value = "下架上架团购商品", notes = "下架上架团购商品")
     @RequestMapping(value = "/updateIsDeleted", method = RequestMethod.GET)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "id", value = "秒杀表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "isDeleted", value = "团购表状态", required = false, type = "Integer"),
     })
-    public  String  updateIsDeleted(Integer id){
-        groupService.updateState(id);
+    public  String  updateIsDeleted(Integer id,Integer isDeleted){
+        groupService.updateIsDeleted(isDeleted,id);
         return "ok";
     }
+
+
 
     @ApiOperation(value = "批量下架团购商品", notes = "批量下架团购商品")
     @RequestMapping(value = "/updateMulti", method = RequestMethod.GET)
@@ -297,28 +307,33 @@ public class GroupController {
         return "ok";
     }
 
-//    @ApiOperation(value = "根据团购表id查团购商品详情", notes = "根据团购表id查团购商品详情")
-//    @RequestMapping(value = "/seleteDate", method = RequestMethod.GET)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
-//    })
-//    public  Group seletDate(Integer id){
-//        Group group = groupService.selectDate(id);
-//        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpec.selectByPrimaryKey(group.getGoodsId());
-//        if(hfGoodsSpecs!=null ||hfGoodsSpecs.get(0)!=null){
-//            group.setHfGoodsSpec(hfGoodsSpecs);
-//        }
-//        return group;
-//    }
+    @ApiOperation(value = "根据团购表id查团购商品详情", notes = "根据团购表id查团购商品详情")
+    @RequestMapping(value = "/seleteDate", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+    })
+    public  Group seletDate(Integer id){
+        Group group = groupService.selectDate(id);
+        List<HfGoodsSpec> hfGoodsSpecs = hfGoodsSpec.selectByPrimaryKey(group.getGoodsId());
+        if(hfGoodsSpecs!=null ){
+            group.setHfGoodsSpec(hfGoodsSpecs);
+        }
+
+        List<Product> products = productService.selectByPrimaryKey(group.getGoodsId());
+        group.setProduct(products);
+        return group;
+    }
 
 // 自己开团
     @ApiOperation(value = "开团 团购商品", notes = "开团 团购商品")
     @RequestMapping(value = "/openGroup", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
     })
-    public  Object  openGroup(Integer groupId,Integer userId) throws ParseException {
+    public  Object  openGroup(Integer groupId,Integer userId,String hfDesc,Integer addressId) throws ParseException {
         Integer orderId=0;
         Group group = groupService.selectByPrimaryKey(groupId);
         if (group == null || group.getNumber() == null) {
@@ -358,7 +373,7 @@ public class GroupController {
             HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
             aReturn.setName(hfUser.getNickName());
 
-            groupOpenConnectService.insert(userId, id, orderId);
+            groupOpenConnectService.insert(userId, id, orderId,hfDesc, addressId);
             int newRrepertory = repertory - 1;
             groupService.updateRrepertory(groupId, newRrepertory);
             return aReturn ;
@@ -370,9 +385,11 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "开团购表id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "hfDesc", value = "所选商品规格", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
 
     })
-    public  Object  joinGroup(Integer id,Integer userId)  {
+    public  Object  joinGroup(Integer id,Integer userId,String hfDesc,Integer addressId) throws ParseException {
         Integer orderId=0;
         GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
         Integer groupId = groupOpen.getGroupId();
@@ -385,18 +402,20 @@ public class GroupController {
         int repertory=group.getRepertory();
         if(reality+1==number){
             //        成团
-            groupOpenConnectService.insert(userId,groupOpenId,orderId);
+            groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
+            Group group1 = groupService.selectDate(groupId);
             List <Integer>  urId =groupOpenService.selectUserId(id);
             for (Integer  id1:urId) {
                 groupOpenConnectService.updateIsDeleted(id1,groupOpenId);
+                hfOrdersService.insert(group1,id1,groupOpenId);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
 
             Return aReturn = new Return();
             aReturn.setId(id);
-            Group group1 = groupService.selectDate(groupId);
+
             Integer number1 = group1.getNumber();
             aReturn.setNumber(number1);
             aReturn.setGoodsName(group1.getHfGoods().getHfName());
@@ -409,7 +428,7 @@ public class GroupController {
 
             return aReturn ;
         }
-        groupOpenConnectService.insert(userId,groupOpenId,orderId);
+        groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
 
@@ -437,9 +456,23 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "name", value = "类目名字", required = false, type = "Sting"),
     })
-    public  List<Group>  selectCategory(String name)  {
+    public  List<GrouoDate>  selectCategory(String name)  {
+        GrouoDate grouoDate = new GrouoDate();
+        ArrayList<GrouoDate> grouoDates = new ArrayList<>();
         Integer categoryId = hfCategoryService.selectByName(name);
-        return  groupService. selectCategory(categoryId);
+        List<Group> groups = groupService.selectCategory(categoryId);
+        for (int i = 0; i < groups.size(); i++) {
+            grouoDate.setId(groups.get(i).getId());
+            grouoDate.setPrice(groups.get(i).getPrice());
+            grouoDate.setNumber(groups.get(i).getNumber());
+            grouoDate.setHfGoods(groups.get(i).getHfGoods());
+            grouoDate.setRepertory(groups.get(i).getRepertory());
+            grouoDate.setFileDesc(groups.get(i).getFileDesc());
+            grouoDate.setStartTime(groups.get(i).getStartTime().getTime());
+            grouoDate.setStopTime(groups.get(i).getStopTime().getTime());
+            grouoDates.add(grouoDate);
+        }
+        return  grouoDates;
     }
 
     @ApiOperation(value = "所有类目", notes = "所有类目")
@@ -453,26 +486,49 @@ public class GroupController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
     })
-    public  List<Open>  selectGroup(Integer id)  {
+    public  OpenDetails  selectGroup(Integer id)  {
+        OpenDetails openDetails = new OpenDetails();
         Group group = groupService.selectByPrimaryKey(id);
         int number = group.getNumber();
 //        获取开团表id
         List<Integer>  id1 = groupOpenService.selectByGroupOpenId(id);
-        Map<Integer, Object> map = new HashMap<Integer, Object>();
         List<Open> open=new ArrayList<>();
-       for (int i=0;i<id1.size();i++){
-           Open open1 = new Open();
+        int a1=0;
+        if(id1.size()>2){
+            for (int i=0;i<2;i++){
+                Open open1 = new Open();
 //           获取开团对应的用户id
-           open1.setId(id1.get(i));
-           List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
-           HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
-           open1.setName(hfUser.getNickName());
-           int a=groupOpenService.selectNumber(id1.get(i));
-            open1.setNumber(number-a);
-           open.add(open1);
-       }
-        return open ;
+                open1.setId(id1.get(i));
+                List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+                a1= a1+integers.size();
+                HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+                open1.setName(hfUser.getNickName());
+                int a=groupOpenService.selectNumber(id1.get(i));
+                open1.setNumber(number-a);
+                open.add(open1);
+            }
+        }else {
+            for (int i = 0; i < 1; i++) {
+                Open open1 = new Open();
+//           获取开团对应的用户id
+                open1.setId(id1.get(i));
+                List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+                a1 = a1 + integers.size();
+                HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+                open1.setName(hfUser.getNickName());
+                int a = groupOpenService.selectNumber(id1.get(i));
+                open1.setNumber(number - a);
+                open.add(open1);
+            }
+        }
+        openDetails.setSum(a1);
+        openDetails.setOpen(open);
+        return openDetails ;
     }
+
+
+
+
     @ApiOperation(value = "查询开团 详情", notes = "查询开团 详情")
     @RequestMapping(value = "/selectOpenGroup", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -501,5 +557,63 @@ public class GroupController {
         }
         aReturn.setUser(hfUsers);
         return aReturn;
+    }
+    @ApiOperation(value = "查询参加详情", notes = "查询参加详情")
+    @RequestMapping(value = "/selectByGroup", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
+
+    })
+    public  Object  selectByGroup(Integer groupId,Integer userId)  {
+        GroupOpen groupOpen1 = groupOpenService.selectByGroup(groupId, userId);
+        Return aReturn = new Return();
+        Integer id = groupOpen1.getId();
+        aReturn.setId(id);
+        Group group1 = groupService.selectDate(groupOpen1.getGroupId());
+        Integer number1 = group1.getNumber();
+        aReturn.setNumber(number1);
+        aReturn.setGoodsName(group1.getHfGoods().getHfName());
+        aReturn.setStartTime(group1.getStartTime());
+        aReturn.setStopTime(group1.getStopTime());
+        aReturn.setPrice(group1.getPrice());
+        int i = groupOpenService.selectNumber(id);
+        int a1=number1-i;
+        aReturn.setNumberFew(a1);
+        List <Integer>  urId =groupOpenService.selectByUserId(id);
+        ArrayList<HfUser> hfUsers = new ArrayList<>();
+        for (Integer a:urId) {
+            hfUsers.add(hfUserService.selectByPrimaryKey(a));
+        }
+        aReturn.setUser(hfUsers);
+        return aReturn;
+    }
+
+
+    @ApiOperation(value = "查询更多正在开团", notes = "查询更多正在开团")
+    @RequestMapping(value = "/selectAllGroup", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "团购表id", required = false, type = "Integer"),
+    })
+    public  List<Open>  selectAllGroup(Integer id)  {
+        Group group = groupService.selectByPrimaryKey(id);
+        int number = group.getNumber();
+//        获取开团表id
+        List<Integer>  id1 = groupOpenService.selectByGroupOpenId(id);
+        List<Open> open=new ArrayList<>();
+        int a1=0;
+        for (int i=0;i<id1.size();i++){
+            Open open1 = new Open();
+//           获取开团对应的用户id
+            open1.setId(id1.get(i));
+            List<Integer> integers = groupOpenService.selectUserId(id1.get(i));
+            a1= a1+integers.size();
+            HfUser hfUser = hfUserService.selectByPrimaryKey(integers.get(i));
+            open1.setName(hfUser.getNickName());
+            int a=groupOpenService.selectNumber(id1.get(i));
+            open1.setNumber(number-a);
+            open.add(open1);
+        }
+        return open ;
     }
 }
