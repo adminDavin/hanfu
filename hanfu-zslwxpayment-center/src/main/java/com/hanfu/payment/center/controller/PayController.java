@@ -68,7 +68,7 @@ public class PayController {
             order.setBody(request.getBody());
             order.setOut_trade_no(request.getId());
 
-            order.setTotal_fee(request.getTotal_fee());//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
+            order.setTotal_fee(request.getTotal_fee()*100);//注意 ！！！这里传过来的钱是分  一定注意，例如传过来10  代表是10分钱  就是一毛钱 零点一元钱！！！
 
             order.setSpbill_create_ip(RandomStringGenerator.getIp2(httpServletRequest));
             order.setNotify_url(notify_url);
