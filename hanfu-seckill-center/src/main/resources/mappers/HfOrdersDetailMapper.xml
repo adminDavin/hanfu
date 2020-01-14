@@ -47,6 +47,17 @@
       #{isDeleted,jdbcType=SMALLINT})
   </insert>
 
+
+  <select id="selectByOrdersId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from hf_orders_detail
+    where orders_id = #{id}
+  </select>
+
+
+
+
   <insert id="insertSelective" parameterType="com.hanfu.seckill.center.model.HfOrdersDetail" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()

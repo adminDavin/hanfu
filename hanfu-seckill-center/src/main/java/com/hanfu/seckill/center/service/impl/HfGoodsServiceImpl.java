@@ -8,11 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author:gyj
- * @date: 2019/12/23
- * @time: 9:27
- */
+
 @Service
 public class HfGoodsServiceImpl implements HfGoodsService {
     @Autowired

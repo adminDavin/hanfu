@@ -1,6 +1,7 @@
 package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
+import java.util.Map;
 
 
 @SuppressWarnings("serial")
@@ -8,20 +9,20 @@ public class CheckResp implements Serializable{
 	private Integer productId;
 	private Integer goodsNum;
 	private String respList;
-	private String name;
-	private String value;
+	private String productSpecName;
+	private String hfValue;
 
-	public String getName() {
-		return name;
+	public String getProductSpecName() {
+		return productSpecName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setProductSpecName(String productSpecName) {
+		this.productSpecName = productSpecName;
 	}
-	public String getValue() {
-		return value;
+	public String getHfValue() {
+		return hfValue;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	public void setHfValue(String hfValue) {
+		this.hfValue = hfValue;
 	}
 	public Integer getProductId() {
 		return productId;
@@ -35,11 +36,11 @@ public class CheckResp implements Serializable{
 	public void setGoodsNum(Integer goodsNum) {
 		this.goodsNum = goodsNum;
 	}
-	public String getRespList() {
-		return respList;
-	}
-	public void setRespList(String respList) {
-		this.respList = respList;
-	}
-	
+    public String getRespList() {
+        return respList;
+    }
+    public void setRespList(String respList) {
+        this.respList = respList;
+    }
+
 }

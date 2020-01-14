@@ -104,6 +104,7 @@ public class KingWordsController {
         if (hfAuth == null) {
             return builder.body(ResponseUtils.getResponseBody("还未注册"));
         }
+        
         System.out.println(redisTemplate.opsForValue().get(hfAuth.getUserId())+"qqq");
         System.out.println(redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId()))+"ppp");
         if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {

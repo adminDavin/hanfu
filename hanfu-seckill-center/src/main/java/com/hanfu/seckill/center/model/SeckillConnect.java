@@ -2,11 +2,7 @@ package com.hanfu.seckill.center.model;
 
 import java.io.Serializable;
 
-/**
- * @author:gyj
- * @date: 2019/12/31
- * @time: 10:53
- */
+
 public class SeckillConnect implements Serializable {
     private Integer id;
     private  Integer userId;
