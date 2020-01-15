@@ -39,4 +39,6 @@ public interface GroupOpenMapper {
     List<Integer> selectByGroupOpenId(Integer groupId);
     GroupOpen selectByGroup(@Param("groupId")Integer groupId,@Param("userId")Integer userId);
     List<Integer> selectByUserId(Integer groupId);
+    //查询全部id
+    List<Integer> selectAllUserId(Integer groupId);
 }

@@ -18,4 +18,5 @@ public interface GroupOpenConnectService {
 
     void updateIsDeleted( Integer userId,Integer groupOpenId);
     void updateState(Integer userId,Integer groupOpenId) ;
+    GroupOpenConnect selectByGroup( Integer id, Integer groupOpenId);
 }

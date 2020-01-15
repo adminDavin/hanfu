@@ -9,6 +9,7 @@ import java.util.List;
 public interface HfGoodsMapper {
 
     List<HfGoods> selectByPrimaryKey(Integer id);
+    HfGoods selectById(Integer id);
     List<HfGoods> selectAll();
     List<HfGoods>selectByName(String name);
 

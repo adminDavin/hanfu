@@ -14,7 +14,7 @@ public class GroupOpenConnect implements Serializable {
     private String Hfdesc;
 
     private Integer addressId;
-
+    private Short isDeleted;
     public String getHfdesc() {
         return Hfdesc;
     }
@@ -46,8 +46,6 @@ public class GroupOpenConnect implements Serializable {
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
     }
-
-    private Short isDeleted;
 
     public Integer getId() {
         return id;

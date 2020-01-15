@@ -29,6 +29,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from hf_goods
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
   <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
     <include refid="Base_Column_List" />

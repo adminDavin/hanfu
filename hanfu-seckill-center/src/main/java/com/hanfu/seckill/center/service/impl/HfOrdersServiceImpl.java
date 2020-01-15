@@ -1,13 +1,7 @@
 package com.hanfu.seckill.center.service.impl;
 
-import com.hanfu.seckill.center.dao.HfOrderLogisticsMapper;
-import com.hanfu.seckill.center.dao.HfOrderStatusMapper;
-import com.hanfu.seckill.center.dao.HfOrdersDetailMapper;
-import com.hanfu.seckill.center.dao.HfOrdersMapper;
-import com.hanfu.seckill.center.model.HfOrderLogistics;
-import com.hanfu.seckill.center.model.HfOrders;
-import com.hanfu.seckill.center.model.HfOrdersDetail;
-import com.hanfu.seckill.center.model.Seckill;
+import com.hanfu.seckill.center.dao.*;
+import com.hanfu.seckill.center.model.*;
 import com.hanfu.seckill.center.service.HfOrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +22,15 @@ public class HfOrdersServiceImpl implements HfOrdersService {
      HfOrdersDetailMapper hfOrdersDetailMapper;
     @Autowired
     HfOrderLogisticsMapper hfOrdersLogisticsMapper;
+    @Autowired
+    HfGoodsMapper hfGoodsMapper;
+    @Autowired
+    HfRespMapper hfRespMapper;
     @Override
     public List<Object> insert(Seckill seckill, Integer userId,String desc,Integer addressId) throws ParseException {
         HfOrders hfOrders = new HfOrders();
         hfOrders.setUserId(userId);
+        Integer goodsId = seckill.getGoodsId();
         Integer a=0;
         hfOrders.setPayStatus(a);
         hfOrders.setOrderType("秒杀");
@@ -51,10 +50,10 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         hfOrders.setIsDeleted((short) 0);
         hfOrdersMapper.insertSelective(hfOrders);
         HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
-        HfOrders orders = hfOrdersMapper.selectByUserId("秒杀", userId);
+        HfOrders orders = hfOrdersMapper.selectByDate("秒杀", userId,startTime1);
         hfOrdersDetail.setOrdersId(orders.getId());
         hfOrdersDetail.setHfDesc(desc);
-        hfOrdersDetail.setGoogsId(seckill.getGoodsId());
+        hfOrdersDetail.setGoogsId(goodsId);
         hfOrdersDetail.setPurchasePrice(price1);
         hfOrdersDetail.setPurchaseQuantity(1);
         hfOrdersDetail.setOrderDetailStatus(hfOrderStatusMapper.selectByPrimaryKey(10).getHfName());
@@ -67,11 +66,18 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         hfOrderLogistics.setOrdersId(orders.getId());
         hfOrderLogistics.setUserId(userId);
         hfOrderLogistics.setUserAddressId(addressId);
-        hfOrderLogistics.setGoogsId(seckill.getGoodsId());
+        hfOrderLogistics.setGoogsId(goodsId);
         hfOrderLogistics.setCreateTime(startTime1);
         hfOrderLogistics.setModifyTime(startTime1);
         hfOrderLogistics.setIsDeleted((short) 0);
         hfOrdersLogisticsMapper.insert(hfOrderLogistics);
+
+        HfGoods hfGoods = hfGoodsMapper.selectById(goodsId);
+        HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+        Integer quantity = hfResp.getQuantity();
+        Integer sum=quantity-1;
+        hfResp.setQuantity(sum);
+        hfRespMapper.updateByPrimaryKey(hfResp);
         List<Object> objects = new ArrayList<>();
         objects.add(hfOrderLogistics);
         objects.add(orders);

@@ -4,15 +4,15 @@
 
   <resultMap id="Base" type="com.hanfu.seckill.center.model.Product" >
     <id column=" aid" property="id" jdbcType="INTEGER" />
-    <result column=" ahf_name" property="hfName" jdbcType="VARCHAR" />
-    <result column=" acategory_id" property="categoryId" jdbcType="INTEGER" />
-    <result column=" abrand_id" property="brandId" jdbcType="INTEGER" />
-    <result column=" aproduct_desc" property="productDesc" jdbcType="VARCHAR" />
-    <result column=" aboss_id" property="bossId" jdbcType="INTEGER" />
-    <result column=" acreate_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column=" alast_modifier" property="lastModifier" jdbcType="VARCHAR" />
-    <result column=" amodify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column=" ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="ahf_name" property="hfName" jdbcType="VARCHAR" />
+    <result column="acategory_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="abrand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="aproduct_desc" property="productDesc" jdbcType="VARCHAR" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="acreate_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="alast_modifier" property="lastModifier" jdbcType="VARCHAR" />
+    <result column="amodify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
     <collection  property="poductSpec" ofType="com.hanfu.seckill.center.model.ProductSpec">
       <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
       <result column="bcategory_spec_id" property="categorySpecId" jdbcType="INTEGER" />
