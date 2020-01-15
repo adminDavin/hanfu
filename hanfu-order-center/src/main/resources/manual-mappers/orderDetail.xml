@@ -28,6 +28,7 @@
         <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
         <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
     </resultMap>
     <select id="selectOrderDetail" resultMap="Map">
 	SELECT
@@ -39,6 +40,8 @@
 	JOIN hf_orders_detail c ON b.order_detail_id = c.id
 	LEFT JOIN hf_user d
 	ON b.user_id = d.id
+	LEFT JOIN hf_goods h
+	ON b.googs_id = d.id
 	WHERE
 	c.orders_id = 1
     </select>

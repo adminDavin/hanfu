@@ -69,8 +69,18 @@ public class OrderInfo implements Serializable {
     private Integer fare;
     @ApiModelProperty(required = true, value = "评价")
     private String evaluate;
+    @ApiModelProperty(required = true, value = "物品名称")
+    private String goodName;
     
-    public String getEvaluate() {
+    public String getGoodName() {
+		return goodName;
+	}
+
+	public void setGoodName(String goodName) {
+		this.goodName = goodName;
+	}
+
+	public String getEvaluate() {
 		return evaluate;
 	}
 

@@ -438,7 +438,7 @@ public class KingWordsController {
         //JSONObject rawDataJson = JSON.parseObject( rawData );
         JSONObject SessionKeyOpenId = getSessionKeyOrOpenId(code);
         String openid = (String) SessionKeyOpenId.get("openid");
-        String sessionKey = (String) SessionKeyOpenId.get("session_key");
+        String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key")) ;
         //uuid生成唯一key
         String skey = UUID.randomUUID().toString();
         //根据openid查询skey是否存在

@@ -9,8 +9,8 @@
     <select id="selectSpecs" resultMap="BaseResultMap123">
     SELECT
         `goods_id`,
-        GROUP_CONCAT( hf_value) AS hf_value,
-        GROUP_CONCAT( hf_spec_id SEPARATOR '' ) AS hf_spec_id 
+        GROUP_CONCAT( hf_value order by hf_spec_id asc) AS hf_value,
+        GROUP_CONCAT( hf_spec_id order by hf_spec_id asc SEPARATOR '') AS hf_spec_id 
         FROM
         hf_goods_spec 
         GROUP BY

@@ -159,9 +159,20 @@ public class GoodsController {
 	}
 	@ApiOperation(value = "获取物品列表", notes = "获取物品列表")
 	@RequestMapping(value = "/listGoods", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listGoods(Integer stoneId) throws JSONException {
+	public ResponseEntity<JSONObject> listGoods(HfGoodsDisplay hfGoodsDisplay) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectAllGoods(stoneId)));
+		HfGoodsExample example = new HfGoodsExample();
+		example.createCriteria().andStoneIdEqualTo(hfGoodsDisplay.getStoneId());
+		List<HfGoods> hfGoods = hfGoodsMapper.selectByExample(example);
+		List<HfGoodsDisplay> list = new ArrayList<>();
+		for (HfGoods hfGood : hfGoods) {
+			hfGoodsDisplay.setPriceId(hfGood.getPriceId());
+			hfGoodsDisplay.setRespId(hfGood.getRespId());
+			hfGoodsDisplay.setId(hfGood.getId());
+		    HfGoodsDisplay hfGoodsDis = hfGoodsDao.selectAllGoods(hfGoodsDisplay);
+		    list.add(hfGoodsDis);
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
@@ -993,19 +1004,38 @@ public class GoodsController {
 //			if (goodsSpecMapper1.selectByExample(example1).size()==0){
 //				return builder.body(ResponseUtils.getResponseBody("不存在"));
 //			}
+//			abc=abc+String.valueOf(productSpecList1.get(a));
+		}
+		
+
+
+		HashMap map = new HashMap();
+		for (int i = 0; i < productSpecList1.size(); i++) {
+	        map.put(productSpecList1.get(i), i); //将值和下标存入Map
+	    }
+		Collections.sort(productSpecList1);
+		for (a=0;a<sss.size();a++){
 			abc=abc+String.valueOf(productSpecList1.get(a));
 		}
-
+        System.out.println(productSpecList1);
+        ArrayList<String> originalList = new ArrayList<>();
+        for (int i = 0; i < productSpecList1.size(); i++) {
+        originalList.add(hfValueList.get((Integer) map.get(productSpecList1.get(i))));
+        System.out.println(map.get(productSpecList1.get(i)));
+        }
+        System.out.println(originalList);
+ 
+        
 		System.out.println(abc);
-		String aaa=hfValueList.toString().replace("[", "");
+		String aaa=originalList.toString().replace("[", "");
 		aaa=aaa.replace("]", "");
 		aaa=aaa.replace(" ", "");
-		System.out.println(aaa);
-		System.out.println(specsService.selectSpecs());
 		for(int i =0;i<specsService.selectSpecs().size();i++) {
-			System.out.println(specsService.selectSpecs().get(i).getHfSpecId());
+			System.out.println(specsService.selectSpecs().get(i).getHfSpecId()+"--------------------");
 			System.out.println(specsService.selectSpecs().get(i).getHfValue());
 			System.out.println(specsService.selectSpecs().get(i).getGoodsId());
+			System.out.println(specsService.selectSpecs().get(i).getHfSpecId().equals(abc));
+			System.out.println(specsService.selectSpecs().get(i).getHfValue().equals(aaa));
 			if(specsService.selectSpecs().get(i).getHfSpecId().equals(abc)&specsService.selectSpecs().get(i).getHfValue().equals(aaa)) {
 				goodsId=specsService.selectSpecs().get(i).getGoodsId();
 				System.out.println("goodsID");

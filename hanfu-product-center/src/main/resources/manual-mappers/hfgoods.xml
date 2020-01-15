@@ -143,20 +143,31 @@
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
 		SELECT
 		h.id,
+		h.price_id priceId,
+		h.resp_id respId,
+		<if test="priceId != null">
 		h3.sell_price,
+		h3.line_price,
+		</if>
 		h.hf_name goodName,
 		h.goods_desc,
-		h4.quantity,
-		h2.hf_name productCategoryName,h3.line_price
+		<if test="respId != null">
+		   h4.quantity,  
+		</if>
+		h2.hf_name productCategoryName
 		FROM
 		hf_goods h
 		JOIN hf_goods_pictrue h1 ON h1.goods_id = h.id
 		JOIN product p ON h.product_id = p.id
 		JOIN hf_category h2 ON h.category_id = h2.id
-		JOIN hf_price h3 ON h3.googs_id = h.id
-		JOIN hf_resp h4 ON h4.googs_id = h.id
+		<if test="priceId != null">
+			 JOIN hf_price h3 ON h3.googs_id = h.id
+		</if>
+		<if test="respId != null">
+		     JOIN hf_resp h4 ON h4.googs_id = h.id
+		</if>
 		WHERE
-		stone_id = #{stoneId}
+		h.id = #{id}
 	</select>
 
 	<select id="selectAllGoodsPartInfo"

@@ -18,7 +18,7 @@ public interface HfGoodsDao {
     
     public HfGoods selectFromHfGoods(Integer goodsId);
 
-    public List<HfGoodsDisplay> selectAllGoods(Integer stoneId);
+    public HfGoodsDisplay selectAllGoods(HfGoodsDisplay hfGoodsDisplay);
 
     public List<HfGoodsDisplay> selectAllGoodsPartInfo(Integer stoneId);
 
