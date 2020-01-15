@@ -31,12 +31,12 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
     @Override
     public HfGoods selectFromHfGoods(Integer goodsId) {
     	HfGoods hfGoods = sqlSessionTemplate.selectOne("selectFromHfGoods", goodsId);
-    	return null;
+    	return hfGoods;
     }
     
     @Override
-    public List<HfGoodsDisplay> selectAllGoods(Integer stoneId) {
-        List<HfGoodsDisplay> result = sqlSessionTemplate.selectList("selectAllGoods", stoneId);
+    public HfGoodsDisplay selectAllGoods(HfGoodsDisplay hfGoodsDisplay) {
+    	HfGoodsDisplay result = sqlSessionTemplate.selectOne("selectAllGoods", hfGoodsDisplay);
         return result;
     }
 

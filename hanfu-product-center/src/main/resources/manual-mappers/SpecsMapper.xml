@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.dao.SpecsMapper">
+    <resultMap id="BaseResultMap123" type="com.hanfu.product.center.model.SpecS">
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="hf_value" jdbcType="VARCHAR" property="hfValue"/>
+        <result column="hf_spec_id" jdbcType="VARCHAR" property="hfSpecId"/>
+    </resultMap>
+    <select id="selectSpecs" resultMap="BaseResultMap123">
+    SELECT
+        `goods_id`,
+        GROUP_CONCAT( hf_value order by hf_spec_id asc) AS hf_value,
+        GROUP_CONCAT( hf_spec_id order by hf_spec_id asc SEPARATOR '') AS hf_spec_id 
+        FROM
+        hf_goods_spec 
+        GROUP BY
+        `goods_id`;
+    </select>
+    </mapper>

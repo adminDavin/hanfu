@@ -28,18 +28,22 @@
         <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
         <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
     </resultMap>
     <select id="selectOrderDetail" resultMap="Map">
-        SELECT * FROM
-        hf_order_logistics b
-        left join
-        hf_orders a
-        on
-        a.id=b.orders_id
-        left join
-        hf_orders_detail c
-        on
-        b.order_detail_id=c.id where c.orders_id = #{id};
+	SELECT
+	*
+	FROM
+	hf_order_logistics b
+	LEFT JOIN hf_orders a ON a.id = b.orders_id
+	LEFT
+	JOIN hf_orders_detail c ON b.order_detail_id = c.id
+	LEFT JOIN hf_user d
+	ON b.user_id = d.id
+	LEFT JOIN hf_goods h
+	ON b.googs_id = d.id
+	WHERE
+	c.orders_id = 1
     </select>
 
 </mapper>

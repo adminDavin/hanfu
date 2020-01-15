@@ -1,6 +1,5 @@
 package com.hanfu.product.center.request;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,16 +13,8 @@ public class HfGoodsInfo extends CommonRequest {
     private String goodName;
     @ApiModelProperty(required = true, value = "物品描述")
     private String goodsDesc;
-    @ApiModelProperty(required = true, value = "商铺id")
-    private Integer hfStoreId;
-    @ApiModelProperty(required = true, value = "商家id")
-    private Integer bossId;
-    @ApiModelProperty(required = false, value = "品牌id")
-    private Integer brandId;
     @ApiModelProperty(name = "username", required = true, value = "商家名称")
     private String username;
-    @ApiModelProperty(required = false, value = "类目规格id")
-    private Integer catrgorySpecId[];
     @ApiModelProperty(required = false, value = "物品规格id")
     private Integer goodsSpecId;
     @ApiModelProperty(required = true, value = "规格值")
@@ -34,44 +25,13 @@ public class HfGoodsInfo extends CommonRequest {
     private String prictureDesc;
     @ApiModelProperty(required = true, value = "核销员Id")
     private Integer cancelId;
-    @ApiModelProperty(required = true, value = "上下架")
-    private Integer frames;
     @ApiModelProperty(required = false, value = "类目Id")
     private Integer catrgoryId;
     @ApiModelProperty(required = false, value = "是否自提")
     private Integer claim;
-    @ApiModelProperty(required = false, value = "规格单位")
-    private String  specUnit;
     @ApiModelProperty(required = false, value = "类目名称")
     private String categoryName;
-    @ApiModelProperty(required = false, value = "库存量")
-    private Integer quantity;
-    @ApiModelProperty(required = false, value = "价格")
-    private Integer sellPrice;
     
-	public Integer getSellPrice() {
-		return sellPrice;
-	}
-
-	public void setSellPrice(Integer sellPrice) {
-		this.sellPrice = sellPrice;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-
-	public String getSpecUnit() {
-		return specUnit;
-	}
-
-	public void setSpecUnit(String specUnit) {
-		this.specUnit = specUnit;
-	}
 
 	public String getCategoryName() {
 		return categoryName;
@@ -97,13 +57,7 @@ public class HfGoodsInfo extends CommonRequest {
 		this.catrgoryId = catrgoryId;
 	}
 
-	public Integer getFrames() {
-		return frames;
-	}
 
-	public void setFrames(Integer frames) {
-		this.frames = frames;
-	}
 
 	public String getPrictureDesc() {
 		return prictureDesc;
@@ -135,14 +89,6 @@ public class HfGoodsInfo extends CommonRequest {
 
 	public void setMember(Integer member) {
 		this.member = member;
-	}
-
-	public Integer[] getCatrgorySpecId() {
-		return catrgorySpecId;
-	}
-
-	public void setCatrgorySpecId(Integer[] catrgorySpecId) {
-		this.catrgorySpecId = catrgorySpecId;
 	}
 
 	public Integer getGoodsSpecId() {
@@ -183,30 +129,6 @@ public class HfGoodsInfo extends CommonRequest {
 
     public void setGoodsDesc(String goodDesc) {
         this.goodsDesc = goodDesc;
-    }
-
-    public Integer getBossId() {
-        return bossId;
-    }
-
-    public void setBossId(Integer bossId) {
-        this.bossId = bossId;
-    }
-
-    public Integer getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Integer brandId) {
-        this.brandId = brandId;
-    }
-
-    public Integer getHfStoreId() {
-        return hfStoreId;
-    }
-
-    public void setHfStoreId(Integer hfStoreId) {
-        this.hfStoreId = hfStoreId;
     }
 
     public String getUsername() {
