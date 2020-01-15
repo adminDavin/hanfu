@@ -239,15 +239,6 @@ public class ProductController {
 		product.setIsDeleted((short) 0);
 		product.setProductDesc(request.getProductDesc());
 		productMapper.insert(product);
-		ProductSpec item = new ProductSpec();
-		for (String specName : request.getSpecName()) {
-			item.setProductId(product.getId());
-			item.setHfName(specName);
-			item.setCreateTime(LocalDateTime.now());
-			item.setModifyTime(LocalDateTime.now());
-			item.setIsDeleted((short) 0);
-			productSpecMapper.insert(item);
-		}
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
 
 	}
@@ -543,16 +534,18 @@ public class ProductController {
 	public ResponseEntity<JSONObject> addProductSpec(ProductSpecRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec item = new ProductSpec();
-		item.setProductId(request.getProductId());
-		item.setHfName(request.getHfName());
-		item.setSpecType(request.getSpecType());
-		item.setSpecUnit(request.getSpecUnit());
-		item.setSpecValue(request.getSpecValue());
-		item.setCategorySpecId(request.getCategorySpecId());
-		item.setCreateTime(LocalDateTime.now());
-		item.setModifyTime(LocalDateTime.now());
-		item.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
+		for (String hfName : request.getHfName()) {
+			item.setHfName(hfName);
+			item.setProductId(request.getProductId());
+			item.setSpecType("类型");
+			item.setSpecUnit(request.getSpecUnit());
+			item.setSpecValue(request.getSpecValue());
+			item.setCreateTime(LocalDateTime.now());
+			item.setModifyTime(LocalDateTime.now());
+			item.setIsDeleted((short) 0);
+			productSpecMapper.insert(item);
+		}
+		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 
 	@ApiOperation(value = "删除商品规格", notes = "根据规格id删除商品的规格描述")

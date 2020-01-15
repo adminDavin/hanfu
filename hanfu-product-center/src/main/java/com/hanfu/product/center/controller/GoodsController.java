@@ -228,6 +228,8 @@ public class GoodsController {
 			record.setHfName(hfGoodsInfo.getGoodName());
 			record.setStoneId(1);
 			record.setBrandId(1);
+			record.setPriceId(0);
+			record.setRespId(0);
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setMember(hfGoodsInfo.getMember());
@@ -505,9 +507,6 @@ public class GoodsController {
 		}
 		HfRespExample example = new HfRespExample();
 		example.createCriteria().andGoogsIdEqualTo(goods.getId());
-		List<HfResp> item = hfRespMapper.selectByExample(example);
-		HfResp resp = new HfResp();
-		Integer respId = null;
 		HfPrice price = new HfPrice();
 		if (goods.getPriceId() == null) {
 			price.setGoogsId(request.getHfGoodsId());
@@ -533,32 +532,6 @@ public class GoodsController {
 			//        	HfPriceExample example = new HfPriceExample();
 			//        	example.createCriteria().andIdEqualTo(goods.getPriceId());
 			hfPriceMapper.updateByPrimaryKey(hfPrice);
-		}
-		if (item.isEmpty()) {
-			resp.setGoogsId(goods.getId());
-			resp.setHfStatus(1);
-			resp.setQuantity(request.getQuantity());
-			resp.setHfDesc(request.getRespDesc());
-			resp.setCreateTime(LocalDateTime.now());
-			resp.setModifyTime(LocalDateTime.now());
-			resp.setLastModifier(request.getUsername());
-			resp.setIsDeleted((short) 0);
-			hfRespMapper.insert(resp);
-			respId = resp.getId();
-		} else {
-			resp = item.get(0);
-			if (!StringUtils.isEmpty(request.getQuantity())) {
-				resp.setQuantity(request.getQuantity());
-			}
-			if (!StringUtils.isEmpty(request.getRespDesc())) {
-				resp.setHfDesc(request.getRespDesc());
-			}
-			resp.setModifyTime(LocalDateTime.now());
-			if (!StringUtils.isEmpty(request.getUsername())) {
-				resp.setLastModifier(request.getUsername());
-			}
-			hfRespMapper.updateByPrimaryKey(resp);
-			respId = resp.getId();
 		}
 		return builder.body(ResponseUtils.getResponseBody(price.getId()));
 	}

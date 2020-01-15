@@ -16,27 +16,6 @@ public class ProductRequest extends CommonRequest {
     private Integer bossId;
     @ApiModelProperty(name = "lastModifier", required = true, value = "商家名称")
     private String lastModifier;
-    @ApiModelProperty(required = true, value = "规格规格默认值")
-    private String specValue;
-    @ApiModelProperty(required = true, value = "规格名称")
-    private String[] SpecName;
-    
-	public String getSpecValue() {
-		return specValue;
-	}
-
-	public void setSpecValue(String specValue) {
-		this.specValue = specValue;
-	}
-
-	public String[] getSpecName() {
-		return SpecName;
-	}
-
-	public void setSpecName(String[] specName) {
-		SpecName = specName;
-	}
-
 
 	public Integer getId() {
         return id;
