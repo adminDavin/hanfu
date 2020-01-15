@@ -22,5 +22,5 @@ public interface HfCouponMapper {
 
     HfCoupon selectOneCoupon(@Param("couponId") Integer couponId);//查询当前用户要用的优惠券信息
 
-    void deleteUserCoupon(@Param("userId") Integer userId,@Param("couponId") Integer couponId);//用户使用优惠券之后删除优惠券
+    Integer deleteUserCoupon(@Param("id") Integer id,@Param("userId") Integer userId,@Param("couponId") Integer couponId);//用户使用优惠券之后删除优惠券
 }

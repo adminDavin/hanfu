@@ -73,7 +73,7 @@
     </select>
 
     <!-- 用户使用优惠券之后删除优惠券 -->
-    <delete id="deleteUserCoupon">
+    <delete id="deleteUserCoupon" parameterType="java.lang.Integer">
         delete from hf_user_coupon
         <where>
             <if test="userId != null">
@@ -81,6 +81,9 @@
             </if>
             <if test="couponId != null">
                 AND coupon_id = #{couponId,jdbcType=INTEGER}
+            </if>
+            <if test="id != null">
+                AND id = #{id,jdbcType=INTEGER}
             </if>
         </where>
     </delete>
