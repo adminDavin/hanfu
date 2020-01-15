@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.CheckResp;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfGoods;
@@ -77,14 +78,14 @@ public class HfGoodsDaoImpl implements HfGoodsDao {
     }
 
 	@Override
-	public List<HfGoodsDisplay> selectPrice() {
-		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectPrice");
+	public List<HfGoodsDisplay> selectPrice(PriceRanking priceRanking) {
+		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectPrice",priceRanking);
 		return list;
 	}
 
 	@Override
-	public List<HfGoodsDisplay> selectPriceDec() {
-		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectPriceDec");
+	public List<HfGoodsDisplay> selectPriceDec(PriceRanking priceRanking) {
+		 List<HfGoodsDisplay> list = sqlSessionTemplate.selectList("selectPriceDec",priceRanking);
 		return list;
 	}
 

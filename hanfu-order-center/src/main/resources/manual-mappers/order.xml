@@ -124,6 +124,7 @@
 	</select>
 	<select id="selectOrderByUserId" resultMap="BaseResultMap">
 		SELECT
+		h2.id,
 		h3.create_time,
 		h3.modify_time,
 		h7.hf_province,
