@@ -48,6 +48,8 @@
 			property="productSpecName" />
 					<result column="line_price" jdbcType="VARCHAR"
 			property="linePrice" />
+		<result column="seniority_id" jdbcType="VARCHAR"
+			property="seniorityId" />
 	</resultMap>
 
 	<resultMap id="EntityHfGoodDispaly1"
@@ -148,18 +150,16 @@
 		<if test="priceId != null">
 		h3.sell_price,
 		h3.line_price,
+		h1.file_id,
 		</if>
-		h.hf_name goodName,
+		h.hf_name,
 		h.goods_desc,
 		<if test="respId != null">
-		   h4.quantity,  
+		   h4.quantity
 		</if>
-		h2.hf_name productCategoryName
 		FROM
 		hf_goods h
 		JOIN hf_goods_pictrue h1 ON h1.goods_id = h.id
-		JOIN product p ON h.product_id = p.id
-		JOIN hf_category h2 ON h.category_id = h2.id
 		<if test="priceId != null">
 			 JOIN hf_price h3 ON h3.googs_id = h.id
 		</if>
@@ -333,44 +333,52 @@
 
 	</select>
 	<select id="selectPrice" resultMap="EntityHfGoodDispaly">
-		SELECT *
-		FROM
-		hf_goods h
-		JOIN
-		product p
-		ON
-		h.product_id = p.id
-		JOIN
-		hf_category h1
-		ON
-		h.category_id =
-		h1.id
-		JOIN
-		hf_price h2
-		ON
-		h.price_id = h2.id
-		ORDER BY
-		h2.sell_price
+      SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price
 	</select>
 	<select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
-		SELECT *
-		FROM
-		hf_goods h
-		JOIN
-		product p
-		ON
-		h.product_id = p.id
-		JOIN
-		hf_category h1
-		ON
-		h.category_id =
-		h1.id
-		JOIN
-		hf_price h2
-		ON
-		h.price_id = h2.id
-		ORDER BY
-		h2.sell_price DESC
+		    SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price DESC
 	</select>
 	<select id="selectQueryList" resultMap="EntityHfGoodDispaly">
 		SELECT

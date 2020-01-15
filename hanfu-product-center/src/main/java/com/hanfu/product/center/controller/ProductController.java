@@ -302,7 +302,7 @@ public class ProductController {
 
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateCategory(@RequestParam CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
+	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
 		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
@@ -312,13 +312,13 @@ public class ProductController {
 		if(fileInfo != null) {
 			hfCategory.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 		}
-		if(StringUtils.isEmpty(request.getLevelId())) {
+		if(!StringUtils.isEmpty(request.getLevelId())) {
 			hfCategory.setLevelId(request.getLevelId());
 		}
-		if(StringUtils.isEmpty(request.getCategory())) {
+		if(!StringUtils.isEmpty(request.getCategory())) {
 			hfCategory.setHfName(request.getCategory());
 		}
-		if(StringUtils.isEmpty(request.getParentCategoryId())) {
+		if(!StringUtils.isEmpty(request.getParentCategoryId())) {
 			hfCategory.setParentCategoryId(request.getParentCategoryId());
 		}
 		hfCategory.setModifyTime(LocalDateTime.now());
@@ -534,8 +534,7 @@ public class ProductController {
 	public ResponseEntity<JSONObject> addProductSpec(ProductSpecRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec item = new ProductSpec();
-		for (String hfName : request.getHfName()) {
-			item.setHfName(hfName);
+			item.setHfName(request.getHfName());
 			item.setProductId(request.getProductId());
 			item.setSpecType("类型");
 			item.setSpecUnit(request.getSpecUnit());
@@ -543,9 +542,7 @@ public class ProductController {
 			item.setCreateTime(LocalDateTime.now());
 			item.setModifyTime(LocalDateTime.now());
 			item.setIsDeleted((short) 0);
-			productSpecMapper.insert(item);
-		}
-		return builder.body(ResponseUtils.getResponseBody(""));
+		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
 	}
 
 	@ApiOperation(value = "删除商品规格", notes = "根据规格id删除商品的规格描述")

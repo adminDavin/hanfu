@@ -43,7 +43,6 @@
 	LEFT JOIN hf_goods h
 	ON b.googs_id = d.id
 	WHERE
-	c.orders_id = 1
+	c.orders_id = #{ordersId}
     </select>
-
 </mapper>

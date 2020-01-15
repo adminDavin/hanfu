@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.CheckResp;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfGoods;
@@ -32,9 +33,9 @@ public interface HfGoodsDao {
 
     public List<HfGoodsDisplay> selectProductBycategoryIdOrProductName(HfGoodsDisplay hfGoodsDisplay);
 
-	public List<HfGoodsDisplay> selectPrice();
+	public List<HfGoodsDisplay> selectPrice(PriceRanking priceRanking);
 
-	public List<HfGoodsDisplay> selectPriceDec();
+	public List<HfGoodsDisplay> selectPriceDec(PriceRanking priceRanking);
 
 	public List<HfGoodsDisplay> selectList(ProductForValue productForValue);
 
