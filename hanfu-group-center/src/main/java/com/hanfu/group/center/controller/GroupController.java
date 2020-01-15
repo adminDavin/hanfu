@@ -412,9 +412,14 @@ public class GroupController {
                 }
             }
         }
+
         Integer orderId=0;
         Integer groupId = groupOpen.getGroupId();
         Group group=groupService.selectByPrimaryKey(groupId);
+        if (group.getRepertory() == null || group.getRepertory() == 0) {
+            groupService.updateState(groupId);
+            return "err";
+        }
         int reality=groupOpenService.selectNumber(groupOpen.getId());
         //    库存没有
         int number=group.getNumber();
