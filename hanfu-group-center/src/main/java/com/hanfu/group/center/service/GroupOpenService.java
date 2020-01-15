@@ -47,4 +47,6 @@ List<GroupOpen> selectByGroupOpen(Integer groupId);
     GroupOpen selectByGroup(Integer groupId,Integer userId);
 
     List<Integer> selectByUserId(Integer groupId);
+
+    List<Integer> selectAllUserId(Integer groupId);
 }

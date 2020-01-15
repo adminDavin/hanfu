@@ -8,9 +8,10 @@
     <result column="orders_id" property="ordersId" jdbcType="INTEGER" />
     <result column="hf_desc" property="Hfdesc" jdbcType="VARCHAR" />
     <result column="address_id" property="addressId" jdbcType="INTEGER" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, user_id, group_open_id,orders_id,hf_desc,address_id
+    id, user_id, group_open_id,orders_id,hf_desc,address_id,is_deleted
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -29,7 +30,7 @@
     select
     <include refid="Base_Column_List" />
     from group_open_connect
-    where user_id = #{id,jdbcType=INTEGER} and  group_open_id=#{groupOpenId,jdbcType=INTEGER}
+    where user_id = #{id} and  group_open_id=#{groupOpenId}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

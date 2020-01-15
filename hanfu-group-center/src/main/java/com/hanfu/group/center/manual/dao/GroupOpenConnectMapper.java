@@ -22,4 +22,5 @@ public interface GroupOpenConnectMapper {
     void updateisDeleted(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId);
     void updateState(@Param("userId") Integer userId,@Param("groupOpenId") Integer groupOpenId );
     GroupOpenConnect selectByGroup(@Param("id") Integer id,@Param("groupOpenId") Integer groupOpenId);
+
 }

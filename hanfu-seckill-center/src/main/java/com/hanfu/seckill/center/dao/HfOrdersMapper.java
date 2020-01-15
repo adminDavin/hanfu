@@ -20,5 +20,7 @@ public interface HfOrdersMapper {
     int updateByPrimaryKeySelective(HfOrders record);
 
     int updateByPrimaryKey(HfOrders record);
-    HfOrders selectByUserId(@Param("orderType")String orderType  ,@Param("userId") Integer userId );
+    HfOrders selectByUserId(@Param("orderType")String orderType ,@Param("userId") Integer userId );
+    HfOrders selectByDate(@Param("orderType")String orderType ,@Param("userId") Integer userId ,
+                            @Param("time")Date time);
 }

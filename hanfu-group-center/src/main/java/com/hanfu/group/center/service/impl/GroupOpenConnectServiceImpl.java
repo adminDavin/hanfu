@@ -55,5 +55,10 @@ public class GroupOpenConnectServiceImpl implements GroupOpenConnectService {
         groupOpenConnectMapper.updateState(userId,groupOpenId);
     }
 
+    @Override
+    public GroupOpenConnect selectByGroup(Integer id, Integer groupOpenId) {
+        return groupOpenConnectMapper.selectByGroup(id,groupOpenId);
+    }
+
 
 }
