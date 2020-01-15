@@ -230,7 +230,7 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = new Product();
 		product.setBossId(request.getBossId());
-		product.setBrandId(request.getBrandId());
+		product.setBrandId(1);
 		product.setCategoryId(request.getCategoryId());
 		product.setHfName(request.getHfName());
 		product.setLastModifier(request.getLastModifier());

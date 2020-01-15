@@ -56,6 +56,7 @@ import com.hanfu.product.center.request.HfGoodsInfo;
 import com.hanfu.product.center.request.RespInfo;
 import com.hanfu.product.center.service.GoodsRespService;
 import com.hanfu.product.center.service.GoodsService;
+import com.hanfu.product.center.service.SpecsService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
@@ -133,6 +134,9 @@ public class GoodsController {
 	
 	@Autowired
     private GoodsRespService goodsRespService;
+	
+	@Autowired
+	private SpecsService specsService;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -207,12 +211,12 @@ public class GoodsController {
 		HfGoods record = new HfGoods();
 		for (String SpecValue : hfGoodsInfo.getSpecValue()) {
 			record.setProductId(hfGoodsInfo.getProductId());
-			record.setBossId(hfGoodsInfo.getBossId());
+			record.setBossId(1);
 			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 			record.setProductId(hfGoodsInfo.getProductId());
 			record.setHfName(hfGoodsInfo.getGoodName());
-			record.setStoneId(hfGoodsInfo.getHfStoreId());
-			record.setBrandId(hfGoodsInfo.getBrandId());
+			record.setStoneId(1);
+			record.setBrandId(1);
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setMember(hfGoodsInfo.getMember());
@@ -223,17 +227,10 @@ public class GoodsController {
 			HfGoodsSpec item1 = new HfGoodsSpec();
 			item1.setHfValue(SpecValue);
 			item1.setGoodsId(record.getId());
-			item1.setLastModifier(hfGoodsInfo.getUsername());
 			item1.setCreateTime(LocalDateTime.now());
 			item1.setModifyTime(LocalDateTime.now());
 			item1.setIsDeleted((short) 0);
 			goodsSpecMapper.insert(item1);
-			HfResp hfResp = new HfResp();
-			hfResp.setQuantity(hfGoodsInfo.getQuantity());
-			hfResp.setGoogsId(record.getId());
-			hfResp.setCreateTime(LocalDateTime.now());
-			hfResp.setModifyTime(LocalDateTime.now());
-			hfResp.setIsDeleted((short) 0);
 			System.out.println(fileInfo1);
 			for (MultipartFile fileInfo : fileInfo1) {
 				List<HfGoodsPictrue> pictures = Lists.newArrayList();
@@ -261,14 +258,6 @@ public class GoodsController {
 				hfGoodsPictrueMapper.insert(picture);
 				pictures.add(picture);
 			}
-			HfPrice price = new HfPrice();
-			price.setGoogsId(record.getId());
-			price.setSellPrice(hfGoodsInfo.getSellPrice());
-			price.setCreateTime(LocalDateTime.now());
-			price.setModifyTime(LocalDateTime.now());
-			price.setLastModifier(hfGoodsInfo.getUsername());
-			price.setIsDeleted((short) 0);
-			hfPriceMapper.insert(price);
 		}
 		return builder.body(ResponseUtils.getResponseBody(""));
 	}
@@ -503,6 +492,11 @@ public class GoodsController {
 		if (goods == null) {
 			throw new Exception("物品不存在");
 		}
+		HfRespExample example = new HfRespExample();
+		example.createCriteria().andGoogsIdEqualTo(goods.getId());
+		List<HfResp> item = hfRespMapper.selectByExample(example);
+		HfResp resp = new HfResp();
+		Integer respId = null;
 		HfPrice price = new HfPrice();
 		if (goods.getPriceId() == null) {
 			price.setGoogsId(request.getHfGoodsId());
@@ -510,6 +504,7 @@ public class GoodsController {
 			price.setCreateTime(LocalDateTime.now());
 			price.setModifyTime(LocalDateTime.now());
 			price.setLastModifier(request.getUsername());
+			price.setLinePrice(request.getLinePrice());
 			price.setIsDeleted((short) 0);
 			hfPriceMapper.insert(price);
 			goods.setPriceId(price.getId());
@@ -527,6 +522,32 @@ public class GoodsController {
 			//        	HfPriceExample example = new HfPriceExample();
 			//        	example.createCriteria().andIdEqualTo(goods.getPriceId());
 			hfPriceMapper.updateByPrimaryKey(hfPrice);
+		}
+		if (item.isEmpty()) {
+			resp.setGoogsId(goods.getId());
+			resp.setHfStatus(1);
+			resp.setQuantity(request.getQuantity());
+			resp.setHfDesc(request.getRespDesc());
+			resp.setCreateTime(LocalDateTime.now());
+			resp.setModifyTime(LocalDateTime.now());
+			resp.setLastModifier(request.getUsername());
+			resp.setIsDeleted((short) 0);
+			hfRespMapper.insert(resp);
+			respId = resp.getId();
+		} else {
+			resp = item.get(0);
+			if (!StringUtils.isEmpty(request.getQuantity())) {
+				resp.setQuantity(request.getQuantity());
+			}
+			if (!StringUtils.isEmpty(request.getRespDesc())) {
+				resp.setHfDesc(request.getRespDesc());
+			}
+			resp.setModifyTime(LocalDateTime.now());
+			if (!StringUtils.isEmpty(request.getUsername())) {
+				resp.setLastModifier(request.getUsername());
+			}
+			hfRespMapper.updateByPrimaryKey(resp);
+			respId = resp.getId();
 		}
 		return builder.body(ResponseUtils.getResponseBody(price.getId()));
 	}
@@ -867,9 +888,31 @@ public class GoodsController {
 	}
 	@ApiOperation(value = "校检库存", notes = "校检库存")
 	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp)
+	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp,Integer goodId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(goodId!=null) {
+				System.out.println(goodId);
+					System.out.println("aaaaaaaa");
+					Example exampleResp = new Example(HfResp.class);
+					Example.Criteria criteriaResp = exampleResp.createCriteria();
+					criteriaResp.andEqualTo("googsId",goodId);
+				System.out.println(hfRespMapper1.selectByExample(exampleResp));
+					if (hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity()<checkResp.getGoodsNum()){
+						return builder.body(ResponseUtils.getResponseBody("库存不足"));
+				}
+				Example examplePrice= new Example(HfPrice.class);
+				Example.Criteria criteriaPrice = examplePrice.createCriteria();
+				criteriaPrice.andEqualTo("googsId",goodId);
+				hfPriceMapper1.selectByExample(examplePrice);
+				Amount amount = new Amount();
+				amount.setId(goodId);
+				amount.setGoodsNum(checkResp.getGoodsNum());
+				amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
+				amount.setDiscountMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
+				return builder.body(ResponseUtils.getResponseBody(amount));	
+			}
+		
 		Integer goodsId=null;
 //		String[] spec =  StringUtils.split(checkResp.getRespList(), "||");
 //		for (String string : spec) {
@@ -888,14 +931,19 @@ public class GoodsController {
         JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
 		Iterator<String> iterator = specs.keySet().iterator();
 		ArrayList<String> strings = new ArrayList<>();
+		ArrayList<String> sss = new ArrayList<>();
+		
 		while(iterator.hasNext()){
 // 获得key
 			String key = iterator.next();
 			String value = specs.getString(key);
 			strings.add(key);
 			System.out.println("key: "+key+",value:"+value);
+			String hfV=value;
+			sss.add(value);
 		}
-
+		System.out.println(sss);
+		
 //		System.out.println();
 //        System.out.println(specs);
 //		        String productSpecName = specs.keySet().stream().findFirst().get();
@@ -908,45 +956,61 @@ public class GoodsController {
 			Example.Criteria criteria = example.createCriteria();
 			criteria.andEqualTo("hfName",strings.get(i)).andEqualTo("productId",checkResp.getProductId());
 			List<ProductSpec> productSpecList = productSpecMapper1.selectByExample(example);
+			if(productSpecList.size()==0) {
+				return builder.body(ResponseUtils.getResponseBody("不存在"));
+			}
 			productSpecList1.add(productSpecList.get(0).getId());
 			System.out.println(productSpecList1+"qqqqq");
 			hfValueList.add(specs.getString(strings.get(i)));
 		}
+		System.out.println(hfValueList.toString()+"1233123");
 		int a;
 		int ifor;
 		List<Integer> numList = new ArrayList<Integer>();
 
-		for (ifor=0;ifor<productSpecList1.size();ifor++){
+
+
+		for (ifor=0;ifor<productSpecList1.size()-1;ifor++){
 			Example example2 = new Example(HfGoodsSpec.class);
 			Example.Criteria criteria2 = example2.createCriteria();
 			criteria2.andEqualTo("hfSpecId",productSpecList1.get(ifor)).andEqualTo("hfValue",hfValueList.get(ifor));
 			numList.add(goodsSpecMapper1.selectByExample(example2).size());
 		}
-		for (a=0;a<Collections.max(numList);a++){
+		ArrayList<String> goodsSpec = new ArrayList<>();
+		System.out.println(Collections.max(numList)+"Collections.max(numList)");
+		String abc="";
+		for (a=0;a<sss.size();a++){
 			System.out.println(productSpecList1.size());
-			System.out.println(a);
-
-
+			System.out.println(a+"aaaaaaaaa");
 			Example example1 = new Example(HfGoodsSpec.class);
 			Example.Criteria criteria1 = example1.createCriteria();
 			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
-			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a));
-			int d = 0;
-			for (int c=0;c<(goodsSpecMapper1.selectByExample(example1).size()-1);c++){
-				if (c==0){
-					d = goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId();
-					System.out.println(d);
-				}
-				if (goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId()==d){
-					goodsId=goodsSpecMapper1.selectByExample(example1).get(c).getGoodsId();
-					System.out.println(goodsId);
-				}
-			}
-
-			if (goodsSpecMapper1.selectByExample(example1).size()==0){
-				return builder.body(ResponseUtils.getResponseBody("不存在"));
-			}
+			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a)+hfValueList.get(a));
+			System.out.println(goodsSpecMapper1.selectByExample(example1).toString());
+			
+			System.out.println(productSpecList1.get(a)+"jieshu");
+			goodsSpec.add(String.valueOf(productSpecList1));
+//			if (goodsSpecMapper1.selectByExample(example1).size()==0){
+//				return builder.body(ResponseUtils.getResponseBody("不存在"));
+//			}
+			abc=abc+String.valueOf(productSpecList1.get(a));
 		}
+
+		System.out.println(abc);
+		String aaa=hfValueList.toString().replace("[", "");
+		aaa=aaa.replace("]", "");
+		aaa=aaa.replace(" ", "");
+		System.out.println(aaa);
+		System.out.println(specsService.selectSpecs());
+		for(int i =0;i<specsService.selectSpecs().size();i++) {
+			System.out.println(specsService.selectSpecs().get(i).getHfSpecId());
+			System.out.println(specsService.selectSpecs().get(i).getHfValue());
+			System.out.println(specsService.selectSpecs().get(i).getGoodsId());
+			if(specsService.selectSpecs().get(i).getHfSpecId().equals(abc)&specsService.selectSpecs().get(i).getHfValue().equals(aaa)) {
+				goodsId=specsService.selectSpecs().get(i).getGoodsId();
+				System.out.println("goodsID");
+			}
+		} 
 		if (goodsId==null){
 			return builder.body(ResponseUtils.getResponseBody("goods不存在"));
 		}

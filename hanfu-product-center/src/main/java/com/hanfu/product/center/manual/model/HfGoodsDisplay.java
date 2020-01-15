@@ -65,12 +65,21 @@ public class HfGoodsDisplay extends CommonRequest {
     private String productName;
     @ApiModelProperty(required = false, value = "商品规格名称")
     private String productSpecName;
-    
+    @ApiModelProperty(required = false, value = "划线价")
+    private Integer linePrice;
 	private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
     
-    public String getProductName() {
+    public Integer getLinePrice() {
+		return linePrice;
+	}
+
+	public void setLinePrice(Integer linePrice) {
+		this.linePrice = linePrice;
+	}
+
+	public String getProductName() {
 		return productName;
 	}
 
