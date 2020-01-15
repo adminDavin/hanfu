@@ -62,11 +62,9 @@ public class HfUserBalanceController {
 	@ApiOperation(value = "生成二维码",notes = "生成二维码")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer")
 	})
 	public ResponseEntity<JSONObject> setCode(@RequestParam(required = true,defaultValue = "") Integer userId,
-											  @RequestParam(required = true,defaultValue = "") Integer hfBalance,
 											  @RequestParam(required = true,defaultValue = "") Integer total,
 											  HttpServletResponse response) throws JSONException, IOException {
 
@@ -86,7 +84,7 @@ public class HfUserBalanceController {
 		OutputStream stream = response.getOutputStream();
 
 		//type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
-		String content = "用户的ID是:"+userId+",用户的余额是:"+hfBalance+",商品价格:"+total;
+		String content = "用户的ID是:"+userId+",商品价格:"+total;
 
 		//加密String encode = MD5.encode(content);
 
