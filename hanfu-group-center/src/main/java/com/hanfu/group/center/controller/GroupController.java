@@ -84,14 +84,7 @@ public class GroupController {
     })
     public  Object  shoppingGroup(Integer groupId,Integer userId,String hfDesc,Integer addressId
     ) throws ParseException {
-        List <Integer>  urId =groupOpenService.selectUserId(groupId);
-        if (urId.size()!=0) {
-            for (int i = 0; i < urId.size(); i++) {
-                if (urId.get(i) == userId) {
-                    return "只能参加一次";
-                }
-            }
-        }
+
         Integer orderId=0;
         Group group=groupService.selectByPrimaryKey(groupId);
         if (group==null||group.getNumber()==null){
@@ -106,6 +99,7 @@ public class GroupController {
         }
         int repertory=group.getRepertory();
         List<GroupOpen> groupOpen=groupOpenService.selectByGroupOpen(groupId);
+
         if(groupOpen ==null||groupOpen.isEmpty()){
     //        默认开团12小时没人集齐退钱
             SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -137,26 +131,35 @@ public class GroupController {
             aReturn.setNumberFew(a);
             HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
             aReturn.setName(hfUser.getNickName());
-
+            System.out.println("开团");
             return aReturn;
         }
-        int reality=groupOpenService.selectNumber(groupId);
+//        一次开团购表
+        List <Integer>  urId =groupOpenService.selectAllUserId(groupId);
+        if (urId.size()!=0) {
+            for (int i = 0; i < urId.size(); i++) {
+                if (urId.get(i) == userId) {
+                    return "只能参加一次";
+                }
+            }
+        }
     //    库存没有
         int number=group.getNumber();
-        Integer groupOpenId=groupOpen1.get(0).getId();
+        GroupOpen groupOpen2 = groupOpen1.get(0);
+        Integer groupOpenId=groupOpen2.getId();
+        int reality=groupOpenService.selectNumber(groupOpenId);
         if(reality+1==number){
     //        成团
             groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
             int newRrepertory=repertory-1;
             groupService.updateRrepertory(groupId,newRrepertory);
             Group group1 = groupService.selectDate(groupId);
-            List <Integer>  urId1 =groupOpenService.selectUserId(groupId);
+            List <Integer>  urId1 =groupOpenService.selectUserId(groupOpenId);
             for (Integer  id:urId1) {
                 groupOpenConnectService.updateIsDeleted(id,groupOpenId);
                 hfOrdersService.insert(group1,id,groupOpenId);
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
-
             Return aReturn = new Return();
             aReturn.setId(groupOpenId);
 
@@ -170,7 +173,7 @@ public class GroupController {
             HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
             aReturn.setName(hfUser.getNickName());
 
-
+            System.out.println("成团");
 
             return aReturn;
         }
@@ -178,21 +181,19 @@ public class GroupController {
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
 //        等待成团
-
         Return aReturn = new Return();
         aReturn.setId(groupOpenId);
-        Group group1 = groupService.selectDate(groupId);
-        Integer number1 = group1.getNumber();
+        Integer number1 = group.getNumber();
         aReturn.setNumber(number1);
-        aReturn.setGoodsName(group1.getHfGoods().getHfName());
-        aReturn.setStartTime(group1.getStartTime());
-        aReturn.setStopTime(group1.getStopTime());
-        aReturn.setPrice(group1.getPrice());
+        aReturn.setGoodsName(group.getHfGoods().getHfName());
+        aReturn.setStartTime(group.getStartTime());
+        aReturn.setStopTime(group.getStopTime());
+        aReturn.setPrice(group.getPrice());
         aReturn.setNumberFew(0);
         HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
         aReturn.setName(hfUser.getNickName());
 
-
+        System.out.println("等待");
         return aReturn;
     }
 
@@ -347,6 +348,14 @@ public class GroupController {
             groupService.updateState(groupId);
             return "err";
         }
+        List <Integer>  urId =groupOpenService.selectAllUserId(groupId);
+        if (urId.size()!=0) {
+            for (int i = 0; i < urId.size(); i++) {
+                if (urId.get(i) == userId) {
+                    return "只能参加一次";
+                }
+            }
+        }
         int repertory = group.getRepertory();
             //        默认开团12小时没人集齐退钱
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -394,7 +403,8 @@ public class GroupController {
 
     })
     public  Object  joinGroup(Integer id,Integer userId,String hfDesc,Integer addressId) throws ParseException {
-        List <Integer>  urId =groupOpenService.selectUserId(id);
+        GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
+        List <Integer>  urId =groupOpenService.selectAllUserId(groupOpen.getGroupId());
         if (urId.size()!=0) {
             for (int i = 0; i < urId.size(); i++) {
                 if (urId.get(i) == userId) {
@@ -402,15 +412,18 @@ public class GroupController {
                 }
             }
         }
+
         Integer orderId=0;
-        GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
         Integer groupId = groupOpen.getGroupId();
         Group group=groupService.selectByPrimaryKey(groupId);
-        int reality=groupOpenService.selectNumber(id);
-        GroupOpen groupOpen1 = groupOpenService.selectById(id);
+        if (group.getRepertory() == null || group.getRepertory() == 0) {
+            groupService.updateState(groupId);
+            return "err";
+        }
+        int reality=groupOpenService.selectNumber(groupOpen.getId());
         //    库存没有
         int number=group.getNumber();
-        Integer groupOpenId=groupOpen1.getId();
+        Integer groupOpenId=groupOpen.getId();
         int repertory=group.getRepertory();
         if(reality+1==number){
             //        成团
@@ -443,7 +456,6 @@ public class GroupController {
         groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
-
         Return aReturn = new Return();
         aReturn.setId(id);
         Group group1 = groupService.selectDate(groupId);
@@ -587,7 +599,7 @@ public class GroupController {
         aReturn.setStartTime(group1.getStartTime());
         aReturn.setStopTime(group1.getStopTime());
         aReturn.setPrice(group1.getPrice());
-        aReturn.setFileDesc(group1.getFileDesc().get(0));
+//        aReturn.setFileDesc(group1.getFileDesc().get(0));
         int i = groupOpenService.selectNumber(id);
         int a1=number1-i;
         aReturn.setNumberFew(a1);
@@ -598,6 +610,9 @@ public class GroupController {
             hfUser=hfUserService.selectByPrimaryKey(a);
             hfUsers.add(hfUser);
         }
+        GroupOpenConnect groupOpenConnect = groupOpenConnectService.selectByGroup(userId, groupOpen1.getId());
+        System.out.println(groupOpenConnect.getIsDeleted()+"3333333");
+        aReturn.setIsDeleted(groupOpenConnect.getIsDeleted());
         aReturn.setUser(hfUsers);
         return aReturn;
     }

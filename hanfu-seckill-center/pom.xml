@@ -169,6 +169,7 @@
           <groupId>com.hanfu.group.center</groupId>
           <artifactId>hanfu-group-center</artifactId>
           <version>0.0.1</version>
+          <scope>compile</scope>
       </dependency>
   </dependencies>
 </project>

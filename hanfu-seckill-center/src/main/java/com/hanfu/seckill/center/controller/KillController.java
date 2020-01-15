@@ -103,7 +103,18 @@ public class KillController {
     })
     @ResponseBody
     public synchronized   List<Object> execute( Integer id,Integer userId,String desc,Integer addressId) throws ParseException {
+        Seckill seckills = seckillService.selectId(id);
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        String format1 = formatter.format(date);
+        Long in2 = Long.valueOf(format1);
+        Date startTime = seckills.getStartTime();
+        long time = startTime.getTime();
         List<Object> objects = new ArrayList<>();
+        if (in2<time){
+            objects.add("未开始");
+            return objects;
+        }
         if (seckillConnectService.selectBySeckillId(userId,id)!=null){
             objects.add("已结束");
             return objects;
@@ -120,11 +131,8 @@ public class KillController {
 //        秒杀成功
         int repertory1=repertory-1;
         seckillService.updateRepertory(id,bossId,repertory1);
-        Seckill seckills = seckillService.selectId(id);
         seckillConnectService.insert(userId,seckills.getId());
         List<Object> insert = hfOrdersSerice.insert(seckills, userId, desc, addressId);
-
-
         objects.add(insert);
         return objects;
     }

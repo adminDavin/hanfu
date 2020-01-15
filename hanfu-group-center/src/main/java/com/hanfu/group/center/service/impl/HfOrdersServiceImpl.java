@@ -2,10 +2,7 @@ package com.hanfu.group.center.service.impl;
 
 
 
-import com.hanfu.group.center.manual.dao.GroupOpenConnectMapper;
-import com.hanfu.group.center.manual.dao.HfOrderLogisticsMapper;
-import com.hanfu.group.center.manual.dao.HfOrdersDetailMapper;
-import com.hanfu.group.center.manual.dao.HfOrdersMapper;
+import com.hanfu.group.center.manual.dao.*;
 import com.hanfu.group.center.manual.model.*;
 import com.hanfu.group.center.service.HfOrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,11 @@ public class HfOrdersServiceImpl implements HfOrdersService {
      HfOrderLogisticsMapper hfOrdersLogistcsMapper;
     @Autowired
     GroupOpenConnectMapper groupOpenConnectMapper;
+    @Autowired
+    HfGoodsMapper hfGoodsMapper;
+    @Autowired
+    HfRespMapper hfRespMapper;
+
     @Override
     public List<Object> insert(Group group, Integer userId,Integer groupOpenId ) throws ParseException {
         GroupOpenConnect groupOpenConnect = groupOpenConnectMapper.selectByGroup(userId, groupOpenId);
@@ -74,6 +76,14 @@ public class HfOrdersServiceImpl implements HfOrdersService {
         hfOrderLogistics.setModifyTime(startTime1);
         hfOrderLogistics.setIsDeleted((short) 0);
         hfOrdersLogistcsMapper.insert(hfOrderLogistics);
+
+        HfGoods hfGoods = hfGoodsMapper.selectById(group.getGoodsId());
+        HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+        Integer quantity = hfResp.getQuantity();
+        Integer sum=quantity-1;
+        hfResp.setQuantity(sum);
+        hfRespMapper.updateByPrimaryKey(hfResp);
+
         List<Object> objects = new ArrayList<>();
         objects.add(hfOrderLogistics);
         objects.add(orders);

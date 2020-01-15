@@ -16,6 +16,7 @@ public class Return implements Serializable {
     private String goodsName;
     private Integer number;
     private Integer numberFew;
+    private  Short isDeleted;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date startTime;
@@ -23,6 +24,14 @@ public class Return implements Serializable {
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss",timezone = "GMT+8")
     private Date stopTime;
     private FileDesc fileDesc;
+
+    public Short getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Short isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
     public FileDesc getFileDesc() {
         return fileDesc;

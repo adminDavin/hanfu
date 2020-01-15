@@ -28,6 +28,15 @@
     where order_type = #{orderType} AND user_id=#{userId}
   </select>
 
+  <select id="selectByDate" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from hf_orders
+    where order_type = #{orderType} AND user_id=#{userId} AND  create_time=#{time}
+  </select>
+
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
     <include refid="Base_Column_List" />

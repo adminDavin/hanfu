@@ -113,4 +113,9 @@ public class GroupOpenServiceImpl implements GroupOpenService {
     public List<Integer> selectByUserId(Integer groupId) {
         return groupOpen.selectByUserId(groupId);
     }
+
+    @Override
+    public List<Integer> selectAllUserId(Integer groupId) {
+        return groupOpen.selectAllUserId(groupId);
+    }
 }

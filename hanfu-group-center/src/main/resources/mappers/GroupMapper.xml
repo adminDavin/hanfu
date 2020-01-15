@@ -56,7 +56,7 @@
          b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
         FROM
         group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
-        left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id} and a.is_deleted=0
+        left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id}
     </select>
 
   <select id="selectCategory"  parameterType="Integer"  resultMap="Date" >
