@@ -8,6 +8,7 @@
         <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
         <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
         <result column="boss_id" jdbcType="INTEGER" property="bossId"/>
+        <result column="file_id" jdbcType="SMALLINT" property="fileId"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
@@ -48,7 +49,7 @@
         p1.category_id, p1.brand_id,
         p1.product_desc, p1.boss_id,
         p1.create_time, p1.last_modifier,
-        p1.modify_time, p1.is_deleted
+        p1.modify_time, p1.is_deleted,p1.file_id
         FROM
         product p1
         LEFT JOIN
@@ -63,7 +64,7 @@
         h.hf_name productCategoryName,p.category_id,
         p.brand_id,p.last_modifier,
         p.id productId,p.create_time,
-        p.modify_time, p.is_deleted
+        p.modify_time, p.is_deleted,p.file_id
         FROM
         product p
         LEFT JOIN

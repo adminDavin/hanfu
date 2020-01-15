@@ -423,159 +423,159 @@ public class KingWordsController {
         return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
     }
 
-    @RequestMapping(path = "/wxLogin", method = RequestMethod.GET)
-    @ApiOperation(value = "微信登录", notes = "微信登录")
-    public ResponseEntity<JSONObject> wxLogin(Model model,
-                                              @RequestParam(value = "code", required = false) String code,
-                                              @RequestParam(value = "rawData", required = false) String rawData,
-                                              @RequestParam(value = "signature", required = false) String signature,
-                                              @RequestParam(value = "encryptedData", required = false) String encryptedData,
-                                              @RequestParam(value = "iv", required = false) String iv
-    ) throws Exception {
-        logger.info("Start get SessionKey");
-        Integer userId = null;
-        Map<String, Object> map = new HashMap<String, Object>();
-        //JSONObject rawDataJson = JSON.parseObject( rawData );
-        JSONObject SessionKeyOpenId = getSessionKeyOrOpenId(code);
-        String openid = (String) SessionKeyOpenId.get("openid");
-        String sessionKey = (String) SessionKeyOpenId.get("session_key");
-        //uuid生成唯一key
-        String skey = UUID.randomUUID().toString();
-        //根据openid查询skey是否存在
-        String skey_redis = (String) redisTemplate.opsForValue().get(openid);
-        if (!StringUtils.isEmpty(skey_redis)) {
-            //存在 删除 skey 重新生成skey 将skey返回
-            redisTemplate.delete(skey_redis);
-            skey = UUID.randomUUID().toString();
-        }
-        //  缓存一份新的
-        JSONObject sessionObj = new JSONObject();
-        sessionObj.put("openId", openid);
-        sessionObj.put("sessionKey", sessionKey);
-        redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
-        redisTemplate.opsForValue().set(openid.toString(), skey);
-        //把新的sessionKey和oppenid返回给小程序
-        map.put("skey", skey);
-        map.put("result", "0");
-        JSONObject userInfo = getUserInfo(encryptedData, sessionKey, iv);
-        String unionId = "";
-        String nickName = "";
-        String avatarUrl = "";
-        if (userInfo != null) {
-            if (userInfo.get("unionId") != null) {
-                unionId = (String) userInfo.get("unionId");
-            }
-            nickName = userInfo.getString("nickName");
-            avatarUrl = userInfo.getString("avatarUrl");
-        }
-        if (!StringUtils.isEmpty(unionId)) {
-            HfUserExample example = new HfUserExample();
-            example.createCriteria().andUsernameEqualTo(unionId);
-            List<HfUser> list = hfUserMapper.selectByExample(example);
-            if (list.isEmpty()) {
-                HfUser hfUser = new HfUser();
-                hfUser.setAddress(avatarUrl);
-                hfUser.setNickName(nickName);
-                hfUser.setUsername(unionId);
-                hfUser.setCreateDate(LocalDateTime.now());
-                hfUser.setModifyDate(LocalDateTime.now());
-                hfUser.setIdDeleted((byte) 0);
-                try {
-                    hfUserMapper.insert(hfUser);
-                } catch (Exception e) {
-                    hfUser.setAddress(avatarUrl);
-                    HfUserExample example2 = new HfUserExample();
-                    example2.createCriteria().andNickNameLike("未知昵称%");
-                    List<HfUser> list2 = hfUserMapper.selectByExample(example2);
-                    hfUser.setNickName("未知昵称" + list2.size() + 1);
-                    hfUser.setUsername(unionId);
-                    hfUser.setCreateDate(LocalDateTime.now());
-                    hfUser.setModifyDate(LocalDateTime.now());
-                    hfUser.setIdDeleted((byte) 0);
-                    hfUserMapper.insert(hfUser);
-                }
-                userId = hfUser.getId();
-            } else {
-                HfUser hfUser = list.get(0);
-                hfUser.setAddress(avatarUrl);
-                hfUser.setNickName(nickName);
-                try {
-                    hfUserMapper.updateByPrimaryKey(hfUser);
-                } catch (Exception e) {
-                    hfUser.setAddress(avatarUrl);
-                    hfUser.setNickName(list.get(0).getNickName());
-                    hfUser.setUsername(unionId);
-                    hfUser.setCreateDate(LocalDateTime.now());
-                    hfUser.setModifyDate(LocalDateTime.now());
-                    hfUser.setIdDeleted((byte) 0);
-                    hfUserMapper.updateByPrimaryKey(hfUser);
-                }
-                userId = hfUser.getId();
-            }
-        }
-        map.put("userId", userId);
-        map.put("userInfo", userInfo);
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(map));
-    }
+    @RequestMapping(path = "/wxLogin",  method = RequestMethod.GET)
+	@ApiOperation(value = "微信登录", notes = "微信登录")
+	public ResponseEntity<JSONObject> wxLogin(Model model,                                  
+			@RequestParam(value = "code",required = false) String code,                                  
+			@RequestParam(value = "rawData",required = false) String rawData,                                  
+			@RequestParam(value = "signature",required = false) String signature,                                  
+			@RequestParam(value = "encryptedData",required = false) String encryptedData,                                  
+			@RequestParam(value = "iv",required = false) String iv
+			) throws Exception{
+		logger.info( "Start get SessionKey" );
+		Integer userId = null;
+		Map<String,Object> map = new HashMap<String, Object>();    
+		//JSONObject rawDataJson = JSON.parseObject( rawData );     
+		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );    	
+		String openid = (String) SessionKeyOpenId.get("openid");   
+		String sessionKey = (String) SessionKeyOpenId.get( "session_key" );    
+		//uuid生成唯一key    
+		String skey = UUID.randomUUID().toString();    
+		//根据openid查询skey是否存在   
+		String skey_redis =(String) redisTemplate.opsForValue().get( openid ); 
+		if(!StringUtils.isEmpty(skey_redis)){    
+			//存在 删除 skey 重新生成skey 将skey返回    
+			redisTemplate.delete( skey_redis );
+			skey = UUID.randomUUID().toString();
+		}      
+		//  缓存一份新的       
+		JSONObject sessionObj = new JSONObject();      
+		sessionObj.put( "openId",openid );     
+		sessionObj.put( "sessionKey",sessionKey );  
+		redisTemplate.opsForValue().set( skey,sessionObj.toJSONString() );
+		redisTemplate.opsForValue().set( openid.toString(),skey );     
+		//把新的sessionKey和oppenid返回给小程序      
+		map.put( "skey",skey );  
+		map.put( "result","0" );  
+		JSONObject userInfo = getUserInfo( encryptedData, sessionKey, iv );
+		String unionId = "";
+		String nickName = "";
+		String avatarUrl = "";
+		if(userInfo != null) {
+			if(userInfo.get("unionId") != null) {
+				unionId = (String) userInfo.get("unionId");
+			}
+			nickName = 	userInfo.getString("nickName");
+			avatarUrl = userInfo.getString("avatarUrl");
+		}
+		if(!StringUtils.isEmpty(unionId)) {
+			HfUserExample example = new HfUserExample();
+			example.createCriteria().andUsernameEqualTo(unionId);
+			List<HfUser> list = hfUserMapper.selectByExample(example);
+			if(list.isEmpty()) {
+				HfUser hfUser = new HfUser();
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				hfUser.setUsername(unionId);
+				hfUser.setCreateDate(LocalDateTime.now());
+				hfUser.setModifyDate(LocalDateTime.now());
+				hfUser.setIdDeleted((byte) 0);
+				try {
+					hfUserMapper.insert(hfUser);
+				} catch (Exception e) {
+					hfUser.setAddress(avatarUrl);
+					HfUserExample example2 = new HfUserExample();
+					example2.createCriteria().andNickNameLike("未知昵称%");
+					List<HfUser> list2 = hfUserMapper.selectByExample(example2);
+					hfUser.setNickName("未知昵称"+list2.size()+1);
+					hfUser.setUsername(unionId);
+					hfUser.setCreateDate(LocalDateTime.now());
+					hfUser.setModifyDate(LocalDateTime.now());
+					hfUser.setIdDeleted((byte) 0);
+					hfUserMapper.insert(hfUser);
+				}
+				userId = hfUser.getId();
+			}else {
+				HfUser hfUser = list.get(0);
+				hfUser.setAddress(avatarUrl);
+				hfUser.setNickName(nickName);
+				try {
+					hfUserMapper.updateByPrimaryKey(hfUser);
+				} catch (Exception e) {
+					hfUser.setAddress(avatarUrl);
+					hfUser.setNickName(list.get(0).getNickName());
+					hfUser.setUsername(unionId);
+					hfUser.setCreateDate(LocalDateTime.now());
+					hfUser.setModifyDate(LocalDateTime.now());
+					hfUser.setIdDeleted((byte) 0);
+					hfUserMapper.updateByPrimaryKey(hfUser);
+				}
+				userId = hfUser.getId();
+			}
+		}
+		map.put("userId", userId);
+		map.put( "userInfo",userInfo ); 
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
 
-    private JSONObject getUserInfo(String encryptedData, String sessionKey, String iv) {
-        // 被加密的数据
-        byte[] dataByte = Base64.getDecoder().decode(encryptedData);
-        // 加密秘钥
-        byte[] keyByte = Base64.getDecoder().decode(sessionKey);
-        // 偏移量
-        byte[] ivByte = Base64.getDecoder().decode(iv);
-        try {
-            // 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
-            int base = 16;
-            if (keyByte.length % base != 0) {
-                int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
-                byte[] temp = new byte[groups * base];
-                Arrays.fill(temp, (byte) 0);
-                System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
-                keyByte = temp;
-            }
-            // 初始化
-            Security.addProvider(new BouncyCastleProvider());
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
-            SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
-            AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
-            parameters.init(new IvParameterSpec(ivByte));
-            cipher.init(Cipher.DECRYPT_MODE, spec, parameters);// 初始化
-            byte[] resultByte = cipher.doFinal(dataByte);
-            if (null != resultByte && resultByte.length > 0) {
-                String result = new String(resultByte, "UTF-8");
-                return JSON.parseObject(result);
-            }
-        } catch (NoSuchAlgorithmException e) {
-            logger.error(e.getMessage(), e);
-        } catch (NoSuchPaddingException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvalidParameterSpecException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IllegalBlockSizeException e) {
-            logger.error(e.getMessage(), e);
-        } catch (BadPaddingException e) {
-            logger.error(e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvalidKeyException e) {
-            logger.error(e.getMessage(), e);
-        } catch (InvalidAlgorithmParameterException e) {
-            logger.error(e.getMessage(), e);
-        } catch (NoSuchProviderException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
+	private JSONObject getUserInfo(String encryptedData, String sessionKey, String iv) {
+		// 被加密的数据
+		byte[] dataByte = Base64.getDecoder().decode(encryptedData);
+		// 加密秘钥
+		byte[] keyByte = Base64.getDecoder().decode(sessionKey);
+		// 偏移量
+		byte[] ivByte = Base64.getDecoder().decode(iv);
+		try {
+			// 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
+			int base = 16;
+			if (keyByte.length % base != 0) {
+				int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
+				byte[] temp = new byte[groups * base];
+				Arrays.fill(temp, (byte) 0);
+				System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
+				keyByte = temp;
+			}
+			// 初始化
+			Security.addProvider(new BouncyCastleProvider());
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding","BC");
+			SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
+			AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
+			parameters.init(new IvParameterSpec(ivByte));
+			cipher.init( Cipher.DECRYPT_MODE, spec, parameters);// 初始化
+			byte[] resultByte = cipher.doFinal(dataByte);
+			if (null != resultByte && resultByte.length > 0) {
+				String result = new String(resultByte, "UTF-8");
+				return JSON.parseObject(result);
+			}
+		} catch (NoSuchAlgorithmException e) {
+			logger.error(e.getMessage(), e);
+		} catch (NoSuchPaddingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidParameterSpecException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IllegalBlockSizeException e) {
+			logger.error(e.getMessage(), e);
+		} catch (BadPaddingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (UnsupportedEncodingException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidKeyException e) {
+			logger.error(e.getMessage(), e);
+		} catch (InvalidAlgorithmParameterException e) {
+			logger.error(e.getMessage(), e);
+		} catch (NoSuchProviderException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
 
-    }
+	}
 
-    private JSONObject getSessionKeyOrOpenId(String code) {
-        //微信端登录code
-        //String wxCode = code;
-        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code=" + code + "&grant_type=authorization_code";
-        //Map<String,String> requestUrlParam = new HashMap<String, String>(  );
+	private JSONObject getSessionKeyOrOpenId(String code) {
+		//微信端登录code
+		//String wxCode = code;
+		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code="+code+"&grant_type=authorization_code";
+		//Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
 //		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
@@ -583,23 +583,23 @@ public class KingWordsController {
 //		//发送post请求读取调用微信接口获取openid用户唯一标识
 //		String str = UrlUtil.sendPost( requestUrl,requestUrlParam );
 //		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(requestUrl);
-        JSONObject jsonObject = null;
-
-        try {
-            HttpResponse response = httpClient.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String result = EntityUtils.toString(entity, "UTF-8");
-                jsonObject = JSONObject.parseObject(result);
-            }
-        } catch (ClientProtocolException e) {
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(requestUrl);
+		JSONObject jsonObject = null;
+		
+		try {
+			HttpResponse response = httpClient.execute(httpGet);
+			HttpEntity entity = response.getEntity();
+			if(entity != null) {
+				String result = EntityUtils.toString(entity,"UTF-8");
+				jsonObject = JSONObject.parseObject(result);
+			}
+		} catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+		
         return jsonObject;
-    }
+	}
 }

@@ -136,8 +136,8 @@ public class GoodsController {
 	private HfCategoryMapper hfCategoryMapper;
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
-
-
+	
+	
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -916,41 +916,43 @@ public class GoodsController {
 //		}
 		return builder.body(ResponseUtils.getResponseBody("库存容量不足"));
 	}
+	
 	@ApiOperation(value = "根据类目id查询商品列表", notes = "根据类目id查询商品列表")
-	@RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findProductBycategoryId(
-			@RequestParam(name = "categoryId", required = false) Integer categoryId,
-			@RequestParam(name = "page", required = false) Integer page,
-			@RequestParam(name = "size", required = false) Integer size) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<HfGoodsDisplay> hfGoodsDisplays = new ArrayList<HfGoodsDisplay>();
-		ProductExample example = new ProductExample();
-		example.createCriteria().andCategoryIdEqualTo(categoryId);
-		if (!StringUtils.isEmpty(page)) {
-			if (!StringUtils.isEmpty(size)) {
-				PageHelper.startPage(page, size);
-			}
-		}
-		List<Product> list = productMapper.selectByExample(example);
-		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				Product product = list.get(i);
-				HfGoodsDisplay display = new HfGoodsDisplay();
-				display.setCategoryId(categoryId);
-				display.setProductId(product.getId());
-				List<HfGoodsDisplay> goodsDisplay = hfGoodsDao.selectProductBycategoryIdOrProductName(display);
-				if(!goodsDisplay.isEmpty()) {
-					HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
-					example2.createCriteria().andGoodsIdEqualTo(goodsDisplay.get(0).getId());
-					List<HfGoodsPictrue> list2 = hfGoodsPictrueMapper.selectByExample(example2);
-					if(!list2.isEmpty()) {
-						HfGoodsPictrue hfGoodsPictrue = list2.get(0);
-						goodsDisplay.get(0).setFileId(hfGoodsPictrue.getFileId());
-					}
-					hfGoodsDisplays.add(goodsDisplay.get(0));
-				}
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplays));
-	}
+    @RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> findProductBycategoryId(
+                    @RequestParam(name = "categoryId", required = false) Integer categoryId,
+                    @RequestParam(name = "page", required = false) Integer page,
+                    @RequestParam(name = "size", required = false) Integer size) throws JSONException {
+            BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+            List<HfGoodsDisplay> hfGoodsDisplays = new ArrayList<HfGoodsDisplay>();
+            ProductExample example = new ProductExample();
+            example.createCriteria().andCategoryIdEqualTo(categoryId);
+            if (!StringUtils.isEmpty(page)) {
+                    if (!StringUtils.isEmpty(size)) {
+                            PageHelper.startPage(page, size);
+                    }
+            }
+            List<Product> list = productMapper.selectByExample(example);
+            if (!list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                            Product product = list.get(i);
+                            HfGoodsDisplay display = new HfGoodsDisplay();
+                            display.setCategoryId(categoryId);
+                            display.setProductId(product.getId());
+                            List<HfGoodsDisplay> goodsDisplay = hfGoodsDao.selectProductBycategoryIdOrProductName(display);
+                            if(!goodsDisplay.isEmpty()) {
+                                    HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
+                                    example2.createCriteria().andGoodsIdEqualTo(goodsDisplay.get(0).getId());
+                                    List<HfGoodsPictrue> list2 = hfGoodsPictrueMapper.selectByExample(example2);
+                                    if(!list2.isEmpty()) {
+                                            HfGoodsPictrue hfGoodsPictrue = list2.get(0);
+                                            goodsDisplay.get(0).setFileId(hfGoodsPictrue.getFileId());
+                                    }
+                                    hfGoodsDisplays.add(goodsDisplay.get(0));
+                            }
+                    }
+            }
+            return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplays));
+    }
+	
 }

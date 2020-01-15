@@ -136,7 +136,8 @@
 		h4.phone,
 		h5.hf_name,
 		h2.amount,
-		h3.googs_id
+		h3.googs_id,
+		h3.order_detail_status
 		FROM
 		hf_order_logistics h1
 		LEFT JOIN hf_orders h2 ON h1.orders_id = h2.id
