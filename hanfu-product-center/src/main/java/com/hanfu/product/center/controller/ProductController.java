@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,6 +293,29 @@ public class ProductController {
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.deleteByPrimaryKey(categoryId)));
 	}
 
+	@ApiOperation(value = "添加商品图片", notes = "添加商品图片")
+	@RequestMapping(value = "/addProductPictrue", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addProductPictrue(@RequestParam("fileInfo1")MultipartFile fileInfo,Integer productId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Product product = productMapper.selectByPrimaryKey(productId);
+		if(product == null) {
+			return builder.body(ResponseUtils.getResponseBody(""));
+		}
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		arr = fileMangeService.uploadFile(fileInfo.getBytes(), "-1");
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(fileInfo.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(1);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		fileDescMapper.insert(fileDesc);
+		product.setFileId(fileDesc.getId());
+		return builder.body(ResponseUtils.getResponseBody(productMapper.updateByPrimaryKeySelective(product)));
+	}
 	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
 	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findAllCategory() throws Exception {
@@ -299,7 +323,6 @@ public class ProductController {
 		List<HfCategory> list = hfCategoryMapper.selectByExample(null);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
 	}
-
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
@@ -668,4 +691,14 @@ public class ProductController {
 //        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //        return builder.body(ResponseUtils.getResponseBody(goodsRespService.selectGoodsResp(ProductID).get(0)));
 //    }
+	@ApiOperation(value = "到店支付", notes = "到店支付")
+	@RequestMapping(value = "/pay", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> pay(Integer productId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<Object> list = new ArrayList<>();
+		Product product = productMapper.selectByPrimaryKey(productId);
+		list.add(product.getHfName());
+		list.add(product.getCancelId());
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
 }
