@@ -147,6 +147,9 @@
 		h.id,
 		h.price_id priceId,
 		h.resp_id respId,
+		<if test="fileId != null">
+		   h1.file_id fileId,
+		</if>
 		<if test="priceId != null">
 		h3.sell_price,
 		h3.line_price,
@@ -159,7 +162,9 @@
 		</if>
 		FROM
 		hf_goods h
-		JOIN hf_goods_pictrue h1 ON h1.goods_id = h.id
+		<if test="fileId">
+		    JOIN hf_goods_pictrue h1 ON h1.goods_id = h.id
+		</if>
 		<if test="priceId != null">
 			 JOIN hf_price h3 ON h3.googs_id = h.id
 		</if>
@@ -228,7 +233,8 @@
 		h.cancel_id,
 		h.claim,
 		h.is_deleted,
-		h2.file_id file_id
+		h2.file_id file_id,
+		h3.sell_price
 		FROM
 		hf_goods h
 		JOIN
@@ -242,8 +248,8 @@
 		JOIN
 		hf_goods_pictrue h2 ON h2.goods_id = h.id
 		where p.id=#{goodsId}
-		limit 1
-		;
+		order by h3.sell_price
+		limit 1;
 
 	</select>
 
