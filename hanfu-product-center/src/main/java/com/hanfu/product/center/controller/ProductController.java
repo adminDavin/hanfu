@@ -1,5 +1,6 @@
 package com.hanfu.product.center.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,8 +140,8 @@ public class ProductController {
 
 	@Autowired
 	private FileDescMapper fileDescMapper;
-//	  @Autowired
-//	    private GoodsRespService goodsRespService;
+	//	  @Autowired
+	//	    private GoodsRespService goodsRespService;
 	//    @ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	//    @ApiImplicitParams({
 	//            @ApiImplicitParam(paramType = "query", name = "parentCategoryId", value = "上级的类目id", required = false, type = "Integer"),
@@ -204,43 +205,42 @@ public class ProductController {
 						categories.setLevelId(threeCategory.getLevelId());
 						categoriesList.add(categories);
 					}
-            		info.setCategories(categoriesList);
-            		System.out.println(info);
-            		hfCategories.add(info);
+					info.setCategories(categoriesList);
+					System.out.println(info);
+					hfCategories.add(info);
 				}
-            	return builder.body(ResponseUtils.getResponseBody(hfCategories));
-            }
-        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-        }
-        if(parentCategoryId != null) {
-        	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
-        	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
-        }
-        if(levelId == 1) {
-        	hfCategoryMapper.selectByExample(null);
-        }
-        return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
-    }
+				return builder.body(ResponseUtils.getResponseBody(hfCategories));
+			}
+			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+		}
+		if(parentCategoryId != null) {
+			example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+			return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
+		}
+		if(levelId == 1) {
+			hfCategoryMapper.selectByExample(null);
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
+	}
 
 
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException, Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = new Product();
-		product.setBossId(request.getBossId());
-		product.setBrandId(1);
-		product.setCategoryId(request.getCategoryId());
-		product.setHfName(request.getHfName());
-		product.setLastModifier(request.getLastModifier());
-		product.setCreateTime(LocalDateTime.now());
-		product.setModifyTime(LocalDateTime.now());
-		product.setIsDeleted((short) 0);
-		product.setProductDesc(request.getProductDesc());
-		productMapper.insert(product);
+			product.setBossId(request.getBossId());
+			product.setBrandId(1);
+			product.setCategoryId(request.getCategoryId());
+			product.setHfName(request.getHfName());
+			product.setLastModifier(request.getLastModifier());
+			product.setCreateTime(LocalDateTime.now());
+			product.setModifyTime(LocalDateTime.now());
+			product.setIsDeleted((short) 0);
+			product.setProductDesc(request.getProductDesc());
+			productMapper.insert(product);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
-
 	}
 
 	@ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
@@ -534,14 +534,14 @@ public class ProductController {
 	public ResponseEntity<JSONObject> addProductSpec(ProductSpecRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec item = new ProductSpec();
-			item.setHfName(request.getHfName());
-			item.setProductId(request.getProductId());
-			item.setSpecType("类型");
-			item.setSpecUnit(request.getSpecUnit());
-			item.setSpecValue(request.getSpecValue());
-			item.setCreateTime(LocalDateTime.now());
-			item.setModifyTime(LocalDateTime.now());
-			item.setIsDeleted((short) 0);
+		item.setHfName(request.getHfName());
+		item.setProductId(request.getProductId());
+		item.setSpecType("类型");
+		item.setSpecUnit(request.getSpecUnit());
+		item.setSpecValue(request.getSpecValue());
+		item.setCreateTime(LocalDateTime.now());
+		item.setModifyTime(LocalDateTime.now());
+		item.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
 	}
 
@@ -662,10 +662,10 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectSlideshow()));
 	}
-//    @ApiOperation(value = "获取商品对应物品库存", notes = "获取商品对应物品库存")
-//    @RequestMapping(value = "/selectGoodsResp", method = RequestMethod.GET)
-//    public ResponseEntity<JSONObject> selectGoodsResp(Integer ProductID) throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        return builder.body(ResponseUtils.getResponseBody(goodsRespService.selectGoodsResp(ProductID).get(0)));
-//    }
+	//    @ApiOperation(value = "获取商品对应物品库存", notes = "获取商品对应物品库存")
+	//    @RequestMapping(value = "/selectGoodsResp", method = RequestMethod.GET)
+	//    public ResponseEntity<JSONObject> selectGoodsResp(Integer ProductID) throws JSONException {
+	//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	//        return builder.body(ResponseUtils.getResponseBody(goodsRespService.selectGoodsResp(ProductID).get(0)));
+	//    }
 }

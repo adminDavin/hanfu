@@ -218,7 +218,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> createGood(@RequestParam("fileInfo1")MultipartFile[] fileInfo1,HfGoodsInfo hfGoodsInfo) throws Exception {
+	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods record = new HfGoods();
 			record.setProductId(hfGoodsInfo.getProductId());
@@ -237,33 +237,6 @@ public class GoodsController {
 			record.setCategoryId(hfGoodsInfo.getCatrgoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
-			System.out.println(fileInfo1);
-			for (MultipartFile fileInfo : fileInfo1) {
-				List<HfGoodsPictrue> pictures = Lists.newArrayList();
-				FileMangeService fileMangeService = new FileMangeService();
-				String arr[];
-				arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsInfo.getUserId()));
-				FileDesc fileDesc = new FileDesc();
-				fileDesc.setFileName(fileInfo.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(hfGoodsInfo.getUserId());
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				fileDescMapper.insert(fileDesc);
-				HfGoodsPictrue picture = new HfGoodsPictrue();
-				picture.setFileId(fileDesc.getId()); 
-				picture.setGoodsId(record.getId());
-				picture.setHfName(fileInfo.getName());
-				picture.setSpecDesc(hfGoodsInfo.getPrictureDesc());
-				picture.setCreateTime(LocalDateTime.now());
-				picture.setModifyTime(LocalDateTime.now());
-				picture.setLastModifier(hfGoodsInfo.getUsername());
-				picture.setIsDeleted((short) 0);
-				hfGoodsPictrueMapper.insert(picture);
-				pictures.add(picture);
-		}
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
@@ -655,7 +628,6 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		System.out.println(request.getGoodsId());
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
-
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
