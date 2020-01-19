@@ -8,7 +8,7 @@
                 property="authType"/>
         <result column="auth_key" jdbcType="VARCHAR" property="authKey"/>
     </resultMap>
-    <resultMap type="com.hanfu.user.center.model.HfUser"
+    <resultMap type="com.hanfu.user.center.manual.model.UserInfo"
                id="ResultMap">
         <result column="id" jdbcType="INTEGER" property="id"/>
         <result column="username" jdbcType="VARCHAR"
@@ -39,6 +39,10 @@
                 property="modifyDate"/>
         <result column="id_deleted" jdbcType="TINYINT"
                 property="idDeleted"/>
+        <result column="cancel_id" jdbcType="INTEGER"
+                property="cancelId"/>
+        <result column="hf_balance" jdbcType="INTEGER"
+                property="hfBalance"/>
     </resultMap>
 
     <resultMap type="com.hanfu.user.center.manual.model.ActivityUserInfo"
@@ -55,7 +59,7 @@
         <result column="department_id" jdbcType="INTEGER"
                 property="departmentId"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
-    </resultMap>
+    </resultMap>   
 
     <select id="selectAuthList" resultMap="BaseResultMap">
         SELECT
@@ -72,6 +76,22 @@
         hf_user_balance h1
         ON
         h.id = h1.user_id
+        where  1=1
+        <if test="createDate != null">
+         and  h.createDate = #{createDate}
+        </if>
+        <if test="userStatus !=null">
+        and  h.user_status = #{userStatus}
+        </if>
+        <if test="sex !=null">
+        and  h.sex = #{sex}
+        </if>
+        <if test="userLevel !=null">
+        and  h.user_level = #{userLevel}
+        </if>
+        <if test="nickName !=null">
+        and  h.nick_name = #{nickName}
+        </if>
     </select>
     <!-- <select id="findActivityUserInfo" resultMap="ActivityUserInfo">
         SELECT

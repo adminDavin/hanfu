@@ -30,8 +30,18 @@ public class UserInfoRequest extends CommonRequest {
     private String region;
     @ApiParam(required = false, value = "手机号")
     private String phone;
+    @ApiParam(required = false, value = "用户状态")
+    private Byte userStatus;
+    
+    public Byte getUserStatus() {
+		return userStatus;
+	}
 
-    public String getUsername() {
+	public void setUserStatus(Byte userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getUsername() {
         return username;
     }
 

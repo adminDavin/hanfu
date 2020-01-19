@@ -7,11 +7,13 @@ import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.dao.AuthorizationMapper;
 import com.hanfu.user.center.config.PermissionConstants;
+import com.hanfu.user.center.config.WxLoginConfig;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
+import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.*;
@@ -28,11 +30,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
@@ -263,6 +267,9 @@ public class KingWordsController {
         if (!StringUtils.isEmpty(request.getSex())) {
             user.setSex(request.getSex());
         }
+        if (!StringUtils.isEmpty(request.getUserStatus())) {
+            user.setSex(request.getUserStatus());
+        }
         user.setModifyDate(LocalDateTime.now());
         user.setIdDeleted((byte) 0);
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -418,9 +425,9 @@ public class KingWordsController {
     }
     @RequestMapping(path = "/selectList", method = RequestMethod.GET)
     @ApiOperation(value = "用户列表", notes = "用户列表")
-    public ResponseEntity<JSONObject> selectList() throws Exception {
+    public ResponseEntity<JSONObject> selectList(UserInfo userInfo) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+        return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList(userInfo)));
     }
 
     @RequestMapping(path = "/wxLogin", method = RequestMethod.GET)
@@ -481,6 +488,7 @@ public class KingWordsController {
                 hfUser.setModifyDate(LocalDateTime.now());
                 hfUser.setIdDeleted((byte) 0);
                 hfUser.setCancelId(0);
+                hfUser.setUserStatus((byte) 0);
                 try {
                     hfUserMapper.insert(hfUser);
                 } catch (Exception e) {
@@ -494,6 +502,7 @@ public class KingWordsController {
                     hfUser.setModifyDate(LocalDateTime.now());
                     hfUser.setIdDeleted((byte) 0);
                     hfUser.setCancelId(0);
+                    hfUser.setUserStatus((byte) 0);
                     hfUserMapper.insert(hfUser);
                 }
                 userId = hfUser.getId();
@@ -511,6 +520,7 @@ public class KingWordsController {
                     hfUser.setModifyDate(LocalDateTime.now());
                     hfUser.setIdDeleted((byte) 0);
                     hfUser.setCancelId(0);
+                    hfUser.setUserStatus((byte) 0);
                     hfUserMapper.updateByPrimaryKey(hfUser);
                 }
                 userId = hfUser.getId();
@@ -577,21 +587,21 @@ public class KingWordsController {
     private JSONObject getSessionKeyOrOpenId(String code) {
         //微信端登录code
         //String wxCode = code;
-        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code=" + code + "&grant_type=authorization_code";
+        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid="+WxLoginConfig.APPID+"&secret="+WxLoginConfig.SECRET+"&js_code=" + code + "&grant_type="+WxLoginConfig.GRANTTYPE;
         //Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
 //		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
-//		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
+//		requestUrlParam.put( "grant_type","authorization_code" );//默认参数 
 //		//发送post请求读取调用微信接口获取openid用户唯一标识
 //		String str = UrlUtil.sendPost( requestUrl,requestUrlParam );
 //		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+        CloseableHttpClient  client = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet(requestUrl);
         JSONObject jsonObject = null;
 
         try {
-            HttpResponse response = httpClient.execute(httpGet);
+            HttpResponse response = client.execute(httpGet);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String result = EntityUtils.toString(entity, "UTF-8");
