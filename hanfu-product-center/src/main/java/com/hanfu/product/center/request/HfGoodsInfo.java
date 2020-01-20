@@ -11,7 +11,7 @@ public class HfGoodsInfo extends CommonRequest {
     private Integer productId;
     @ApiModelProperty(required = true, value = "物品名称")
     private String goodName;
-    @ApiModelProperty(required = true, value = "物品描述")
+    @ApiModelProperty(required = false, value = "物品描述")
     private String goodsDesc;
     @ApiModelProperty(name = "username", required = true, value = "商家名称")
     private String username;

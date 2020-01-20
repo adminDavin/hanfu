@@ -147,13 +147,9 @@
 		h.id,
 		h.price_id priceId,
 		h.resp_id respId,
-		<if test="fileId != null">
-		   h1.file_id fileId,
-		</if>
 		<if test="priceId != null">
 		h3.sell_price,
 		h3.line_price,
-		h1.file_id,
 		</if>
 		h.hf_name,
 		h.goods_desc,
@@ -162,9 +158,6 @@
 		</if>
 		FROM
 		hf_goods h
-		<if test="fileId">
-		    JOIN hf_goods_pictrue h1 ON h1.goods_id = h.id
-		</if>
 		<if test="priceId != null">
 			 JOIN hf_price h3 ON h3.googs_id = h.id
 		</if>
@@ -194,8 +187,7 @@
 		JOIN
 		hf_category h1
 		ON
-		h.category_id =
-		h1.id
+		h.category_id = h1.id
 		WHERE
 		h.stone_id=#{stoneId}
 	</select>
