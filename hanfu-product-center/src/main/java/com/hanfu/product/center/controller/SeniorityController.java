@@ -21,28 +21,21 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
-import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfSeniorityMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.SeniorityInstanceMapper;
-import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.FileDescExample;
-import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfPrice;
-import com.hanfu.product.center.model.HfResp;
-import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfSeniority;
 import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.ProductExample;
 import com.hanfu.product.center.model.SeniorityInstance;
 import com.hanfu.product.center.model.SeniorityInstanceExample;
-import com.hanfu.product.center.model.Warehouse;
-import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.HfSeniorityRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -70,12 +63,6 @@ public class SeniorityController {
     private HfGoodsDao hfGoodsDao;
     @Autowired
     private HfPriceMapper    hfPriceMapper;
-
-    @Autowired
-    private HfRespMapper hfRespMapper;
-
-    @Autowired
-    private WarehouseMapper warehouseMapper;
 
     @Autowired
     private ProductMapper productMapper;

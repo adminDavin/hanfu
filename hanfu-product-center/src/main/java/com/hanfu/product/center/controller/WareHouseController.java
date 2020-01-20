@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.model.WarehouseExample;
-import com.hanfu.product.center.request.HfRespRequest;
 import com.hanfu.product.center.request.WareHouseRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;

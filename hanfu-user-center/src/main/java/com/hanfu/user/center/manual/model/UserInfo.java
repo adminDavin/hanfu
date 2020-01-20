@@ -3,33 +3,73 @@ package com.hanfu.user.center.manual.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import io.swagger.annotations.ApiParam;
 
 @SuppressWarnings("serial")
 public class UserInfo implements Serializable {
+	@ApiParam(required = false, value = "用户Id")
+	private Integer Id;
+	@ApiParam(required = false, value = "用户Id")
 	private Integer userId;
-
-
+	@ApiParam(required = false, value = "用户邮箱")
 	private String email;
-	private Integer id;
+	@ApiParam(required = false, value = "用户名")
 	private String username;
+	@ApiParam(required = false, value = "手机号")
 	private String phone;
+	@ApiParam(required = false, value = "用户来源")
 	private String sourceType;
+	@ApiParam(required = false, value = "用户昵称")
 	private String nickName;
+	@ApiParam(required = false, value = "真实姓名")
 	private String realName;
+	@ApiParam(required = false, value = "性别")
 	private Byte sex;
+	@ApiParam(required = false, value = "出生日期")
 	private LocalDateTime birthDay;
+	@ApiParam(required = false, value = "用户状态")
 	private Byte userStatus;
+	@ApiParam(required = false, value = "用户头像")
 	private Integer fileId;
+	@ApiParam(required = false, value = "用户地址")
 	private String address;
+	@ApiParam(required = false, value = "用户等级")
 	private Byte userLevel;
+	@ApiParam(required = false, value = "最后修改人")
 	private LocalDateTime lastAuthTime;
+	@ApiParam(required = false, value = "地区")
 	private String region;
+	@ApiParam(required = false, value = "创建时间")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime createDate;
+	@ApiParam(required = false, value = "修改时间")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime modifyDate;
+	@ApiParam(required = false, value = "是否失效")
 	private Byte idDeleted;
+	@ApiParam(required = false, value = "核销员Id")
 	private Integer cancelId;
+	@ApiParam(required = false, value = "余额类型")
 	private String balanceType;
+	@ApiParam(required = false, value = "余额")
     private Integer hfBalance;
+	@ApiParam(required = false, value = "时间")
+    private String time;
+	
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
+	public Integer getId() {
+		return Id;
+	}
+	public void setId(Integer id) {
+		Id = id;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
@@ -41,12 +81,6 @@ public class UserInfo implements Serializable {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
 	}
 	public String getUsername() {
 		return username;

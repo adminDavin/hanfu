@@ -32,8 +32,18 @@ public class UserInfoRequest extends CommonRequest {
     private String phone;
     @ApiParam(required = false, value = "用户状态")
     private Byte userStatus;
+    @ApiParam(required = false, value = "核销员Id")
+    private Integer cancelId;
     
-    public Byte getUserStatus() {
+    public Integer getCancelId() {
+		return cancelId;
+	}
+
+	public void setCancelId(Integer cancelId) {
+		this.cancelId = cancelId;
+	}
+
+	public Byte getUserStatus() {
 		return userStatus;
 	}
 

@@ -47,13 +47,22 @@ public class HfUserAddressManager {
     @ApiOperation(value = "获取用戶地址列表", notes = "获取用戶地址列表")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "token", value = "token", required = false, type = "String")
+            @ApiImplicitParam(paramType = "query", name = "token", value = "token", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "phoneNumber", value = "手机号", required = false, type = "String")
     })
-    public ResponseEntity<JSONObject> query(@RequestParam Integer userId, @RequestParam String token) throws Exception {
+    public ResponseEntity<JSONObject> query(@RequestParam Integer userId, @RequestParam String token,String phoneNumber) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUserAddresseExample e = new HfUserAddresseExample();
-        e.createCriteria().andUserIdEqualTo(userId);
-        return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(e)));
+        if(userId != null) {
+        	e.createCriteria().andUserIdEqualTo(userId);
+        	return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(e)));
+        }else {
+        	if(phoneNumber !=null) {
+        		e.createCriteria().andPhoneNumberEqualTo(phoneNumber);
+        		return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(e)));
+        	}
+        }
+        return builder.body(ResponseUtils.getResponseBody("用户没有添加地址"));
     }
 
     @CrossOrigin
@@ -62,7 +71,6 @@ public class HfUserAddressManager {
     public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser hfUser = new HfUser();
-
         HfUserAddresse hfUserAddress = new HfUserAddresse();
         hfUserAddress.setUserId(request.getUserId());
         hfUserAddress.setContact(request.getContact());
@@ -80,7 +88,8 @@ public class HfUserAddressManager {
         if (StringUtils.isEmpty(hfUser.getAddress())) {
             hfUserAddress.setIsFaultAddress(1);
         }
-        int i = addressDao.updateAddress(request.getId());
+        @SuppressWarnings("unused")
+		int i = addressDao.updateAddress(request.getId());
         return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.insert(hfUserAddress)));
     }
 
@@ -144,18 +153,7 @@ public class HfUserAddressManager {
         example.createCriteria().andIdEqualTo(id);
         return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByPrimaryKey(id)));
     }
-
-    @RequestMapping(value = "/searchAddress", method = RequestMethod.GET)
-    @ApiOperation(value = "搜索地址", notes = "搜索地址")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "phoneNumber", value = "手机号", required = true, type = "String")})
-    public ResponseEntity<JSONObject> search(@RequestParam String phoneNumber) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        HfUserAddresseExample example = new HfUserAddresseExample();
-        example.createCriteria().andPhoneNumberEqualTo(phoneNumber);
-        return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.selectByExample(example)));
-    }
-
+    
     @RequestMapping(value = "/getIngAndLat", method = RequestMethod.GET)
     @ApiOperation(value = "腾讯地图", notes = "腾讯地图")
     public ResponseEntity<JSONObject> getIngAndLat(@RequestParam(required = false, defaultValue = "") String address) throws JSONException {

@@ -159,18 +159,18 @@ public class StoneController {
         if (!StringUtils.isEmpty(request.getHfName())) {
             hfStone.setHfName(request.getHfName());
         }
-        FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(request.getUserId());
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
+//        FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(fileInfo.getName());
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(request.getUserId());	
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
 //        if (!StringUtils.isEmpty(request.getHfStatus())) {
 //            hfStone.setHfStatus((request.getHfStatus()));
 //        }
