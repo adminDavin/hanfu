@@ -116,20 +116,7 @@ public class GroupController {
             groupService.updateRrepertory(groupId,newRrepertory);
 
             Return aReturn = new Return();
-            aReturn.setId(id);
-            Group group1 = groupService.selectDate(groupId);
-            Integer number = group1.getNumber();
-            aReturn.setNumber(number);
-            aReturn.setGoodsName(group1.getHfGoods().getHfName());
-            aReturn.setStartTime(group1.getStartTime());
-            aReturn.setStopTime(group1.getStopTime());
-            aReturn.setPrice(group1.getPrice());
-            int i = groupOpenService.selectNumber(id);
-            int a=number-i;
-            aReturn.setNumberFew(a);
-            HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
-            aReturn.setName(hfUser.getNickName());
-            System.out.println("开团");
+
             return aReturn;
         }
 //        一次开团购表
@@ -159,19 +146,6 @@ public class GroupController {
             }
             groupOpenService.updateByIsDeleted(groupOpenId);
             Return aReturn = new Return();
-            aReturn.setId(groupOpenId);
-
-            Integer number1 = group1.getNumber();
-            aReturn.setNumber(number1);
-            aReturn.setGoodsName(group1.getHfGoods().getHfName());
-            aReturn.setStartTime(group1.getStartTime());
-            aReturn.setStopTime(group1.getStopTime());
-            aReturn.setPrice(group1.getPrice());
-            aReturn.setNumberFew(0);
-            HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
-            aReturn.setName(hfUser.getNickName());
-
-            System.out.println("成团");
 
             return aReturn;
         }
@@ -180,18 +154,7 @@ public class GroupController {
         groupService.updateRrepertory(groupId,newRrepertory);
 //        等待成团
         Return aReturn = new Return();
-        aReturn.setId(groupOpenId);
-        Integer number1 = group.getNumber();
-        aReturn.setNumber(number1);
-        aReturn.setGoodsName(group.getHfGoods().getHfName());
-        aReturn.setStartTime(group.getStartTime());
-        aReturn.setStopTime(group.getStopTime());
-        aReturn.setPrice(group.getPrice());
-        aReturn.setNumberFew(0);
-        HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
-        aReturn.setName(hfUser.getNickName());
 
-        System.out.println("等待");
         return aReturn;
     }
 
@@ -437,38 +400,13 @@ public class GroupController {
             groupOpenService.updateByIsDeleted(groupOpenId);
 
             Return aReturn = new Return();
-            aReturn.setId(id);
-
-            Integer number1 = group1.getNumber();
-            aReturn.setNumber(number1);
-            aReturn.setGoodsName(group1.getHfGoods().getHfName());
-            aReturn.setStartTime(group1.getStartTime());
-            aReturn.setStopTime(group1.getStopTime());
-            aReturn.setPrice(group1.getPrice());
-            aReturn.setNumberFew(0);
-            HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
-            aReturn.setName(hfUser.getNickName());
-
             return aReturn ;
         }
         groupOpenConnectService.insert(userId,groupOpenId,orderId,hfDesc,addressId);
         int newRrepertory=repertory-1;
         groupService.updateRrepertory(groupId,newRrepertory);
         Return aReturn = new Return();
-        aReturn.setId(id);
-        Group group1 = groupService.selectDate(groupId);
-        Integer number1 = group1.getNumber();
-        aReturn.setNumber(number1);
-        aReturn.setGoodsName(group1.getHfGoods().getHfName());
-        aReturn.setStartTime(group1.getStartTime());
-        aReturn.setStopTime(group1.getStopTime());
-        aReturn.setPrice(group1.getPrice());
-        int i = groupOpenService.selectNumber(id);
-        int a=number1-i;
-        aReturn.setNumberFew(a);
-        HfUser hfUser = hfUserService.selectByPrimaryKey(userId);
-        aReturn.setName(hfUser.getNickName());
-        aReturn.setHfUser(hfUser);
+
 //        拼团中
         return aReturn;
     }
@@ -597,7 +535,7 @@ public class GroupController {
         aReturn.setStartTime(group1.getStartTime());
         aReturn.setStopTime(group1.getStopTime());
         aReturn.setPrice(group1.getPrice());
-//        aReturn.setFileDesc(group1.getFileDesc().get(0));
+        aReturn.setFileDesc(group1.getFileDesc().get(0));
         int i = groupOpenService.selectNumber(id);
         int a1=number1-i;
         aReturn.setNumberFew(a1);
