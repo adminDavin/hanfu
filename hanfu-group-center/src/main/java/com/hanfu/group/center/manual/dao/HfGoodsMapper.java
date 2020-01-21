@@ -19,4 +19,5 @@ public interface HfGoodsMapper {
     int updateByPrimaryKeySelective(HfGoods record);
 
     int updateByPrimaryKey(HfGoods record);
+    Integer selectByPrice(Integer id);
 }

@@ -14,7 +14,7 @@ public class Group implements Serializable {
     private Integer goodsId;
 
     private Double price;
-
+    private Integer practicalPrice;
     private Integer number;
     @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -27,6 +27,14 @@ public class Group implements Serializable {
     private HfGoods hfGoods;
     private List<FileDesc> fileDesc;
     private List<Product> product;
+
+    public Integer getPracticalPrice() {
+        return practicalPrice;
+    }
+
+    public void setPracticalPrice(Integer practicalPrice) {
+        this.practicalPrice = practicalPrice;
+    }
 
     public List<Product> getProduct() {
         return product;

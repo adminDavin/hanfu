@@ -50,4 +50,12 @@
     where hf_name like '%${name}%' order by id
   </select>
 
+  <select id="selectByPrice" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    b.sell_price
+    from hf_goods a
+    left join  hf_price b
+    on a.price_id=b.id
+    where a.id=#{id}
+  </select>
 </mapper>
