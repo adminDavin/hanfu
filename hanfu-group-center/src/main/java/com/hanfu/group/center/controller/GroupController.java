@@ -285,6 +285,8 @@ public class GroupController {
         if(hfGoodsSpecs!=null ){
             group.setHfGoodsSpec(hfGoodsSpecs);
         }
+        Integer price = hfGoodsService.selectByPrice(group.getGoodsId());
+        group.setPracticalPrice(price);
         List<Product> products = productService.selectByPrimaryKey(group.getGoodsId());
         group.setProduct(products);
         return group;

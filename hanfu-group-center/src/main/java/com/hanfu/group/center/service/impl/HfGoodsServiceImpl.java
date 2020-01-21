@@ -31,6 +31,11 @@ public class HfGoodsServiceImpl implements HfGoodsService {
     }
 
     @Override
+    public Integer selectByPrice(Integer id) {
+        return hfGoodsMapper.selectByPrice(id);
+    }
+
+    @Override
     public List<HfGoods> selectAll() {
         return hfGoodsMapper.selectAll();
     }
