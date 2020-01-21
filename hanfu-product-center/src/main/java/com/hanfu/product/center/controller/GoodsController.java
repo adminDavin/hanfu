@@ -428,30 +428,28 @@ public class GoodsController {
 			if (!StringUtils.isEmpty(request.getSellPrice())) {
 				hfPrice.setSellPrice(request.getSellPrice()); 
 			}
+			if (!StringUtils.isEmpty(request.getLinePrice())) {
+				hfPrice.setLinePrice(request.getLinePrice()); 
+			}
 			hfPrice.setModifyTime(LocalDateTime.now());
 			if (!StringUtils.isEmpty(request.getUsername())) {
 				hfPrice.setLastModifier(request.getUsername());
 			}
 			hfPriceMapper.updateByPrimaryKey(hfPrice);
 		}
-		if (item.isEmpty()) {
+		if (goods.getRespId() == null) {
 			resp.setGoogsId(goods.getId());
-			resp.setHfStatus(1);
+			resp.setHfStatus(1);  
 			resp.setQuantity(request.getQuantity());
 			resp.setHfDesc(request.getRespDesc());
-			if (!StringUtils.isEmpty(request.getWareHouseId())) {
-				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
-				if (warehouse == null) {
-					throw new Exception("仓库不存在");
-				}
-				resp.setWarehouseId(request.getWareHouseId());
-			}
 			resp.setCreateTime(LocalDateTime.now());
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
 			resp.setIsDeleted((short) 0);
 			hfRespMapper.insert(resp);
-			respId = resp.getId();
+			goods.setRespId(resp.getId());
+			goods.setModifyTime(LocalDateTime.now());
+			hfGoodsMapper.updateByPrimaryKey(goods);
 		} else {
 			resp = item.get(0);
 			if (!StringUtils.isEmpty(request.getQuantity())) {
