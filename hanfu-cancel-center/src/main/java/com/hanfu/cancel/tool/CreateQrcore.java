@@ -1,9 +1,11 @@
 package com.hanfu.cancel.tool;
 
-import net.sf.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -27,7 +29,7 @@ public class CreateQrcore {
 
             String rt = UrlUtil.sendPost("https://api.weixin.qq.com/cgi-bin/token", map);
             System.out.println("what is:"+rt);
-            JSONObject json = JSONObject.fromObject(rt);
+            JSONObject json = JSONObject.parseObject(rt);
 
             if (json.getString("access_token") != null || json.getString("access_token") != "") {
                 return json.getString("access_token");
