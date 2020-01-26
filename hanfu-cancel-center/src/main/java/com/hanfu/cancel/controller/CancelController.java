@@ -71,6 +71,8 @@ public class CancelController {
     private CancelRecordMapper cancelRecordMapper;
     @Autowired
     private HfPriceMapper hfPriceMapper;
+    @Autowired
+    private CancelProductMapper cancelProductMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/selectCancel", method = RequestMethod.GET)
@@ -191,6 +193,11 @@ public class CancelController {
         hfUser.setCancelId(0);
         hfUserMapper.updateByPrimaryKeySelective(hfUser);
         cancelsMapper.deleteByPrimaryKey(id);
+        //删除核销和商品中间表
+//        Example example = new Example(CancelProduct.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("cancelId",id);
+//        cancelProductMapper.deleteByExample(example);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
@@ -212,6 +219,11 @@ public class CancelController {
             hfUser.setCancelId(0);
             hfUserMapper.updateByPrimaryKeySelective(hfUser);
             cancelsMapper.deleteByPrimaryKey(cancelID);
+            //删除核销和商品中间表
+//        Example example = new Example(CancelProduct.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("cancelId",cancelID);
+//        cancelProductMapper.deleteByExample(example);
         }
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
@@ -299,7 +311,6 @@ public class CancelController {
         if (cancel2 == null) {
             cancel2 = 1;
         }
-        System.out.println(cancel2+"cancel2");
         cancel cancel1 = new cancel();
         HfUser hfUser = new HfUser();
         hfUser.setId(UserId);
@@ -310,9 +321,7 @@ public class CancelController {
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("userId",UserId);
-        System.out.println("12222");
         if (cancel2==1 &cancelsMapper.selectByExample(example1).size()==0){
-            System.out.println("12222333");
             cancel1.setSite(site);
             cancel1.setUserId(UserId);
             cancel1.setMoney(0);
@@ -323,7 +332,6 @@ public class CancelController {
             return builder.body(ResponseUtils.getResponseBody("成功"));
         }
 
-        System.out.println("122224444");
         cancel1.setSite(site);
         cancel1.setUserId(UserId);
         cancel1.setCreateDate(LocalDateTime.now());
@@ -333,7 +341,14 @@ public class CancelController {
         criteria.andEqualTo("userId", UserId);
         cancelsMapper.updateByExampleSelective(cancel1, example);
         if (cancel2 == 0) {
-            criteria.andEqualTo("userId", UserId);
+            //删除核销和商品中间表
+//            if (cancelsMapper.selectByExample(example).get(0).getId()!=null){
+//                Example example7 = new Example(CancelProduct.class);
+//                Example.Criteria criteria7 = example7.createCriteria();
+//                criteria7.andEqualTo("cancelId",cancelsMapper.selectByExample(example).get(0).getId());
+//                cancelProductMapper.deleteByExample(example7);
+//            }
+
             cancelsMapper.deleteByExample(example);
             System.out.println(hfUserMapper.selectByPrimaryKey(UserId).getCancelId()+"取消后的CANCELid");
             return builder.body(ResponseUtils.getResponseBody("已取消此人的核销资格"));
