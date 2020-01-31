@@ -762,37 +762,37 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectQueryList(productForValue)));
 	}
-//	@ApiOperation(value = "校检库存", notes = "校检库存")
-//	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-//	public ResponseEntity<JSONObject> checkResp(CheckResp checkResp,Integer goodId)
-//			throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		if(goodId!=null) {
-//				System.out.println(goodId);
-//					System.out.println("aaaaaaaa");
-//					HfRespExample exampleResp = new HfRespExample();
-//					exampleResp.createCriteria().andGoogsIdEqualTo(goodId);
-//					if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<checkResp.getGoodsNum()){
-//						return builder.body(ResponseUtils.getResponseBody("库存不足"));
-//				}
-//				HfPriceExample examplePrice= new HfPriceExample();
-//				examplePrice.createCriteria().andGoogsIdEqualTo(goodId);
-//				hfPriceMapper.selectByExample(examplePrice);
-//				Amount amount = new Amount();
-//				amount.setId(goodId);
-//				amount.setGoodsNum(checkResp.getGoodsNum());
-//				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
-//				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
-//				return builder.body(ResponseUtils.getResponseBody(amount));	
-//			}
-//		
+	@ApiOperation(value = "校检库存", notes = "校检库存")
+	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(goodsId!=null) {
+				System.out.println(goodsId);
+					System.out.println("aaaaaaaa");
+					HfRespExample exampleResp = new HfRespExample();
+					exampleResp.createCriteria().andGoogsIdEqualTo(goodsId);
+					if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<GoodsNum){
+						return builder.body(ResponseUtils.getResponseBody("库存不足"));
+				}
+				HfPriceExample examplePrice= new HfPriceExample();
+				examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
+				hfPriceMapper.selectByExample(examplePrice);
+				Amount amount = new Amount();
+				amount.setId(goodsId);
+				amount.setGoodsNum(GoodsNum);
+				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+				return builder.body(ResponseUtils.getResponseBody(amount));
+			}
+
 //		Integer goodsId=null;
 //		System.out.println(checkResp.getRespList());
 //        JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
 //		Iterator<String> iterator = specs.keySet().iterator();
 //		ArrayList<String> strings = new ArrayList<>();
 //		ArrayList<String> sss = new ArrayList<>();
-//		
+//
 //		while(iterator.hasNext()){
 //// 获得key
 //			String key = iterator.next();
@@ -840,11 +840,11 @@ public class GoodsController {
 //			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
 //			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a)+hfValueList.get(a));
 //			System.out.println(goodsSpecMapper1.selectByExample(example1).toString());
-//			
+//
 //			System.out.println(productSpecList1.get(a)+"jieshu");
 //			goodsSpec.add(String.valueOf(productSpecList1));
 //		}
-//		
+//
 //
 //
 //		HashMap map = new HashMap();
@@ -862,8 +862,8 @@ public class GoodsController {
 //        System.out.println(map.get(productSpecList1.get(i)));
 //        }
 //        System.out.println(originalList);
-// 
-//        
+//
+//
 //		System.out.println(abc);
 //		String aaa=originalList.toString().replace("[", "");
 //		aaa=aaa.replace("]", "");
@@ -878,7 +878,7 @@ public class GoodsController {
 //				goodsId=specsService.selectSpecs().get(i).getGoodsId();
 //				System.out.println("goodsID");
 //			}
-//		} 
+//		}
 //		if (goodsId==null){
 //			return builder.body(ResponseUtils.getResponseBody("goods不存在"));
 //		}
@@ -905,9 +905,9 @@ public class GoodsController {
 //			amount.setDiscountMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
 //			return builder.body(ResponseUtils.getResponseBody(amount));
 //		}
-//		return builder.body(ResponseUtils.getResponseBody("ojbk"));
-//
-//	}
+		return builder.body(ResponseUtils.getResponseBody("ojbk"));
+
+	}
 	@ApiOperation(value = "根据类目id查询商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findProductBycategoryId(
