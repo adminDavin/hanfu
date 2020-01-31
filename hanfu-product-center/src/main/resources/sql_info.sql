@@ -20,6 +20,8 @@ drop table if exists hf_goods;
 
 drop table if exists hf_goods_pictrue;
 
+drop table if exists hf_product_pictrue;
+
 drop table if exists hf_warehouse;
 
 drop table if exists hf_goods_spec;
@@ -169,6 +171,25 @@ create table hf_goods_pictrue
 );
 
 alter table hf_goods_pictrue comment '商品实体定价单图片描述';
+
+
+create table hf_product_pictrue
+(
+   id                   int not null AUTO_INCREMENT comment '序列号',
+   product_id             int comment '物品id',
+   hf_name              varchar(63) comment '图片名称',
+   spec_desc            varchar(127) comment '图片说明',
+   file_id              int comment '文件id',
+   is_default           smallint default false comment '是否默认',
+   create_time          timestamp default now() comment '添加时间',
+   modify_time          timestamp default now() comment '修改时间',
+   last_modifier        varchar(15) comment '最后一次修改人',
+   is_deleted           smallint default false comment '是否失效',
+   primary key (id)
+);
+
+alter table hf_product_pictrue comment '商品图片描述';
+
 
 /*==============================================================*/
 /* Table: hf_warehouse                                     */

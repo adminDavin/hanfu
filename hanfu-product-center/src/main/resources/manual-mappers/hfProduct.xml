@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.HfProductDaoImpl">
+    <resultMap id="ProductDispaly" type="com.hanfu.product.center.manual.model.HfProductDisplay">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryName"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
+        <result column="brand_name" jdbcType="VARCHAR" property="brandName"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+
+    <select id="selectProductForRotation"  resultMap="ProductDispaly">
+    SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
+    FROM  product p
+    LEFT JOIN hf_category h   ON  p.category_id = h.id
+    left JOIN product_instance i on p.id=i.product_id
+    
+    </select>
+    <select id="selectProductByProductId"   resultMap="ProductDispaly">
+    SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
+    FROM  product p
+    LEFT JOIN hf_category h   ON  p.category_id = h.id
+    left JOIN product_instance i on p.id=i.product_id
+    where p.id=#{productId}
+    </select>
+
+</mapper>

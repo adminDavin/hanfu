@@ -15,7 +15,7 @@ spring:
       auto-commit: true
   redis:
     database: 0
-    host: 47.105.72.216
+    host: 39.100.86.77
     port: 6379
     timeout: 10000
     jedis:
@@ -52,3 +52,4 @@ mybatis:
   mapper-locations: 
     - mappers/*.xml
     - manual-mappers/*.xml
+          

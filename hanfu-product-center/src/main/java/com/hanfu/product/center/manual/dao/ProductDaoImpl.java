@@ -46,4 +46,6 @@ public class ProductDaoImpl implements ProductDao {
         Integer row = sqlSessionTemplate.update("updateProduct", productDispaly);
         return row;
     }
+
+    
 }

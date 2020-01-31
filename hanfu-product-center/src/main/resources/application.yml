@@ -3,12 +3,12 @@ server:
 
 dubbo:
   registry:
-    address: 47.105.72.216:2181
+    address: 39.100.86.77:2181
     protocol: zookeeper
     id: dubboProductServer
     client: curator
   metadata-report:
-    address: zookeeper://47.105.72.216:2181
+    address: zookeeper://39.100.86.77:2181
   application:
     name: hanfu-product-center
   protocol:
@@ -30,6 +30,7 @@ spring:
       connection-test-query: select now()
       idle-timeout: 3000000
       auto-commit: true
+      max-lifetime: 28700000
   task:
     execution:
       pool:
@@ -41,7 +42,7 @@ spring:
       enabled: true
   redis:
     database: 0
-    host: 47.105.72.216
+    host: 39.100.86.77
     port: 6379
     timeout: 3000000
     jedis:

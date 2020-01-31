@@ -18,19 +18,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
-import com.hanfu.product.center.dao.GoodsSpecMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
+import com.hanfu.product.center.dao.HfGoodsSpecMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.model.FileDesc;
-import com.hanfu.product.center.model.GoodsSpecExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
+import com.hanfu.product.center.model.HfGoodsSpecExample;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
@@ -61,7 +61,7 @@ public class StoneController {
     private ProductInstanceMapper productInstanceMapper;
 
     @Autowired
-    private GoodsSpecMapper goodsSpecMapper;
+    private HfGoodsSpecMapper hfGoodsSpecMapper;
 
     @Autowired
     private HfGoodsPictrueMapper hfGoodsPictrueMapper;
@@ -124,9 +124,9 @@ public class StoneController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsId);
         productInstanceMapper.deleteByPrimaryKey(hfGoods.getInstanceId());
-        GoodsSpecExample example = new GoodsSpecExample();
+        HfGoodsSpecExample example = new HfGoodsSpecExample();
         example.createCriteria().andGoodsIdEqualTo(hfGoodsId);
-        goodsSpecMapper.deleteByExample(example);
+        hfGoodsSpecMapper.deleteByExample(example);
         HfGoodsPictrueExample example2 = new HfGoodsPictrueExample();
         example2.createCriteria().andGoodsIdEqualTo(hfGoodsId);
         List<HfGoodsPictrue> list = hfGoodsPictrueMapper.selectByExample(example2);

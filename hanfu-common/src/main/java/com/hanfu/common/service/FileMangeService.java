@@ -10,7 +10,7 @@ import com.hanfu.common.utils.FdfsClient;
 
 public class FileMangeService {
 
-    public String[] uploadFile(FileInputStream fis, String userId) {
+    public static String[] uploadFile(FileInputStream fis, String userId) {
         String[] fileid = null;
         try {
             fileid = FdfsClient.uploadFile(fis, userId);
@@ -22,7 +22,7 @@ public class FileMangeService {
         return fileid;
     }
 
-    public String[] uploadFile(byte[] fis, String userId) {
+    public static String[] uploadFile(byte[] fis, String userId) {
         String[] fileid = null;
         try {
             fileid = FdfsClient.uploadFile(fis, userId);
@@ -34,7 +34,7 @@ public class FileMangeService {
         return fileid;
     }
 
-    public byte[] downloadFile(String group_name, String remoteFilename) {
+    public static byte[] downloadFile(String group_name, String remoteFilename) {
         byte[] fileid = null;
         try {
             fileid = FdfsClient.downloadFile(group_name, remoteFilename);
@@ -46,7 +46,7 @@ public class FileMangeService {
         return fileid;
     }
 
-    public void deleteFile(String group_name, String remoteFilename) {
+    public static void deleteFile(String group_name, String remoteFilename) {
         try {
             FdfsClient.deleteFile(group_name, remoteFilename);
         } catch (IOException e) {
