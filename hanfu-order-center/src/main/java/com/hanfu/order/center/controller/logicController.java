@@ -95,21 +95,21 @@ public class logicController {
         Example example2 = new Example(HfOrdersDetail.class);
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("ordersId", orderId).andEqualTo("googsId",goodsId);
-        List<HfOrdersDetail> hfPriceList = hfOrdersCancelDetailMapper.selectByExample(example2);
+        List<HfOrderDetail> hfPriceList = hfOrdersCancelDetailMapper.selectByExample(example2);
         if (hfPriceList.size() == 0) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
         }
-        HfOrdersDetail hfPrice = hfOrdersCancelDetailMapper.selectByPrimaryKey(hfPriceList.get(0).getId());
-        if (hfPrice.getOrderDetailStatus().equals("已完成")) {
+        HfOrderDetail hfPrice = hfOrdersCancelDetailMapper.selectByPrimaryKey(hfPriceList.get(0).getId());
+        if (hfPrice.getHfStatus().equals("已完成")) {
             return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
         }
-        if (!hfPrice.getGoogsId().equals(goodsId)) {
+        if (!hfPrice.getGoodsId().equals(goodsId)) {
             return builder.body(ResponseUtils.getResponseBody("订单核销的商品与实际不符合"));
         }
-        HfOrdersDetail hfOrdersDetail = new HfOrdersDetail();
+        HfOrderDetail hfOrdersDetail = new HfOrderDetail();
         hfOrdersDetail.setModifyTime(LocalDateTime.now());
         hfOrdersDetail.setId(hfPrice.getId());
-        hfOrdersDetail.setOrderDetailStatus("已完成");
+        hfOrdersDetail.setHfStatus("已完成");
         hfOrdersCancelDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
         //添加核销记录
         CancelRecord cancelRecord = new CancelRecord();
@@ -121,13 +121,13 @@ public class logicController {
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("googsId", goodsId);
         List<HfPrice> hfPriceList1 = hfPriceMapper.selectByExample(example3);
-        cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity());
+        cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity());
         hfLogMapper.insert(cancelRecord);
         //添加核销员核销额记录
         cancel cancel = new cancel();
         cancel.setId(cancel1.getId());
-        cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getMoney());
-        cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getPurchaseQuantity() + cancel1.getPresentMoney());
+        cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getMoney());
+        cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getPresentMoney());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
         return builder.body(ResponseUtils.getResponseBody(0));
     }

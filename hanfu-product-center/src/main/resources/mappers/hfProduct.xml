@@ -30,10 +30,38 @@
     </select>
     <select id="selectProductByProductId"   resultMap="ProductDispaly">
     SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p
+    FROM  product p++++
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
     where p.id=#{productId}
     </select>
 
+    <select id="selectProductByStoneId"   resultMap="ProductDispaly">
+    SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
+    FROM  product p
+    LEFT JOIN hf_category h   ON  p.category_id = h.id
+    left JOIN product_instance i on p.id=i.product_id
+    where i.stone_id=#{stoneId}
+    </select>
+
+    <select id="selectProductByUserId" resultMap="ProductDispaly">
+        SELECT
+	p.id,
+	p.hf_name,
+	product_desc,
+	p.category_id,
+	p.file_id,
+	h.hf_name category_name,
+	i.stone_id,
+	p.brand_id,
+	p.last_modifier,
+	p.modify_time
+FROM
+	user_product_collect u
+	LEFT JOIN product p ON u.product_id = p.id
+	LEFT JOIN hf_category h ON p.category_id = h.id
+	LEFT JOIN product_instance i ON p.id = i.product_id
+WHERE
+	u.user_id=#{userId}
+    </select>
 </mapper>

@@ -11,4 +11,6 @@ public interface HfProductDao {
     
     public HfProductDisplay selectProduct(Integer productId);
     List<HfProductDisplay> selectProductCategory(Integer cagetoryId);
+    List<HfProductDisplay> selectProductByStoneId(Integer stoneId);
+    List<HfProductDisplay> selectProductByUserId( Integer userId);
 }
