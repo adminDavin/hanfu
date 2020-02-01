@@ -80,6 +80,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
+        <table schema="user_center" tableName="hf_order_address"
+               domainObjectName="hfOrderAddress">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
         <table schema="user_center" tableName="file_desc"
                domainObjectName="FileDesc">
             <property name="useActualColumnNames" value="false"/>

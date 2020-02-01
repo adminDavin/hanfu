@@ -16,8 +16,16 @@ public class CreateHfOrderRequest extends CommonRequest {
         }
     }
     
+    
     public static enum OrderStatus {
-        PAYMENT("payment");
+        ALL("all"),
+        PAYMENT("payment"),
+        PROCESS("process"),
+        TRANSPORT("transport"),
+        EVALUATE("evaluate"),
+        CONTROVERSIAL("controversial"),
+        CANCEL("cancel");
+
         private String orderStatus;
         OrderStatus(String orderStatus) {
             this.orderStatus = orderStatus;

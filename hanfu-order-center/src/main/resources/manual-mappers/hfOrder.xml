@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.order.center.manual.dao.HfOrderDao">
+    
+    <insert id="insertOrderAddress">
+       insert into hf_order_address(order_id, origin_address_id, address, detail, contact, phone, hf_desc, create_time, modify_time, last_modifier)
+       select #{orderId}, id, hf_city, hf_address_detail, contact, phone_number, hf_desc, now(), now(), user_id from hf_user_address where id=#{addressId};
+    </insert>
+</mapper>
