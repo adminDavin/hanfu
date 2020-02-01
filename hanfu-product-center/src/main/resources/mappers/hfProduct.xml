@@ -22,6 +22,12 @@
     left JOIN product_instance i on p.id=i.product_id
     
     </select>
+    <select id="selectProductCategory"  resultMap="ProductDispaly">
+          SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
+    FROM  product p
+    LEFT JOIN hf_category h   ON  p.category_id = h.id
+    left JOIN product_instance i on p.id=i.product_id where p.category_id=#{cagetoryId}
+    </select>
     <select id="selectProductByProductId"   resultMap="ProductDispaly">
     SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
     FROM  product p

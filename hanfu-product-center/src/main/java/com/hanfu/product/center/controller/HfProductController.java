@@ -124,8 +124,43 @@ public class HfProductController {
        product.setFileIds(fileIds);
        
        return builder.body(ResponseUtils.getResponseBody(product));
-    }    
+    }
 
-    
+    @ApiOperation(value = "获取商品列表", notes = "根据类目id商品列表")
+    @RequestMapping(value = "/getCategory", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "cagetoryId", value = "类目Id", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> getCategory(@RequestParam(name = "cagetoryId") Integer cagetoryId)
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<HfProductDisplay> products = hfProductDao.selectProductCategory(cagetoryId);
+        Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
+        System.out.println(stoneIds);
+        HfStoneExample hfStoneExample = new HfStoneExample();
+        hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
+        List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
+        System.out.println(stoneInfos);
+        Map<Integer, String> stones = stoneInfos.stream().collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
+        products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+
+        List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
+        List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
+        Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
+                .collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+                        (List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+                            oldList.addAll(newList);
+                            return oldList;
+                        }));
+        products.forEach(product -> {
+            List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+            if (Optional.ofNullable(hfGoods).isPresent()) {
+                Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+                product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+                product.setDefaultGoodsId(hfGood.get().getId());
+            }
+
+        });
+        return builder.body(ResponseUtils.getResponseBody(products));
+    }
 }
 
