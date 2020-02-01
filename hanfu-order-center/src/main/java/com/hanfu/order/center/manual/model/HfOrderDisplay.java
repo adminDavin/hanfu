@@ -1,9 +1,7 @@
 package com.hanfu.order.center.manual.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import com.hanfu.order.center.model.HfOrderDetail;
 
 public class HfOrderDisplay {
     private Integer id;
@@ -23,6 +21,7 @@ public class HfOrderDisplay {
     private String stoneName;
     private String goodsName;
     private Integer goodsId;
+    private Integer fileId;
     private Integer actualPrice;
     private Integer quantity;
     private String takingType;
@@ -32,9 +31,9 @@ public class HfOrderDisplay {
     private Integer addressId;
     private String address;
     private String addressDetail;
-    private Integer contact;
-    private Integer phone;
-    private Integer addressDesc;
+    private String contact;
+    private String phone;
+    private String addressDesc;
     public Integer getId() {
         return id;
     }
@@ -61,6 +60,12 @@ public class HfOrderDisplay {
     }
     public LocalDateTime getModifyTime() {
         return modifyTime;
+    }
+    public Integer getFileId() {
+        return fileId;
+    }
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
     public void setModifyTime(LocalDateTime modifyTime) {
         this.modifyTime = modifyTime;
@@ -173,25 +178,24 @@ public class HfOrderDisplay {
     public void setAddressDetail(String addressDetail) {
         this.addressDetail = addressDetail;
     }
-    public Integer getContact() {
+    public String getContact() {
         return contact;
     }
-    public void setContact(Integer contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
-    public Integer getAddressDesc() {
+    public String getAddressDesc() {
         return addressDesc;
     }
-    public void setAddressDesc(Integer addressDesc) {
+    public void setAddressDesc(String addressDesc) {
         this.addressDesc = addressDesc;
-    }  
-    
-    
+    }
+        
 }
 

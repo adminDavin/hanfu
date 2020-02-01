@@ -1,12 +1,14 @@
 package com.hanfu.order.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.curator.shaded.com.google.common.collect.Lists;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
+import com.esotericsoftware.kryo.serializers.FieldSerializer.Optional;
 import com.hanfu.order.center.dao.HfOrderDetailMapper;
 import com.hanfu.order.center.dao.HfOrderMapper;
+import com.hanfu.order.center.manual.dao.HfOrderDao;
+import com.hanfu.order.center.manual.model.HfGoodsDisplay;
 import com.hanfu.order.center.manual.model.HfOrderDisplay;
 import com.hanfu.order.center.model.HfOrder;
 import com.hanfu.order.center.model.HfOrderDetail;
-import com.hanfu.order.center.model.HfOrderDetailExample;
-import com.hanfu.order.center.model.HfOrderExample;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.PaymentStatus;
@@ -48,6 +51,9 @@ public class HfOrderController {
     @Autowired
     private HfOrderMapper hfOrderMapper;
 
+    @Autowired
+    private HfOrderDao hfOrderDao;
+    
     @Autowired
     private HfOrderDetailMapper hfOrderDetailMapper;
 
@@ -87,7 +93,7 @@ public class HfOrderController {
         detail.setTakingType(request.getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
         
-        
+        hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 
@@ -101,19 +107,26 @@ public class HfOrderController {
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
-        HfOrderExample example = new HfOrderExample();
-        if (orderStatusEnum.equals(OrderStatus.ALL)) {
-            example.createCriteria().andUserIdEqualTo(userId);
-        } else {
-            example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo(orderStatusEnum.getOrderStatus());
-        }
-
-        List<HfOrder> hfOrders = hfOrderMapper.selectByExample(example);
-        List<Integer> hfOrderIds = hfOrders.stream().map(HfOrder::getId).collect(Collectors.toList());
-
-        HfOrderDetailExample detailExample = new HfOrderDetailExample();
-        detailExample.createCriteria().andOrderIdIn(hfOrderIds);
-
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("userId", userId);
+        params.put("orderStatus", orderStatusEnum.getOrderStatus());
+        List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
+        
+        Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
+        List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
+        
+        Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
+        
+        hfOrders.forEach(hfOrder -> {
+            HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
+            if (java.util.Optional.ofNullable(goods).isPresent()) {
+                hfOrder.setGoodsName(goods.getHfName());
+                hfOrder.setStoneId(goods.getStoneId());
+                hfOrder.setStoneName(goods.getStoneName());
+                hfOrder.setFileId(goods.getFileId());
+            }
+        });
+        
         return builder.body(ResponseUtils.getResponseBody(hfOrders));
     }
 

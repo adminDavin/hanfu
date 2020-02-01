@@ -29,13 +29,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select now()
-      idle-timeout: 3000000
+      idle-timeout: 300000000
       auto-commit: true
       max-lifetime: 1200000
       maximum-pool-size: 60
       minimum-idle: 10
       login-timeout: 5
-      validation-timeout: 300000
+      validation-timeout: 30000000
       connection-timeout: 600000000
       read-only: false
   task:
