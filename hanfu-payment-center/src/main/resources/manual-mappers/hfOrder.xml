@@ -76,6 +76,7 @@
 	 from hf_order o left join hf_order_detail d on o.id=d.order_id
 	 left join hf_order_address a on o.id=a.order_id
 	 where o.user_id =#{userId} 
+	 order by o.modify_time desc;
     </select>
     
     <select id="selectHfUser" resultMap="HfUserResultMap">
