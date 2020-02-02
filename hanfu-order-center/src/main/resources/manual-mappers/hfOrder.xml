@@ -59,5 +59,6 @@
 	a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
 	 from hf_order o left join hf_order_detail d on o.id=d.order_id
 	 left join hf_order_address a on o.id=a.order_id
+	 where o.user_id =#{userId} 
     </select>
 </mapper>

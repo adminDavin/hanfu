@@ -31,6 +31,7 @@ import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.PaymentStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.PaymentType;
+import com.hanfu.order.center.request.CreateHfOrderRequest.TakingTypeEnum;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -90,10 +91,13 @@ public class HfOrderController {
         detail.setOrderId(hfOrder.getId());
         detail.setQuantity(request.getQuantity());
         detail.setSellPrice(request.getSellPrice());
-        detail.setTakingType(request.getTakingType());
+        detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
-        
-        hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
+        if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
+            if (TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
+                hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());   
+            }
+        }
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 
@@ -111,21 +115,23 @@ public class HfOrderController {
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
+        if (!hfOrders.isEmpty()) {
+            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
+            List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
+            
+            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
+            
+            hfOrders.forEach(hfOrder -> {
+                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
+                if (java.util.Optional.ofNullable(goods).isPresent()) {
+                    hfOrder.setGoodsName(goods.getHfName());
+                    hfOrder.setStoneId(goods.getStoneId());
+                    hfOrder.setStoneName(goods.getStoneName());
+                    hfOrder.setFileId(goods.getFileId());
+                }
+            });
+        }
         
-        Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
-        List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
-        
-        Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
-        
-        hfOrders.forEach(hfOrder -> {
-            HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
-            if (java.util.Optional.ofNullable(goods).isPresent()) {
-                hfOrder.setGoodsName(goods.getHfName());
-                hfOrder.setStoneId(goods.getStoneId());
-                hfOrder.setStoneName(goods.getStoneName());
-                hfOrder.setFileId(goods.getFileId());
-            }
-        });
         
         return builder.body(ResponseUtils.getResponseBody(hfOrders));
     }

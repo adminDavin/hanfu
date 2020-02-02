@@ -15,7 +15,28 @@ public class CreateHfOrderRequest extends CommonRequest {
             return this.paymentStatus;
         }
     }
-    
+
+    public static enum TakingTypeEnum {
+        DELIVERY("delivery"),
+        SELF_PICKUP("selfPickUp");
+        private String takingType;
+        
+        TakingTypeEnum(String takingType) {
+            this.takingType = takingType;
+        }
+        public String getTakingType() {
+            return this.takingType;
+        }
+        
+        public static TakingTypeEnum getTakingTypeEnum(String takingType) {
+            for(TakingTypeEnum item : TakingTypeEnum.values()) {
+                if (item.takingType.equals(takingType)) {
+                    return item;
+                }
+            }
+            return SELF_PICKUP;
+        }
+    }
     
     public static enum OrderStatus {
         ALL("all"),
