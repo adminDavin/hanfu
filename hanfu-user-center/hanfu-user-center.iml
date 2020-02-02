@@ -10,8 +10,6 @@
         <sourceRoots>
           <root url="file://$MODULE_DIR$/src/main/java" />
           <root url="file://$MODULE_DIR$/src/main/resources" />
-          <root url="file://$MODULE_DIR$/../src/main/java" />
-          <root url="file://$MODULE_DIR$/../src/main/resources" />
         </sourceRoots>
       </configuration>
     </facet>
@@ -24,15 +22,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
-    </content>
-    <content url="file://$MODULE_DIR$/../src/main/java">
-      <sourceFolder url="file://$MODULE_DIR$/../src/main/java" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../src/main/resources">
-      <sourceFolder url="file://$MODULE_DIR$/../src/main/resources" type="java-resource" />
-    </content>
-    <content url="file://$MODULE_DIR$/../src/test/java">
-      <sourceFolder url="file://$MODULE_DIR$/../src/test/java" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -227,7 +216,6 @@
     <orderEntry type="library" name="Maven: org.apache.dubbo:dubbo:2.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.20.0-GA" level="project" />
     <orderEntry type="module" module-name="hanfu-inner-sdk" />
-    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:4.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-client:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.zookeeper:zookeeper:3.5.4-beta" level="project" />

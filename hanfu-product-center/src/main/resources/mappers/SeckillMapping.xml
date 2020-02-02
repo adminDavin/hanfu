@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.SeckillDao">
+    <cache type="com.hanfu.product.center.cache.MybatisCache">
+    </cache>
+    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.Seckill" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="boss_id" property="bossId" jdbcType="INTEGER" />
+        <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
+        <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+        <result column="price" property="price" jdbcType="DOUBLE" />
+        <result column="repertory" property="repertory" jdbcType="INTEGER" />
+        <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    </resultMap>
+
+    <resultMap id="Base" type="com.hanfu.product.center.model.Seckill" >
+        <id column="aid" property="id" jdbcType="INTEGER" />
+        <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+        <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+        <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+        <result column="acategory_id" property="categoryId" jdbcType="INTEGER" />
+        <result column="aprice" property="price" jdbcType="DOUBLE" />
+        <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+        <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+        <association property="hfGoods" javaType="com.hanfu.product.center.model.HfGoods">
+        <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+
+    <resultMap id="Date" type="com.hanfu.product.center.model.Seckill" >
+        <id column="aid" property="id" jdbcType="INTEGER" />
+        <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+        <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+        <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+        <result column="acategory_id" property="categoryId" jdbcType="INTEGER" />
+        <result column="aprice" property="price" jdbcType="DOUBLE" />
+        <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+        <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+        <association property="hfGoods" javaType="com.hanfu.product.center.model.HfGoods">
+            <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+            <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
+        </association>
+        <collection  property="fileDesc" ofType="com.hanfu.product.center.model.FileDesc">
+            <result column="did" property="id" jdbcType="INTEGER" />
+            <result column="dremote_filename" property="remoteFilename" jdbcType="VARCHAR" />
+        </collection >
+    </resultMap>
+
+
+    <sql id="Base_Column_List" >
+    id, boss_id, goods_id, start_time, stop_time, category_id, price, repertory,is_deleted
+  </sql>
+
+    <select id="getRepertory"  parameterType="com.hanfu.product.center.model.Seckill" resultType="Integer" >
+          SELECT repertory
+    FROM
+    seckill  WHERE id=#{id}
+    </select>
+
+    <select id="selectAll"  parameterType="Integer" resultMap="Base"  >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id, a.start_time astart_time, a.stop_time astop_time, a.category_id  acategory_id,
+        a.price  aprice, a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc
+        FROM
+        seckill  a left  join  hf_goods b on    a. goods_id =b.id    WHERE   a.boss_id=#{bossId}
+    </select>
+
+    <select id="selectSeckill"  parameterType="Integer" resultMap="BaseResultMap"  >
+          SELECT <include refid="Base_Column_List" />
+    FROM
+    seckill  WHERE  boss_id=#{bossId}
+    </select>
+
+    <select id="selectId"  parameterType="Integer"  resultMap="BaseResultMap" >
+        SELECT <include refid="Base_Column_List" />
+        FROM
+        seckill  WHERE id=#{id}
+    </select>
+
+    <select id="selectDate"  parameterType="Date"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id, a.start_time astart_time, a.stop_time astop_time, a.category_id  acategory_id,
+        a.price  aprice, a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
+        FROM
+        seckill a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE a.start_time=#{startTime}
+    </select>
+
+    <select id="seletById"  parameterType="Integer"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id, a.start_time astart_time, a.stop_time astop_time, a.category_id  acategory_id,
+        a.price  aprice, a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
+        FROM
+        seckill a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id}
+    </select>
+
+
+    <select id="selectByDate"    resultType="Date" >
+        SELECT  distinct  start_time
+        FROM
+        seckill   WHERE start_time LIKE '${time}%'
+    </select>
+
+
+    <select id="selectGoodsId"  parameterType="Integer"  resultMap="BaseResultMap" >
+        SELECT <include refid="Base_Column_List" />
+        FROM
+        seckill    WHERE   goods_id=#{goodsId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from seckill
+    where id = #{id}
+  </delete>
+
+    <insert id="insertSeckill" parameterType="com.hanfu.product.center.model.Seckill">
+        insert into seckill (boss_id,goods_id,start_time,stop_time,category_id,price,repertory,is_deleted)
+        values (#{bossId},#{goodsId},#{startTime},#{stopTime}, #{categoryId},#{price},#{repertory},#{isDeleted})
+     </insert>
+
+
+    <update id="updateRepertory" parameterType="com.hanfu.product.center.model.Seckill">
+        update seckill set
+        repertory=#{repertory}
+        where id=#{goodsId} and boss_id=#{bossId} and is_deleted=0
+    </update>
+
+    <update id="updateIsDeleted" >
+        update seckill set
+       is_deleted=#{isDeleted}
+        where id=#{goodsId} and boss_id=#{bossId}
+    </update>
+
+    <update id="updateState" >
+        update seckill set
+       is_deleted=1
+        where id = #{id}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+    update seckill
+    set boss_id = #{bossId},
+      goods_id = #{goodsId},
+      start_time = #{startTime,},
+      stop_time=#{stopTime},
+      category_id = #{categoryId},
+      price = #{price},
+      repertory = #{repertory},
+      is_deleted = 0
+    where id = #{id}
+  </update>
+
+
+
+</mapper>
