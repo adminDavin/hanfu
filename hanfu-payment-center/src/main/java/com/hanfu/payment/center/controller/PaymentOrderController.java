@@ -83,7 +83,9 @@ public class PaymentOrderController {
         data.put("openid",hfUser.getAuthKey());
         String sign = WXPayUtil.generateSignature(data, config.getKey());
         data.put("sign",sign);
+        logger.info(JSONObject.toJSONString(data));
         Map<String, String> resp = wxpay.unifiedOrder(data);
+        logger.info(JSONObject.toJSONString(resp));
         if ("SUCCESS".equals(resp.get("return_code"))) {
             Map<String, String> reData = new HashMap<>();
             reData.put("appId", config.getAppID());
