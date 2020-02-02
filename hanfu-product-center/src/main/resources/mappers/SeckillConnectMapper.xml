@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.SeckillConnectDao" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.SeckillConnect" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="seckill_id" property="seckillId" jdbcType="INTEGER" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="selectByUserId" resultMap="BaseResultMap"  >
+    select 
+   id,user_id,seckill_id,is_deleted
+    from seckill_connect
+    where user_id = #{id} and is_deleted=0
+  </select>
+
+    <select id="selectBySeckillId" resultMap="BaseResultMap"  >
+    select
+   id,user_id,seckill_id,is_deleted
+    from seckill_connect
+    where user_id = #{id} and seckill_id=#{seckillId}
+  </select>
+
+  <insert id="insert" parameterType="com.hanfu.product.center.model.SeckillConnect" >
+
+    insert into seckill_connect (user_id,seckill_id,is_deleted
+      )
+    values (#{id}, #{seckillId}, 0 )
+  </insert>
+
+  <update id="updateIsDeleted" >
+        update seckill_connect set
+       is_deleted=1
+        where user_id=#{userId}
+    </update>
+
+
+
+</mapper>

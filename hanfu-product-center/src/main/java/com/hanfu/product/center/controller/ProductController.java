@@ -180,7 +180,17 @@ public class ProductController {
 		productInfoMapper.deleteByExample(example2);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
 	}
-
+	@ApiOperation(value = "查询商品列表", notes = "根据类目id查询商品列表")
+	@RequestMapping(value = "/selectProductId", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "categoryId", value = "类目ID", required = true, type = "Integer")})
+	public ResponseEntity<JSONObject> selectProduct(@RequestParam(name = "categoryId") Integer categoryId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductExample example = new ProductExample();
+		example.createCriteria().andCategoryIdEqualTo(categoryId);
+		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
+	}
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo) throws Exception {

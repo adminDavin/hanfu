@@ -28,12 +28,12 @@
         <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
     </resultMap>
 
-    <resultMap id="EntityProductDispalyForList" type="com.hanfu.product.center.manual.model.ProductDispalyForList">
-        <result column="id" jdbcType="VARCHAR" property="id"/>
-        <result column="hfName" jdbcType="VARCHAR" property="hfName"/>
-        <result column="cellPrice" jdbcType="VARCHAR" property="cellPrice"/>
-        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
-    </resultMap>
+    <!--<resultMap id="EntityProductDispalyForList" type="com.hanfu.product.center.manual.model.ProductDispalyForList">-->
+        <!--<result column="id" jdbcType="VARCHAR" property="id"/>-->
+        <!--<result column="hfName" jdbcType="VARCHAR" property="hfName"/>-->
+        <!--<result column="cellPrice" jdbcType="VARCHAR" property="cellPrice"/>-->
+        <!--<result column="file_id" jdbcType="INTEGER" property="fileId"/>-->
+    <!--</resultMap>-->
 
 
 

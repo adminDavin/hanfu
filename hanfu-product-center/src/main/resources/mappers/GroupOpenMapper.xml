@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.GroupOpenMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.GroupOpen" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="group_id" property="groupId" jdbcType="INTEGER" />
+    <result column="connect_id" property="connectId" jdbcType="INTEGER" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="Base" type="com.hanfu.product.center.model.GroupOpen" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="agroup_id" property="groupId" jdbcType="INTEGER" />
+    <result column="aconnect_id" property="connectId" jdbcType="INTEGER" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, group_id, connect_id, is_deleted, start_time, stop_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_open
+    where id = #{id} and is_deleted=0;
+  </select>
+
+  <select id="selectByGroupOpen" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where group_id = #{groupId} and is_deleted=0 order by id;
+  </select>
+
+
+
+  <select id="selectByGroupOpenId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select
+    id
+    from group_open
+    where group_id = #{groupId} and is_deleted=0;
+  </select>
+
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where id = #{id} and is_deleted=0;
+  </select>
+
+  <select id="selectNumber" resultType="int">
+        select count(*)
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.id=#{groupId} and b.is_deleted=0
+    </select>
+
+  <select id="selectUserId" parameterType="java.lang.Integer" resultType="int">
+        select b.user_id
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.id=#{groupId} and b.is_deleted=0 order by b.id
+    </select>
+
+  <select id="selectAllUserId" parameterType="java.lang.Integer" resultType="int">
+        select b.user_id
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.group_id=#{groupId}  order by b.id
+    </select>
+
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultType="int">
+        select b.user_id
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.id=#{groupId}  order by b.id
+    </select>
+
+
+  <select id="selectByGroup" parameterType="java.lang.Integer" resultMap="Base">
+        select
+         a.id aid, a.group_id  agroup_id,  a.connect_id aconnect_id,  a.is_deleted ais_deleted,  a.start_time astart_time,  a.stop_time astop_time
+        from
+        group_open a LEFT JOIN group_open_connect b on a.id =b.group_open_id
+		where a.group_id=#{groupId} and b.user_id=#{userId}
+    </select>
+
+
+
+  <select id="selectByStopTime"  resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+		where group_id=#{groupId} and stop_time=#{stopTime} and is_deleted=0;
+    </select>
+
+  <select id="getStopTime" resultType="Date"   >
+    select stop_time
+    from group_open
+    where is_deleted=0 order by stop_time
+  </select>
+
+  <select id="selectStopTime"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from group_open
+    where stop_time=#{stopTime} and is_deleted=0;
+  </select>
+
+  <select id="selectId"  parameterType="java.lang.Integer"  resultType="int">
+    select
+    id
+    from group_open
+    where group_id = #{groupId} ;
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from group_open
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deleteByGroupId" parameterType="java.lang.Integer" >
+    delete from group_open
+    where group_id = #{groupId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert"  >
+    insert into group_open (group_id,  is_deleted,start_time,
+       stop_time)
+    values (#{groupId,jdbcType=INTEGER},  0,  #{startTime,jdbcType=TIMESTAMP},
+       #{stopTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.hanfu.product.center.model.GroupOpen" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into group_open
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="connectId != null" >
+        connect_id,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="stopTime != null" >
+        stop_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="connectId != null" >
+        #{connectId,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=SMALLINT},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null" >
+        #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.product.center.model.GroupOpen" >
+    update group_open
+    <set >
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="connectId != null" >
+        connect_id = #{connectId,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=SMALLINT},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null" >
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hanfu.product.center.model.GroupOpen" >
+    update group_open
+    set group_id = #{groupId,jdbcType=INTEGER},
+      connect_id = #{connectId,jdbcType=INTEGER},
+      is_deleted = #{isDeleted,jdbcType=SMALLINT},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      stop_time = #{stopTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByIsDeleted" parameterType="java.lang.Integer" >
+    update group_open
+    set
+    is_deleted=1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>
