@@ -117,10 +117,23 @@ public class PaymentOrderController {
     
     private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder,
             Map<String, String> data, Map<String, String> reData) {
-        HfTansactionFlow t = new HfTansactionFlow();
+        HfTansactionFlowExample e = new HfTansactionFlowExample();
+        e.createCriteria().andTradeTypeEqualTo("paymentOrder").andOutTradeNoEqualTo(data.get("out_trade_no"));
+        List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
         
+        if (hfTansactionFlows.isEmpty()) {
+            HfTansactionFlow t = completeHfTansactionFlow(new HfTansactionFlow(), hfUser, hfOrder, data, reData);
+            hfTansactionFlowMapper.insertSelective(t);
+        } else {
+            HfTansactionFlow t = completeHfTansactionFlow(hfTansactionFlows.get(0), hfUser, hfOrder, data, reData);
+            hfTansactionFlowMapper.updateByPrimaryKey(t);
+        }   
+    }
+    
+    
+    private HfTansactionFlow completeHfTansactionFlow(HfTansactionFlow t, HfUser hfUser, HfOrderDisplay hfOrder, Map<String, String> data, Map<String, String> reData) {
         LocalDateTime current = LocalDateTime.now();
-        
+
         t.setAppId(data.get("appid"));
         t.setCreateDate(current);
         t.setDeviceInfo(data.get("device_info"));
@@ -139,9 +152,8 @@ public class PaymentOrderController {
         t.setUserId(hfUser.getUserId());
         t.setWechartBody(data.get("body"));
         t.setWechartPackage("package");
-        hfTansactionFlowMapper.insertSelective(t);
+        return t;
     }
-    
     
     @ApiOperation(value = "完成支付", notes = "")
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
