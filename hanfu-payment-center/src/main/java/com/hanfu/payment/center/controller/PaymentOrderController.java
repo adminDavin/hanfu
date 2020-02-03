@@ -235,7 +235,7 @@ public class PaymentOrderController {
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfTansactionFlowExample e = new HfTansactionFlowExample();
-        e.createCriteria().andTradeTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+        e.createCriteria().andTransactionTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
         List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
         if (!hfTansactionFlows.isEmpty()) {
             HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
