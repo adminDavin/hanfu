@@ -45,4 +45,10 @@ public class HfProductDaoImpl implements HfProductDao {
         List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByUserId", userId);
         return result;
     }
+
+    @Override
+    public List<HfProductDisplay> selectProductSeniorityId(Integer seniorityId) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductSeniorityId", seniorityId);
+        return result;
+    }
 }
