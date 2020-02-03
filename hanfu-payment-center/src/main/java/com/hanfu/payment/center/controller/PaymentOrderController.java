@@ -64,21 +64,20 @@ public class PaymentOrderController {
     @ApiOperation(value = "支付订单", notes = "")
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     @ApiImplicitParams({
-        @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
+        @ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
         @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")}
     )
-    public ResponseEntity<JSONObject> payment(@RequestParam Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> payment(@RequestParam String outTradeNo, Integer userId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", userId);
-        List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
-        HfOrderDisplay hfOrder = hfOrders.get(0);
+        HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
         HfUser hfUser = hfOrderDao.selectHfUser(userId); 
         MiniProgramConfig config = new MiniProgramConfig();
-        WXPay wxpay = new WXPay(config);
+        
         Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
         logger.info(JSONObject.toJSONString(data));
+        
+        WXPay wxpay = new WXPay(config);
         Map<String, String> resp = wxpay.unifiedOrder(data);
         logger.info(JSONObject.toJSONString(resp));
         if ("SUCCESS".equals(resp.get("return_code"))) {
@@ -106,18 +105,15 @@ public class PaymentOrderController {
     @ApiOperation(value = "支付订单", notes = "")
     @RequestMapping(value = "/refund", method = RequestMethod.GET)
     @ApiImplicitParams({
-        @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
+        @ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
         @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")}
     )
-    public ResponseEntity<JSONObject> refund(Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> refund(String outTradeNo, Integer userId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", userId);
-        List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
-
-        HfUser hfUser = hfOrderDao.selectHfUser(userId); 
-        HfOrderDisplay hfOrder = hfOrders.get(0);
+        HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+        HfUser hfUser = hfOrderDao.selectHfUser(userId);
+        
         MiniProgramConfig config = new MiniProgramConfig();
         WXPay wxpay = new WXPay(config);
         Map<String, String> data = new HashMap<>();
@@ -156,7 +152,7 @@ public class PaymentOrderController {
             t.setTotalFee(data.get("refund_fee"));
             t.setOutRefundNo(data.get("out_refund_no"));
             t.setTransactionType("rerundOrder");
-            t.setHfStatus(TansactionFlowStatusEnum.PROCESS.getStatus());
+            t.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
             t.setUserId(hfUser.getUserId());
         }
         
