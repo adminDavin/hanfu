@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -63,34 +64,20 @@ public class PaymentOrderController {
     @ApiOperation(value = "支付订单", notes = "")
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     @ApiImplicitParams({
-        @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
+        @ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
         @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")}
     )
-    public ResponseEntity<JSONObject> payment(@RequestParam Integer orderId, Integer userId)
+    public ResponseEntity<JSONObject> payment(@RequestParam String outTradeNo, Integer userId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("userId", userId);
-        List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
-        HfOrderDisplay hfOrder = hfOrders.get(0);
+        HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
         HfUser hfUser = hfOrderDao.selectHfUser(userId); 
         MiniProgramConfig config = new MiniProgramConfig();
-        WXPay wxpay = new WXPay(config);
-        Map<String, String> data = new HashMap<>();
-        data.put("appid",config.getAppID());
-        data.put("mch_id",config.getMchID());
-        data.put("body","訂單支付");
-        data.put("out_trade_no", hfOrder.getOrderCode());
-        data.put("device_info", req.getRemoteHost());
-        data.put("fee_type", "CNY");
-        data.put("total_fee", String.valueOf(1));
-        data.put("spbill_create_ip", req.getRemoteAddr());
-        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
-        data.put("trade_type", "JSAPI");
-        data.put("openid",hfUser.getAuthKey());
-        String sign = WXPayUtil.generateSignature(data, config.getKey());
-        data.put("sign",sign);
+        
+        Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
         logger.info(JSONObject.toJSONString(data));
+        
+        WXPay wxpay = new WXPay(config);
         Map<String, String> resp = wxpay.unifiedOrder(data);
         logger.info(JSONObject.toJSONString(resp));
         if ("SUCCESS".equals(resp.get("return_code"))) {
@@ -115,12 +102,107 @@ public class PaymentOrderController {
         
     }
     
+    @ApiOperation(value = "支付订单", notes = "")
+    @RequestMapping(value = "/refund", method = RequestMethod.GET)
+    @ApiImplicitParams({
+        @ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
+        @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")}
+    )
+    public ResponseEntity<JSONObject> refund(String outTradeNo, Integer userId)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+        HfUser hfUser = hfOrderDao.selectHfUser(userId);
+        
+        MiniProgramConfig config = new MiniProgramConfig();
+        WXPay wxpay = new WXPay(config);
+        Map<String, String> data = new HashMap<>();
+        data.put("appid",config.getAppID());
+        data.put("mch_id",config.getMchID());
+        data.put("device_info", req.getRemoteHost());
+        data.put("fee_type", "CNY");
+        data.put("total_fee", String.valueOf(1));
+        data.put("spbill_create_ip", req.getRemoteAddr());
+        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+    
+        data.put("out_trade_no", hfOrder.getOrderCode());
+        data.put("op_user_id", config.getMchID());
+        data.put("refund_fee_type", "CNY");
+        data.put("refund_fee", String.valueOf(1));
+        data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
+        String sign = WXPayUtil.generateSignature(data, config.getKey());
+        data.put("sign",sign);
+        logger.info(JSONObject.toJSONString(data));
+        
+        Map<String, String> resp = wxpay.refund(data);
+        logger.info(JSONObject.toJSONString(resp));
+        if ("SUCCESS".equals(resp.get("return_code"))) {
+            LocalDateTime current = LocalDateTime.now();
+            
+            HfTansactionFlow t = new HfTansactionFlow();
+            t.setAppId(config.getAppID());
+            t.setCreateDate(current);
+            t.setDeviceInfo(req.getRemoteHost());
+            t.setFeeType(data.get("refund_fee_type"));
+            t.setMchId(config.getMchID());
+            t.setModifyDate(current);
+            t.setOpenId(hfUser.getAuthKey());
+            t.setOutTradeNo(data.get("out_trade_no"));
+            t.setSpbillCreateIp(req.getRemoteAddr());
+            t.setTotalFee(data.get("refund_fee"));
+            t.setOutRefundNo(data.get("out_refund_no"));
+            t.setTransactionType("rerundOrder");
+            t.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
+            t.setUserId(hfUser.getUserId());
+        }
+        
+        return builder.body(ResponseUtils.getResponseBody(resp));
+       
+        
+    }
+
+    
+    
+    private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode) throws Exception {
+        Map<String, String> data = new HashMap<>();
+        data.put("appid",config.getAppID());
+        data.put("mch_id",config.getMchID());
+        data.put("body","订单支付");
+        data.put("out_trade_no", orderCode);
+        data.put("device_info", req.getRemoteHost());
+        data.put("fee_type", "CNY");
+        data.put("total_fee", String.valueOf(1));
+        data.put("spbill_create_ip", req.getRemoteAddr());
+        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+        data.put("trade_type", "JSAPI");
+        data.put("openid", openId);
+        String sign = WXPayUtil.generateSignature(data, config.getKey());
+        data.put("sign",sign);
+        logger.info(JSONObject.toJSONString(data));
+        return data;
+    }
+    
     private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder,
             Map<String, String> data, Map<String, String> reData) {
-        HfTansactionFlow t = new HfTansactionFlow();
+        HfTansactionFlowExample e = new HfTansactionFlowExample();
+        e.createCriteria().andTradeTypeEqualTo("paymentOrder")
+            .andOutTradeNoEqualTo(data.get("out_trade_no"))
+            .andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+        List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
         
+        if (hfTansactionFlows.isEmpty()) {
+            HfTansactionFlow t = completeHfTansactionFlow(new HfTansactionFlow(), hfUser, hfOrder, data, reData);
+            hfTansactionFlowMapper.insertSelective(t);
+        } else {
+            HfTansactionFlow t = completeHfTansactionFlow(hfTansactionFlows.get(0), hfUser, hfOrder, data, reData);
+            hfTansactionFlowMapper.updateByPrimaryKey(t);
+        }   
+    }
+    
+    
+    private HfTansactionFlow completeHfTansactionFlow(HfTansactionFlow t, HfUser hfUser, HfOrderDisplay hfOrder, Map<String, String> data, Map<String, String> reData) {
         LocalDateTime current = LocalDateTime.now();
-        
+
         t.setAppId(data.get("appid"));
         t.setCreateDate(current);
         t.setDeviceInfo(data.get("device_info"));
@@ -139,9 +221,8 @@ public class PaymentOrderController {
         t.setUserId(hfUser.getUserId());
         t.setWechartBody(data.get("body"));
         t.setWechartPackage("package");
-        hfTansactionFlowMapper.insertSelective(t);
+        return t;
     }
-    
     
     @ApiOperation(value = "完成支付", notes = "")
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
@@ -154,7 +235,7 @@ public class PaymentOrderController {
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfTansactionFlowExample e = new HfTansactionFlowExample();
-        e.createCriteria().andTradeTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+        e.createCriteria().andTransactionTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
         List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
         if (!hfTansactionFlows.isEmpty()) {
             HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
