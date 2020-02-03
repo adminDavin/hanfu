@@ -84,7 +84,7 @@
     </select>
     
     <update id="updateHfOrderStatus" parameterType="map">
-    update hf_order o set o.order_status=#{orderStatus}, o.modify_time=#{modifyTime}
+    update hf_order o set o.order_status=#{orderStatus}, o.modify_time=#{modifyTime}, pay_status=1
      where o.order_code =#{orderCode}
     </update>
 </mapper>

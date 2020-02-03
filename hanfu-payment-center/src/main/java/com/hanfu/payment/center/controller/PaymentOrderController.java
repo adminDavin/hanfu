@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
-import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.hanfu.payment.center.config.MiniProgramConfig;
+import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
 import com.hanfu.payment.center.manual.model.HfOrderDisplay;
 import com.hanfu.payment.center.manual.model.HfUser;
 import com.hanfu.payment.center.manual.model.OrderStatus;
+import com.hanfu.payment.center.manual.model.TansactionFlowStatusEnum;
+import com.hanfu.payment.center.model.HfTansactionFlow;
+import com.hanfu.payment.center.model.HfTansactionFlowExample;
 import com.hanfu.payment.center.util.PayUtil;
-import com.hanfu.payment.center.util.WXConfigUtil;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -54,6 +55,9 @@ public class PaymentOrderController {
     private HfOrderDao hfOrderDao;
     
     @Autowired
+    private HfTansactionFlowMapper hfTansactionFlowMapper;
+    
+    @Autowired
     HttpServletRequest req;
     
     @ApiOperation(value = "支付订单", notes = "")
@@ -69,10 +73,7 @@ public class PaymentOrderController {
         params.put("userId", userId);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         HfOrderDisplay hfOrder = hfOrders.get(0);
-        HfUser hfUser = hfOrderDao.selectHfUser(userId);
-//        HfOrderDisplay newHfOrder = hfOrderDao.selectHfOrderbyCode(hfOrder.getOrderCode());
-//
-//        hfOrderDao.updateHfOrderStatus(newHfOrder.getOrderCode(), OrderStatus.PAYMENT.getOrderStatus(), LocalDateTime.now());  
+        HfUser hfUser = hfOrderDao.selectHfUser(userId); 
         MiniProgramConfig config = new MiniProgramConfig();
         WXPay wxpay = new WXPay(config);
         Map<String, String> data = new HashMap<>();
@@ -106,6 +107,7 @@ public class PaymentOrderController {
             resp.put("package",reData.get("package"));
             resp.put("signType", reData.get("signType"));
             resp.put("timeStamp", reData.get("timeStamp"));
+            recordTransactionFlow(hfUser, hfOrder, data, reData);
             return builder.body(ResponseUtils.getResponseBody(resp));
         } else {
             throw new Exception(resp.get("return_msg"));
@@ -113,6 +115,61 @@ public class PaymentOrderController {
         
     }
     
+    private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder,
+            Map<String, String> data, Map<String, String> reData) {
+        HfTansactionFlow t = new HfTansactionFlow();
+        
+        LocalDateTime current = LocalDateTime.now();
+        
+        t.setAppId(data.get("appid"));
+        t.setCreateDate(current);
+        t.setDeviceInfo(data.get("device_info"));
+        t.setFeeType(data.get("fee_type"));
+        t.setMchId(data.get("mch_id"));
+        t.setModifyDate(current);
+        t.setNotifyUrl(data.get("notify_url"));
+        t.setOpenId(hfUser.getAuthKey());
+        t.setOutTradeNo(data.get("out_trade_no"));
+        t.setSigntype(reData.get("signType"));
+        t.setSpbillCreateIp(data.get("spbill_create_ip"));
+        t.setTotalFee(data.get("total_fee"));
+        t.setTradeType(data.get("trade_type"));
+        t.setTransactionType("paymentOrder");
+        t.setHfStatus(TansactionFlowStatusEnum.PROCESS.getStatus());
+        t.setUserId(hfUser.getUserId());
+        t.setWechartBody(data.get("body"));
+        t.setWechartPackage("package");
+        hfTansactionFlowMapper.insertSelective(t);
+    }
+    
+    
+    @ApiOperation(value = "完成支付", notes = "")
+    @RequestMapping(value = "/complete", method = RequestMethod.GET)
+    @ApiImplicitParams({
+        @ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
+        @ApiImplicitParam(paramType = "query", name = "transactionType", value = "订单id", required = true, type = "String"),
+        @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")}
+    )
+    public ResponseEntity<JSONObject> completePaymentAfter(@RequestParam("outTradeNo") String outTradeNo, @RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfTansactionFlowExample e = new HfTansactionFlowExample();
+        e.createCriteria().andTradeTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+        List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
+        if (!hfTansactionFlows.isEmpty()) {
+            HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
+            hfTansactionFlow.setModifyDate(LocalDateTime.now());
+            hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
+            hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
+            hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+            return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
+        } else {
+            throw new Exception("交易柳树不存在, 或者已完成支付");
+        }
+        
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
     @RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
     public void refund(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -156,7 +213,7 @@ public class PaymentOrderController {
                 + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
     }
     System.out.println(resXml);
-    System.out.println("微信支付回调数据结束");
+    logger.info("微信支付回调数据结束");
 
     BufferedOutputStream out = new BufferedOutputStream(
             response.getOutputStream());

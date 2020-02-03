@@ -68,4 +68,6 @@ logging:
 
 mybatis:
   mapper-locations:
+    - mappers/*.xml
     - manual-mappers/*.xml
+

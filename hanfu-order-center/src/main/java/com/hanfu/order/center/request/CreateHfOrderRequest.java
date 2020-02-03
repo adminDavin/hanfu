@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 @SuppressWarnings("serial")
 public class CreateHfOrderRequest extends CommonRequest {
     public static enum PaymentStatus {
-        UNPAID(1),
-        PAID(0);
+        UNPAID(0),
+        PAID(1);
         private Integer paymentStatus;
         PaymentStatus(Integer paymentStatus) {
             this.paymentStatus = paymentStatus;
