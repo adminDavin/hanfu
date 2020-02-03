@@ -59,11 +59,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.hanfu.inner.sdk</groupId>
-			<artifactId>hanfu-inner-sdk</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
 			<artifactId>hanfu-web-utils</artifactId>
 			<groupId>com.hanfu.utils</groupId>
 			<version>0.0.1</version>
