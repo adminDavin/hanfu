@@ -219,7 +219,7 @@ public class HfProductController {
 
     @ApiOperation(value = "获取商品列表收藏", notes = "根据用户id收藏商品列表")
     @RequestMapping(value = "/getcollect", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "userId", value = "店铺Id", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true,
             type = "Integer") })
     public ResponseEntity<JSONObject> getcollect(@RequestParam(name = "userId") Integer userId,Integer pageNum,Integer pageSize)
             throws JSONException {
