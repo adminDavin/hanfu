@@ -35,6 +35,11 @@
         <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
         
     </resultMap>
+    
+    <resultMap id="HfOrderStatisticsResultMap" type="com.hanfu.order.center.manual.model.HfOrderStatistics">
+        <result column="order_status" jdbcType="VARCHAR" property="orderStatus"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+    </resultMap>
  
    
     <insert id="insertOrderAddress">
@@ -59,7 +64,14 @@
     a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
      from hf_order o left join hf_order_detail d on o.id=d.order_id
      left join hf_order_address a on o.id=a.order_id
-     where o.user_id =#{userId} 
+     where o.user_id =#{userId} and o.id_deleted=0
+     <if test="orderStatus!='all'">
+        and o.order_status = #{orderStatus}
+    </if >
      order by o.modify_time desc;
+    </select>
+    
+    <select id="selectHfOrderStatistics" resultMap="HfOrderStatisticsResultMap">
+    select order_status, count(1) quantity from hf_order where user_id=965 and id_deleted=0 group by order_status;
     </select>
 </mapper>

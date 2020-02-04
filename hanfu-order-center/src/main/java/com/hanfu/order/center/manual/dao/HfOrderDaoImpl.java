@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hanfu.order.center.manual.model.HfGoodsDisplay;
 import com.hanfu.order.center.manual.model.HfOrderDisplay;
+import com.hanfu.order.center.manual.model.HfOrderStatistics;
 
 @Repository
 public class HfOrderDaoImpl implements HfOrderDao {
@@ -35,6 +36,11 @@ public class HfOrderDaoImpl implements HfOrderDao {
     @Override
     public List<HfGoodsDisplay> selectGoodsInfo(Set<Integer> goodsIds) {
         return sqlSessionTemplate.selectList("selectGoodsInfo", Lists.newArrayList(goodsIds));
+    }
+
+    @Override
+    public List<HfOrderStatistics> selectHfOrderStatistics(Integer userId) {
+        return sqlSessionTemplate.selectList("selectHfOrderStatistics", userId);
     }
 
 }

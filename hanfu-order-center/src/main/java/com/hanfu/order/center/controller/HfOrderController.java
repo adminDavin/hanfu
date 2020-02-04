@@ -25,6 +25,7 @@ import com.hanfu.order.center.dao.HfOrderMapper;
 import com.hanfu.order.center.manual.dao.HfOrderDao;
 import com.hanfu.order.center.manual.model.HfGoodsDisplay;
 import com.hanfu.order.center.manual.model.HfOrderDisplay;
+import com.hanfu.order.center.manual.model.HfOrderStatistics;
 import com.hanfu.order.center.model.HfOrder;
 import com.hanfu.order.center.model.HfOrderDetail;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
@@ -134,6 +135,17 @@ public class HfOrderController {
         
         
         return builder.body(ResponseUtils.getResponseBody(hfOrders));
+    }
+
+    @ApiOperation(value = "订单统计", notes = "订单查询")
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "orderStatus", value = "订单状态", required = true,
+                    type = "String")})
+    public ResponseEntity<JSONObject> statistics(Integer userId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<HfOrderStatistics> hfOrderStatus = hfOrderDao.selectHfOrderStatistics(userId);
+        return builder.body(ResponseUtils.getResponseBody(hfOrderStatus));
     }
 
 }
