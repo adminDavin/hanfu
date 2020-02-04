@@ -30,7 +30,7 @@
     </select>
     <select id="selectProductByProductId"   resultMap="ProductDispaly">
     SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p++++
+    FROM  product p
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
     where p.id=#{productId}
@@ -63,5 +63,26 @@ FROM
 	LEFT JOIN product_instance i ON p.id = i.product_id
 WHERE
 	u.user_id=#{userId}
+    </select>
+    <select id="selectProductSeniorityId" resultMap="ProductDispaly">
+        SELECT
+	p.id,
+	p.hf_name,
+	product_desc,
+	p.category_id,
+	p.file_id,
+	h.hf_name category_name,
+	i.stone_id,
+	p.brand_id,
+	p.last_modifier,
+	p.modify_time
+FROM
+	seniority_instance s
+	LEFT JOIN hf_goods g ON s.goods_id = g.id
+	LEFT JOIN product p ON g.product_id = p.id
+	LEFT JOIN hf_category h ON p.category_id = h.id
+	LEFT JOIN product_instance i ON p.id = i.product_id
+WHERE
+	s.seniority_id =#{seniorityId}
     </select>
 </mapper>

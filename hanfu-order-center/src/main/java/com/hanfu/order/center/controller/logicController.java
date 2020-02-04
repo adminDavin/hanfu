@@ -92,9 +92,9 @@ public class logicController {
         }
         //判断订单的商品与核销商品是否一致
         //价格，根据订单id，设置订单状态
-        Example example2 = new Example(HfOrdersDetail.class);
+        Example example2 = new Example(HfOrderDetail.class);
         Example.Criteria criteria2 = example2.createCriteria();
-        criteria2.andEqualTo("ordersId", orderId).andEqualTo("googsId",goodsId);
+        criteria2.andEqualTo("orderId", orderId).andEqualTo("goodsId",goodsId);
         List<HfOrderDetail> hfPriceList = hfOrdersCancelDetailMapper.selectByExample(example2);
         if (hfPriceList.size() == 0) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
