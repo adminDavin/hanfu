@@ -15,7 +15,28 @@ public class CreateHfOrderRequest extends CommonRequest {
             return this.paymentStatus;
         }
     }
-
+    
+    public static enum OrderTypeEnum {
+        NOMAL_ORDER("nomalOrder"),
+        PAYMENT_ORDER("paymentOrder");
+        private String orderType;
+        OrderTypeEnum(String orderType) {
+            this.orderType = orderType;
+        }
+        public String getOrderType() {
+            return this.orderType;
+        }
+        
+        public static OrderTypeEnum getOrderTypeEnum(String orderType) {
+            for(OrderTypeEnum item : OrderTypeEnum.values()) {
+                if (item.orderType.equals(orderType)) {
+                    return item;
+                }
+            }
+            return NOMAL_ORDER;
+        }
+    }
+    
     public static enum TakingTypeEnum {
         DELIVERY("delivery"),
         SELF_PICKUP("selfPickUp");
@@ -44,6 +65,7 @@ public class CreateHfOrderRequest extends CommonRequest {
         PROCESS("process"),
         TRANSPORT("transport"),
         EVALUATE("evaluate"),
+        COMPLETE("complete"),
         CONTROVERSIAL("controversial"),
         CANCEL("cancel");
 
@@ -101,6 +123,8 @@ public class CreateHfOrderRequest extends CommonRequest {
     private String paymentName;
     @ApiModelProperty(required = true, value = "订单备注")
     private String hfRemark;
+    @ApiModelProperty(required = true, value = "店铺id")
+    private Integer stoneId;
     
     // 订单物品属性
     @ApiModelProperty(required = true, value = "物品id")
@@ -120,6 +144,13 @@ public class CreateHfOrderRequest extends CommonRequest {
     @ApiModelProperty(required = true, value = "邮寄地址")
     private Integer userAddressId;
     
+    
+    public Integer getStoneId() {
+        return stoneId;
+    }
+    public void setStoneId(Integer stoneId) {
+        this.stoneId = stoneId;
+    }
     public Integer getUserAddressId() {
         return userAddressId;
     }

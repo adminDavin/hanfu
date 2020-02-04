@@ -29,10 +29,6 @@ public class HfOrderDaoImpl implements HfOrderDao {
         sqlSessionTemplate.update("insertOrderAddress", params);   
     }
 
-    @Override
-    public List<HfOrderDisplay> selectHfOrder(Map<String, Object> params) {
-        return sqlSessionTemplate.selectList("selectHfOrder", params);
-    }
 
 
     @Override

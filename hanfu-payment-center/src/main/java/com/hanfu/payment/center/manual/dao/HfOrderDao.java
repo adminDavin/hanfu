@@ -14,7 +14,6 @@ import com.hanfu.payment.center.manual.model.HfUser;
 public interface HfOrderDao {
 
     void insertOrderAddress(Integer addressId, Integer orderId);
-    List<HfOrderDisplay> selectHfOrder(Map<String, Object> params);
     List<HfGoodsDisplay> selectGoodsInfo(Set<Integer> goodsIds);
     HfUser selectHfUser(Integer userId);
     HfOrderDisplay selectHfOrderbyCode(String orderCode);
