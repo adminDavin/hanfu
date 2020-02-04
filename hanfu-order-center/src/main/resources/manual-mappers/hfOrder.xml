@@ -24,6 +24,7 @@
         <result column="address_detail" jdbcType="VARCHAR" property="addressDetail"/>
         <result column="contact" jdbcType="VARCHAR" property="contact"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="stone_id" jdbcType="VARCHAR" property="stoneId"/>
         <result column="address_desc" jdbcType="VARCHAR" property="addressDesc"/>
     </resultMap>
     
@@ -59,12 +60,12 @@
     </select>
     
     <select id="selectHfOrder" resultMap="BaseResultMap">
-    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.payment_name, o.payment_type, o.user_id, 
+    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.payment_name, o.stone_id, o.payment_type, o.user_id, 
     d.goods_id, d.actual_price, d.quantity, d.taking_type, d.freight, d.hf_desc,
     a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
      from hf_order o left join hf_order_detail d on o.id=d.order_id
      left join hf_order_address a on o.id=a.order_id
-     where o.user_id =#{userId} and o.id_deleted=0
+     where o.user_id =#{userId} and o.id_deleted=0 and o.order_type='nomalOrder'
      <if test="orderStatus!='all'">
         and o.order_status = #{orderStatus}
     </if >

@@ -15,9 +15,9 @@ public class HfOrderDisplay {
     private String paymentName;
     private Integer paymentType;
     private Integer userId;
+    private Integer stoneId;
     
     // 订单详情
-    private Integer stoneId;
     private String stoneName;
     private String goodsName;
     private Integer goodsId;

@@ -5,6 +5,7 @@ public enum OrderStatus {
     PAYMENT("payment"),
     PROCESS("process"),
     TRANSPORT("transport"),
+    COMPLETE("complete"),
     EVALUATE("evaluate"),
     CONTROVERSIAL("controversial"),
     CANCEL("cancel");

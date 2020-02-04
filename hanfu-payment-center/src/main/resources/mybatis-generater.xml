@@ -57,5 +57,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
+        
+        <table schema="user_center" tableName="hf_user_balance"
+               domainObjectName="HfUserBalance">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>

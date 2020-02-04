@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
-import com.esotericsoftware.kryo.serializers.FieldSerializer.Optional;
 import com.hanfu.order.center.dao.HfOrderDetailMapper;
 import com.hanfu.order.center.dao.HfOrderMapper;
 import com.hanfu.order.center.manual.dao.HfOrderDao;
@@ -30,6 +29,7 @@ import com.hanfu.order.center.model.HfOrder;
 import com.hanfu.order.center.model.HfOrderDetail;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderStatus;
+import com.hanfu.order.center.request.CreateHfOrderRequest.OrderTypeEnum;
 import com.hanfu.order.center.request.CreateHfOrderRequest.PaymentStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.PaymentType;
 import com.hanfu.order.center.request.CreateHfOrderRequest.TakingTypeEnum;
@@ -66,19 +66,32 @@ public class HfOrderController {
         System.out.println(request);
         LocalDateTime time = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
-        hfOrder.setAmount(request.getAmount());
         hfOrder.setCreateTime(time);
-        hfOrder.setHfRemark(request.getHfRemark());
-        hfOrder.setLastModifier(String.valueOf(request.getUserId()));
         hfOrder.setModifyTime(time);
-        hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
-        hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
+        
+        hfOrder.setAmount(request.getAmount());
+        hfOrder.setHfRemark(request.getHfRemark());        
+        hfOrder.setUserId(request.getUserId());
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
-        hfOrder.setPaymentType(PaymentType.getPaymentTypeEnum(request.getPaymentName()).getPaymentType());
+        hfOrder.setStoneId(request.getStoneId());
+        
+        hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
+        hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
+        Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
+        hfOrder.setPaymentType(paymentType);
+        hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
         hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
-        hfOrder.setUserId(request.getUserId());
-        hfOrderMapper.insertSelective(hfOrder);
+        
+        hfOrderMapper.insertSelective(hfOrder); 
+        if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {  
+            handleNomalOrder(request, hfOrder);
+        }
+        return builder.body(ResponseUtils.getResponseBody(hfOrder));
+    }
+
+    private void handleNomalOrder(CreateHfOrderRequest request, HfOrder hfOrder) {
+        LocalDateTime time = LocalDateTime.now();
 
         HfOrderDetail detail = new HfOrderDetail();
         detail.setActualPrice(request.getActualPrice());
@@ -99,9 +112,9 @@ public class HfOrderController {
                 hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());   
             }
         }
-        return builder.body(ResponseUtils.getResponseBody(hfOrder));
-    }
 
+    }
+    
     @ApiOperation(value = "订单查询", notes = "订单查询")
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -126,7 +139,6 @@ public class HfOrderController {
                 HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
                 if (java.util.Optional.ofNullable(goods).isPresent()) {
                     hfOrder.setGoodsName(goods.getHfName());
-                    hfOrder.setStoneId(goods.getStoneId());
                     hfOrder.setStoneName(goods.getStoneName());
                     hfOrder.setFileId(goods.getFileId());
                 }
