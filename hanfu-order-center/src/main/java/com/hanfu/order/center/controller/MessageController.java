@@ -1,7 +1,6 @@
 package com.hanfu.order.center.controller;
 
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import javax.annotation.Resource;
@@ -15,16 +14,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.order.center.dao.FileDescMapper;
-import com.hanfu.order.center.manual.dao.MessageDao;
-import com.hanfu.order.center.manual.model.Evaluate;
+import com.hanfu.order.center.dao.hfEvaluateMapper;
 import com.hanfu.order.center.model.FileDesc;
+import com.hanfu.order.center.model.hfEvaluate;
+import com.hanfu.order.center.model.hfEvaluateExample;
+import com.hanfu.order.center.request.Evaluate;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -41,80 +41,34 @@ import io.swagger.annotations.ApiOperation;
 public class MessageController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
-    MessageDao messageDao;
-    @Autowired
     FileDescMapper fileDescMapper;
+    @Autowired
+    hfEvaluateMapper hfEvaluateMapper1;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
-    @ApiOperation(value = "查询全部消息", notes = "查询全部消息")
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> query()
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(messageDao.selectMeaasgeList()));
-    }
-
-    @ApiOperation(value = "添加消息", notes = "添加消息")
-    @RequestMapping(value = "/addMessage", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer")
-    })
-    public ResponseEntity<JSONObject> addMessage(String message, Integer userId)
-            throws JSONException {
-        String key = userId.toString();
-        redisTemplate.opsForValue().set(key, message);
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(""));
-    }
-
-    @ApiOperation(value = "删除消息", notes = "删除消息")
-    @RequestMapping(value = "/deleteMessage", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")
-    })
-    public ResponseEntity<JSONObject> deleteMessage(Integer userId)
-            throws JSONException {
-        String userid = userId.toString();
-        redisTemplate.delete(userid);
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(""));
-    }
-
-    @ApiOperation(value = "修改消息", notes = "修改消息")
-    @RequestMapping(value = "/updateMessage", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String")
-    })
-    public ResponseEntity<JSONObject> updateMessage(Integer userId, String message)
-            throws JSONException {
-        redisTemplate.opsForValue().get(userId);
-        String key = userId.toString();
-        redisTemplate.opsForValue().append(key, message);
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(""));
-    }
-
-    @ApiOperation(value = "添加评价", notes = "添加评价")
+    
+    @SuppressWarnings("static-access")
+	@ApiOperation(value = "添加评价", notes = "添加评价")
     @RequestMapping(value = "/insertReply", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = false, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> insertReply(MultipartFile fileInfo, Evaluate evaluate, Integer orderId, Integer userId,Integer goodsId)
-            throws JSONException {
+    public ResponseEntity<JSONObject> insertReply(MultipartFile fileInfo, String evaluate, Integer orderId, Integer userId)
+            throws JSONException, Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
         }
-        String key = orderId.toString() + userId.toString()+goodsId.toString();
+        hfEvaluate hfEvaluate1 = new hfEvaluate();
+        hfEvaluate1.setUserId(userId);
+        hfEvaluate1.setOrderId(orderId);
+        hfEvaluate1.setCreateTime(LocalDateTime.now());
+        hfEvaluate1.setModifyTime(LocalDateTime.now());
+        hfEvaluate1.setIsDeleted((short)0);
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
-		try {
 			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
 			FileDesc fileDesc = new FileDesc();
 			fileDesc.setFileName(fileInfo.getName());
@@ -125,44 +79,42 @@ public class MessageController {
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        redisTemplate.opsForValue().set(key, evaluate);
-        return builder.body(ResponseUtils.getResponseBody(""));
+			hfEvaluate1.setFileId(fileDesc.getId());
+			hfEvaluate1.setEvaluate(evaluate);
+        return builder.body(ResponseUtils.getResponseBody(hfEvaluateMapper1.insertSelective(hfEvaluate1)));
     }
 
     @ApiOperation(value = "查看评价", notes = "查看评价")
     @RequestMapping(value = "/SeekReply", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = true, type = "Integer"),
-    })
-    public ResponseEntity<JSONObject> SeekReply(Integer orderId, Integer userId,Integer goodsId)
+    public ResponseEntity<JSONObject> SeekReply(Evaluate evaluate)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        if (orderId == null) {
-            return builder.body(ResponseUtils.getResponseBody("没有评价"));
+        hfEvaluateExample example = new hfEvaluateExample();
+        if(evaluate.getUserId() != null) {
+        	   example.createCriteria().andUserIdEqualTo(evaluate.getUserId());
+               return builder.body(ResponseUtils.getResponseBody(hfEvaluateMapper1.selectByExample(example)));
+        }else {
+             if(evaluate.getOrderId() != null) {
+            	 example.createCriteria().andOrderIdEqualTo(evaluate.getOrderId());
+            	 return builder.body(ResponseUtils.getResponseBody(hfEvaluateMapper1.selectByExample(example)));
+             }
         }
-        String key = orderId.toString() + userId.toString()+goodsId.toString();
-        return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(key)));
+        return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
     }
 
     @ApiOperation(value = "评价回复", notes = "评价回复")
     @RequestMapping(value = "/queryReply", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品Id", required = true, type = "Integer"),
-    })
-    public ResponseEntity<JSONObject> queryReply(@RequestParam String evaluate, Integer orderId, Integer userId,Integer goodsId)
+    public ResponseEntity<JSONObject> queryReply(Evaluate evaluate)
             throws JSONException {
-        String key = orderId.toString()+orderId.toString()+goodsId.toString();
-        redisTemplate.opsForValue().set(key, evaluate);
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(""));
+        hfEvaluate hfevaluate2 = new hfEvaluate();
+        hfEvaluate hfevaluate1 = hfEvaluateMapper1.selectByPrimaryKey(evaluate.getId());
+        hfevaluate2.setEvaluate(evaluate.getEvaluate());
+        hfevaluate2.setOrderId(hfevaluate1.getOrderId());
+        hfevaluate2.setCreateTime(LocalDateTime.now());
+        hfevaluate2.setModifyTime(LocalDateTime.now());
+        hfevaluate2.setIsDeleted((short) 0);
+        hfEvaluateMapper1.insertSelective(hfevaluate2);
+        return builder.body(ResponseUtils.getResponseBody(hfEvaluateMapper1.insertSelective(hfevaluate2)));
     }
 }
