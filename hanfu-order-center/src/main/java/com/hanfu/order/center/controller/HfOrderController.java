@@ -63,7 +63,6 @@ public class HfOrderController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> creatOrder(CreateHfOrderRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        System.out.println(request);
         LocalDateTime time = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
         hfOrder.setCreateTime(time);
@@ -75,7 +74,7 @@ public class HfOrderController {
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
         hfOrder.setStoneId(request.getStoneId());
-        
+        hfOrder.setDistributorId(request.getDistributorId());
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
         Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();

@@ -18,7 +18,8 @@ public class CreateHfOrderRequest extends CommonRequest {
     
     public static enum OrderTypeEnum {
         NOMAL_ORDER("nomalOrder"),
-        PAYMENT_ORDER("paymentOrder");
+        RECHAEGE_ORDER("rechargeOrder"),
+        SHOPPING_ORDER("shoppingOrder");
         private String orderType;
         OrderTypeEnum(String orderType) {
             this.orderType = orderType;
@@ -123,9 +124,11 @@ public class CreateHfOrderRequest extends CommonRequest {
     private String paymentName;
     @ApiModelProperty(required = true, value = "订单备注")
     private String hfRemark;
-    @ApiModelProperty(required = true, value = "店铺id")
+    @ApiModelProperty(required = false, value = "店铺id")
     private Integer stoneId;
-    
+
+    @ApiModelProperty(required = false, value = "核销人员id")
+    private Integer distributorId;
     // 订单物品属性
     @ApiModelProperty(required = true, value = "物品id")
     private Integer goodsId;
@@ -210,9 +213,12 @@ public class CreateHfOrderRequest extends CommonRequest {
         this.orderType = orderType;
     }
 
-
-
-
+    public Integer getDistributorId() {
+        return distributorId;
+    }
+    public void setDistributorId(Integer distributorId) {
+        this.distributorId = distributorId;
+    }
     public String getPaymentName() {
         return paymentName;
     }

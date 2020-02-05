@@ -2,8 +2,9 @@ package com.hanfu.payment.center.manual.model;
 
 
 public enum OrderTypeEnum {
-    NOMAL_ORDER("nomalOrder"),
-    PAYMENT_ORDER("paymentOrder");
+    RECHAEGE_ORDER("rechargeOrder"), // 充值订单
+    NOMAL_ORDER("nomalOrder"), // 购物订单
+    SHOPPING_ORDER("shoppingOrder"); // 支付订单
     private String orderType;
     OrderTypeEnum(String orderType) {
         this.orderType = orderType;

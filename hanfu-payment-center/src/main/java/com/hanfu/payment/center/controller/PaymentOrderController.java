@@ -206,8 +206,7 @@ public class PaymentOrderController {
     private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder, Map<String, String> data,
             Map<String, String> reData) {
         HfTansactionFlowExample e = new HfTansactionFlowExample();
-        e.createCriteria().andTradeTypeEqualTo("paymentOrder").andOutTradeNoEqualTo(data.get("out_trade_no"))
-                .andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+        e.createCriteria().andTradeTypeEqualTo(hfOrder.getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"));
         List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
 
         if (hfTansactionFlows.isEmpty()) {
@@ -236,7 +235,7 @@ public class PaymentOrderController {
         t.setSpbillCreateIp(data.get("spbill_create_ip"));
         t.setTotalFee(data.get("total_fee"));
         t.setTradeType(data.get("trade_type"));
-        t.setTransactionType("paymentOrder");
+        t.setTransactionType(hfOrder.getOrderType());
         t.setHfStatus(TansactionFlowStatusEnum.PROCESS.getStatus());
         t.setUserId(hfUser.getUserId());
         t.setWechartBody(data.get("body"));
@@ -264,11 +263,15 @@ public class PaymentOrderController {
         if (!hfTansactionFlows.isEmpty()) {
             HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
             HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-            if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+            if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
                 hfTansactionFlow.setModifyDate(LocalDateTime.now());
                 hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
                 hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
-                hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+                hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+                
+                if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+                    rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()));
+                }
             } else {
                 rechangeBalance(hfTansactionFlow.getUserId(), Integer.valueOf(hfTansactionFlow.getTotalFee()));
                 hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
@@ -277,7 +280,6 @@ public class PaymentOrderController {
         } else {
             throw new Exception("交易柳树不存在, 或者已完成支付");
         }
-
     }
 
     private void rechangeBalance(Integer userId, Integer totalFee) {

@@ -34,6 +34,16 @@ public class HfOrderDisplay {
     private String contact;
     private String phone;
     private String addressDesc;
+    private Integer distributorId;
+
+    
+    
+    public Integer getDistributorId() {
+        return distributorId;
+    }
+    public void setDistributorId(Integer distributorId) {
+        this.distributorId = distributorId;
+    }
     public Integer getId() {
         return id;
     }
