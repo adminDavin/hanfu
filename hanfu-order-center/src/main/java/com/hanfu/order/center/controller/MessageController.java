@@ -3,7 +3,6 @@ package com.hanfu.order.center.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.order.center.dao.FileDescMapper;
 import com.hanfu.order.center.manual.dao.MessageDao;

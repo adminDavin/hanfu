@@ -61,7 +61,7 @@ public class accreditController {
 
     @RequestMapping(value = "/deleteBatchCancel", method = RequestMethod.GET)
     @ApiOperation(value = "批量删除", notes = "批量删除")
-    public ResponseEntity<JSONObject> deleteBatchCancel(@RequestParam("id") List id) throws Exception {
+    public ResponseEntity<JSONObject> deleteBatchCancel(@SuppressWarnings("rawtypes") @RequestParam("id") List id) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         System.out.println(id);
         if (id == null) {

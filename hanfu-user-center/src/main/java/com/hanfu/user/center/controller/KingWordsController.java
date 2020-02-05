@@ -2,24 +2,26 @@ package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
+//import com.github.pagehelper.PageHelper;
+//import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
-import com.hanfu.user.center.dao.AuthorizationMapper;
-import com.hanfu.user.center.config.PermissionConstants;
+//import com.hanfu.user.center.config.PermissionConstants;
+import com.hanfu.user.center.config.WxLoginConfig;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
-import com.hanfu.user.center.manual.model.ActivityUserInfo;
-import com.hanfu.user.center.manual.model.UserQuery;
-import com.hanfu.user.center.manual.model.test;
+//import com.hanfu.user.center.manual.model.ActivityUserInfo;
+import com.hanfu.user.center.manual.model.UserInfo;
+//import com.hanfu.user.center.manual.model.UserQuery;
+//import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.response.handler.UserNotExistException;
-import com.hanfu.user.center.service.RequiredPermission;
+//import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.user.center.utils.GetMessageCode;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -28,17 +30,21 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +57,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpSession;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +66,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.InvalidParameterSpecException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,8 +91,6 @@ public class KingWordsController {
     HfAuthMapper hfAuthMapper;
     @Autowired
     UserDao userDao;
-    @Autowired
-    private AuthorizationMapper authorizationMapper;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @ApiOperation(value = "用户登录", notes = "用户登录")
@@ -135,28 +139,28 @@ public class KingWordsController {
     }
     
     
-    @RequestMapping(value = "/guangdongLogin", method = RequestMethod.GET)
-    @ApiOperation(value = "广东单商户用户登录", notes = "广东单商户用户登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
-    })
-    public ResponseEntity<JSONObject> guangdongLogin(@RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd
-    		,HttpSession session) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        AuthorizationExample example = new AuthorizationExample();
-        example.createCriteria().andPhoneEqualTo(authKey);
-        List<Authorization> list = authorizationMapper.selectByExample(example);
-        if (list.isEmpty()) {
-            return builder.body(ResponseUtils.getResponseBody("还未注册"));
-        }
-        System.out.println(redisTemplate.opsForValue().get(authKey));
-        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
-            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
-        }
-        session.setAttribute("uid",list.get(0).getId());
-        return builder.body(ResponseUtils.getResponseBody(list.get(0).getId()));
-    }
+//    @RequestMapping(value = "/guangdongLogin", method = RequestMethod.GET)
+//    @ApiOperation(value = "广东单商户用户登录", notes = "广东单商户用户登录")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
+//    })
+//    public ResponseEntity<JSONObject> guangdongLogin(@RequestParam(name = "authKey") String authKey, @RequestParam(name = "passwd") String passwd
+//    		,HttpSession session) throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        AuthorizationExample example = new AuthorizationExample();
+//        example.createCriteria().andPhoneEqualTo(authKey);
+//        List<Authorization> list = authorizationMapper.selectByExample(example);
+//        if (list.isEmpty()) {
+//            return builder.body(ResponseUtils.getResponseBody("还未注册"));
+//        }
+//        System.out.println(redisTemplate.opsForValue().get(authKey));
+//        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+//            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+//        }
+//        session.setAttribute("uid",list.get(0).getId());
+//        return builder.body(ResponseUtils.getResponseBody(list.get(0).getId()));
+//    }
     
 
     @RequestMapping(path = "/code", method = RequestMethod.GET)
@@ -235,6 +239,7 @@ public class KingWordsController {
     public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
 //		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //		LocalDateTime ldt = LocalDateTime.parse("request.getBirthDay()",df);
+    	BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
         if (user == null) {
             throw new UserNotExistException(String.valueOf(request.getUserId()));
@@ -263,33 +268,53 @@ public class KingWordsController {
         if (!StringUtils.isEmpty(request.getSex())) {
             user.setSex(request.getSex());
         }
+        if (!StringUtils.isEmpty(request.getUserStatus())) {
+            user.setUserStatus(request.getUserStatus());
+        }
+        if (!StringUtils.isEmpty(request.getCancelId())) {
+            user.setCancelId(request.getCancelId());
+        }
         user.setModifyDate(LocalDateTime.now());
         user.setIdDeleted((byte) 0);
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        
         return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
     }
 
-    @RequestMapping(path = "/upload_avatar")
+    @RequestMapping(value = "/upload_avatar", method = RequestMethod.POST)
     @ApiOperation(value = "上传头像", notes = "上传头像")
     public ResponseEntity<JSONObject> uploadAvatar(@RequestParam(value = "file", required = false) MultipartFile file,
                                                    @RequestParam(value = "userId", required = false) Integer userId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         FileMangeService fileMangeService = new FileMangeService();
         String arr[];
-        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-        FileDesc fileDesc = new FileDesc();
-        fileDesc.setFileName(file.getName());
-        fileDesc.setGroupName(arr[0]);
-        fileDesc.setRemoteFilename(arr[1]);
-        fileDesc.setUserId(userId);
-        fileDesc.setCreateTime(LocalDateTime.now());
-        fileDesc.setModifyTime(LocalDateTime.now());
-        fileDesc.setIsDeleted((short) 0);
-        fileDescMapper.insert(fileDesc);
-        HfUser hfUser = new HfUser();
-        hfUser.setFileId(fileDesc.getId());
-        hfUserMapper.insert(hfUser);
-        return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(hfUser)));
+        if (file != null) {
+            arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+            FileDescExample example = new FileDescExample();
+            example.createCriteria().andUserIdEqualTo(userId);
+            List<FileDesc> list = fileDescMapper.selectByExample(example);
+            if (list.isEmpty()) {
+                FileDesc fileDesc = new FileDesc();
+                fileDesc.setFileName(file.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setUserId(userId);
+                fileDesc.setCreateTime(LocalDateTime.now());
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDesc.setIsDeleted((short) 0);
+                fileDescMapper.insert(fileDesc);
+                HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+                hfUser.setFileId(fileDesc.getId());
+                hfUserMapper.updateByPrimaryKey(hfUser);
+            } else {
+                FileDesc fileDesc = list.get(0);
+                fileDesc.setFileName(file.getName());
+                fileDesc.setGroupName(arr[0]);
+                fileDesc.setRemoteFilename(arr[1]);
+                fileDesc.setModifyTime(LocalDateTime.now());
+                fileDescMapper.updateByPrimaryKey(fileDesc);
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody(null));
     }
 
     @RequestMapping(path = "/download_avatar", method = RequestMethod.GET)
@@ -336,91 +361,97 @@ public class KingWordsController {
 //            System.out.println(page);
 //            return builder.body(ResponseUtils.getResponseBody(page));
 //    }
-    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
-    @RequestMapping(path = "/userList",  method = RequestMethod.GET)
+//    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
+//    @RequestMapping(path = "/userList",  method = RequestMethod.GET)
+//    @ApiOperation(value = "用户列表", notes = "用户列表")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "time", value = "排序方式1降序2升序,3微信名降序4升序", required = false, type = "Integer")
+//    })
+//    public ResponseEntity<JSONObject> userList(Integer userId, test test) throws Exception{
+//        if (test.getPageNum()==null){
+//            test.setPageNum(0);
+//        }if (test.getPageSize()==null){
+//            test.setPageSize(0);
+//        }if(test.getTime()==null){
+//            test.setPageNum(1);
+//        }
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        if(!StringUtils.isEmpty(userId)) {
+//            HfUserExample hfUserExample = new HfUserExample();
+//            hfUserExample.createCriteria().andIdNotEqualTo(userId);
+//            return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+//        }
+//        PageHelper.startPage(test.getPageNum(),test.getPageSize());
+//        List<ActivityUserInfo> list = userDao.findActivityUserInfo(test);
+//        System.out.println(list);
+//        for (int i = 0; i < list.size(); i++) {
+//            ActivityUserInfo info = list.get(i);
+//            if(info != null) {
+//                if(info.getDepartmentId() != null) {
+//                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+//                    info.setDepartmentName(departmentName);
+//                    System.out.println(departmentName);
+//                }
+//            }
+//        }
+//
+//        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+//        System.out.println(page);
+//        return builder.body(ResponseUtils.getResponseBody(page));
+//    }
+//
+//
+//    @RequestMapping(path = "/userListTP", method = RequestMethod.GET)
+//    @ApiOperation(value = "用户列表查询", notes = "用户列表查询")
+//    public ResponseEntity<JSONObject> userListTP(UserQuery userQuery, Integer pageNum, Integer pageSize) throws Exception {
+//        System.out.println(userQuery);
+//        if (pageNum==null){
+//            pageNum=0;
+//        }if (pageSize==null){
+//            pageSize=0;
+//        }
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        PageHelper.startPage(pageNum, pageSize);
+//        List<ActivityUserInfo> list = userDao.findActivityUserInfoTP(userQuery);
+//        System.out.println(list + "list-----");
+//        for (int i = 0; i < list.size(); i++) {
+//            ActivityUserInfo info = list.get(i);
+//            if (info != null) {
+//                if (info.getDepartmentId() != null) {
+//                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+//                    info.setDepartmentName(departmentName);
+//                    System.out.println(departmentName);
+//                }
+//            }
+//        }
+//
+//        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+//        System.out.println(page);
+//        return builder.body(ResponseUtils.getResponseBody(page));
+//    }
+//
+//    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
+//    @ApiOperation(value = "删除人", notes = "删除人")
+//    public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+//        if (hfUser == null) {
+//            return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
+//        }
+//        return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
+//    }
+    @RequestMapping(path = "/selectList", method = RequestMethod.POST)
     @ApiOperation(value = "用户列表", notes = "用户列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "time", value = "排序方式1降序2升序,3微信名降序4升序", required = false, type = "Integer")
-    })
-    public ResponseEntity<JSONObject> userList(Integer userId, test test) throws Exception{
-        if (test.getPageNum()==null){
-            test.setPageNum(0);
-        }if (test.getPageSize()==null){
-            test.setPageSize(0);
-        }if(test.getTime()==null){
-            test.setPageNum(1);
-        }
+    public ResponseEntity<JSONObject> selectList(UserInfo userInfo) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        if(!StringUtils.isEmpty(userId)) {
-            HfUserExample hfUserExample = new HfUserExample();
-            hfUserExample.createCriteria().andIdNotEqualTo(userId);
-            return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+        if(!StringUtil.isEmpty(userInfo.getTime())) {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime ldt = LocalDateTime.parse(userInfo.getTime(),df);
+            System.out.println(ldt);
+            userInfo.setCreateDate(ldt);
         }
-        PageHelper.startPage(test.getPageNum(),test.getPageSize());
-        List<ActivityUserInfo> list = userDao.findActivityUserInfo(test);
-        System.out.println(list);
-        for (int i = 0; i < list.size(); i++) {
-            ActivityUserInfo info = list.get(i);
-            if(info != null) {
-                if(info.getDepartmentId() != null) {
-                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
-                    info.setDepartmentName(departmentName);
-                    System.out.println(departmentName);
-                }
-            }
-        }
-
-        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
-        System.out.println(page);
-        return builder.body(ResponseUtils.getResponseBody(page));
-    }
-
-
-    @RequestMapping(path = "/userListTP", method = RequestMethod.GET)
-    @ApiOperation(value = "用户列表查询", notes = "用户列表查询")
-    public ResponseEntity<JSONObject> userListTP(UserQuery userQuery, Integer pageNum, Integer pageSize) throws Exception {
-        System.out.println(userQuery);
-        if (pageNum==null){
-            pageNum=0;
-        }if (pageSize==null){
-            pageSize=0;
-        }
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        PageHelper.startPage(pageNum, pageSize);
-        List<ActivityUserInfo> list = userDao.findActivityUserInfoTP(userQuery);
-        System.out.println(list + "list-----");
-        for (int i = 0; i < list.size(); i++) {
-            ActivityUserInfo info = list.get(i);
-            if (info != null) {
-                if (info.getDepartmentId() != null) {
-                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
-                    info.setDepartmentName(departmentName);
-                    System.out.println(departmentName);
-                }
-            }
-        }
-
-        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
-        System.out.println(page);
-        return builder.body(ResponseUtils.getResponseBody(page));
-    }
-
-    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
-    @ApiOperation(value = "删除人", notes = "删除人")
-    public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
-        if (hfUser == null) {
-            return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
-        }
-        return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
-    }
-    @RequestMapping(path = "/selectList", method = RequestMethod.GET)
-    @ApiOperation(value = "用户列表", notes = "用户列表")
-    public ResponseEntity<JSONObject> selectList() throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList()));
+        return builder.body(ResponseUtils.getResponseBody(userDao.selectUserList(userInfo)));
     }
 
     @RequestMapping(path = "/wxLogin", method = RequestMethod.GET)
@@ -438,11 +469,11 @@ public class KingWordsController {
         //JSONObject rawDataJson = JSON.parseObject( rawData );
         JSONObject SessionKeyOpenId = getSessionKeyOrOpenId(code);
         String openid = (String) SessionKeyOpenId.get("openid");
-        String sessionKey = (String) SessionKeyOpenId.get("session_key");
+        String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key")) ;
         //uuid生成唯一key
         String skey = UUID.randomUUID().toString();
         //根据openid查询skey是否存在
-        String skey_redis = (String) redisTemplate.opsForValue().get(openid);
+        String skey_redis =  String.valueOf(redisTemplate.opsForValue().get(openid));
         if (!StringUtils.isEmpty(skey_redis)) {
             //存在 删除 skey 重新生成skey 将skey返回
             redisTemplate.delete(skey_redis);
@@ -480,6 +511,8 @@ public class KingWordsController {
                 hfUser.setCreateDate(LocalDateTime.now());
                 hfUser.setModifyDate(LocalDateTime.now());
                 hfUser.setIdDeleted((byte) 0);
+                hfUser.setCancelId(0);
+                hfUser.setUserStatus((byte) 0);
                 try {
                     hfUserMapper.insert(hfUser);
                 } catch (Exception e) {
@@ -492,6 +525,8 @@ public class KingWordsController {
                     hfUser.setCreateDate(LocalDateTime.now());
                     hfUser.setModifyDate(LocalDateTime.now());
                     hfUser.setIdDeleted((byte) 0);
+                    hfUser.setCancelId(0);
+                    hfUser.setUserStatus((byte) 0);
                     hfUserMapper.insert(hfUser);
                 }
                 userId = hfUser.getId();
@@ -508,6 +543,8 @@ public class KingWordsController {
                     hfUser.setCreateDate(LocalDateTime.now());
                     hfUser.setModifyDate(LocalDateTime.now());
                     hfUser.setIdDeleted((byte) 0);
+                    hfUser.setCancelId(0);
+                    hfUser.setUserStatus((byte) 0);
                     hfUserMapper.updateByPrimaryKey(hfUser);
                 }
                 userId = hfUser.getId();
@@ -574,16 +611,16 @@ public class KingWordsController {
     private JSONObject getSessionKeyOrOpenId(String code) {
         //微信端登录code
         //String wxCode = code;
-        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxfa188a42d843a0b0&secret=0433593dd1887ea5381e6d01308f81ba&js_code=" + code + "&grant_type=authorization_code";
         //Map<String,String> requestUrlParam = new HashMap<String, String>(  );
 //		requestUrlParam.put( "appid","wx16159fcc93b0400c" );//小程序appId
 //		requestUrlParam.put( "secret","1403f2e207dfa2f1f348910626f5aa42" );
 //		requestUrlParam.put( "js_code",wxCode );//小程序端返回的code
-//		requestUrlParam.put( "grant_type","authorization_code" );//默认参数
+//		requestUrlParam.put( "grant_type","authorization_code" );//默认参数 
 //		//发送post请求读取调用微信接口获取openid用户唯一标识
 //		String str = UrlUtil.sendPost( requestUrl,requestUrlParam );
 //		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+    	String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx2641aaa105c07dd4&secret=fb26dde971b62de61c4573b12bd5f5da&js_code=" + code + "&grant_type=authorization_code";
+    	DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(requestUrl);
         JSONObject jsonObject = null;
 

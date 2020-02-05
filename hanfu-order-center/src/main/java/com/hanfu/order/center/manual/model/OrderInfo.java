@@ -2,8 +2,10 @@ package com.hanfu.order.center.manual.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 
 @SuppressWarnings("serial")
 public class OrderInfo implements Serializable {
@@ -69,8 +71,97 @@ public class OrderInfo implements Serializable {
     private Integer fare;
     @ApiModelProperty(required = true, value = "评价")
     private String evaluate;
+    @ApiModelProperty(required = true, value = "物品名称")
+    private String goodName;
+    @ApiModelProperty(required = true, value = "用户昵称")
+    private String nickName;
+    @ApiParam(required = true, value = "国家")
+    private String hfConty;
+    @ApiParam(required = true, value = "省")
+    private String hfProvince;
+    @ApiParam(required = true, value = "城市")
+    private String hfCity;
+    @ApiParam(required = true, value = "详细地址信息")
+    private String hfAddressDetail;
+    @ApiParam(required = true, value = "是否为默认地址")
+    private Integer isFaultAddress;
+//    @ApiModelProperty(required = true, value = "物品规格")
+//    private String specValue;
+    private List<GoodsSpec> goodsSpecList;
     
-    public String getEvaluate() {
+//    public String getSpecValue() {
+//		return specValue;
+//	}
+//
+//	public void setSpecValue(String specValue) {
+//		this.specValue = specValue;
+//	}
+
+	public String getGoodName() {
+		return goodName;
+	}
+
+	public String getHfConty() {
+		return hfConty;
+	}
+
+	public void setHfConty(String hfConty) {
+		this.hfConty = hfConty;
+	}
+
+	public String getHfProvince() {
+		return hfProvince;
+	}
+
+	public void setHfProvince(String hfProvince) {
+		this.hfProvince = hfProvince;
+	}
+
+	public String getHfCity() {
+		return hfCity;
+	}
+
+	public void setHfCity(String hfCity) {
+		this.hfCity = hfCity;
+	}
+
+	public String getHfAddressDetail() {
+		return hfAddressDetail;
+	}
+
+	public void setHfAddressDetail(String hfAddressDetail) {
+		this.hfAddressDetail = hfAddressDetail;
+	}
+
+	public Integer getIsFaultAddress() {
+		return isFaultAddress;
+	}
+
+	public void setIsFaultAddress(Integer isFaultAddress) {
+		this.isFaultAddress = isFaultAddress;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public List<GoodsSpec> getGoodsSpecList() {
+		return goodsSpecList;
+	}
+
+	public void setGoodsSpecList(List<GoodsSpec> goodsSpecList) {
+		this.goodsSpecList = goodsSpecList;
+	}
+
+	public void setGoodName(String goodName) {
+		this.goodName = goodName;
+	}
+
+	public String getEvaluate() {
 		return evaluate;
 	}
 

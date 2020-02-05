@@ -140,15 +140,23 @@ public class HfCouponController {
     @ApiOperation(value = "用户使用优惠券之后删除优惠券",notes = "用户使用优惠券之后删除优惠券")
     @RequestMapping(value = "/deleteUserCoupon",method = RequestMethod.GET)
     @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "用户优惠券中间表id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户ID", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券ID", required = true, type = "Integer")
     })
-    public ResponseEntity<JSONObject> deleteUserCoupon(@RequestParam(required = true,defaultValue = "") Integer userId,
+    public ResponseEntity<JSONObject> deleteUserCoupon(@RequestParam(required = true,defaultValue = "") Integer id,
+                                                       @RequestParam(required = true,defaultValue = "") Integer userId,
                                                        @RequestParam(required = true,defaultValue = "") Integer couponId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
-        hfCouponService.deleteUserCoupon(userId,couponId);
+        Integer result = hfCouponService.deleteUserCoupon(id,userId,couponId);
 
-        return builder.body(ResponseUtils.getResponseBody("删除优惠券成功"));
+        System.out.println(result);
+
+        if(null!=result&&result>0){
+            return builder.body(ResponseUtils.getResponseBody("删除用户优惠券成功"));
+        }else{
+            return builder.body(ResponseUtils.getResponseBody("删除用户优惠券失败"));
+        }
     }
 }

@@ -36,7 +36,7 @@ spring:
       auto-commit: true
   redis:
     database: 0
-    host: 39.100.237.144
+    host: 39.100.86.77
     port: 6379
     timeout: 10000
     jedis:

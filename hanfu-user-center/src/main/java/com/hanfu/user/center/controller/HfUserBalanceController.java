@@ -3,7 +3,6 @@ package com.hanfu.user.center.controller;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.hanfu.user.center.service.HfUserBalanceService;
-import com.hanfu.user.center.utils.MD5;
 import com.hanfu.user.center.utils.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;

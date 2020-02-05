@@ -2,6 +2,7 @@ package com.hanfu.user.center.manual.dao;
 
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
+import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
@@ -24,8 +25,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<HfUser> selectUserList() {
-        List<HfUser> result = sqlSessionTemplate.selectList("selectUserList");
+    public List<HfUser> selectUserList(UserInfo userInfo) {
+        List<HfUser> result = sqlSessionTemplate.selectList("selectUserList",userInfo);
         return result;
     }
 

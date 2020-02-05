@@ -57,7 +57,7 @@ public class HfCouponServiceImpl implements HfCouponService {
     }
 
     @Override
-    public void deleteUserCoupon(Integer userId, Integer couponId) {
-        hfCouponMapper.deleteUserCoupon(userId,couponId);
+    public Integer deleteUserCoupon(Integer id, Integer userId, Integer couponId) {
+        return hfCouponMapper.deleteUserCoupon(id,userId,couponId);
     }
 }

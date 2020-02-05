@@ -28,18 +28,43 @@
         <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
         <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="file_id" jdbcType="VARCHAR" property="fileId"/>
+        <collection property="goodsSpecList" ofType="com.hanfu.order.center.manual.model.GoodsSpec">
+		   <result column="hf_value" property="specValue" jdbcType="VARCHAR"/>
+		</collection>
     </resultMap>
     <select id="selectOrderDetail" resultMap="Map">
-        SELECT * FROM
-        hf_order_logistics b
-        left join
-        hf_orders a
-        on
-        a.id=b.orders_id
-        left join
-        hf_orders_detail c
-        on
-        b.order_detail_id=c.id where c.orders_id = #{id};
+		SELECT
+		h2.id,
+		h3.create_time,
+		h3.modify_time,
+		h7.hf_province,
+		h7.hf_city,
+		h7.hf_conty,
+		h7.is_fault_address,
+		h7.hf_address_detail,
+		h4.username,
+		h3.purchase_quantity,
+		h4.phone,
+		h5.hf_name,
+		h2.amount,
+		h3.googs_id,
+		h3.order_detail_status,
+		h8.file_id,
+		h9.hf_value,
+		h4.nick_name
+		FROM
+		hf_order_logistics h1
+		LEFT JOIN hf_orders h2 ON h1.orders_id = h2.id
+		LEFT JOIN hf_orders_detail h3 ON h1.order_detail_id = h3.id
+		LEFT JOIN hf_user h4 ON h1.user_id = h4.id
+		LEFT JOIN hf_goods h5 ON h1.googs_id = h5.id
+		LEFT JOIN hf_user_address h7 ON h1.user_address_id = h7.id
+		LEFT JOIN hf_goods_pictrue h8 ON h8.goods_id = h5.id
+		LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id
+	WHERE
+	h1.orders_id = #{ordersId}
     </select>
-
 </mapper>
