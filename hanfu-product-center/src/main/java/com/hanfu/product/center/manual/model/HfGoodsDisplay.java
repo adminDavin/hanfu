@@ -37,7 +37,7 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer productId;
     @ApiModelProperty(required = false, value = "物品图片id")
     private Integer fileId;
-    @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
+    @ApiModelProperty(required = false, value = "店家名称, 登录修改的用户名称")
     private String username;
     @ApiModelProperty(required = false, value = "店铺id")
     private Integer stoneId;
@@ -47,7 +47,7 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer claim;
     @ApiModelProperty(required = false, value = "上下架")
     private Integer frames;
-    @ApiModelProperty(required = true, value = "品牌名称")
+    @ApiModelProperty(required = false, value = "品牌名称")
     private String brandName;
     @ApiModelProperty(required = false, value = "图片描述")
     private String prictureDesc;
@@ -65,12 +65,31 @@ public class HfGoodsDisplay extends CommonRequest {
     private String productName;
     @ApiModelProperty(required = false, value = "商品规格名称")
     private String productSpecName;
-    
+    @ApiModelProperty(required = false, value = "划线价")
+    private Integer linePrice;
+    @ApiModelProperty(required = false, value = "榜单id")
+    private Integer seniorityId;
 	private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private short isDeleted;
     
-    public String getProductName() {
+    public Integer getSeniorityId() {
+		return seniorityId;
+	}
+
+	public void setSeniorityId(Integer seniorityId) {
+		this.seniorityId = seniorityId;
+	}
+
+	public Integer getLinePrice() {
+		return linePrice;
+	}
+
+	public void setLinePrice(Integer linePrice) {
+		this.linePrice = linePrice;
+	}
+
+	public String getProductName() {
 		return productName;
 	}
 

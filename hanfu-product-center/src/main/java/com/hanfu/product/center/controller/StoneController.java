@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
@@ -159,18 +156,18 @@ public class StoneController {
         if (!StringUtils.isEmpty(request.getHfName())) {
             hfStone.setHfName(request.getHfName());
         }
-        FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(request.getUserId());
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
+//        FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(fileInfo.getName());
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(request.getUserId());	
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
 //        if (!StringUtils.isEmpty(request.getHfStatus())) {
 //            hfStone.setHfStatus((request.getHfStatus()));
 //        }
@@ -178,5 +175,14 @@ public class StoneController {
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByPrimaryKey(hfStone)));
     }
 
+    @ApiOperation(value = "根据id查询商铺信息", notes = "根据id查询商铺信息")
+    @RequestMapping(value = "/selectById",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "商铺id", required = true, type = "Integer"),
+    })
+    public  ResponseEntity<JSONObject> selectById( Integer id) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByPrimaryKey(id)));
+    }
 
 }

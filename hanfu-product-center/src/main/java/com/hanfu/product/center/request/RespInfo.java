@@ -8,7 +8,7 @@ public class RespInfo extends CommonRequest {
     private Integer HfGoodsId;
     @ApiModelProperty(required = true, value = "物品数量")
     private Integer quantity;
-    @ApiModelProperty(required = true, value = "仓库id")
+    @ApiModelProperty(required = false, value = "仓库id")
     private Integer wareHouseId;
     @ApiModelProperty(required = true, value = "库存描述")
     private String respDesc;

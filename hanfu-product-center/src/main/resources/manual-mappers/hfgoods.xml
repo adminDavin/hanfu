@@ -46,6 +46,10 @@
 			property="productSpecId" />
 		<result column="productSpecName" jdbcType="VARCHAR"
 			property="productSpecName" />
+					<result column="line_price" jdbcType="VARCHAR"
+			property="linePrice" />
+		<result column="seniority_id" jdbcType="VARCHAR"
+			property="seniorityId" />
 	</resultMap>
 
 	<resultMap id="EntityHfGoodDispaly1"
@@ -139,26 +143,29 @@
 
 
 	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
-		select * from
+		SELECT
+		h.id,
+		h.price_id priceId,
+		h.resp_id respId,
+		<if test="priceId != null">
+		h3.sell_price,
+		h3.line_price,
+		</if>
+		h.hf_name,
+		h.goods_desc,
+		<if test="respId != null">
+		   h4.quantity
+		</if>
+		FROM
 		hf_goods h
-		join
-		hf_goods_pictrue h1
-		on
-		h1.goods_id = h.id
-		JOIN
-		product p
-		ON
-		h.product_id = p.id
-		JOIN
-		hf_category h2
-		ON
-		h.category_id = h2.id
-		join
-		hf_price h3
-		on
-		h3.googs_id = h.id
-		where
-		stone_id=#{stoneId}
+		<if test="priceId != null">
+			 JOIN hf_price h3 ON h3.googs_id = h.id
+		</if>
+		<if test="respId != null">
+		     JOIN hf_resp h4 ON h4.googs_id = h.id
+		</if>
+		WHERE
+		h.id = #{id}
 	</select>
 
 	<select id="selectAllGoodsPartInfo"
@@ -180,8 +187,7 @@
 		JOIN
 		hf_category h1
 		ON
-		h.category_id =
-		h1.id
+		h.category_id = h1.id
 		WHERE
 		h.stone_id=#{stoneId}
 	</select>
@@ -204,37 +210,38 @@
 	</select>
 
 	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
-SELECT
-    product_desc goods_desc,
-    p.id,
-    p.hf_name,
-    h.resp_id resp_id,
-    h.price_id price_id,
-    h1.hf_name productCategoryName,
-    h1.id categoryId,
-    p.id productId,
-    p.boss_id stone_id,
-    p.create_time,
-    p.modify_time,
-    h.cancel_id,
-    h.claim,
-    h.is_deleted,
-    h2.file_id file_id
-FROM
-    hf_goods h
-        JOIN
-    product p ON h.product_id = p.id
-        JOIN
-    hf_category h1 ON h.category_id = h1.id
-        JOIN
-    hf_price h3 ON h.price_id = h3.id
-        left JOIN
-    cancel h4 ON h.cancel_id = h4.id
-        JOIN
-    hf_goods_pictrue h2 ON h2.goods_id = h.id
-    where p.id=#{goodsId}
-    limit 1
-    ;
+		SELECT
+		product_desc goods_desc,
+		p.id,
+		p.hf_name,
+		h.resp_id resp_id,
+		h.price_id price_id,
+		h1.hf_name productCategoryName,
+		h1.id categoryId,
+		p.id productId,
+		p.boss_id stone_id,
+		p.create_time,
+		p.modify_time,
+		h.cancel_id,
+		h.claim,
+		h.is_deleted,
+		h2.file_id file_id,
+		h3.sell_price
+		FROM
+		hf_goods h
+		JOIN
+		product p ON h.product_id = p.id
+		JOIN
+		hf_category h1 ON h.category_id = h1.id
+		JOIN
+		hf_price h3 ON h.price_id = h3.id
+		left JOIN
+		cancel h4 ON h.cancel_id = h4.id
+		JOIN
+		hf_goods_pictrue h2 ON h2.goods_id = h.id
+		where p.id=#{goodsId}
+		order by h3.sell_price
+		limit 1;
 
 	</select>
 
@@ -324,44 +331,52 @@ FROM
 
 	</select>
 	<select id="selectPrice" resultMap="EntityHfGoodDispaly">
-		SELECT *
-		FROM
-		hf_goods h
-		JOIN
-		product p
-		ON
-		h.product_id = p.id
-		JOIN
-		hf_category h1
-		ON
-		h.category_id =
-		h1.id
-		JOIN
-		hf_price h2
-		ON
-		h.price_id = h2.id
-		ORDER BY
-		h2.sell_price
+      SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price
 	</select>
 	<select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
-		SELECT *
-		FROM
-		hf_goods h
-		JOIN
-		product p
-		ON
-		h.product_id = p.id
-		JOIN
-		hf_category h1
-		ON
-		h.category_id =
-		h1.id
-		JOIN
-		hf_price h2
-		ON
-		h.price_id = h2.id
-		ORDER BY
-		h2.sell_price DESC
+		    SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price DESC
 	</select>
 	<select id="selectQueryList" resultMap="EntityHfGoodDispaly">
 		SELECT
@@ -443,10 +458,11 @@ FROM
 		h4.goods_id = h1.id
 		WHERE
 		p.id = #{productId}
-		AND p1.hf_name = #{productSpecName}
+		AND p1.hf_name =
+		#{productSpecName}
 		AND h4.hf_value = #{hfValue}
 	</select>
 	<select id="selectSlideshow" resultMap="EntityHfGoodDispaly">
-	    select * from product order by id limit 0,5
+		select * from product order by id limit 0,5
 	</select>
 </mapper>

@@ -4,17 +4,17 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class ProductSpecRequest extends CommonRequest {
-    @ApiModelProperty(required = true, value = "规格名称")
+    @ApiModelProperty(required = false, value = "规格名称")
     private String hfName;
-    @ApiModelProperty(required = true, value = "商品id")
+    @ApiModelProperty(required = false, value = "商品id")
     private Integer productId;
-    @ApiModelProperty(required = true, value = "类目规格id")
+    @ApiModelProperty(required = false, value = "类目规格id")
     private Integer categorySpecId;
-    @ApiModelProperty(required = true, value = "规格类型")
+    @ApiModelProperty(required = false, value = "规格类型")
     private String specType;
-    @ApiModelProperty(required = true, value = "规格单元")
+    @ApiModelProperty(required = false, value = "规格单元")
     private String specUnit;
-    @ApiModelProperty(required = true, value = "规格规格默认值")
+    @ApiModelProperty(required = false, value = "规格默认值")
     private String specValue;
 
     public String getHfName() {
