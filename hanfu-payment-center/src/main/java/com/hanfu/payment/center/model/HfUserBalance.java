@@ -1,5 +1,10 @@
 package com.hanfu.payment.center.model;
 
+import tk.mybatis.mapper.annotation.KeySql;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,6 +16,9 @@ public class HfUserBalance implements Serializable {
      *
      * @mbg.generated Tue Feb 04 13:32:42 CST 2020
      */
+    @KeySql(useGeneratedKeys = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Integer id;
 
     /**
