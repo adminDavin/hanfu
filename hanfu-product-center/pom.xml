@@ -175,5 +175,11 @@
             <!-- 建议使用最新版本,最新版本请从项目首页查找 -->
             <version>4.1.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.hanfu.group.center</groupId>
+            <artifactId>hanfu-group-center</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
