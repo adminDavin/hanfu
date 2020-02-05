@@ -268,17 +268,27 @@ public class PaymentOrderController {
                 hfTansactionFlow.setModifyDate(LocalDateTime.now());
                 hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
                 hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
-                hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+                
                 if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()));
-                } 
+                    hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+                } else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+                    hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+                } else {
+                    hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+                }
                 return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
             } else {
                 throw new Exception("交易柳树不存在, 或者已完成支付");
             }
         } else {
             paymentBalance(userId, hfOrder.getAmount());
-            hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+            if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+                hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+            } else {
+                hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+            }
+            
             return builder.body(ResponseUtils.getResponseBody(hfOrder));
         }
     }
