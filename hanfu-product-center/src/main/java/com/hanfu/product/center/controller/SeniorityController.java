@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.hanfu.product.center.model.*;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
@@ -25,6 +26,16 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.SeniorityInstanceMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.FileDescExample;
+import com.hanfu.product.center.model.HfGoodsPictrue;
+import com.hanfu.product.center.model.HfGoodsPictrueExample;
+import com.hanfu.product.center.model.HfPrice;
+import com.hanfu.product.center.model.HfSeniority;
+import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductExample;
+import com.hanfu.product.center.model.SeniorityInstance;
+import com.hanfu.product.center.model.SeniorityInstanceExample;
 import com.hanfu.product.center.request.HfSeniorityRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -316,6 +327,5 @@ public class SeniorityController {
         }
         return builder.body(ResponseUtils.getResponseBody(null));
     }
-
 
 }
