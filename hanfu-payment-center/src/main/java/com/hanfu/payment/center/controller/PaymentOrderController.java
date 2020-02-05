@@ -80,16 +80,16 @@ public class PaymentOrderController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
         HfUser hfUser = hfOrderDao.selectHfUser(userId);
-        
+
         Map<String, String> resp = null;
-        if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+        if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
             resp = wxPay(hfUser, hfOrder);
         } else {
             resp = balancePay(hfUser, hfOrder);
         }
         return builder.body(ResponseUtils.getResponseBody(resp));
     }
-    
+
     private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) {
         // TODO Auto-generated method stub
         return null;
@@ -122,7 +122,7 @@ public class PaymentOrderController {
         } else {
             throw new Exception(resp.get("return_msg"));
         }
-        
+
     }
 
     @ApiOperation(value = "支付订单", notes = "")
@@ -206,7 +206,8 @@ public class PaymentOrderController {
     private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder, Map<String, String> data,
             Map<String, String> reData) {
         HfTansactionFlowExample e = new HfTansactionFlowExample();
-        e.createCriteria().andTradeTypeEqualTo(hfOrder.getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"));
+        e.createCriteria().andTradeTypeEqualTo(hfOrder.getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"))
+                .andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
         List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
 
         if (hfTansactionFlows.isEmpty()) {
@@ -260,31 +261,32 @@ public class PaymentOrderController {
         e.createCriteria().andTransactionTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo)
                 .andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
         List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
-        if (!hfTansactionFlows.isEmpty()) {
-            HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
-            HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-            if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+        HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+        if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+            if (!hfTansactionFlows.isEmpty()) {
+                HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
                 hfTansactionFlow.setModifyDate(LocalDateTime.now());
                 hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
                 hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
                 hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
-                
                 if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()));
-                }
+                } 
+                return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
             } else {
-                rechangeBalance(hfTansactionFlow.getUserId(), Integer.valueOf(hfTansactionFlow.getTotalFee()));
-                hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+                throw new Exception("交易柳树不存在, 或者已完成支付");
             }
-            return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
         } else {
-            throw new Exception("交易柳树不存在, 或者已完成支付");
+            paymentBalance(userId, hfOrder.getAmount());
+            hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
+            return builder.body(ResponseUtils.getResponseBody(hfOrder));
         }
     }
 
     private void rechangeBalance(Integer userId, Integer totalFee) {
         HfUserBalanceExample example = new HfUserBalanceExample();
-        example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0).andBalanceTypeEqualTo("rechargeAmount");
+        example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+                .andBalanceTypeEqualTo("rechargeAmount");
         List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
         if (hfUserBalance.isEmpty()) {
             HfUserBalance userBalance = new HfUserBalance();
@@ -302,7 +304,29 @@ public class PaymentOrderController {
             hfUserBalanceMapper.updateByPrimaryKey(userBalance);
         }
     }
-    
+
+    private void paymentBalance(Integer userId, Integer totalFee) {
+        HfUserBalanceExample example = new HfUserBalanceExample();
+        example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+                .andBalanceTypeEqualTo("rechargeAmount");
+        List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
+        if (hfUserBalance.isEmpty()) {
+            HfUserBalance userBalance = new HfUserBalance();
+            userBalance.setBalanceType("rechargeAmount");
+            userBalance.setCreateTime(LocalDateTime.now());
+            userBalance.setHfBalance(Integer.valueOf(totalFee));
+            userBalance.setLastModifier(String.valueOf(userId));
+            userBalance.setModifyTime(LocalDateTime.now());
+            hfUserBalanceMapper.insertSelective(userBalance);
+        } else {
+            HfUserBalance userBalance = hfUserBalance.get(0);
+            userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
+            userBalance.setModifyTime(LocalDateTime.now());
+            userBalance.setLastModifier(String.valueOf(userId));
+            hfUserBalanceMapper.updateByPrimaryKey(userBalance);
+        }
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
     @RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
