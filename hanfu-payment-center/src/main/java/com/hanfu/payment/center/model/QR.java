@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class QR {
     private String qrCodeType;
     private String userId;
-    private String money;
+//    private String money;
     private String qrCode;
 
 
@@ -27,13 +27,13 @@ public class QR {
         this.userId = userId;
     }
 
-    public String getMoney() {
-        return money;
-    }
-
-    public void setMoney(String money) {
-        this.money = money;
-    }
+//    public String getMoney() {
+//        return money;
+//    }
+//
+//    public void setMoney(String money) {
+//        this.money = money;
+//    }
 
     public String getQrCode() {
         return qrCode;

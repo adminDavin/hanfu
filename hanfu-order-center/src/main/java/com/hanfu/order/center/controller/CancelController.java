@@ -138,28 +138,28 @@ public class CancelController {
         return builder.body(ResponseUtils.getResponseBody(hfLogMapper.deleteByPrimaryKey(id)));
     }
 
-    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
-    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
-    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        Example example = new Example(HfGoods.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("cancelId", id);
-        List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(example);
-        List<HfGoods> list = new ArrayList<>();
-        if (hfGoodsList.size() != 0) {
-            for (int i = 0; i < hfGoodsList.size(); i++) {
-                if (hfGoodsList.get(i).getClaim() != 0) {
-                    if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId()) != null) {
-                        list.add(hfGoodsList.get(i));
-                    }
-                }
-            }
-            return builder.body(ResponseUtils.getResponseBody(list));
-        }
-        deleteCancel(id);
-        return builder.body(ResponseUtils.getResponseBody("该核销员没有对应的核销商品,已删除"));
-    }
+//    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
+//    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
+//    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        Example example = new Example(HfGoods.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("cancelId", id);
+//        List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(example);
+//        List<HfGoods> list = new ArrayList<>();
+//        if (hfGoodsList.size() != 0) {
+//            for (int i = 0; i < hfGoodsList.size(); i++) {
+//                if (hfGoodsList.get(i).getClaim() != 0) {
+//                    if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId()) != null) {
+//                        list.add(hfGoodsList.get(i));
+//                    }
+//                }
+//            }
+//            return builder.body(ResponseUtils.getResponseBody(list));
+//        }
+//        deleteCancel(id);
+//        return builder.body(ResponseUtils.getResponseBody("该核销员没有对应的核销商品,已删除"));
+//    }
 
     @RequestMapping(value = "/deleteCancel", method = RequestMethod.GET)
     @ApiOperation(value = "删除核销员", notes = "删除核销员")

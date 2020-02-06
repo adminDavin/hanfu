@@ -59,7 +59,7 @@ public class BalancePaymentController {
                     type = "Integer") })
     public void getCode(HttpServletResponse response, Integer money,Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        redisTemplate.opsForValue().set(String.valueOf(userId), userId);
+        redisTemplate.opsForValue().set(String.valueOf(userId), money);
         redisTemplate.expire(String.valueOf(userId),300 , TimeUnit.SECONDS);
         System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(userId)));
         QR t = new QR();
@@ -101,11 +101,11 @@ public class BalancePaymentController {
         //字符串
         String QrCodeType = "BalancePayment";
         String UserId = String.valueOf(userId);
-        String Money= String.valueOf(money);
+//        String Money= String.valueOf(money);
         //加密
         String encrypt = PageTool.encrypt(QrCodeType, key);
         String encrypt1 = PageTool.encrypt(UserId, key);
-        String encrypt2=PageTool.encrypt(Money, key);
+//        String encrypt2=PageTool.encrypt(Money, key);
         //解密
 //            String decrypt = PageTool.decrypt(encrypt, key);
 //
@@ -148,7 +148,7 @@ public class BalancePaymentController {
         //
         t.setQrCodeType(encrypt + "思维创造");
         t.setUserId(encrypt1+ "思维创造");
-        t.setMoney(encrypt2+ "思维创造");
+//        t.setMoney(encrypt2+ "思维创造");
         t.setQrCode(uuid);
 //        t.setQrCodeId(qrCode.getId());
         List<QR> list = new ArrayList<>();
@@ -220,11 +220,11 @@ public class BalancePaymentController {
         String key = "MIGfMA0GCSqGSIb3";
         String QrCodeType = qr.getQrCodeType().replace("思维创造", "");
         String UserId = qr.getUserId().replace("思维创造", "");
-        String Money = qr.getMoney().replace("思维创造", "");
+//        String Money = qr.getMoney().replace("思维创造", "");
         String decrypt = PageTool.decrypt(QrCodeType, key);
         String decrypt1 = PageTool.decrypt(UserId, key);
-        String decrypt2=PageTool.decrypt(Money,key);
-        System.out.println("hahha"+redisTemplate.opsForValue().get(decrypt1));
+//        String decrypt2=PageTool.decrypt(Money,key);
+        Integer money= (Integer) redisTemplate.opsForValue().get(decrypt1);
         System.out.println(redisTemplate.getExpire(String.valueOf(decrypt1),TimeUnit.SECONDS));
         if (redisTemplate.opsForValue().get(decrypt1)==null){
             return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
@@ -233,14 +233,14 @@ public class BalancePaymentController {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",Integer.valueOf(decrypt1));
         List<HfUserBalance> hfUserBalances=balanceMapper.selectByExample(example);
-        if (hfUserBalances.get(0).getHfBalance()-Integer.valueOf(decrypt2)<0){
+        if (hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money)<0){
             return builder.body(ResponseUtils.getResponseBody("余额不足请充值"));
         }
         HfUserBalance hfUserBalance = new HfUserBalance();
         hfUserBalance.setCreateTime(LocalDateTime.now());
         hfUserBalance.setModifyTime(LocalDateTime.now());
         hfUserBalance.setIsDeleted((short) 0);
-        hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()-Integer.valueOf(decrypt2));
+        hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money));
 //        QR ttt = new QR();
 //        ttt.setQrCodeType(decrypt);
 //        ttt.setUserId(decrypt1);
@@ -260,7 +260,7 @@ public class BalancePaymentController {
         hfOrder.setCreateTime(timeOrder);
         hfOrder.setModifyTime(timeOrder);
 
-        hfOrder.setAmount(Integer.valueOf(decrypt2));
+        hfOrder.setAmount(Integer.valueOf(money));
         hfOrder.setHfRemark("余额扫码支付");
         hfOrder.setUserId(Integer.valueOf(decrypt1));
         hfOrder.setOrderType("balancePayment");
@@ -280,11 +280,11 @@ public class BalancePaymentController {
         cancel cancel1 = new cancel();
         cancel1.setId(DistributorId);
         cancel1.setModifyDate(LocalDateTime.now());
-        cancel1.setMoney(cancel.getMoney()+Integer.valueOf(decrypt2));
-        cancel1.setPresentMoney(cancel.getPresentMoney()+Integer.valueOf(decrypt2));
+        cancel1.setMoney(cancel.getMoney()+Integer.valueOf(money));
+        cancel1.setPresentMoney(cancel.getPresentMoney()+Integer.valueOf(money));
         cancelPaymentMapper.updateByPrimaryKeySelective(cancel1);
         CancelRecord cancelRecord = new CancelRecord();
-        cancelRecord.setAmount(Integer.valueOf(decrypt2));
+        cancelRecord.setAmount(Integer.valueOf(money));
         cancelRecord.setCancelId(DistributorId);
         cancelRecord.setGoodsId(0);
         cancelRecord.setCreateDate(LocalDateTime.now());
