@@ -31,8 +31,9 @@ import com.hanfu.payment.center.service.AlipayService;
 @org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class AlipayServiceImpl implements AlipayService {
 
-    @Autowired
-    private AlipayClient alipayClient;
+    private AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.APPID,
+            AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET,
+            AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     public static final String TRADE_SUCCESS = "TRADE_SUCCESS"; //支付成功标识
@@ -51,10 +52,6 @@ public class AlipayServiceImpl implements AlipayService {
         alipaymentOrder.setAmount(amount);//订单金额
         alipaymentOrder.setRefundFee(amount);    //总退款金额
         try {
-            //实例化客户端（参数：网关地址、商户appid、商户私钥、格式、编码、支付宝公钥、加密类型），为了取得预付订单信息
-            AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.APPID,
-                    AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET,
-                    AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
             //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
             AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
             //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式

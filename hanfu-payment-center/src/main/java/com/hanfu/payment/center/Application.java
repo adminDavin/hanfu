@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao")})
+@MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao"), @MapperScan("com.hanfu.payment.center.dao")})
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableAutoConfiguration
