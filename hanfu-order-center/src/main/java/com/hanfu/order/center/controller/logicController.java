@@ -117,6 +117,7 @@ public class logicController {
         cancelRecord.setModifyDate(LocalDateTime.now());
         cancelRecord.setGoodsId(goodsId);
         cancelRecord.setCancelId(cancel1.getId());
+        cancelRecord.setOrderId(orderId);
         Example example3 = new Example(HfPrice.class);
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("googsId", goodsId);

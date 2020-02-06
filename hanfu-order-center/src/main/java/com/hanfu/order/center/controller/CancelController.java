@@ -97,6 +97,7 @@ public class CancelController {
         cancel.setId(id);
         cancel.setPresentMoney(0);
         cancel.setModifyDate(LocalDateTime.now());
+        cancel.setEmptyDate(LocalDateTime.now());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }

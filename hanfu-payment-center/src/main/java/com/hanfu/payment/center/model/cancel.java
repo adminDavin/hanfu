@@ -1,4 +1,4 @@
-package com.hanfu.order.center.cancel.model;
+package com.hanfu.payment.center.model;
 
 import tk.mybatis.mapper.annotation.KeySql;
 

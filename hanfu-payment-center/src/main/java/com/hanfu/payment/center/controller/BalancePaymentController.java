@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.hanfu.payment.center.dao.BalanceMapper;
-import com.hanfu.payment.center.dao.HfOrderDetailMapper;
-import com.hanfu.payment.center.dao.HfOrderMapper;
-import com.hanfu.payment.center.dao.QrCodeMapper;
+import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.manual.model.OrderStatus;
 import com.hanfu.payment.center.manual.model.OrderTypeEnum;
 import com.hanfu.payment.center.model.*;
@@ -46,9 +43,11 @@ public class BalancePaymentController {
     @Autowired
     private HfOrderMapper hfOrderMapper;
     @Autowired
-    private HfOrderDetailMapper hfOrderDetailMapper;
-    @Autowired
     private QrCodeMapper qrCodeMapper;
+    @Autowired
+    private CancelPaymentMapper cancelPaymentMapper;
+    @Autowired
+    private CancelRecordPaymentMapper cancelRecordPaymentMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @GetMapping(value = "/activity/payment/activity-code")
@@ -168,8 +167,17 @@ public class BalancePaymentController {
 
     @GetMapping(value = "/payment")
     @ApiOperation("扫码支付")
-    public ResponseEntity<JSONObject> getCode(QR qr,Integer DistributorId) throws Exception {
+    public ResponseEntity<JSONObject> getCode(QR qr,Integer userCancelId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Example example1 = new Example(cancel.class);
+        Example.Criteria criteria1 = example1.createCriteria();
+        criteria1.andEqualTo("userId",userCancelId);
+        List<cancel> cancelList = cancelPaymentMapper.selectByExample(example1);
+        Integer DistributorId = cancelList.get(0).getId();
+        cancel cancel=cancelPaymentMapper.selectByPrimaryKey(DistributorId);
+        if (cancel==null){
+            return builder.body(ResponseUtils.getResponseBody("您不是核销人员"));
+        }
 //        if (qrCodeMapper.selectByPrimaryKey(QRCodeId)==null){
 //           return builder.body(ResponseUtils.getResponseBody("二维码已失效,不要重复扫描"));
 //        }
@@ -268,6 +276,22 @@ public class BalancePaymentController {
 
         hfOrderMapper.insertSelective(hfOrder);
 //        qrCodeMapper.deleteByPrimaryKey(QRCodeId);
+        //添加核销记录
+        cancel cancel1 = new cancel();
+        cancel1.setId(DistributorId);
+        cancel1.setModifyDate(LocalDateTime.now());
+        cancel1.setMoney(cancel.getMoney()+Integer.valueOf(decrypt2));
+        cancel1.setPresentMoney(cancel.getPresentMoney()+Integer.valueOf(decrypt2));
+        cancelPaymentMapper.updateByPrimaryKeySelective(cancel1);
+        CancelRecord cancelRecord = new CancelRecord();
+        cancelRecord.setAmount(Integer.valueOf(decrypt2));
+        cancelRecord.setCancelId(DistributorId);
+        cancelRecord.setGoodsId(0);
+        cancelRecord.setCreateDate(LocalDateTime.now());
+        cancelRecord.setModifyDate(LocalDateTime.now());
+        cancelRecord.setOrderId(hfOrder.getId());
+        cancelRecord.setCancelId(cancel1.getId());
+        cancelRecordPaymentMapper.insertSelective(cancelRecord);
         redisTemplate.delete(decrypt1);
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
