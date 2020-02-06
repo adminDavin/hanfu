@@ -257,12 +257,11 @@ public class PaymentOrderController {
             @RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfTansactionFlowExample e = new HfTansactionFlowExample();
-        e.createCriteria().andTransactionTypeEqualTo(transactionType).andOutTradeNoEqualTo(outTradeNo)
-                .andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
-        List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
         HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
         if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+            HfTansactionFlowExample e = new HfTansactionFlowExample();
+            e.createCriteria().andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+            List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
             if (!hfTansactionFlows.isEmpty()) {
                 HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
                 hfTansactionFlow.setModifyDate(LocalDateTime.now());
