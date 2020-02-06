@@ -60,36 +60,36 @@ public class BalancePaymentController {
                     type = "Integer") })
     public void getCode(HttpServletResponse response, Integer money,Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        this.redisTemplate.expire(String.valueOf(userId),1000 , TimeUnit.MILLISECONDS);
-        this.redisTemplate.opsForValue().set(String.valueOf(userId), userId);
+        redisTemplate.opsForValue().set(String.valueOf(userId), userId);
+        redisTemplate.expire(String.valueOf(userId),300 , TimeUnit.SECONDS);
         System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(userId)));
         QR t = new QR();
-        Calendar now = Calendar.getInstance();
-        System.out.println("年: " + now.get(Calendar.YEAR));
-        t.setYear(now.get(Calendar.YEAR));
-        System.out.println("月: " + (now.get(Calendar.MONTH) + 1) + "");
-        t.setMonth((now.get(Calendar.MONTH) + 1));
-        System.out.println("日: " + now.get(Calendar.DAY_OF_MONTH));
-        t.setDay(now.get(Calendar.DAY_OF_MONTH));
-        System.out.println("时: " + now.get(Calendar.HOUR_OF_DAY));
-        System.out.println(now.get(Calendar.HOUR_OF_DAY));
-        t.setHour(now.get(Calendar.HOUR_OF_DAY));
-        System.out.println("分: " + now.get(Calendar.MINUTE));
-        t.setMinute(now.get(Calendar.MINUTE));
-        System.out.println("秒: " + now.get(Calendar.SECOND));
-        t.setSecond(now.get(Calendar.SECOND));
-        System.out.println("当前时间毫秒数：" + now.getTimeInMillis());
-        System.out.println(now.getTime());
+//        Calendar now = Calendar.getInstance();
+//        System.out.println("年: " + now.get(Calendar.YEAR));
+//        t.setYear(now.get(Calendar.YEAR));
+//        System.out.println("月: " + (now.get(Calendar.MONTH) + 1) + "");
+//        t.setMonth((now.get(Calendar.MONTH) + 1));
+//        System.out.println("日: " + now.get(Calendar.DAY_OF_MONTH));
+//        t.setDay(now.get(Calendar.DAY_OF_MONTH));
+//        System.out.println("时: " + now.get(Calendar.HOUR_OF_DAY));
+//        System.out.println(now.get(Calendar.HOUR_OF_DAY));
+//        t.setHour(now.get(Calendar.HOUR_OF_DAY));
+//        System.out.println("分: " + now.get(Calendar.MINUTE));
+//        t.setMinute(now.get(Calendar.MINUTE));
+//        System.out.println("秒: " + now.get(Calendar.SECOND));
+//        t.setSecond(now.get(Calendar.SECOND));
+//        System.out.println("当前时间毫秒数：" + now.getTimeInMillis());
+//        System.out.println(now.getTime());
 
-        Date d = new Date();
-        System.out.println(d);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateNowStr = sdf.format(d);
-        System.out.println("格式化后的日期：" + dateNowStr);
+//        Date d = new Date();
+//        System.out.println(d);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String dateNowStr = sdf.format(d);
+//        System.out.println("格式化后的日期：" + dateNowStr);
 
-        String str = "2012-1-13 17:26:33";	//要跟上面sdf定义的格式一样
-        Date today = sdf.parse(str);
-        System.out.println("字符串转成日期：" + today);
+//        String str = "2012-1-13 17:26:33";	//要跟上面sdf定义的格式一样
+//        Date today = sdf.parse(str);
+//        System.out.println("字符串转成日期：" + today);
         //uuid生成不重复主键
         String uuid1=UUID.randomUUID().toString();
         String uuid=UUID.randomUUID().toString().replace("-", "");
@@ -138,20 +138,20 @@ public class BalancePaymentController {
         OutputStream stream = response.getOutputStream();
         //type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
         //二维码记录
-        QrCode qrCode = new QrCode();
-        qrCode.setUserId(Integer.valueOf(userId));
-        qrCode.setCode("BalancePayment");
-        qrCode.setCreateTime(LocalDateTime.now());
-        qrCode.setModifyTime(LocalDateTime.now());
-        qrCode.setIdDeleted((byte) 0);
-        qrCode.setQrCode(uuid);
-        qrCodeMapper.insertSelective(qrCode);
+//        QrCode qrCode = new QrCode();
+//        qrCode.setUserId(Integer.valueOf(userId));
+//        qrCode.setCode("BalancePayment");
+//        qrCode.setCreateTime(LocalDateTime.now());
+//        qrCode.setModifyTime(LocalDateTime.now());
+//        qrCode.setIdDeleted((byte) 0);
+//        qrCode.setQrCode(uuid);
+//        qrCodeMapper.insertSelective(qrCode);
         //
         t.setQrCodeType(encrypt + "思维创造");
         t.setUserId(encrypt1+ "思维创造");
         t.setMoney(encrypt2+ "思维创造");
         t.setQrCode(uuid);
-        t.setQrCodeId(qrCode.getId());
+//        t.setQrCodeId(qrCode.getId());
         List<QR> list = new ArrayList<>();
         list.add(t);
         String str1 = JSON.toJSONString(list);
@@ -168,48 +168,46 @@ public class BalancePaymentController {
 
     @GetMapping(value = "/payment")
     @ApiOperation("扫码支付")
-    public ResponseEntity<JSONObject> getCode(QR qr,Integer DistributorId, Integer QRCodeId,Date date) throws Exception {
+    public ResponseEntity<JSONObject> getCode(QR qr,Integer DistributorId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(qr.getUserId())));
-        System.out.println(redisTemplate.getExpire(String.valueOf(qr.getUserId())));
-        if (qrCodeMapper.selectByPrimaryKey(QRCodeId)==null){
-           return builder.body(ResponseUtils.getResponseBody("二维码已失效,不要重复扫描"));
-        }
-        Calendar now = Calendar.getInstance();
-        Integer year=qr.getYear()-now.get(Calendar.YEAR);
-        Integer month=qr.getMonth()-(now.get(Calendar.MONTH) + 1);
-        Integer day=qr.getDay()-now.get(Calendar.DAY_OF_MONTH);
-            String Hour=String.format("%2d", qr.getHour()).replace(" ", "0");
-            String HourNow=String.format("%2d", now.get(Calendar.HOUR_OF_DAY)).replace(" ", "0");
-            System.out.println(Hour);//输出结果Hour
-        String Minute=String.format("%2d", qr.getMinute()).replace(" ", "0");
-        String MinuteNow=String.format("%2d", now.get(Calendar.MINUTE)).replace(" ", "0");
-        System.out.println(Minute);//输出结果Minute
-        String Second=String.format("%2d", qr.getSecond()).replace(" ", "0");
-        String SecondNow=String.format("%2d", now.get(Calendar.SECOND)).replace(" ", "0");
-        System.out.println(Second);//输出结果Second
-        String time = Hour+Minute+Second;
-        System.out.println("time"+time);
-        String timeNow = HourNow+MinuteNow+SecondNow;
-        System.out.println("timeNow"+timeNow);
-        boolean a=true;
-        if (year!=0||month!=0||day!=0){
-              return   builder.body(ResponseUtils.getResponseBody("二维码已失效"));
-        }
-            if (now.get(Calendar.HOUR_OF_DAY)-qr.getHour()!=0){
-                System.out.println(Integer.valueOf(timeNow)-Integer.valueOf(time));
-                if ((Integer.valueOf(timeNow)-Integer.valueOf(time))>4500){
-                   return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
-                }else {
-                    a=false;
-                }
-            }
-            if (a){
-                System.out.println(Integer.valueOf(timeNow)-Integer.valueOf(time));
-                if ((Integer.valueOf(timeNow)-Integer.valueOf(time))>500){
-                    return  builder.body(ResponseUtils.getResponseBody("二维码已失效"));
-                }
-            }
+//        if (qrCodeMapper.selectByPrimaryKey(QRCodeId)==null){
+//           return builder.body(ResponseUtils.getResponseBody("二维码已失效,不要重复扫描"));
+//        }
+//        Calendar now = Calendar.getInstance();
+//        Integer year=qr.getYear()-now.get(Calendar.YEAR);
+//        Integer month=qr.getMonth()-(now.get(Calendar.MONTH) + 1);
+//        Integer day=qr.getDay()-now.get(Calendar.DAY_OF_MONTH);
+//            String Hour=String.format("%2d", qr.getHour()).replace(" ", "0");
+//            String HourNow=String.format("%2d", now.get(Calendar.HOUR_OF_DAY)).replace(" ", "0");
+//            System.out.println(Hour);//输出结果Hour
+//        String Minute=String.format("%2d", qr.getMinute()).replace(" ", "0");
+//        String MinuteNow=String.format("%2d", now.get(Calendar.MINUTE)).replace(" ", "0");
+//        System.out.println(Minute);//输出结果Minute
+//        String Second=String.format("%2d", qr.getSecond()).replace(" ", "0");
+//        String SecondNow=String.format("%2d", now.get(Calendar.SECOND)).replace(" ", "0");
+//        System.out.println(Second);//输出结果Second
+//        String time = Hour+Minute+Second;
+//        System.out.println("time"+time);
+//        String timeNow = HourNow+MinuteNow+SecondNow;
+//        System.out.println("timeNow"+timeNow);
+//        boolean a=true;
+//        if (year!=0||month!=0||day!=0){
+//              return   builder.body(ResponseUtils.getResponseBody("二维码已失效"));
+//        }
+//            if (now.get(Calendar.HOUR_OF_DAY)-qr.getHour()!=0){
+//                System.out.println(Integer.valueOf(timeNow)-Integer.valueOf(time));
+//                if ((Integer.valueOf(timeNow)-Integer.valueOf(time))>4500){
+//                   return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
+//                }else {
+//                    a=false;
+//                }
+//            }
+//            if (a){
+//                System.out.println(Integer.valueOf(timeNow)-Integer.valueOf(time));
+//                if ((Integer.valueOf(timeNow)-Integer.valueOf(time))>500){
+//                    return  builder.body(ResponseUtils.getResponseBody("二维码已失效"));
+//                }
+//            }
 
         String key = "MIGfMA0GCSqGSIb3";
         String QrCodeType = qr.getQrCodeType().replace("思维创造", "");
@@ -218,6 +216,11 @@ public class BalancePaymentController {
         String decrypt = PageTool.decrypt(QrCodeType, key);
         String decrypt1 = PageTool.decrypt(UserId, key);
         String decrypt2=PageTool.decrypt(Money,key);
+        System.out.println("hahha"+redisTemplate.opsForValue().get(decrypt1));
+        System.out.println(redisTemplate.getExpire(String.valueOf(decrypt1),TimeUnit.SECONDS));
+        if (redisTemplate.opsForValue().get(decrypt1)==null){
+            return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
+        }
         Example example = new Example(HfUserBalance.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",Integer.valueOf(decrypt1));
@@ -264,7 +267,8 @@ public class BalancePaymentController {
         hfOrder.setPayStatus(CreateHfOrderRequest.PaymentStatus.UNPAID.getPaymentStatus());
 
         hfOrderMapper.insertSelective(hfOrder);
-        qrCodeMapper.deleteByPrimaryKey(QRCodeId);
+//        qrCodeMapper.deleteByPrimaryKey(QRCodeId);
+        redisTemplate.delete(decrypt1);
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 }
