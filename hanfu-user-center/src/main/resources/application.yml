@@ -11,11 +11,18 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select now()
-      idle-timeout: 300
+      idle-timeout: 3000000
       auto-commit: true
+      max-lifetime: 1200000
+      maximum-pool-size: 60
+      minimum-idle: 10
+      login-timeout: 5
+      validation-timeout: 300000
+      connection-timeout: 600000000
+      read-only: false
   redis:
     database: 0
-    host: 47.105.72.216
+    host: 39.100.86.77
     port: 6379
     timeout: 10000
     jedis:
@@ -52,3 +59,4 @@ mybatis:
   mapper-locations: 
     - mappers/*.xml
     - manual-mappers/*.xml
+          

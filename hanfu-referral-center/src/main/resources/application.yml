@@ -1,16 +1,16 @@
 server:
   port: 9100
 
-# http://47.105.72.216:1234/#/service?filter=%2a&pattern=service
+# http://39.100.86.77:1234/#/service?filter=%2a&pattern=service
 
 dubbo:
   registry:
-    address: 47.105.72.216:2181
+    address: 39.100.86.77:2181
     protocol: zookeeper
     id: dubboProductServer
     client: curator
   metadata-report:
-    address: zookeeper://47.105.72.216:2181
+    address: zookeeper://39.100.86.77:2181
   application:
     name: hanfu-referral-cosumer
   protocol:
@@ -33,7 +33,7 @@ spring:
       auto-commit: true
   redis:
     database: 0
-    host: 47.105.72.216
+    host: 39.100.86.77
     port: 6379
     timeout: 10000
     jedis:
