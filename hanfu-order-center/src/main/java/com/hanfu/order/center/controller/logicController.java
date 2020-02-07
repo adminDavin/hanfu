@@ -14,11 +14,13 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.text.DateFormat;
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Api
@@ -50,6 +53,8 @@ public class logicController {
     private CancelProductMapper cancelProductMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     //转换时间格式
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
@@ -63,9 +68,24 @@ public class logicController {
     @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
     public ResponseEntity<JSONObject> testCancel(
             @RequestParam(value = "userId", required = true) Integer userId,
-            @RequestParam(value = "goodsId", required = true) Integer goodsId,
-            @RequestParam(value = "orderId", required = true) Integer orderId
+            @RequestParam(value = "UgoodsId", required = true) String UgoodsId,
+            @RequestParam(value = "UorderId", required = true) String UorderId
     ) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        String key = "MIGfMA0GCSqGSIb3";
+        String goodId = String.valueOf(UgoodsId).replace("思维创造", "");
+        String ordersId = String.valueOf(UorderId).replace("思维创造", "");
+        String decrypt = PageTool.decrypt(ordersId, key);
+        String decrypt1 = PageTool.decrypt(goodId, key);
+        Integer goodsId=Integer.valueOf(decrypt1);
+        Integer orderId=Integer.valueOf(decrypt);
+
+        Integer goodsid= (Integer) redisTemplate.opsForValue().get(decrypt);
+        System.out.println(goodsid+"goodsId");
+        System.out.println(redisTemplate.getExpire(String.valueOf(decrypt1),TimeUnit.SECONDS));
+        if (redisTemplate.opsForValue().get(decrypt)==null){
+            return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
+        }
         //核销员查询
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
@@ -76,7 +96,7 @@ public class logicController {
         System.out.println(hfUser.getUsername());
         String unionId = hfUser.getUsername();
         System.out.println(userId + goodsId + orderId);
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
         if (goodsId == null) {
             return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
         }
@@ -98,16 +118,17 @@ public class logicController {
         System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
         //判断核销的商品是否为自提商品
         int productId=hfGoodsMapper.selectByPrimaryKey(goodsId).getProductId();
+        if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
+            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
+        }
+
+        //判断核销员是否为该商品的核销员
+        cancel cancel1 = cancelsMapper.selectByPrimaryKey(cancelList.get(0).getId());
+//        CancelProduct cancelProduct = cancelProductMapper.selectByExample(examplecancel).get(0);
         Example examplecancel = new Example(CancelProduct.class);
         Example.Criteria criteriacancel = examplecancel.createCriteria();
         criteriacancel.andEqualTo("productId",productId).andEqualTo("cancelId",cancelList.get(0).getId());
         if (cancelProductMapper.selectByExample(examplecancel).size()==0) {
-            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
-        }
-        //判断核销员是否为该商品的核销员
-        cancel cancel1 = cancelsMapper.selectByPrimaryKey(cancelList.get(0).getId());
-        CancelProduct cancelProduct = cancelProductMapper.selectByExample(examplecancel).get(0);
-        if (!cancelProduct.getCancelId().equals(cancel1.getId())) {
             return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
         }
         //判断订单的商品与核销商品是否一致
@@ -150,6 +171,7 @@ public class logicController {
         cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getMoney());
         cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getPresentMoney());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
+        redisTemplate.delete(decrypt1);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
@@ -173,22 +195,22 @@ public class logicController {
         logger.info("没有核销员的物品Id:" + list);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
-    @GetMapping(value = "/decode")
-    @ApiOperation("解码")
-    public ResponseEntity<JSONObject> getCode(String goodsId, String ordersId) throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        String key = "MIGfMA0GCSqGSIb3";
-        goodsId = goodsId.replace("思维创造", "");
-        ordersId = ordersId.replace("思维创造", "");
-        String decrypt = PageTool.decrypt(ordersId, key);
-        String decrypt1 = PageTool.decrypt(goodsId, key);
-        test ttt = new test();
-        ttt.setOrderId(Integer.valueOf(decrypt));
-        ttt.setGoodsId(Integer.valueOf(decrypt1));
-        List<test> list = new ArrayList<test>();
-        list.add(ttt);
-        return builder.body(ResponseUtils.getResponseBody(list));
-    }
+//    @GetMapping(value = "/decode")
+//    @ApiOperation("解码")
+//    public ResponseEntity<JSONObject> getCode(String goodsId, String ordersId) throws Exception {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        String key = "MIGfMA0GCSqGSIb3";
+//        goodsId = goodsId.replace("思维创造", "");
+//        ordersId = ordersId.replace("思维创造", "");
+//        String decrypt = PageTool.decrypt(ordersId, key);
+//        String decrypt1 = PageTool.decrypt(goodsId, key);
+//        test ttt = new test();
+//        ttt.setOrderId(Integer.valueOf(decrypt));
+//        ttt.setGoodsId(Integer.valueOf(decrypt1));
+//        List<test> list = new ArrayList<test>();
+//        list.add(ttt);
+//        return builder.body(ResponseUtils.getResponseBody(list));
+//    }
 
     /**
      * 生成二维码
@@ -201,7 +223,9 @@ public class logicController {
 //        String uuid=UUID.randomUUID().toString().replace("-", "");
 //        System.out.println(uuid1);
 //        System.out.println(uuid);
-
+        redisTemplate.opsForValue().set(String.valueOf(orderId), goodsId);
+        redisTemplate.expire(String.valueOf(orderId),30 , TimeUnit.SECONDS);
+        System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(orderId)));
         //16位
         String key = "MIGfMA0GCSqGSIb3";
 
