@@ -38,6 +38,15 @@ spring:
       validation-timeout: 300000
       connection-timeout: 60000
       read-only: false
+  redis:
+    database: 0
+    host: 39.100.86.77
+    port: 6379
+    timeout: 10000ms
+    jedis:
+      pool:
+        max-active: 16
+        max-idle: 4
   task:
     execution:
       pool:

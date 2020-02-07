@@ -36,24 +36,6 @@ public class HfGoods {
     private LocalDateTime createTime;
 
     private LocalDateTime modifyTime;
-    private Integer claim;
-    private Integer cancelId;
-
-    public Integer getCancelId() {
-        return cancelId;
-    }
-
-    public void setCancelId(Integer cancelId) {
-        this.cancelId = cancelId;
-    }
-
-    public Integer getClaim() {
-        return claim;
-    }
-
-    public void setClaim(Integer claim) {
-        this.claim = claim;
-    }
 
     private Short isDeleted;
 

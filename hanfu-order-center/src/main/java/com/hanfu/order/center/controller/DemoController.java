@@ -72,9 +72,9 @@ public class DemoController {
         }
         System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
         //判断核销的商品是否为自提商品
-        if (hfGoodsMapper.selectByPrimaryKey(goodsId).getClaim().equals(0)) {
-            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
-        }
+//        if (hfGoodsMapper.selectByPrimaryKey(goodsId).getClaim().equals(0)) {
+//            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
+//        }
         //判断核销员是否为该商品的核销员
         System.out.println("UserId" + hfUserList.get(0).getId());//123
         Example example1 = new Example(cancel.class);
@@ -85,9 +85,9 @@ public class DemoController {
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
         cancel cancel1 = cancelsMapper.selectByPrimaryKey(cancelList.get(0).getId());
         System.out.println(cancelList.get(0).getId() + "getId");//123
-        if (!hfGoods.getCancelId().equals(cancel1.getId())) {
-            return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
-        }
+//        if (!hfGoods.getCancelId().equals(cancel1.getId())) {
+//            return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
+//        }
         //判断订单的商品与核销商品是否一致
         //价格，根据订单id，设置订单状态
         Example example2 = new Example(HfOrderDetail.class);

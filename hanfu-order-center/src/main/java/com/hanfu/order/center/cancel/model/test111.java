@@ -1,8 +1,17 @@
 package com.hanfu.order.center.cancel.model;
 
 public class test111 {
+    private String qrCodeType;
     private String goodsId;
     private String orderId;
+
+    public String getQrCodeType() {
+        return qrCodeType;
+    }
+
+    public void setQrCodeType(String qrCodeType) {
+        this.qrCodeType = qrCodeType;
+    }
 
     public String getGoodsId() {
         return goodsId;
