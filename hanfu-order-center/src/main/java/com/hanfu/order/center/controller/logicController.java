@@ -82,7 +82,7 @@ public class logicController {
 
         Integer goodsid= (Integer) redisTemplate.opsForValue().get(decrypt);
         System.out.println(goodsid+"goodsId");
-        System.out.println(redisTemplate.getExpire(String.valueOf(decrypt1),TimeUnit.SECONDS));
+        System.out.println(redisTemplate.getExpire(decrypt,TimeUnit.SECONDS));
         if (redisTemplate.opsForValue().get(decrypt)==null){
             return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
         }
@@ -171,7 +171,7 @@ public class logicController {
         cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getMoney());
         cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getPresentMoney());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
-        redisTemplate.delete(decrypt1);
+        redisTemplate.delete(decrypt);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
@@ -224,8 +224,9 @@ public class logicController {
 //        System.out.println(uuid1);
 //        System.out.println(uuid);
         redisTemplate.opsForValue().set(String.valueOf(orderId), goodsId);
-        redisTemplate.expire(String.valueOf(orderId),30 , TimeUnit.SECONDS);
+        redisTemplate.expire(String.valueOf(orderId),300 , TimeUnit.SECONDS);
         System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(orderId)));
+        System.out.println(redisTemplate.getExpire(String.valueOf(String.valueOf(orderId)),TimeUnit.SECONDS));
         //16位
         String key = "MIGfMA0GCSqGSIb3";
 
