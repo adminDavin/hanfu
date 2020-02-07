@@ -231,9 +231,9 @@ public class BalancePaymentController {
         }
         Example example = new Example(HfUserBalance.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userId",Integer.valueOf(decrypt1));
+        criteria.andEqualTo("userId",Integer.valueOf(decrypt1)).andEqualTo("balanceType","rechargeAmount");
         List<HfUserBalance> hfUserBalances=balanceMapper.selectByExample(example);
-        if (hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money)<0){
+        if (hfUserBalances.size()==0||hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money)<0){
             return builder.body(ResponseUtils.getResponseBody("余额不足请充值"));
         }
         HfUserBalance hfUserBalance = new HfUserBalance();
