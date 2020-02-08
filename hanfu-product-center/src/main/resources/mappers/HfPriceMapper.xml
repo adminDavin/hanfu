@@ -12,6 +12,7 @@
     <result column="price_mode_id" jdbcType="INTEGER" property="priceModeId" />
     <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
     <result column="is_use_price_mode" jdbcType="SMALLINT" property="isUsePriceMode" />
+    <result column="line_price" jdbcType="INTEGER" property="linePrice" />
     <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
@@ -187,6 +188,9 @@
       <if test="isUsePriceMode != null">
         is_use_price_mode,
       </if>
+      <if test="linePrice != null">
+        line_price,
+      </if>
       <if test="hfDesc != null">
         hf_desc,
       </if>
@@ -218,6 +222,9 @@
       </if>
       <if test="isUsePriceMode != null">
         #{isUsePriceMode,jdbcType=SMALLINT},
+      </if>
+      <if test="linePrice != null">
+        #{linePrice,jdbcType=INTEGER},
       </if>
       <if test="hfDesc != null">
         #{hfDesc,jdbcType=VARCHAR},
@@ -273,6 +280,9 @@
       <if test="record.isUsePriceMode != null">
         is_use_price_mode = #{record.isUsePriceMode,jdbcType=SMALLINT},
       </if>
+      <if test="record.linePrice != null">
+        line_price = #{record.linePrice,jdbcType=INTEGER},
+      </if>
       <if test="record.hfDesc != null">
         hf_desc = #{record.hfDesc,jdbcType=VARCHAR},
       </if>
@@ -308,6 +318,7 @@
       price_mode_id = #{record.priceModeId,jdbcType=INTEGER},
       sell_price = #{record.sellPrice,jdbcType=INTEGER},
       is_use_price_mode = #{record.isUsePriceMode,jdbcType=SMALLINT},
+      line_price = #{record.linePrice,jdbcType=INTEGER},
       hf_desc = #{record.hfDesc,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
@@ -337,6 +348,9 @@
       </if>
       <if test="isUsePriceMode != null">
         is_use_price_mode = #{isUsePriceMode,jdbcType=SMALLINT},
+      </if>
+      <if test="linePrice != null">
+        line_price = #{linePrice,jdbcType=INTEGER},
       </if>
       <if test="hfDesc != null">
         hf_desc = #{hfDesc,jdbcType=VARCHAR},
@@ -370,6 +384,7 @@
       price_mode_id = #{priceModeId,jdbcType=INTEGER},
       sell_price = #{sellPrice,jdbcType=INTEGER},
       is_use_price_mode = #{isUsePriceMode,jdbcType=SMALLINT},
+      line_price = #{linePrice,jdbcType=INTEGER},
       hf_desc = #{hfDesc,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},

@@ -3,6 +3,8 @@ package com.hanfu.product.center.service.impl;
 
 import java.util.List;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,6 @@ public class ProductServiceImpl implements com.hanfu.inner.sdk.product.center.Pr
 
     @Autowired
     private HfCategoryMapper hfCategoryMapper;
-
     @Override
     public void getProductByStone(Integer stoneId) {
         manualDao.selectProductByStone(stoneId);

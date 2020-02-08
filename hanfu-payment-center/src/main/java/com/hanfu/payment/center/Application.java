@@ -12,11 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.Properties;
 
 @MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao"), @MapperScan("com.hanfu.payment.center.dao")})
-@EnableTransactionManagement
-@SpringBootApplication
 @EnableAutoConfiguration
 @EnableDubbo(scanBasePackages = "com.hanfu.payment.center.service.impl")
 @ComponentScan("com.hanfu.payment.center")

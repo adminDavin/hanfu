@@ -102,8 +102,7 @@
       This element was generated on Tue Jan 28 11:22:49 CST 2020.
     -->
     id, hf_name, instance_id, product_id, category_id, stone_id, boss_id, brand_id, resp_id, 
-    price_id, goods_desc, create_time, modify_time, is_deleted, cancel_id, claim, frames, 
-    member, evaluate
+    price_id, goods_desc, create_time, modify_time, is_deleted
   </sql>
   <select id="selectByExample" parameterType="com.hanfu.product.center.model.HfGoodsExample" resultMap="BaseResultMap">
     <!--
@@ -117,12 +116,7 @@
     </if>
     <include refid="Base_Column_List" />
     from hf_goods
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--

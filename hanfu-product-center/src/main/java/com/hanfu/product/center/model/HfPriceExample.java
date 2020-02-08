@@ -495,6 +495,66 @@ public class HfPriceExample {
             return (Criteria) this;
         }
 
+        public Criteria andLinePriceIsNull() {
+            addCriterion("line_price is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceIsNotNull() {
+            addCriterion("line_price is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceEqualTo(Integer value) {
+            addCriterion("line_price =", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceNotEqualTo(Integer value) {
+            addCriterion("line_price <>", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceGreaterThan(Integer value) {
+            addCriterion("line_price >", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceGreaterThanOrEqualTo(Integer value) {
+            addCriterion("line_price >=", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceLessThan(Integer value) {
+            addCriterion("line_price <", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceLessThanOrEqualTo(Integer value) {
+            addCriterion("line_price <=", value, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceIn(List<Integer> values) {
+            addCriterion("line_price in", values, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceNotIn(List<Integer> values) {
+            addCriterion("line_price not in", values, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceBetween(Integer value1, Integer value2) {
+            addCriterion("line_price between", value1, value2, "linePrice");
+            return (Criteria) this;
+        }
+
+        public Criteria andLinePriceNotBetween(Integer value1, Integer value2) {
+            addCriterion("line_price not between", value1, value2, "linePrice");
+            return (Criteria) this;
+        }
+
         public Criteria andHfDescIsNull() {
             addCriterion("hf_desc is null");
             return (Criteria) this;

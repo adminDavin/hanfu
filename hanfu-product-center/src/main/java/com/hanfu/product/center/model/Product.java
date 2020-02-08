@@ -2,6 +2,7 @@ package com.hanfu.product.center.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Product implements Serializable {
     /**
@@ -461,6 +462,7 @@ public class Product implements Serializable {
         sb.append(", bossId=").append(bossId);
         sb.append(", fileId=").append(fileId);
         sb.append(", claim=").append(claim);
+        sb.append(", cancelId=").append(cancelId);
         sb.append(", createTime=").append(createTime);
         sb.append(", lastModifier=").append(lastModifier);
         sb.append(", modifyTime=").append(modifyTime);
