@@ -2,15 +2,16 @@ package com.hanfu.payment.center;
 
 
 import com.github.pagehelper.PageHelper;
+
+import java.util.Properties;
+
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.annotation.MapperScans;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 @MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao"), @MapperScan("com.hanfu.payment.center.dao")})

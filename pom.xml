@@ -19,11 +19,8 @@
 		<module>hanfu-payment-client</module>
 		<module>hanfu-referral-center</module>
 		<module>hanfu-activity-center</module>
-    <module>hanfu-seckill-center</module>
 		<module>hanfu-cart-center</module>
-    <module>hanfu-cancel-center</module>
 		<module>hanfu-message-center</module>
-		<module>hanfu-group-center</module>
 	</modules>
 	<profiles>
 		<profile>

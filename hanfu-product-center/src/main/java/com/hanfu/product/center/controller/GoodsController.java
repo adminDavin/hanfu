@@ -214,7 +214,7 @@ public class GoodsController {
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setMember(hfGoodsInfo.getMember());
-			record.setClaim(hfGoodsInfo.getClaim());
+//			record.setClaim(hfGoodsInfo.getClaim());
 			record.setCategoryId(product.getCategoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
