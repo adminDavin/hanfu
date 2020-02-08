@@ -59,9 +59,12 @@ public class BalancePaymentController {
                     type = "Integer") })
     public void getCode(HttpServletResponse response, Integer money,Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        redisTemplate.opsForValue().set(String.valueOf(userId), money);
-        redisTemplate.expire(String.valueOf(userId),300 , TimeUnit.SECONDS);
-        System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(userId)));
+        String key1=String.valueOf(userId)+"BalancePayment";
+        redisTemplate.opsForValue().set(key1, money);
+        redisTemplate.expire(key1,300 , TimeUnit.SECONDS);
+        System.out.println(key1);
+        System.out.println(redisTemplate.getExpire(key1, TimeUnit.SECONDS));
+        System.out.println(redisTemplate.opsForValue().get(key1));
         QR t = new QR();
 //        Calendar now = Calendar.getInstance();
 //        System.out.println("年: " + now.get(Calendar.YEAR));
@@ -224,9 +227,11 @@ public class BalancePaymentController {
         String decrypt = PageTool.decrypt(QrCodeType, key);
         String decrypt1 = PageTool.decrypt(UserId, key);
 //        String decrypt2=PageTool.decrypt(Money,key);
-        Integer money= (Integer) redisTemplate.opsForValue().get(decrypt1);
-        System.out.println(redisTemplate.getExpire(String.valueOf(decrypt1),TimeUnit.SECONDS));
-        if (redisTemplate.opsForValue().get(decrypt1)==null){
+        String key1=decrypt1+"BalancePayment";
+        Integer money= (Integer) redisTemplate.opsForValue().get(key1);
+        System.out.println(redisTemplate.getExpire(key1,TimeUnit.SECONDS));
+        System.out.println(key1);
+        if (redisTemplate.opsForValue().get(decrypt1+"BalancePayment")==null){
             return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
         }
         Example example = new Example(HfUserBalance.class);
@@ -292,7 +297,7 @@ public class BalancePaymentController {
         cancelRecord.setOrderId(hfOrder.getId());
         cancelRecord.setCancelId(cancel1.getId());
         cancelRecordPaymentMapper.insertSelective(cancelRecord);
-        redisTemplate.delete(decrypt1);
+        redisTemplate.delete(key1);
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 }

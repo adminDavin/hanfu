@@ -65,7 +65,7 @@ public class logicController {
 
     @ResponseBody
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
-    @ApiOperation(value = "核销逻辑测试", notes = "核销逻辑测试")
+    @ApiOperation(value = "核销逻辑", notes = "核销逻辑")
     public ResponseEntity<JSONObject> testCancel(
             @RequestParam(value = "userId", required = true) Integer userId,
             @RequestParam(value = "UgoodsId", required = true) String UgoodsId,
