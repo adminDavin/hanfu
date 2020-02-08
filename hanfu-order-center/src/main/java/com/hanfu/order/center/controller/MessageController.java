@@ -3,6 +3,8 @@ package com.hanfu.order.center.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -98,7 +100,7 @@ public class MessageController {
     }
 
     @ApiOperation(value = "添加评价", notes = "添加评价")
-    @RequestMapping(value = "/insertReply", method = RequestMethod.GET)
+    @RequestMapping(value = "/insertReply", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = false, type = "Integer"),
@@ -111,6 +113,9 @@ public class MessageController {
         if (orderId == null) {
             return builder.body(ResponseUtils.getResponseBody("没有任何评价"));
         }
+        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put("evaluate", evaluate);
+//        map.put("start", start);
         String key = orderId.toString() + userId.toString()+goodsId.toString();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
