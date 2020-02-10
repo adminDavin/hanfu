@@ -81,7 +81,7 @@
                           identity="true"/>
         </table>
         <table schema="user_center" tableName="hf_order_address"
-               domainObjectName="hfOrderAddress">
+               domainObjectName="HfOrderAddress">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
@@ -94,13 +94,13 @@
         </table>
         
         <table schema="user_center" tableName="hf_order_group"
-               domainObjectName="hfOrderGroup">
+               domainObjectName="HfOrderGroup">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
         <table schema="user_center" tableName="hf_order_group_detail"
-               domainObjectName="hfOrderGroupDetail">
+               domainObjectName="HfOrderGroupDetail">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
