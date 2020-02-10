@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hanfu.product.center.manual.dao.ManualDaoImpl">
+
+	<resultMap id="EntityHfGoodDispaly"
+		type="com.hanfu.product.center.manual.model.HfGoodsDisplay">
+		<result column="hf_name" jdbcType="VARCHAR" property="goodName" />
+		<result column="goods_desc" jdbcType="VARCHAR"
+			property="goodsDesc" />
+		<result column="productCategoryName" jdbcType="VARCHAR"
+			property="productCategoryName" />
+		<result column="categoryId" jdbcType="INTEGER"
+			property="categoryId" />
+		<result column="quantity" jdbcType="INTEGER"
+			property="quantity" />
+		<result column="sell_price" jdbcType="INTEGER"
+			property="sellPrice" />
+		<result column="resp_id" jdbcType="INTEGER" property="respId" />
+		<result column="price_id" jdbcType="INTEGER" property="priceId" />
+		<result column="productId" jdbcType="INTEGER"
+			property="productId" />
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+		<result column="is_deleted" jdbcType="SMALLINT"
+			property="isDeleted" />
+		<result column="cancel_id" jdbcType="INTEGER"
+			property="cancelId" />
+		<result column="claim" jdbcType="INTEGER" property="claim" />
+		<result column="memeber" jdbcType="INTEGER" property="member" />
+		<result column="evaluate" jdbcType="VARCHAR"
+			property="evaluate" />
+		<result column="sellPrice1" jdbcType="INTEGER"
+			property="sellPrice1" />
+		<result column="sellPrice1" jdbcType="INTEGER"
+			property="sellPrice2" />
+		<result column="file_id" jdbcType="INTEGER" property="fileId" />
+		<result column="stone_id" jdbcType="INTEGER" property="stoneId" />
+		<result column="hf_value" jdbcType="INTEGER" property="hfValue" />
+		<result column="productName" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="productSpecId" jdbcType="INTEGER"
+			property="productSpecId" />
+		<result column="productSpecName" jdbcType="VARCHAR"
+			property="productSpecName" />
+					<result column="line_price" jdbcType="VARCHAR"
+			property="linePrice" />
+		<result column="seniority_id" jdbcType="VARCHAR"
+			property="seniorityId" />
+	</resultMap>
+
+	<resultMap id="EntityHfGoodDispaly1"
+		type="com.hanfu.inner.model.product.center.HfGoodsDisplay">
+		<result column="hf_name" jdbcType="VARCHAR" property="goodName" />
+		<result column="goods_desc" jdbcType="VARCHAR"
+			property="goodsDesc" />
+		<result column="productCategoryName" jdbcType="VARCHAR"
+			property="productCategoryName" />
+		<result column="categoryId" jdbcType="INTEGER"
+			property="categoryId" />
+		<result column="quantity" jdbcType="INTEGER"
+			property="quantity" />
+		<result column="sell_price" jdbcType="INTEGER"
+			property="sellPrice" />
+		<result column="resp_id" jdbcType="INTEGER" property="respId" />
+		<result column="price_id" jdbcType="INTEGER" property="priceId" />
+		<result column="productId" jdbcType="INTEGER"
+			property="productId" />
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+		<result column="is_deleted" jdbcType="SMALLINT"
+			property="isDeleted" />
+		<result column="cancel_id" jdbcType="INTEGER"
+			property="cancelId" />
+		<result column="claim" jdbcType="INTEGER" property="claim" />
+		<result column="memeber" jdbcType="INTEGER" property="member" />
+		<result column="evaluate" jdbcType="VARCHAR"
+			property="evaluate" />
+		<result column="file_id" jdbcType="INTEGER" property="fileId" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap"
+		type="com.hanfu.product.center.model.HfGoods">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="hf_name" jdbcType="INTEGER" property="hfName" />
+		<result column="instance_id" jdbcType="INTEGER"
+			property="instanceId" />
+		<result column="product_id" jdbcType="INTEGER"
+			property="productId" />
+		<result column="category_id" jdbcType="INTEGER"
+			property="categoryId" />
+		<result column="stone_id" jdbcType="INTEGER" property="stoneId" />
+		<result column="boss_id" jdbcType="INTEGER" property="bossId" />
+		<result column="brand_id" jdbcType="INTEGER" property="brandId" />
+		<result column="resp_id" jdbcType="INTEGER" property="respId" />
+		<result column="price_id" jdbcType="INTEGER" property="priceId" />
+		<result column="goods_desc" jdbcType="VARCHAR"
+			property="goodsDesc" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+		<result column="is_deleted" jdbcType="SMALLINT"
+			property="isDeleted" />
+	</resultMap>
+
+	<!-- <resultMap id="AwardInfoEntityMap" type="cn.tedu.store.entity.AwardInfo"> 
+		<id column="id" property="id"/> <result column="award_name" property="awardName"/> 
+		<result column="emp_num" property="empNum"/> </resultMap> -->
+	<select id="selectAllGoodsInfo" resultMap="EntityHfGoodDispaly1">
+		SELECT
+		h.goods_desc,h.id,
+		h.hf_name,h.resp_id,
+		h.price_id,h1.hf_name
+		productCategoryName,
+		h1.id categoryId,
+		h.create_time,h.modify_time,h.cancelId,h.claim,
+		h.is_deleted
+		FROM
+		hf_goods h
+		JOIN
+		hf_category h1
+		ON
+		h.category_id = h1.id
+		<if test="stoneId != null and stoneId != ''">
+			WHERE
+			h.stone_id=#{stoneId}
+		</if>
+
+	</select>
+
+
+	<select id="selectFromHfGoods" resultMap="BaseResultMap">
+		SELECT * FROM hf_goods
+		WHERE id = #{goodsId}
+	</select>
+
+
+	<select id="selectAllGoods" resultMap="EntityHfGoodDispaly">
+		SELECT
+		h.id,
+		h.price_id priceId,
+		h.resp_id respId,
+		<if test="priceId != null">
+		h3.sell_price,
+		h3.line_price,
+		</if>
+		h.hf_name,
+		h.goods_desc,
+		<if test="respId != null">
+		   h4.quantity
+		</if>
+		FROM
+		hf_goods h
+		<if test="priceId != null">
+			 JOIN hf_price h3 ON h3.googs_id = h.id
+		</if>
+		<if test="respId != null">
+		     JOIN hf_resp h4 ON h4.googs_id = h.id
+		</if>
+		WHERE
+		h.id = #{id}
+	</select>
+
+	<select id="selectAllGoodsPartInfo"
+		resultMap="EntityHfGoodDispaly">
+		SELECT
+		h.goods_desc,h.id,
+		h.hf_name,h.resp_id,
+		h.price_id,h1.hf_name productCategoryName,
+		h1.id categoryId,p.id
+		productId,
+		h.create_time,h.modify_time,
+		h.is_deleted
+		FROM
+		hf_goods h
+		JOIN
+		product p
+		ON
+		h.product_id = p.id
+		JOIN
+		hf_category h1
+		ON
+		h.category_id = h1.id
+		WHERE
+		h.stone_id=#{stoneId}
+	</select>
+
+	<select id="selectByStoneId" resultMap="BaseResultMap">
+		SELECT
+		distinct id,
+		instance_id,
+		product_id, category_id,
+		stone_id, boss_id,
+		brand_id,
+		resp_id,
+		price_id, goods_desc,
+		create_time,modify_time,
+		is_deleted
+		FROM
+		hf_goods
+		WHERE
+		stone_id = #{stoneId}
+	</select>
+
+	<select id="selectGoodsInfo" resultMap="EntityHfGoodDispaly">
+		SELECT
+		product_desc goods_desc,
+		p.id,
+		p.hf_name,
+		h.resp_id resp_id,
+		h.price_id price_id,
+		h1.hf_name productCategoryName,
+		h1.id categoryId,
+		p.id productId,
+		p.boss_id stone_id,
+		p.create_time,
+		p.modify_time,
+		h.cancel_id,
+		h.claim,
+		h.is_deleted,
+		h2.file_id file_id,
+		h3.sell_price
+		FROM
+		hf_goods h
+		JOIN
+		product p ON h.product_id = p.id
+		JOIN
+		hf_category h1 ON h.category_id = h1.id
+		JOIN
+		hf_price h3 ON h.price_id = h3.id
+		left JOIN
+		cancel h4 ON h.cancel_id = h4.id
+		JOIN
+		hf_goods_pictrue h2 ON h2.goods_id = h.id
+		where p.id=#{goodsId}
+		order by h3.sell_price
+		limit 1;
+
+	</select>
+
+	<select id="selectGoodsPartInfo" resultMap="EntityHfGoodDispaly">
+		SELECT
+		h.goods_desc,h.id,
+		h.hf_name,h.resp_id,
+		h.price_id,h1.hf_name
+		productCategoryName,
+		h1.id categoryId,p.id productId,h.stone_id,
+		h.create_time,h.modify_time,h.cancel_id,h.claim,
+		h.is_deleted,h.member,
+		h.evaluate
+		FROM
+		hf_goods h
+		JOIN
+		product p
+		ON
+		h.product_id = p.id
+		JOIN
+		hf_category h1
+		ON
+		h.category_id = h1.id
+		JOIN
+		cancel h4
+		ON
+		h.cancel_id = h4.id
+		WHERE
+		h.id=#{goodsId}
+	</select>
+
+	<select id="selectProductBycategoryIdOrProductName"
+		resultMap="EntityHfGoodDispaly">
+		SELECT
+		h.goods_desc,h.id,
+		h.hf_name,h.resp_id,
+		h.price_id,h2.sell_price,
+		h1.id categoryId,p.id productId,
+		h.create_time,h.modify_time,
+		h.is_deleted,h1.hf_name productCategoryName
+		FROM
+		hf_goods h
+		JOIN
+		product p
+		ON
+		h.product_id = p.id
+		JOIN
+		hf_category h1
+		ON
+		h.category_id = h1.id
+		JOIN
+		hf_price h2
+		ON
+		h.price_id = h2.id
+		WHERE 1=1
+		<if test="goodName != null and goodName != ''">
+			AND h.hf_name like '%${goodName}%'
+		</if>
+		<if test="categoryId != null and categoryId != ''">
+			AND h1.id = #{categoryId}
+		</if>
+		AND p.id = #{productId}
+		ORDER BY sell_price
+	</select>
+	<select id="selectList" resultMap="EntityHfGoodDispaly">
+		select
+		b.goods_desc,b.id,
+		b.hf_name goodName,b.resp_id,
+		b.price_id,c.hf_name productCategoryName,
+		c.id categoryId,
+		a.sell_price,b.create_time,
+		b.modify_time,b.is_deleted,b.cancel_id,b.claim
+		from
+		hf_price a
+		LEFT JOIN
+		hf_goods b
+		on
+		a.googs_id=b.id
+		lEFT JOIN
+		hf_category c
+		on
+		b.category_id =c.id
+		where
+		c.hf_name= #{productCategoryName}
+		and #{sellPrice1} > a.sell_price
+		>#{sellPrice2}
+
+	</select>
+	<select id="selectPrice" resultMap="EntityHfGoodDispaly">
+      SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price
+	</select>
+	<select id="selectPriceDec" resultMap="EntityHfGoodDispaly">
+		    SELECT
+	 * 
+     FROM
+	hf_goods h
+	<if test="categoryId != null">
+	    JOIN hf_category h1 ON h.category_id = h1.id
+	</if>
+		<if test="seniorityId != null">
+	    JOIN seniority_instance h3 ON h.id = h3.goods_id
+	    JOIN hf_seniority h4 ON h4.id = h3.seniority_id
+	</if>
+	JOIN hf_price h2 ON h.price_id = h2.id 
+	where 1=1
+	<if test="categoryId != null">
+	 and   h.category_id = #{categoryId}
+	</if>
+	<if test="seniorityId !=null">
+	and   h3.seniority_id = #{seniorityId}
+	and   h4.id = h3.seniority_id
+	</if>
+      ORDER BY
+	h2.sell_price DESC
+	</select>
+	<select id="selectQueryList" resultMap="EntityHfGoodDispaly">
+		SELECT
+		h.goods_desc,h.id,
+		h.hf_name,h.resp_id,h2.file_id,
+		h.price_id,h1.hf_name productCategoryName,
+		h1.id categoryId,
+		h3.sell_price,h.create_time,
+		h.modify_time,h.is_deleted,h.cancel_id,h.claim,h.member,h.evaluate
+		FROM
+		hf_goods h
+		JOIN
+		hf_category h1
+		ON
+		h.category_id = h1.id
+		JOIN
+		hf_price h3
+		ON
+		h.price_id = h3.id
+		JOIN
+		hf_goods_pictrue h2
+		ON
+		h.id = h2.goods_id
+		WHERE
+		1=1
+		<if test="goodsName != null and goodsName != ''">
+			and h.hf_name like '%${goodsName}%'
+		</if>
+		<if
+			test="productCategoryName != null and productCategoryName != ''">
+			AND h1.hf_name like '%${productCategoryName}%'
+		</if>
+	</select>
+	<update id="updateGoods">
+		UPDATE
+		hf_goods
+		SET
+		good_name = #{goodName},price_id =
+		#{priceId},
+		resp_id = #{respId},goods_desc = #{goodsDesc}
+		WHERE
+		id =
+		#{id}
+	</update>
+	<insert id="insertAwardInfo" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO
+		award(award_name,emp_num)
+		values(#{awardName},#{empNum})
+	</insert>
+	<select id="queryGoods" resultMap="EntityHfGoodDispaly">
+		select count(*) from hf_goods
+	</select>
+	<select id="selectGoodsSpec" resultMap="EntityHfGoodDispaly">
+		select p.id productId,
+		p.hf_name productName,
+		s.id productSpecId, s.hf_name productSpecName,
+		gs.goods_id id, gs.hf_value
+		from product p
+		left join product_spec s on
+		p.id = s.product_id
+		left join hf_goods_spec gs on s.id = gs.hf_spec_id
+		where p.id=#{productId}
+	</select>
+	<select id="checkResp" resultMap="EntityHfGoodDispaly">
+		SELECT
+		h1.id,
+		h3.sell_price,
+		h2.quantity
+		FROM
+		hf_goods h1
+		JOIN product p ON h1.product_id = p.id
+		JOIN
+		product_spec p1 ON p1.product_id = p.id
+		JOIN hf_resp h2 ON h2.googs_id
+		= h1.id
+		JOIN hf_price h3 ON h3.googs_id = h1.id
+		JOIN hf_goods_spec h4 ON
+		h4.goods_id = h1.id
+		WHERE
+		p.id = #{productId}
+		AND p1.hf_name =
+		#{productSpecName}
+		AND h4.hf_value = #{hfValue}
+	</select>
+	<select id="selectSlideshow" resultMap="EntityHfGoodDispaly">
+		select * from product order by id limit 0,5
+	</select>
+</mapper>

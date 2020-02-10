@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.ProductGroupMapper" >
+
+  <resultMap id="Base" type="com.hanfu.product.center.model.Product" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="ahf_name" property="hfName" jdbcType="VARCHAR" />
+    <result column="acategory_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="abrand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="aproduct_desc" property="productDesc" jdbcType="VARCHAR" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="acreate_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="alast_modifier" property="lastModifier" jdbcType="VARCHAR" />
+    <result column="amodify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <collection  property="poductSpec" ofType="com.hanfu.product.center.model.ProductSpec">
+      <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
+      <result column="bcategory_spec_id" property="categorySpecId" jdbcType="INTEGER" />
+      <result column="bproduct_id" property="productId" jdbcType="INTEGER" />
+      <result column="bspec_type" property="specType" jdbcType="VARCHAR" />
+      <result column="bspec_unit" property="specUnit" jdbcType="VARCHAR" />
+      <result column="bspec_value" property="specValue" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    a.id aid, a.hf_name ahf_name , a.category_id acategory_id, a.brand_id abrand_id, a.product_desc aproduct_desc, a.boss_id aboss_id,
+     a.create_time  acreate_time, a.last_modifier alast_modifier,
+    a.modify_time amodify_time, a.is_deleted ais_deleted,  b.hf_name bhf_name, b.category_spec_id bcategory_spec_id, b.product_id  bproduct_id,
+    b.spec_type bspec_type,b.spec_unit bspec_unit, b.spec_value  bspec_value
+  </sql>
+
+  <select id="selectByPrimaryKey"  parameterType="java.lang.Integer" resultMap="Base" >
+    select 
+    <include refid="Base_Column_List" />
+    from  hf_goods  c left join product a on c.product_id =a.id
+    left join product_spec b on  a.id=b.product_id
+    where c.id =#{id}
+  </select>
+</mapper>

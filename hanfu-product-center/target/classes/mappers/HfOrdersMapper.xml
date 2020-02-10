@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.HfOrdersGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfOrders" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+    <result column="order_type" property="orderType" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="pay_method_type" property="payMethodType" jdbcType="INTEGER" />
+    <result column="hf_memo" property="hfMemo" jdbcType="VARCHAR" />
+    <result column="hf_remark" property="hfRemark" jdbcType="VARCHAR" />
+    <result column="pay_method_name" property="payMethodName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="last_modifier" property="lastModifier" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, pay_status, order_type, amount, pay_method_type, hf_memo, hf_remark, 
+    pay_method_name, create_time, modify_time, last_modifier, is_deleted
+  </sql>
+
+  <select id="selectByUserId" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from hf_orders
+    where order_type = #{orderType} AND user_id=#{userId} AND  create_time=#{time}
+  </select>
+
+
+  <select id="selectByOrderType" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from hf_orders
+    where order_type = #{orderType} AND user_id=#{userId}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
+    from hf_orders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hf_orders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+
+  <insert id="insert" parameterType="com.hanfu.product.center.model.HfOrders">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_orders (user_id, pay_status, order_type, 
+      amount, pay_method_type, hf_memo, 
+      hf_remark, pay_method_name, create_time, 
+      modify_time, last_modifier, is_deleted
+      )
+    values (#{userId,jdbcType=INTEGER}, #{payStatus,jdbcType=INTEGER}, #{orderType,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=INTEGER}, #{payMethodType,jdbcType=INTEGER}, #{hfMemo,jdbcType=VARCHAR}, 
+      #{hfRemark,jdbcType=VARCHAR}, #{payMethodName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{lastModifier,jdbcType=VARCHAR}, #{isDeleted,jdbcType=SMALLINT}
+      )
+  </insert>
+
+
+  <insert id="insertSelective" parameterType="com.hanfu.product.center.model.HfOrders" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_orders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="payStatus != null" >
+        pay_status,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="payMethodType != null" >
+        pay_method_type,
+      </if>
+      <if test="hfMemo != null" >
+        hf_memo,
+      </if>
+      <if test="hfRemark != null" >
+        hf_remark,
+      </if>
+      <if test="payMethodName != null" >
+        pay_method_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="lastModifier != null" >
+        last_modifier,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="payStatus != null" >
+        #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="payMethodType != null" >
+        #{payMethodType,jdbcType=INTEGER},
+      </if>
+      <if test="hfMemo != null" >
+        #{hfMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="hfRemark != null" >
+        #{hfRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="payMethodName != null" >
+        #{payMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifier != null" >
+        #{lastModifier,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

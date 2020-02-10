@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.ProductInstanceDao">
+
+    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.ProductInstance">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="product_id" jdbcType="INTEGER" property="productId"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="boss_id" jdbcType="INTEGER" property="bossId"/>
+        <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+    </resultMap>
+
+    <select id="selectProductInstance" resultMap="BaseResultMap">
+        SELECT
+        product_id, category_id,
+        stone_id, boss_id, brand_id,
+        create_time, modify_time,
+        last_modifier, is_deleted
+        FROM
+        product_instance
+        WHERE
+        product_id = #{productId}
+        AND
+        stone_id = #{stoneId}
+    </select>
+
+    <delete id="deleteProductInstance">
+        DELETE FROM
+        product_instance
+        WHERE
+        product_id = #{productId}
+        AND
+        stone_id = #{stoneId}
+    </delete>
+
+</mapper>
