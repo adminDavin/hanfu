@@ -203,5 +203,18 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
+        
+        <table schema="user_center" tableName="hf_order_group"
+               domainObjectName="hfOrderGroup">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_order_group_detail"
+               domainObjectName="hfOrderGroupDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>
