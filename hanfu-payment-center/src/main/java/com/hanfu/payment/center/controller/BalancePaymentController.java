@@ -176,11 +176,12 @@ public class BalancePaymentController {
         Example.Criteria criteria1 = example1.createCriteria();
         criteria1.andEqualTo("userId",userCancelId);
         List<cancel> cancelList = cancelPaymentMapper.selectByExample(example1);
-        Integer DistributorId = cancelList.get(0).getId();
-        cancel cancel=cancelPaymentMapper.selectByPrimaryKey(DistributorId);
-        if (cancel==null){
+        if (cancelList.size()==0){
             return builder.body(ResponseUtils.getResponseBody("您不是核销人员"));
         }
+        Integer DistributorId = cancelList.get(0).getId();
+        cancel cancel=cancelPaymentMapper.selectByPrimaryKey(DistributorId);
+
 //        if (qrCodeMapper.selectByPrimaryKey(QRCodeId)==null){
 //           return builder.body(ResponseUtils.getResponseBody("二维码已失效,不要重复扫描"));
 //        }

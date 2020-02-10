@@ -55,6 +55,8 @@ public class logicController {
     private ProductMapper productMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private HfOrdersCancelMapper hfOrdersCancelMapper;
     //转换时间格式
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
@@ -93,7 +95,6 @@ public class logicController {
         List<cancel> cancelList = cancelsMapper.selectByExample(example1);
         //
         HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
-        System.out.println(hfUser.getUsername());
         String unionId = hfUser.getUsername();
         System.out.println(userId + goodsId + orderId);
 
@@ -110,12 +111,12 @@ public class logicController {
         if (hfUserList.size() == 0) {
             return builder.body(ResponseUtils.getResponseBody("请登录后操作"));
         }
-        HfUser hfUser1 = hfUserMapper.selectByPrimaryKey(hfUserList.get(0));
-        System.out.println(hfUser1);
-        if (hfUser1.getCancelId() == 0) {
+//        HfUser hfUser1 = hfUserMapper.selectByPrimaryKey(cancelList.get(0));
+//        System.out.println(hfUser1);
+        if (cancelList.size() == 0) {
             return builder.body(ResponseUtils.getResponseBody("对不起你不是核销员无法核销商品"));
         }
-        System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
+//        System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
         //判断核销的商品是否为自提商品
         int productId=hfGoodsMapper.selectByPrimaryKey(goodsId).getProductId();
         if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
@@ -137,8 +138,13 @@ public class logicController {
         Example.Criteria criteria2 = example2.createCriteria();
         criteria2.andEqualTo("orderId", orderId).andEqualTo("goodsId",goodsId);
         List<HfOrderDetail> hfPriceList = hfOrdersCancelDetailMapper.selectByExample(example2);
-        if (hfPriceList.size() == 0) {
+        HfOrder hfOrder=hfOrdersCancelMapper.selectByPrimaryKey(orderId);
+        if (hfPriceList.size() == 0||hfOrder==null) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
+        }
+
+        if (hfOrder.getOrderStatus().equals("complete")) {
+            return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
         }
         HfOrderDetail hfPrice = hfOrdersCancelDetailMapper.selectByPrimaryKey(hfPriceList.get(0).getId());
         if (hfPrice.getHfStatus().equals("已完成")) {
@@ -152,6 +158,11 @@ public class logicController {
         hfOrdersDetail.setId(hfPrice.getId());
         hfOrdersDetail.setHfStatus("已完成");
         hfOrdersCancelDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
+        HfOrder hfOrder1 = new HfOrder();
+        hfOrder1.setId(orderId);
+        hfOrder1.setOrderStatus("complete");
+        hfOrder1.setModifyTime(LocalDateTime.now());
+        hfOrdersCancelMapper.updateByPrimaryKeySelective(hfOrder1);
         //添加核销记录
         CancelRecord cancelRecord = new CancelRecord();
         cancelRecord.setCreateDate(LocalDateTime.now());
