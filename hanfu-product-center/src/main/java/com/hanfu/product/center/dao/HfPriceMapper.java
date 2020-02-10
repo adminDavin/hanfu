@@ -3,8 +3,6 @@ package com.hanfu.product.center.dao;
 import com.hanfu.product.center.model.HfPrice;
 import com.hanfu.product.center.model.HfPriceExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 
 public interface HfPriceMapper {
@@ -95,6 +93,4 @@ public interface HfPriceMapper {
      * @mbg.generated Mon Feb 10 09:00:31 CST 2020
      */
     int updateByPrimaryKey(HfPrice record);
-
-    Integer  selectByPrice(Integer id);
 }

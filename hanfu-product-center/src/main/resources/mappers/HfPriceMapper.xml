@@ -126,15 +126,6 @@
     from hf_price
     where id = #{id,jdbcType=INTEGER}
   </select>
-
-    <select id="selectByPrice" parameterType="java.lang.Integer" resultType="Integer">
-        select
-          sell_price
-        from hf_price
-        where googs_id = #{id,jdbcType=INTEGER}
-    </select>
-
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbg.generated
