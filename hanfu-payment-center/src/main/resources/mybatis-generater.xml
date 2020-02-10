@@ -64,5 +64,24 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
+        <table schema="user_center" tableName="hf_user_browse_record"
+               domainObjectName="HfUserBrowseRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        
+        <table schema="user_center" tableName="hf_user_privilege"
+               domainObjectName="HfUserPrivilege">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_user_coupons"
+               domainObjectName="HfUserCoupons">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>
