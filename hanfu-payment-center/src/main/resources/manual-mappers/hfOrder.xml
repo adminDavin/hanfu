@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.payment.center.manual.dao.HfOrderDao">
+    <resultMap id="BaseResultMap" type="com.hanfu.payment.center.manual.model.HfOrderDisplay">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="amount" jdbcType="INTEGER" property="amount"/>
+        <result column="hf_remark" jdbcType="VARCHAR" property="hfRemark"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="order_status" jdbcType="VARCHAR" property="orderStatus"/>
+        <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
+        <result column="payment_name" jdbcType="VARCHAR" property="paymentName"/>
+        <result column="payment_type" jdbcType="INTEGER" property="paymentType"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="actual_price" jdbcType="INTEGER" property="actualPrice"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="taking_type" jdbcType="INTEGER" property="takingType"/>
+        <result column="freight" jdbcType="INTEGER" property="freight"/>
+        <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
+        <result column="address_id" jdbcType="INTEGER" property="addressId"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="address_detail" jdbcType="VARCHAR" property="addressDetail"/>
+        <result column="contact" jdbcType="VARCHAR" property="contact"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="address_desc" jdbcType="VARCHAR" property="addressDesc"/>
+    </resultMap>
+    
+    <resultMap id="HfGoodsDisplayResultMap" type="com.hanfu.payment.center.manual.model.HfGoodsDisplay">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
+        <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
+        
+    </resultMap>
+ 
+ 
+    <resultMap id="HfUserResultMap" type="com.hanfu.payment.center.manual.model.HfUser">
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="auth_key" jdbcType="VARCHAR" property="authKey"/>
+        
+    </resultMap>
+ 
+   
+    <insert id="insertOrderAddress">
+       insert into hf_order_address(order_id, origin_address_id, address, detail, contact, phone, hf_desc, create_time, modify_time, last_modifier)
+       select #{orderId}, id, hf_city, hf_address_detail, contact, phone_number, hf_desc, now(), now(), user_id from hf_user_address where id=#{addressId};
+    </insert>
+    
+    <select id="selectGoodsInfo" parameterType="java.util.List" resultMap="HfGoodsDisplayResultMap">
+       select g.id, g.hf_name, g.stone_id, s.hf_name stone_name, max(p.file_id) file_id
+       from hf_goods g left join hf_stone s on g.stone_id=s.id 
+       left join hf_goods_pictrue p on g.id=p.goods_id 
+       where g.id in 
+       <foreach collection="list" item="goodsIds" index="index"  open="(" close=")" separator=",">
+         #{goodsIds}
+       </foreach>
+       group by g.id, g.hf_name, g.stone_id, s.hf_name;
+    </select>
+    
+    <select id="selectHfOrderbyCode" resultMap="BaseResultMap">
+    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.stone_id, o.payment_name, o.payment_type, o.user_id, 
+    d.goods_id, d.actual_price, d.quantity, d.taking_type, d.freight, d.hf_desc,
+    a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
+     from hf_order o left join hf_order_detail d on o.id=d.order_id
+     left join hf_order_address a on o.id=a.order_id
+     where o.order_code =#{orderCode}
+    </select>
+    
+    <select id="selectHfUser" resultMap="HfUserResultMap">
+    select user_id, auth_key from hf_auth where user_id=#{userId} and auth_type=1 and auth_status=0; 
+    </select>
+    
+    <update id="updateHfOrderStatus" parameterType="map">
+    update hf_order o set o.order_status=#{orderStatus}, o.modify_time=#{modifyTime}, pay_status=1
+     where o.order_code =#{orderCode}
+    </update>
+</mapper>
