@@ -16,7 +16,7 @@
     id, goods_id, hf_spec_id, category_spec_id, hf_value, create_time, modify_time, last_modifier, 
     is_deleted
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from hf_goods_spec
