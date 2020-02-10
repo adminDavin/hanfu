@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.HfOrdersDetailGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfOrdersDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="orders_id" property="ordersId" jdbcType="INTEGER" />
+    <result column="resp_id" property="respId" jdbcType="INTEGER" />
+    <result column="order_detail_status" property="orderDetailStatus" jdbcType="VARCHAR" />
+    <result column="googs_id" property="googsId" jdbcType="INTEGER" />
+    <result column="hf_tax" property="hfTax" jdbcType="INTEGER" />
+    <result column="purchase_price" property="purchasePrice" jdbcType="INTEGER" />
+    <result column="purchase_quantity" property="purchaseQuantity" jdbcType="INTEGER" />
+    <result column="Distribution" property="distribution" jdbcType="VARCHAR" />
+    <result column="hf_desc" property="hfDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="last_modifier" property="lastModifier" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, orders_id, resp_id, order_detail_status, googs_id, hf_tax, purchase_price, purchase_quantity, 
+    Distribution, hf_desc, create_time, modify_time, last_modifier, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hf_orders_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByOrdersId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from hf_orders_detail
+    where orders_id = #{id}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hf_orders_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hanfu.product.center.model.HfOrdersDetail" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_orders_detail (orders_id, resp_id, order_detail_status, 
+      googs_id, hf_tax, purchase_price, 
+      purchase_quantity, Distribution, hf_desc, 
+      create_time, modify_time, last_modifier, 
+      is_deleted)
+    values (#{ordersId,jdbcType=INTEGER}, #{respId,jdbcType=INTEGER}, #{orderDetailStatus,jdbcType=VARCHAR}, 
+      #{googsId,jdbcType=INTEGER}, #{hfTax,jdbcType=INTEGER}, #{purchasePrice,jdbcType=INTEGER}, 
+      #{purchaseQuantity,jdbcType=INTEGER}, #{distribution,jdbcType=VARCHAR}, #{hfDesc,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{lastModifier,jdbcType=VARCHAR}, 
+      #{isDeleted,jdbcType=SMALLINT})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.hanfu.product.center.model.HfOrdersDetail" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_orders_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ordersId != null" >
+        orders_id,
+      </if>
+      <if test="respId != null" >
+        resp_id,
+      </if>
+      <if test="orderDetailStatus != null" >
+        order_detail_status,
+      </if>
+      <if test="googsId != null" >
+        googs_id,
+      </if>
+      <if test="hfTax != null" >
+        hf_tax,
+      </if>
+      <if test="purchasePrice != null" >
+        purchase_price,
+      </if>
+      <if test="purchaseQuantity != null" >
+        purchase_quantity,
+      </if>
+      <if test="distribution != null" >
+        Distribution,
+      </if>
+      <if test="hfDesc != null" >
+        hf_desc,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="lastModifier != null" >
+        last_modifier,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ordersId != null" >
+        #{ordersId,jdbcType=INTEGER},
+      </if>
+      <if test="respId != null" >
+        #{respId,jdbcType=INTEGER},
+      </if>
+      <if test="orderDetailStatus != null" >
+        #{orderDetailStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="googsId != null" >
+        #{googsId,jdbcType=INTEGER},
+      </if>
+      <if test="hfTax != null" >
+        #{hfTax,jdbcType=INTEGER},
+      </if>
+      <if test="purchasePrice != null" >
+        #{purchasePrice,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseQuantity != null" >
+        #{purchaseQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="distribution != null" >
+        #{distribution,jdbcType=VARCHAR},
+      </if>
+      <if test="hfDesc != null" >
+        #{hfDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifier != null" >
+        #{lastModifier,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+
+
+
+
+</mapper>

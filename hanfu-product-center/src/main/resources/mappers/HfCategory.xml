@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.HfCategory" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfCategory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="hf_name" property="hfName" jdbcType="VARCHAR" />
+    <result column="parent_category_id" property="parentCategoryId" jdbcType="INTEGER" />
+    <result column="level_id" property="levelId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, hf_name, parent_category_id, level_id, create_time, modify_time, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hf_category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByName" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select
+    id
+    from hf_category
+    where hf_name = #{name}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hf_category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+</mapper>
