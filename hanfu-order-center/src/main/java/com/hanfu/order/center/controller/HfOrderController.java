@@ -9,6 +9,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+import com.hanfu.order.center.model.HfOrderDetailExample;
+import com.hanfu.order.center.model.HfOrderExample;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +39,6 @@ import com.hanfu.order.center.request.CreateHfOrderRequest.TakingTypeEnum;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin
 @RestController
@@ -157,6 +155,28 @@ public class HfOrderController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfOrderStatistics> hfOrderStatus = hfOrderDao.selectHfOrderStatistics(userId);
         return builder.body(ResponseUtils.getResponseBody(hfOrderStatus));
+    }
+
+    @ApiOperation(value = "修改订单状态", notes = "修改订单状态")
+    @RequestMapping(value = "/modifyStatus", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "Id", value = "订单id", required = true,
+                    type = "Integer")})
+    public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrder hfOrder = new HfOrder();
+        hfOrder.setId(Id);
+        hfOrder.setOrderStatus(targetOrderStatus);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+        hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+        HfOrderDetail hfOrderDetail = new HfOrderDetail();
+        hfOrderDetail.setId(Id);
+        hfOrderDetail.setHfStatus(targetOrderStatus);
+        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+        hfOrderDetailMapper.updateByExample(hfOrderDetail,hfOrderDetailExample);
+        return builder.body(ResponseUtils.getResponseBody("0"));
     }
 
 }
