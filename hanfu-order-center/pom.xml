@@ -54,6 +54,21 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.hanfu.common</groupId>
+            <artifactId>hanfu-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hanfu.inner.sdk</groupId>
+            <artifactId>hanfu-inner-sdk</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <artifactId>hanfu-web-utils</artifactId>
+            <groupId>com.hanfu.utils</groupId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.5</version>
