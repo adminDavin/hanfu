@@ -3,12 +3,12 @@ server:
 
 dubbo:
   registry:
-    address: 47.105.72.216:2181
+    address: 39.100.86.77:2181
     protocol: zookeeper
     id: dubboProductServer
     client: curator
   metadata-report:
-    address: zookeeper://47.105.72.216:2181
+    address: zookeeper://39.100.86.77:2181
   application:
     name: hanfu-product-center
   protocol:
@@ -22,7 +22,7 @@ spring:
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://47.105.72.216:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true  
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
     username: hanfu_admin
     password: Davin1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -30,6 +30,13 @@ spring:
       connection-test-query: select now()
       idle-timeout: 3000000
       auto-commit: true
+      max-lifetime: 1200000
+      maximum-pool-size: 60
+      minimum-idle: 10
+      login-timeout: 5
+      validation-timeout: 300000
+      connection-timeout: 600000000
+      read-only: false
   task:
     execution:
       pool:
@@ -39,7 +46,15 @@ spring:
   servlet:
     multipart:
       enabled: true
-
+  redis:
+    database: 0
+    host: 39.100.86.77
+    port: 6379
+    timeout: 3000000
+    jedis:
+      pool:
+        max-active: 1000
+        max-idle: 4
 
 #
 #info:
@@ -59,9 +74,9 @@ spring:
 #      enabled: false
 
 logging:
-  file: ./target/king-words.log  
-  
+  file: ./target/king-words.log
+
 mybatis:
-  mapper-locations: 
+  mapper-locations:
     - mappers/*.xml
     - manual-mappers/*.xml

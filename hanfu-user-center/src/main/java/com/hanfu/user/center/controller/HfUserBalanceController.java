@@ -1,6 +1,12 @@
 package com.hanfu.user.center.controller;
 
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.hanfu.user.center.service.HfUserBalanceService;
+import com.hanfu.user.center.utils.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,15 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayDataBillTransferQueryModel;
-import com.alipay.api.request.AlipayDataBillTransferQueryRequest;
-import com.alipay.api.response.AlipayDataBillTransferQueryResponse;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
 import com.hanfu.user.center.model.HUserBalanceExample;
-import com.hanfu.user.center.request.AlipayConfig;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -26,18 +25,30 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
+
 @RestController
 @Api
 @RequestMapping("/user/balance")
 @CrossOrigin
 public class HfUserBalanceController {
+
 	@Autowired
 	HUserBalanceMapper hUserBalanceMapper;
-	
+
+	@Autowired
+	HfUserBalanceService hfUserBalanceService;
+
+	@Autowired
+	private StringRedisTemplate stringRedisTemplate;
+
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true,type = "Integer"),
 	})
 	public ResponseEntity<JSONObject> query(@RequestParam Integer userId) throws Exception {
 		HUserBalanceExample example = new HUserBalanceExample();
@@ -45,38 +56,100 @@ public class HfUserBalanceController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hUserBalanceMapper.selectByExample(example)));
 	}
-	@RequestMapping(value = "/recharge", method = RequestMethod.GET)
-	@ApiOperation(value = "余额充值", notes = "余额充值")
+
+	@RequestMapping(value = "/setCode",method = RequestMethod.GET)
+	@ApiOperation(value = "生成二维码",notes = "生成二维码")
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "startTime", value = "开始时间", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "endTime", value = "结束时间", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "type", value = "转账类型：充值-DEPOSIT，提现-WITHDRAW，转账-TRANSFER。", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "pageNo", value = "分页号", required = true, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "pageSize", value = "分页大小", required = true, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer")
 	})
-	public ResponseEntity<JSONObject> recharge(String startTime,String endTime,String type,String pageNo,String pageSize) throws Exception{
-		AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do",
-				AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, "json", "UTF-8",
-				AlipayConfig.ALIPAY_PUBLIC_KEY, "RSA");
-		AlipayDataBillTransferQueryRequest  transferQuery_request = new AlipayDataBillTransferQueryRequest();
-		AlipayDataBillTransferQueryModel model = new AlipayDataBillTransferQueryModel();
-		model.setStartTime(startTime);
-		model.setEndTime(endTime);
-		model.setType(type);
-		model.setPageNo(pageNo);
-		model.setPageSize(pageSize);
-		transferQuery_request.setBizModel(model);
-		try {
-			AlipayDataBillTransferQueryResponse response = alipayClient.execute(transferQuery_request);
-			if(response.isSuccess()){
-				System.out.println(response.getBody());
-			} else {
-				System.out.println("调用失败");
-			}
-		} catch (AlipayApiException e) {
-			e.printStackTrace();
-		}
+	public ResponseEntity<JSONObject> setCode(@RequestParam(required = true,defaultValue = "") Integer userId,
+											  @RequestParam(required = true,defaultValue = "") Integer hfBalance,
+											  @RequestParam(required = true,defaultValue = "") Integer total,
+											  HttpServletResponse response) throws JSONException, IOException {
+
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(""));
-	}  
+
+		int random = (int)((Math.random()*9+1)*100000);//六个随机数字
+
+		//System.out.println(random);
+
+		stringRedisTemplate.opsForValue().set(userId+"",random+"",60, TimeUnit.SECONDS);
+
+		// 设置响应流信息
+		response.setContentType("image/jpg");
+		response.setHeader("Pragma", "no-cache");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setDateHeader("Expires", 0);
+		OutputStream stream = response.getOutputStream();
+
+		//type是1，生成活动详情、报名的二维码，type是2，生成活动签到的二维码
+		String content = "用户的ID是:"+userId+",用户的余额是:"+hfBalance+",商品价格:"+total;
+
+		//加密String encode = MD5.encode(content);
+
+		//获取一个二维码图片
+		BitMatrix bitMatrix = QRCodeUtils.createCode(content);
+
+		//以流的形式输出到前端
+		MatrixToImageWriter.writeToStream(bitMatrix , "jpg" , stream);
+
+		return builder.body(ResponseUtils.getResponseBody("二维码生成成功,六十秒钟后失效"));
+	}
+
+
+	@RequestMapping(value = "/deduction",method = RequestMethod.GET)
+	@ApiOperation(value = "扣款请求",notes = "扣款请求")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer"),
+	})
+	public ResponseEntity<JSONObject> deduction(@RequestParam(required = true,defaultValue = "") Integer userId,
+												 @RequestParam(required = true,defaultValue = "") Integer hfBalance,
+												 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException, IOException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+		String newUserId = userId+"";
+
+		String value = stringRedisTemplate.opsForValue().get(newUserId);
+
+		if(null!=value){
+
+			if(hfBalance>=total){
+				hfUserBalanceService.balanceCutTotal(userId,hfBalance,total);
+				stringRedisTemplate.delete(newUserId);
+				return builder.body(ResponseUtils.getResponseBody("付款成功，二维码已失效"));
+			}else{
+				return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
+			}
+
+		}else{
+			return builder.body(ResponseUtils.getResponseBody("该二维码已经失效"));
+		}
+	}
+
+
+	@RequestMapping(value = "/balancePay",method = RequestMethod.GET)
+	@ApiOperation(value = "余额支付",notes = "余额支付")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用戶id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "hfBalance", value = "用户余额", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "total", value = "商品价格", required = true, type = "Integer"),
+	})
+	public ResponseEntity<JSONObject> balancePay(@RequestParam(required = true,defaultValue = "") Integer userId,
+												 @RequestParam(required = true,defaultValue = "") Integer hfBalance,
+												 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException, IOException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+		if(hfBalance>=total){
+			hfUserBalanceService.balanceCutTotal(userId,hfBalance,total);
+			return builder.body(ResponseUtils.getResponseBody("付款成功"));
+		}else{
+			return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
+		}
+	}
 }

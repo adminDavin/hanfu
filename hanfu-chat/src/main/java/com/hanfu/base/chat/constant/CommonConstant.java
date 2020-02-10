@@ -1,7 +1,7 @@
 package com.hanfu.base.chat.constant;
 
 public interface CommonConstant {
-	   /**
+    /**
      * 用户数据 Key前缀标识
      */
     String USER_PREFIX = "USER_";
@@ -13,13 +13,13 @@ public interface CommonConstant {
 
     /**
      * 推送至指定用户消息
-     *      推送方Session Key前缀标识
+     * 推送方Session Key前缀标识
      */
     String CHAT_FROM_PREFIX = "CHAT_FROM_";
 
     /**
      * 推送至指定用户消息
-     *      接收方Session Key前缀标识
+     * 接收方Session Key前缀标识
      */
     String CHAT_TO_PREFIX = "_TO_";
 

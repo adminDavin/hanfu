@@ -9,10 +9,10 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 
 public class GetMessageCode {
-/**
- * 阿里云短信服务：
- * 注意：需要 签名名称、模版CODE 以及 RAM访问控制中的 AccessKeyID 和 AccessKeySecret  
- */
+    /**
+     * 阿里云短信服务：
+     * 注意：需要 签名名称、模版CODE 以及 RAM访问控制中的 AccessKeyID 和 AccessKeySecret
+     */
     //产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
     //产品域名,开发者无需替换
@@ -20,6 +20,7 @@ public class GetMessageCode {
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
     static final String accessKeyId = "LTAI4FcwjjugxzJCxcfTDwUX";  // TODO 修改成自己的
     static final String accessKeySecret = "vs6blWodGEAsvlIoOsah69WeXVwvmh";   // TODO 修改成自己的
+
     public static Integer sendSms(String telephone) throws ClientException {
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
@@ -45,16 +46,17 @@ public class GetMessageCode {
         request.setOutId("yourOutId");
         //hint 此处可能会抛出异常，注意catch
         SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-        if(sendSmsResponse.getCode()!= null && sendSmsResponse.getCode().equals("OK")){
+        if (sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
             System.out.println("短信发送成功！");
-        }else {
+        } else {
             System.out.println("短信发送失败！");
         }
         return code;
     }
-    public static Integer setNewcode(){
-       int  newcode = (int)(Math.random()*9999)+1000;  //每次调用生成一位四位数的随机数
-		return newcode;
+
+    public static Integer setNewcode() {
+        int newcode = (int) (Math.random() * 9999) + 1000;  //每次调用生成一位四位数的随机数
+        return newcode;
     }
 }
 

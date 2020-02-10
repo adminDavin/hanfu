@@ -14,6 +14,7 @@
       <module fileurl="file://$PROJECT_DIR$/hanfu-product-center/hanfu-product-center.iml" filepath="$PROJECT_DIR$/hanfu-product-center/hanfu-product-center.iml" />
       <module fileurl="file://$PROJECT_DIR$/hanfu-product-client/hanfu-product-client.iml" filepath="$PROJECT_DIR$/hanfu-product-client/hanfu-product-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/hanfu-referral-center/hanfu-referral-center.iml" filepath="$PROJECT_DIR$/hanfu-referral-center/hanfu-referral-center.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hanfu-seckill-center/hanfu-seckill-center.iml" filepath="$PROJECT_DIR$/hanfu-seckill-center/hanfu-seckill-center.iml" />
       <module fileurl="file://$PROJECT_DIR$/hanfu-system.iml" filepath="$PROJECT_DIR$/hanfu-system.iml" />
       <module fileurl="file://$PROJECT_DIR$/hanfu-user-center/hanfu-user-center.iml" filepath="$PROJECT_DIR$/hanfu-user-center/hanfu-user-center.iml" />
       <module fileurl="file://$PROJECT_DIR$/hanfu-web-utils/hanfu-web-utils.iml" filepath="$PROJECT_DIR$/hanfu-web-utils/hanfu-web-utils.iml" />

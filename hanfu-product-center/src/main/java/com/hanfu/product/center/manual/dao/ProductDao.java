@@ -16,4 +16,6 @@ public interface ProductDao {
     public Integer deleteSelectProduct(Integer[] productId);
 
     public Integer updateProduct(ProductDispaly productDispaly);
+    
+
 }

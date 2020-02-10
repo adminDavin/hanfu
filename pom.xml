@@ -22,7 +22,8 @@
 		<module>hanfu-seckill-center</module>
 		<module>hanfu-chat</module>
 		<module>hanfu-activity-center</module>
-	</modules>
+        <module>hanfu-seckill-center</module>
+    </modules>
 	<profiles>
 		<profile>
 			<id>jdk11</id>

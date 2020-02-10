@@ -17,20 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+
 @RestController
 @RequestMapping("/")
-public class CommonController extends BasicErrorController{
-	public CommonController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
-		super(errorAttributes, errorProperties);
-		// TODO Auto-generated constructor stub
-	}
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class CommonController extends BasicErrorController {
+    public CommonController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
+        super(errorAttributes, errorProperties);
+        // TODO Auto-generated constructor stub
+    }
 
-	
-	@RequestMapping(path = "/error", method = RequestMethod.GET)
-	public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(getStatus(request));
-		Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
-		return builder.body(body);
-	}
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> responce(HttpServletRequest request) {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(getStatus(request));
+        Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
+        return builder.body(body);
+    }
 }

@@ -2,7 +2,9 @@ package com.hanfu.user.center.dao;
 
 import com.hanfu.user.center.model.Admin;
 import com.hanfu.user.center.model.AdminExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface AdminMapper {
