@@ -83,8 +83,6 @@ public class logicController {
         Integer orderId=Integer.valueOf(decrypt);
 
         Integer goodsid= (Integer) redisTemplate.opsForValue().get(decrypt);
-        System.out.println(goodsid+"goodsId");
-        System.out.println(redisTemplate.getExpire(decrypt,TimeUnit.SECONDS));
         if (redisTemplate.opsForValue().get(decrypt)==null){
             return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
         }
@@ -96,8 +94,6 @@ public class logicController {
         //
         HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
         String unionId = hfUser.getUsername();
-        System.out.println(userId + goodsId + orderId);
-
         if (goodsId == null) {
             return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
         }
@@ -119,6 +115,7 @@ public class logicController {
 //        System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
         //判断核销的商品是否为自提商品
         int productId=hfGoodsMapper.selectByPrimaryKey(goodsId).getProductId();
+        System.out.println(productId);
         if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
             return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
         }
