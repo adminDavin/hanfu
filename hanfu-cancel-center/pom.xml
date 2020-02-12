@@ -274,8 +274,8 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>hanfu-user-center</groupId>
-            <artifactId>hanfu-user</artifactId>
+            <groupId>com.hanfu.user.center</groupId>
+            <artifactId>hanfu-user-center</artifactId>
             <version>0.0.1</version>
         </dependency>
    </dependencies>

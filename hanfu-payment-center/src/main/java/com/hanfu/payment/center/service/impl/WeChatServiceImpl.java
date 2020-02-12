@@ -4,7 +4,6 @@ package com.hanfu.payment.center.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hanfu.payment.center.manual.dao.ManualDao;
 import com.hanfu.payment.center.service.WeChatService;
 import com.hanfu.payment.center.util.WXConfigUtil;
 import com.hanfu.payment.center.util.WxMD5Util;
@@ -24,12 +23,10 @@ public class WeChatServiceImpl implements WeChatService {
     public static final String SPBILL_CREATE_IP = "你的服务器ip地址";
     public static final String NOTIFY_URL = "http://你的域名/v1/weixin/notify.json";
     public static final String TRADE_TYPE_APP = "APP";
-    @Autowired
-    private ManualDao manualDao;
+   
 
     @Override
     public void getProductByStone(Integer stoneId) {
-        manualDao.selectProductByStone(stoneId);
         System.out.println("hello word");
     }
 

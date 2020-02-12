@@ -97,6 +97,7 @@ public class CancelController {
         cancel.setId(id);
         cancel.setPresentMoney(0);
         cancel.setModifyDate(LocalDateTime.now());
+        cancel.setEmptyDate(LocalDateTime.now());
         cancelsMapper.updateByPrimaryKeySelective(cancel);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
@@ -137,28 +138,28 @@ public class CancelController {
         return builder.body(ResponseUtils.getResponseBody(hfLogMapper.deleteByPrimaryKey(id)));
     }
 
-    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
-    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
-    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        Example example = new Example(HfGoods.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("cancelId", id);
-        List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(example);
-        List<HfGoods> list = new ArrayList<>();
-        if (hfGoodsList.size() != 0) {
-            for (int i = 0; i < hfGoodsList.size(); i++) {
-                if (hfGoodsList.get(i).getClaim() != 0) {
-                    if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId()) != null) {
-                        list.add(hfGoodsList.get(i));
-                    }
-                }
-            }
-            return builder.body(ResponseUtils.getResponseBody(list));
-        }
-        deleteCancel(id);
-        return builder.body(ResponseUtils.getResponseBody("该核销员没有对应的核销商品,已删除"));
-    }
+//    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
+//    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
+//    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        Example example = new Example(HfGoods.class);
+//        Example.Criteria criteria = example.createCriteria();
+//        criteria.andEqualTo("cancelId", id);
+//        List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(example);
+//        List<HfGoods> list = new ArrayList<>();
+//        if (hfGoodsList.size() != 0) {
+//            for (int i = 0; i < hfGoodsList.size(); i++) {
+//                if (hfGoodsList.get(i).getClaim() != 0) {
+//                    if (cancelsMapper.selectByPrimaryKey(hfGoodsList.get(i).getCancelId()) != null) {
+//                        list.add(hfGoodsList.get(i));
+//                    }
+//                }
+//            }
+//            return builder.body(ResponseUtils.getResponseBody(list));
+//        }
+//        deleteCancel(id);
+//        return builder.body(ResponseUtils.getResponseBody("该核销员没有对应的核销商品,已删除"));
+//    }
 
     @RequestMapping(value = "/deleteCancel", method = RequestMethod.GET)
     @ApiOperation(value = "删除核销员", notes = "删除核销员")
@@ -177,10 +178,10 @@ public class CancelController {
         hfUserMapper.updateByPrimaryKeySelective(hfUser);
         cancelsMapper.deleteByPrimaryKey(id);
         //删除核销和商品中间表
-//        Example example = new Example(CancelProduct.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("cancelId",id);
-//        cancelProductMapper.deleteByExample(example);
+        Example example = new Example(CancelProduct.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("cancelId",id);
+        cancelProductMapper.deleteByExample(example);
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
@@ -203,10 +204,10 @@ public class CancelController {
             hfUserMapper.updateByPrimaryKeySelective(hfUser);
             cancelsMapper.deleteByPrimaryKey(cancelID);
             //删除核销和商品中间表
-//        Example example = new Example(CancelProduct.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("cancelId",cancelID);
-//        cancelProductMapper.deleteByExample(example);
+        Example example = new Example(CancelProduct.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("cancelId",cancelID);
+        cancelProductMapper.deleteByExample(example);
         }
         return builder.body(ResponseUtils.getResponseBody("成功"));
     }
@@ -325,12 +326,12 @@ public class CancelController {
         cancelsMapper.updateByExampleSelective(cancel1, example);
         if (cancel2 == 0) {
             //删除核销和商品中间表
-//            if (cancelsMapper.selectByExample(example).get(0).getId()!=null){
-//                Example example7 = new Example(CancelProduct.class);
-//                Example.Criteria criteria7 = example7.createCriteria();
-//                criteria7.andEqualTo("cancelId",cancelsMapper.selectByExample(example).get(0).getId());
-//                cancelProductMapper.deleteByExample(example7);
-//            }
+            if (cancelsMapper.selectByExample(example).get(0).getId()!=null){
+                Example example7 = new Example(CancelProduct.class);
+                Example.Criteria criteria7 = example7.createCriteria();
+                criteria7.andEqualTo("cancelId",cancelsMapper.selectByExample(example).get(0).getId());
+                cancelProductMapper.deleteByExample(example7);
+            }
 
             cancelsMapper.deleteByExample(example);
             System.out.println(hfUserMapper.selectByPrimaryKey(UserId).getCancelId()+"取消后的CANCELid");

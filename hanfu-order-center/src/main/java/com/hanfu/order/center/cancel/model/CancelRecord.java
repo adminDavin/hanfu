@@ -17,6 +17,15 @@ public class CancelRecord {
     private Integer cancelId;
     private Integer goodsId;
     private Integer amount;
+    private Integer orderId;
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
 
     public Integer getId() {
         return id;

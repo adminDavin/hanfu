@@ -214,7 +214,7 @@ public class GoodsController {
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setMember(hfGoodsInfo.getMember());
-			record.setClaim(hfGoodsInfo.getClaim());
+//			record.setClaim(hfGoodsInfo.getClaim());
 			record.setCategoryId(product.getCategoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
@@ -778,12 +778,12 @@ public class GoodsController {
 				HfPriceExample examplePrice= new HfPriceExample();
 				examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
 				hfPriceMapper.selectByExample(examplePrice);
-				Amount amount = new Amount();
-				amount.setId(goodsId);
-				amount.setGoodsNum(GoodsNum);
-				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-				return builder.body(ResponseUtils.getResponseBody(amount));
+//				Amount amount = new Amount();
+//				amount.setId(goodsId);
+//				amount.setGoodsNum(GoodsNum);
+//				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+//				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+				return builder.body(ResponseUtils.getResponseBody(examplePrice));
 			}
 
 //		Integer goodsId=null;

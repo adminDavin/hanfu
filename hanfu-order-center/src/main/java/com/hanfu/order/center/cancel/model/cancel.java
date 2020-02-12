@@ -21,6 +21,15 @@ public class cancel {
     private Integer recordId;
     private Integer goodsId;
     private Integer presentMoney;
+    private LocalDateTime emptyDate;
+
+    public LocalDateTime getEmptyDate() {
+        return emptyDate;
+    }
+
+    public void setEmptyDate(LocalDateTime emptyDate) {
+        this.emptyDate = emptyDate;
+    }
 
     public Integer getPresentMoney() {
         return presentMoney;

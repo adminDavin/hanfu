@@ -30,7 +30,13 @@ spring:
       connection-test-query: select now()
       idle-timeout: 3000000
       auto-commit: true
-      max-lifetime: 28700000
+      max-lifetime: 1200000
+      maximum-pool-size: 60
+      minimum-idle: 10
+      login-timeout: 5
+      validation-timeout: 300000
+      connection-timeout: 600000000
+      read-only: false
   task:
     execution:
       pool:

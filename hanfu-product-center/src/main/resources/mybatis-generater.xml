@@ -75,12 +75,6 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
-        <table schema="user_center" tableName="hf_goods_info"
-               domainObjectName="hfGoodsInfo">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
         <table schema="user_center" tableName="hf_goods_pictrue"
                domainObjectName="HfGoodsPictrue">
             <property name="useActualColumnNames" value="false"/>
@@ -161,7 +155,7 @@
                           identity="true"/>
         </table>
         <table schema="user_center" tableName="hf_price_mode"
-               domainObjectName="hfPriceMode">
+               domainObjectName="HfPriceMode">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
@@ -191,6 +185,30 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
-
+        <table schema="user_center" tableName="hf_product_coupons"
+               domainObjectName="HfProductCoupons">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_coupons_strategy"
+               domainObjectName="HfCouponsStrategy">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        
+        <table schema="user_center" tableName="hf_order_group"
+               domainObjectName="HfOrderGroup">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_order_group_detail"
+               domainObjectName="HfOrderGroupDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>

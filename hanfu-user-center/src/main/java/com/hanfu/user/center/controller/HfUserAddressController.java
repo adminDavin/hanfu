@@ -64,7 +64,7 @@ public class HfUserAddressController {
     }
     
     @CrossOrigin
-    @RequestMapping(value = "/addAddress", method = RequestMethod.GET)
+    @RequestMapping(value = "/addAddress", method = RequestMethod.POST)
     @ApiOperation(value = "添加用戶地址", notes = "添加用戶地址")
     public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();

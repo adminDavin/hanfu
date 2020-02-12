@@ -33,4 +33,22 @@ public class HfProductDaoImpl implements HfProductDao {
         List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductCategory", cagetoryId);
         return result;
     }
+
+    @Override
+    public List<HfProductDisplay> selectProductByStoneId(Integer stoneId) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByStoneId", stoneId);
+        return result;
+    }
+
+    @Override
+    public List<HfProductDisplay> selectProductByUserId(Integer userId) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByUserId", userId);
+        return result;
+    }
+
+    @Override
+    public List<HfProductDisplay> selectProductSeniorityId(Integer seniorityId) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductSeniorityId", seniorityId);
+        return result;
+    }
 }
