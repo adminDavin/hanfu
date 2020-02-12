@@ -768,8 +768,6 @@ public class GoodsController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		if(goodsId!=null) {
-				System.out.println(goodsId);
-					System.out.println("aaaaaaaa");
 					HfRespExample exampleResp = new HfRespExample();
 					exampleResp.createCriteria().andGoogsIdEqualTo(goodsId);
 					if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<GoodsNum){
@@ -778,12 +776,12 @@ public class GoodsController {
 				HfPriceExample examplePrice= new HfPriceExample();
 				examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
 				hfPriceMapper.selectByExample(examplePrice);
-//				Amount amount = new Amount();
-//				amount.setId(goodsId);
-//				amount.setGoodsNum(GoodsNum);
-//				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-//				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-				return builder.body(ResponseUtils.getResponseBody(examplePrice));
+				Amount amount = new Amount();
+				amount.setGoodsId(goodsId);
+				amount.setGoodsNum(hfRespMapper.selectByExample(exampleResp).get(0).getQuantity());
+				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+				return builder.body(ResponseUtils.getResponseBody(amount));
 			}
 
 //		Integer goodsId=null;
