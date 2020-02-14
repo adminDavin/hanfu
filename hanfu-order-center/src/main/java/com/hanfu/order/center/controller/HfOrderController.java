@@ -175,7 +175,7 @@ public class HfOrderController {
         hfOrderDetail.setHfStatus(targetOrderStatus);
         HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
         hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
-        hfOrderDetailMapper.updateByExample(hfOrderDetail,hfOrderDetailExample);
+        hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
         return builder.body(ResponseUtils.getResponseBody("0"));
     }
 
