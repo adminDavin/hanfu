@@ -171,7 +171,6 @@ public class HfOrderController {
         hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
         hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         HfOrderDetail hfOrderDetail = new HfOrderDetail();
-        hfOrderDetail.setId(Id);
         hfOrderDetail.setHfStatus(targetOrderStatus);
         HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
         hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
