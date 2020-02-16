@@ -150,46 +150,53 @@ public class KingWordsController {
             @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String")
     })
     public ResponseEntity<JSONObject> register(@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey, @RequestParam("passwd") String passwd) throws Exception {
-        HfAuthExample example = new HfAuthExample();
-        example.createCriteria().andAuthKeyEqualTo(authKey);
-        long authCount = hfAuthMapper.countByExample(example);
-        if (authCount > 0) {
-            throw new AuthKeyIsExistException(authKey);
-        }
-        System.out.println(redisTemplate.opsForValue().get(authKey));
-        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
-            throw new ParamInvalidException("authKey is invalid");
-        }
-        HfUser user = new HfUser();
-        user.setSourceType(authType);
-        user.setPhone(authKey);
-        user.setUsername(authKey);
-        user.setUserStatus("0".getBytes()[0]);
-        user.setBirthDay(LocalDateTime.now());
-        user.setSex((byte) 1);
-        //user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
-        user.setLastAuthTime(LocalDateTime.now());
-        user.setCreateDate(LocalDateTime.now());
-        user.setModifyDate(LocalDateTime.now());
-        user.setIdDeleted((byte) 0);
-        hfUserMapper.insert(user);
-        HfAuth auth = new HfAuth();
-        auth.setAuthKey(authKey);
-        auth.setAuthType(authType);
-        auth.setUserId(user.getId());
-        auth.setAuthStatus((byte) 0);
-        auth.setIdDeleted((byte) 0);
-        auth.setEncodeType("0");
-        auth.setCreateDate(LocalDateTime.now());
-        auth.setModifyDate(LocalDateTime.now());
-        auth.setIdDeleted((byte) 0);
-        hfAuthMapper.insert(auth);
-        UUID uuid = UUID.randomUUID();
-        String token = "_" + uuid.toString().replaceAll("-", "");
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(token, String.valueOf(user.getId()));
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(map));
+    	HfAuth hfAuth = userDao.selectAuthList(authKey);
+        if (hfAuth == null) {
+        	HfAuthExample example = new HfAuthExample();
+            example.createCriteria().andAuthKeyEqualTo(authKey);
+            long authCount = hfAuthMapper.countByExample(example);
+            if (authCount > 0) {
+                throw new AuthKeyIsExistException(authKey);
+            }
+            System.out.println(redisTemplate.opsForValue().get(authKey));
+            if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+                throw new ParamInvalidException("authKey is invalid");
+            }
+            HfUser user = new HfUser();
+            user.setSourceType(authType);
+            user.setPhone(authKey);
+            user.setUsername(authKey);
+            user.setUserStatus("0".getBytes()[0]);
+            user.setBirthDay(LocalDateTime.now());
+            user.setSex((byte) 1);
+            //user.setAddress(IpAddress.findOne(IpAddress.getRemortIP(request)));
+            user.setLastAuthTime(LocalDateTime.now());
+            user.setCreateDate(LocalDateTime.now());
+            user.setModifyDate(LocalDateTime.now());
+            user.setIdDeleted((byte) 0);
+            hfUserMapper.insert(user);
+            HfAuth auth = new HfAuth();
+            auth.setAuthKey(authKey);
+            auth.setAuthType(authType);
+            auth.setUserId(user.getId());
+            auth.setAuthStatus((byte) 0);
+            auth.setIdDeleted((byte) 0);
+            auth.setEncodeType("0");
+            auth.setCreateDate(LocalDateTime.now());
+            auth.setModifyDate(LocalDateTime.now());
+            auth.setIdDeleted((byte) 0);
+            hfAuthMapper.insert(auth);
+            UUID uuid = UUID.randomUUID();
+            String token = "_" + uuid.toString().replaceAll("-", "");
+            Map<String, String> map = new HashMap<String, String>();
+            map.put(token, String.valueOf(user.getId()));
+            return builder.body(ResponseUtils.getResponseBody(map));
+        }
+        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 
 
