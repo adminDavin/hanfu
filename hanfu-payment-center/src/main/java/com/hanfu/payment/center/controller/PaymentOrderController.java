@@ -260,7 +260,7 @@ public class PaymentOrderController {
         HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
         if(PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
             HfTansactionFlowExample e = new HfTansactionFlowExample();
-            e.createCriteria().andOutTradeNoEqualTo(outTradeNo).andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
+            e.createCriteria().andOutTradeNoEqualTo(outTradeNo);
             List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
             if (!hfTansactionFlows.isEmpty()) {
                 HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
