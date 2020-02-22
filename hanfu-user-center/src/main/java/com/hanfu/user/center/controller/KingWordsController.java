@@ -190,7 +190,7 @@ public class KingWordsController {
             UUID uuid = UUID.randomUUID();
             String token = "_" + uuid.toString().replaceAll("-", "");
             Map<String, String> map = new HashMap<String, String>();
-            map.put(token, String.valueOf(user.getId()));
+            map.put("UserId", String.valueOf(user.getId()));
             return builder.body(ResponseUtils.getResponseBody(map));
         }
         if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
