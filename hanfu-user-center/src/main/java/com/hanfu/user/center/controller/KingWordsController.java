@@ -188,13 +188,18 @@ public class KingWordsController {
             auth.setIdDeleted((byte) 0);
             hfAuthMapper.insert(auth);
             Map<String, String> map = new HashMap<String, String>();
-            map.put(String.valueOf(user.getId()), String.valueOf(user.getFileId()));
+            map.put("UserId", String.valueOf(user.getId()));
+            map.put("FileId", String.valueOf(user.getFileId()));
             return builder.body(ResponseUtils.getResponseBody(map));
         }
         if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
             return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
         }
-        return builder.body(ResponseUtils.getResponseBody("成功"));
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("UserId", String.valueOf(hfAuth.getUserId()));
+        HfUser hfUser= hfUserMapper.selectByPrimaryKey(hfAuth.getUserId());
+        map.put("FileId", String.valueOf(hfUser.getFileId()));
+        return builder.body(ResponseUtils.getResponseBody(map));
     }
 
 
