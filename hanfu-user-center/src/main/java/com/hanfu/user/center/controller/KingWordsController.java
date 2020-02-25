@@ -141,7 +141,7 @@ public class KingWordsController {
             return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
         }
     }
-
+//test施皓
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     @ApiOperation(value = "用户注册", notes = "用户注册")
     @ApiImplicitParams({
