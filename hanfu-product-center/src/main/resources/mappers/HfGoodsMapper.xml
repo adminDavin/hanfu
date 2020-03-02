@@ -22,7 +22,7 @@
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
     <result column="frames" jdbcType="INTEGER" property="frames" />
-    <result column="member" jdbcType="INTEGER" property="member" />
+    <result column="gmember" jdbcType="INTEGER" property="gmember" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--
@@ -99,7 +99,7 @@
       This element was generated on Mon Feb 10 21:14:04 CST 2020.
     -->
     id, hf_name, instance_id, product_id, category_id, stone_id, boss_id, brand_id, resp_id, 
-    price_id, goods_desc, create_time, modify_time, is_deleted, frames, member
+    price_id, goods_desc, create_time, modify_time, is_deleted, frames, gmember
   </sql>
   <select id="selectByExample" parameterType="com.hanfu.product.center.model.HfGoodsExample" resultMap="BaseResultMap">
     <!--
@@ -226,8 +226,8 @@
       <if test="frames != null">
         frames,
       </if>
-      <if test="member != null">
-        member,
+      <if test="gmember != null">
+        gmember,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -273,8 +273,8 @@
       <if test="frames != null">
         #{frames,jdbcType=INTEGER},
       </if>
-      <if test="member != null">
-        #{member,jdbcType=INTEGER},
+      <if test="gmember != null">
+        #{gmember,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -342,8 +342,8 @@
       <if test="record.frames != null">
         frames = #{record.frames,jdbcType=INTEGER},
       </if>
-      <if test="record.member != null">
-        member = #{record.member,jdbcType=INTEGER},
+      <if test="record.gmember != null">
+        gmember = #{record.gmember,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -372,7 +372,7 @@
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       is_deleted = #{record.isDeleted,jdbcType=SMALLINT},
       frames = #{record.frames,jdbcType=INTEGER},
-      member = #{record.member,jdbcType=INTEGER}
+    gmember = #{record.gmember,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -427,8 +427,8 @@
       <if test="frames != null">
         frames = #{frames,jdbcType=INTEGER},
       </if>
-      <if test="member != null">
-        member = #{member,jdbcType=INTEGER},
+      <if test="gmember != null">
+        gmember = #{gmember,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -454,7 +454,7 @@
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       is_deleted = #{isDeleted,jdbcType=SMALLINT},
       frames = #{frames,jdbcType=INTEGER},
-      member = #{member,jdbcType=INTEGER}
+    gmember = #{gmember,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
