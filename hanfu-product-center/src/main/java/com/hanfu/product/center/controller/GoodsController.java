@@ -213,7 +213,7 @@ public class GoodsController {
 			record.setRespId(1);
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
-			record.setMember(hfGoodsInfo.getMember());
+			record.setGmember(hfGoodsInfo.getMember());
 //			record.setClaim(hfGoodsInfo.getClaim());
 			record.setCategoryId(product.getCategoryId());
 			record.setIsDeleted((short) 0);

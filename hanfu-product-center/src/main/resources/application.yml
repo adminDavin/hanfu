@@ -10,11 +10,11 @@ dubbo:
   metadata-report:
     address: zookeeper://39.100.86.77:2181
   application:
-    name: hanfu-product-center
+    name: hanfu-products-center
   protocol:
     id: dubbo
     name: dubbo
-    port: 1900
+    port: 1909
   provider:
     server: netty4
 

@@ -164,13 +164,13 @@
       category_id, stone_id, boss_id, 
       brand_id, resp_id, price_id, 
       goods_desc, create_time, modify_time, 
-      is_deleted, frames, member
+      is_deleted, frames, gmember
       )
     values (#{hfName,jdbcType=VARCHAR}, #{instanceId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
       #{categoryId,jdbcType=INTEGER}, #{stoneId,jdbcType=INTEGER}, #{bossId,jdbcType=INTEGER}, 
       #{brandId,jdbcType=INTEGER}, #{respId,jdbcType=INTEGER}, #{priceId,jdbcType=INTEGER}, 
       #{goodsDesc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{isDeleted,jdbcType=SMALLINT}, #{frames,jdbcType=INTEGER}, #{member,jdbcType=INTEGER}
+      #{isDeleted,jdbcType=SMALLINT}, #{frames,jdbcType=INTEGER}, #{gmember,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.hanfu.product.center.model.HfGoods">
