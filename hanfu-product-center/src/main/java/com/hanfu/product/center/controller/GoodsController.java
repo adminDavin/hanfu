@@ -207,8 +207,8 @@ public class GoodsController {
 			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 			record.setProductId(hfGoodsInfo.getProductId());
 			record.setHfName(hfGoodsInfo.getGoodName());
-//			record.setStoneId(1);
-//			record.setBrandId(1);
+			record.setStoneId(1);
+			record.setBrandId(1);
 //			record.setPriceId(1);
 //			record.setRespId(1);
 			record.setCreateTime(LocalDateTime.now());
@@ -229,7 +229,7 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
 		ProductSpecExample pExample = new ProductSpecExample();
-		pExample.createCriteria().andProductIdEqualTo(goods.getId());
+		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
 		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
 		productSpecs.stream().forEach(spec -> {
 			HfGoodsSpecExample example = new HfGoodsSpecExample();
