@@ -207,10 +207,10 @@ public class GoodsController {
 			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 			record.setProductId(hfGoodsInfo.getProductId());
 			record.setHfName(hfGoodsInfo.getGoodName());
-			record.setStoneId(1);
-			record.setBrandId(1);
-			record.setPriceId(1);
-			record.setRespId(1);
+//			record.setStoneId(1);
+//			record.setBrandId(1);
+//			record.setPriceId(1);
+//			record.setRespId(1);
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setGmember(hfGoodsInfo.getMember());
