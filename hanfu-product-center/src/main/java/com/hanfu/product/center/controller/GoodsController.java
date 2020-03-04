@@ -340,9 +340,10 @@ public class GoodsController {
 		item.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsSpecMapper.insert(item)));
 	}
-	@ApiOperation(value = "更新物品规格", notes = "更新物品规格")
-	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateGoodsSpec(MultipartFile fileInfo1, GoodsSpecRequest request,int fileID) throws Exception {
+
+	@ApiOperation(value = "更新物品图片", notes = "更新物品图片")
+	@RequestMapping(value = "/updatePictrue", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateGoodsPictrue(MultipartFile fileInfo1, GoodsSpecRequest request,int fileID) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
@@ -350,30 +351,69 @@ public class GoodsController {
 		String arr[];
 //		for (int i=0;i<=fileInfo1.length;i++) {
 //			MultipartFile fileInfo=fileInfo1[i];
-			arr = fileMangeService.uploadFile(fileInfo1.getBytes(), String.valueOf(request.getUserId()));
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo1.getName());
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(request.getUserId());
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			HfGoodsPictrue picture = new HfGoodsPictrue();
-			picture.setFileId(fileDesc.getId());
-			picture.setGoodsId(request.getGoodsId());
-			picture.setHfName(fileInfo1.getName());
-			picture.setSpecDesc(request.getPrictureDesc());
-			picture.setCreateTime(LocalDateTime.now());
-			picture.setModifyTime(LocalDateTime.now());
-			picture.setLastModifier(request.getUsername());
-			picture.setIsDeleted((short) 0);
+		arr = fileMangeService.uploadFile(fileInfo1.getBytes(), String.valueOf(request.getUserId()));
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(fileInfo1.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(request.getUserId());
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		fileDescMapper.insert(fileDesc);
+		HfGoodsPictrue picture = new HfGoodsPictrue();
+		picture.setFileId(fileDesc.getId());
+		picture.setGoodsId(request.getGoodsId());
+		picture.setHfName(fileInfo1.getName());
+		picture.setSpecDesc(request.getPrictureDesc());
+		picture.setCreateTime(LocalDateTime.now());
+		picture.setModifyTime(LocalDateTime.now());
+		picture.setLastModifier(request.getUsername());
+		picture.setIsDeleted((short) 0);
 		HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
 		example1.createCriteria().andGoodsIdEqualTo(request.getGoodsId()).andFileIdEqualTo(fileID);
 
-			hfGoodsPictrueMapper.updateByExampleSelective(picture,example1);
-			pictures.add(picture);
+		hfGoodsPictrueMapper.updateByExampleSelective(picture,example1);
+//		pictures.add(picture);
+		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(""));
+	}
+
+	@ApiOperation(value = "更新物品规格", notes = "更新物品规格")
+	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+
+//		List<HfGoodsPictrue> pictures = Lists.newArrayList();
+//		FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//		for (int i=0;i<=fileInfo1.length;i++) {
+//			MultipartFile fileInfo=fileInfo1[i];
+//			arr = fileMangeService.uploadFile(fileInfo1.getBytes(), String.valueOf(request.getUserId()));
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(fileInfo1.getName());
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(request.getUserId());
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			HfGoodsPictrue picture = new HfGoodsPictrue();
+//			picture.setFileId(fileDesc.getId());
+//			picture.setGoodsId(request.getGoodsId());
+//			picture.setHfName(fileInfo1.getName());
+//			picture.setSpecDesc(request.getPrictureDesc());
+//			picture.setCreateTime(LocalDateTime.now());
+//			picture.setModifyTime(LocalDateTime.now());
+//			picture.setLastModifier(request.getUsername());
+//			picture.setIsDeleted((short) 0);
+//		HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
+//		example1.createCriteria().andGoodsIdEqualTo(request.getGoodsId()).andFileIdEqualTo(fileID);
+//
+//			hfGoodsPictrueMapper.updateByExampleSelective(picture,example1);
+//			pictures.add(picture);
 			HfGoodsSpecExample example = new HfGoodsSpecExample();
 			example.createCriteria().andGoodsIdEqualTo(request.getGoodsId())
 			.andHfSpecIdEqualTo(String.valueOf(request.getProductSpecId()));
