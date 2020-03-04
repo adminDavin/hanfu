@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hanfu.product.center.manual.dao.*;
@@ -341,16 +342,17 @@ public class GoodsController {
 	}
 	@ApiOperation(value = "更新物品规格", notes = "更新物品规格")
 	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateGoodsSpec( @RequestParam("fileInfo1")MultipartFile[] fileInfo1, GoodsSpecRequest request) throws Exception {
+	public ResponseEntity<JSONObject> updateGoodsSpec(MultipartFile fileInfo1, GoodsSpecRequest request,int fileID) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
-		for (MultipartFile fileInfo : fileInfo1) {
-			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+//		for (int i=0;i<=fileInfo1.length;i++) {
+//			MultipartFile fileInfo=fileInfo1[i];
+			arr = fileMangeService.uploadFile(fileInfo1.getBytes(), String.valueOf(request.getUserId()));
 			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setFileName(fileInfo1.getName());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setUserId(request.getUserId());
@@ -361,13 +363,16 @@ public class GoodsController {
 			HfGoodsPictrue picture = new HfGoodsPictrue();
 			picture.setFileId(fileDesc.getId());
 			picture.setGoodsId(request.getGoodsId());
-			picture.setHfName(fileInfo.getName());
+			picture.setHfName(fileInfo1.getName());
 			picture.setSpecDesc(request.getPrictureDesc());
 			picture.setCreateTime(LocalDateTime.now());
 			picture.setModifyTime(LocalDateTime.now());
 			picture.setLastModifier(request.getUsername());
 			picture.setIsDeleted((short) 0);
-			hfGoodsPictrueMapper.updateByPrimaryKey(picture);
+		HfGoodsPictrueExample example1 = new HfGoodsPictrueExample();
+		example1.createCriteria().andGoodsIdEqualTo(request.getGoodsId()).andFileIdEqualTo(fileID);
+
+			hfGoodsPictrueMapper.updateByExampleSelective(picture,example1);
 			pictures.add(picture);
 			HfGoodsSpecExample example = new HfGoodsSpecExample();
 			example.createCriteria().andGoodsIdEqualTo(request.getGoodsId())
@@ -383,8 +388,8 @@ public class GoodsController {
 				hfGoodsSpecMapper.updateByPrimaryKey(item);
 			}
 			return builder.body(ResponseUtils.getResponseBody(hfGoodsSpecMapper.selectByExample(example)));
-		}
-		return builder.body(ResponseUtils.getResponseBody(""));
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(""));
 	}
 	
 	@ApiOperation(value = "设置物品价格", notes = "设置物品价格")
