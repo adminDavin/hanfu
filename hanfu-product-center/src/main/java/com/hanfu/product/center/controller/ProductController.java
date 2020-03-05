@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,29 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
-import com.hanfu.product.center.dao.FileDescMapper;
-import com.hanfu.product.center.dao.HfCategoryMapper;
-import com.hanfu.product.center.dao.HfGoodsMapper;
-import com.hanfu.product.center.dao.ProductInfoMapper;
-import com.hanfu.product.center.dao.ProductMapper;
-import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.CategoryInfo;
 import com.hanfu.product.center.manual.model.ProductDispaly;
-import com.hanfu.product.center.model.FileDesc;
-import com.hanfu.product.center.model.FileDescExample;
-import com.hanfu.product.center.model.HfCategory;
-import com.hanfu.product.center.model.HfCategoryExample;
-import com.hanfu.product.center.model.HfGoods;
-import com.hanfu.product.center.model.HfGoodsExample;
-import com.hanfu.product.center.model.Product;
-import com.hanfu.product.center.model.ProductExample;
-import com.hanfu.product.center.model.ProductInfo;
-import com.hanfu.product.center.model.ProductInfoExample;
-import com.hanfu.product.center.model.ProductSpec;
-import com.hanfu.product.center.model.ProductSpecExample;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductRequest;
@@ -86,6 +71,8 @@ public class ProductController {
 
 	@Autowired
 	private FileDescMapper fileDescMapper;
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -161,6 +148,17 @@ public class ProductController {
 		product.setIsDeleted((short) 0);
 		product.setProductDesc(request.getProductDesc());
 		productMapper.insert(product);
+		ProductInstance productInstance = new ProductInstance();
+		productInstance.setBossId(request.getBossId());
+		productInstance.setStoneId(1);
+		productInstance.setProductId(product.getId());
+		productInstance.setCategoryId(request.getCategoryId());
+		productInstance.setBrandId(1);
+		productInstance.setCreateTime(LocalDateTime.now());
+		productInstance.setLastModifier(request.getLastModifier());
+		productInstance.setModifyTime(LocalDateTime.now());
+		productInstance.setIsDeleted((short) 0);
+		productInstanceMapper.insert(productInstance);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
 
 	}
