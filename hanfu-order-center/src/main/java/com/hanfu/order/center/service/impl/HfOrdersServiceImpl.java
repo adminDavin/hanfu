@@ -34,7 +34,7 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	HfOrderLogisticsMapper hfOrderLogisticsMapper;
 	@Autowired
 	HfOrdersMapper hfOrdersMapper;
-	@Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService")
+	@Reference(registry = "dubboProductServer", url = "dubbo://127.0.0.1:1900/com.hanfu.inner.sdk.product.center.ProductService", check=false)
 	ProductService productService;
 	@Autowired
 	OrderDao orderDao;
