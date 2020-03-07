@@ -531,4 +531,22 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	}
 	return builder.body(ResponseUtils.getResponseBody("0"));
 }
+
+	@ApiOperation(value = "修改商品规格", notes = "修改商品规格")
+	@RequestMapping(value = "/updatespec", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updatespec(Integer productSpecId,String specName,Integer categorySpecId,Integer productId,String specUnit)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductSpec productSpec = new ProductSpec();
+		productSpec.setId(productSpecId);
+		productSpec.setHfName(specName);
+		productSpec.setCategorySpecId(categorySpecId);
+		productSpec.setProductId(productId);
+		productSpec.setSpecUnit(specUnit);
+		productSpec.setCreateTime(LocalDateTime.now());
+		productSpec.setModifyTime(LocalDateTime.now());
+		productSpec.setIsDeleted((short) 0);
+		productSpecMapper.updateByPrimaryKeySelective(productSpec);
+		return builder.body(ResponseUtils.getResponseBody(productSpec));
+	}
 }
