@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hanfu.product.center.manual.model.IsDelete;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +177,7 @@ public class HfProductController {
     @RequestMapping(value = "/getstone", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = true,
             type = "Integer") })
-    public ResponseEntity<JSONObject> getstone(@RequestParam(name = "stoneId") Integer stoneId,Integer pageNum,Integer pageSize)
+    public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize)
             throws JSONException {
         if(pageNum==null) {
             pageNum=0;
@@ -185,7 +186,7 @@ public class HfProductController {
         }
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         PageHelper.startPage(pageNum,pageSize);
-        List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(stoneId);
+        List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
         System.out.println(products);
         Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
         System.out.println(stoneIds);
@@ -320,6 +321,52 @@ public class HfProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         PageHelper.startPage(pageNum,pageSize);
         List<HfProductDisplay> products = hfProductDao.selectProductSeniorityId(seniorityId);
+        System.out.println(products);
+        Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
+        System.out.println(stoneIds);
+        HfStoneExample hfStoneExample = new HfStoneExample();
+        hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
+        List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
+        System.out.println(stoneInfos);
+        Map<Integer, String> stones = stoneInfos.stream().collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
+        products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+
+        List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
+        List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
+        Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
+                .collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+                        (List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+                            oldList.addAll(newList);
+                            return oldList;
+                        }));
+        products.forEach(product -> {
+            List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+            if (Optional.ofNullable(hfGoods).isPresent()) {
+                Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+                product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+                product.setDefaultGoodsId(hfGood.get().getId());
+            }
+
+        });
+        PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
+        return builder.body(ResponseUtils.getResponseBody(page));
+    }
+
+
+    @ApiOperation(value = "获取商品列表商品名称", notes = "获取商品列表商品名称")
+    @RequestMapping(value = "/getHfName", method = RequestMethod.GET)
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = true,
+            type = "Integer") })
+    public ResponseEntity<JSONObject> getHfName(@RequestParam(name = "hfName") String hfName,Integer pageNum,Integer pageSize)
+            throws JSONException {
+        if(pageNum==null) {
+            pageNum=0;
+        }if(pageSize==null) {
+            pageSize=0;
+        }
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        PageHelper.startPage(pageNum,pageSize);
+        List<HfProductDisplay> products = hfProductDao.selectProductName(hfName);
         System.out.println(products);
         Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
         System.out.println(stoneIds);

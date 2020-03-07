@@ -519,4 +519,16 @@ public class ProductController {
 //		list.add(product.getCancelId());
 //		return builder.body(ResponseUtils.getResponseBody(list));
 //	}
+@ApiOperation(value = "批量上下架", notes = "批量上下架")
+@RequestMapping(value = "/racking", method = RequestMethod.POST)
+public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
+		throws JSONException {
+	BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+	for (Integer pId : productId) {
+		Product product = productMapper.selectByPrimaryKey(pId);
+		product.setIsDeleted(frames);
+		productMapper.updateByPrimaryKeySelective(product);
+	}
+	return builder.body(ResponseUtils.getResponseBody("0"));
+}
 }

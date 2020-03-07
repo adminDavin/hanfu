@@ -3,6 +3,7 @@ package com.hanfu.product.center.manual.dao;
 import java.util.List;
 
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
+import com.hanfu.product.center.manual.model.IsDelete;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,8 +36,8 @@ public class HfProductDaoImpl implements HfProductDao {
     }
 
     @Override
-    public List<HfProductDisplay> selectProductByStoneId(Integer stoneId) {
-        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByStoneId", stoneId);
+    public List<HfProductDisplay> selectProductByStoneId(IsDelete isDelete) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByStoneId", isDelete);
         return result;
     }
 
@@ -49,6 +50,12 @@ public class HfProductDaoImpl implements HfProductDao {
     @Override
     public List<HfProductDisplay> selectProductSeniorityId(Integer seniorityId) {
         List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductSeniorityId", seniorityId);
+        return result;
+    }
+
+    @Override
+    public List<HfProductDisplay> selectProductName(String hfName) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductName", hfName);
         return result;
     }
 }

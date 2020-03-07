@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.HfProductDisplay;
+import com.hanfu.product.center.manual.model.IsDelete;
 
 public interface HfProductDao {
 
@@ -11,7 +12,8 @@ public interface HfProductDao {
     
     public HfProductDisplay selectProduct(Integer productId);
     List<HfProductDisplay> selectProductCategory(Integer cagetoryId);
-    List<HfProductDisplay> selectProductByStoneId(Integer stoneId);
+    List<HfProductDisplay> selectProductByStoneId(IsDelete isDelete);
     List<HfProductDisplay> selectProductByUserId( Integer userId);
     List<HfProductDisplay> selectProductSeniorityId(Integer seniorityId);
+    List<HfProductDisplay> selectProductName(String hfName);
 }

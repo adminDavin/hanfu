@@ -41,7 +41,7 @@
     FROM  product p
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
-    where i.stone_id=#{stoneId}
+    where i.stone_id=#{stoneId} and p.is_deleted=#{isDelete}
     </select>
 
     <select id="selectProductByUserId" resultMap="ProductDispaly">
@@ -84,5 +84,13 @@ FROM
 	LEFT JOIN product_instance i ON p.id = i.product_id
 WHERE
 	s.seniority_id =#{seniorityId}
+    </select>
+    <select id="selectProductName" resultMap="ProductDispaly">
+    SELECT p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
+    FROM  product p
+    LEFT JOIN hf_category h   ON  p.category_id = h.id
+    left JOIN product_instance i on p.id=i.product_id
+WHERE
+	p.hf_name like concat('%', #{hfName},'%')
     </select>
 </mapper>
