@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.IsDelete;
+import com.hanfu.product.center.manual.model.ProductNameSelect;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,7 @@ public class HfProductDaoImpl implements HfProductDao {
 
     @Override
     public List<HfProductDisplay> selectProductByStoneId(IsDelete isDelete) {
+        System.out.println(isDelete);
         List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByStoneId", isDelete);
         return result;
     }
@@ -54,8 +56,8 @@ public class HfProductDaoImpl implements HfProductDao {
     }
 
     @Override
-    public List<HfProductDisplay> selectProductName(String hfName) {
-        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductName", hfName);
+    public List<HfProductDisplay> selectProductName(ProductNameSelect productNameSelect) {
+        List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductName", productNameSelect);
         return result;
     }
 }

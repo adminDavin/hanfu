@@ -43,7 +43,7 @@
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
     where i.stone_id=#{stoneId}
-     <if test="isDelete != null and isDelete != ''">
+     <if test=" isDelete != null ">
          and p.is_deleted=#{isDelete}
      </if>
     </select>
@@ -96,7 +96,16 @@ WHERE
     FROM  product p
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
-WHERE
-	p.hf_name like concat('%', #{hfName},'%')
+WHERE 1=1
+        <if test="hfName != null and hfName != '' and category != null and category != ''">
+          and p.hf_name like concat('%', #{hfName},'%') and h.hf_name like concat('%', #{category},'%')
+        </if>
+<if test="hfName != null and hfName != ''">
+   and p.hf_name like concat('%', #{hfName},'%')
+</if>
+        <if test="category != null and category != ''">
+           and h.hf_name like concat('%', #{category},'%')
+        </if>
+
     </select>
 </mapper>

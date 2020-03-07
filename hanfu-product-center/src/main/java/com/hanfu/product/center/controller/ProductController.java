@@ -520,7 +520,7 @@ public class ProductController {
 //		return builder.body(ResponseUtils.getResponseBody(list));
 //	}
 @ApiOperation(value = "批量上下架", notes = "批量上下架")
-@RequestMapping(value = "/racking", method = RequestMethod.POST)
+@RequestMapping(value = "/racking", method = RequestMethod.GET)
 public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		throws JSONException {
 	BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.product.center.manual.model.IsDelete;
+import com.hanfu.product.center.manual.model.ProductNameSelect;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -355,9 +356,9 @@ public class HfProductController {
 
     @ApiOperation(value = "获取商品列表商品名称", notes = "获取商品列表商品名称")
     @RequestMapping(value = "/getHfName", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false,
             type = "Integer") })
-    public ResponseEntity<JSONObject> getHfName(@RequestParam(name = "hfName") String hfName,Integer pageNum,Integer pageSize)
+    public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize)
             throws JSONException {
         if(pageNum==null) {
             pageNum=0;
@@ -366,7 +367,7 @@ public class HfProductController {
         }
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         PageHelper.startPage(pageNum,pageSize);
-        List<HfProductDisplay> products = hfProductDao.selectProductName(hfName);
+        List<HfProductDisplay> products = hfProductDao.selectProductName(productNameSelect);
         System.out.println(products);
         Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
         System.out.println(stoneIds);
