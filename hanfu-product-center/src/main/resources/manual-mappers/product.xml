@@ -28,6 +28,17 @@
         <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
     </resultMap>
 
+    <resultMap id="ProductGoods" type="com.hanfu.product.center.manual.model.ProductGoods">
+        <result column="id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="hf_status" jdbcType="INTEGER" property="hfStatus"/>
+        <result column="warehouse_id" jdbcType="INTEGER" property="warehouseId"/>
+    </resultMap>
 
     <select id="selectProductById" resultMap="BaseResultMap">
         SELECT
@@ -106,4 +117,23 @@
         WHERE
         id = #{id}
     </update>
+
+    <select id="selectProductGoods" resultMap="ProductGoods">
+        SELECT
+	h1.id,
+	h1.category_id,
+	h1.create_time,
+	h1.goods_desc,
+	h1.hf_name,
+	h2.sell_price,
+	h3.quantity,
+	h3.hf_status,
+	h3.warehouse_id
+FROM
+	hf_goods h1
+	LEFT JOIN hf_price h2 ON h1.id = h2.googs_id
+	LEFT JOIN hf_resp h3 ON h1.id = h3.googs_id
+WHERE
+	h1.product_id =#{productId}
+    </select>
 </mapper>

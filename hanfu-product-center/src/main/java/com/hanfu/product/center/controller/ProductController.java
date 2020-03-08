@@ -1,11 +1,11 @@
 package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.manual.dao.HfProductDao;
+import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,6 @@ import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
-import com.hanfu.product.center.manual.model.Categories;
-import com.hanfu.product.center.manual.model.CategoryInfo;
-import com.hanfu.product.center.manual.model.ProductDispaly;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
 import com.hanfu.product.center.request.ProductRequest;
@@ -73,6 +70,8 @@ public class ProductController {
 	private FileDescMapper fileDescMapper;
 	@Autowired
 	private ProductInstanceMapper productInstanceMapper;
+	@Autowired
+	private HfProductDao hfProductDao;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -548,5 +547,13 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		productSpec.setIsDeleted((short) 0);
 		productSpecMapper.updateByPrimaryKeySelective(productSpec);
 		return builder.body(ResponseUtils.getResponseBody(productSpec));
+	}
+
+	@ApiOperation(value = "获取商品所有物品", notes = "获取商品所有物品")
+	@RequestMapping(value = "/selectProductGoods", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> selectProductGoods(Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
 	}
 }

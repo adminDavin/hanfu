@@ -2,14 +2,11 @@ package com.hanfu.product.center.manual.dao;
 
 import java.util.List;
 
-import com.hanfu.product.center.manual.model.HfGoodsDisplay;
-import com.hanfu.product.center.manual.model.IsDelete;
-import com.hanfu.product.center.manual.model.ProductNameSelect;
+import com.hanfu.product.center.manual.model.*;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.hanfu.product.center.manual.model.HfProductDisplay;
 import com.hanfu.product.center.model.Product;
 
 @Repository("hfProductDao")
@@ -58,6 +55,12 @@ public class HfProductDaoImpl implements HfProductDao {
     @Override
     public List<HfProductDisplay> selectProductName(ProductNameSelect productNameSelect) {
         List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductName", productNameSelect);
+        return result;
+    }
+
+    @Override
+    public List<ProductGoods> selectProductGoods(Integer ProductId) {
+        List<ProductGoods> result = sqlSessionTemplate.selectList("selectProductGoods", ProductId);
         return result;
     }
 }
