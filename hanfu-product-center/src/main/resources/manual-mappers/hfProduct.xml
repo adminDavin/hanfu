@@ -8,7 +8,7 @@
         <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
         <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
-        <result column="category_id" jdbcType="INTEGER" property="categoryName"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
         <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
         <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
         <result column="brand_name" jdbcType="VARCHAR" property="brandName"/>
