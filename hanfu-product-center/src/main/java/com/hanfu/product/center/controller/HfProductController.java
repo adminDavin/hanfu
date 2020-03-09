@@ -63,7 +63,7 @@ public class HfProductController {
     @Autowired
     private HfStoneMapper hfStoneMapper;
 
-    @ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
+    @ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
     @RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "quantity", value = "获取商品的数量限制", required = false,
             type = "Integer") })
@@ -118,7 +118,8 @@ public class HfProductController {
         if (Optional.ofNullable(hfGoods).isPresent()) {
            Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
            product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");    
-           product.setDefaultGoodsId(hfGood.get().getId());    
+           product.setDefaultGoodsId(hfGood.get().getId());
+           product.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
        }
        
        HfGoodsPictrueExample example = new HfGoodsPictrueExample();

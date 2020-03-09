@@ -19,6 +19,7 @@ public class HfGoodsDisplayInfo implements Serializable {
     private List<Integer> fileIds;
     private Integer sellPrice;
     private short isUsePriceMode;
+    private Integer linePrice;
     private List<HfGoodsSpecDisplay> hfGoodsSpecs;
     public Integer getId() {
         return id;
@@ -104,6 +105,12 @@ public class HfGoodsDisplayInfo implements Serializable {
     public void setHfGoodsSpecs(List<HfGoodsSpecDisplay> hfGoodsSpecs) {
         this.hfGoodsSpecs = hfGoodsSpecs;
     }
-    
-    
+
+    public Integer getLinePrice() {
+        return linePrice;
+    }
+
+    public void setLinePrice(Integer linePrice) {
+        this.linePrice = linePrice;
+    }
 }

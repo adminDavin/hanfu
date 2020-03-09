@@ -37,6 +37,8 @@ public class HfProductDisplay implements Serializable {
     private Integer defaultGoodsId;
     @ApiModelProperty(required = false, value = "更新商品的时间")
     private LocalDateTime modifyTime;
+    @ApiModelProperty(required = false, value = "划线价")
+    private Integer linePrice;
     private Short isDeleted;
 
     public List<Integer> getFileIds() {
@@ -158,5 +160,13 @@ public class HfProductDisplay implements Serializable {
 
     public void setIsDeleted(Short isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Integer getLinePrice() {
+        return linePrice;
+    }
+
+    public void setLinePrice(Integer linePrice) {
+        this.linePrice = linePrice;
     }
 }

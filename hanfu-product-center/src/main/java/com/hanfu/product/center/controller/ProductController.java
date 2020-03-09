@@ -72,6 +72,8 @@ public class ProductController {
 	private ProductInstanceMapper productInstanceMapper;
 	@Autowired
 	private HfProductDao hfProductDao;
+	@Autowired
+	private HfProductPictrueMapper hfProductPictrueMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -555,5 +557,16 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
+	}
+
+	@ApiOperation(value = "获取商品图片", notes = "获取商品图片")
+	@RequestMapping(value = "/selectProductPictures", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectProductPictures(Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfProductPictrueExample example = new HfProductPictrueExample();
+		example.createCriteria().andProductIdEqualTo(productId);
+
+		return builder.body(ResponseUtils.getResponseBody(hfProductPictrueMapper.selectByExample(example)));
 	}
 }
