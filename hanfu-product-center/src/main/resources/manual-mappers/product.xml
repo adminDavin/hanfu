@@ -33,11 +33,16 @@
         <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
-        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="goodsName"/>
         <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
         <result column="quantity" jdbcType="INTEGER" property="quantity"/>
         <result column="hf_status" jdbcType="INTEGER" property="hfStatus"/>
         <result column="warehouse_id" jdbcType="INTEGER" property="warehouseId"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
+        <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
+        <result column="brand_type" jdbcType="VARCHAR" property="brandType"/>
+        <result column="categoryName" jdbcType="VARCHAR" property="categoryName"/>
     </resultMap>
 
     <select id="selectProductById" resultMap="BaseResultMap">
@@ -128,11 +133,18 @@
 	h2.sell_price,
 	h3.quantity,
 	h3.hf_status,
-	h3.warehouse_id
+	h3.warehouse_id,
+	h1.modify_time,
+	h4.hf_name "brandName",
+	h4.hf_desc,
+	h4.brand_type,
+	h5.hf_name "categoryName"
 FROM
 	hf_goods h1
 	LEFT JOIN hf_price h2 ON h1.id = h2.googs_id
 	LEFT JOIN hf_resp h3 ON h1.id = h3.googs_id
+	LEFT JOIN hf_brand h4 ON h1.brand_id=h4.id
+	LEFT JOIN hf_category h5 ON h1.category_id=h5.id
 WHERE
 	h1.product_id =#{productId}
     </select>

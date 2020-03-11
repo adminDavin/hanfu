@@ -12,6 +12,11 @@ public class ProductGoods {
     private Integer quantity;
     private Integer hfStatus;
     private Integer warehouseId;
+    private LocalDateTime modifyTime;
+    private String brandName;
+    private String hfDesc;
+    private String brandType;
+    private String categoryName;
 
     public Integer getGoodsId() {
         return goodsId;
@@ -83,5 +88,45 @@ public class ProductGoods {
 
     public void setWarehouseId(Integer warehouseId) {
         this.warehouseId = warehouseId;
+    }
+
+    public LocalDateTime getModifyTime() {
+        return modifyTime;
+    }
+
+    public void setModifyTime(LocalDateTime modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    public String getHfDesc() {
+        return hfDesc;
+    }
+
+    public void setHfDesc(String hfDesc) {
+        this.hfDesc = hfDesc;
+    }
+
+    public String getBrandType() {
+        return brandType;
+    }
+
+    public void setBrandType(String brandType) {
+        this.brandType = brandType;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
