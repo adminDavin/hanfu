@@ -40,6 +40,8 @@ public class HfProductDisplay implements Serializable {
     @ApiModelProperty(required = false, value = "划线价")
     private Integer linePrice;
     private Short isDeleted;
+    private String lastModifier;
+    private LocalDateTime createTime;
 
     public List<Integer> getFileIds() {
         return fileIds;
@@ -168,5 +170,21 @@ public class HfProductDisplay implements Serializable {
 
     public void setLinePrice(Integer linePrice) {
         this.linePrice = linePrice;
+    }
+
+    public String getLastModifier() {
+        return lastModifier;
+    }
+
+    public void setLastModifier(String lastModifier) {
+        this.lastModifier = lastModifier;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 }
