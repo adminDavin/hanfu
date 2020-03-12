@@ -553,7 +553,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "获取商品所有物品", notes = "获取商品所有物品")
 	@RequestMapping(value = "/selectProductGoods", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectProductGoods(Integer productId)
+	public ResponseEntity<JSONObject> selectProductGoods(SelectProductGoods productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));

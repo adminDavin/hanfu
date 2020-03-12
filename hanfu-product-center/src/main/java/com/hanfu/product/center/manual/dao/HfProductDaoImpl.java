@@ -3,6 +3,7 @@ package com.hanfu.product.center.manual.dao;
 import java.util.List;
 
 import com.hanfu.product.center.manual.model.*;
+import com.hanfu.product.center.model.SelectProductGoods;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -59,7 +60,7 @@ public class HfProductDaoImpl implements HfProductDao {
     }
 
     @Override
-    public List<ProductGoods> selectProductGoods(Integer ProductId) {
+    public List<ProductGoods> selectProductGoods(SelectProductGoods ProductId) {
         List<ProductGoods> result = sqlSessionTemplate.selectList("selectProductGoods", ProductId);
         return result;
     }

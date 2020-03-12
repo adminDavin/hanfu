@@ -3,6 +3,7 @@ package com.hanfu.product.center.manual.dao;
 import java.util.List;
 
 import com.hanfu.product.center.manual.model.*;
+import com.hanfu.product.center.model.SelectProductGoods;
 
 public interface HfProductDao {
 
@@ -14,5 +15,5 @@ public interface HfProductDao {
     List<HfProductDisplay> selectProductByUserId( Integer userId);
     List<HfProductDisplay> selectProductSeniorityId(Integer seniorityId);
     List<HfProductDisplay> selectProductName(ProductNameSelect productNameSelect);
-    List<ProductGoods> selectProductGoods(Integer ProductId);
+    List<ProductGoods> selectProductGoods(SelectProductGoods ProductId);
 }

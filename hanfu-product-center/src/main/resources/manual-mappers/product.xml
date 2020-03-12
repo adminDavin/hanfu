@@ -149,6 +149,9 @@ FROM
 	LEFT JOIN hf_category h5 ON h1.category_id=h5.id
 WHERE
 	h1.product_id =#{productId}
+        <if test="goodsId != null and goodsId != ''">
+            and h1.id=#{goodsId}
+        </if>
 	ORDER BY h1.create_time DESC
     </select>
 </mapper>
