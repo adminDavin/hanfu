@@ -17,6 +17,7 @@ public class ProductGoods {
     private String hfDesc;
     private String brandType;
     private String categoryName;
+    private String linePrice;
 
     public Integer getGoodsId() {
         return goodsId;
@@ -128,5 +129,13 @@ public class ProductGoods {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getLinePrice() {
+        return linePrice;
+    }
+
+    public void setLinePrice(String linePrice) {
+        this.linePrice = linePrice;
     }
 }

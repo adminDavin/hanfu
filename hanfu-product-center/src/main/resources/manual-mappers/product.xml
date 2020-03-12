@@ -43,6 +43,7 @@
         <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
         <result column="brand_type" jdbcType="VARCHAR" property="brandType"/>
         <result column="categoryName" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="line_price" jdbcType="INTEGER" property="linePrice"/>
     </resultMap>
 
     <select id="selectProductById" resultMap="BaseResultMap">
@@ -131,6 +132,7 @@
 	h1.goods_desc,
 	h1.hf_name,
 	h2.sell_price,
+	h2.line_price,
 	h3.quantity,
 	h3.hf_status,
 	h3.warehouse_id,
@@ -147,5 +149,6 @@ FROM
 	LEFT JOIN hf_category h5 ON h1.category_id=h5.id
 WHERE
 	h1.product_id =#{productId}
+	ORDER BY h1.create_time DESC
     </select>
 </mapper>

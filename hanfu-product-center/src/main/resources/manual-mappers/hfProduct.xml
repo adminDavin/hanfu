@@ -47,7 +47,7 @@
     where i.stone_id=#{stoneId}
      <if test=" isDelete != null ">
          and p.is_deleted=#{isDelete}
-     </if>
+     </if> ORDER BY p.create_time DESC
     </select>
 
     <select id="selectProductByUserId" resultMap="ProductDispaly">
