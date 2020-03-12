@@ -1,0 +1,22 @@
+server:
+  port: 9096
+
+dubbo:
+  registry:
+    address: 39.100.86.77:2181
+    protocol: zookeeper
+    id: dubboProductServer
+    client: curator
+  metadata-report:
+    address: zookeeper://39.100.86.77:2181
+  application:
+    name: hanfu-product-cosumer
+  protocol:
+    id: dubbo
+    name: dubbo
+  consumer:
+    client: netty4
+    #
+
+logging:
+  file: ./target/king-words.log  

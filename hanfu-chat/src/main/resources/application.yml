@@ -1,0 +1,45 @@
+server:
+  port: 9101
+
+# http://47.105.72.216:1234/#/service?filter=%2a&pattern=service
+
+dubbo:
+  registry:
+    address: 47.105.72.216:2181
+    protocol: zookeeper
+    id: dubboProductServer
+    client: curator
+  metadata-report:
+    address: zookeeper://47.105.72.216:2181
+  application:
+    name: hanfu-referral-cosumer
+  protocol:
+    id: dubbo
+    name: dubbo
+  consumer:
+    client: netty4
+#
+spring:
+  datasource:
+    name: dataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://39.98.126.20:3306/user_center?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&zeroDateTimeBehavior=CONVERT_TO_NULL&allowPublicKeyRetrieval=true
+    username: hanfu_admin
+    password: Davin1234!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select now()
+      idle-timeout: 300
+      auto-commit: true
+  redis:
+    database: 0
+    host: 47.105.72.216
+    port: 6379
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 16
+        max-idle: 4
+
+logging:
+  file: ./target/king-words.log  

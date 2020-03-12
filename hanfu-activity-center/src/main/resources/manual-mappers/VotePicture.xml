@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.activity.center.manual.dao.VotePictureDao">
+    <resultMap id="BaseResultMap" type="com.hanfu.activity.center.model.FileDesc">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="group_name" jdbcType="VARCHAR" property="groupName"/>
+        <result column="remote_filename" jdbcType="VARCHAR" property="remoteFilename"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+    </resultMap>
+
+    <insert id="insertFileDesc" useGeneratedKeys="true" keyProperty="id">
+        insert into file_desc (file_name, user_id, group_name,
+        remote_filename, create_time, modify_time,
+        is_deleted)
+        values (#{fileName,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR},
+        #{remoteFilename,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP},
+        #{isDeleted,jdbcType=SMALLINT})
+    </insert>
+
+    <select id="selectFileDesc" resultMap="BaseResultMap">
+        select * from file_desc where id = #{fileDescId}
+    </select>
+</mapper>

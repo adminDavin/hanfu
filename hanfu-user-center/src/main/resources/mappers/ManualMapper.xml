@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.manual.model">
+    <resultMap id="simpleUserInfo" type="com.hanfu.user.center.manual.model.UserInfo">
+        <result property="userId" column="userId"/>
+        <result property="name" column="username"/>
+        <result property="email" column="email"/>
+    </resultMap>
+
+    <select id="getSimpleUserInfo" resultMap="simpleUserInfo">
+        select userId, name, email from userinfo
+    </select>
+</mapper>

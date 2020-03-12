@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry
+            location="C:\Users\administor\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+    <context id="MySQLTables" targetRuntime="MyBatis3">
+        <property name="xmlFormatter"
+                  value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+        <property name="javaFormatter"
+                  value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+        <property name="javaFileEncoding" value="UTF-8"/>
+
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!-- 配置生成自定义的类序列化接口的插件 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://47.105.72.216:3306/user_center?serverTimezone=UTC"
+                        userId="hanfu_admin" password="Davin1234!">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="useJSR310Types" value="true"/>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator
+                targetPackage="com.hanfu.activity.center.model"
+                targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mappers"
+                         targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.hanfu.activity.center.dao"
+                             targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+        <table schema="user_center" tableName="activiti_strategy"
+               domainObjectName="ActivitiStrategy">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activity_strategy_instance"
+               domainObjectName="ActivityStrategyInstance">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activiti_rule_instance"
+               domainObjectName="ActivitiRuleInstance">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="strategy_rule"
+               domainObjectName="StrategyRule">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activity"
+               domainObjectName="Activity">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="strategy_rule_relate"
+               domainObjectName="StrategyRuleRelate">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activity_vote_records"
+               domainObjectName="ActivityVoteRecords">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="hf_user_info"
+               domainObjectName="UserInfo">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="hf_user"
+               domainObjectName="HfUser">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="file_desc"
+               domainObjectName="FileDesc">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+
+        <table schema="user_center" tableName="activity_user_evaluate"
+               domainObjectName="ActivityUserEvaluate">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activity_evaluate_template"
+               domainObjectName="ActivityEvaluateTemplate">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+
+        <table schema="user_center" tableName="activity_user_info"
+               domainObjectName="ActivityUserInfo">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="activity_user_experience"
+               domainObjectName="ActivityUserExperience">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="activity_compony"
+               domainObjectName="ActivityCompony">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="activity_department"
+               domainObjectName="ActivityDepartment">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>

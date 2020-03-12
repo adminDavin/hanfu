@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.order.center.manual.dao.OrderDao">
+    <resultMap type="com.hanfu.order.center.manual.model.OrderInfo" id="Map">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="orders_id" jdbcType="INTEGER" property="ordersId"/>
+        <result column="order_detail_id" jdbcType="INTEGER" property="orderDetailId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="user_address_id" jdbcType="INTEGER" property="userAddressId"/>
+        <result column="googs_id" jdbcType="INTEGER" property="googsId"/>
+        <result column="logistics_order_name" jdbcType="VARCHAR" property="logisticsOrderName"/>
+        <result column="resp_id" jdbcType="INTEGER" property="respId"/>
+        <result column="logistics_orders_id" jdbcType="VARCHAR" property="logisticsOrdersId"/>
+        <result column="logistics_company" jdbcType="VARCHAR" property="logisticsCompany"/>
+        <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="amount" jdbcType="INTEGER" property="amount"/>
+        <result column="purchase_price" jdbcType="VARCHAR" property="purchasePrice"/>
+        <result column="pay_method_name" jdbcType="VARCHAR" property="payMethodName"/>
+        <result column="pay_method_type" jdbcType="INTEGER" property="payMethodType"/>
+        <result column="order_detail_status" jdbcType="VARCHAR" property="orderDetailStatus"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
+        <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="file_id" jdbcType="VARCHAR" property="fileId"/>
+        <collection property="goodsSpecList" ofType="com.hanfu.order.center.manual.model.GoodsSpec">
+		   <result column="hf_value" property="specValue" jdbcType="VARCHAR"/>
+		</collection>
+    </resultMap>
+    <select id="selectOrderDetail" resultMap="Map">
+		SELECT
+		h2.id,
+		h3.create_time,
+		h3.modify_time,
+		h7.hf_province,
+		h7.hf_city,
+		h7.hf_conty,
+		h7.is_fault_address,
+		h7.hf_address_detail,
+		h4.username,
+		h3.purchase_quantity,
+		h4.phone,
+		h5.hf_name,
+		h2.amount,
+		h3.googs_id,
+		h3.order_detail_status,
+		h8.file_id,
+		h9.hf_value,
+		h4.nick_name
+		FROM
+		hf_order_logistics h1
+		LEFT JOIN hf_orders h2 ON h1.orders_id = h2.id
+		LEFT JOIN hf_orders_detail h3 ON h1.order_detail_id = h3.id
+		LEFT JOIN hf_user h4 ON h1.user_id = h4.id
+		LEFT JOIN hf_goods h5 ON h1.googs_id = h5.id
+		LEFT JOIN hf_user_address h7 ON h1.user_address_id = h7.id
+		LEFT JOIN hf_goods_pictrue h8 ON h8.goods_id = h5.id
+		LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id
+	WHERE
+	h1.orders_id = #{ordersId}
+    </select>
+</mapper>

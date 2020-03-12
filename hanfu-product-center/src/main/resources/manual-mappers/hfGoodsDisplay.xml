@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.HfGoodsDisplayDaoImpl">
+    <resultMap id="HfGoodsDisplayInfo" type="com.hanfu.product.center.manual.model.HfGoodsDisplayInfo">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
+        <result column="product_id" jdbcType="INTEGER" property="productId"/>
+        <result column="warehouse_id" jdbcType="INTEGER" property="warehouseId"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="resp_status" jdbcType="SMALLINT" property="respStatus"/>
+        <result column="price_id" jdbcType="INTEGER" property="priceId"/>
+        <result column="price_mode_id" jdbcType="VARCHAR" property="priceModeId"/>
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+        <result column="is_use_price_mode" jdbcType="SMALLINT" property="isUsePriceMode"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="line_price" jdbcType="INTEGER" property="linePrice"/>
+    </resultMap>
+    <resultMap id="HfGoodsSpecDisplay" type="com.hanfu.product.center.manual.model.HfGoodsSpecDisplay">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="hf_spec_id" jdbcType="INTEGER" property="hfSpecId"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="spec_type" jdbcType="VARCHAR" property="specType"/>
+        <result column="spec_unit" jdbcType="VARCHAR" property="specUnit"/>
+        <result column="hf_value" jdbcType="VARCHAR" property="hfValue"/>
+    </resultMap>
+
+    <select id="selectHfGoodsDisplay" parameterType="java.util.List" resultMap="HfGoodsDisplayInfo">
+    select g.id, g.hf_name, g.product_id, g.goods_desc, g.modify_time, r.warehouse_id, r.quantity, r.hf_status resp_status,
+     g.price_id, p.price_mode_id, p.sell_price, p.is_use_price_mode  ,p.line_price
+    from hf_goods g left join hf_price p on g.price_id=p.id
+    left join hf_resp r on r.googs_id=g.id
+    where g.product_id in 
+    <foreach collection="list" item="productId" index="index"  open="(" close=")" separator=",">
+         #{productId}
+     </foreach>
+    </select>
+    <select id="selectHfGoods" parameterType="Integer" resultMap="HfGoodsDisplayInfo">
+    select g.id, g.hf_name, g.product_id, g.goods_desc, g.modify_time, r.warehouse_id, r.quantity, r.hf_status resp_status,
+     g.price_id, p.price_mode_id, p.sell_price, p.is_use_price_mode 
+    from hf_goods g left join hf_price p on g.price_id=p.id
+    left join hf_resp r on r.googs_id=g.id
+    where g.id = #{goodsId}
+    </select>
+
+    <select id="selectHfGoodsSpec" parameterType="java.util.List" resultMap="HfGoodsSpecDisplay">
+		select p.id, g.id goods_id, p.hf_name, p.spec_type, p.spec_unit, IFNULL(gs.hf_value, p.spec_value) hf_value  
+	    from product_spec p  
+	    left join hf_goods g on p.product_id=g.product_id 
+	    left join hf_goods_spec gs on gs.goods_id=g.id and p.id=gs.hf_spec_id
+	    where g.id in
+	    <foreach collection="list" item="goodsId" index="index"  open="(" close=")" separator=",">
+         #{goodsId}
+        </foreach>
+    </select>
+
+
+</mapper>

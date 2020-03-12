@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.order.center.manual.dao.OrderDao">
+    <resultMap type="com.hanfu.order.center.manual.model.OrderStatusInfo" id="ResultMap">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="hf_status" jdbcType="INTEGER" property="hfStatus"/>
+        <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
+    </resultMap>
+    <select id="selectOrderStatus" resultMap="ResultMap">
+        SELECT id,hf_name FROM hf_order_status
+    </select>
+</mapper>

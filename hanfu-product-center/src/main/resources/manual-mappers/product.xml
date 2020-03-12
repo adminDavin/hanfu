@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.ProductDaoImpl">
+    <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.Product">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
+        <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
+        <result column="boss_id" jdbcType="INTEGER" property="bossId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="EntityProductDispaly" type="com.hanfu.product.center.manual.model.ProductDispaly">
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
+        <result column="productCategoryName" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="productId" jdbcType="INTEGER" property="id"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="brand_id" jdbcType="TIMESTAMP" property="brandId"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
+    </resultMap>
+
+    <resultMap id="ProductGoods" type="com.hanfu.product.center.manual.model.ProductGoods">
+        <result column="id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc"/>
+        <result column="hf_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+        <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+        <result column="hf_status" jdbcType="INTEGER" property="hfStatus"/>
+        <result column="warehouse_id" jdbcType="INTEGER" property="warehouseId"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="brandName" jdbcType="VARCHAR" property="brandName"/>
+        <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
+        <result column="brand_type" jdbcType="VARCHAR" property="brandType"/>
+        <result column="categoryName" jdbcType="VARCHAR" property="categoryName"/>
+    </resultMap>
+
+    <select id="selectProductById" resultMap="BaseResultMap">
+        SELECT
+        distinct p1.id, p1.hf_name,
+        p1.category_id, p1.brand_id,
+        p1.product_desc, p1.boss_id,
+        p1.create_time, p1.last_modifier,
+        p1.modify_time, p1.is_deleted
+        FROM
+        product p1
+        LEFT JOIN
+        product_instance p2
+        ON p1.id = p2.product_id
+        WHERE p2.stone_id = #{storeId}
+    </select>
+
+    <select id="selectProductBycategoryId" resultMap="EntityProductDispaly">
+        SELECT
+        p.hf_name productName,product_desc,
+        h.hf_name productCategoryName,p.category_id,
+        p.brand_id,p.last_modifier,
+        p.id productId,p.create_time,
+        p.modify_time, p.is_deleted
+        FROM
+        product p
+        LEFT JOIN
+        hf_category h
+        ON p.category_id = h.id
+        WHERE p.boss_id = #{bossId}
+        <if test="productName != null and productName != ''">
+            AND p.hf_name like '%${productName}%'
+        </if>
+        <if test="categoryId != null and categoryId != ''">
+            AND h.id = #{categoryId}
+        </if>
+    </select>
+
+    <select id="selectProductDisplay" resultMap="EntityProductDispaly">
+        SELECT
+        p.hf_name productName,product_desc,
+        h.hf_name productCategoryName,p.category_id,
+        p.brand_id,p.last_modifier,
+        p.id productId,p.create_time,
+        p.last_modifier,p.modify_time,
+        p.is_deleted
+        FROM
+        product p
+        LEFT JOIN
+        hf_category h
+        ON
+        p.category_id = h.id
+        WHERE
+        boss_id = #{bossId}
+    </select>
+
+    <delete id="deleteSelectProduct">
+        <if test="productId != null and productId != ''">
+            DELETE FROM
+            product
+            WHERE
+            id in
+            <foreach collection="array"
+                     open="(" close=")" separator=","
+                     item="productId">
+                #{productId}
+            </foreach>
+        </if>
+    </delete>
+
+    <update id="updateProduct">
+        UPDATE
+        product
+        SET
+        hf_name = #{productName},product_desc = #{productDesc},
+        category_id = #{categoryId}
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="selectProductGoods" resultMap="ProductGoods">
+        SELECT
+	h1.id,
+	h1.category_id,
+	h1.create_time,
+	h1.goods_desc,
+	h1.hf_name,
+	h2.sell_price,
+	h3.quantity,
+	h3.hf_status,
+	h3.warehouse_id,
+	h1.modify_time,
+	h4.hf_name "brandName",
+	h4.hf_desc,
+	h4.brand_type,
+	h5.hf_name "categoryName"
+FROM
+	hf_goods h1
+	LEFT JOIN hf_price h2 ON h1.id = h2.googs_id
+	LEFT JOIN hf_resp h3 ON h1.id = h3.googs_id
+	LEFT JOIN hf_brand h4 ON h1.brand_id=h4.id
+	LEFT JOIN hf_category h5 ON h1.category_id=h5.id
+WHERE
+	h1.product_id =#{productId}
+    </select>
+</mapper>

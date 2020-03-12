@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.manual.dao.UserDao">
+    <resultMap type="com.hanfu.user.center.model.HfAuth"
+               id="BaseResultMap">
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="auth_type" jdbcType="VARCHAR"
+                property="authType"/>
+        <result column="auth_key" jdbcType="VARCHAR" property="authKey"/>
+    </resultMap>
+    <resultMap type="com.hanfu.user.center.manual.model.UserInfo"
+               id="ResultMap">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR"
+                property="username"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="source_type" jdbcType="VARCHAR"
+                property="sourceType"/>
+        <result column="nick_name" jdbcType="VARCHAR"
+                property="nickName"/>
+        <result column="real_name" jdbcType="VARCHAR"
+                property="realName"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="birth_day" jdbcType="TIMESTAMP"
+                property="birthDay"/>
+        <result column="user_status" jdbcType="TINYINT"
+                property="userStatus"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="user_level" jdbcType="TINYINT"
+                property="userLevel"/>
+        <result column="last_auth_time" jdbcType="TIMESTAMP"
+                property="lastAuthTime"/>
+        <result column="region" jdbcType="VARCHAR" property="region"/>
+        <result column="create_date" jdbcType="TIMESTAMP"
+                property="createDate"/>
+        <result column="modify_date" jdbcType="TIMESTAMP"
+                property="modifyDate"/>
+        <result column="id_deleted" jdbcType="TINYINT"
+                property="idDeleted"/>
+        <result column="cancel_id" jdbcType="INTEGER"
+                property="cancelId"/>
+        <result column="hf_balance" jdbcType="INTEGER"
+                property="hfBalance"/>
+    </resultMap>
+
+    <resultMap type="com.hanfu.user.center.manual.model.ActivityUserInfo"
+               id="ActivityUserInfoMap">
+        <result column="id" jdbcType="VARCHAR" property="userId"/>
+        <result column="phone" jdbcType="VARCHAR" property="Jobposition"/>
+        <result column="nick_name" jdbcType="VARCHAR"
+                property="wxName"/>
+        <result column="real_name" jdbcType="VARCHAR"
+                property="realName"/>
+        <result column="address" jdbcType="VARCHAR" property="avatar"/>
+        <result column="create_date" jdbcType="TIMESTAMP"
+                property="createtime"/>
+        <result column="department_id" jdbcType="INTEGER"
+                property="departmentId"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+    </resultMap>   
+
+    <select id="selectAuthList" resultMap="BaseResultMap">
+        SELECT
+        user_id,auth_type,auth_key
+        FROM
+        hf_auth
+        WHERE
+        auth_key=#{authKey}
+    </select>
+    <select id="selectUserList" resultMap="ResultMap">
+        SELECT * FROM
+        hf_user h
+        JOIN 
+        hf_user_balance h1
+        ON
+        h.id = h1.user_id
+        where  1=1
+        <if test="createDate != null">	
+         and  h.create_date = #{createDate}
+        </if>
+        <if test="userStatus !=null">
+        and  h.user_status = #{userStatus}
+        </if>
+        <if test="sex !=null">
+        and  h.sex = #{sex}
+        </if>
+        <if test="userLevel !=null">
+        and  h.user_level = #{userLevel}
+        </if>
+        <if test="nickName !=null">
+        and  h.nick_name = #{nickName}
+        </if>
+    </select>
+    <!-- <select id="findActivityUserInfo" resultMap="ActivityUserInfo">
+        SELECT
+            h.address,h.nick_name,
+            h.real_name,h.phone,
+            h.create_date,a.department_id,
+            h.id,h.file_id
+        FROM
+            hf_user h
+        LEFT JOIN
+            activity_user_info a
+        ON
+            h.id = a.user_id
+    </select> -->
+
+    <select id="findActivityUserInfo" resultMap="ActivityUserInfoMap">
+        SELECT
+        h.address,h.nick_name,
+        h.real_name,h.phone,
+        h.create_date,a.department_id,
+        h.id
+        FROM
+        hf_user h
+        LEFT JOIN
+        activity_user_info a
+        ON
+        h.id = a.user_id
+        <if test="time==1">
+            order by h.create_date desc
+        </if>
+        <if test="time==2">
+            order by h.create_date asc
+        </if>
+        <if test="time==3">
+            order by h.nick_name desc
+        </if>
+        <if test="time==4">
+            order by h.nick_name asc
+        </if>
+    </select>
+
+
+    <select id="findActivityUserInfoTP" resultMap="ActivityUserInfoMap">
+        SELECT
+        h.address,h.nick_name,
+        h.real_name,h.phone,
+        h.create_date,a.department_id,
+        h.id, h.file_id
+        FROM
+        hf_user h
+        LEFT JOIN
+        activity_user_info a
+        ON
+        h.id = a.user_id
+        WHERE 1=1
+        <if test="wxName!=null">
+            AND h.nick_name LIKE concat('%',#{wxName},'%')
+        </if>
+        <if test="phone!=null">
+            AND h.phone LIKE concat('%',#{phone},'%')
+        </if>
+        <if test="realName!=null">
+            AND h.real_name LIKE concat('%',#{realName},'%')
+        </if>
+    </select>
+
+    <select id="findDepartmentName" resultType="String">
+        SELECT
+        department_name
+        FROM
+        activity_department
+        WHERE
+        id = #{departmentId}
+    </select>
+</mapper>
