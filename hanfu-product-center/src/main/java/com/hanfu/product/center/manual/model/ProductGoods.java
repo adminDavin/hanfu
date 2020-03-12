@@ -18,6 +18,8 @@ public class ProductGoods {
     private String brandType;
     private String categoryName;
     private String linePrice;
+    private String warehouseName;
+    private String hfRegion;
 
     public Integer getGoodsId() {
         return goodsId;
@@ -137,5 +139,21 @@ public class ProductGoods {
 
     public void setLinePrice(String linePrice) {
         this.linePrice = linePrice;
+    }
+
+    public String getWarehouseName() {
+        return warehouseName;
+    }
+
+    public void setWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+    }
+
+    public String getHfRegion() {
+        return hfRegion;
+    }
+
+    public void setHfRegion(String hfRegion) {
+        this.hfRegion = hfRegion;
     }
 }

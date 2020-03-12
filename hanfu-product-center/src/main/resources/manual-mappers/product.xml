@@ -44,6 +44,8 @@
         <result column="brand_type" jdbcType="VARCHAR" property="brandType"/>
         <result column="categoryName" jdbcType="VARCHAR" property="categoryName"/>
         <result column="line_price" jdbcType="INTEGER" property="linePrice"/>
+        <result column="warehouseName" jdbcType="INTEGER" property="warehouseName"/>
+        <result column="hf_region" jdbcType="INTEGER" property="hfRegion"/>
     </resultMap>
 
     <select id="selectProductById" resultMap="BaseResultMap">
@@ -127,26 +129,31 @@
     <select id="selectProductGoods" resultMap="ProductGoods">
         SELECT
 	h1.id,
-	h1.category_id,
 	h1.create_time,
 	h1.goods_desc,
 	h1.hf_name,
-	h2.sell_price,
-	h2.line_price,
-	h3.quantity,
-	h3.hf_status,
-	h3.warehouse_id,
+        h2.sell_price,
+        h2.line_price,
+        <if test="goodsId != null and goodsId != ''">
+            h1.category_id,
+            h2.line_price,
+            h3.hf_status,
+            h4.hf_desc,
+            h4.brand_type,
+            h5.hf_name "categoryName",
+            h3.warehouse_id,
+            h6.hf_name "warehouseName",
+            h6.hf_region,
+        </if>
 	h1.modify_time,
-	h4.hf_name "brandName",
-	h4.hf_desc,
-	h4.brand_type,
-	h5.hf_name "categoryName"
+	h4.hf_name "brandName"
 FROM
 	hf_goods h1
 	LEFT JOIN hf_price h2 ON h1.id = h2.googs_id
 	LEFT JOIN hf_resp h3 ON h1.id = h3.googs_id
 	LEFT JOIN hf_brand h4 ON h1.brand_id=h4.id
 	LEFT JOIN hf_category h5 ON h1.category_id=h5.id
+    LEFT JOIN hf_warehouse h6 ON h3.warehouse_id=h6.id
 WHERE
 	h1.product_id =#{productId}
         <if test="goodsId != null and goodsId != ''">
