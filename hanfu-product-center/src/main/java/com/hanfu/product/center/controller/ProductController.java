@@ -74,6 +74,8 @@ public class ProductController {
 	private HfProductDao hfProductDao;
 	@Autowired
 	private HfProductPictrueMapper hfProductPictrueMapper;
+	@Autowired
+	private HfBossMapper hfBossMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -160,7 +162,11 @@ public class ProductController {
 		productInstance.setModifyTime(LocalDateTime.now());
 		productInstance.setIsDeleted((short) 0);
 		productInstanceMapper.insert(productInstance);
-		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByPrimaryKey(product.getId())));
+		Map<String, Object> map = new HashMap<>();
+		map.put("bossName",hfBossMapper.selectByPrimaryKey(product.getBossId()).getName());
+		map.put("productId",product.getId());
+		map.put("createTime",product.getCreateTime());
+		return builder.body(ResponseUtils.getResponseBody(map));
 
 	}
 
