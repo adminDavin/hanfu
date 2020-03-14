@@ -1109,20 +1109,24 @@ public class GoodsController {
 	@RequestMapping(value = "/deleteGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteGoods(@RequestParam(name = "goodsId") List<Integer> goodsId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		for (int i=0;i<goodsId.size();i++){
-			HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId.get(i));
+		goodsId.forEach(item->{
+			System.out.println(item);
+			HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(item);
 			if (hfGoods==null){
-				throw new Exception("物品不存在");
+				try {
+					throw new Exception("物品不存在");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			hfGoodsMapper.deleteByPrimaryKey(goodsId.get(i));
+			hfGoodsMapper.deleteByPrimaryKey(item);
 			if (hfGoods.getPriceId()!=null){
 				hfPriceMapper.deleteByPrimaryKey(hfGoods.getPriceId());
 			}
 			if (hfGoods.getRespId()!=null){
 				hfRespMapper.deleteByPrimaryKey(hfGoods.getRespId());
 			}
-
-		}
+		});
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 }

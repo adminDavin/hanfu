@@ -208,13 +208,13 @@ public class HfProductController {
                             return oldList;
                         }));
         products.forEach(product -> {
+            System.out.println(product.getId());
             List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
             if (Optional.ofNullable(hfGoods).isPresent()) {
                 Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
                 product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
                 product.setDefaultGoodsId(hfGood.get().getId());
             }
-
         });
         PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
         return builder.body(ResponseUtils.getResponseBody(page));

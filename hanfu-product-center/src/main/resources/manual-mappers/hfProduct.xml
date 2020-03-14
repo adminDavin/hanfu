@@ -45,7 +45,7 @@
     LEFT JOIN hf_category h   ON  p.category_id = h.id
     left JOIN product_instance i on p.id=i.product_id
     where i.stone_id=#{stoneId}
-     <if test=" isDelete != null ">
+     <if test=" isDelete != null and isDelete != ''">
          and p.is_deleted=#{isDelete}
      </if> ORDER BY p.create_time DESC
     </select>
