@@ -166,6 +166,8 @@ public class ProductController {
 		map.put("bossName",hfBossMapper.selectByPrimaryKey(product.getBossId()).getName());
 		map.put("productId",product.getId());
 		map.put("createTime",product.getCreateTime());
+		map.put("productName",request.getHfName());
+		map.put("CategoryId",request.getCategoryId());
 		return builder.body(ResponseUtils.getResponseBody(map));
 
 	}
