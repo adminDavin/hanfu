@@ -120,7 +120,9 @@ public class HfProductController {
                 Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
                 product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
                 product.setDefaultGoodsId(hfGood.get().getId());
-                product.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
+                if (hfGood.get().getLinePrice()!=null){
+                    product.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
+                }
             }
 
             HfGoodsPictrueExample example = new HfGoodsPictrueExample();
