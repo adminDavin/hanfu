@@ -115,19 +115,20 @@ public class HfProductController {
         product.setStoneName(stones.get(product.getStoneId()));
 
         List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayDao.selectHfGoodsDisplay(product.getId());
-        if (Optional.ofNullable(hfGoods).isPresent()) {
-           Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
-           product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");    
-           product.setDefaultGoodsId(hfGood.get().getId());
-           product.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
-       }
-       
-       HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-       example.createCriteria().andGoodsIdEqualTo(product.getDefaultGoodsId());
-       List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
-       List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
-       product.setFileIds(fileIds);
-       
+        if (hfGoods.size()!=0) {
+            if (Optional.ofNullable(hfGoods).isPresent()) {
+                Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+                product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+                product.setDefaultGoodsId(hfGood.get().getId());
+                product.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
+            }
+
+            HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+            example.createCriteria().andGoodsIdEqualTo(product.getDefaultGoodsId());
+            List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
+            List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
+            product.setFileIds(fileIds);
+        }
        return builder.body(ResponseUtils.getResponseBody(product));
     }
 
