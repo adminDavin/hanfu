@@ -117,7 +117,7 @@ public class HfProductController {
         List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayDao.selectHfGoodsDisplay(product.getId());
         if (hfGoods.size()!=0) {
             if (Optional.ofNullable(hfGoods).isPresent()) {
-                Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+                Optional<HfGoodsDisplayInfo> hfGood = Optional.ofNullable(hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice)).orElse(null));
                 product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
                 product.setDefaultGoodsId(hfGood.get().getId());
                 if (hfGood.get().getLinePrice()!=null){
