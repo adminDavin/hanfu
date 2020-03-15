@@ -150,6 +150,7 @@ public class ProductController {
 		product.setModifyTime(LocalDateTime.now());
 		product.setIsDeleted((short) 0);
 		product.setProductDesc(request.getProductDesc());
+		product.setClaim(request.getClaim());
 		productMapper.insert(product);
 		ProductInstance productInstance = new ProductInstance();
 		productInstance.setBossId(request.getBossId());

@@ -16,6 +16,8 @@ public class ProductRequest extends CommonRequest {
     private Integer bossId;
     @ApiModelProperty(name = "lastModifier", required = true, value = "商家名称")
     private String lastModifier;
+    @ApiModelProperty(required = true, value = "自体邮寄")
+    private Short claim;
 
 	public Integer getId() {
         return id;
@@ -66,4 +68,11 @@ public class ProductRequest extends CommonRequest {
         this.lastModifier = lastModifier;
     }
 
+    public Short getClaim() {
+        return claim;
+    }
+
+    public void setClaim(Short claim) {
+        this.claim = claim;
+    }
 }
