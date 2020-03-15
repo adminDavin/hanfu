@@ -219,6 +219,18 @@ public class GoodsController {
 			record.setCategoryId(product.getCategoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
+
+		ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(hfGoodsInfo.getProductSpecId());
+		HfGoodsSpec item = new HfGoodsSpec();
+		item.setGoodsId(record.getId());
+		item.setLastModifier(hfGoodsInfo.getUsername());
+		item.setHfSpecId(String.valueOf(productSpec.getId()));
+		item.setHfValue(hfGoodsInfo.getSpecValue());
+		item.setCategorySpecId(hfGoodsInfo.getCatrgorySpecId());
+		item.setCreateTime(LocalDateTime.now());
+		item.setModifyTime(LocalDateTime.now());
+		item.setIsDeleted((short) 0);
+		hfGoodsSpecMapper.insert(item);
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")

@@ -18,7 +18,7 @@ public class HfGoodsInfo extends CommonRequest {
     @ApiModelProperty(required = false, value = "物品规格id")
     private Integer goodsSpecId;
     @ApiModelProperty(required = true, value = "规格值")
-    private String[] specValue;
+    private String specValue;
     @ApiModelProperty(required = true, value = "是否为会员 0 非会员 1会员")
     private Integer member;
     @ApiModelProperty(required = false, value = "图片描述")
@@ -31,8 +31,10 @@ public class HfGoodsInfo extends CommonRequest {
     private Integer claim;
     @ApiModelProperty(required = false, value = "类目名称")
     private String categoryName;
-    
-
+	@ApiModelProperty(required = true, value = "商品规格id")
+	private Integer productSpecId;
+	@ApiModelProperty(required = true, value = "类目规格id")
+	private Integer catrgorySpecId;
 	public String getCategoryName() {
 		return categoryName;
 	}
@@ -99,11 +101,11 @@ public class HfGoodsInfo extends CommonRequest {
 		this.goodsSpecId = goodsSpecId;
 	}
 
-	public String[] getSpecValue() {
+	public String getSpecValue() {
 		return specValue;
 	}
 
-	public void setSpecValue(String[] specValue) {
+	public void setSpecValue(String specValue) {
 		this.specValue = specValue;
 	}
 
@@ -139,5 +141,19 @@ public class HfGoodsInfo extends CommonRequest {
         this.username = username;
     }
 
+	public Integer getProductSpecId() {
+		return productSpecId;
+	}
 
+	public void setProductSpecId(Integer productSpecId) {
+		this.productSpecId = productSpecId;
+	}
+
+	public Integer getCatrgorySpecId() {
+		return catrgorySpecId;
+	}
+
+	public void setCatrgorySpecId(Integer catrgorySpecId) {
+		this.catrgorySpecId = catrgorySpecId;
+	}
 }
