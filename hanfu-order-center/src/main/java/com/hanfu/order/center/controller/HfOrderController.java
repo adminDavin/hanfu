@@ -115,9 +115,9 @@ public class HfOrderController {
     @ApiOperation(value = "订单查询", notes = "订单查询")
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "orderStatus", value = "订单状态", required = true,
+            @ApiImplicitParam(paramType = "query", name = "orderStatus", value = "订单状态", required = false,
                     type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true,
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false,
                     type = "Integer") })
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

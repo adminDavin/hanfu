@@ -8,6 +8,6 @@
         <result column="hf_desc" jdbcType="VARCHAR" property="hfDesc"/>
     </resultMap>
     <select id="selectOrderStatus" resultMap="ResultMap">
-        SELECT id,hf_name FROM hf_order_status
+        SELECT id,hf_name,hf_desc,hf_status FROM hf_order_status
     </select>
 </mapper>

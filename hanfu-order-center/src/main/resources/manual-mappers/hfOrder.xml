@@ -66,7 +66,12 @@
     a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
      from hf_order o left join hf_order_detail d on o.id=d.order_id
      left join hf_order_address a on o.id=a.order_id
-     where o.user_id =#{userId} and o.id_deleted=0 and o.order_type not in ('rechargeOrder')
+     where
+        o.id_deleted=0
+        <if test="userId != null and userId!= ''">
+            and  o.user_id =#{userId}
+        </if>
+           and o.order_type not in ('rechargeOrder')
      <if test="orderStatus!='all'">
         and o.order_status = #{orderStatus}
     </if >
