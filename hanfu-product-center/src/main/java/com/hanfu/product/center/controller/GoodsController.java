@@ -219,25 +219,25 @@ public class GoodsController {
 			record.setCategoryId(product.getCategoryId());
 			record.setIsDeleted((short) 0);
 			hfGoodsMapper.insert(record);
-		ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(hfGoodsInfo.getProductSpecId());
-		JSONObject specs = JSONObject.parseObject(hfGoodsInfo.getSpecValue());
-		Iterator<String> iterator = specs.keySet().iterator();
-		while(iterator.hasNext()){
-// 获得key
-			String key = iterator.next();
-			String value = specs.getString(key);
-			System.out.println("key: "+key+",value:"+value);
-			HfGoodsSpec item = new HfGoodsSpec();
-			item.setGoodsId(record.getId());
-			item.setLastModifier(hfGoodsInfo.getUsername());
-			item.setHfSpecId(String.valueOf(key));
-			item.setHfValue(value);
-			item.setCategorySpecId(hfGoodsInfo.getCatrgorySpecId());
-			item.setCreateTime(LocalDateTime.now());
-			item.setModifyTime(LocalDateTime.now());
-			item.setIsDeleted((short) 0);
-			hfGoodsSpecMapper.insert(item);
-		}
+//		ProductSpec productSpec = productSpecMapper.selectByPrimaryKey(hfGoodsInfo.getProductSpecId());
+//		JSONObject specs = JSONObject.parseObject(hfGoodsInfo.getSpecValue());
+//		Iterator<String> iterator = specs.keySet().iterator();
+//		while(iterator.hasNext()){
+//// 获得key
+//			String key = iterator.next();
+//			String value = specs.getString(key);
+//			System.out.println("key: "+key+",value:"+value);
+//			HfGoodsSpec item = new HfGoodsSpec();
+//			item.setGoodsId(record.getId());
+//			item.setLastModifier(hfGoodsInfo.getUsername());
+//			item.setHfSpecId(String.valueOf(key));
+//			item.setHfValue(value);
+//			item.setCategorySpecId(hfGoodsInfo.getCatrgorySpecId());
+//			item.setCreateTime(LocalDateTime.now());
+//			item.setModifyTime(LocalDateTime.now());
+//			item.setIsDeleted((short) 0);
+//			hfGoodsSpecMapper.insert(item);
+//		}
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
