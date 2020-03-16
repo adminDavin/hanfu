@@ -56,6 +56,10 @@ public class CancelController {
     private HfPriceMapper hfPriceMapper;
     @Autowired
     private CancelProductMapper cancelProductMapper;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private CancelMapper cancelMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/selectCancel", method = RequestMethod.GET)
@@ -138,6 +142,56 @@ public class CancelController {
         return builder.body(ResponseUtils.getResponseBody(hfLogMapper.deleteByPrimaryKey(id)));
     }
 
+    @RequestMapping(value = "/deselectCancel", method = RequestMethod.GET)
+    @ApiOperation(value = "取消核销员对此商品的核销权限", notes = "取消核销员对此商品的核销权限")
+    public ResponseEntity<JSONObject> deselectCancel(Integer productId,Integer cancelId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Example example = new Example(CancelProduct.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("productId",productId).andEqualTo("cancelId",cancelId);
+        return builder.body(ResponseUtils.getResponseBody(cancelProductMapper.deleteByExample(example)));
+    }
+
+    @RequestMapping(value = "/addCancel", method = RequestMethod.POST)
+    @ApiOperation(value = "商品添加核销员", notes = "商品添加核销员")
+    public ResponseEntity<JSONObject> addCancel(Integer productId,Integer[] cancelId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
+            return builder.body(ResponseUtils.getResponseBody("非自体商品"));
+        }
+        for (int i=0;i<cancelId.length;i++){
+            CancelProduct cancelProduct = new CancelProduct();
+            cancelProduct.setCancelId(cancelId[i]);
+            cancelProduct.setClaim((short) 0);
+            cancelProduct.setCreateTime(LocalDateTime.now());
+            cancelProduct.setModifyTime(LocalDateTime.now());
+            cancelProduct.setProductId(productId);
+            cancelProduct.setIsDeleted((short) 0);
+            cancelProductMapper.insert(cancelProduct);
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    @RequestMapping(value = "/selectProductCancel", method = RequestMethod.GET)
+    @ApiOperation(value = "商品核销员查询", notes = "商品核销员查询")
+    public ResponseEntity<JSONObject> selectProductCancel(Integer productId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
+            return builder.body(ResponseUtils.getResponseBody("非自体商品"));
+        }
+        List<SelectCancelProduct> cancelProductList= cancelMapper.selectProductCancel(productId);
+        cancelProductList.forEach(cancelProduct -> {
+            cancel cancel= cancelsMapper.selectByPrimaryKey(cancelProduct.getCancelId());
+            HfUser hfUser= hfUserMapper.selectByPrimaryKey(cancel.getUserId());
+            Product product= productMapper.selectByPrimaryKey(cancelProduct.getProductId());
+            cancelProduct.setProductName(product.getHfName());
+            cancelProduct.setProductDesc(product.getProductDesc());
+            cancelProduct.setUserId(hfUser.getId());
+            cancelProduct.setUsername(hfUser.getRealName());
+        });
+        return builder.body(ResponseUtils.getResponseBody(cancelProductList));
+    }
 //    @RequestMapping(value = "/deleteJudge", method = RequestMethod.GET)
 //    @ApiOperation(value = "判断是否删除", notes = "判断是否删除")
 //    public ResponseEntity<JSONObject> deleteJudge(int id) throws Exception {
