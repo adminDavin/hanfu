@@ -61,6 +61,8 @@ public class OrderController {
 	HfOrderStatusMapper hfOrderStatusMapper;
 	@Autowired
 	HfGoodsPictrueMapper hfGoodsPictrueMapper;
+	@Autowired
+	HfOrderDetailMapper hfOrderDetailMapper;
 
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -216,12 +218,17 @@ public class OrderController {
 	public ResponseEntity<JSONObject> queryOrderList(@RequestParam Integer id)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrderDetailExample example1 = new HfOrderDetailExample();
+		example1.createCriteria().andOrderIdEqualTo(id);
+		List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(example1);
 		OrderInfo orderInfos= orderDao.selectOrderDetail(id);
-		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-		example.createCriteria().andGoodsIdEqualTo(orderInfos.getGoogsId());
-		List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
-		List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
-		orderInfos.setFileIds(fileIds);
+		if (hfOrderDetailList.size()!=0 || orderInfos.getGoogsId()!=null) {
+			HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+			example.createCriteria().andGoodsIdEqualTo(orderInfos.getGoogsId());
+			List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
+			List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
+			orderInfos.setFileIds(fileIds);
+		}
 		return builder.body(ResponseUtils.getResponseBody(orderInfos));
 	}
 
