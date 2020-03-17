@@ -203,54 +203,7 @@ public class KingWordsController {
     }
 
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
-    public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
-//		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//		LocalDateTime ldt = LocalDateTime.parse("request.getBirthDay()",df);
-    	BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
-        if (user == null) {
-            throw new UserNotExistException(String.valueOf(request.getUserId()));
-        }
-        if (!StringUtils.isEmpty(request.getPhone())) {
-            user.setPhone(request.getPhone());
-        }
-        if (!StringUtils.isEmpty(request.getAddress())) {
-            user.setAddress(request.getAddress());
-        }
-        if (!StringUtils.isEmpty(request.getUsername())) {
-            user.setUsername(request.getUsername());
-        }
-//		if(!StringUtils.isEmpty(request.getBirthDay())) {
-//			user.setBirthDay(ldt);
-//		}
-        if (!StringUtils.isEmpty(request.getEmail())) {
-            user.setEmail(request.getEmail());
-        }
-        if (!StringUtils.isEmpty(request.getNickName())) {
-            user.setNickName(request.getNickName());
-        }
-        if (!StringUtils.isEmpty(request.getRealName())) {
-            user.setRealName(request.getRealName());
-        }
-        if (!StringUtils.isEmpty(request.getRegion())) {
-            user.setRegion(request.getRegion());
-        }
-        if (!StringUtils.isEmpty(request.getSex())) {
-            user.setSex(request.getSex());
-        }
-        if (!StringUtils.isEmpty(request.getUserStatus())) {
-            user.setUserStatus(request.getUserStatus());
-        }
-        if (!StringUtils.isEmpty(request.getCancelId())) {
-            user.setCancelId(request.getCancelId());
-        }
-        user.setModifyDate(LocalDateTime.now());
-        user.setIdDeleted((byte) 0);
-        
-        return builder.body(ResponseUtils.getResponseBody(hfUserMapper.updateByPrimaryKeySelective(user)));
-    }
+    
 
     @RequestMapping(value = "/upload_avatar", method = RequestMethod.POST)
     @ApiOperation(value = "上传头像", notes = "上传头像")

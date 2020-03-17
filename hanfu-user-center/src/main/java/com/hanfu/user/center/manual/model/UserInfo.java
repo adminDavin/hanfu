@@ -57,6 +57,10 @@ public class UserInfo implements Serializable {
     private Integer hfBalance;
 	@ApiParam(required = false, value = "时间")
     private String time;
+	@ApiParam(required = false, value = "自己的邀请码")
+	private String ownInvitationCode;
+	@ApiParam(required = false, value = "他人的邀请码")
+	private String InvitationCode;
 	
 	public String getTime() {
 		return time;
@@ -196,6 +200,17 @@ public class UserInfo implements Serializable {
 	public void setHfBalance(Integer hfBalance) {
 		this.hfBalance = hfBalance;
 	}
-    
+	public String getOwnInvitationCode() {
+		return ownInvitationCode;
+	}
+	public void setOwnInvitationCode(String ownInvitationCode) {
+		this.ownInvitationCode = ownInvitationCode;
+	}
+	public String getInvitationCode() {
+		return InvitationCode;
+	}
+	public void setInvitationCode(String invitationCode) {
+		InvitationCode = invitationCode;
+	}
 
 }

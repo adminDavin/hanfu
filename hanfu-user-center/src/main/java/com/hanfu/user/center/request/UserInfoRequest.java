@@ -21,7 +21,7 @@ public class UserInfoRequest extends CommonRequest {
     @ApiParam(required = false, value = "用户性别")
     private Byte sex;
     @ApiParam(required = false, value = "出生时间, 时间格式:20181023T081324Z")
-    private LocalDateTime birthDay;
+    private String birthDay;
     @ApiModelProperty(required = false, value = "图片文件")
     private MultipartFile fileInfo;
     @ApiParam(required = false, value = "详细地址")
@@ -34,6 +34,8 @@ public class UserInfoRequest extends CommonRequest {
     private Byte userStatus;
     @ApiParam(required = false, value = "核销员Id")
     private Integer cancelId;
+    @ApiParam(required = false, value = "他人的邀请码")
+    private String invitationCode;
     
     public Integer getCancelId() {
 		return cancelId;
@@ -91,15 +93,15 @@ public class UserInfoRequest extends CommonRequest {
         this.sex = sex;
     }
 
-    public LocalDateTime getBirthDay() {
-        return birthDay;
-    }
+    public String getBirthDay() {
+		return birthDay;
+	}
 
-    public void setBirthDay(LocalDateTime birthDay) {
-        this.birthDay = birthDay;
-    }
+	public void setBirthDay(String birthDay) {
+		this.birthDay = birthDay;
+	}
 
-    public MultipartFile getFileInfo() {
+	public MultipartFile getFileInfo() {
         return fileInfo;
     }
 
@@ -130,6 +132,14 @@ public class UserInfoRequest extends CommonRequest {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+	public String getInvitationCode() {
+		return invitationCode;
+	}
+
+	public void setInvitationCode(String invitationCode) {
+		this.invitationCode = invitationCode;
+	}
 
 
 }
