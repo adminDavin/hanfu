@@ -75,6 +75,9 @@
      <if test="orderStatus!='all'">
         and o.order_status = #{orderStatus}
     </if >
+        <if test="orderType != null and orderType!= ''">
+            and  o.order_type =#{orderType}
+        </if>
      order by o.modify_time desc;
     </select>
     

@@ -119,12 +119,13 @@ public class HfOrderController {
                     type = "String"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false,
                     type = "Integer") })
-    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId) throws JSONException {
+    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
+        params.put("orderType", orderType);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
             Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
