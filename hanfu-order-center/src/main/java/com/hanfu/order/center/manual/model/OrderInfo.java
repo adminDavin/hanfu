@@ -111,6 +111,8 @@ public class OrderInfo implements Serializable {
     private String detail;
     private String contact;
 
+    private String orderCode;
+
 	public String getGoodName() {
 		return goodName;
 	}
@@ -501,5 +503,13 @@ public class OrderInfo implements Serializable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
     }
 }

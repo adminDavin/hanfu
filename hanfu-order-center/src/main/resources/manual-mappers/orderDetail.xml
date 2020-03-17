@@ -44,6 +44,7 @@
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="contact" jdbcType="VARCHAR" property="contact"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
         <collection property="goodsSpecList" ofType="com.hanfu.order.center.manual.model.GoodsSpec">
 		   <result column="hf_value" property="specValue" jdbcType="VARCHAR"/>
 		</collection>
@@ -86,6 +87,7 @@
     <select id="selectOrderDetail" resultMap="Map">
 		SELECT
 		h2.id,
+		h2.order_code,
 		h3.create_time,
 		h3.modify_time,
 		h7.address,
