@@ -1,7 +1,10 @@
 package com.hanfu.order.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,6 +153,36 @@ public class OrderController {
 			throws JSONException, Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderStatus()));
+	}
+
+	@ApiOperation(value = "获取订单类型", notes = "获取订单类型")
+	@RequestMapping(value = "/orderType", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> orderType()
+			throws JSONException, Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params1 = new HashMap<String, Object>();
+		Map<String, Object> params2 = new HashMap<String, Object>();
+		Map<String, Object> params3 = new HashMap<String, Object>();
+		params.put("orderType", "nomalOrder");
+		params.put("orderDesc", "普通订单");
+		params1.put("orderType","rechargeOrder");
+		params1.put("orderDesc","充值订单");
+
+		params2.put("orderType","shoppingOrder");
+		params2.put("orderDesc","到店支付订单");
+
+		params3.put("orderType","balancePayment");
+		params3.put("orderDesc","余额支付订单");
+
+
+			List<Object> list = new ArrayList<>();
+			list.add(0,params);
+			list.add(1,params1);
+			list.add(2,params2);
+			list.add(3,params3);
+
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@ApiOperation(value = "修改订单状态", notes = "修改订单状态")
