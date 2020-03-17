@@ -6,8 +6,8 @@
         <result column="orders_id" jdbcType="INTEGER" property="ordersId"/>
         <result column="order_detail_id" jdbcType="INTEGER" property="orderDetailId"/>
         <result column="user_id" jdbcType="INTEGER" property="userId"/>
-        <result column="user_address_id" jdbcType="INTEGER" property="userAddressId"/>
-        <result column="googs_id" jdbcType="INTEGER" property="googsId"/>
+        <result column="userAddressId" jdbcType="INTEGER" property="userAddressId"/>
+        <result column="goods_id" jdbcType="INTEGER" property="googsId"/>
         <result column="logistics_order_name" jdbcType="VARCHAR" property="logisticsOrderName"/>
         <result column="resp_id" jdbcType="INTEGER" property="respId"/>
         <result column="logistics_orders_id" jdbcType="VARCHAR" property="logisticsOrdersId"/>
@@ -21,50 +21,103 @@
         <result column="purchase_price" jdbcType="VARCHAR" property="purchasePrice"/>
         <result column="pay_method_name" jdbcType="VARCHAR" property="payMethodName"/>
         <result column="pay_method_type" jdbcType="INTEGER" property="payMethodType"/>
-        <result column="order_detail_status" jdbcType="VARCHAR" property="orderDetailStatus"/>
+        <result column="hf_status" jdbcType="VARCHAR" property="orderDetailStatus"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
-        <result column="purchase_quantity" jdbcType="INTEGER" property="purchaseQuantity"/>
+        <result column="quantity" jdbcType="INTEGER" property="purchaseQuantity"/>
         <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
         <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
         <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="hf_remark" jdbcType="VARCHAR" property="hfRemark"/>
+        <result column="payment_name" jdbcType="VARCHAR" property="paymentName"/>
         <result column="good_name" jdbcType="VARCHAR" property="goodName"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
         <result column="file_id" jdbcType="VARCHAR" property="fileId"/>
+
+        <result column="sell_price" jdbcType="INTEGER" property="sellPrice"/>
+        <result column="actual_price" jdbcType="INTEGER" property="actualPrice"/>
+        <result column="orderDesc" jdbcType="VARCHAR" property="orderDesc"/>
+        <result column="orderCreate_time" jdbcType="TIMESTAMP" property="orderCreateTime"/>
+        <result column="freight" jdbcType="INTEGER" property="freight"/>
+
+        <result column="detail" jdbcType="VARCHAR" property="detail"/>
+        <result column="contact" jdbcType="VARCHAR" property="contact"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <collection property="goodsSpecList" ofType="com.hanfu.order.center.manual.model.GoodsSpec">
 		   <result column="hf_value" property="specValue" jdbcType="VARCHAR"/>
 		</collection>
+
+
     </resultMap>
+    <!--<select id="selectOrderDetail" resultMap="Map">-->
+		<!--SELECT-->
+		<!--h2.id,-->
+		<!--h3.create_time,-->
+		<!--h3.modify_time,-->
+		<!--h7.hf_province,-->
+		<!--h7.hf_city,-->
+		<!--h7.hf_conty,-->
+		<!--h7.is_fault_address,-->
+		<!--h7.hf_address_detail,-->
+		<!--h4.username,-->
+		<!--h3.purchase_quantity,-->
+		<!--h4.phone,-->
+		<!--h5.hf_name,-->
+		<!--h2.amount,-->
+		<!--h3.googs_id,-->
+		<!--h3.order_detail_status,-->
+		<!--h8.file_id,-->
+		<!--h9.hf_value,-->
+		<!--h4.nick_name-->
+		<!--FROM-->
+		<!--hf_order_logistics h1-->
+		<!--LEFT JOIN hf_orders h2 ON h1.orders_id = h2.id-->
+		<!--LEFT JOIN hf_orders_detail h3 ON h1.order_detail_id = h3.id-->
+		<!--LEFT JOIN hf_user h4 ON h1.user_id = h4.id-->
+		<!--LEFT JOIN hf_goods h5 ON h1.googs_id = h5.id-->
+		<!--LEFT JOIN hf_user_address h7 ON h1.user_address_id = h7.id-->
+		<!--LEFT JOIN hf_goods_pictrue h8 ON h8.goods_id = h5.id-->
+		<!--LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id-->
+	<!--WHERE-->
+	<!--h1.orders_id = #{ordersId}-->
+    <!--</select>-->
+
     <select id="selectOrderDetail" resultMap="Map">
 		SELECT
 		h2.id,
 		h3.create_time,
 		h3.modify_time,
-		h7.hf_province,
-		h7.hf_city,
-		h7.hf_conty,
-		h7.is_fault_address,
-		h7.hf_address_detail,
+		h7.address,
+		h7.detail,
+		h7.contact,
+		h7.phone,
+		h7.hf_desc,
 		h4.username,
-		h3.purchase_quantity,
-		h4.phone,
-		h5.hf_name,
+		h3.quantity,
+		h5.hf_name "good_name",
 		h2.amount,
-		h3.googs_id,
-		h3.order_detail_status,
-		h8.file_id,
+		h3.goods_id,
+		h3.hf_status,
 		h9.hf_value,
-		h4.nick_name
+		h4.nick_name,
+		h3.sell_price,
+		h3.actual_price,
+		h3.hf_desc "orderDesc",
+		h3.create_time "orderCreate_time",
+		h3.freight,
+		h2.order_type,
+		h2.payment_name,
+		h2.hf_remark,
+		h2.order_status
 		FROM
-		hf_order_logistics h1
-		LEFT JOIN hf_orders h2 ON h1.orders_id = h2.id
-		LEFT JOIN hf_orders_detail h3 ON h1.order_detail_id = h3.id
-		LEFT JOIN hf_user h4 ON h1.user_id = h4.id
-		LEFT JOIN hf_goods h5 ON h1.googs_id = h5.id
-		LEFT JOIN hf_user_address h7 ON h1.user_address_id = h7.id
-		LEFT JOIN hf_goods_pictrue h8 ON h8.goods_id = h5.id
+        hf_order h2
+		LEFT JOIN hf_order_detail h3 ON h2.id = h3.order_id
+		LEFT JOIN hf_user h4 ON h2.user_id = h4.id
+		LEFT JOIN hf_goods h5 ON h3.goods_id = h5.id
+		LEFT JOIN hf_order_address h7 ON h2.id = h7.order_id
 		LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id
 	WHERE
-	h1.orders_id = #{ordersId}
+	h2.id = #{ordersId} and h2.id_deleted=0
     </select>
 </mapper>

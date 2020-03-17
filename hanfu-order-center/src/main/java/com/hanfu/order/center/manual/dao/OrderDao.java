@@ -13,7 +13,7 @@ public interface OrderDao {
 
     List<HfOrderStatus> selectOrderStatus();
 
-    List<HfOrdersDetail> selectOrderDetail(Integer id);
+    OrderInfo selectOrderDetail(Integer id);
 
     List<OrderInfo> selectOrder(OrderFindValue orderFindValue);
 

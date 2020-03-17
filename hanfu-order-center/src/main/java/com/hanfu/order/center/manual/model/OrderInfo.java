@@ -66,7 +66,7 @@ public class OrderInfo implements Serializable {
     @ApiModelProperty(required = true, value = "用户名")
     private String userName;
     @ApiModelProperty(required = true, value = "图片Id")
-    private Integer fileId;
+    private List<Integer> fileIds;
     @ApiModelProperty(required = true, value = "运费")
     private Integer fare;
     @ApiModelProperty(required = true, value = "评价")
@@ -96,6 +96,20 @@ public class OrderInfo implements Serializable {
 //	public void setSpecValue(String specValue) {
 //		this.specValue = specValue;
 //	}
+
+    private Integer sellPrice;
+    private Integer actualPrice;
+    private String orderDesc;
+    private LocalDateTime orderCreateTime;
+    private String freight;
+
+
+    private String paymentName;
+    private String hfRemark;
+    private String orderStatus;
+
+    private String detail;
+    private String contact;
 
 	public String getGoodName() {
 		return goodName;
@@ -177,15 +191,15 @@ public class OrderInfo implements Serializable {
 		this.fare = fare;
 	}
 
-	public Integer getFileId() {
-		return fileId;
-	}
+    public List<Integer> getFileIds() {
+        return fileIds;
+    }
 
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
+    public void setFileIds(List<Integer> fileIds) {
+        this.fileIds = fileIds;
+    }
 
-	public String getUserName() {
+    public String getUserName() {
         return userName;
     }
 
@@ -409,4 +423,83 @@ public class OrderInfo implements Serializable {
         this.lastModifier = lastModifier;
     }
 
+    public Integer getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(Integer sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
+    public Integer getActualPrice() {
+        return actualPrice;
+    }
+
+    public void setActualPrice(Integer actualPrice) {
+        this.actualPrice = actualPrice;
+    }
+
+    public String getOrderDesc() {
+        return orderDesc;
+    }
+
+    public void setOrderDesc(String orderDesc) {
+        this.orderDesc = orderDesc;
+    }
+
+    public LocalDateTime getOrderCreateTime() {
+        return orderCreateTime;
+    }
+
+    public void setOrderCreateTime(LocalDateTime orderCreateTime) {
+        this.orderCreateTime = orderCreateTime;
+    }
+
+    public String getFreight() {
+        return freight;
+    }
+
+    public void setFreight(String freight) {
+        this.freight = freight;
+    }
+
+    public String getPaymentName() {
+        return paymentName;
+    }
+
+    public void setPaymentName(String paymentName) {
+        this.paymentName = paymentName;
+    }
+
+    public String getHfRemark() {
+        return hfRemark;
+    }
+
+    public void setHfRemark(String hfRemark) {
+        this.hfRemark = hfRemark;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 }

@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.hanfu.inner.model.product.center.HfGoodsPictrue;
+import com.hanfu.order.center.dao.*;
+import com.hanfu.order.center.manual.model.OrderInfo;
+import com.hanfu.order.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +23,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
-import com.hanfu.order.center.dao.HfOrderStatusMapper;
-import com.hanfu.order.center.dao.HfOrdersDetailMapper;
-import com.hanfu.order.center.dao.HfOrdersMapper;
 import com.hanfu.order.center.manual.dao.OrderDao;
 import com.hanfu.order.center.manual.model.OrderFindValue;
 import com.hanfu.order.center.manual.model.OrdersInfo;
-import com.hanfu.order.center.model.HfOrderLogistics;
-import com.hanfu.order.center.model.HfOrderStatus;
-import com.hanfu.order.center.model.HfOrderStatusExample;
-import com.hanfu.order.center.model.HfOrders;
-import com.hanfu.order.center.model.HfOrdersDetail;
-import com.hanfu.order.center.model.HfOrdersDetailExample;
 import com.hanfu.order.center.request.HfOrderLogisticsRequest;
 import com.hanfu.order.center.request.HfOrdersDetailRequest;
 import com.hanfu.order.center.request.HfOrdersRequest;
@@ -64,6 +59,8 @@ public class OrderController {
 	OrderDao orderDao;
 	@Autowired
 	HfOrderStatusMapper hfOrderStatusMapper;
+	@Autowired
+	HfGoodsPictrueMapper hfGoodsPictrueMapper;
 
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -219,7 +216,13 @@ public class OrderController {
 	public ResponseEntity<JSONObject> queryOrderList(@RequestParam Integer id)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrderDetail(id)));
+		OrderInfo orderInfos= orderDao.selectOrderDetail(id);
+		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+		example.createCriteria().andGoodsIdEqualTo(orderInfos.getGoogsId());
+		List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
+		List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
+		orderInfos.setFileIds(fileIds);
+		return builder.body(ResponseUtils.getResponseBody(orderInfos));
 	}
 
 	@ApiOperation(value = "打印订单", notes = "打印订单")
