@@ -7,6 +7,8 @@ import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
 import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
+import com.hanfu.product.center.model.HfCategory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

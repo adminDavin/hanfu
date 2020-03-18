@@ -210,7 +210,42 @@ public class HfAuthController {
         }
         PageInfo<UserInfo> page = new PageInfo<UserInfo>(result);
         return builder.body(ResponseUtils.getResponseBody(page));
-    }@RequestMapping(value = "/update", method = RequestMethod.POST)
+    }
+    
+    
+    @RequestMapping(value = "/findUserDetails", method = RequestMethod.GET)
+    @ApiOperation(value = "后台查询用户详情", notes = "后台查询用户详情")
+
+    public ResponseEntity<JSONObject> findUserDetails(Integer userId) throws Exception {
+
+        	BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        	HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+        	if(hfUser == null) {
+        		return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
+        	}
+            UserInfo info = new UserInfo();
+            info.setCreateDate(hfUser.getCreateDate());
+            info.setAddress(hfUser.getAddress());
+            info.setSex(hfUser.getSex());
+            info.setBirthDay(hfUser.getBirthDay());
+            info.setFileId(hfUser.getFileId());
+            info.setEmail(hfUser.getEmail());
+            info.setInvitationCode(hfUser.getInvitationCode());
+            info.setOwnInvitationCode(hfUser.getOwnInvitationCode());
+            info.setNickName(hfUser.getNickName());
+            info.setPhone(hfUser.getPhone());
+            info.setId(hfUser.getId());
+            HUserBalanceExample example2 = new HUserBalanceExample();
+            example2.createCriteria().andUserIdEqualTo(hfUser.getId());
+            if(hUserBalanceMapper.selectByExample(example2).isEmpty()) {
+            	info.setHfBalance(0);
+            }else {
+            	hUserBalanceMapper.selectByExample(example2).get(0).getHfBalance();
+            }
+        return builder.body(ResponseUtils.getResponseBody(info));
+    }
+    
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
     public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
     	
