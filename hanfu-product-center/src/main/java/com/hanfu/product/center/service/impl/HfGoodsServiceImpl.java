@@ -1,6 +1,7 @@
 package com.hanfu.product.center.service.impl;
 
 import com.hanfu.product.center.dao.HfGoodsGroupMapper;
+import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.service.HfGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +19,27 @@ import java.util.List;
 @Transactional
 public class HfGoodsServiceImpl implements HfGoodsService {
     @Autowired
-    HfGoodsGroupMapper hfGoodsMapper;
+    HfGoodsMapper hfGoodsMapper;
     @Override
     public List<HfGoods>  selectByPrimaryKey(Integer id) {
-        return hfGoodsMapper.selectByPrimaryKey(id);
+//        return hfGoodsMapper.selectByPrimaryKey(id);
+    	return null;
     }
 
     @Override
     public List<HfGoods> selectByName(String name) {
-        return hfGoodsMapper.selectByName(name);
+    	return null;
+//        return hfGoodsMapper.selectByName(name);
     }
 
     @Override
     public Integer selectByPrice(Integer id) {
-        return hfGoodsMapper.selectByPrice(id);
+    	return null;
+//        return hfGoodsMapper.selectByPrice(id);
     }
 
     @Override
     public List<HfGoods> selectAll() {
-        return hfGoodsMapper.selectAll();
+        return hfGoodsMapper.selectByExample(null);
     }
 }

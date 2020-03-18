@@ -1,11 +1,16 @@
 package com.hanfu.product.center.service.impl;
 
+import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.SeckillDao;
+import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.Seckill;
 import com.hanfu.product.center.service.SeckillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +19,8 @@ import java.util.List;
 public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private SeckillDao seckillDao;
+    @Autowired
+    private HfGoodsMapper hfGoodsMapper;
     @Override
     public Integer getRepertory(Integer id) {
         return seckillDao.getRepertory(id);
@@ -24,9 +31,15 @@ public class SeckillServiceImpl implements SeckillService {
         seckillDao.updateRepertory(goodsId,bossId,repertory);
     }
   @Override
-    public void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Date stopTime, Integer categoryId, Double price, Integer repertory) {
+    public void insertSeckill(Integer bossId, Integer goodsId, String startTime, String stopTime, Integer categoryId, Double price, Integer repertory) throws Exception {
       Short isDeleted=0;
-      seckillDao.insertSeckill(bossId,goodsId,startTime,stopTime, categoryId,price, repertory,isDeleted);
+      HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
+      if(goods == null) {
+    	  throw new Exception("物品不存在");
+      }
+      Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+      Date time2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+      seckillDao.insertSeckill(bossId,goodsId,time1,time2,categoryId,price, repertory,isDeleted);
     }
 
 
