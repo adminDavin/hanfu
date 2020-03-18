@@ -17,7 +17,7 @@ import java.util.List;
 public interface SeckillService {
     Integer getRepertory(Integer id);
     void updateRepertory(Integer goodsId, Integer bossId, Integer repertory);
-    void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Date stopTime, Integer categoryId, Double price, Integer repertory);
+    void insertSeckill(Integer bossId, Integer goodsId, String startTime, String stopTime, Integer categoryId, Double price, Integer repertory) throws Exception;
     void updateIsDeleted(Integer goodsId, Short isDeleted, Integer bossId);
     void deleteByPrimaryKey(Integer id);
     void updateByPrimaryKey(Integer id, Integer bossId, Integer goodsId, Date startTime, Date stopTime, Integer categoryId, Double price,

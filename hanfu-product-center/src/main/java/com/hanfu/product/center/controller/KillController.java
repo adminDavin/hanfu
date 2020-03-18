@@ -47,10 +47,9 @@ public class KillController {
             @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
 //    添加秒杀表
-    public Object insertSeckill( Integer goodsId,Date startTime,Date stopTime,  Double   price, Integer repertory) {
+    public Object insertSeckill( Integer goodsId,String startTime,String stopTime,  Double price, Integer repertory) throws Exception {
         Integer categoryId=0;
-            Integer bossId=1;
-//           Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+        Integer bossId=1;
             seckillService.insertSeckill( bossId, goodsId, startTime,stopTime,  categoryId,  price, repertory);
 //        } catch (ParseException e) {
 //            e.printStackTrace();
