@@ -1,6 +1,7 @@
-package com.hanfu.user.center.config;
+package com.hanfu.product.center.config;
 
 import com.hanfu.user.center.service.PermissionService;
+import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 public class MyInterceptor implements HandlerInterceptor {
-    @Autowired
-    PermissionService permissionService;
+
+    Permission permissionService = new Permission();
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
@@ -26,14 +27,6 @@ public class MyInterceptor implements HandlerInterceptor {
 //    private HfAdminMapper hfAdminMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        System.out.println(request.getSession());
-//        System.out.println(request.getParameter("name"));
-//        System.out.println(request.getSession().getAttribute("userId"));
-//        Example example = new Example(HfAuth.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("authKey",request.getParameter("userId"));
-//        List<HfAuth> hfAuthList=hfAdminMapper.selectByExample(example);
-//        hfAuthList.get(0).getUserId();
         Cookie[] cookies = request.getCookies();
         if (cookies==null){
             return false;

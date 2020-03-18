@@ -2,7 +2,9 @@ package com.hanfu.user.center.controller;
 
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.service.HfUserBalanceService;
+import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.user.center.utils.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -56,7 +58,7 @@ public class HfUserBalanceController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		return builder.body(ResponseUtils.getResponseBody(hUserBalanceMapper.selectByExample(example)));
 	}
-
+	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
 	@RequestMapping(value = "/setCode",method = RequestMethod.GET)
 	@ApiOperation(value = "生成二维码",notes = "生成二维码")
 	@ApiImplicitParams({

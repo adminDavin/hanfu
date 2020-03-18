@@ -84,8 +84,6 @@ public class HfAuthController {
 			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
 			@RequestParam(name = "passwd", required = false) Integer passwd) throws Exception {
 		Integer userId = null;
-		Cookie cookie = new Cookie("autologin", authKey);
-		response.addCookie(cookie);
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (passwd == null) {
@@ -126,6 +124,9 @@ public class HfAuthController {
 		}
 
 		HfUser user = hfUserMapper.selectByPrimaryKey(userId);
+		Cookie cookie = new Cookie("autologin", authKey);
+		response.addCookie(cookie);
+		redisTemplate.opsForValue().set("autologin", authKey);
 		return builder.body(ResponseUtils.getResponseBody(user));
 	}
 
