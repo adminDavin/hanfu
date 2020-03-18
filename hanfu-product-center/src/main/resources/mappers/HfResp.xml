@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.HfRespGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.HfResp" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="googs_id" property="googsId" jdbcType="INTEGER" />
+    <result column="warehouse_id" property="warehouseId" jdbcType="INTEGER" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="hf_status" property="hfStatus" jdbcType="INTEGER" />
+    <result column="hf_desc" property="hfDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="last_modifier" property="lastModifier" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, googs_id, warehouse_id, quantity, hf_status, hf_desc, create_time, modify_time, 
+    last_modifier, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hf_resp
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from hf_resp
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hanfu.product.center.model.HfResp" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_resp (googs_id, warehouse_id, quantity, 
+      hf_status, hf_desc, create_time, 
+      modify_time, last_modifier, is_deleted
+      )
+    values (#{googsId,jdbcType=INTEGER}, #{warehouseId,jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER},
+      #{hfStatus,jdbcType=INTEGER}, #{hfDesc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{lastModifier,jdbcType=VARCHAR}, #{isDeleted,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hanfu.product.center.model.HfResp" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into hf_resp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="googsId != null" >
+        googs_id,
+      </if>
+      <if test="warehouseId != null" >
+        warehouse_id,
+      </if>
+      <if test="quantity != null" >
+        quantity,
+      </if>
+      <if test="hfStatus != null" >
+        hf_status,
+      </if>
+      <if test="hfDesc != null" >
+        hf_desc,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="lastModifier != null" >
+        last_modifier,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="googsId != null" >
+        #{googsId,jdbcType=INTEGER},
+      </if>
+      <if test="warehouseId != null" >
+        #{warehouseId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="hfStatus != null" >
+        #{hfStatus,jdbcType=INTEGER},
+      </if>
+      <if test="hfDesc != null" >
+        #{hfDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifier != null" >
+        #{lastModifier,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.product.center.model.HfResp" >
+    update hf_resp
+    <set >
+      <if test="googsId != null" >
+        googs_id = #{googsId,jdbcType=INTEGER},
+      </if>
+      <if test="warehouseId != null" >
+        warehouse_id = #{warehouseId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="hfStatus != null" >
+        hf_status = #{hfStatus,jdbcType=INTEGER},
+      </if>
+      <if test="hfDesc != null" >
+        hf_desc = #{hfDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifier != null" >
+        last_modifier = #{lastModifier,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hanfu.product.center.model.HfResp" >
+    update hf_resp
+    set googs_id = #{googsId,jdbcType=INTEGER},
+      warehouse_id = #{warehouseId,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=INTEGER},
+      hf_status = #{hfStatus,jdbcType=INTEGER},
+      hf_desc = #{hfDesc,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      last_modifier = #{lastModifier,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

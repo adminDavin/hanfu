@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.dao.GroupMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.product.center.model.Group" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="boss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="stop_time" property="stopTime" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="repertory" property="repertory" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="Base" type="com.hanfu.product.center.model.Group" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="aprice" property="price" jdbcType="DOUBLE" />
+    <result column="anumber" property="number" jdbcType="INTEGER" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+    <association property="hfGoods" javaType="com.hanfu.product.center.model.HfGoods">
+      <id column="bid" property="id" jdbcType="INTEGER" />
+      <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+
+  <resultMap id="Date" type="com.hanfu.product.center.model.Group" >
+    <id column="aid" property="id" jdbcType="INTEGER" />
+    <result column="aboss_id" property="bossId" jdbcType="INTEGER" />
+    <result column="agoods_id" property="goodsId" jdbcType="INTEGER" />
+    <result column="aprice" property="price" jdbcType="DOUBLE" />
+    <result column="anumber" property="number" jdbcType="INTEGER" />
+    <result column="astart_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="astop_time" property="stopTime" jdbcType="TIMESTAMP" />
+    <result column="ais_deleted" property="isDeleted" jdbcType="SMALLINT" />
+    <result column="arepertory" property="repertory" jdbcType="INTEGER" />
+    <association property="hfGoods" javaType="com.hanfu.product.center.model.HfGoods">
+      <result column="bgoods_desc" property="goodsDesc" jdbcType="VARCHAR" />
+      <result column="bhf_name" property="hfName" jdbcType="VARCHAR" />
+    </association>
+    <collection  property="fileDesc" ofType="com.hanfu.product.center.model.FileDesc">
+      <result column="did" property="id" jdbcType="INTEGER" />
+      <result column="dremote_filename" property="remoteFilename" jdbcType="VARCHAR" />
+    </collection >
+  </resultMap>
+
+
+  <select id="selectDate"  parameterType="Integer"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE a.id=#{id}
+    </select>
+
+  <select id="selectCategory"  parameterType="Integer"  resultMap="Date" >
+        SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+         b.goods_desc bgoods_desc,b.hf_name bhf_name,d.id did,d.remote_filename dremote_filename
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_goods_pictrue c  on   b.id =c.goods_id
+        left join file_desc d   on c.file_id =d.id   WHERE b.category_id =#{id} and a.is_deleted=0
+    </select>
+
+
+  <select id="selectCategoryName"   resultType="java.lang.String" >
+        SELECT distinct c.hf_name
+        FROM
+        group_id a left  join  hf_goods b  on  a. goods_id =b.id   left join hf_category c  on   b.category_id =c.id WHERE a.is_deleted=0
+    </select>
+
+
+
+
+  <sql id="Base_Column_List" >
+    id,  boss_id, goods_id, price, number, start_time, stop_time,
+    is_deleted,repertory
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_id
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="seleteGroup" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_id
+    where boss_id = #{bossId} order by id
+  </select>
+
+  <select id="seleteAll" resultMap="Base" parameterType="java.lang.Integer" >
+    select a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id,  a.price  aprice, a.number anumber, a.start_time astart_time, a.stop_time astop_time,
+         a.repertory arepertory,a.is_deleted ais_deleted,
+        b.id bid, b.goods_desc bgoods_desc
+    from group_id a left join   hf_goods b on    a.goods_id =b.id
+    where a.boss_id = #{bossId} order by a.id
+  </select>
+
+  <select id="seleteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from group_id
+    where goods_id = #{goodsId} order by id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from group_id
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insert"  >
+    insert into  group_id ( boss_id, goods_id,price, number, start_time, stop_time,  repertory )
+    values ( #{bossId}, #{goodsId},#{price}, #{number}, #{startTime},#{stopTime}, #{repertory})
+  </insert>
+
+
+  <insert id="insertSelective" parameterType="com.hanfu.product.center.model.Group" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into group_id
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bossId != null" >
+        boss_id,
+      </if>
+      <if test="goodsId != null" >
+        goods_id,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="stopTime != null" >
+        stop_time,
+      </if>
+      <if test="repertory != null" >
+        repertory,
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bossId != null" >
+        #{bossId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null" >
+        #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repertory != null" >
+        #{repertory,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null" >
+        #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.hanfu.product.center.model.Group" >
+    update group_id
+    <set >
+      <if test="bossId != null" >
+        boss_id = #{bossId,jdbcType=INTEGER},
+      </if>
+      <if test="goodsId != null" >
+        goods_id = #{goodsId,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null" >
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repertory != null" >
+        #{repertory,jdbcType=INTEGER},
+      </if>
+      <if test="isDeleted != null" >
+        is_deleted = #{isDeleted,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" >
+    update group_id
+    set
+      boss_id = #{bossId},
+      goods_id = #{goodsId},
+      price = #{price},
+      number = #{number},
+      start_time = #{startTime},
+      stop_time = #{stopTime},
+       repertory = #{repertory}
+      where id = #{groupId}
+  </update>
+
+
+
+  <update id="updateRrepertory" parameterType="java.lang.Integer" >
+    update group_id
+    set
+       repertory = #{repertory}
+    where id = #{id}
+  </update>
+  <update id="updateState" parameterType="java.lang.Integer" >
+    update group_id
+    set
+       is_deleted = 1
+    where id = #{id}
+  </update>
+
+  <update id="updateIsDeleted" parameterType="java.lang.Integer" >
+    update group_id
+    set
+       is_deleted = #{isDeleted}
+    where id = #{id}
+  </update>
+</mapper>
