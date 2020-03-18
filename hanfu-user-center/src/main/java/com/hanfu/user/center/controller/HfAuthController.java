@@ -53,7 +53,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api
-@RequestMapping("/hf-auth")
+@RequestMapping("/hfAuth")
 @CrossOrigin
 public class HfAuthController {
 
