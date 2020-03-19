@@ -102,7 +102,6 @@
 		h2.amount,
 		h3.goods_id,
 		h3.hf_status,
-		h9.hf_value,
 		h4.nick_name,
 		h3.sell_price,
 		h3.actual_price,
@@ -120,7 +119,6 @@
 		LEFT JOIN hf_user h4 ON h2.user_id = h4.id
 		LEFT JOIN hf_goods h5 ON h3.goods_id = h5.id
 		LEFT JOIN hf_order_address h7 ON h2.id = h7.order_id
-		LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id
 		LEFT JOIN product h10 ON h5.product_id=h10.id
 	WHERE
 	h2.id = #{ordersId} and h2.id_deleted=0

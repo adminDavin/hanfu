@@ -231,9 +231,9 @@ public class OrderController {
 		if (hfOrderDetailList.size()!=0 || orderInfos.getGoogsId()!=null) {
 			HfGoodsPictrueExample example = new HfGoodsPictrueExample();
 			example.createCriteria().andGoodsIdEqualTo(orderInfos.getGoogsId());
-			List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
-			List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
-			orderInfos.setFileIds(fileIds);
+//			List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
+//			List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
+//			orderInfos.setFileIds(fileIds);
 			HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(orderInfos.getGoogsId());
 			ProductInstanceExample example2 = new ProductInstanceExample();
 			example2.createCriteria().andProductIdEqualTo(hfGoods.getProductId());
