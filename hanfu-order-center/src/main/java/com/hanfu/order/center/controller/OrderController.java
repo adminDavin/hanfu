@@ -63,6 +63,12 @@ public class OrderController {
 	HfGoodsPictrueMapper hfGoodsPictrueMapper;
 	@Autowired
 	HfOrderDetailMapper hfOrderDetailMapper;
+	@Autowired
+	HfGoodMapper hfGoodsMapper;
+	@Autowired
+	ProductInstanceMapper productInstanceMapper;
+	@Autowired
+	HfBossMapper hfBossMapper;
 
 	@ApiOperation(value = "查询订单", notes = "查询订单")
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -228,6 +234,13 @@ public class OrderController {
 			List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
 			List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
 			orderInfos.setFileIds(fileIds);
+			HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(orderInfos.getGoogsId());
+			ProductInstanceExample example2 = new ProductInstanceExample();
+			example2.createCriteria().andProductIdEqualTo(hfGoods.getProductId());
+			Integer bossID= productInstanceMapper.selectByExample(example2).get(0).getBossId();
+			HfBoss hfBoss= hfBossMapper.selectByPrimaryKey(bossID);
+			orderInfos.setBossId(bossID);
+			orderInfos.setBossName(hfBoss.getName());
 		}
 		return builder.body(ResponseUtils.getResponseBody(orderInfos));
 	}

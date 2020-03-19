@@ -45,6 +45,7 @@
         <result column="contact" jdbcType="VARCHAR" property="contact"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
         <collection property="goodsSpecList" ofType="com.hanfu.order.center.manual.model.GoodsSpec">
 		   <result column="hf_value" property="specValue" jdbcType="VARCHAR"/>
 		</collection>
@@ -111,7 +112,8 @@
 		h2.order_type,
 		h2.payment_name,
 		h2.hf_remark,
-		h2.order_status
+		h2.order_status,
+		h10.hf_name "productName"
 		FROM
         hf_order h2
 		LEFT JOIN hf_order_detail h3 ON h2.id = h3.order_id
@@ -119,6 +121,7 @@
 		LEFT JOIN hf_goods h5 ON h3.goods_id = h5.id
 		LEFT JOIN hf_order_address h7 ON h2.id = h7.order_id
 		LEFT JOIN hf_goods_spec h9 ON h9.goods_id = h5.id
+		LEFT JOIN product h10 ON h5.product_id=h10.id
 	WHERE
 	h2.id = #{ordersId} and h2.id_deleted=0
     </select>

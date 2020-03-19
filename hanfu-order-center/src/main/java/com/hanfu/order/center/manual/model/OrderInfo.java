@@ -113,6 +113,11 @@ public class OrderInfo implements Serializable {
 
     private String orderCode;
 
+    private Integer bossId;
+    private String bossName;
+
+    private String productName;
+
 	public String getGoodName() {
 		return goodName;
 	}
@@ -511,5 +516,29 @@ public class OrderInfo implements Serializable {
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
+    }
+
+    public Integer getBossId() {
+        return bossId;
+    }
+
+    public void setBossId(Integer bossId) {
+        this.bossId = bossId;
+    }
+
+    public String getBossName() {
+        return bossName;
+    }
+
+    public void setBossName(String bossName) {
+        this.bossName = bossName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }
