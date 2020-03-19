@@ -1,6 +1,7 @@
 package com.hanfu.product.center.service;
 
 import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.Product;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.hanfu.product.center.service.impl;
 
-import com.hanfu.product.center.dao.HfGoodsGroupMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.model.HfGoods;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.service.HfGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

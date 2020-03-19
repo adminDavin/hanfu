@@ -64,7 +64,7 @@
     <select id="selectAll"  parameterType="Integer" resultMap="Base"  >
         SELECT  a.id aid, a.boss_id  aboss_id, a.goods_id agoods_id, a.start_time astart_time, a.stop_time astop_time, a.category_id  acategory_id,
         a.price  aprice, a.repertory arepertory,a.is_deleted ais_deleted,
-         b.goods_desc bgoods_desc
+         b.goods_desc bproduct_desc
         FROM
         seckill  a left  join  hf_goods b on    a. goods_id =b.id    WHERE   a.boss_id=#{bossId}
     </select>

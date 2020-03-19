@@ -12,11 +12,9 @@ public class Seckill implements Serializable{
     private Integer id;
     private Integer bossId;
     private Integer goodsId;
-    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat( timezone="GMT+8",pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date startTime;
-    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-    @JsonFormat(timezone="GMT+8" ,pattern = "yyyy-mm-dd hh:mm:ss" )
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date stopTime;
     private Integer categoryId;
     private Double   price;
