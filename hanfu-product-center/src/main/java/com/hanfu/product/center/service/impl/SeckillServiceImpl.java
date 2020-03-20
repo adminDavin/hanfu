@@ -31,15 +31,15 @@ public class SeckillServiceImpl implements SeckillService {
         seckillDao.updateRepertory(goodsId,bossId,repertory);
     }
   @Override
-    public void insertSeckill(Integer bossId, Integer goodsId, String startTime, String stopTime, Integer categoryId, Double price, Integer repertory) throws Exception {
+    public void insertSeckill(Integer bossId, Integer goodsId, Date startTime, Date stopTime, Integer categoryId, Double price, Integer repertory) throws Exception {
       Short isDeleted=0;
       HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodsId);
       if(goods == null) {
     	  throw new Exception("物品不存在");
       }
-      Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
-      Date time2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
-      seckillDao.insertSeckill(bossId,goodsId,time1,time2,categoryId,price, repertory,isDeleted);
+//      Date time1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime);
+//      Date time2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(stopTime);
+      seckillDao.insertSeckill(bossId,goodsId,startTime,stopTime,categoryId,price, repertory,isDeleted);
     }
 
 
