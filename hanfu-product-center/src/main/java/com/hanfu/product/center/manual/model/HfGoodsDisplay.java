@@ -2,6 +2,7 @@ package com.hanfu.product.center.manual.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanfu.product.center.request.CommonRequest;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -69,7 +70,9 @@ public class HfGoodsDisplay extends CommonRequest {
     private Integer linePrice;
     @ApiModelProperty(required = false, value = "榜单id")
     private Integer seniorityId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime createTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime modifyTime;
     private short isDeleted;
     

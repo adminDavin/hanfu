@@ -252,9 +252,8 @@
 		h.price_id,h1.hf_name
 		productCategoryName,
 		h1.id categoryId,p.id productId,h.stone_id,
-		h.create_time,h.modify_time,h.cancel_id,h.claim,
-		h.is_deleted,h.member,
-		h.evaluate
+		h.create_time,h.modify_time,
+		h.is_deleted
 		FROM
 		hf_goods h
 		JOIN
@@ -265,10 +264,6 @@
 		hf_category h1
 		ON
 		h.category_id = h1.id
-		JOIN
-		cancel h4
-		ON
-		h.cancel_id = h4.id
 		WHERE
 		h.id=#{goodsId}
 	</select>

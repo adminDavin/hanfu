@@ -72,7 +72,6 @@ public class HfProductController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfProductDisplay> products = hfProductDao.selectProductForRotation(quantity);
         Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
-
         HfStoneExample hfStoneExample = new HfStoneExample();
         hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
         List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);

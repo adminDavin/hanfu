@@ -187,4 +187,15 @@ public class HfProductDisplay implements Serializable {
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
+
+	@Override
+	public String toString() {
+		return "HfProductDisplay [id=" + id + ", productName=" + productName + ", productDesc=" + productDesc
+				+ ", stoneId=" + stoneId + ", fileIds=" + fileIds + ", stoneName=" + stoneName + ", categoryId="
+				+ categoryId + ", categoryName=" + categoryName + ", brandId=" + brandId + ", branName=" + branName
+				+ ", fileId=" + fileId + ", priceArea=" + priceArea + ", defaultGoodsId=" + defaultGoodsId
+				+ ", modifyTime=" + modifyTime + ", linePrice=" + linePrice + ", isDeleted=" + isDeleted
+				+ ", lastModifier=" + lastModifier + ", createTime=" + createTime + "]";
+	}
+    
 }
