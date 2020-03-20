@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="C:\Users\administor\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="D:\work\eclipse\repository\repositoryHanfu\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -206,6 +206,12 @@
         </table>
         <table schema="user_center" tableName="hf_order_group_detail"
                domainObjectName="HfOrderGroupDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="distribution_product"
+               domainObjectName="DistributionProduct">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

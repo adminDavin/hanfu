@@ -1,6 +1,7 @@
 package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -145,7 +146,21 @@ public class SeniorityController {
     @RequestMapping(value = "/findSeniorityInfo", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> findSeniorityInfo() throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(hfSeniorityMapper.selectByExample(null)));
+        List<HfSeniority> list = hfSeniorityMapper.selectByExample(null);
+        List<HfSeniorityRequest> result = new ArrayList<HfSeniorityRequest>();
+        for (int i = 0; i < list.size(); i++) {
+			HfSeniority hfSeniority = list.get(i);
+			HfSeniorityRequest request = new HfSeniorityRequest();
+			request.setId(hfSeniority.getId());
+			request.setSeniorityName(hfSeniority.getSeniorityName());
+			request.setFileId(hfSeniority.getFileId());
+			request.setCreateTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss")
+                    .format(hfSeniority.getCreateTime().plusHours(8L)));
+			request.setModifityTime(DateTimeFormatter.ofPattern("yyyy-MM-dd HH：mm：ss")
+                    .format(hfSeniority.getModifityTime().plusHours(8L)));
+			result.add(request);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
     }
 
 
