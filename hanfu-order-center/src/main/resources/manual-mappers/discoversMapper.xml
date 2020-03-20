@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.order.center.manual.dao.DiscoverDao">
+    <resultMap id="selectDiscoverIdMap" type="com.hanfu.order.center.manual.model.DiscoverUser">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="discoverId" jdbcType="INTEGER" property="discoverId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
+
+    </resultMap>
+
+    <select id="selectDiscoverAll" resultMap="selectDiscoverIdMap">
+        SELECT
+	h2.id,
+	h1.id "discoverId",
+	h2.nick_name,
+	h2.file_id
+FROM
+	discover h1
+	LEFT JOIN hf_user h2 ON h1.user_id = h2.id
+        where 1=1
+	<if test="userId != null and userId!= ''">
+        and h2.id=#{userId}
+    </if>
+    </select>
+    </mapper>

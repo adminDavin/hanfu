@@ -33,6 +33,8 @@ public class Product {
 
     private Short isDeleted;
 
+    private Integer fileId;
+
     public Integer getId() {
         return id;
     }
@@ -119,5 +121,13 @@ public class Product {
 
     public void setClaim(Short claim) {
         this.claim = claim;
+    }
+
+    public Integer getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 }
