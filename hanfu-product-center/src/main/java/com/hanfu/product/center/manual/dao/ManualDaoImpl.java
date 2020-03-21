@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.UserInfo;
+import com.hanfu.user.center.model.HfUser;
 
 
 @Repository("dbDao")
@@ -34,6 +35,12 @@ public class ManualDaoImpl implements ManualDao {
     public List<Categories> selectCategories() {
         List<Categories> result = sqlSessionTemplate.selectList("selectCategories");
         return result;
+    }
+    
+    @Override
+    public HfUser select(Integer userId) {
+    	HfUser result = sqlSessionTemplate.selectOne("select");
+    	return result;
     }
 
 }

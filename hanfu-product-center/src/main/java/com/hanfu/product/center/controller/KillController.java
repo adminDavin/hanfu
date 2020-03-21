@@ -38,13 +38,8 @@ public class KillController {
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
     @ResponseBody
     @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "startTime", value = "秒杀开始时间", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "stopTime", value = "秒杀结束时间", required = false, type = "String"),
-//            @ApiImplicitParam(paramType = "query", name = "categoryId", value = "类别id", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "price", value = "团购价格", required = false, type = "Double"),
-            @ApiImplicitParam(paramType = "query", name = "repertory", value = "库存", required = false, type = "Integer")
     })
 //    添加秒杀表
     public Object insertSeckill( Integer goodsId,Date startTime,Date stopTime,  Double price, Integer repertory) throws Exception {
