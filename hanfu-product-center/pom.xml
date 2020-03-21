@@ -7,7 +7,9 @@
         <artifactId>hanfu-system</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+    <groupId>com.hanfu.product.center</groupId>
     <artifactId>hanfu-product-center</artifactId>
+    <version>0.0.1</version>
 
     <build>
         <finalName>hanfu-product-center</finalName>
