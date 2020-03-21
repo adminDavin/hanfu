@@ -14,19 +14,25 @@ import io.swagger.annotations.ApiModelProperty;
 public class ProductActivityRequest extends CommonRequest {
 	
 	public static enum ActivityTypeEnum {
-        SECKILL_ACTIVITY("seckillActivity"),
-        GROUP_ACTIVITY("groupActivity"),
-        SENIORITY_ACTIVITY("seniorityActivity"),
-		DISTRIBUTION_ACTIVITY("distributionActivity");
+        SECKILL_ACTIVITY("秒杀","seckillActivity"),
+        GROUP_ACTIVITY("团购","groupActivity"),
+        SENIORITY_ACTIVITY("精选","seniorityActivity"),
+		DISTRIBUTION_ACTIVITY("分销","distributionActivity");
         private String activityType;
-        ActivityTypeEnum(String activityType) {
+        private String name;
+        ActivityTypeEnum(String name,String activityType) {
             this.activityType = activityType;
+            this.name = name;
         }
         
 		public String getActivityType() {
             return this.activityType;
         }
         
+		public String getName() {
+			return this.name;
+		}
+		
         public static ActivityTypeEnum getActivityTypeEnum(String activityType) {
             for(ActivityTypeEnum item : ActivityTypeEnum.values()) {
                 if (item.activityType.equals(activityType)) {

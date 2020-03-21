@@ -31,12 +31,15 @@ import com.hanfu.product.center.model.HfActivityProduct;
 import com.hanfu.product.center.model.HfActivityProductExample;
 import com.hanfu.product.center.request.ProductActivityInfoRequest;
 import com.hanfu.product.center.request.ProductActivityRequest;
+import com.hanfu.product.center.request.ProductActivityRequest.ActivityTypeEnum;
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin
@@ -94,7 +97,10 @@ public class HfProductActivityController {
 	public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
-		System.out.println(result);
+		for (int i = 0; i < result.size(); i++) {
+			ProductActivityInfo productActivityInfo = result.get(i);
+			productActivityInfo.setActivityType(ActivityTypeEnum.getActivityTypeEnum(activityType).getName());
+		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
@@ -111,8 +117,12 @@ public class HfProductActivityController {
 	
 	@ApiOperation(value = "给活动绑定商品", notes = "给活动绑定商品")
 	@RequestMapping(value = "/intoActivityProduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true,name = "活动id") Integer id,
-			@RequestParam(required = true,name = "商品id") Integer productId) throws JSONException {
+	@ApiImplicitParams({
+        @ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
+        @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),
+})
+	public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true) Integer id,
+			@RequestParam(required = true) Integer productId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivityProduct hfActivityProduct = new HfActivityProduct();
 		hfActivityProduct.setActivityId(id);
