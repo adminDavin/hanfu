@@ -171,4 +171,15 @@ private FileDescMapper fileDescMapper;
         discoverPictrueMapper.insert(discoverPictrue);
         return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
     }
+
+    @RequestMapping(value = "/delleteDiscover", method = RequestMethod.POST)
+    @ApiOperation(value = "删除发现", notes = "删除发现")
+    public ResponseEntity<JSONObject> delleteDiscover(Integer discoverId) throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Discover discover = new Discover();
+        discover.setId(discoverId);
+        discover.setIsDeleted((short) 1);
+        discoverMapper.updateByPrimaryKeySelective(discover);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
