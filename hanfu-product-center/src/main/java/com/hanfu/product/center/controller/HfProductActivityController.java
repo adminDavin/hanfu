@@ -155,15 +155,15 @@ public class HfProductActivityController {
 		Map<String, Object> params2 = new HashMap<String, Object>();
 		Map<String, Object> params3 = new HashMap<String, Object>();
 		params.put("activityType", "seckillActivity");
-		params.put("activityDesc", "秒杀活动");
+		params.put("activityDesc", "秒杀");
 		params1.put("activityType", "groupActivity");
-		params1.put("activityDesc", "团购活动");
+		params1.put("activityDesc", "团购");
 
 		params2.put("activityType", "seniorityActivity");
-		params2.put("activityDesc", "精选活动");
+		params2.put("activityDesc", "精选");
 
 		params3.put("activityType", "distributionActivity");
-		params3.put("activityDesc", "分销活动");
+		params3.put("activityDesc", "分销");
 
 		List<Object> list = new ArrayList<>();
 		list.add(0, params);
