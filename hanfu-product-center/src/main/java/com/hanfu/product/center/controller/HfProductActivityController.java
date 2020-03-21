@@ -94,7 +94,19 @@ public class HfProductActivityController {
 	public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
+		System.out.println(result);
 		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "删除活动", notes = "删除活动")
+	@RequestMapping(value = "/deleteProdcutActivity", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteProdcutActivity(Integer id) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		hfActivityMapper.deleteByPrimaryKey(id);
+		HfActivityProductExample example = new HfActivityProductExample();
+		example.createCriteria().andActivityIdEqualTo(id);
+		hfActivityProductMapper.deleteByExample(example);
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
 	
 	@ApiOperation(value = "给活动绑定商品", notes = "给活动绑定商品")
@@ -110,6 +122,14 @@ public class HfProductActivityController {
 		hfActivityProduct.setIsDeleted((byte) 0);
 		hfActivityProductMapper.insert(hfActivityProduct);
 		return builder.body(ResponseUtils.getResponseBody("添加成功"));
+	}
+	
+	@ApiOperation(value = "给活动删除商品", notes = "给活动删除商品")
+	@RequestMapping(value = "/deleteActivityProduct", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteActivityProduct(Integer id) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		hfActivityProductMapper.deleteByPrimaryKey(id);
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
 	
 	@ApiOperation(value = "查询活动商品列表信息", notes = "查询活动商品列表信息")

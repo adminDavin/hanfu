@@ -44,8 +44,8 @@
         <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
         <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
         <result column="modify_time" jdbcType="VARCHAR" property="modifyTime"/>
-        <result column="start_time" jdbcType="VARCHAR" property="ChildCategories"/>
-        <result column="end_time" jdbcType="VARCHAR" property="ChildCategories"/>
+        <result column="start_time" jdbcType="VARCHAR" property="startTime"/>
+        <result column="end_time" jdbcType="VARCHAR" property="endTime"/>
         <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted"/>
     </resultMap>
   
@@ -71,7 +71,7 @@
     	select * from hf_user where id = #{userId}
     </select>
     
-     <select id="selectProductActivityList" resultMap="HfUser">
+     <select id="selectProductActivityList" resultMap="ProductActivityInfo">
     	select * from hf_activity where activity_type = #{activityType}
     </select>
 </mapper>

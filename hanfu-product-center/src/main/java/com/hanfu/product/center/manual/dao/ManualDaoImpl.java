@@ -13,7 +13,7 @@ import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.user.center.model.HfUser;
 
 
-@Repository("dbDao")
+@Repository
 public class ManualDaoImpl implements ManualDao {
 
     @Autowired
@@ -46,7 +46,7 @@ public class ManualDaoImpl implements ManualDao {
     
     @Override
     public List<ProductActivityInfo> selectProductActivityList(String activityType) {
-    	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList");
+    	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList",activityType);
     	return result;
     }
 }
