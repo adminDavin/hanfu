@@ -73,7 +73,7 @@ public class HfProductActivityController {
 			Instant instant = request.getEndTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-			hfActivity.setStartTime(localDateTime);
+			hfActivity.setEndTime(localDateTime);
 		}
 		HfUser hfUser = manualDao.select(request.getUserId());
 		if(hfUser != null) {
