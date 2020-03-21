@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.model.HfActivity;
 import com.hanfu.product.center.model.HfActivityProduct;
 import com.hanfu.product.center.model.HfActivityProductExample;
@@ -86,6 +87,14 @@ public class HfProductActivityController {
 		hfActivity.setIsDeleted((byte) 0);
 		hfActivityMapper.insert(hfActivity);
 		return builder.body(ResponseUtils.getResponseBody(hfActivity.getId()));
+	}
+	
+	@ApiOperation(value = "查询活动", notes = "查询活动")
+	@RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@ApiOperation(value = "给活动绑定商品", notes = "给活动绑定商品")

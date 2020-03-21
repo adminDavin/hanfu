@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hanfu.product.center.manual.model.Categories;
+import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.user.center.model.HfUser;
 
@@ -42,5 +43,10 @@ public class ManualDaoImpl implements ManualDao {
     	HfUser result = sqlSessionTemplate.selectOne("select");
     	return result;
     }
-
+    
+    @Override
+    public List<ProductActivityInfo> selectProductActivityList(String activityType) {
+    	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList");
+    	return result;
+    }
 }

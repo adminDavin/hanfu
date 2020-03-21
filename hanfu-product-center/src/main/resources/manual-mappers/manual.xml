@@ -37,6 +37,18 @@
     <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
   </resultMap>
   
+  <resultMap type="com.hanfu.product.center.manual.model.ProductActivityInfo" id="ProductActivityInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="activity_name" jdbcType="INTEGER" property="activityName"/>
+        <result column="activity_type" jdbcType="VARCHAR" property="activityType"/>
+        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="modify_time" jdbcType="VARCHAR" property="modifyTime"/>
+        <result column="start_time" jdbcType="VARCHAR" property="ChildCategories"/>
+        <result column="end_time" jdbcType="VARCHAR" property="ChildCategories"/>
+        <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted"/>
+    </resultMap>
+  
     <select id="selectCategories" resultMap="categories">
         SELECT
         a.id, a.level_id, a.hf_name, GROUP_CONCAT(b.hf_name, ':', b.id) child_categories
@@ -52,10 +64,14 @@
     
     <select id="selectProductByStone" parameterType="integer" resultType="integer">
         select count(1)
-        from hf_goods a join hf_resp b on a.id = b.googs_id join hf_price c on a.id=c.googs_id where a.id=#{goodsId};
+        from hf_goods a join hf_resp b on a.id = b.googs_id join hf_price c on a.id=c.googs_id where a.id=#{goodsId}
     </select>
     
     <select id="select" resultMap="HfUser">
-    	select * from hf_user where id = #{userId};
+    	select * from hf_user where id = #{userId}
+    </select>
+    
+     <select id="selectProductActivityList" resultMap="HfUser">
+    	select * from hf_activity where activity_type = #{activityType}
     </select>
 </mapper>
