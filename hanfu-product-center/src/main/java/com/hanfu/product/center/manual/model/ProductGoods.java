@@ -1,10 +1,13 @@
 package com.hanfu.product.center.manual.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 public class ProductGoods {
     private Integer goodsId;
     private Integer categoryId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime createTime;
     private String goodsDesc;
     private String goodsName;
@@ -12,6 +15,7 @@ public class ProductGoods {
     private Integer quantity;
     private Integer hfStatus;
     private Integer warehouseId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime modifyTime;
     private String brandName;
     private String hfDesc;

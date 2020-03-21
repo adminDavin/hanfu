@@ -18,6 +18,8 @@ public class ProductRequest extends CommonRequest {
     private String lastModifier;
     @ApiModelProperty(required = true, value = "自体邮寄")
     private Short claim;
+    @ApiModelProperty(required = false, value = "是否会员商品，0否1是")
+    private Short vip;
 
 	public Integer getId() {
         return id;
@@ -74,5 +76,13 @@ public class ProductRequest extends CommonRequest {
 
     public void setClaim(Short claim) {
         this.claim = claim;
+    }
+
+    public Short getVip() {
+        return vip;
+    }
+
+    public void setVip(Short vip) {
+        this.vip = vip;
     }
 }

@@ -9,6 +9,7 @@ import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
 
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,8 @@ public class ProductController {
 	private HfProductPictrueMapper hfProductPictrueMapper;
 	@Autowired
 	private HfBossMapper hfBossMapper;
+	@Autowired
+	private cancelProductMapper cancelProductMappers;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -140,7 +143,7 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProduct(ProductRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addProduct(ProductRequest request, Integer cancelId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = new Product();
 		product.setBossId(request.getBossId());
@@ -152,8 +155,24 @@ public class ProductController {
 		product.setModifyTime(LocalDateTime.now());
 		product.setIsDeleted((short) 0);
 		product.setProductDesc(request.getProductDesc());
-		product.setClaim(request.getClaim());
+		if (request.getClaim()!=null){
+			product.setClaim(request.getClaim());
+		} else {
+			product.setClaim((short) 0);
+		}
+		if (request.getVip()!=null){
+			product.setProductVip(request.getVip());
+		}else {
+			product.setProductVip((short) 0);
+		}
 		productMapper.insert(product);
+		if (request.getClaim()==1){
+			if (cancelId==null){
+				productMapper.deleteByPrimaryKey(product.getId());
+				return builder.body(ResponseUtils.getResponseBody("自提商品请选择核销员"));
+			}
+			addCancel(product.getId(),cancelId);
+		}
 		ProductInstance productInstance = new ProductInstance();
 		productInstance.setBossId(request.getBossId());
 		productInstance.setStoneId(1);
@@ -175,6 +194,16 @@ public class ProductController {
 
 	}
 
+	private void addCancel(Integer productId,Integer cancelId){
+		cancelProduct cancelProduct = new cancelProduct();
+		cancelProduct.setCancelId(cancelId);
+		cancelProduct.setClaim((short) 0);
+		cancelProduct.setCreateTime(LocalDateTime.now());
+		cancelProduct.setModifyTime(LocalDateTime.now());
+		cancelProduct.setProductId(productId);
+		cancelProduct.setIsDeleted((short) 0);
+		cancelProductMappers.insert(cancelProduct);
+	}
 	@ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
 	@ApiImplicitParams({
