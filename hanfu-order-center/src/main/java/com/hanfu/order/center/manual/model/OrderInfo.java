@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 
@@ -48,6 +49,7 @@ public class OrderInfo implements Serializable {
     @ApiModelProperty(required = true, value = "添加时间")
     private LocalDateTime createTime;
     @ApiModelProperty(required = true, value = "修改时间")
+    @JSONField(format= "yyyy-MM-dd HH:mm:ss" )
     private LocalDateTime modifyTime;
     @ApiModelProperty(required = true, value = "最后一次修改人")
     private String lastModifier;
