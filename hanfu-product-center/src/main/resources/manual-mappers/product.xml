@@ -136,7 +136,6 @@
         h2.line_price,
         <if test="goodsId != null and goodsId != ''">
             h1.category_id,
-            h2.line_price,
             h3.hf_status,
             h4.hf_desc,
             h4.brand_type,
@@ -144,6 +143,7 @@
             h3.warehouse_id,
             h6.hf_name "warehouseName",
             h6.hf_region,
+            h3.quantity,
         </if>
 	h1.modify_time,
 	h4.hf_name "brandName"
