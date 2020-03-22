@@ -21,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.model.ActivityProductInfo;
+import com.hanfu.product.center.manual.model.DistributionDiscount;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.model.HfActivity;
 import com.hanfu.product.center.model.HfActivityProduct;
@@ -178,9 +182,21 @@ public class HfProductActivityController {
 	
 	@ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")
 	@RequestMapping(value = "/updateActivityProduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateActivityProduct(ProductActivityInfoRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> updateActivityProduct(Integer id,ProductActivityInfoRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfActivityProduct hfActivityProduct = new HfActivityProduct();
+		HfActivityProduct hfActivityProduct = hfActivityProductMapper.selectByPrimaryKey(id);
+		if(hfActivityProduct == null) {
+			return builder.body(ResponseUtils.getResponseBody("数据不存在"));
+		}
+		if(!StringUtils.isEmpty(request.getDistributionRatio())) {
+			ArrayList<DistributionDiscount> list = new ArrayList<DistributionDiscount>();
+			String[] str = request.getDistributionRatio().split(",");
+			for (int i = 0; i < str.length; i++) {
+				list.add(new DistributionDiscount(i+1+"级",i+1+"",str[i]));
+			}
+			JSONArray array= JSONArray.parseArray(JSON.toJSONString(list));
+			hfActivityProduct.setDistributionRatio(array.toString());
+		}
 		if(!StringUtils.isEmpty(request.getDiscountRatio())) {
 			hfActivityProduct.setDiscountRatio(request.getDiscountRatio());
 		}
@@ -197,6 +213,7 @@ public class HfProductActivityController {
 			hfActivityProduct.setInventoryCelling(request.getInventoryCelling());
 		}
 		hfActivityProduct.setModifyTime(LocalDateTime.now());
+		hfActivityProductMapper.updateByPrimaryKey(hfActivityProduct);
 		return builder.body(ResponseUtils.getResponseBody("修改成功"));
 	}
 	
