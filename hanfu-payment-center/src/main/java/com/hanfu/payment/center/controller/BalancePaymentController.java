@@ -277,7 +277,7 @@ public class BalancePaymentController {
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
         Integer paymentType = CreateHfOrderRequest.PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
         hfOrder.setPaymentType(paymentType);
-        hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
+        hfOrder.setOrderStatus(OrderStatus.COMPLETE.getOrderStatus());
         hfOrder.setPayStatus(CreateHfOrderRequest.PaymentStatus.UNPAID.getPaymentStatus());
 
         hfOrderMapper.insertSelective(hfOrder);
