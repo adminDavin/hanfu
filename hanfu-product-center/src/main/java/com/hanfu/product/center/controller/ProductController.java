@@ -166,13 +166,13 @@ public class ProductController {
 			product.setProductVip((short) 0);
 		}
 		productMapper.insert(product);
-		if (request.getClaim()==1){
-			if (cancelId==null){
-				productMapper.deleteByPrimaryKey(product.getId());
-				return builder.body(ResponseUtils.getResponseBody("自提商品请选择核销员"));
-			}
-			addCancel(product.getId(),cancelId);
-		}
+//		if (request.getClaim()==1){
+//			if (cancelId==null){
+//				productMapper.deleteByPrimaryKey(product.getId());
+//				return builder.body(ResponseUtils.getResponseBody("自提商品请选择核销员"));
+//			}
+//			addCancel(product.getId(),cancelId);
+//		}
 		ProductInstance productInstance = new ProductInstance();
 		productInstance.setBossId(request.getBossId());
 		productInstance.setStoneId(1);
@@ -191,7 +191,6 @@ public class ProductController {
 		map.put("productName",request.getHfName());
 		map.put("CategoryId",request.getCategoryId());
 		return builder.body(ResponseUtils.getResponseBody(map));
-
 	}
 
 	private void addCancel(Integer productId,Integer cancelId){
