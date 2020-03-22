@@ -135,13 +135,16 @@ public class HfProductActivityController {
 			@RequestParam(required = true) Integer productId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivityProduct hfActivityProduct = new HfActivityProduct();
-		hfActivityProduct.setActivityId(id);
-		hfActivityProduct.setProductId(productId);
-		hfActivityProduct.setCreateTime(LocalDateTime.now());
-		hfActivityProduct.setModifyTime(LocalDateTime.now());
-		hfActivityProduct.setIsDeleted((byte) 0);
-		hfActivityProductMapper.insert(hfActivityProduct);
-		return builder.body(ResponseUtils.getResponseBody("添加成功"));
+		if(id != null) {
+			hfActivityProduct.setActivityId(id);
+			hfActivityProduct.setProductId(productId);
+			hfActivityProduct.setCreateTime(LocalDateTime.now());
+			hfActivityProduct.setModifyTime(LocalDateTime.now());
+			hfActivityProduct.setIsDeleted((byte) 0);
+			hfActivityProductMapper.insert(hfActivityProduct);
+			return builder.body(ResponseUtils.getResponseBody("添加成功"));
+		}
+		return builder.body(ResponseUtils.getResponseBody("添加失败"));
 	}
 	
 	@ApiOperation(value = "给活动删除商品", notes = "给活动删除商品")
@@ -159,25 +162,28 @@ public class HfProductActivityController {
 		HfActivityProductExample example = new HfActivityProductExample();
 		example.createCriteria().andActivityIdEqualTo(id);
 		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(example);
-		List<ActivityProductInfo> result = new ArrayList<ActivityProductInfo>();
-		for (int i = 0; i < list.size(); i++) {
-			HfActivityProduct activityProduct = list.get(i);
-			ActivityProductInfo activityProductInfo = new ActivityProductInfo();
-			activityProductInfo.setId(activityProduct.getId());
-			activityProductInfo.setAcivityId(activityProduct.getActivityId());
-			activityProductInfo.setProductId(activityProduct.getProductId());
-			Product product = productMapper.selectByPrimaryKey(activityProduct.getProductId());
-			activityProductInfo.setProductName(product.getHfName());
-			activityProductInfo.setDiscountRatio(activityProduct.getDiscountRatio());
-			activityProductInfo.setDistributionRatio(activityProduct.getDistributionRatio());
-			activityProductInfo.setFavoravlePrice(activityProduct.getFavoravlePrice());
-			activityProductInfo.setGroupNum(activityProduct.getGroupNum());
-			activityProductInfo.setInventoryCelling(activityProduct.getInventoryCelling());
-			activityProductInfo.setCreateTime(activityProduct.getCreateTime());
-			activityProductInfo.setModifyTime(activityProduct.getModifyTime());
-			result.add(activityProductInfo);
+		if(!list.isEmpty()) {
+			List<ActivityProductInfo> result = new ArrayList<ActivityProductInfo>();
+			for (int i = 0; i < list.size(); i++) {
+				HfActivityProduct activityProduct = list.get(i);
+				ActivityProductInfo activityProductInfo = new ActivityProductInfo();
+				activityProductInfo.setId(activityProduct.getId());
+				activityProductInfo.setAcivityId(activityProduct.getActivityId());
+				activityProductInfo.setProductId(activityProduct.getProductId());
+				Product product = productMapper.selectByPrimaryKey(activityProduct.getProductId());
+				activityProductInfo.setProductName(product.getHfName());
+				activityProductInfo.setDiscountRatio(activityProduct.getDiscountRatio());
+				activityProductInfo.setDistributionRatio(activityProduct.getDistributionRatio());
+				activityProductInfo.setFavoravlePrice(activityProduct.getFavoravlePrice());
+				activityProductInfo.setGroupNum(activityProduct.getGroupNum());
+				activityProductInfo.setInventoryCelling(activityProduct.getInventoryCelling());
+				activityProductInfo.setCreateTime(activityProduct.getCreateTime());
+				activityProductInfo.setModifyTime(activityProduct.getModifyTime());
+				result.add(activityProductInfo);
+			}
+			return builder.body(ResponseUtils.getResponseBody(result));
 		}
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody("还未添加信息"));
 	}
 	
 	@ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")
@@ -194,6 +200,7 @@ public class HfProductActivityController {
 			for (int i = 0; i < str.length; i++) {
 				list.add(new DistributionDiscount(i+1+"级",i+1+"",str[i]));
 			}
+			System.out.println(list.toString());
 			JSONArray array= JSONArray.parseArray(JSON.toJSONString(list));
 			hfActivityProduct.setDistributionRatio(array.toString());
 		}
