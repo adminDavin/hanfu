@@ -6,7 +6,7 @@
 <generatorConfiguration>
 
     <classPathEntry
-            location="D:\work\eclipse\repository\repositoryHanfu\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
         <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
@@ -40,62 +40,67 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="user_center" tableName="hf_user" domainObjectName="HfUser">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql" identity="true"/>
+        <!--<table schema="user_center" tableName="hf_user" domainObjectName="HfUser">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_auth" domainObjectName="HfAuth">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_user_address"-->
+               <!--domainObjectName="HfUserAddresse">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_user_balance"-->
+               <!--domainObjectName="HUserBalance">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="jurisdiction_module"-->
+               <!--domainObjectName="JurisdictionModule">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="jurisdiction"-->
+               <!--domainObjectName="Jurisdiction">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="role"-->
+               <!--domainObjectName="Role">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="role_jurisdiction"-->
+               <!--domainObjectName="RoleJurisdiction">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="user_role"-->
+               <!--domainObjectName="UserRole">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="authorization"-->
+               <!--domainObjectName="Authorization">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <table schema="user_center" tableName="hf_stone"
+        domainObjectName="HfStone">
+        <property name="useActualColumnNames" value="false"/>
+        <generatedKey column="id" sqlStatement="mysql"
+        identity="true"/>
         </table>
-        <table schema="user_center" tableName="hf_auth" domainObjectName="HfAuth">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql" identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_user_address"
-               domainObjectName="HfUserAddresse">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_user_balance"
-               domainObjectName="HUserBalance">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="jurisdiction_module"
-               domainObjectName="JurisdictionModule">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="jurisdiction"
-               domainObjectName="Jurisdiction">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="role"
-               domainObjectName="Role">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="role_jurisdiction"
-               domainObjectName="RoleJurisdiction">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="user_role"
-               domainObjectName="UserRole">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="authorization"
-               domainObjectName="Authorization">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-
     </context>
 </generatorConfiguration>

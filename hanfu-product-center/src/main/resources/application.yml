@@ -49,7 +49,7 @@ spring:
   redis:
     database: 0
     host: 39.100.86.77
-    port: 6379
+    port: 16379
     timeout: 3000000
     jedis:
       pool:
