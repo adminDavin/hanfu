@@ -36,4 +36,8 @@ public class DistributionDiscount implements Serializable{
 		this.index = index;
 		this.ratio = ratio;
 	}
+	@Override
+	public String toString() {
+		return "DistributionDiscount [name=" + name + ", index=" + index + ", ratio=" + ratio + "]";
+	}
 }
