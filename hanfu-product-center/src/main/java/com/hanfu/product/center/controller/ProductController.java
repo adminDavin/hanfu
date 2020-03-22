@@ -264,25 +264,32 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品图片", notes = "添加商品图片")
 	@RequestMapping(value = "/addProductPictrue", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProductPictrue(MultipartFile fileInfo,Integer productId) throws Exception {
+	public ResponseEntity<JSONObject> addProductPictrue(MultipartFile fileInfo,Integer productId, Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(productId);
 		if(product == null) {
 			return builder.body(ResponseUtils.getResponseBody(""));
 		}
-		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
-		arr = fileMangeService.uploadFile(fileInfo.getBytes(), "-1");
+		arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
 		FileDesc fileDesc = new FileDesc();
 		fileDesc.setFileName(fileInfo.getName());
 		fileDesc.setGroupName(arr[0]);
 		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(1);
+		fileDesc.setUserId(userId);
 		fileDesc.setCreateTime(LocalDateTime.now());
 		fileDesc.setModifyTime(LocalDateTime.now());
-		fileDesc.setIsDeleted((short) 0);
-		fileDescMapper.insert(fileDesc);
+		fileDescMapper.insertSelective(fileDesc);
 		product.setFileId(fileDesc.getId());
+		
+		HfProductPictrue productPicture = new HfProductPictrue();
+		productPicture.setProductId(productId);
+		productPicture.setCreateTime(LocalDateTime.now());
+		productPicture.setFileId(fileDesc.getId());
+		productPicture.setLastModifier(String.valueOf(userId));
+		productPicture.setHfName(fileInfo.getName());
+		productPicture.setModifyTime(LocalDateTime.now());
+		hfProductPictrueMapper.insertSelective(productPicture);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.updateByPrimaryKeySelective(product)));
 	}
 	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
