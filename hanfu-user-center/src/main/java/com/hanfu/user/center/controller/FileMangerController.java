@@ -41,7 +41,7 @@ public class FileMangerController {
     @Autowired
     FileDescMapper fileDescMapper;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RequestMapping(value = "/image", method = RequestMethod.GET)
     @ApiOperation(value = "上传文件", notes = "上传文件")
     public void getFile(@RequestParam(value = "userId", required = false) Integer userId,
             @RequestParam(value = "fileId", required = false) Integer fileId, HttpServletResponse response)
@@ -64,7 +64,7 @@ public class FileMangerController {
 
         FileDesc fileDesc = getFileDesc(file, userId, arr);
         fileDescMapper.insert(fileDesc);
-        return builder.body(ResponseUtils.getResponseBody(null));
+        return builder.body(ResponseUtils.getResponseBody(fileDesc));
     }
 
     @RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
