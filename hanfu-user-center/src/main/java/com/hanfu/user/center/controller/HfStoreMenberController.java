@@ -103,6 +103,7 @@ public class HfStoreMenberController {
                 hfUserExample.createCriteria().andIdEqualTo(hfStoreMenber1.getUserId()).andIdDeletedEqualTo((byte) 0);
                 List<HfUser> hfUsers= hfUserMapper.selectByExample(hfUserExample);
                 storeUser.setUserName(hfUsers.get(0).getRealName());
+                storeUser.setRealName(hfUsers.get(0).getNickName());
                 storeUsers.add(storeUser);
                 System.out.println(storeUser);
             });
