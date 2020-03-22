@@ -67,6 +67,29 @@ public class FileMangerController {
         return builder.body(ResponseUtils.getResponseBody(fileDesc));
     }
 
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @ApiOperation(value = "上传文件", notes = "上传文件")
+    public ResponseEntity<JSONObject> getList(@RequestParam(value = "userId", required = false) Integer userId) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        List<FileDesc> list = fileDescMapper.selectByExample(null);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @ApiOperation(value = "删除文件", notes = "删除文件")
+    public ResponseEntity<JSONObject> delete(@RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "fileId", required = false) Integer fileId) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        try {
+            FileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+        } catch(Exception e) {
+            logger.error("delete remote file Failed", e);
+        }
+        return builder.body(ResponseUtils.getResponseBody(fileDescMapper.deleteByPrimaryKey(fileId)));
+    }
+
     @RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
     @ApiOperation(value = "上传文件", notes = "上传文件")
     public ResponseEntity<JSONObject> uploadBatch(
