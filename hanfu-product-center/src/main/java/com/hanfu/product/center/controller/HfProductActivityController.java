@@ -197,13 +197,13 @@ public class HfProductActivityController {
 			JSONArray array= JSONArray.parseArray(JSON.toJSONString(list));
 			hfActivityProduct.setDistributionRatio(array.toString());
 		}
-		if(!StringUtils.isEmpty(request.getDiscountRatio())) {
+		if(!StringUtils.isEmpty(String.valueOf(request.getDiscountRatio()))) {
 			hfActivityProduct.setDiscountRatio(request.getDiscountRatio());
 		}
 		if(!StringUtils.isEmpty(request.getDistributionRatio())) {
 			hfActivityProduct.setDistributionRatio(request.getDistributionRatio());
 		}
-		if(!StringUtils.isEmpty(request.getFavoravlePrice())) {
+		if(!StringUtils.isEmpty(String.valueOf(request.getFavoravlePrice()))) {
 			hfActivityProduct.setFavoravlePrice(request.getFavoravlePrice());
 		}
 		if(!StringUtils.isEmpty(request.getGroupNum())) {
