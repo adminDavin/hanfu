@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,23 @@ public class HfStoreMenberController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> add(hfStoreMenber hfStoreMenbers) throws Exception {
+        hfStoreMenberExample hfStoreMenberExamples= new hfStoreMenberExample();
+        hfStoreMenberExamples.createCriteria().andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 0).andStoreIdEqualTo(hfStoreMenbers.getStoreId());
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples).size()!=0){
+            return builder.body(ResponseUtils.getResponseBody("此人已经是此店铺管理员"));
+        }
+        hfStoreMenberExample hfStoreMenberExamples1= new hfStoreMenberExample();
+        hfStoreMenberExamples1.createCriteria().andStoreIdEqualTo(hfStoreMenbers.getStoreId()).andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 1);
+        if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples1).size()!=0){
+            hfStoreMenbers.setIsDeleted((short) 0);
+            hfStoreMenbers.setCreateTime(LocalDateTime.now());
+            hfStoreMenbers.setModifyTime(LocalDateTime.now());
+            return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers,hfStoreMenberExamples1)));
+        }
+        hfStoreMenbers.setIsDeleted((short) 0);
+        hfStoreMenbers.setCreateTime(LocalDateTime.now());
+        hfStoreMenbers.setModifyTime(LocalDateTime.now());
         return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.insert(hfStoreMenbers)));
     }
 
