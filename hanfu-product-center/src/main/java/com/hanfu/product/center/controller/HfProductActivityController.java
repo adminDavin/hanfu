@@ -24,11 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
+import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.model.ActivityProductInfo;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.model.HfActivity;
 import com.hanfu.product.center.model.HfActivityProduct;
 import com.hanfu.product.center.model.HfActivityProductExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.request.ProductActivityInfoRequest;
 import com.hanfu.product.center.request.ProductActivityRequest;
 import com.hanfu.product.center.request.ProductActivityRequest.ActivityTypeEnum;
@@ -58,6 +61,9 @@ public class HfProductActivityController {
 	
 	@Autowired
 	private HfActivityProductMapper hfActivityProductMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 	
 	@ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
 	@RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -149,7 +155,25 @@ public class HfProductActivityController {
 		HfActivityProductExample example = new HfActivityProductExample();
 		example.createCriteria().andActivityIdEqualTo(id);
 		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(example);
-		return builder.body(ResponseUtils.getResponseBody(list));
+		List<ActivityProductInfo> result = new ArrayList<ActivityProductInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			HfActivityProduct activityProduct = list.get(i);
+			ActivityProductInfo activityProductInfo = new ActivityProductInfo();
+			activityProductInfo.setId(activityProduct.getId());
+			activityProductInfo.setAcivityId(activityProduct.getActivityId());
+			activityProductInfo.setProductId(activityProduct.getProductId());
+			Product product = productMapper.selectByPrimaryKey(activityProduct.getProductId());
+			activityProductInfo.setProductName(product.getHfName());
+			activityProductInfo.setDiscountRatio(activityProduct.getDiscountRatio());
+			activityProductInfo.setDistributionRatio(activityProduct.getDistributionRatio());
+			activityProductInfo.setFavoravlePrice(activityProduct.getFavoravlePrice());
+			activityProductInfo.setGroupNum(activityProduct.getGroupNum());
+			activityProductInfo.setInventoryCelling(activityProduct.getInventoryCelling());
+			activityProductInfo.setCreateTime(activityProduct.getCreateTime());
+			activityProductInfo.setModifyTime(activityProduct.getModifyTime());
+			result.add(activityProductInfo);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")
