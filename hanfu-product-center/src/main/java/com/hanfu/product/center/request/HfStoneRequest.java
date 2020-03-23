@@ -16,6 +16,8 @@ public class HfStoneRequest {
     @ApiModelProperty(required = true, value = "店铺状态")
     private Integer hfStatus;
 
+    private String address;
+
     public Integer getStoneId() {
         return stoneId;
     }
@@ -62,5 +64,13 @@ public class HfStoneRequest {
 
     public void setHfStatus(Integer hfStatus) {
         this.hfStatus = hfStatus;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

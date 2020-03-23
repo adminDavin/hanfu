@@ -99,6 +99,7 @@ public class StoneController {
         expireTime.plusYears(10);
         item.setExpireTime(expireTime);
         item.setIsDeleted((short) 0);
+        item.setAddress(request.getAddress());
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
     }
 
@@ -155,6 +156,7 @@ public class StoneController {
         }
         if (!StringUtils.isEmpty(request.getHfName())) {
             hfStone.setHfName(request.getHfName());
+            hfStone.setAddress(request.getAddress());
         }
 //        FileMangeService fileMangeService = new FileMangeService();
 //		String arr[];
