@@ -40,6 +40,9 @@ public class HfStoreMenberController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> add(hfStoreMenber hfStoreMenbers,@RequestParam(value = "ids")List<Integer> ids) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (hfStoreMenbers.getIsCancel()==null){
+            hfStoreMenbers.setIsCancel(0);
+        }
         for (Integer id : ids) {
             hfStoreMenbers.setUserId(id);
             hfStoreMenberExample hfStoreMenberExamples = new hfStoreMenberExample();
@@ -54,16 +57,17 @@ public class HfStoreMenberController {
                 hfStoreMenbers.setIsDeleted((short) 0);
                 hfStoreMenbers.setCreateTime(LocalDateTime.now());
                 hfStoreMenbers.setModifyTime(LocalDateTime.now());
-                return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers, hfStoreMenberExamples1)));
+                hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers, hfStoreMenberExamples1);
+
+            } else {
+                hfStoreMenbers.setIsDeleted((short) 0);
+                hfStoreMenbers.setCreateTime(LocalDateTime.now());
+                hfStoreMenbers.setModifyTime(LocalDateTime.now());
+                if (hfStoreMenbers.getIsCancel() != 0) {
+                    hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
+                }
+                hfStoreMenberMappers.insert(hfStoreMenbers);
             }
-            hfStoreMenbers.setIsDeleted((short) 0);
-            hfStoreMenbers.setCreateTime(LocalDateTime.now());
-            hfStoreMenbers.setModifyTime(LocalDateTime.now());
-            if (hfStoreMenbers.getIsCancel()!=null){
-                hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
-            }
-            hfStoreMenbers.setIsCancel(0);
-            hfStoreMenberMappers.insert(hfStoreMenbers);
         }
         return builder.body(ResponseUtils.getResponseBody(ids.size()));
     }
@@ -113,10 +117,12 @@ public class HfStoreMenberController {
                 storeUser.setUserName(hfUsers.get(0).getRealName());
                 storeUser.setRealName(hfUsers.get(0).getNickName());
                 storeUser.setUserPhone(hfUsers.get(0).getPhone());
-                System.out.println(hfUsers.get(0).getId());
 
                 CancelExample cancelExample = new CancelExample();
-                cancelExample.createCriteria().andUserIdEqualTo(hfStoreMenber1.getUserId()).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+//                System.out.println(hfStoreMenber1.getUserId()+"qwqwqwq"+hfStoreMenber1.getIsCancel());
+                cancelExample.createCriteria().andUserIdEqualTo(hfStoreMenber1.getUserId()).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber1.getIsCancel());
+//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getId()+"--------------1");
+//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getUserId()+"--------------2");
                 if (cancelMapper.selectByExample(cancelExample).size()!=0){
                     storeUser.setIsCancel(1);
                     storeUser.setCancelId(hfStoreMenber1.getIsCancel());
@@ -174,6 +180,11 @@ public class HfStoreMenberController {
         if (isCancel==1){
             CancelExample cancelExample = new CancelExample();
             cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+            CancelExample cancelExample1 = new CancelExample();
+            cancelExample1.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+            if (cancelMapper.selectByExample(cancelExample1).size()!=0){
+                return builder.body(ResponseUtils.getResponseBody("已经是核销员"));
+            }
             if (cancelMapper.selectByExample(cancelExample).size()!=0){
                 cancel.setIsDeleted(0);
                 cancelMapper.updateByExampleSelective(cancel,cancelExample);
