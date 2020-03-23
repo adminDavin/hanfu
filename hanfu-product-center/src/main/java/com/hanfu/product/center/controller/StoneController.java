@@ -157,6 +157,9 @@ public class StoneController {
         if (!StringUtils.isEmpty(request.getHfName())) {
             hfStone.setHfName(request.getHfName());
             hfStone.setAddress(request.getAddress());
+            hfStone.setHfDesc(request.getHfDesc());
+            hfStone.setHfStatus(request.getHfStatus());
+            hfStone.setExpireTime(LocalDateTime.now());
         }
 //        FileMangeService fileMangeService = new FileMangeService();
 //		String arr[];
