@@ -22,6 +22,8 @@ public class StoreUser {
     private String storeName;
     private String storeAddress;
     private String storeDesc;
+    private String userPhone;
+    private Integer cancelId;
 
     public Integer getUserId() {
         return userId;
@@ -134,4 +136,21 @@ public class StoreUser {
     public void setStoreDesc(String storeDesc) {
         this.storeDesc = storeDesc;
     }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public Integer getCancelId() {
+        return cancelId;
+    }
+
+    public void setCancelId(Integer cancelId) {
+        this.cancelId = cancelId;
+    }
 }
+

@@ -96,8 +96,8 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <table schema="user_center" tableName="hf_stone"
-        domainObjectName="HfStone">
+        <table schema="user_center" tableName="cancel"
+        domainObjectName="Cancel">
         <property name="useActualColumnNames" value="false"/>
         <generatedKey column="id" sqlStatement="mysql"
         identity="true"/>

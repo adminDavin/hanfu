@@ -1,10 +1,7 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.user.center.dao.HfBossMapper;
-import com.hanfu.user.center.dao.HfStoneMapper;
-import com.hanfu.user.center.dao.HfUserMapper;
-import com.hanfu.user.center.dao.hfStoreMenberMapper;
+import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -13,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,30 +31,41 @@ public class HfStoreMenberController {
     HfStoneMapper hfStoneMapper;
     @Autowired
     HfUserMapper hfUserMapper;
+    @Autowired
+    CancelMapper cancelMapper;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "店铺添加成员", notes = "店铺添加成员")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> add(hfStoreMenber hfStoreMenbers) throws Exception {
-        hfStoreMenberExample hfStoreMenberExamples= new hfStoreMenberExample();
-        hfStoreMenberExamples.createCriteria().andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 0).andStoreIdEqualTo(hfStoreMenbers.getStoreId());
+    public ResponseEntity<JSONObject> add(hfStoreMenber hfStoreMenbers,@RequestParam(value = "ids")List<Integer> ids) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples).size()!=0){
-            return builder.body(ResponseUtils.getResponseBody("此人已经是此店铺管理员"));
-        }
-        hfStoreMenberExample hfStoreMenberExamples1= new hfStoreMenberExample();
-        hfStoreMenberExamples1.createCriteria().andStoreIdEqualTo(hfStoreMenbers.getStoreId()).andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 1);
-        if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples1).size()!=0){
+        for (Integer id : ids) {
+            hfStoreMenbers.setUserId(id);
+            hfStoreMenberExample hfStoreMenberExamples = new hfStoreMenberExample();
+            hfStoreMenberExamples.createCriteria().andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 0).andStoreIdEqualTo(hfStoreMenbers.getStoreId());
+
+            if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples).size() != 0) {
+                return builder.body(ResponseUtils.getResponseBody("此人已经是此店铺管理员"));
+            }
+            hfStoreMenberExample hfStoreMenberExamples1 = new hfStoreMenberExample();
+            hfStoreMenberExamples1.createCriteria().andStoreIdEqualTo(hfStoreMenbers.getStoreId()).andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 1);
+            if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples1).size() != 0) {
+                hfStoreMenbers.setIsDeleted((short) 0);
+                hfStoreMenbers.setCreateTime(LocalDateTime.now());
+                hfStoreMenbers.setModifyTime(LocalDateTime.now());
+                return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers, hfStoreMenberExamples1)));
+            }
             hfStoreMenbers.setIsDeleted((short) 0);
             hfStoreMenbers.setCreateTime(LocalDateTime.now());
             hfStoreMenbers.setModifyTime(LocalDateTime.now());
-            return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers,hfStoreMenberExamples1)));
+            if (hfStoreMenbers.getIsCancel()!=null){
+                hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
+            }
+            hfStoreMenbers.setIsCancel(0);
+            hfStoreMenberMappers.insert(hfStoreMenbers);
         }
-        hfStoreMenbers.setIsDeleted((short) 0);
-        hfStoreMenbers.setCreateTime(LocalDateTime.now());
-        hfStoreMenbers.setModifyTime(LocalDateTime.now());
-        return builder.body(ResponseUtils.getResponseBody(hfStoreMenberMappers.insert(hfStoreMenbers)));
+        return builder.body(ResponseUtils.getResponseBody(ids.size()));
     }
 
 
@@ -75,7 +84,6 @@ public class HfStoreMenberController {
 //        storeUsers.forEach(storeUser -> {
             hfStoreMenber.forEach(hfStoreMenber1 -> {
                 StoreUser storeUser = new StoreUser();
-                System.out.println(hfStoreMenber1);
                 storeUser.setCreatetime(hfStoreMenber1.getCreateTime());
                 storeUser.setIsCancel(hfStoreMenber1.getIsCancel());
                 storeUser.setLastModifier(hfStoreMenber1.getLastModifier());
@@ -104,8 +112,18 @@ public class HfStoreMenberController {
                 List<HfUser> hfUsers= hfUserMapper.selectByExample(hfUserExample);
                 storeUser.setUserName(hfUsers.get(0).getRealName());
                 storeUser.setRealName(hfUsers.get(0).getNickName());
+                storeUser.setUserPhone(hfUsers.get(0).getPhone());
+                System.out.println(hfUsers.get(0).getId());
+
+                CancelExample cancelExample = new CancelExample();
+                cancelExample.createCriteria().andUserIdEqualTo(hfStoreMenber1.getUserId()).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+                if (cancelMapper.selectByExample(cancelExample).size()!=0){
+                    storeUser.setIsCancel(1);
+                    storeUser.setCancelId(hfStoreMenber1.getIsCancel());
+                }else {
+                    storeUser.setIsCancel(0);
+                }
                 storeUsers.add(storeUser);
-                System.out.println(storeUser);
             });
 //        });
         return builder.body(ResponseUtils.getResponseBody(storeUsers));
@@ -138,6 +156,52 @@ public class HfStoreMenberController {
         hfStoreMenberExamples.createCriteria().andUserIdEqualTo(hfStoreMenber.getUserId()).andStoreIdEqualTo(hfStoreMenber.getStoreId());
         hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers,hfStoreMenberExamples);
         return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    @RequestMapping(value = "/isCancel", method = RequestMethod.GET)
+    @ApiOperation(value = "是否核销权限", notes = "是否核销权限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "isCancel", value = "是否", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> isCancel(Integer userId,Integer isCancel,Integer stoneId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
+        hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0).andUserIdEqualTo(userId);
+        List<hfStoreMenber> hfStoreMenber = hfStoreMenberMappers.selectByExample(hfStoreMenbersExample);
+
+        Cancel cancel = new Cancel();
+        if (isCancel==1){
+            CancelExample cancelExample = new CancelExample();
+            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+            if (cancelMapper.selectByExample(cancelExample).size()!=0){
+                cancel.setIsDeleted(0);
+                cancelMapper.updateByExampleSelective(cancel,cancelExample);
+            } else {
+                hfStoreMenber hfStoreMenber1 = new hfStoreMenber();
+                hfStoreMenber1.setIsCancel(addCancel(userId));
+                hfStoreMenberMappers.updateByExampleSelective(hfStoreMenber1,hfStoreMenbersExample);
+            }
+        }else {
+            cancel.setIsDeleted(1);
+            CancelExample cancelExample = new CancelExample();
+            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0);
+            cancelMapper.updateByExampleSelective(cancel,cancelExample);
+        }
+
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    private Integer addCancel(Integer userId){
+        Cancel cancel = new Cancel();
+        cancel.setUserId(userId);
+        cancel.setIsDeleted(0);
+        cancel.setCreateDate(LocalDateTime.now());
+        cancel.setModifyDate(LocalDateTime.now());
+        cancel.setMoney(0);
+        cancel.setPresentMoney(0);
+        cancelMapper.insert(cancel);
+        return cancel.getId();
     }
 
 }
