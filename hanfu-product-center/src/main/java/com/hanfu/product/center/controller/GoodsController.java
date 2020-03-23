@@ -603,6 +603,7 @@ public class GoodsController {
 		if (goods == null) {
 		}
 		List<HfGoodsPictrue> pictures = Lists.newArrayList();
+		Map<String, Integer> params = new HashMap<>();
 		try {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
@@ -628,10 +629,14 @@ public class GoodsController {
 			picture.setIsDeleted((short) 0);
 			hfGoodsPictrueMapper.insert(picture);
 			pictures.add(picture);
+			params.put("fileId", fileDesc.getId());
+			params.put("HfGoodsPictrueId",picture.getId());
 		} catch (IOException e) {
 			logger.error("add picture failed", e);
 		}
-		return builder.body(ResponseUtils.getResponseBody(pictures));
+
+
+		return builder.body(ResponseUtils.getResponseBody(params));
 	}
 
 	@ApiOperation(value = "获取图片", notes = "获取图片")

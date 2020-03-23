@@ -10,8 +10,8 @@ public class GoodsPictrueRequest extends CommonRequest {
     private Integer goodsId;
     @ApiModelProperty(required = false, value = "图片描述")
     private String prictureDesc;
-    @ApiModelProperty(required = false, value = "图片路径")
-    private MultipartFile fileInfo;
+//    @ApiModelProperty(required = false, value = "图片路径")
+//    private MultipartFile fileInfo;
     @ApiModelProperty(required = true, value = "店家名称, 登录修改的用户名称")
     private String username;
 
@@ -39,12 +39,12 @@ public class GoodsPictrueRequest extends CommonRequest {
         this.username = username;
     }
 
-    public MultipartFile getFileInfo() {
-        return fileInfo;
-    }
-
-    public void setFileInfo(MultipartFile fileInfo) {
-        this.fileInfo = fileInfo;
-    }
+//    public MultipartFile getFileInfo() {
+//        return fileInfo;
+//    }
+//
+//    public void setFileInfo(MultipartFile fileInfo) {
+//        this.fileInfo = fileInfo;
+//    }
 
 }

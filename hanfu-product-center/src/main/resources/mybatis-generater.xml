@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="D:\work\eclipse\repository\repositoryHanfu\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -45,188 +45,195 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="user_center" tableName="category_spec"
-               domainObjectName="CategorySpec">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_boss"
-               domainObjectName="HfBoss">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_brand"
-               domainObjectName="HfBrand">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_category"
-               domainObjectName="HfCategory">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_goods"
-               domainObjectName="HfGoods">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_goods_pictrue"
-               domainObjectName="HfGoodsPictrue">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_stone"
-               domainObjectName="HfStone">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="product"
-               domainObjectName="Product">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="product_info"
-               domainObjectName="ProductInfo">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="product_instance"
-               domainObjectName="ProductInstance">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="product_source"
-               domainObjectName="ProductSource">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="product_spec"
-               domainObjectName="ProductSpec">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="stone_info"
-               domainObjectName="StoneInfo">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
+        <!--<table schema="user_center" tableName="category_spec"-->
+               <!--domainObjectName="CategorySpec">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_boss"-->
+               <!--domainObjectName="HfBoss">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_brand"-->
+               <!--domainObjectName="HfBrand">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_category"-->
+               <!--domainObjectName="HfCategory">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_goods"-->
+               <!--domainObjectName="HfGoods">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_goods_pictrue"-->
+               <!--domainObjectName="HfGoodsPictrue">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_stone"-->
+               <!--domainObjectName="HfStone">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="product"-->
+               <!--domainObjectName="Product">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="product_info"-->
+               <!--domainObjectName="ProductInfo">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="product_instance"-->
+               <!--domainObjectName="ProductInstance">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="product_source"-->
+               <!--domainObjectName="ProductSource">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="product_spec"-->
+               <!--domainObjectName="ProductSpec">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="stone_info"-->
+               <!--domainObjectName="StoneInfo">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
 
-        <table schema="user_center" tableName="file_desc"
-               domainObjectName="FileDesc">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_goods_spec"
-               domainObjectName="HfGoodsSpec">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_resp"
-               domainObjectName="HfResp">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_warehouse"
-               domainObjectName="Warehouse">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_price"
-               domainObjectName="HfPrice">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_price_mode"
-               domainObjectName="HfPriceMode">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_brand"
-               domainObjectName="HfBrand">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_seniority"
-               domainObjectName="HfSeniority">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="seniority_instance"
-               domainObjectName="SeniorityInstance">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        
-        <table schema="user_center" tableName="hf_product_pictrue"
-               domainObjectName="HfProductPictrue">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_product_coupons"
-               domainObjectName="HfProductCoupons">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_coupons_strategy"
-               domainObjectName="HfCouponsStrategy">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        
-        <table schema="user_center" tableName="hf_order_group"
-               domainObjectName="HfOrderGroup">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_order_group_detail"
-               domainObjectName="HfOrderGroupDetail">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="distribution_product"
-               domainObjectName="DistributionProduct">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_activity_product"
-               domainObjectName="HfActivityProduct">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_activity"
-               domainObjectName="HfActivity">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
+        <!--<table schema="user_center" tableName="file_desc"-->
+               <!--domainObjectName="FileDesc">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_goods_spec"-->
+               <!--domainObjectName="HfGoodsSpec">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_resp"-->
+               <!--domainObjectName="HfResp">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_warehouse"-->
+               <!--domainObjectName="Warehouse">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_price"-->
+               <!--domainObjectName="HfPrice">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_price_mode"-->
+               <!--domainObjectName="HfPriceMode">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_brand"-->
+               <!--domainObjectName="HfBrand">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_seniority"-->
+               <!--domainObjectName="HfSeniority">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="seniority_instance"-->
+               <!--domainObjectName="SeniorityInstance">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!---->
+        <!--<table schema="user_center" tableName="hf_product_pictrue"-->
+               <!--domainObjectName="HfProductPictrue">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_product_coupons"-->
+               <!--domainObjectName="HfProductCoupons">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_coupons_strategy"-->
+               <!--domainObjectName="HfCouponsStrategy">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!---->
+        <!--<table schema="user_center" tableName="hf_order_group"-->
+               <!--domainObjectName="HfOrderGroup">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_order_group_detail"-->
+               <!--domainObjectName="HfOrderGroupDetail">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="distribution_product"-->
+               <!--domainObjectName="DistributionProduct">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_activity_product"-->
+               <!--domainObjectName="HfActivityProduct">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_activity"-->
+               <!--domainObjectName="HfActivity">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+
+        <table schema="user_center" tableName="product_introduce_pictrue"
+        domainObjectName="ProductIntroducePictrue">
+        <property name="useActualColumnNames" value="false"/>
+        <generatedKey column="id" sqlStatement="mysql"
+        identity="true"/>
         </table>
     </context>
 </generatorConfiguration>

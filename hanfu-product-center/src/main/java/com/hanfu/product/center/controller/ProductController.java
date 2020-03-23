@@ -1,5 +1,6 @@
 package com.hanfu.product.center.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -81,6 +82,8 @@ public class ProductController {
 	private HfBossMapper hfBossMapper;
 	@Autowired
 	private cancelProductMapper cancelProductMappers;
+	@Autowired
+	private ProductIntroducePictrueMapper productIntroducePictrueMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -290,7 +293,12 @@ public class ProductController {
 		productPicture.setHfName(fileInfo.getName());
 		productPicture.setModifyTime(LocalDateTime.now());
 		hfProductPictrueMapper.insertSelective(productPicture);
-		return builder.body(ResponseUtils.getResponseBody(productMapper.updateByPrimaryKeySelective(product)));
+		productMapper.updateByPrimaryKeySelective(product);
+
+		Map<String, Integer> params = new HashMap<>();
+		params.put("fileId", fileDesc.getId());
+		params.put("hfProductPictrueId",productPicture.getId());
+		return builder.body(ResponseUtils.getResponseBody(params));
 	}
 	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
 	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
@@ -614,5 +622,64 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		example.createCriteria().andProductIdEqualTo(productId);
 
 		return builder.body(ResponseUtils.getResponseBody(hfProductPictrueMapper.selectByExample(example)));
+	}
+
+	@ApiOperation(value = "添加商品介绍图", notes = "添加商品介绍图")
+	@RequestMapping(value = "/addProductIntroducePictrue", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addProductIntroducePictrue(MultipartFile fileInfo,Integer productId,String introduceDesc,Integer userId)
+			throws JSONException, IOException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Product product = productMapper.selectByPrimaryKey(productId);
+		if(product == null) {
+			return builder.body(ResponseUtils.getResponseBody(""));
+		}
+		String arr[];
+		arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(productId));
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(fileInfo.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(productId);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDescMapper.insertSelective(fileDesc);
+		ProductIntroducePictrue productIntroducePictrue = new ProductIntroducePictrue();
+		productIntroducePictrue.setCreateTime(LocalDateTime.now());
+		productIntroducePictrue.setModifyTime(LocalDateTime.now());
+		productIntroducePictrue.setIsDeleted((short) 0);
+		productIntroducePictrue.setLastModifier(String.valueOf(userId));
+		productIntroducePictrue.setFileId(fileDesc.getId());
+		productIntroducePictrue.setIntroduceDesc(introduceDesc);
+		productIntroducePictrue.setHfName(fileInfo.getName());
+		productIntroducePictrue.setProductId(productId);
+		productIntroducePictrueMapper.insert(productIntroducePictrue);
+		Map<String, Integer> params = new HashMap<>();
+		params.put("fileId", fileDesc.getId());
+		params.put("productIntroducePictrueId", productIntroducePictrue.getId());
+		return builder.body(ResponseUtils.getResponseBody(params));
+	}
+
+	@ApiOperation(value = "删除商品介绍图片", notes = "删除商品介绍图片")
+	@RequestMapping(value = "/deletedPictrue", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deletedPictrue(Integer fileId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductIntroducePictrue productIntroducePictrue = new ProductIntroducePictrue();
+		productIntroducePictrue.setIsDeleted((short) 1);
+		ProductIntroducePictrueExample productIntroducePictrueExample =new ProductIntroducePictrueExample();
+		productIntroducePictrueExample.createCriteria().andFileIdEqualTo(fileId).andIsDeletedEqualTo((short) 0);
+		productIntroducePictrueMapper.updateByExampleSelective(productIntroducePictrue,productIntroducePictrueExample);
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+
+	@ApiOperation(value = "获取商品介绍图片", notes = "获取商品介绍图片")
+	@RequestMapping(value = "/selectProductIntroducePictrue", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectProductIntroducePictrue(Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductIntroducePictrueExample example = new ProductIntroducePictrueExample();
+		example.createCriteria().andProductIdEqualTo(productId).andIsDeletedEqualTo((short) 0);
+
+		return builder.body(ResponseUtils.getResponseBody(productIntroducePictrueMapper.selectByExample(example)));
 	}
 }
