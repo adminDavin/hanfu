@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hanfu.product.center.dao.HfProductPictrueMapper;
 import com.hanfu.product.center.manual.model.IsDelete;
 import com.hanfu.product.center.manual.model.ProductNameSelect;
+import com.hanfu.product.center.model.*;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +32,6 @@ import com.hanfu.product.center.manual.dao.HfProductDao;
 import com.hanfu.product.center.manual.model.HfGoodsDisplayInfo;
 import com.hanfu.product.center.manual.model.HfProductDisplay;
 
-import com.hanfu.product.center.model.HfGoodsPictrue;
-import com.hanfu.product.center.model.HfGoodsPictrueExample;
-import com.hanfu.product.center.model.HfStone;
-import com.hanfu.product.center.model.HfStoneExample;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -53,6 +51,9 @@ public class HfProductController {
 
     @Autowired
     private HfGoodsPictrueMapper hfGoodsPictrueMapper;
+
+    @Autowired
+    private HfProductPictrueMapper hfProductPictrueMapper;
 
     @Autowired
     private HfProductDao hfProductDao;
@@ -124,10 +125,13 @@ public class HfProductController {
                 }
             }
 
-            HfGoodsPictrueExample example = new HfGoodsPictrueExample();
-            example.createCriteria().andGoodsIdEqualTo(product.getDefaultGoodsId());
-            List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
-            List<Integer> fileIds = hfProductPictrues.stream().map(HfGoodsPictrue::getFileId).collect(Collectors.toList());
+            HfProductPictrueExample example =new HfProductPictrueExample();
+            example.createCriteria().andProductIdEqualTo(productId);
+            List<HfProductPictrue> hfProductPictrues = hfProductPictrueMapper.selectByExample(example);
+//            HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+//            example.createCriteria().andGoodsIdEqualTo(product.getDefaultGoodsId());
+//            List<HfGoodsPictrue> hfProductPictrues = hfGoodsPictrueMapper.selectByExample(example);
+            List<Integer> fileIds = hfProductPictrues.stream().map(HfProductPictrue::getFileId).collect(Collectors.toList());
             product.setFileIds(fileIds);
         }
        return builder.body(ResponseUtils.getResponseBody(product));
