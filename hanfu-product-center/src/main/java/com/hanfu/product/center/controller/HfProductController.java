@@ -89,7 +89,7 @@ public class HfProductController {
        products.forEach(product -> {
            List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
            if (Optional.ofNullable(hfGoods).isPresent()) {
-               Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+               Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent()).min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
                product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");    
                product.setDefaultGoodsId(hfGood.get().getId());
            }

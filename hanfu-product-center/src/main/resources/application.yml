@@ -74,7 +74,7 @@ spring:
 #      enabled: false
 
 logging:
-  file: ./target/king-words.log
+  file: ./logs/product-center.log
 
 mybatis:
   mapper-locations:
