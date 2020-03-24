@@ -74,43 +74,43 @@ public class HfUserController {
     @Autowired
     private UserDao userDao;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    @ApiOperation(value = "用户登录", notes = "用户登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ",
-                    required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false,
-                    type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
-    public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
-            @RequestParam(name = "passwd") Integer passwd) throws Exception {
-        Cookie cookie = new Cookie("autologin", authKey);
-        response.addCookie(cookie);
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    @ApiOperation(value = "用户登录", notes = "用户登录")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ",
+//                    required = true, type = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false,
+//                    type = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
+//    public ResponseEntity<JSONObject> login(
+//            @RequestParam(name = "username") String username, @RequestParam(name = "password") String password) throws Exception {
+//        Cookie cookie = new Cookie("autologin", authKey);
+//        response.addCookie(cookie);
 
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        HfAuth hfAuth = userDao.selectAuthList(authKey);
-
-        if (hfAuth == null) {
-            return builder.body(ResponseUtils.getResponseBody("还未注册"));
-        }
-
-        if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
-
-            String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
-            redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
-        } else {
-
-            return builder.body(ResponseUtils.getResponseBody("1"));
-        }
-        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
-
-            return builder.body(ResponseUtils.getResponseBody("成功"));
-        } else {
-
-            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
-        }
-    }
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        HfAuth hfAuth = userDao.selectAuthList(authKey);
+//
+//        if (hfAuth == null) {
+//            return builder.body(ResponseUtils.getResponseBody("还未注册"));
+//        }
+//
+//        if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
+//
+//            String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
+//            redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
+//        } else {
+//
+//            return builder.body(ResponseUtils.getResponseBody("1"));
+//        }
+//        if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
+//
+//            return builder.body(ResponseUtils.getResponseBody("成功"));
+//        } else {
+//
+//            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+//        }
+//        return builder.body(ResponseUtils.getResponseBody("调通"));
+//    }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
