@@ -229,8 +229,8 @@
                           <!--identity="true"/>-->
         <!--</table>-->
 
-        <table schema="user_center" tableName="product_introduce_pictrue"
-        domainObjectName="ProductIntroducePictrue">
+        <table schema="user_center" tableName="discount_coupon"
+        domainObjectName="DiscountCoupon">
         <property name="useActualColumnNames" value="false"/>
         <generatedKey column="id" sqlStatement="mysql"
         identity="true"/>
