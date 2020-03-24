@@ -31,22 +31,23 @@ import java.util.*;
 @RequestMapping("/discountCoupon")
 @Api
 public class discountCouponController {
-@Autowired
-private DiscountCouponMapper discountCouponMapper;
-@Autowired
-private FileDescMapper fileDescMapper;
+    @Autowired
+    private DiscountCouponMapper discountCouponMapper;
+    @Autowired
+    private FileDescMapper fileDescMapper;
+
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Date startTime,Date stopTime,DiscountCoupon discountCoupon, MultipartFile fileInfo)
+    public ResponseEntity<JSONObject> getGoodsSpecs(Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
             throws Exception {
         DiscountCouponScope.ScopeTypeEnum scopeTypeEnum = DiscountCouponScope.ScopeTypeEnum.getOrderTypeEnum(discountCoupon.getScope());
         System.out.println(scopeTypeEnum);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String arr[];
         FileDesc fileDesc = new FileDesc();
-        if (fileInfo!=null){
+        if (fileInfo != null) {
             arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(discountCoupon.getCreator()));
             fileDesc.setFileName(fileInfo.getName());
             fileDesc.setGroupName(arr[0]);
@@ -68,7 +69,7 @@ private FileDescMapper fileDescMapper;
         discountCouponMapper.insertSelective(discountCoupon);
         Map<String, Integer> params = new HashMap<>();
         params.put("fileId", fileDesc.getId());
-        params.put("discountCouponId",discountCoupon.getId());
+        params.put("discountCouponId", discountCoupon.getId());
         return builder.body(ResponseUtils.getResponseBody(params));
     }
 
@@ -89,25 +90,31 @@ private FileDescMapper fileDescMapper;
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
-        List<DiscountCoupon> discountCoupons= discountCouponMapper.selectByExample(discountCouponExample);
+        List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
         discountCoupons.forEach(discountCoupon -> {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date1 = new Date();
+            Date date2 = new Date();
+            Date date3 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                Date date1 = df.parse(df.format(discountCoupon.getStartTime()));
-                Date date2 = df.parse(df.format(discountCoupon.getStopTime()));
-                Date date3 = df.parse(df.format(new Date()));
-                System.out.println("---1---"+date1+"---2---"+date2+"----3---"+date3);
-                // 得到微秒级别的差值
-                long diff = date3.getTime() - date1.getTime();
-                long diff1= date2.getTime() - date3.getTime();
-                // 将级别提升到天
-                long days = diff /(1000 * 60); //当前时间减去开始时间
-                long days2 = diff1 /(1000 * 60);//结束时间减去当前时间
-                System.out.println(days+"相减时间");
-                System.out.println(days2+"相减时间2");
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(discountCoupon.getStartTime()));
+                date3 = f.parse(f.format(discountCoupon.getStopTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+        if (date1.getTime()>date3.getTime()){
+            System.out.println("结束了");
+            discountCoupon.setUseState(1);
+        }
+        if (date1.getTime()<date2.getTime()){
+            System.out.println("还未开始");
+            discountCoupon.setUseState(-1);
+        }
+        if (date2.getTime()<date1.getTime()&&date1.getTime()<date3.getTime()){
+            System.out.println("开始中");
+            discountCoupon.setUseState(0);
+        }
         });
 
         return builder.body(ResponseUtils.getResponseBody(discountCoupons));
@@ -118,7 +125,7 @@ private FileDescMapper fileDescMapper;
     @RequestMapping(value = "/updateDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> updateDiscountCoupon(Date startTime,Date stopTime,DiscountCoupon discountCoupon, MultipartFile fileInfo)
+    public ResponseEntity<JSONObject> updateDiscountCoupon(Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String arr[];
@@ -141,7 +148,7 @@ private FileDescMapper fileDescMapper;
         discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
         Map<String, Integer> params = new HashMap<>();
         params.put("fileId", fileDesc.getId());
-        params.put("discountCouponId",discountCoupon.getId());
+        params.put("discountCouponId", discountCoupon.getId());
         return builder.body(ResponseUtils.getResponseBody(params));
     }
 
@@ -156,7 +163,7 @@ private FileDescMapper fileDescMapper;
         discountCoupon.setIdDeleted((byte) 1);
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andIdEqualTo(Id);
-        return builder.body(ResponseUtils.getResponseBody(discountCouponMapper.updateByExampleSelective(discountCoupon,discountCouponExample)));
+        return builder.body(ResponseUtils.getResponseBody(discountCouponMapper.updateByExampleSelective(discountCoupon, discountCouponExample)));
     }
 
     @ApiOperation(value = "使用范围", notes = "使用范围")
@@ -170,11 +177,11 @@ private FileDescMapper fileDescMapper;
         List<Map<String, String>> Scope = new ArrayList<>();
 
         Map<String, String> params = new HashMap<>();
-        params.put("name","全部用户");
+        params.put("name", "全部用户");
         params.put("code", "allUser");
         Map<String, String> params1 = new HashMap<>();
-        params1.put("name","会员用户");
-        params1.put("code","vipUser");
+        params1.put("name", "会员用户");
+        params1.put("code", "vipUser");
         Scope.add(params);
         Scope.add(params1);
         return builder.body(ResponseUtils.getResponseBody(Scope));
