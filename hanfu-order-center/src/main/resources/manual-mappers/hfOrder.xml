@@ -78,6 +78,9 @@
         <if test="orderType != null and orderType!= ''">
             and  o.order_type =#{orderType}
         </if>
+        <if test="orderCode != null and orderCode!= ''">
+            and  o.order_code =#{orderCode}
+        </if>
      order by o.modify_time desc;
     </select>
     
