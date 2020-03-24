@@ -300,6 +300,33 @@ public class ProductController {
 		params.put("hfProductPictrueId",productPicture.getId());
 		return builder.body(ResponseUtils.getResponseBody(params));
 	}
+	
+	@ApiOperation(value = "删除商品图片", notes = "删除商品图片")
+	@RequestMapping(value = "/deleteProductPictrue", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addProductPictrue(Integer fileId,Integer productId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Product product = productMapper.selectByPrimaryKey(productId);
+		if(product == null) {
+			return builder.body(ResponseUtils.getResponseBody(""));
+		}
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+		FileMangeService fileMangeService = new FileMangeService();
+		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		fileDescMapper.deleteByPrimaryKey(fileId);
+		HfProductPictrueExample example = new HfProductPictrueExample();
+		example.createCriteria().andFileIdEqualTo(fileId).andProductIdEqualTo(productId);
+		hfProductPictrueMapper.deleteByExample(example);
+		example.clear();
+		example.createCriteria().andProductIdEqualTo(productId);
+		List<HfProductPictrue> list = hfProductPictrueMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			product.setFileId(null);
+		}else {
+			product.setFileId(list.get(list.size()-1).getFileId());
+		}
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+	
 	@ApiOperation(value = "查询所有类目", notes = "查询所有类目")
 	@RequestMapping(value = "/findAllCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findAllCategory() throws Exception {

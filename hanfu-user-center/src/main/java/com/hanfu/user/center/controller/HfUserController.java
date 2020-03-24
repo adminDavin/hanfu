@@ -74,20 +74,20 @@ public class HfUserController {
     @Autowired
     private UserDao userDao;
 
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    @ApiOperation(value = "用户登录", notes = "用户登录")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ApiOperation(value = "用户登录", notes = "用户登录")
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ",
 //                    required = true, type = "String"),
 //            @ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false,
 //                    type = "String"),
 //            @ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
-//    public ResponseEntity<JSONObject> login(
-//            @RequestParam(name = "username") String username, @RequestParam(name = "password") String password) throws Exception {
+    public ResponseEntity<JSONObject> login(
+            String username,  String password) throws Exception {
 //        Cookie cookie = new Cookie("autologin", authKey);
 //        response.addCookie(cookie);
 
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
 //        HfAuth hfAuth = userDao.selectAuthList(authKey);
 //
 //        if (hfAuth == null) {
@@ -109,8 +109,8 @@ public class HfUserController {
 //
 //            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 //        }
-//        return builder.body(ResponseUtils.getResponseBody("调通"));
-//    }
+        return builder.body(ResponseUtils.getResponseBody("调通"));
+    }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
