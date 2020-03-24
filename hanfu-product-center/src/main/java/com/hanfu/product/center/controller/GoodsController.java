@@ -1159,4 +1159,20 @@ public class GoodsController {
 		});
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
+
+	@ApiOperation(value = "删除图片", notes = "删除图片根据文件id")
+	@RequestMapping(value = "/deleteGoodsFile", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
+	public void deleteGoodsFile(@RequestParam(name = "fileId") Integer fileId) throws Exception {
+		HfGoodsPictrueExample example = new HfGoodsPictrueExample();
+		example.createCriteria().andFileIdEqualTo(fileId);
+		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+		FileMangeService fileManageService = new FileMangeService();
+		if(fileDesc!=null) {
+			fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			hfGoodsPictrueMapper.deleteByExample(example);
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+		}
+	}
 }

@@ -682,4 +682,20 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 		return builder.body(ResponseUtils.getResponseBody(productIntroducePictrueMapper.selectByExample(example)));
 	}
+
+	@ApiOperation(value = "删除图片", notes = "删除图片根据文件id")
+	@RequestMapping(value = "/deleteProductFile", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
+	public void deleteProductFile(@RequestParam(name = "fileId") Integer fileId) throws Exception {
+		HfProductPictrueExample example = new HfProductPictrueExample();
+		example.createCriteria().andFileIdEqualTo(fileId);
+			FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+			FileMangeService fileManageService = new FileMangeService();
+			if(fileDesc!=null) {
+			fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			hfProductPictrueMapper.deleteByExample(example);
+			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+		}
+	}
 }
