@@ -503,6 +503,7 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
 			resp.setIsDeleted((short) 0);
+			resp.setWarehouseId(request.getWareHouseId());
 			hfRespMapper.insert(resp);
 			goods.setRespId(resp.getId());
 			goods.setModifyTime(LocalDateTime.now());
@@ -518,6 +519,9 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			if (!StringUtils.isEmpty(request.getUsername())) {
 				resp.setLastModifier(request.getUsername());
+			}
+			if (!StringUtils.isEmpty(String.valueOf(request.getWareHouseId()))) {
+				resp.setWarehouseId(request.getWareHouseId());
 			}
 			hfRespMapper.updateByPrimaryKey(resp);
 			respId = resp.getId();
