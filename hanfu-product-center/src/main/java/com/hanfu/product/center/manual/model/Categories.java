@@ -1,19 +1,24 @@
 package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Categories implements Serializable {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4823802365336691611L;
+	/**
      *
      */
-    private static final long serialVersionUID = 1966678079375432118L;
 
     private Integer id;
     private Integer levelId;
     private String hfName;
     private String ChildCategories;
     private Integer fileId;
+    private List<Categorie> categorie;
 
     public Integer getId() {
         return id;
@@ -53,6 +58,14 @@ public class Categories implements Serializable {
 
 	public void setFileId(Integer fileId) {
 		this.fileId = fileId;
+	}
+
+	public List<Categorie> getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(List<Categorie> categorie) {
+		this.categorie = categorie;
 	}
 
 }

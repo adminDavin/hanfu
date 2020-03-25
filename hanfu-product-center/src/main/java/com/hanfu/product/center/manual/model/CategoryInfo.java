@@ -12,6 +12,8 @@ public class CategoryInfo implements Serializable{
 
 	private String TwoLevelName;
 	private Integer TwoLevelId;
+	private Integer id;
+	private String hfName;
 	private List<Categories> categories;
 	public String getTwoLevelName() {
 		return TwoLevelName;
@@ -30,5 +32,17 @@ public class CategoryInfo implements Serializable{
 	}
 	public void setCategories(List<Categories> categories) {
 		this.categories = categories;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getHfName() {
+		return hfName;
+	}
+	public void setHfName(String hfName) {
+		this.hfName = hfName;
 	}
 }

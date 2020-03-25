@@ -29,17 +29,29 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hanfu.user.center.dao.CancelMapper;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
+import com.hanfu.user.center.dao.HfBossMapper;
+import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.dao.hfStoreMenberMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
+import com.hanfu.user.center.model.CancelExample;
 import com.hanfu.user.center.model.HUserBalanceExample;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
+import com.hanfu.user.center.model.HfBoss;
+import com.hanfu.user.center.model.HfBossExample;
+import com.hanfu.user.center.model.HfStone;
+import com.hanfu.user.center.model.HfStoneExample;
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.HfUserExample;
+import com.hanfu.user.center.model.hfStoreMenber;
+import com.hanfu.user.center.model.hfStoreMenberExample;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -74,6 +86,18 @@ public class HfAuthController {
 	@Autowired
 	private HUserBalanceMapper hUserBalanceMapper;
 
+	@Autowired
+	private HfStoneMapper hfStoneMapper;
+
+	@Autowired
+	private HfBossMapper hfBossMapper;
+
+	@Autowired
+	private CancelMapper cancelMapper;
+	
+	@Autowired
+	private hfStoreMenberMapper hfStoreMenberMappers;
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -315,6 +339,73 @@ public class HfAuthController {
 		example.createCriteria().andUserIdEqualTo(userId);
 		hfAuthMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+
+	@RequestMapping(value = "/selectStoneAdmin", method = RequestMethod.GET)
+	@ApiOperation(value = "店铺管理员列表", notes = "店铺管理员列表根据商家id")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> select(Integer bossId) throws Exception {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<StoreUser> storeUsers = new ArrayList<>();
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfStone> list = hfStoneMapper.selectByExample(example);
+		list.forEach(hfStoneInfo -> {
+			hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
+			hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(hfStoneInfo.getId()).andIsDeletedEqualTo((short) 0);
+			List<hfStoreMenber> hfStoreMenber = hfStoreMenberMappers.selectByExample(hfStoreMenbersExample);
+//        storeUsers.forEach(storeUser -> {
+			hfStoreMenber.forEach(hfStoreMenber1 -> {
+				StoreUser storeUser = new StoreUser();
+				storeUser.setCreatetime(hfStoreMenber1.getCreateTime());
+				storeUser.setIsCancel(hfStoreMenber1.getIsCancel());
+				storeUser.setLastModifier(hfStoreMenber1.getLastModifier());
+				storeUser.setPhone(hfStoreMenber1.getPhone());
+				storeUser.setStoreId(hfStoreMenber1.getStoreId());
+				storeUser.setUserId(hfStoreMenber1.getUserId());
+				storeUser.setStoreRole(hfStoreMenber1.getStoreRole());
+				HfStoneExample hfStoneExample = new HfStoneExample();
+				hfStoneExample.createCriteria().andIdEqualTo(hfStoreMenber1.getStoreId())
+						.andIsDeletedEqualTo((short) 0);
+				List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+				hfStones.forEach(hfStone -> {
+					storeUser.setStoreDesc(hfStone.getHfDesc());
+					storeUser.setStoreName(hfStone.getHfName());
+					storeUser.setStoreAddress(hfStone.getAddress());
+				});
+				HfBossExample hfBossExample = new HfBossExample();
+				hfBossExample.createCriteria().andIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
+				List<HfBoss> hfBosses = hfBossMapper.selectByExample(hfBossExample);
+				hfBosses.forEach(hfBoss -> {
+					storeUser.setBossName(hfBoss.getName());
+					storeUser.setBossId(bossId);
+				});
+
+				HfUserExample hfUserExample = new HfUserExample();
+				hfUserExample.createCriteria().andIdEqualTo(hfStoreMenber1.getUserId()).andIdDeletedEqualTo((byte) 0);
+				List<HfUser> hfUsers = hfUserMapper.selectByExample(hfUserExample);
+				storeUser.setUserName(hfUsers.get(0).getRealName());
+				storeUser.setRealName(hfUsers.get(0).getNickName());
+				storeUser.setUserPhone(hfUsers.get(0).getPhone());
+
+				CancelExample cancelExample = new CancelExample();
+//                System.out.println(hfStoreMenber1.getUserId()+"qwqwqwq"+hfStoreMenber1.getIsCancel());
+				cancelExample.createCriteria().andUserIdEqualTo(hfStoreMenber1.getUserId()).andIsDeletedEqualTo(0)
+						.andIdEqualTo(hfStoreMenber1.getIsCancel());
+//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getId()+"--------------1");
+//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getUserId()+"--------------2");
+				if (cancelMapper.selectByExample(cancelExample).size() != 0) {
+					storeUser.setIsCancel(1);
+					storeUser.setCancelId(hfStoreMenber1.getIsCancel());
+				} else {
+					storeUser.setIsCancel(0);
+				}
+				storeUsers.add(storeUser);
+			});
+		});
+//        });
+		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
 
 	public static String create() {

@@ -142,7 +142,49 @@ public class ProductController {
         return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
     }
 
-
+	@ApiOperation(value = "获取所有类目", notes = "获取所有类目全部数据")
+	@RequestMapping(value = "/categoryAll", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> listCategory() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<CategoryInfo> result = new ArrayList<CategoryInfo>();
+		List<Categories> categoriesList = null;
+		List<Categorie> categorieList = null;
+		HfCategoryExample example = new HfCategoryExample();
+		example.createCriteria().andLevelIdEqualTo(0);
+		List<HfCategory> list = hfCategoryMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfCategory hfCategory = list.get(i);
+			CategoryInfo info = new CategoryInfo();
+			info.setId(hfCategory.getId());
+			info.setHfName(hfCategory.getHfName());
+			example.clear();
+			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId());
+			List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
+			for (int j = 0; j < list2.size(); j++) {
+				HfCategory hfCategory2 = list2.get(j);
+				Categories categories = new Categories();
+				categories.setId(hfCategory2.getId());
+				categories.setHfName(hfCategory2.getHfName());
+				categoriesList = new ArrayList<Categories>();
+				categoriesList.add(categories);
+				example.clear();
+				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId());
+				List<HfCategory> list3 = hfCategoryMapper.selectByExample(example);
+				for (int k = 0; k < list3.size(); k++) {
+					HfCategory hfCategory3 = list3.get(k);
+					Categorie categorie = new Categorie();
+					categorie.setId(hfCategory3.getId());
+					categorie.setHfName(hfCategory3.getHfName());
+					categorieList = new ArrayList<Categorie>();
+					categorieList.add(categorie);
+				}
+				categories.setCategorie(categorieList);
+			}
+			info.setCategories(categoriesList);
+			result.add(info);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+    }	
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
