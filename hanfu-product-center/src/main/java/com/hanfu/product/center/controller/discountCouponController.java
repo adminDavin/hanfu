@@ -129,16 +129,17 @@ public class discountCouponController {
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String arr[];
-        arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(discountCoupon.getCreator()));
         FileDesc fileDesc = new FileDesc();
-        fileDesc.setFileName(fileInfo.getName());
-        fileDesc.setGroupName(arr[0]);
-        fileDesc.setRemoteFilename(arr[1]);
-        fileDesc.setUserId(discountCoupon.getCreator());
-        fileDesc.setCreateTime(LocalDateTime.now());
-        fileDesc.setModifyTime(LocalDateTime.now());
-        fileDescMapper.insertSelective(fileDesc);
-
+        if (fileInfo != null) {
+            arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(discountCoupon.getCreator()));
+            fileDesc.setFileName(fileInfo.getName());
+            fileDesc.setGroupName(arr[0]);
+            fileDesc.setRemoteFilename(arr[1]);
+            fileDesc.setUserId(discountCoupon.getCreator());
+            fileDesc.setCreateTime(LocalDateTime.now());
+            fileDesc.setModifyTime(LocalDateTime.now());
+            fileDescMapper.insertSelective(fileDesc);
+        }
         discountCoupon.setCreateDate(LocalDateTime.now());
         discountCoupon.setModifyDate(LocalDateTime.now());
         discountCoupon.setIdDeleted((byte) 0);
