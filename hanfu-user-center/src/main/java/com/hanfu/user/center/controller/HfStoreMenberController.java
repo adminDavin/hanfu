@@ -33,6 +33,8 @@ public class HfStoreMenberController {
     HfUserMapper hfUserMapper;
     @Autowired
     CancelMapper cancelMapper;
+    @Autowired
+    HfStoreReleMapper hfStoreReleMapper;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "店铺添加成员", notes = "店铺添加成员")
@@ -68,6 +70,7 @@ public class HfStoreMenberController {
                 }
                 hfStoreMenberMappers.insert(hfStoreMenbers);
             }
+
         }
         return builder.body(ResponseUtils.getResponseBody(ids.size()));
     }
@@ -129,6 +132,7 @@ public class HfStoreMenberController {
                 }else {
                     storeUser.setIsCancel(0);
                 }
+                storeUser.setStoreRoleName(hfStoreReleMapper.selectByPrimaryKey(hfStoreMenber1.getStoreRole()).getRoleName());
                 storeUsers.add(storeUser);
             });
 //        });
@@ -215,4 +219,54 @@ public class HfStoreMenberController {
         return cancel.getId();
     }
 
+    @RequestMapping(value = "/selectRole", method = RequestMethod.GET)
+    @ApiOperation(value = "店铺角色", notes = "店铺角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> selectRole(Integer StoreId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        HfStoreReleExample hfStoreReleExample = new HfStoreReleExample();
+        hfStoreReleExample.createCriteria().andStoneIdEqualTo(StoreId).andIsDeletedEqualTo((short) 0);
+        return builder.body(ResponseUtils.getResponseBody(hfStoreReleMapper.selectByExample(hfStoreReleExample)));
+    }
+    @RequestMapping(value = "/addRole", method = RequestMethod.POST)
+    @ApiOperation(value = "添加店铺角色", notes = "添加店铺角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> addRole(HfStoreRele hfStoreRele) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        hfStoreRele.setIsDeleted((short) 0);
+        hfStoreRele.setCreateTime(LocalDateTime.now());
+        hfStoreRele.setModifyTime(LocalDateTime.now());
+        return builder.body(ResponseUtils.getResponseBody(hfStoreReleMapper.insert(hfStoreRele)));
+    }
+    @RequestMapping(value = "/deletedRole", method = RequestMethod.GET)
+    @ApiOperation(value = "删除店铺角色", notes = "删除店铺角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> deletedRole(Integer StoreId,Integer StoreRoleId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        HfStoreReleExample hfStoreReleExample = new HfStoreReleExample();
+        hfStoreReleExample.createCriteria().andStoneIdEqualTo(StoreId).andIsDeletedEqualTo((short) 0).andIdEqualTo(StoreRoleId);
+        return builder.body(ResponseUtils.getResponseBody(hfStoreReleMapper.deleteByExample(hfStoreReleExample)));
+    }
+
+    @RequestMapping(value = "/updateRole", method = RequestMethod.GET)
+    @ApiOperation(value = "修改店铺角色", notes = "修改删除店铺角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> updateRole(Integer StoreId,Integer StoreRoleId,Integer userId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        hfStoreMenber hfStoreMenber = new hfStoreMenber();
+        hfStoreMenber.setStoreRole(StoreRoleId);
+        hfStoreMenberExample hfStoreReleExample = new hfStoreMenberExample();
+        hfStoreReleExample.createCriteria().andUserIdEqualTo(userId).andStoreIdEqualTo(StoreId).andIsDeletedEqualTo((short) 0);
+        hfStoreMenberMappers.updateByExampleSelective(hfStoreMenber,hfStoreReleExample);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
+

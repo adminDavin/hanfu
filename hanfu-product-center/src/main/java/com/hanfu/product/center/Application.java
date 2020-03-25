@@ -8,6 +8,7 @@ import org.mybatis.spring.annotation.MapperScans;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
@@ -16,6 +17,7 @@ import java.util.Properties;
 @tk.mybatis.spring.annotation.MapperScan({"com.hanfu.product.center.dao"})
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableScheduling
 @EnableDubbo(scanBasePackages = "com.hanfu.product.center.service.impl")
 public class Application {
     public static void main(String[] args) {
