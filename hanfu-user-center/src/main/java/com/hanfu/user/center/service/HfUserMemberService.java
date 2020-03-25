@@ -1,7 +1,8 @@
 package com.hanfu.user.center.service;
 
-import com.hanfu.user.center.model.HfUserMember;
 import org.apache.ibatis.annotations.Param;
+
+import com.hanfu.user.center.manual.model.HfUserMember;
 
 import java.time.LocalDateTime;
 

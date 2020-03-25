@@ -1,8 +1,8 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.user.center.manual.model.HfUserMember;
 import com.hanfu.user.center.model.HfSetBuyMember;
-import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
 import com.hanfu.user.center.service.HfsetMemeberService;
 import com.hanfu.utils.response.handler.ResponseEntity;
