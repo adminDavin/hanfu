@@ -24,6 +24,7 @@ public class StoreUser {
     private String storeDesc;
     private String userPhone;
     private Integer cancelId;
+    private String storeRoleName;
 
     public Integer getUserId() {
         return userId;
@@ -151,6 +152,14 @@ public class StoreUser {
 
     public void setCancelId(Integer cancelId) {
         this.cancelId = cancelId;
+    }
+
+    public String getStoreRoleName() {
+        return storeRoleName;
+    }
+
+    public void setStoreRoleName(String storeRoleName) {
+        this.storeRoleName = storeRoleName;
     }
 }
 

@@ -837,150 +837,150 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDao.selectQueryList(productForValue)));
 	}
-	@ApiOperation(value = "校检库存", notes = "校检库存")
-	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		if(goodsId!=null) {
-					HfRespExample exampleResp = new HfRespExample();
-					exampleResp.createCriteria().andGoogsIdEqualTo(goodsId);
-					if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<GoodsNum){
-						return builder.body(ResponseUtils.getResponseBody("库存不足"));
-				}
-				HfPriceExample examplePrice= new HfPriceExample();
-				examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
-				hfPriceMapper.selectByExample(examplePrice);
-				Amount amount = new Amount();
-				amount.setGoodsId(goodsId);
-				amount.setGoodsNum(hfRespMapper.selectByExample(exampleResp).get(0).getQuantity());
-				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-				return builder.body(ResponseUtils.getResponseBody(amount));
-			}
-
-//		Integer goodsId=null;
-//		System.out.println(checkResp.getRespList());
-//        JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
-//		Iterator<String> iterator = specs.keySet().iterator();
-//		ArrayList<String> strings = new ArrayList<>();
-//		ArrayList<String> sss = new ArrayList<>();
-//
-//		while(iterator.hasNext()){
-//// 获得key
-//			String key = iterator.next();
-//			String value = specs.getString(key);
-//			strings.add(key);
-//			System.out.println("key: "+key+",value:"+value);
-//			String hfV=value;
-//			sss.add(value);
-//		}
-//		System.out.println(sss);
-//		ArrayList<Integer> productSpecList1 = new ArrayList<>();
-//		ArrayList<String> hfValueList = new ArrayList<>();
-//		for (int i=0;i<strings.size();i++){
-//		    ProductSpecExample example = new ProductSpecExample();
-//			example.createCriteria().andHfNameEqualTo(strings.get(i)).andProductIdEqualTo(checkResp.getProductId());
-//			List<ProductSpec> productSpecList = productSpecMapper.selectByExample(example);
-//			if(productSpecList.size()==0) {
-//				return builder.body(ResponseUtils.getResponseBody("不存在"));
+//	@ApiOperation(value = "校检库存", notes = "校检库存")
+//	@RequestMapping(value = "/checkResp", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId)
+//			throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		if(goodsId!=null) {
+//					HfRespExample exampleResp = new HfRespExample();
+//					exampleResp.createCriteria().andGoogsIdEqualTo(goodsId);
+//					if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<GoodsNum){
+//						return builder.body(ResponseUtils.getResponseBody("库存不足"));
+//				}
+//				HfPriceExample examplePrice= new HfPriceExample();
+//				examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
+//				hfPriceMapper.selectByExample(examplePrice);
+//				Amount amount = new Amount();
+//				amount.setGoodsId(goodsId);
+//				amount.setGoodsNum(hfRespMapper.selectByExample(exampleResp).get(0).getQuantity());
+//				amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+//				amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+//				return builder.body(ResponseUtils.getResponseBody(amount));
 //			}
-//			productSpecList1.add(productSpecList.get(0).getId());
-//			System.out.println(productSpecList1+"qqqqq");
-//			hfValueList.add(specs.getString(strings.get(i)));
-//		}
-//		System.out.println(hfValueList.toString()+"1233123");
-//		int a;
-//		int ifor;
-//		List<Integer> numList = new ArrayList<Integer>();
 //
+////		Integer goodsId=null;
+////		System.out.println(checkResp.getRespList());
+////        JSONObject specs = JSONObject.parseObject(checkResp.getRespList());
+////		Iterator<String> iterator = specs.keySet().iterator();
+////		ArrayList<String> strings = new ArrayList<>();
+////		ArrayList<String> sss = new ArrayList<>();
+////
+////		while(iterator.hasNext()){
+////// 获得key
+////			String key = iterator.next();
+////			String value = specs.getString(key);
+////			strings.add(key);
+////			System.out.println("key: "+key+",value:"+value);
+////			String hfV=value;
+////			sss.add(value);
+////		}
+////		System.out.println(sss);
+////		ArrayList<Integer> productSpecList1 = new ArrayList<>();
+////		ArrayList<String> hfValueList = new ArrayList<>();
+////		for (int i=0;i<strings.size();i++){
+////		    ProductSpecExample example = new ProductSpecExample();
+////			example.createCriteria().andHfNameEqualTo(strings.get(i)).andProductIdEqualTo(checkResp.getProductId());
+////			List<ProductSpec> productSpecList = productSpecMapper.selectByExample(example);
+////			if(productSpecList.size()==0) {
+////				return builder.body(ResponseUtils.getResponseBody("不存在"));
+////			}
+////			productSpecList1.add(productSpecList.get(0).getId());
+////			System.out.println(productSpecList1+"qqqqq");
+////			hfValueList.add(specs.getString(strings.get(i)));
+////		}
+////		System.out.println(hfValueList.toString()+"1233123");
+////		int a;
+////		int ifor;
+////		List<Integer> numList = new ArrayList<Integer>();
+////
+////
+////
+////		for (ifor=0;ifor<productSpecList1.size()-1;ifor++){
+////			Example example2 = new Example(HfGoodsSpec.class);
+////			Example.Criteria criteria2 = example2.createCriteria();
+////			criteria2.andEqualTo("hfSpecId",productSpecList1.get(ifor)).andEqualTo("hfValue",hfValueList.get(ifor));
+////			numList.add(goodsSpecMapper1.selectByExample(example2).size());
+////		}
+////		ArrayList<String> goodsSpec = new ArrayList<>();
+////		System.out.println(Collections.max(numList)+"Collections.max(numList)");
+////		String abc="";
+////		for (a=0;a<sss.size();a++){
+////			System.out.println(productSpecList1.size());
+////			System.out.println(a+"aaaaaaaaa");
+////			Example example1 = new Example(HfGoodsSpec.class);
+////			Example.Criteria criteria1 = example1.createCriteria();
+////			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
+////			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a)+hfValueList.get(a));
+////			System.out.println(goodsSpecMapper1.selectByExample(example1).toString());
+////
+////			System.out.println(productSpecList1.get(a)+"jieshu");
+////			goodsSpec.add(String.valueOf(productSpecList1));
+////		}
+////
+////
+////
+////		HashMap map = new HashMap();
+////		for (int i = 0; i < productSpecList1.size(); i++) {
+////	        map.put(productSpecList1.get(i), i); //将值和下标存入Map
+////	    }
+////		Collections.sort(productSpecList1);
+////		for (a=0;a<sss.size();a++){
+////			abc=abc+String.valueOf(productSpecList1.get(a));
+////		}
+////        System.out.println(productSpecList1);
+////        ArrayList<String> originalList = new ArrayList<>();
+////        for (int i = 0; i < productSpecList1.size(); i++) {
+////        originalList.add(hfValueList.get((Integer) map.get(productSpecList1.get(i))));
+////        System.out.println(map.get(productSpecList1.get(i)));
+////        }
+////        System.out.println(originalList);
+////
+////
+////		System.out.println(abc);
+////		String aaa=originalList.toString().replace("[", "");
+////		aaa=aaa.replace("]", "");
+////		aaa=aaa.replace(" ", "");
+////		for(int i =0;i<specsService.selectSpecs().size();i++) {
+////			System.out.println(specsService.selectSpecs().get(i).getHfSpecId()+"--------------------");
+////			System.out.println(specsService.selectSpecs().get(i).getHfValue());
+////			System.out.println(specsService.selectSpecs().get(i).getGoodsId());
+////			System.out.println(specsService.selectSpecs().get(i).getHfSpecId().equals(abc));
+////			System.out.println(specsService.selectSpecs().get(i).getHfValue().equals(aaa));
+////			if(specsService.selectSpecs().get(i).getHfSpecId().equals(abc)&specsService.selectSpecs().get(i).getHfValue().equals(aaa)) {
+////				goodsId=specsService.selectSpecs().get(i).getGoodsId();
+////				System.out.println("goodsID");
+////			}
+////		}
+////		if (goodsId==null){
+////			return builder.body(ResponseUtils.getResponseBody("goods不存在"));
+////		}
+////		System.out.println("zzzzz");
+////		System.out.println(a);
+////		for (int x=0;x<a;x++){
+////			System.out.println(goodsId);
+////				System.out.println("aaaaaaaa");
+////				Example exampleResp = new Example(HfResp.class);
+////				Example.Criteria criteriaResp = exampleResp.createCriteria();
+////				criteriaResp.andEqualTo("googsId",goodsId);
+////			System.out.println(hfRespMapper1.selectByExample(exampleResp));
+////				if (hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity()<checkResp.getGoodsNum()){
+////					return builder.body(ResponseUtils.getResponseBody("库存不足"));
+////			}
+////			Example examplePrice= new Example(HfPrice.class);
+////			Example.Criteria criteriaPrice = examplePrice.createCriteria();
+////			criteriaPrice.andEqualTo("googsId",goodsId);
+////			hfPriceMapper1.selectByExample(examplePrice);
+////			Amount amount = new Amount();
+////			amount.setId(goodsId);
+////			amount.setGoodsNum(checkResp.getGoodsNum());
+////			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
+////			amount.setDiscountMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
+////			return builder.body(ResponseUtils.getResponseBody(amount));
+////		}
+//		return builder.body(ResponseUtils.getResponseBody("ojbk"));
 //
-//
-//		for (ifor=0;ifor<productSpecList1.size()-1;ifor++){
-//			Example example2 = new Example(HfGoodsSpec.class);
-//			Example.Criteria criteria2 = example2.createCriteria();
-//			criteria2.andEqualTo("hfSpecId",productSpecList1.get(ifor)).andEqualTo("hfValue",hfValueList.get(ifor));
-//			numList.add(goodsSpecMapper1.selectByExample(example2).size());
-//		}
-//		ArrayList<String> goodsSpec = new ArrayList<>();
-//		System.out.println(Collections.max(numList)+"Collections.max(numList)");
-//		String abc="";
-//		for (a=0;a<sss.size();a++){
-//			System.out.println(productSpecList1.size());
-//			System.out.println(a+"aaaaaaaaa");
-//			Example example1 = new Example(HfGoodsSpec.class);
-//			Example.Criteria criteria1 = example1.createCriteria();
-//			criteria1.andEqualTo("hfSpecId",productSpecList1.get(a)).andEqualTo("hfValue",hfValueList.get(a));
-//			System.out.println(hfValueList.get(a)+"vavavvava"+productSpecList1.get(a)+hfValueList.get(a));
-//			System.out.println(goodsSpecMapper1.selectByExample(example1).toString());
-//
-//			System.out.println(productSpecList1.get(a)+"jieshu");
-//			goodsSpec.add(String.valueOf(productSpecList1));
-//		}
-//
-//
-//
-//		HashMap map = new HashMap();
-//		for (int i = 0; i < productSpecList1.size(); i++) {
-//	        map.put(productSpecList1.get(i), i); //将值和下标存入Map
-//	    }
-//		Collections.sort(productSpecList1);
-//		for (a=0;a<sss.size();a++){
-//			abc=abc+String.valueOf(productSpecList1.get(a));
-//		}
-//        System.out.println(productSpecList1);
-//        ArrayList<String> originalList = new ArrayList<>();
-//        for (int i = 0; i < productSpecList1.size(); i++) {
-//        originalList.add(hfValueList.get((Integer) map.get(productSpecList1.get(i))));
-//        System.out.println(map.get(productSpecList1.get(i)));
-//        }
-//        System.out.println(originalList);
-//
-//
-//		System.out.println(abc);
-//		String aaa=originalList.toString().replace("[", "");
-//		aaa=aaa.replace("]", "");
-//		aaa=aaa.replace(" ", "");
-//		for(int i =0;i<specsService.selectSpecs().size();i++) {
-//			System.out.println(specsService.selectSpecs().get(i).getHfSpecId()+"--------------------");
-//			System.out.println(specsService.selectSpecs().get(i).getHfValue());
-//			System.out.println(specsService.selectSpecs().get(i).getGoodsId());
-//			System.out.println(specsService.selectSpecs().get(i).getHfSpecId().equals(abc));
-//			System.out.println(specsService.selectSpecs().get(i).getHfValue().equals(aaa));
-//			if(specsService.selectSpecs().get(i).getHfSpecId().equals(abc)&specsService.selectSpecs().get(i).getHfValue().equals(aaa)) {
-//				goodsId=specsService.selectSpecs().get(i).getGoodsId();
-//				System.out.println("goodsID");
-//			}
-//		}
-//		if (goodsId==null){
-//			return builder.body(ResponseUtils.getResponseBody("goods不存在"));
-//		}
-//		System.out.println("zzzzz");
-//		System.out.println(a);
-//		for (int x=0;x<a;x++){
-//			System.out.println(goodsId);
-//				System.out.println("aaaaaaaa");
-//				Example exampleResp = new Example(HfResp.class);
-//				Example.Criteria criteriaResp = exampleResp.createCriteria();
-//				criteriaResp.andEqualTo("googsId",goodsId);
-//			System.out.println(hfRespMapper1.selectByExample(exampleResp));
-//				if (hfRespMapper1.selectByExample(exampleResp).get(0).getQuantity()<checkResp.getGoodsNum()){
-//					return builder.body(ResponseUtils.getResponseBody("库存不足"));
-//			}
-//			Example examplePrice= new Example(HfPrice.class);
-//			Example.Criteria criteriaPrice = examplePrice.createCriteria();
-//			criteriaPrice.andEqualTo("googsId",goodsId);
-//			hfPriceMapper1.selectByExample(examplePrice);
-//			Amount amount = new Amount();
-//			amount.setId(goodsId);
-//			amount.setGoodsNum(checkResp.getGoodsNum());
-//			amount.setMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
-//			amount.setDiscountMoney(hfPriceMapper1.selectByExample(examplePrice).get(0).getSellPrice()*checkResp.getGoodsNum());
-//			return builder.body(ResponseUtils.getResponseBody(amount));
-//		}
-		return builder.body(ResponseUtils.getResponseBody("ojbk"));
-
-	}
+//	}
 	@ApiOperation(value = "根据类目id查询商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/findProductBycategoryId", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findProductBycategoryId(
