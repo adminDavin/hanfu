@@ -1,8 +1,14 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.user.center.dao.HfLevelDescribleMapper;
+import com.hanfu.user.center.dao.HfMemberLevelMapper;
+import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.manual.model.HfUserMember;
+import com.hanfu.user.center.model.HfLevelDescribleExample;
+import com.hanfu.user.center.model.HfMemberLevel;
 import com.hanfu.user.center.model.HfSetBuyMember;
+import com.hanfu.user.center.model.HfUserMemberExample;
 import com.hanfu.user.center.service.HfUserMemberService;
 import com.hanfu.user.center.service.HfsetMemeberService;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -37,7 +43,7 @@ public class HfUserMemberController {
 
 	@Autowired
 	private HfsetMemeberService hfsetMemeberService;
-
+	
 	@RequestMapping(value = "/rechargeMember",method = RequestMethod.GET)
 	@ApiOperation(value = "充值会员",notes = "充值会员")
 	@ApiImplicitParams({
@@ -247,4 +253,5 @@ public class HfUserMemberController {
 
 		return builder.body(ResponseUtils.getResponseBody(objects));
 	}
+	
 }
