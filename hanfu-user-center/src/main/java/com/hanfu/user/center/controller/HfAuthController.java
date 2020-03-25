@@ -43,6 +43,7 @@ import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.dao.hfStoreMenberMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.manual.model.HfMemberLevelInfo;
+import com.hanfu.user.center.manual.model.HfUserMemberInfo;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.model.CancelExample;
@@ -103,19 +104,19 @@ public class HfAuthController {
 
 	@Autowired
 	private CancelMapper cancelMapper;
-	
+
 	@Autowired
 	private hfStoreMenberMapper hfStoreMenberMappers;
-	
+
 	@Autowired
 	private HfMemberLevelMapper hfMemberLevelMapper;
-	
+
 	@Autowired
 	private HfLevelDescribleMapper hfLevelDescribleMapper;
-	
+
 	@Autowired
 	private HfUserMemberMapper hfUserMemberMapper;
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -371,7 +372,8 @@ public class HfAuthController {
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
 		list.forEach(hfStoneInfo -> {
 			hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
-			hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(hfStoneInfo.getId()).andIsDeletedEqualTo((short) 0);
+			hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(hfStoneInfo.getId())
+					.andIsDeletedEqualTo((short) 0);
 			List<hfStoreMenber> hfStoreMenber = hfStoreMenberMappers.selectByExample(hfStoreMenbersExample);
 //        storeUsers.forEach(storeUser -> {
 			hfStoreMenber.forEach(hfStoreMenber1 -> {
@@ -426,11 +428,11 @@ public class HfAuthController {
 //        });
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
-	
-	@ApiOperation(value = "添加用户会员等级",notes = "添加用户会员等级")
-	@RequestMapping(value = "/addUserMemberLevel",method = RequestMethod.POST)
-	 @ApiImplicitParams({
-         @ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String")})
+
+	@ApiOperation(value = "添加用户会员等级", notes = "添加用户会员等级")
+	@RequestMapping(value = "/addUserMemberLevel", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String") })
 	public ResponseEntity<JSONObject> addUserMemberLevel(String name) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -442,35 +444,37 @@ public class HfAuthController {
 		hfMemberLevelMapper.insert(hfMemberLevel);
 		return builder.body(ResponseUtils.getResponseBody(hfMemberLevel.getId()));
 	}
-	
-	@ApiOperation(value = "修改用户会员等级",notes = "修改用户会员等级")
-	@RequestMapping(value = "/updateUserMemberLevel",method = RequestMethod.POST)
-	 @ApiImplicitParams({
-         @ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
-         @ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer")})
-	public ResponseEntity<JSONObject> updateUserMemberLevel(String name,Integer id) throws JSONException {
+
+	@ApiOperation(value = "修改用户会员等级", notes = "修改用户会员等级")
+	@RequestMapping(value = "/updateUserMemberLevel", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> updateUserMemberLevel(String name, Integer id) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(id);
-		
+
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
-		hfMemberLevel.setLevelName(name);
+		if (!StringUtils.isEmpty(name)) {
+			hfMemberLevel.setLevelName(name);
+		}
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevelMapper.updateByPrimaryKey(hfMemberLevel);
 		return builder.body(ResponseUtils.getResponseBody("更新成功"));
 	}
-	
-	@ApiOperation(value = "删除用户会员等级",notes = "删除用户会员等级")
-	@RequestMapping(value = "/deleteUserMemberLevel",method = RequestMethod.GET)
-	 @ApiImplicitParams({
-         @ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer")})
+
+	@ApiOperation(value = "删除用户会员等级", notes = "删除用户会员等级")
+	@RequestMapping(value = "/deleteUserMemberLevel", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteUserMemberLevel(Integer id) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(id);
-		
+
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
@@ -489,9 +493,8 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
 
-	
-	@ApiOperation(value = "查询用户会员等级",notes = "查询用户会员等级")
-	@RequestMapping(value = "/findUserMemberLevel",method = RequestMethod.GET)
+	@ApiOperation(value = "查询用户会员等级", notes = "查询用户会员等级")
+	@RequestMapping(value = "/findUserMemberLevel", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findUserMemberLevel() throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -509,16 +512,115 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
-	@ApiOperation(value = "添加会员",notes = "添加会员")
-	@RequestMapping(value = "/addUserMember",method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addUserMember(Date startTime,Date endTime,HfUserMember hfUserMember,Integer[] userId) throws JSONException {
+
+	@ApiOperation(value = "添加会员", notes = "添加会员")
+	@RequestMapping(value = "/addUserMember", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addUserMember(Date startTime, Date endTime, HfUserMember hfUserMember,
+			Integer levelId, Integer[] userId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfUserMember member = new HfUserMember();
-//		member.setUserId(userId);
-		return builder.body(ResponseUtils.getResponseBody(null));
+		Instant instant = startTime.toInstant();
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+		Instant instant2 = endTime.toInstant();
+		ZoneId zoneId2 = ZoneId.systemDefault();
+		LocalDateTime ldt2 = instant2.atZone(zoneId2).toLocalDateTime();
+		for (int i = 0; i < userId.length; i++) {
+			HfUserMember member = new HfUserMember();
+			member.setUserId(userId[i]);
+			member.setLevelId(levelId);
+			member.setStartTme(ldt);
+			member.setEndTime(ldt2);
+			member.setCreateTime(LocalDateTime.now());
+			member.setModifyTime(LocalDateTime.now());
+			member.setIsDeleted((byte) 0);
+			hfUserMemberMapper.insert(member);
+		}
+
+		return builder.body(ResponseUtils.getResponseBody(userId.length));
 	}
+	
+	@ApiOperation(value = "修改会员信息", notes = "修改会员信息")
+	@RequestMapping(value = "/updateUserMember", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateUserMember(Date startTime, Date endTime, HfUserMember hfUserMember,
+			Integer levelId) throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+		HfUserMember member = hfUserMemberMapper.selectByPrimaryKey(hfUserMember.getId());
+		if (member == null) {
+			return builder.body(ResponseUtils.getResponseBody("数据异常"));
+		}
+
+		if (!StringUtils.isEmpty(String.valueOf(startTime))) {
+			Instant instant = startTime.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+			member.setStartTme(ldt);
+		}
+		if (!StringUtils.isEmpty(String.valueOf(endTime))) {
+			Instant instant = endTime.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+			member.setEndTime(ldt);
+		}
+		if (!StringUtils.isEmpty(String.valueOf(levelId))) {
+			member.setLevelId(levelId);
+		}
+		hfUserMemberMapper.updateByPrimaryKey(member);
+		return builder.body(ResponseUtils.getResponseBody(member.getId()));
+	}
+	
+	@ApiOperation(value = "删除会员", notes = "删除会员")
+	@RequestMapping(value = "/deleteUserMember", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteUserMember(Integer id) throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		hfUserMemberMapper.deleteByPrimaryKey(id);
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+	
+	@ApiOperation(value = "查询会员", notes = "查询会员")
+	@RequestMapping(value = "/findUserMember", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findUserMember() throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<HfUserMember> list = hfUserMemberMapper.selectByExample(null);
+		List<HfUserMemberInfo> result = new ArrayList<HfUserMemberInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			HfUserMember member = list.get(i);
+			HfUserMemberInfo info = new HfUserMemberInfo();
+			info.setId(member.getId());
+			info.setUserId(member.getUserId());
+			info.setCreateTime(member.getCreateTime());
+			info.setModifyTime(member.getModifyTime());
+			info.setIsDeleted(member.getIsDeleted());
+			info.setStartTime(member.getStartTme());
+			info.setEndTime(member.getEndTime());
+			if(member.getLevelId() != null) {
+				info.setLevelId(member.getLevelId());
+				HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.getLevelId());
+				info.setLevelName(level.getLevelName());
+			}
+			LocalDateTime ldt = LocalDateTime.now();
+			if(ldt.isAfter(member.getStartTme()) && ldt.isBefore(member.getEndTime())) {
+				System.out.println("开始了");
+				info.setUseState(0);
+			}
+			if(ldt.isBefore(member.getStartTme())) {
+				System.out.println("还未开始");
+				info.setUseState(-1);
+			}
+			if(ldt.isAfter(member.getEndTime())) {
+				System.out.println("结束了");
+				info.setUseState(1);
+			}
+			result.add(info);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	
 	
 	public static String create() {
 		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
