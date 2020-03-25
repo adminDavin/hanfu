@@ -18,7 +18,7 @@ public class Categories implements Serializable {
     private String hfName;
     private String ChildCategories;
     private Integer fileId;
-    private List<Categorie> categorie;
+    private List<Categories> categories;
 
     public Integer getId() {
         return id;
@@ -60,12 +60,12 @@ public class Categories implements Serializable {
 		this.fileId = fileId;
 	}
 
-	public List<Categorie> getCategorie() {
-		return categorie;
+	public List<Categories> getCategories() {
+		return categories;
 	}
 
-	public void setCategorie(List<Categorie> categorie) {
-		this.categorie = categorie;
+	public void setCategories(List<Categories> categories) {
+		this.categories = categories;
 	}
 
 }

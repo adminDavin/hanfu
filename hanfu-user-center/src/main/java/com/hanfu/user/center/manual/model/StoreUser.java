@@ -25,6 +25,7 @@ public class StoreUser {
     private String userPhone;
     private Integer cancelId;
     private String storeRoleName;
+    private String ownInvitationCode;
 
     public Integer getUserId() {
         return userId;
@@ -161,5 +162,13 @@ public class StoreUser {
     public void setStoreRoleName(String storeRoleName) {
         this.storeRoleName = storeRoleName;
     }
+
+	public String getOwnInvitationCode() {
+		return ownInvitationCode;
+	}
+
+	public void setOwnInvitationCode(String ownInvitationCode) {
+		this.ownInvitationCode = ownInvitationCode;
+	}
 }
 

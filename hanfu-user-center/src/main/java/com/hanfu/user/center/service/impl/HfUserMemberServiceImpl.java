@@ -1,7 +1,7 @@
 package com.hanfu.user.center.service.impl;
 
-import com.hanfu.user.center.dao.HfUserMemberMapper;
-import com.hanfu.user.center.model.HfUserMember;
+import com.hanfu.user.center.dao.HfUserMemberDao;
+import com.hanfu.user.center.manual.model.HfUserMember;
 import com.hanfu.user.center.service.HfUserMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class HfUserMemberServiceImpl implements HfUserMemberService {
 
     @Autowired
-    private HfUserMemberMapper hfUserMemberMapper;
+    private HfUserMemberDao hfUserMemberMapper;
 
     @Override
     public HfUserMember itExistUserById(Integer userId) {
