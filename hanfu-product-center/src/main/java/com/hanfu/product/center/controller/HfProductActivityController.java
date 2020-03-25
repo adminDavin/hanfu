@@ -61,22 +61,22 @@ import io.swagger.annotations.ApiOperation;
 public class HfProductActivityController {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private ManualDao manualDao;
-	
-	@Autowired 
+
+	@Autowired
 	private HfActivityMapper hfActivityMapper;
-	
+
 	@Autowired
 	private HfActivityProductMapper hfActivityProductMapper;
-	
+
 	@Autowired
 	private ProductMapper productMapper;
-	
+
 	@Autowired
 	private FileDescMapper fileDescMapper;
-	
+
 	@ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
 	@RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addProdcutActivity(ProductActivityRequest request) throws JSONException {
@@ -97,11 +97,11 @@ public class HfProductActivityController {
 			hfActivity.setEndTime(localDateTime);
 		}
 		HfUser hfUser = manualDao.select(request.getUserId());
-		if(hfUser != null) {
-			if(hfUser.getNickName() != null) {
+		if (hfUser != null) {
+			if (hfUser.getNickName() != null) {
 				hfActivity.setLastModifier(hfUser.getNickName());
 			}
-			
+
 		}
 		hfActivity.setCreateTime(LocalDateTime.now());
 		hfActivity.setModifyTime(LocalDateTime.now());
@@ -109,7 +109,7 @@ public class HfProductActivityController {
 		hfActivityMapper.insert(hfActivity);
 		return builder.body(ResponseUtils.getResponseBody(hfActivity.getId()));
 	}
-	
+
 	@ApiOperation(value = "查询活动", notes = "查询活动")
 	@RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
@@ -121,7 +121,7 @@ public class HfProductActivityController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
+
 	@ApiOperation(value = "删除活动", notes = "删除活动")
 	@RequestMapping(value = "/deleteProdcutActivity", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> deleteProdcutActivity(Integer id) throws JSONException {
@@ -132,59 +132,59 @@ public class HfProductActivityController {
 		hfActivityProductMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
-	
+
 	@ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
-    @RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateProdcutActivity(String activityName,Integer id,MultipartFile fileInfo) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
-        if(activity != null) {
-            String uuid = UUID.randomUUID().toString();
-            uuid = uuid.replace("-", "");
-            if(fileInfo != null) {
-                FileMangeService fileMangeService = new FileMangeService();
-                String arr[];
-                arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
-                if(activity.getFileId() == null) {
-                    FileDesc fileDesc = new FileDesc();
-                    fileDesc.setFileName(uuid);
-                    fileDesc.setGroupName(arr[0]);
-                    fileDesc.setRemoteFilename(arr[1]);
-                    fileDesc.setUserId(-1);
-                    fileDesc.setCreateTime(LocalDateTime.now());
-                    fileDesc.setModifyTime(LocalDateTime.now());
-                    fileDesc.setIsDeleted((short) 0);
-                    fileDescMapper.insert(fileDesc);
-                    activity.setFileId(fileDesc.getId());
-                }else {
-                    FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(activity.getFileId());
-                    fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
-                    fileDesc.setGroupName(arr[0]);
-                    fileDesc.setRemoteFilename(arr[1]);
-                    fileDesc.setModifyTime(LocalDateTime.now());
-                    fileDescMapper.updateByPrimaryKey(fileDesc);
-                }
-            }
-            if(!StringUtils.isEmpty(activityName)) {
-            	activity.setActivityName(activityName);
-            }
-            activity.setModifyTime(LocalDateTime.now());
-            hfActivityMapper.updateByPrimaryKey(activity);
-        }
-        return builder.body(ResponseUtils.getResponseBody("修改成功"));
-    }
-	
+	@RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
+		if (activity != null) {
+			String uuid = UUID.randomUUID().toString();
+			uuid = uuid.replace("-", "");
+			if (fileInfo != null) {
+				FileMangeService fileMangeService = new FileMangeService();
+				String arr[];
+				arr = fileMangeService.uploadFile(fileInfo.getBytes(), "-1");
+				if (activity.getFileId() == null) {
+					FileDesc fileDesc = new FileDesc();
+					fileDesc.setFileName(uuid);
+					fileDesc.setGroupName(arr[0]);
+					fileDesc.setRemoteFilename(arr[1]);
+					fileDesc.setUserId(-1);
+					fileDesc.setCreateTime(LocalDateTime.now());
+					fileDesc.setModifyTime(LocalDateTime.now());
+					fileDesc.setIsDeleted((short) 0);
+					fileDescMapper.insert(fileDesc);
+					activity.setFileId(fileDesc.getId());
+				} else {
+					FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(activity.getFileId());
+					fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+					fileDesc.setGroupName(arr[0]);
+					fileDesc.setRemoteFilename(arr[1]);
+					fileDesc.setModifyTime(LocalDateTime.now());
+					fileDescMapper.updateByPrimaryKey(fileDesc);
+				}
+			}
+			if (!StringUtils.isEmpty(activityName)) {
+				activity.setActivityName(activityName);
+			}
+			activity.setModifyTime(LocalDateTime.now());
+			hfActivityMapper.updateByPrimaryKey(activity);
+		}
+		return builder.body(ResponseUtils.getResponseBody("修改成功"));
+	}
+
 	@ApiOperation(value = "给活动绑定商品", notes = "给活动绑定商品")
 	@RequestMapping(value = "/intoActivityProduct", method = RequestMethod.POST)
 	@ApiImplicitParams({
-        @ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
-        @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),
-})
+			@ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"), })
 	public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true) Integer id,
 			@RequestParam(required = true) Integer productId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivityProduct hfActivityProduct = new HfActivityProduct();
-		if(productId != null) {
+		if (productId != null) {
 			hfActivityProduct.setActivityId(id);
 			hfActivityProduct.setProductId(productId);
 			hfActivityProduct.setCreateTime(LocalDateTime.now());
@@ -195,7 +195,7 @@ public class HfProductActivityController {
 		}
 		return builder.body(ResponseUtils.getResponseBody("添加失败"));
 	}
-	
+
 	@ApiOperation(value = "给活动删除商品", notes = "给活动删除商品")
 	@RequestMapping(value = "/deleteActivityProduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> deleteActivityProduct(Integer id) throws JSONException {
@@ -203,7 +203,7 @@ public class HfProductActivityController {
 		hfActivityProductMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
-	
+
 	@ApiOperation(value = "查询活动商品列表信息", notes = "查询活动商品列表信息")
 	@RequestMapping(value = "/getActivityProductList", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getActivityProductList(Integer id) throws JSONException {
@@ -211,7 +211,7 @@ public class HfProductActivityController {
 		HfActivityProductExample example = new HfActivityProductExample();
 		example.createCriteria().andActivityIdEqualTo(id);
 		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(example);
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			List<ActivityProductInfo> result = new ArrayList<ActivityProductInfo>();
 			for (int i = 0; i < list.size(); i++) {
 				HfActivityProduct activityProduct = list.get(i);
@@ -234,41 +234,54 @@ public class HfProductActivityController {
 		}
 		return builder.body(ResponseUtils.getResponseBody("还未添加信息"));
 	}
-	
+
 	@ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")
 	@RequestMapping(value = "/updateActivityProduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateActivityProduct(Integer id,ProductActivityInfoRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> updateActivityProduct(Integer id, ProductActivityInfoRequest request)
+			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivityProduct hfActivityProduct = hfActivityProductMapper.selectByPrimaryKey(id);
-		if(hfActivityProduct == null) {
+		if (hfActivityProduct == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据不存在"));
 		}
-		if(!StringUtils.isEmpty(request.getDistributionRatio())) {
+		if (!StringUtils.isEmpty(request.getDistributionRatio())) {
 			ArrayList<DistributionDiscount> list = new ArrayList<DistributionDiscount>();
 			String[] str = request.getDistributionRatio().split(",");
-			for (int i = 0; i < str.length; i++) {
-				list.add(new DistributionDiscount(i+1+"级",i+1+"",str[i]));
+			String nameInfo = str[0];
+			String ratioInfo = str[1];
+			String[] name = nameInfo.split(":");
+			String[] ratio = ratioInfo.split(":");
+			list.add(new DistributionDiscount(name[1], ratio[1]));
+			JSONArray array = JSONArray.parseArray(JSON.toJSONString(list));
+			if(!StringUtils.isEmpty(hfActivityProduct.getDistributionRatio())) {
+				JSONArray jsonArray = JSONArray.parseArray(hfActivityProduct.getDistributionRatio());
+				JSONArray resultArray = new JSONArray();
+				jsonArray.forEach(action -> {
+					resultArray.add(action);
+				});
+				resultArray.add(array.get(0));
+				hfActivityProduct.setDistributionRatio(resultArray.toJSONString());
+			}else {
+				hfActivityProduct.setDistributionRatio(array.toString());
 			}
-			JSONArray array= JSONArray.parseArray(JSON.toJSONString(list));
-			hfActivityProduct.setDistributionRatio(array.toString());
 		}
-		if(!StringUtils.isEmpty(String.valueOf(request.getDiscountRatio()))) {
+		if (!StringUtils.isEmpty(String.valueOf(request.getDiscountRatio()))) {
 			hfActivityProduct.setDiscountRatio(request.getDiscountRatio());
 		}
-		if(!StringUtils.isEmpty(String.valueOf(request.getFavoravlePrice()))) {
+		if (!StringUtils.isEmpty(String.valueOf(request.getFavoravlePrice()))) {
 			hfActivityProduct.setFavoravlePrice(request.getFavoravlePrice());
 		}
-		if(!StringUtils.isEmpty(request.getGroupNum())) {
+		if (!StringUtils.isEmpty(request.getGroupNum())) {
 			hfActivityProduct.setGroupNum(request.getGroupNum());
 		}
-		if(!StringUtils.isEmpty(request.getInventoryCelling())) {
+		if (!StringUtils.isEmpty(request.getInventoryCelling())) {
 			hfActivityProduct.setInventoryCelling(request.getInventoryCelling());
 		}
 		hfActivityProduct.setModifyTime(LocalDateTime.now());
 		hfActivityProductMapper.updateByPrimaryKey(hfActivityProduct);
 		return builder.body(ResponseUtils.getResponseBody("修改成功"));
 	}
-	
+
 	@ApiOperation(value = "获取商品活动类型", notes = "获取商品活动类型")
 	@RequestMapping(value = "/getProdcutActivityType", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getProdcutActivityType() throws JSONException {

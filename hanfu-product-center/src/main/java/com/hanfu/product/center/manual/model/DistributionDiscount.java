@@ -30,10 +30,9 @@ public class DistributionDiscount implements Serializable{
 	public void setRatio(String ratio) {
 		this.ratio = ratio;
 	}
-	public DistributionDiscount(String name, String index, String ratio) {
+	public DistributionDiscount(String name, String ratio) {
 		super();
 		this.name = name;
-		this.index = index;
 		this.ratio = ratio;
 	}
 	@Override
