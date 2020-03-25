@@ -510,6 +510,16 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
+	@ApiOperation(value = "添加会员",notes = "添加会员")
+	@RequestMapping(value = "/addUserMember",method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addUserMember(Date startTime,Date endTime,HfUserMember hfUserMember,Integer[] userId) throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUserMember member = new HfUserMember();
+//		member.setUserId(userId);
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
 	public static String create() {
 		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
 		String str = "";

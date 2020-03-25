@@ -148,7 +148,7 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<CategoryInfo> result = new ArrayList<CategoryInfo>();
 		List<Categories> categoriesList = null;
-		List<Categorie> categorieList = null;
+		List<Categories> categorieList = null;
 		HfCategoryExample example = new HfCategoryExample();
 		example.createCriteria().andLevelIdEqualTo(0);
 		List<HfCategory> list = hfCategoryMapper.selectByExample(example);
@@ -172,13 +172,13 @@ public class ProductController {
 				List<HfCategory> list3 = hfCategoryMapper.selectByExample(example);
 				for (int k = 0; k < list3.size(); k++) {
 					HfCategory hfCategory3 = list3.get(k);
-					Categorie categorie = new Categorie();
+					Categories categorie = new Categories();
 					categorie.setId(hfCategory3.getId());
 					categorie.setHfName(hfCategory3.getHfName());
-					categorieList = new ArrayList<Categorie>();
+					categorieList = new ArrayList<Categories>();
 					categorieList.add(categorie);
 				}
-				categories.setCategorie(categorieList);
+				categories.setCategories(categorieList);
 			}
 			info.setCategories(categoriesList);
 			result.add(info);
