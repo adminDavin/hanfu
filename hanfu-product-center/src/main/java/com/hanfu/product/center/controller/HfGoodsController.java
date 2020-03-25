@@ -55,57 +55,93 @@ public class HfGoodsController {
     public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "productId") Integer productId)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        
+
         HfGoodsExample example = new HfGoodsExample();
         example.createCriteria().andProductIdEqualTo(productId);
         List<HfGoods> list = hfGoodsMapper.selectByExample(example);
-        
+
         return builder.body(ResponseUtils.getResponseBody(list));
     }
 
 
-//    @ApiOperation(value = "校检库存", notes = "校检库存")
-//    @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-//    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId)
-//            throws JSONException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        if(goodsId!=null) {
-//            HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
-//            HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
-//            hfActivityProductExample.createCriteria().andActivityIdEqualTo(activityId).andProductIdEqualTo(hfGoods.getProductId());
-//            if (activityId!=null){
-//                Date date1 = new Date();
-//                Date date2 = new Date();
-//                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                try {
-//                    date1 = f.parse(f.format(new Date())); //这是获取当前时间
-//                    date2 = f.parse(f.format(discountCoupon.getStartTime()));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//            product(goodsId,GoodsNum);
-//        }
-//        return builder.body(ResponseUtils.getResponseBody("goods null"));
-//    }
+    @ApiOperation(value = "校检库存", notes = "校检库存")
+    @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId)
+            throws JSONException {
+        Amount amount = new Amount();
+        amount.setGoodsId(goodsId);
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if(goodsId!=null) {
+            HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
+            HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+            hfActivityProductExample.createCriteria().andActivityIdEqualTo(activityId).andProductIdEqualTo(hfGoods.getProductId());
+            List<HfActivityProduct> hfActivityProductList= hfActivityProductMapper.selectByExample(hfActivityProductExample);
+            if (hfActivityProductList.size()!=0){
+                if (hfActivityProductList.get(0).getInventoryCelling()!=null&&hfActivityProductList.get(0).getInventoryCelling()!=0){
+                    if (hfActivityProductList.get(0).getInventoryCelling()<GoodsNum){
+                        return builder.body(ResponseUtils.getResponseBody("understock"));
+                    }
+                    amount.setGoodsNum(hfActivityProductList.get(0).getInventoryCelling());
+                } else {
+                    if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
+                        return builder.body(ResponseUtils.getResponseBody("understock"));
+                    }
+                    amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
+                }
+                if (hfActivityProductList.get(0).getFavoravlePrice()==null||hfActivityProductList.get(0).getFavoravlePrice()==0){
+                  if (hfActivityProductList.get(0).getDiscountRatio()==null||hfActivityProductList.get(0).getDiscountRatio()==0){
+                      return product(goodsId,GoodsNum);
+                  } else {
+                      amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")*hfActivityProductList.get(0).getDiscountRatio())/100);
+                      amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")*hfActivityProductList.get(0).getDiscountRatio())/100);
+                      return builder.body(ResponseUtils.getResponseBody(amount));
+                  }
+                } else {
+                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice()));
+                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")-hfActivityProductList.get(0).getFavoravlePrice()));
+                    return builder.body(ResponseUtils.getResponseBody(amount));
+                }
+            }
+            return product(goodsId,GoodsNum);
+        }
+        return builder.body(ResponseUtils.getResponseBody("goods null"));
+    }
 
     private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfRespExample exampleResp = new HfRespExample();
-        exampleResp.createCriteria().andGoogsIdEqualTo(goodsId);
-        if (hfRespMapper.selectByExample(exampleResp).get(0).getQuantity()<GoodsNum){
-            return builder.body(ResponseUtils.getResponseBody("库存不足"));
+        if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
+            return builder.body(ResponseUtils.getResponseBody("understock"));
         }
-        HfPriceExample examplePrice= new HfPriceExample();
-        examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
-        hfPriceMapper.selectByExample(examplePrice);
         Amount amount = new Amount();
         amount.setGoodsId(goodsId);
-        amount.setGoodsNum(hfRespMapper.selectByExample(exampleResp).get(0).getQuantity());
-        amount.setMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
-        amount.setDiscountMoney(hfPriceMapper.selectByExample(examplePrice).get(0).getSellPrice()*GoodsNum);
+        amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
+        amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
+        amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
         return builder.body(ResponseUtils.getResponseBody(amount));
+    }
+
+
+    private Map<String, Integer> selectPriceResp(Integer goodsId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        //价格
+        HfPriceExample examplePrice= new HfPriceExample();
+        examplePrice.createCriteria().andGoogsIdEqualTo(goodsId);
+        List<HfPrice> hfPrices = hfPriceMapper.selectByExample(examplePrice);
+        //数量
+        HfRespExample exampleResp = new HfRespExample();
+        exampleResp.createCriteria().andGoogsIdEqualTo(goodsId).andIsDeletedEqualTo((short) 0);
+        List<HfResp> hfResps= hfRespMapper.selectByExample(exampleResp);
+
+
+        Map<String, Integer> params = new HashMap<>();
+        params.put("hfPrices", hfPrices.get(0).getSellPrice());
+        System.out.println(hfPrices.get(0).getSellPrice());
+        System.out.println(hfResps.get(0).getQuantity());
+        System.out.println(hfPrices.get(0).getLinePrice());
+        params.put("hfResps", hfResps.get(0).getQuantity());
+        params.put("linePrice",hfPrices.get(0).getLinePrice());
+
+        return params;
     }
 
 }

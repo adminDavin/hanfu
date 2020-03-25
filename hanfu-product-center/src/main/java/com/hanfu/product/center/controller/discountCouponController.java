@@ -186,4 +186,46 @@ public class discountCouponController {
         Scope.add(params1);
         return builder.body(ResponseUtils.getResponseBody(Scope));
     }
+
+    @ApiOperation(value = "优惠券图片", notes = "优惠券图片")
+    @RequestMapping(value = "/discountCouponMap", method = RequestMethod.POST)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public ResponseEntity<JSONObject> discountCouponMap(MultipartFile fileInfo,Integer discountCouponId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        String arr[];
+        FileDesc fileDesc = new FileDesc();
+        if (fileInfo != null) {
+            arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(discountCouponId));
+            fileDesc.setFileName(fileInfo.getName());
+            fileDesc.setGroupName(arr[0]);
+            fileDesc.setRemoteFilename(arr[1]);
+            fileDesc.setUserId(discountCouponId);
+            fileDesc.setCreateTime(LocalDateTime.now());
+            fileDesc.setModifyTime(LocalDateTime.now());
+            fileDescMapper.insertSelective(fileDesc);
+        }
+        DiscountCoupon discountCoupon = new DiscountCoupon();
+        discountCoupon.setId(discountCouponId);
+        discountCoupon.setFileId(fileDesc.getId());
+        discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
+        return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
+    }
+
+    @ApiOperation(value = "删除优惠券图片", notes = "删除优惠券图片")
+    @RequestMapping(value = "/deletedMap", method = RequestMethod.POST)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public ResponseEntity<JSONObject> deletedMap(Integer discountCouponId,Integer fileId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        FileMangeService fileManageService = new FileMangeService();
+        if(fileDesc!=null) {
+            fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+            fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
