@@ -1,7 +1,10 @@
 package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,6 +191,37 @@ public class StoneController {
     public  ResponseEntity<JSONObject> selectById( Integer id) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByPrimaryKey(id)));
+    }
+
+    @ApiOperation(value = "修改商铺状态", notes = "修改商铺状态")
+    @RequestMapping(value = "/updateStatus",method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "id", value = "商铺id", required = true, type = "Integer"),
+    })
+    public  ResponseEntity<JSONObject> updateStatus(Integer id,Integer hfStatus) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStone hfStone = new HfStone();
+        hfStone.setHfStatus(hfStatus);
+        HfStoneExample hfStoneExample = new HfStoneExample();
+        hfStoneExample.createCriteria().andIdEqualTo(id).andIsDeletedEqualTo((short) 0);
+        return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.updateByExampleSelective(hfStone,hfStoneExample)));
+    }
+
+    @ApiOperation(value = "商铺状态", notes = "商铺状态")
+    @RequestMapping(value = "/stoneStatus",method = RequestMethod.GET)
+
+    public  ResponseEntity<JSONObject> stoneStatus() throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<Map<String, String>> Scope = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "营业");
+        params.put("code", "0");
+        Map<String, String> params1 = new HashMap<>();
+        params1.put("name", "未营业");
+        params1.put("code", "1");
+        Scope.add(params);
+        Scope.add(params1);
+        return builder.body(ResponseUtils.getResponseBody(Scope));
     }
 
 }

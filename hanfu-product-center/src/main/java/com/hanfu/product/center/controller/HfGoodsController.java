@@ -68,9 +68,11 @@ public class HfGoodsController {
 //    @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
 //    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId)
 //            throws JSONException {
-//        HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
 //        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //        if(goodsId!=null) {
+//            HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
+//            HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+//            hfActivityProductExample.createCriteria().andActivityIdEqualTo(activityId).andProductIdEqualTo(hfGoods.getProductId());
 //            if (activityId!=null){
 //                Date date1 = new Date();
 //                Date date2 = new Date();
