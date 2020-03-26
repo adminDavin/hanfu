@@ -411,7 +411,7 @@ public class HfAuthController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String") })
 	public ResponseEntity<JSONObject> addUserMemberLevel(String name) throws JSONException {
-
+		
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
@@ -611,15 +611,17 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
-	@ApiOperation(value = "增加会员等级描述输入框", notes = "增加会员等级描述输入框")
+	@ApiOperation(value = "填写等级描述", notes = "填写等级描述")
 	@RequestMapping(value = "/addMemberLevelDescribe", method = RequestMethod.POST)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "levelId", value = "等级id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> addMemberLevelDescribe(Integer levelId) throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "levelId", value = "等级id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "等级描述", required = true, type = "String")})
+	public ResponseEntity<JSONObject> addMemberLevelDescribe(Integer levelId,String levelDescribe) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfLevelDescrible describle = new HfLevelDescrible();
 		describle.setLevelId(levelId);
+		describle.setLevelDescribe(levelDescribe);
 		describle.setCreateTime(LocalDateTime.now());
 		describle.setModifyTime(LocalDateTime.now());
 		describle.setIsDeleted((byte) 0);
