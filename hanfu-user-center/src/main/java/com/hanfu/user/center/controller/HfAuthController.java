@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -369,65 +370,39 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> select(Integer bossId) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<StoreUser> storeUsers = new ArrayList<>();
+		List<Integer> result = new ArrayList<Integer>();
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
-		list.forEach(hfStoneInfo -> {
-			hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
-			hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(hfStoneInfo.getId())
-					.andIsDeletedEqualTo((short) 0);
-			List<hfStoreMenber> hfStoreMenber = hfStoreMenberMappers.selectByExample(hfStoreMenbersExample);
-//        storeUsers.forEach(storeUser -> {
-			hfStoreMenber.forEach(hfStoreMenber1 -> {
-				StoreUser storeUser = new StoreUser();
-				storeUser.setCreatetime(hfStoreMenber1.getCreateTime());
-				storeUser.setIsCancel(hfStoreMenber1.getIsCancel());
-				storeUser.setLastModifier(hfStoreMenber1.getLastModifier());
-				storeUser.setPhone(hfStoreMenber1.getPhone());
-				storeUser.setStoreId(hfStoreMenber1.getStoreId());
-				storeUser.setUserId(hfStoreMenber1.getUserId());
-				storeUser.setStoreRole(hfStoreMenber1.getStoreRole());
-				HfStoneExample hfStoneExample = new HfStoneExample();
-				hfStoneExample.createCriteria().andIdEqualTo(hfStoreMenber1.getStoreId())
-						.andIsDeletedEqualTo((short) 0);
-				List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
-				hfStones.forEach(hfStone -> {
-					storeUser.setStoreDesc(hfStone.getHfDesc());
-					storeUser.setStoreName(hfStone.getHfName());
-					storeUser.setStoreAddress(hfStone.getAddress());
-				});
-				HfBossExample hfBossExample = new HfBossExample();
-				hfBossExample.createCriteria().andIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
-				List<HfBoss> hfBosses = hfBossMapper.selectByExample(hfBossExample);
-				hfBosses.forEach(hfBoss -> {
-					storeUser.setBossName(hfBoss.getName());
-					storeUser.setBossId(bossId);
-				});
-
-				HfUserExample hfUserExample = new HfUserExample();
-				hfUserExample.createCriteria().andIdEqualTo(hfStoreMenber1.getUserId()).andIdDeletedEqualTo((byte) 0);
-				List<HfUser> hfUsers = hfUserMapper.selectByExample(hfUserExample);
-				storeUser.setUserName(hfUsers.get(0).getRealName());
-				storeUser.setRealName(hfUsers.get(0).getNickName());
-				storeUser.setUserPhone(hfUsers.get(0).getPhone());
-				storeUser.setOwnInvitationCode(hfUsers.get(0).getOwnInvitationCode());
-
-				CancelExample cancelExample = new CancelExample();
-//                System.out.println(hfStoreMenber1.getUserId()+"qwqwqwq"+hfStoreMenber1.getIsCancel());
-				cancelExample.createCriteria().andUserIdEqualTo(hfStoreMenber1.getUserId()).andIsDeletedEqualTo(0)
-						.andIdEqualTo(hfStoreMenber1.getIsCancel());
-//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getId()+"--------------1");
-//                System.out.println(cancelMapper.selectByExample(cancelExample).get(0).getUserId()+"--------------2");
-				if (cancelMapper.selectByExample(cancelExample).size() != 0) {
-					storeUser.setIsCancel(1);
-					storeUser.setCancelId(hfStoreMenber1.getIsCancel());
-				} else {
-					storeUser.setIsCancel(0);
-				}
-				storeUsers.add(storeUser);
-			});
-		});
-//        });
+		for (int i = 0; i < list.size(); i++) {
+			HfStone hfStone = list.get(i);
+			hfStoreMenberExample example2 = new hfStoreMenberExample();
+			example2.createCriteria().andStoreIdEqualTo(hfStone.getId());
+			List<hfStoreMenber> list2 = hfStoreMenberMappers.selectByExample(example2);
+			for (int j = 0; j < list2.size(); j++) {
+				hfStoreMenber hfStoreMenber = list2.get(j);
+				result.add(hfStoreMenber.getUserId());
+			}
+		}
+//		for  ( int  i  =   0 ; i  <  qq.size()  -   1 ; i ++ )  {       
+//		      for  ( int  j  =  qq.size()  -   1 ; j  >  i; j -- )  {       
+//		           if  (qq.get(j).equals(qq.get(i)))  {       
+//		        	   qq.remove(j);       
+//		            }        
+//		        }        
+//		      }        
+		HashSet h = new HashSet(result);   
+		result.clear();   
+		result.addAll(h);
+		for (int i = 0; i < result.size(); i++) {
+			StoreUser storeUser = new StoreUser();
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
+			storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+			storeUser.setRealName(hfUser.getRealName());
+			storeUser.setUserPhone(hfUser.getPhone());
+			storeUser.setUserId(hfUser.getId());
+			storeUsers.add(storeUser);
+		}
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
 
