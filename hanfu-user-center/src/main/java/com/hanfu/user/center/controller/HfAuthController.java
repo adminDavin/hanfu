@@ -118,7 +118,7 @@ public class HfAuthController {
 
 	@Autowired
 	private HfUserMemberMapper hfUserMemberMapper;
-
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -596,6 +596,12 @@ public class HfAuthController {
 			HfUserMemberInfo info = new HfUserMemberInfo();
 			info.setId(member.getId());
 			info.setUserId(member.getUserId());
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(member.getUserId());
+			if(hfUser != null) {
+				if(!StringUtils.isEmpty(hfUser.getRealName())) {
+					info.setName(hfUser.getRealName());
+				}
+			}
 			info.setCreateTime(member.getCreateTime());
 			info.setModifyTime(member.getModifyTime());
 			info.setIsDeleted(member.getIsDeleted());

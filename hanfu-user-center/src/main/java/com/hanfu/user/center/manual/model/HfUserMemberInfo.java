@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class HfUserMemberInfo {
 	private Integer id;
+	private String name;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime startTime;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -79,6 +80,12 @@ public class HfUserMemberInfo {
 	}
 	public void setIsDeleted(byte isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }
