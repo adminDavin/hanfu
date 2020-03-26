@@ -629,7 +629,7 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody(describle.getId()));
 	}
 
-	@ApiOperation(value="填写等级描述",notes="填写等级描述")
+	@ApiOperation(value="更新等级描述",notes="更新等级描述")
 	@RequestMapping(value="/updateMemberLevelDescribe",method=RequestMethod.POST)
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer"),

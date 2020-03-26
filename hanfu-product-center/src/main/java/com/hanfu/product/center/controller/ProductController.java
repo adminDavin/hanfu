@@ -193,7 +193,7 @@ public class ProductController {
 		Product product = new Product();
 		product.setBossId(request.getBossId());
 		product.setBrandId(1);
-		product.setCategoryId(request.getCategoryId());
+		product.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		product.setHfName(request.getHfName());
 		product.setLastModifier(request.getLastModifier());
 		product.setCreateTime(LocalDateTime.now());
@@ -222,7 +222,7 @@ public class ProductController {
 		productInstance.setBossId(request.getBossId());
 		productInstance.setStoneId(1);
 		productInstance.setProductId(product.getId());
-		productInstance.setCategoryId(request.getCategoryId());
+		productInstance.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		productInstance.setBrandId(1);
 		productInstance.setCreateTime(LocalDateTime.now());
 		productInstance.setLastModifier(request.getLastModifier());
