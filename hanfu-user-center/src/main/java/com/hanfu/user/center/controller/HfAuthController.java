@@ -517,22 +517,22 @@ public class HfAuthController {
 
 	@ApiOperation(value = "添加会员", notes = "添加会员")
 	@RequestMapping(value = "/addUserMember", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addUserMember(Date startTime, Date endTime, HfUserMember hfUserMember,
-			Integer levelId, Integer[] userId) throws JSONException {
+//	Date startTime, Date endTime, HfUserMember hfUserMember,
+	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Instant instant = startTime.toInstant();
-		ZoneId zoneId = ZoneId.systemDefault();
-		LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
-		Instant instant2 = endTime.toInstant();
-		ZoneId zoneId2 = ZoneId.systemDefault();
-		LocalDateTime ldt2 = instant2.atZone(zoneId2).toLocalDateTime();
+//		Instant instant = startTime.toInstant();
+//		ZoneId zoneId = ZoneId.systemDefault();
+//		LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+//		Instant instant2 = endTime.toInstant();
+//		ZoneId zoneId2 = ZoneId.systemDefault();
+//		LocalDateTime ldt2 = instant2.atZone(zoneId2).toLocalDateTime();
 		for (int i = 0; i < userId.length; i++) {
 			HfUserMember member = new HfUserMember();
 			member.setUserId(userId[i]);
 			member.setLevelId(levelId);
-			member.setStartTme(ldt);
-			member.setEndTime(ldt2);
+//			member.setStartTme(ldt);
+//			member.setEndTime(ldt2);
 			member.setCreateTime(LocalDateTime.now());
 			member.setModifyTime(LocalDateTime.now());
 			member.setIsDeleted((byte) 0);
@@ -544,7 +544,8 @@ public class HfAuthController {
 
 	@ApiOperation(value = "修改会员信息", notes = "修改会员信息")
 	@RequestMapping(value = "/updateUserMember", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateUserMember(Date startTime, Date endTime, HfUserMember hfUserMember,
+//	Date startTime, Date endTime, 
+	public ResponseEntity<JSONObject> updateUserMember(HfUserMember hfUserMember,
 			Integer levelId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -554,18 +555,18 @@ public class HfAuthController {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
 
-		if (!StringUtils.isEmpty(String.valueOf(startTime))) {
-			Instant instant = startTime.toInstant();
-			ZoneId zoneId = ZoneId.systemDefault();
-			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
-			member.setStartTme(ldt);
-		}
-		if (!StringUtils.isEmpty(String.valueOf(endTime))) {
-			Instant instant = endTime.toInstant();
-			ZoneId zoneId = ZoneId.systemDefault();
-			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
-			member.setEndTime(ldt);
-		}
+//		if (!StringUtils.isEmpty(String.valueOf(startTime))) {
+//			Instant instant = startTime.toInstant();
+//			ZoneId zoneId = ZoneId.systemDefault();
+//			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+//			member.setStartTme(ldt);
+//		}
+//		if (!StringUtils.isEmpty(String.valueOf(endTime))) {
+//			Instant instant = endTime.toInstant();
+//			ZoneId zoneId = ZoneId.systemDefault();
+//			LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
+//			member.setEndTime(ldt);
+//		}
 		if (!StringUtils.isEmpty(String.valueOf(levelId))) {
 			member.setLevelId(levelId);
 		}
@@ -598,32 +599,32 @@ public class HfAuthController {
 			info.setCreateTime(member.getCreateTime());
 			info.setModifyTime(member.getModifyTime());
 			info.setIsDeleted(member.getIsDeleted());
-			info.setStartTime(member.getStartTme());
-			info.setEndTime(member.getEndTime());
+//			info.setStartTime(member.getStartTme());
+//			info.setEndTime(member.getEndTime());
 			if (member.getLevelId() != null) {
 				info.setLevelId(member.getLevelId());
 				HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.getLevelId());
 				info.setLevelName(level.getLevelName());
 			}
-			LocalDateTime ldt = LocalDateTime.now();
-			if (ldt.isAfter(member.getStartTme()) && ldt.isBefore(member.getEndTime())) {
-				System.out.println("开始了");
-				info.setUseState(0);
-				member.setUseState(0);
-				hfUserMemberMapper.updateByPrimaryKey(member);
-			}
-			if (ldt.isBefore(member.getStartTme())) {
-				System.out.println("还未开始");
-				info.setUseState(-1);
-				member.setUseState(-1);
-				hfUserMemberMapper.updateByPrimaryKey(member);
-			}
-			if (ldt.isAfter(member.getEndTime())) {
-				System.out.println("结束了");
-				info.setUseState(1);
-				member.setUseState(1);
-				hfUserMemberMapper.updateByPrimaryKey(member);
-			}
+//			LocalDateTime ldt = LocalDateTime.now();
+//			if (ldt.isAfter(member.getStartTme()) && ldt.isBefore(member.getEndTime())) {
+//				System.out.println("开始了");
+//				info.setUseState(0);
+//				member.setUseState(0);
+//				hfUserMemberMapper.updateByPrimaryKey(member);
+//			}
+//			if (ldt.isBefore(member.getStartTme())) {
+//				System.out.println("还未开始");
+//				info.setUseState(-1);
+//				member.setUseState(-1);
+//				hfUserMemberMapper.updateByPrimaryKey(member);
+//			}
+//			if (ldt.isAfter(member.getEndTime())) {
+//				System.out.println("结束了");
+//				info.setUseState(1);
+//				member.setUseState(1);
+//				hfUserMemberMapper.updateByPrimaryKey(member);
+//			}
 			result.add(info);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
