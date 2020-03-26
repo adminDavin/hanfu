@@ -160,25 +160,25 @@ public class ProductController {
 			example.clear();
 			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId());
 			List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
+			categoriesList = new ArrayList<Categories>();
 			for (int j = 0; j < list2.size(); j++) {
 				HfCategory hfCategory2 = list2.get(j);
 				Categories categories = new Categories();
 				categories.setId(hfCategory2.getId());
 				categories.setHfName(hfCategory2.getHfName());
-				categoriesList = new ArrayList<Categories>();
-				categoriesList.add(categories);
 				example.clear();
 				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId());
+				categorieList = new ArrayList<Categories>();
 				List<HfCategory> list3 = hfCategoryMapper.selectByExample(example);
 				for (int k = 0; k < list3.size(); k++) {
 					HfCategory hfCategory3 = list3.get(k);
 					Categories categorie = new Categories();
 					categorie.setId(hfCategory3.getId());
 					categorie.setHfName(hfCategory3.getHfName());
-					categorieList = new ArrayList<Categories>();
 					categorieList.add(categorie);
 				}
 				categories.setCategories(categorieList);
+				categoriesList.add(categories);
 			}
 			info.setCategories(categoriesList);
 			result.add(info);
