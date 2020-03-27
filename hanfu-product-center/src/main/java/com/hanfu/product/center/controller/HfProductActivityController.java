@@ -310,6 +310,9 @@ public class HfProductActivityController {
 				}
 				hfActivityProduct.setDistributionRatio(sortedJsonArray.toJSONString());
 			} else {
+				if(Integer.valueOf(names[1]) != 1) {
+					return builder.body(ResponseUtils.getResponseBody("-1"));
+				}
 				hfActivityProduct.setDistributionRatio(array.toString());
 			}
 		}
