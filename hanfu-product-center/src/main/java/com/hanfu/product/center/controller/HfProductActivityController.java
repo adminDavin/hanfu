@@ -85,13 +85,13 @@ public class HfProductActivityController {
 		HfActivity hfActivity = new HfActivity();
 		hfActivity.setActivityName(request.getActivityName());
 		hfActivity.setActivityType(request.getActivityType());
-		if (request.getStartTime() != null) {
+		if (!StringUtils.isEmpty(request.getStartTime())) {
 			Instant instant = request.getStartTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 			hfActivity.setStartTime(localDateTime);
 		}
-		if (request.getEndTime() != null) {
+		if (!StringUtils.isEmpty(request.getEndTime())) {
 			Instant instant = request.getEndTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
