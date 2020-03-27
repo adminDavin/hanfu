@@ -3,6 +3,9 @@ package com.hanfu.user.center.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class HfUserMember implements Serializable {
     /**
      *

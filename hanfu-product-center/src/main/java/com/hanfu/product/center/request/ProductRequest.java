@@ -9,7 +9,7 @@ public class ProductRequest extends CommonRequest {
     @ApiModelProperty(required = true, value = "商品名称")
     private String hfName;
     @ApiModelProperty(required = true, value = "商品所属的类目id")
-    private Integer categoryId;
+    private Integer categoryId[];
     @ApiModelProperty(required = true, value = "商品描述")
     private String productDesc;
     @ApiModelProperty(required = true, name = "bossId", value = "商家id")
@@ -37,16 +37,15 @@ public class ProductRequest extends CommonRequest {
         this.hfName = hfName;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
-    }
+    public Integer[] getCategoryId() {
+		return categoryId;
+	}
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
+	public void setCategoryId(Integer[] categoryId) {
+		this.categoryId = categoryId;
+	}
 
-
-    public String getProductDesc() {
+	public String getProductDesc() {
         return productDesc;
     }
 
