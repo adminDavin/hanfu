@@ -85,13 +85,13 @@ public class HfProductActivityController {
 		HfActivity hfActivity = new HfActivity();
 		hfActivity.setActivityName(request.getActivityName());
 		hfActivity.setActivityType(request.getActivityType());
-		if (!StringUtils.isEmpty(request.getStartTime())) {
+		if (request.getStartTime() != null) {
 			Instant instant = request.getStartTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 			hfActivity.setStartTime(localDateTime);
 		}
-		if (!StringUtils.isEmpty(request.getEndTime())) {
+		if (request.getEndTime() != null) {
 			Instant instant = request.getEndTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
@@ -168,13 +168,13 @@ public class HfProductActivityController {
 					fileDescMapper.updateByPrimaryKey(fileDesc);
 				}
 			}
-			if(!StringUtils.isEmpty(String.valueOf(startTime))) {
+			if(startTime != null) {
 				Instant instant = startTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 				activity.setStartTime(localDateTime);
 			}
-			if(!StringUtils.isEmpty(String.valueOf(endTime))) {
+			if(endTime != null) {
 				Instant instant = endTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
