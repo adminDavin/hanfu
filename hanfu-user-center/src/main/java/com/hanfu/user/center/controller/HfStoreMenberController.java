@@ -50,27 +50,26 @@ public class HfStoreMenberController {
             hfStoreMenberExample hfStoreMenberExamples = new hfStoreMenberExample();
             hfStoreMenberExamples.createCriteria().andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 0).andStoreIdEqualTo(hfStoreMenbers.getStoreId());
 
-            if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples).size() != 0) {
-                return builder.body(ResponseUtils.getResponseBody("此人已经是此店铺管理员"));
-            }
-            hfStoreMenberExample hfStoreMenberExamples1 = new hfStoreMenberExample();
-            hfStoreMenberExamples1.createCriteria().andStoreIdEqualTo(hfStoreMenbers.getStoreId()).andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 1);
-            if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples1).size() != 0) {
-                hfStoreMenbers.setIsDeleted((short) 0);
-                hfStoreMenbers.setCreateTime(LocalDateTime.now());
-                hfStoreMenbers.setModifyTime(LocalDateTime.now());
-                hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers, hfStoreMenberExamples1);
+            if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples).size() == 0) {
+                hfStoreMenberExample hfStoreMenberExamples1 = new hfStoreMenberExample();
+                hfStoreMenberExamples1.createCriteria().andStoreIdEqualTo(hfStoreMenbers.getStoreId()).andUserIdEqualTo(hfStoreMenbers.getUserId()).andIsDeletedEqualTo((short) 1);
+                if (hfStoreMenberMappers.selectByExample(hfStoreMenberExamples1).size() != 0) {
+                    hfStoreMenbers.setIsDeleted((short) 0);
+                    hfStoreMenbers.setCreateTime(LocalDateTime.now());
+                    hfStoreMenbers.setModifyTime(LocalDateTime.now());
+                    hfStoreMenberMappers.updateByExampleSelective(hfStoreMenbers, hfStoreMenberExamples1);
 
-            } else {
-                hfStoreMenbers.setIsDeleted((short) 0);
-                hfStoreMenbers.setCreateTime(LocalDateTime.now());
-                hfStoreMenbers.setModifyTime(LocalDateTime.now());
-                if (hfStoreMenbers.getIsCancel() != 0) {
-                    hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
+                } else {
+                    hfStoreMenbers.setIsDeleted((short) 0);
+                    hfStoreMenbers.setCreateTime(LocalDateTime.now());
+                    hfStoreMenbers.setModifyTime(LocalDateTime.now());
+                    hfStoreMenbers.setStoreRole(1);
+                    if (hfStoreMenbers.getIsCancel() != 0) {
+                        hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
+                    }
+                    hfStoreMenberMappers.insert(hfStoreMenbers);
                 }
-                hfStoreMenberMappers.insert(hfStoreMenbers);
             }
-
         }
         return builder.body(ResponseUtils.getResponseBody(ids.size()));
     }
