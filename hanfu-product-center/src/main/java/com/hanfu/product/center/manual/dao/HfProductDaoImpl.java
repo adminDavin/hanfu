@@ -61,7 +61,7 @@ public class HfProductDaoImpl implements HfProductDao {
     
     @Override
     public List<HfProductDisplay> selectActivityProductList(Integer activityId) {
-    	List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductName", activityId);
+    	List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectActivityProductList", activityId);
     	return result;
     }
 

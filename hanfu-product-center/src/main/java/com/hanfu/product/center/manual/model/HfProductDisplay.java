@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
@@ -36,6 +38,7 @@ public class HfProductDisplay implements Serializable {
     @ApiModelProperty(required = false, value = "默认物品Id")
     private Integer defaultGoodsId;
     @ApiModelProperty(required = false, value = "更新商品的时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime modifyTime;
     @ApiModelProperty(required = false, value = "划线价")
     private Integer linePrice;
