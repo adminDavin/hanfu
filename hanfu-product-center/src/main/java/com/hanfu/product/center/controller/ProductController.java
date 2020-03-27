@@ -363,8 +363,10 @@ public class ProductController {
 		List<HfProductPictrue> list = hfProductPictrueMapper.selectByExample(example);
 		if(list.isEmpty()) {
 			product.setFileId(null);
+			productMapper.updateByPrimaryKey(product);
 		}else {
 			product.setFileId(list.get(list.size()-1).getFileId());
+			productMapper.updateByPrimaryKey(product);
 		}
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}

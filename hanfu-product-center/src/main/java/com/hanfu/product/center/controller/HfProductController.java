@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.fastjson.JSONObject; 
+import com.alibaba.fastjson.JSONObject;
+import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDisplayDao;
@@ -63,6 +64,9 @@ public class HfProductController {
 
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    
+    @Autowired
+    private HfActivityMapper hfActivityMapper;
 
     @ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
     @RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -407,5 +411,58 @@ public class HfProductController {
         PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
         return builder.body(ResponseUtils.getResponseBody(page));
     }
+    
+    
+//    @ApiOperation(value = "获取商品列小程序活动", notes = "获取商品列小程序活动")
+//    @RequestMapping(value = "/getActivityProductList", method = RequestMethod.GET)
+//    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "activityType", value = "活动类型", required = false,
+//            type = "String") })
+//    public ResponseEntity<JSONObject> getActivityProductList(String activityType, Integer pageNum, Integer pageSize)
+//            throws JSONException {
+//        if(pageNum==null) {
+//            pageNum=0;
+//        }if(pageSize==null) {
+//            pageSize=0;
+//        }
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        HfActivityExample example = new HfActivityExample();
+//        example.createCriteria().andActivityTypeEqualTo(activityType);
+//        List<HfActivity> list = hfActivityMapper.selectByExample(example);
+//        for (int i = 0; i < list.size(); i++) {
+//		HfActivity item = list.get(i);
+//		
+//        PageHelper.startPage(pageNum,pageSize);
+//        List<HfProductDisplay> products = hfProductDao.selectActivityProductList(item.getId());
+//        System.out.println(products);
+//        Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
+//        System.out.println(stoneIds);
+//        HfStoneExample hfStoneExample = new HfStoneExample();
+//        hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
+//        List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
+//        System.out.println(stoneInfos);
+//        Map<Integer, String> stones = stoneInfos.stream().collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
+//        products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+//
+//        List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
+//        List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
+//        Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
+//                .collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+//                        (List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+//                            oldList.addAll(newList);
+//                            return oldList;
+//                        }));
+//        products.forEach(product -> {
+//            List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+//            if (Optional.ofNullable(hfGoods).isPresent()) {
+//                Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream().min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+//                product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+//                product.setDefaultGoodsId(hfGood.get().getId());
+//            }
+//
+//        });
+////        PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
+//        }
+//        return builder.body(ResponseUtils.getResponseBody(page));
+//    }
 }
 
