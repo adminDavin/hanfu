@@ -289,6 +289,10 @@ public class HfProductActivityController {
 				for (int i = 0; i < resultArray.size(); i++) {
 					jsonValues.add(resultArray.getJSONObject(i));
 				}
+				
+				if(Integer.valueOf(names[1])-1 != jsonValues.get(jsonValues.size()-2).getInteger("name")) {
+					return builder.body(ResponseUtils.getResponseBody("-1"));
+				}
 				Collections.sort(jsonValues, new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject a, JSONObject b) {
