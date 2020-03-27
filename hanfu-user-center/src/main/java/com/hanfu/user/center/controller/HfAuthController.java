@@ -397,8 +397,10 @@ public class HfAuthController {
 		for (int i = 0; i < result.size(); i++) {
 			StoreUser storeUser = new StoreUser();
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
-			if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
-				storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+			if(hfUser != null) {
+				if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
+					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+				}
 			}
 			storeUser.setUserName(hfUser.getNickName());
 			storeUser.setRealName(hfUser.getRealName());
