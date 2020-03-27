@@ -84,6 +84,8 @@ public class ProductController {
 	private cancelProductMapper cancelProductMappers;
 	@Autowired
 	private ProductIntroducePictrueMapper productIntroducePictrueMapper;
+	@Autowired
+	private HfActivityProductMapper hfActivityProductMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -261,6 +263,9 @@ public class ProductController {
 		example2.createCriteria().andProductIdEqualTo(productId);
 		productSpecMapper.deleteByExample(example);
 		productInfoMapper.deleteByExample(example2);
+		HfActivityProductExample example3 = new HfActivityProductExample();
+		example3.createCriteria().andProductIdEqualTo(productId);
+		hfActivityProductMapper.deleteByExample(example3);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.deleteByPrimaryKey(productId)));
 	}
 	@ApiOperation(value = "查询商品列表", notes = "根据类目id查询商品列表")
