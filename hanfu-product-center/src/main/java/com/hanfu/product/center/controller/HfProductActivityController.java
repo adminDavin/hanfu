@@ -86,6 +86,10 @@ public class HfProductActivityController {
 	private HfUsersMapper hfUsersMapper;
 	@Autowired
 	private HfUserBalanceMapper hfUserBalanceMapper;
+	@Autowired
+	private HfOrderMapper hfOrderMapper;
+	@Autowired
+	private HfOrderDetailMapper hfOrderDetailMapper;
 
 	@ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
 	@RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -456,35 +460,47 @@ public class HfProductActivityController {
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 
-//	@ApiOperation(value = "分销计算", notes = "分销计算")
-//	@RequestMapping(value = "/distributionActivityCalculate", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> distributionActivityCalculate(Integer activityId,Integer goodsId,Integer userId) throws JSONException {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		//用户
-//        HfUsers hfUsers= hfUsersMapper.selectByPrimaryKey(userId);
-//		//物品
-//		HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
-//		//价格
-//		HfResp hfResp= hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-//		//活动
-//		HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
-//		hfActivityProductExample.createCriteria().andProductIdEqualTo(hfGoods.getProductId()).andActivityIdEqualTo(activityId);
-//		List<HfActivityProduct> hfActivityProductList= hfActivityProductMapper.selectByExample(hfActivityProductExample);
-//		//转对象
-//		List<DistributionActivity> list = JSONArray.parseArray(hfActivityProductList.get(0).getDistributionRatio(), DistributionActivity.class);
+	@ApiOperation(value = "分销计算", notes = "分销计算")
+	@RequestMapping(value = "/distributionActivityCalculate", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> distributionActivityCalculate(Integer activityId,Integer orderId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrder hfOrder=hfOrderMapper.selectByPrimaryKey(orderId);
+		//物品
+		HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+		hfOrderDetailExample.createCriteria().andOrderIdEqualTo(orderId);
+		List<HfOrderDetail> hfOrderDetail= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+		Integer goodsId=hfOrderDetail.get(0).getGoodsId();
+		Integer userId=hfOrder.getUserId();
+		HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
+		//活动
+		HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+		hfActivityProductExample.createCriteria().andProductIdEqualTo(hfGoods.getProductId()).andActivityIdEqualTo(activityId);
+		List<HfActivityProduct> hfActivityProductList= hfActivityProductMapper.selectByExample(hfActivityProductExample);
+		//转对象
+		List<DistributionActivity> list = JSONArray.parseArray(hfActivityProductList.get(0).getDistributionRatio(), DistributionActivity.class);
+		for (DistributionActivity lists:list){
 //		list.forEach(lists ->{
-//		HfUsersExample hfUsersExample = new HfUsersExample();
-//		hfUsersExample.createCriteria().andOwnInvitationCodeEqualTo(hfUsers.getOwnInvitationCode());
-//		//分销上级用户
-//		List<HfUsers> hfUsers1=	hfUsersMapper.selectByExample(hfUsersExample);
-//		HfUserBalanceExample hfUsersExample1 = new HfUserBalanceExample();
-//		hfUsersExample1.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
-//        List<HfUserBalance> hfUserBalances=hfUserBalanceMapper.selectByExample(hfUsersExample1);
-//        HfUserBalance hfUserBalance = new HfUserBalance();
-//        hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance());
-//			hfUserBalanceMapper.updateByExampleSelective()
-//		});
-//
-//		return builder.body(ResponseUtils.getResponseBody(0));
-//	}
+			//订单
+			//分销上级用户
+			//用户
+		HfUsers hfUsers= hfUsersMapper.selectByPrimaryKey(userId);
+		HfUsersExample hfUsersExample = new HfUsersExample();
+		if (hfUsers.getInvitationCode()==null){
+			return builder.body(ResponseUtils.getResponseBody(0));
+		}
+		hfUsersExample.createCriteria().andOwnInvitationCodeEqualTo(hfUsers.getInvitationCode());
+		List<HfUsers> hfUsers1=	hfUsersMapper.selectByExample(hfUsersExample);
+		userId=hfUsers1.get(0).getId();
+		HfUserBalanceExample hfUsersExample1 = new HfUserBalanceExample();
+		hfUsersExample1.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
+        List<HfUserBalance> hfUserBalances=hfUserBalanceMapper.selectByExample(hfUsersExample1);
+//增加上级余额
+			HfUserBalanceExample hfUsersExample2 = new HfUserBalanceExample();
+			hfUsersExample2.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
+        HfUserBalance hfUserBalance = new HfUserBalance();
+        hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+((hfOrder.getAmount()*lists.getRatio())/100));
+			hfUserBalanceMapper.updateByExampleSelective(hfUserBalance,hfUsersExample2);
+		};
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
 }
