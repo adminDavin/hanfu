@@ -397,14 +397,22 @@ public class HfAuthController {
 		for (int i = 0; i < result.size(); i++) {
 			StoreUser storeUser = new StoreUser();
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
-			if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
-				storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+			if(hfUser != null) {
+				if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
+					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+				}
+				if(!StringUtils.isEmpty(hfUser.getNickName())) {
+					storeUser.setUserName(hfUser.getNickName());
+				}
+				if(!StringUtils.isEmpty(hfUser.getRealName())) {
+					storeUser.setRealName(hfUser.getRealName());
+				}
+				if(!StringUtils.isEmpty(hfUser.getPhone())) {
+					storeUser.setUserPhone(hfUser.getPhone());
+				}
+					storeUser.setUserId(hfUser.getId());
+					storeUsers.add(storeUser);
 			}
-			storeUser.setUserName(hfUser.getNickName());
-			storeUser.setRealName(hfUser.getRealName());
-			storeUser.setUserPhone(hfUser.getPhone());
-			storeUser.setUserId(hfUser.getId());
-			storeUsers.add(storeUser);
 		}
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
