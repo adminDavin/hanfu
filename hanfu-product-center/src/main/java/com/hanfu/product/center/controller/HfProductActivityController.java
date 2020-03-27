@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +141,8 @@ public class HfProductActivityController {
 
 	@ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
 	@RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo)
+	public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
+			Date startTime,Date endTime)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
@@ -170,6 +172,18 @@ public class HfProductActivityController {
 					fileDesc.setModifyTime(LocalDateTime.now());
 					fileDescMapper.updateByPrimaryKey(fileDesc);
 				}
+			}
+			if(startTime != null) {
+				Instant instant = startTime.toInstant();
+				ZoneId zoneId = ZoneId.systemDefault();
+				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+				activity.setStartTime(localDateTime);
+			}
+			if(endTime != null) {
+				Instant instant = endTime.toInstant();
+				ZoneId zoneId = ZoneId.systemDefault();
+				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+				activity.setStartTime(localDateTime);
 			}
 			if (!StringUtils.isEmpty(activityName)) {
 				activity.setActivityName(activityName);

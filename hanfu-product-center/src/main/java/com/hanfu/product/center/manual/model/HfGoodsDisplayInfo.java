@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @SuppressWarnings("serial")
 public class HfGoodsDisplayInfo implements Serializable {
     private Integer id;
     private String goodsName;
     private Integer productId;
     private String goodsDesc;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime modifyTime;
     private Integer warehouseId;
     private Integer quantity;

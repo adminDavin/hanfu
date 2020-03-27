@@ -1,6 +1,7 @@
 package com.hanfu.product.center.manual.model;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -8,6 +9,8 @@ public class ProductActivityInfo {
 	private Integer id;
 	private String activityName;
 	private String activityType;
+	private Integer fileId;
+	private List<HfProductDisplay> productList;
 	private String lastModifier;
 	private byte isDeleted;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -35,6 +38,18 @@ public class ProductActivityInfo {
 	}
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+	public List<HfProductDisplay> getProductList() {
+		return productList;
+	}
+	public void setProductList(List<HfProductDisplay> productList) {
+		this.productList = productList;
 	}
 	public String getLastModifier() {
 		return lastModifier;

@@ -1,120 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hanfu.product.center.manual.dao.HfProductDaoImpl">
-    <resultMap id="ProductDispaly" type="com.hanfu.product.center.manual.model.HfProductDisplay">
-        <result column="id" jdbcType="INTEGER" property="id"/>
-        <result column="hf_name" jdbcType="VARCHAR" property="productName"/>
-        <result column="product_desc" jdbcType="VARCHAR" property="productDesc"/>
-        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
-        <result column="file_id" jdbcType="INTEGER" property="fileId"/>
-        <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
-        <result column="category_id" jdbcType="INTEGER" property="categoryId"/>
-        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
-        <result column="brand_id" jdbcType="INTEGER" property="brandId"/>
-        <result column="brand_name" jdbcType="VARCHAR" property="brandName"/>
-        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
-        <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted"/>
-        <result column="last_modifier" jdbcType="VARCHAR" property="lastModifier"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-    </resultMap>
+<mapper
+	namespace="com.hanfu.product.center.manual.dao.HfProductDaoImpl">
+	<resultMap id="ProductDispaly"
+		type="com.hanfu.product.center.manual.model.HfProductDisplay">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="hf_name" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="product_desc" jdbcType="VARCHAR"
+			property="productDesc" />
+		<result column="stone_id" jdbcType="INTEGER" property="stoneId" />
+		<result column="file_id" jdbcType="INTEGER" property="fileId" />
+		<result column="stone_name" jdbcType="VARCHAR"
+			property="stoneName" />
+		<result column="category_id" jdbcType="INTEGER"
+			property="categoryId" />
+		<result column="category_name" jdbcType="VARCHAR"
+			property="categoryName" />
+		<result column="brand_id" jdbcType="INTEGER" property="brandId" />
+		<result column="brand_name" jdbcType="VARCHAR"
+			property="brandName" />
+		<result column="discount_ratio" jdbcType="VARCHAR"
+			property="discountRatio" />
+		<result column="group_num" jdbcType="VARCHAR"
+			property="groupNum" />
+		<result column="favoravle_price" jdbcType="VARCHAR"
+			property="favoravlePrice" />
+		<result column="inventory_celling" jdbcType="VARCHAR"
+			property="inventoryCelling" />
+		<result column="distribution_ratio" jdbcType="VARCHAR"
+			property="distributionRatio" />
+		<result column="modify_time" jdbcType="TIMESTAMP"
+			property="modifyTime" />
+		<result column="is_deleted" jdbcType="VARCHAR"
+			property="isDeleted" />
+		<result column="last_modifier" jdbcType="VARCHAR"
+			property="lastModifier" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+	</resultMap>
+	
+	<select id="selectProductForRotation" resultMap="ProductDispaly">
+		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
+		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
+		p.last_modifier, p.modify_time
+		FROM product p
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		left JOIN product_instance i on p.id=i.product_id
 
-    <select id="selectProductForRotation"  resultMap="ProductDispaly">
-    SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p
-    LEFT JOIN hf_category h   ON  p.category_id = h.id
-    left JOIN product_instance i on p.id=i.product_id
+	</select>
+	<select id="selectProductCategory" resultMap="ProductDispaly">
+		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
+		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
+		p.last_modifier, p.modify_time
+		FROM product p
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		left JOIN product_instance i on p.id=i.product_id where
+		p.category_id=#{cagetoryId}
+	</select>
+	<select id="selectProductByProductId" resultMap="ProductDispaly">
+		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
+		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
+		p.last_modifier, p.modify_time
+		FROM product p
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		left JOIN product_instance i on p.id=i.product_id
+		where p.id=#{productId}
+	</select>
 
-    </select>
-    <select id="selectProductCategory"  resultMap="ProductDispaly">
-          SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p
-    LEFT JOIN hf_category h   ON  p.category_id = h.id
-    left JOIN product_instance i on p.id=i.product_id where p.category_id=#{cagetoryId}
-    </select>
-    <select id="selectProductByProductId"   resultMap="ProductDispaly">
-    SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p
-    LEFT JOIN hf_category h   ON  p.category_id = h.id
-    left JOIN product_instance i on p.id=i.product_id
-    where p.id=#{productId}
-    </select>
+	<select id="selectProductByStoneId" resultMap="ProductDispaly">
+		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
+		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
+		p.last_modifier, p.modify_time ,p.create_time
+		FROM product p
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		left JOIN product_instance i on p.id=i.product_id
+		where 1=1
+		<if test="stoneId != null and stoneId != ''">
+			and i.stone_id=#{stoneId}
+		</if>
+		<if test=" isDelete != null and isDelete != ''">
+			and p.is_deleted=#{isDelete}
+		</if>
+		<if test="bossId != null and bossId != ''">
+			and i.boss_id=#{bossId}
+		</if>
+		ORDER BY p.create_time DESC
+	</select>
 
-    <select id="selectProductByStoneId"   resultMap="ProductDispaly">
-    SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time ,p.create_time
-    FROM  product p
-    LEFT JOIN hf_category h   ON  p.category_id = h.id
-    left JOIN product_instance i on p.id=i.product_id
-    where 1=1
-        <if test="stoneId != null and stoneId != ''">
-            and i.stone_id=#{stoneId}
-        </if>
-     <if test=" isDelete != null and isDelete != ''">
-         and p.is_deleted=#{isDelete}
-     </if>
-        <if test="bossId != null and bossId != ''">
-            and i.boss_id=#{bossId}
-        </if>
-        ORDER BY p.create_time DESC
-    </select>
+	<select id="selectProductByUserId" resultMap="ProductDispaly">
+		SELECT
+		p.is_deleted,
+		p.id,
+		p.hf_name,
+		product_desc,
+		p.category_id,
+		p.file_id,
+		h.hf_name category_name,
+		i.stone_id,
+		p.brand_id,
+		p.last_modifier,
+		p.modify_time
+		FROM
+		user_product_collect u
+		LEFT JOIN product p ON u.product_id = p.id
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		LEFT JOIN product_instance i ON p.id = i.product_id
+		WHERE
+		u.user_id=#{userId}
+	</select>
+	<select id="selectProductSeniorityId" resultMap="ProductDispaly">
+		SELECT
+		p.is_deleted,
+		p.id,
+		p.hf_name,
+		product_desc,
+		p.category_id,
+		p.file_id,
+		h.hf_name category_name,
+		i.stone_id,
+		p.brand_id,
+		p.last_modifier,
+		p.modify_time
+		FROM
+		seniority_instance s
+		LEFT JOIN hf_goods g ON s.goods_id = g.id
+		LEFT JOIN product p ON g.product_id = p.id
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		LEFT JOIN product_instance i ON p.id = i.product_id
+		WHERE
+		s.seniority_id =#{seniorityId}
+	</select>
+	
+	<select id="selectActivityProductList" resultMap="ProductDispaly">
+		SELECT
+		p.is_deleted,p.id,
+		p.hf_name,product_desc,
+		p.category_id,p.file_id,
+		h.hf_name category_name,i.stone_id,
+		p.brand_id,p.last_modifier,
+		p.modify_time,s.discount_ratio,
+		s.group_num,s.favoravle_price,
+		s.inventory_celling,s.distribution_ratio
+		FROM 
+		hf_activity_product s
+		LEFT JOIN product p ON s.product_id = p.id
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		LEFT JOIN product_instance i ON p.id = i.product_id
+		WHERE
+		s.activity_id =#{activityId}
+	</select>
+	
+	<select id="selectProductName" resultMap="ProductDispaly">
+		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
+		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
+		p.last_modifier, p.modify_time
+		FROM product p
+		LEFT JOIN hf_category h ON p.category_id = h.id
+		left JOIN product_instance i on p.id=i.product_id
+		WHERE 1=1
+		<if
+			test="hfName != null and hfName != '' and category != null and category != ''">
+			and p.hf_name like concat('%', #{hfName},'%') and h.hf_name like
+			concat('%', #{category},'%')
+		</if>
+		<if test="hfName != null and hfName != ''">
+			and p.hf_name like concat('%', #{hfName},'%')
+		</if>
+		<if test="category != null and category != ''">
+			and h.hf_name like concat('%', #{category},'%')
+		</if>
 
-    <select id="selectProductByUserId" resultMap="ProductDispaly">
-        SELECT
-        p.is_deleted,
-	p.id,
-	p.hf_name,
-	product_desc,
-	p.category_id,
-	p.file_id,
-	h.hf_name category_name,
-	i.stone_id,
-	p.brand_id,
-	p.last_modifier,
-	p.modify_time
-FROM
-	user_product_collect u
-	LEFT JOIN product p ON u.product_id = p.id
-	LEFT JOIN hf_category h ON p.category_id = h.id
-	LEFT JOIN product_instance i ON p.id = i.product_id
-WHERE
-	u.user_id=#{userId}
-    </select>
-    <select id="selectProductSeniorityId" resultMap="ProductDispaly">
-        SELECT
-        p.is_deleted,
-	p.id,
-	p.hf_name,
-	product_desc,
-	p.category_id,
-	p.file_id,
-	h.hf_name category_name,
-	i.stone_id,
-	p.brand_id,
-	p.last_modifier,
-	p.modify_time
-FROM
-	seniority_instance s
-	LEFT JOIN hf_goods g ON s.goods_id = g.id
-	LEFT JOIN product p ON g.product_id = p.id
-	LEFT JOIN hf_category h ON p.category_id = h.id
-	LEFT JOIN product_instance i ON p.id = i.product_id
-WHERE
-	s.seniority_id =#{seniorityId}
-    </select>
-    <select id="selectProductName" resultMap="ProductDispaly">
-    SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id, p.file_id, h.hf_name category_name, i.stone_id, p.brand_id, p.last_modifier, p.modify_time
-    FROM  product p
-    LEFT JOIN hf_category h   ON  p.category_id = h.id
-    left JOIN product_instance i on p.id=i.product_id
-WHERE 1=1
-        <if test="hfName != null and hfName != '' and category != null and category != ''">
-          and p.hf_name like concat('%', #{hfName},'%') and h.hf_name like concat('%', #{category},'%')
-        </if>
-<if test="hfName != null and hfName != ''">
-   and p.hf_name like concat('%', #{hfName},'%')
-</if>
-        <if test="category != null and category != ''">
-           and h.hf_name like concat('%', #{category},'%')
-        </if>
-
-    </select>
+	</select>
 </mapper>
