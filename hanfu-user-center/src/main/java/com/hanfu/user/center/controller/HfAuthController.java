@@ -401,12 +401,18 @@ public class HfAuthController {
 				if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
 					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
 				}
+				if(!StringUtils.isEmpty(hfUser.getNickName())) {
+					storeUser.setUserName(hfUser.getNickName());
+				}
+				if(!StringUtils.isEmpty(hfUser.getRealName())) {
+					storeUser.setRealName(hfUser.getRealName());
+				}
+				if(!StringUtils.isEmpty(hfUser.getPhone())) {
+					storeUser.setUserPhone(hfUser.getPhone());
+				}
+					storeUser.setUserId(hfUser.getId());
+					storeUsers.add(storeUser);
 			}
-			storeUser.setUserName(hfUser.getNickName());
-			storeUser.setRealName(hfUser.getRealName());
-			storeUser.setUserPhone(hfUser.getPhone());
-			storeUser.setUserId(hfUser.getId());
-			storeUsers.add(storeUser);
 		}
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
