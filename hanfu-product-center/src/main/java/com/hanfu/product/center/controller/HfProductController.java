@@ -183,7 +183,7 @@ public class HfProductController {
 
     @ApiOperation(value = "获取商品列表店铺", notes = "根据店铺id商品列表")
     @RequestMapping(value = "/getstone", method = RequestMethod.GET)
-    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = true,
+    @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false,
             type = "Integer") })
     public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize)
             throws JSONException {
