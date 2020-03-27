@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,8 @@ import io.swagger.annotations.ApiOperation;
 public class HfProductActivityController {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	private final String KEY_NAME = "name";
 
 	@Autowired
 	private ManualDao manualDao;
@@ -137,8 +141,7 @@ public class HfProductActivityController {
 	@ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
 	@RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
-			Date startTime,Date endTime)
-			throws Exception {
+			Date startTime, Date endTime) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
 		if (activity != null) {
@@ -168,13 +171,13 @@ public class HfProductActivityController {
 					fileDescMapper.updateByPrimaryKey(fileDesc);
 				}
 			}
-			if(startTime != null) {
+			if (startTime != null) {
 				Instant instant = startTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 				activity.setStartTime(localDateTime);
 			}
-			if(endTime != null) {
+			if (endTime != null) {
 				Instant instant = endTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
@@ -263,19 +266,41 @@ public class HfProductActivityController {
 			String[] str = request.getDistributionRatio().split(",");
 			String nameInfo = str[0];
 			String ratioInfo = str[1];
-			String[] name = nameInfo.split(":");
+			String[] names = nameInfo.split(":");
 			String[] ratio = ratioInfo.split(":");
-			list.add(new DistributionDiscount(name[1], ratio[1]));
+			list.add(new DistributionDiscount(names[1], ratio[1]));
 			JSONArray array = JSONArray.parseArray(JSON.toJSONString(list));
-			if(!StringUtils.isEmpty(hfActivityProduct.getDistributionRatio())) {
+			JSONObject jsonObj = JSONObject.parseObject(array.getString(0).toString());
+			if (!StringUtils.isEmpty(hfActivityProduct.getDistributionRatio())) {
 				JSONArray jsonArray = JSONArray.parseArray(hfActivityProduct.getDistributionRatio());
 				JSONArray resultArray = new JSONArray();
 				jsonArray.forEach(action -> {
 					resultArray.add(action);
 				});
 				resultArray.add(array.get(0));
-				hfActivityProduct.setDistributionRatio(resultArray.toJSONString());
-			}else {
+
+				JSONArray sortedJsonArray = new JSONArray();
+				List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+				for (int i = 0; i < resultArray.size(); i++) {
+					jsonValues.add(resultArray.getJSONObject(i));
+				}
+				Collections.sort(jsonValues, new Comparator<JSONObject>() {
+					@Override
+					public int compare(JSONObject a, JSONObject b) {
+						String valA = new String();
+						String valB = new String();
+						String aStr = a.getString(KEY_NAME);
+						valA = aStr.replaceAll("-", "");
+						String bStr = b.getString(KEY_NAME);
+						valB = bStr.replaceAll("-", "");
+						return -valB.compareTo(valA);
+					}
+				});
+				for (int i = 0; i < resultArray.size(); i++) {
+					sortedJsonArray.add(jsonValues.get(i));
+				}
+				hfActivityProduct.setDistributionRatio(sortedJsonArray.toJSONString());
+			} else {
 				hfActivityProduct.setDistributionRatio(array.toString());
 			}
 		}
