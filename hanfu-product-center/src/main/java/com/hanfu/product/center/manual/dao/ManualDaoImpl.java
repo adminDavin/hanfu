@@ -52,7 +52,7 @@ public class ManualDaoImpl implements ManualDao {
     }
     
     @Override
-    public void updateActivityState(HfActivity activity) {
+    public void updateActivityState(ProductActivityInfo activity) {
     	sqlSessionTemplate.update("updateActivityState", activity);
     }
 }

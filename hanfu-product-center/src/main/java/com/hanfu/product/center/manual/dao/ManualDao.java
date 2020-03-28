@@ -19,5 +19,5 @@ public interface ManualDao {
     
     public List<ProductActivityInfo> selectProductActivityList(String activityType);
     
-    public void updateActivityState(HfActivity activity);
+    public void updateActivityState(ProductActivityInfo activity);
 }
