@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.manual.model.UserInfo;
+import com.hanfu.product.center.model.HfActivity;
 import com.hanfu.user.center.model.HfUser;
 
 
@@ -48,5 +49,10 @@ public class ManualDaoImpl implements ManualDao {
     public List<ProductActivityInfo> selectProductActivityList(String activityType) {
     	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList",activityType);
     	return result;
+    }
+    
+    @Override
+    public void updateActivityState(HfActivity activity) {
+    	sqlSessionTemplate.update("updateActivityState", activity);
     }
 }

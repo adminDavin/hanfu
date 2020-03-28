@@ -75,4 +75,7 @@
      <select id="selectProductActivityList" resultMap="ProductActivityInfo">
     	select * from hf_activity where activity_type = #{activityType}
     </select>
+    <update id="updateActivityState">
+   		update hf_activity set activity_state = #{activityState} where id = #{id} 
+    </update>
 </mapper>
