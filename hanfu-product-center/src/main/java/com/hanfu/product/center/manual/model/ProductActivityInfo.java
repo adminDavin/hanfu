@@ -13,6 +13,9 @@ public class ProductActivityInfo {
 	private List<HfProductDisplay> productList;
 	private String lastModifier;
 	private byte isDeleted;
+	private String startTimes;
+	private String endTimes;
+	private int activityState;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date startTime;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -86,5 +89,23 @@ public class ProductActivityInfo {
 	}
 	public void setModifyTime(Date modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+	public String getStartTimes() {
+		return startTimes;
+	}
+	public void setStartTimes(String startTimes) {
+		this.startTimes = startTimes;
+	}
+	public String getEndTimes() {
+		return endTimes;
+	}
+	public void setEndTimes(String endTimes) {
+		this.endTimes = endTimes;
+	}
+	public int getActivityState() {
+		return activityState;
+	}
+	public void setActivityState(int activityState) {
+		this.activityState = activityState;
 	}
 }

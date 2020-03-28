@@ -1,5 +1,6 @@
 package com.hanfu.product.center.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -131,7 +132,30 @@ public class HfProductActivityController {
 		List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
 		for (int i = 0; i < result.size(); i++) {
 			ProductActivityInfo productActivityInfo = result.get(i);
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
 			productActivityInfo.setActivityType(ActivityTypeEnum.getActivityTypeEnum(activityType).getName());
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
+			productActivityInfo.setStartTimes(sdf.format(productActivityInfo.getStartTime()));
+			productActivityInfo.setEndTimes(sdf.format(productActivityInfo.getEndTime()));
+			Date date = new Date();
+			if(date.before(productActivityInfo.getStartTime())) {
+				System.out.println("活动未开始");
+				productActivityInfo.setActivityState(-1);
+				activity.setActivityState(-1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+			}
+			if(date.after(productActivityInfo.getStartTime()) && date.after(productActivityInfo.getEndTime())) {
+				System.out.println("活动开始中");
+				productActivityInfo.setActivityState(0);
+				activity.setActivityState(0);
+				hfActivityMapper.updateByPrimaryKey(activity);
+			}
+			if(date.after(productActivityInfo.getEndTime())) {
+				System.out.println("活动结束了");
+				productActivityInfo.setActivityState(1);
+				activity.setActivityState(1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
