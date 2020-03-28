@@ -132,8 +132,8 @@ public class HfProductActivityController {
 		List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
 		for (int i = 0; i < result.size(); i++) {
 			ProductActivityInfo productActivityInfo = result.get(i);
-			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
 			productActivityInfo.setActivityType(ActivityTypeEnum.getActivityTypeEnum(activityType).getName());
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
 			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
 			productActivityInfo.setStartTimes(sdf.format(productActivityInfo.getStartTime()));
 			productActivityInfo.setEndTimes(sdf.format(productActivityInfo.getEndTime()));
