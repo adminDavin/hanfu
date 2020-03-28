@@ -83,7 +83,7 @@
 			and p.is_deleted=#{isDelete}
 		</if>
 		<if test="bossId != null and bossId != ''">
-			and i.boss_id=#{bossId}
+			and i.boss_id=#{bossId} and i.stone_id=0
 		</if>
 		ORDER BY p.create_time DESC
 	</select>
