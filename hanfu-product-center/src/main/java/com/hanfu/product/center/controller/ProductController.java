@@ -84,6 +84,8 @@ public class ProductController {
 	private cancelProductMapper cancelProductMappers;
 	@Autowired
 	private ProductIntroducePictrueMapper productIntroducePictrueMapper;
+	@Autowired
+	private HfStoneMapper hfStoneMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -768,5 +770,49 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			hfProductPictrueMapper.deleteByExample(example);
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
+	}
+
+
+	@ApiOperation(value = "店铺添加商品", notes = "店铺添加商品")
+	@RequestMapping(value = "/addStoneProduct", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId,Integer userId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneExample hfStoneExample = new HfStoneExample();
+		hfStoneExample.createCriteria().andIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0);
+		List<HfStone> hfStones= hfStoneMapper.selectByExample(hfStoneExample);
+		for (Integer productId : productIds){
+			ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+			productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+			productInstanceMapper.selectByExample(productInstanceExample);
+			if (productInstanceMapper.selectByExample(productInstanceExample).size()==0){
+				ProductInstance productInstance = new ProductInstance();
+				productInstance.setCreateTime(LocalDateTime.now());
+				productInstance.setModifyTime(LocalDateTime.now());
+				productInstance.setLastModifier(String.valueOf(userId));
+				productInstance.setIsDeleted((short) 0);
+				productInstance.setStoneId(stoneId);
+				productInstance.setProductId(productId);
+				productInstance.setBossId(hfStones.get(0).getBossId());
+
+				productInstance.setCategoryId(31);
+				productInstance.setBrandId(1);
+				productInstanceMapper.insertSelective(productInstance);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+
+	@ApiOperation(value = "店铺删除商品", notes = "店铺删除商品")
+	@RequestMapping(value = "/deletedStoneProduct", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deletedStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		for (Integer productId : productIds){
+			ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+			productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+			productInstanceMapper.deleteByExample(productInstanceExample);
+		}
+		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 }
