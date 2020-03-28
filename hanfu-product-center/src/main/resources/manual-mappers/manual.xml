@@ -47,6 +47,7 @@
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
         <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
         <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="activity_state" jdbcType="TIMESTAMP" property="activityState"/>
         <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
     </resultMap>
   
