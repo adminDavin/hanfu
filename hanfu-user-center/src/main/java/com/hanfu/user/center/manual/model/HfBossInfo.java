@@ -14,18 +14,26 @@ public class HfBossInfo implements Serializable {
 	
 	@ApiParam(required = false, value = "总金额")
 	private double amount;
+	@ApiParam(required = false, value = "总金额")
+	private String bossName;
 	@ApiParam(required = false, value = "店铺")
 	private List<HfStone> stones;
 	@ApiParam(required = false, value = "总浏览数")
 	private double browseCounts;
-//	@ApiParam(required = false, value = "创建时间")
-//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-//	private LocalDateTime createDate;
+	@ApiParam(required = false, value = "有效时间")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT")
+	private LocalDateTime expireDate;
 	public double getAmount() {
 		return amount;
 	}
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+	public String getBossName() {
+		return bossName;
+	}
+	public void setBossName(String bossName) {
+		this.bossName = bossName;
 	}
 	public List<HfStone> getStones() {
 		return stones;
@@ -39,5 +47,10 @@ public class HfBossInfo implements Serializable {
 	public void setBrowseCounts(double browseCounts) {
 		this.browseCounts = browseCounts;
 	}
-	
+	public LocalDateTime getExpireDate() {
+		return expireDate;
+	}
+	public void setExpireDate(LocalDateTime expireDate) {
+		this.expireDate = expireDate;
+	}
 }

@@ -377,6 +377,7 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> findBossInfo(Integer bossId) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		double amount = 0;
+		HfBoss boss = hfBossMapper.selectByPrimaryKey(bossId);
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -393,6 +394,8 @@ public class HfAuthController {
 		bossInfo.setAmount(amount);
 		bossInfo.setBrowseCounts(count);
 		bossInfo.setStones(list);
+		bossInfo.setBossName(boss.getName());
+		bossInfo.setExpireDate(boss.getExpireTime());
 		return builder.body(ResponseUtils.getResponseBody(bossInfo));
 	}
 
