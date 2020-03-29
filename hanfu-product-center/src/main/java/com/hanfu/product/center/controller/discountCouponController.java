@@ -12,9 +12,12 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -35,7 +38,7 @@ public class discountCouponController {
     private DiscountCouponMapper discountCouponMapper;
     @Autowired
     private FileDescMapper fileDescMapper;
-
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
@@ -104,16 +107,16 @@ public class discountCouponController {
                 e.printStackTrace();
             }
         if (date1.getTime()>date3.getTime()){
-            System.out.println("结束了");
             discountCoupon.setUseState(1);
+            discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
         }
         if (date1.getTime()<date2.getTime()){
-            System.out.println("还未开始");
             discountCoupon.setUseState(-1);
+            discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
         }
         if (date2.getTime()<date1.getTime()&&date1.getTime()<date3.getTime()){
-            System.out.println("开始中");
             discountCoupon.setUseState(0);
+            discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
         }
         });
 
@@ -228,5 +231,48 @@ public class discountCouponController {
             fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
         }
         return builder.body(ResponseUtils.getResponseBody(0));
+    }
+    @Scheduled(cron="0/5 * * * * ? ")
+    @ApiOperation(value = "优惠券", notes = "优惠券")
+    @RequestMapping(value = "/TimeDiscountCoupon", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public void TimeDiscountCoupon()
+            throws Exception {
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
+        DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+        discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0);
+        List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        discountCoupons.forEach(discountCoupon -> {
+            Date date1 = new Date();
+            Date date2 = new Date();
+            Date date3 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(discountCoupon.getStartTime()));
+                date3 = f.parse(f.format(discountCoupon.getStopTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (date1.getTime()>date3.getTime()){
+                discountCoupon.setUseState(1);
+                discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
+            }
+            if (date1.getTime()<date2.getTime()){
+                discountCoupon.setUseState(-1);
+                discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
+            }
+            if (date2.getTime()<date1.getTime()&&date1.getTime()<date3.getTime()){
+                discountCoupon.setUseState(0);
+                discountCouponMapper.updateByPrimaryKeySelective(discountCoupon);
+            }
+        });
+//        Random r = new Random();
+        try{
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
