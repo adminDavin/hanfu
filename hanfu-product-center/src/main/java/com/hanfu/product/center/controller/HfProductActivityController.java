@@ -1,20 +1,15 @@
 package com.hanfu.product.center.controller;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import com.hanfu.product.center.dao.*;
-import com.hanfu.product.center.manual.model.DistributionActivity;
+import com.hanfu.product.center.manual.dao.HfGroupDao;
+import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +29,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.manual.dao.ManualDao;
-import com.hanfu.product.center.manual.model.ActivityProductInfo;
-import com.hanfu.product.center.manual.model.DistributionDiscount;
-import com.hanfu.product.center.manual.model.ProductActivityInfo;
-import com.hanfu.product.center.request.HfSeniorityRequest;
 import com.hanfu.product.center.request.ProductActivityInfoRequest;
 import com.hanfu.product.center.request.ProductActivityRequest;
 import com.hanfu.product.center.request.ProductActivityRequest.ActivityTypeEnum;
@@ -91,6 +82,8 @@ public class HfProductActivityController {
 	private HfOrderMapper hfOrderMapper;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
+	@Autowired
+	private HfGroupDao hfGroupDao;
 
 	@ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
 	@RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -103,13 +96,13 @@ public class HfProductActivityController {
 			Instant instant = request.getStartTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-			hfActivity.setStartTime(localDateTime);
+			hfActivity.setStartTime(new Date());
 		}
 		if (!StringUtils.isEmpty(request.getEndTime())) {
 			Instant instant = request.getEndTime().toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-			hfActivity.setEndTime(localDateTime);
+			hfActivity.setEndTime(new Date());
 		}
 		HfUser hfUser = manualDao.select(request.getUserId());
 		if (hfUser != null) {
@@ -208,13 +201,13 @@ public class HfProductActivityController {
 				Instant instant = startTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-				activity.setStartTime(localDateTime);
+				activity.setStartTime(new Date());
 			}
 			if (endTime != null) {
 				Instant instant = endTime.toInstant();
 				ZoneId zoneId = ZoneId.systemDefault();
 				LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-				activity.setStartTime(localDateTime);
+				activity.setStartTime(new Date());
 			}
 			if (!StringUtils.isEmpty(activityName)) {
 				activity.setActivityName(activityName);
@@ -399,7 +392,7 @@ public class HfProductActivityController {
 		hfActivityGroup.setCreateTime(LocalDateTime.now());
 		hfActivityGroup.setModifyTime(LocalDateTime.now());
 		hfActivityGroup.setActivityId(activityId);
-		hfActivityGroup.setClusteringTime(LocalDateTime.now());
+		hfActivityGroup.setClusteringTime(new Date());
 		hfActivityGroup.setState(0);
 		hfActivityGroup.setIsDeleted((byte) 0);
 		hfActivityGroup.setUserId(userId);
@@ -489,6 +482,60 @@ public class HfProductActivityController {
 			return builder.body(ResponseUtils.getResponseBody("无人参与团购，团购取消"));
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+
+	@ApiOperation(value = "团购列表", notes = "团购列表")
+	@RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> ListGroup(Integer bossId) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfGroup> hfGroupList= hfGroupDao.groupList();
+		List<Map<String, String>> groupLists = new ArrayList<>();
+		System.out.println(hfGroupList.get(0).getUserId());
+		hfGroupList.forEach(hfGroup -> {
+			//
+			HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
+			hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
+			List<HfActivityGroup> hfActivityGroup= hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
+			//
+			HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
+			//
+			HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+			hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
+			List<HfActivityProduct> hfActivityProduct= hfActivityProductMapper.selectByExample(hfActivityProductExample);
+			//时间
+			Date date1 = new Date();
+			Date date2 = new Date();
+			Date date3 = new Date();
+			Date date4 = new Date();
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			try {
+				date1 = f.parse(f.format(new Date())); //这是获取当前时间
+				date2 = f.parse(f.format(hfActivity.getStartTime()));
+				date3 = f.parse(f.format(hfActivity.getEndTime()));
+				date4 = f.parse(f.format(hfActivityGroup.get(0).getClusteringTime()));
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			long hours = (date1.getTime()-date4.getTime()) / (1000 * 60 * 60);
+			System.out.println(hours);
+			if (date1.getTime()>date2.getTime()&&date1.getTime()<date3.getTime()&&hours<24) {
+//				long hours = (date3.getTime()-date1.getTime()) / (1000 * 60 * 60);
+//				long minutes = ((date3.getTime()-date1.getTime())-hours*(1000 * 60 * 60 ))/(1000* 60);
+				String[] arr = hfGroup.getUserId().split(",");
+				HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup.get(0).getUserId());
+				List<String> list = Arrays.asList(arr);
+				Map<String, String> map = new HashMap<>();
+				map.put("groupSum", String.valueOf(hfActivityProduct.get(0).getGroupNum()));
+				map.put("nowSum", String.valueOf(list.size()));
+				map.put("userName", hfUsers.getNickName());
+				map.put("fileId", String.valueOf(hfUsers.getFileId()));
+				map.put("time", String.valueOf(date1.getTime()-date4.getTime()));
+				groupLists.add(map);
+			}
+		});
+		return builder.body(ResponseUtils.getResponseBody(groupLists));
 	}
 
 	@ApiOperation(value = "分销计算", notes = "分销计算")

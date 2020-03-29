@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.HfGroupDaoImpl">
+    <resultMap id="groupListDisplay" type="com.hanfu.product.center.manual.model.HfGroup">
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="goods_id" jdbcType="VARCHAR" property="goodsId"/>
+        <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+    </resultMap>
+    <select id="groupList" resultMap="groupListDisplay">
+        SELECT group_id,
+	GROUP_CONCAT( `user_id` ) user_id ,GROUP_CONCAT( `goods_id` ) goods_id
+FROM
+	hf_activity_count
+WHERE
+	state = 0 and is_deleted=0
+GROUP BY
+	group_id
+    </select>
+</mapper>

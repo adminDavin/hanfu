@@ -2,6 +2,7 @@ package com.hanfu.product.center.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class HfActivityGroup implements Serializable {
     /**
@@ -47,7 +48,7 @@ public class HfActivityGroup implements Serializable {
      *
      * @mbg.generated Fri Mar 27 12:05:00 CST 2020
      */
-    private LocalDateTime clusteringTime;
+    private Date clusteringTime;
 
     /**
      *
@@ -197,7 +198,7 @@ public class HfActivityGroup implements Serializable {
      *
      * @mbg.generated Fri Mar 27 12:05:00 CST 2020
      */
-    public LocalDateTime getClusteringTime() {
+    public Date getClusteringTime() {
         return clusteringTime;
     }
 
@@ -209,7 +210,7 @@ public class HfActivityGroup implements Serializable {
      *
      * @mbg.generated Fri Mar 27 12:05:00 CST 2020
      */
-    public void setClusteringTime(LocalDateTime clusteringTime) {
+    public void setClusteringTime(Date clusteringTime) {
         this.clusteringTime = clusteringTime;
     }
 
