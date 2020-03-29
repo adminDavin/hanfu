@@ -222,12 +222,12 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <table schema="user_center" tableName="hf_activity"
+        <!-- <table schema="user_center" tableName="hf_activity"
                domainObjectName="HfActivity">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
         <!--<table schema="user_center" tableName="hf_activity_group"-->
         <!--domainObjectName="HfActivityGroup">-->
@@ -235,13 +235,19 @@
         <!--<generatedKey column="id" sqlStatement="mysql"-->
         <!--identity="true"/>-->
         <!--</table>-->
-        <table schema="user_center" tableName="hf_order"
+        <!-- table schema="user_center" tableName="hf_order"
                                domainObjectName="HfOrder">
         <property name="useActualColumnNames" value="false"/>
         <generatedKey column="id" sqlStatement="mysql"
                       identity="true"/>
-    </table>
+    </table> -->
 
+       <!--  <table schema="user_center" tableName="hf_order_detail"
+               domainObjectName="HfOrderDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
         <table schema="user_center" tableName="hf_order_detail"
                domainObjectName="HfOrderDetail">
             <property name="useActualColumnNames" value="false"/>
