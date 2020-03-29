@@ -378,6 +378,7 @@ public class HfAuthController {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		double amount = 0;
 		HfBoss boss = hfBossMapper.selectByPrimaryKey(bossId);
+		HfUser hfUser = hfUserMapper.selectByPrimaryKey(boss.getUserId());
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -396,6 +397,9 @@ public class HfAuthController {
 		bossInfo.setStones(list);
 		bossInfo.setBossName(boss.getName());
 		bossInfo.setExpireDate(boss.getExpireTime());
+		bossInfo.setRegisteredCapital(boss.getRegisteredCapital());
+		bossInfo.setBusinessScope(boss.getBusinessScope());
+		bossInfo.setPhone(hfUser.getPhone());
 		return builder.body(ResponseUtils.getResponseBody(bossInfo));
 	}
 

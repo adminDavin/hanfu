@@ -16,6 +16,12 @@ public class HfBossInfo implements Serializable {
 	private double amount;
 	@ApiParam(required = false, value = "总金额")
 	private String bossName;
+	@ApiParam(required = false, value = "注册资本")
+	private Integer registeredCapital;
+	@ApiParam(required = false, value = "经营范围")
+	private String businessScope;
+	@ApiParam(required = false, value = "联系电话")
+	private String phone;
 	@ApiParam(required = false, value = "店铺")
 	private List<HfStone> stones;
 	@ApiParam(required = false, value = "总浏览数")
@@ -34,6 +40,24 @@ public class HfBossInfo implements Serializable {
 	}
 	public void setBossName(String bossName) {
 		this.bossName = bossName;
+	}
+	public Integer getRegisteredCapital() {
+		return registeredCapital;
+	}
+	public void setRegisteredCapital(Integer registeredCapital) {
+		this.registeredCapital = registeredCapital;
+	}
+	public String getBusinessScope() {
+		return businessScope;
+	}
+	public void setBusinessScope(String businessScope) {
+		this.businessScope = businessScope;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public List<HfStone> getStones() {
 		return stones;

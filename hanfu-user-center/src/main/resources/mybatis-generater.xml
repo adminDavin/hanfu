@@ -105,7 +105,7 @@
 		<!-- <table schema="user_center" tableName="cancel" domainObjectName="Cancel"> 
 			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true" /> </table> -->
-		<table schema="user_center" tableName="hf_store_rele"
+		<!-- <table schema="user_center" tableName="hf_store_rele"
 			domainObjectName="HfStoreRele">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
@@ -134,6 +134,12 @@
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
-		</table>
+		</table> -->
+		<table schema="user_center" tableName="hf_boss"
+			domainObjectName="HfBoss">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table> 
 	</context>
 </generatorConfiguration>
