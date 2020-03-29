@@ -1,6 +1,7 @@
 package com.hanfu.product.center.controller;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -32,6 +33,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
+import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDisplayDao;
 import com.hanfu.product.center.manual.dao.HfProductDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
@@ -75,6 +78,12 @@ public class HfProductController {
 
 	@Autowired
 	private ManualDao manualDao;
+	
+	@Autowired
+	private ProductMapper productMapper;
+	
+	@Autowired
+	private HfUserBrowseRecordMapper hfUserBrowseRecordMapper;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -150,6 +159,16 @@ public class HfProductController {
 					.collect(Collectors.toList());
 			product.setFileIds(fileIds);
 		}
+		HfUserBrowseRecord browseRecord = new HfUserBrowseRecord();
+		browseRecord.setBrowseDate(LocalDateTime.now());
+		browseRecord.setCreateDate(LocalDateTime.now());
+		browseRecord.setIdDeleted((byte) 0);
+		browseRecord.setModifyDate(LocalDateTime.now());
+		browseRecord.setProductId(productId);
+		browseRecord.setUserId(1);
+		Product product2 = productMapper.selectByPrimaryKey(productId);
+		browseRecord.setBossId(product2.getBossId());
+		hfUserBrowseRecordMapper.insert(browseRecord);
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
 

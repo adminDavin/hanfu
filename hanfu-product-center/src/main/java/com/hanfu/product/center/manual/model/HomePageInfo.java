@@ -21,20 +21,28 @@ public class HomePageInfo implements Serializable {
     private Integer orderCountsDay;
     @ApiModelProperty(required = true, value = "今日支付人数")
     private Integer paymentConutsDay;
+    @ApiModelProperty(required = true, value = "今日浏览人数")
+    private Integer browseCountsDay;
     @ApiModelProperty(required = true, value = "昨日支付订单数")
     private Integer orderCountsYestday;
     @ApiModelProperty(required = true, value = "昨日支付人数")
     private Integer paymentConutsYestday;
+    @ApiModelProperty(required = true, value = "昨日浏览人数")
+    private Integer browseCountsYestday;
     @ApiModelProperty(required = true, value = "今月总金额")
     private double amountMouth;
-    @ApiModelProperty(required = true, value = "今月支付订单数")
+    @ApiModelProperty(required = true, value = "本月支付订单数")
     private Integer orderConutsMouth;
-    @ApiModelProperty(required = true, value = "今月支付人数")
+    @ApiModelProperty(required = true, value = "本月支付人数")
     private Integer paymentConutsMouth;
+    @ApiModelProperty(required = true, value = "本月浏览人数")
+    private Integer browseCountsMouth;
     @ApiModelProperty(required = true, value = "上月支付订单数")
     private Integer orderConutsLastMouth;
     @ApiModelProperty(required = true, value = "上月支付人数")
     private Integer paymentConutsLastMouth;
+    @ApiModelProperty(required = true, value = "上月浏览人数")
+    private Integer browseCountsLastMouth;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -64,6 +72,14 @@ public class HomePageInfo implements Serializable {
 		this.paymentConutsDay = paymentConutsDay;
 	}
 
+	public Integer getBrowseCountsDay() {
+		return browseCountsDay;
+	}
+
+	public void setBrowseCountsDay(Integer browseCountsDay) {
+		this.browseCountsDay = browseCountsDay;
+	}
+
 	public Integer getOrderCountsYestday() {
 		return orderCountsYestday;
 	}
@@ -78,6 +94,14 @@ public class HomePageInfo implements Serializable {
 
 	public void setPaymentConutsYestday(Integer paymentConutsYestday) {
 		this.paymentConutsYestday = paymentConutsYestday;
+	}
+
+	public Integer getBrowseCountsYestday() {
+		return browseCountsYestday;
+	}
+
+	public void setBrowseCountsYestday(Integer browseCountsYestday) {
+		this.browseCountsYestday = browseCountsYestday;
 	}
 
 	public double getAmountMouth() {
@@ -104,6 +128,14 @@ public class HomePageInfo implements Serializable {
 		this.paymentConutsMouth = paymentConutsMouth;
 	}
 
+	public Integer getBrowseCountsMouth() {
+		return browseCountsMouth;
+	}
+
+	public void setBrowseCountsMouth(Integer browseCountsMouth) {
+		this.browseCountsMouth = browseCountsMouth;
+	}
+
 	public Integer getOrderConutsLastMouth() {
 		return orderConutsLastMouth;
 	}
@@ -118,6 +150,14 @@ public class HomePageInfo implements Serializable {
 
 	public void setPaymentConutsLastMouth(Integer paymentConutsLastMouth) {
 		this.paymentConutsLastMouth = paymentConutsLastMouth;
+	}
+
+	public Integer getBrowseCountsLastMouth() {
+		return browseCountsLastMouth;
+	}
+
+	public void setBrowseCountsLastMouth(Integer browseCountsLastMouth) {
+		this.browseCountsLastMouth = browseCountsLastMouth;
 	}
 
 	public LocalDateTime getCreateTime() {

@@ -41,6 +41,7 @@ import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
@@ -84,6 +85,9 @@ public class HomePageController {
 	@Autowired
 	private HfOrderMapper hfOrderMapper;
 	
+	@Autowired
+	private HfUserBrowseRecordMapper hfUserBrowseRecordMapper;
+	
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -100,6 +104,14 @@ public class HomePageController {
 		Integer orderCountYestday = 0;
 		Integer orderCountMouth = 0;
 		Integer orderCountLastMouth = 0;
+		LocalDateTime dayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+		LocalDateTime dayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+		LocalDateTime yestdayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(-1);
+		LocalDateTime yestdayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).plusDays(-1);
+		LocalDateTime mouthStart = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN);
+		LocalDateTime mouthEnd = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX);
+		LocalDateTime lastMouthStart = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN).plusMonths(-1);
+		LocalDateTime lastMouthEnd = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX).plusMonths(-1);
 		HfStoneExample example = new HfStoneExample();
         example.createCriteria().andBossIdEqualTo(bossId);
         List<HfStone> hfStones = hfStoneMapper.selectByExample(example);
@@ -107,24 +119,22 @@ public class HomePageController {
 			HfStone hfStone = hfStones.get(i);
 			HfOrderExample example2 = new HfOrderExample();
 			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-			.andCreateTimeBetween(LocalDateTime.of(LocalDate.now(), LocalTime.MIN), LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
+			.andCreateTimeBetween(dayStart, dayEnd);
 			List<HfOrder> hfOrderDays = hfOrderMapper.selectByExample(example2);
 			
 			example2.clear();
 			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-			.andCreateTimeBetween(LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(-1), LocalDateTime.of(LocalDate.now(), LocalTime.MAX).plusDays(-1));
+			.andCreateTimeBetween(yestdayStart, yestdayEnd);
 			List<HfOrder> hfOrderYesterday = hfOrderMapper.selectByExample(example2);
 			
 			example2.clear();
 			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-			.andCreateTimeBetween(LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN),
-					LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX));
+			.andCreateTimeBetween(mouthStart, mouthEnd);
 			List<HfOrder> hfOrderMouths = hfOrderMapper.selectByExample(example2);
 			
 			example2.clear();
 			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-			.andCreateTimeBetween(LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN).plusMonths(-1),
-					LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX).plusMonths(-1));
+			.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
 			List<HfOrder> hfOrderLastMouths = hfOrderMapper.selectByExample(example2);
 			
 			for (int j = 0; j < hfOrderDays.size(); j++) {
@@ -160,26 +170,42 @@ public class HomePageController {
         HashSet h = new HashSet(paymentCountDay);
         paymentCountDay.clear();
         paymentCountDay.addAll(h);
-        HashSet h2 = new HashSet(paymentCountYestday);
+        h = new HashSet(paymentCountYestday);
         paymentCountYestday.clear();
-        paymentCountYestday.addAll(h2);
-        HashSet h3 = new HashSet(paymentCountMouth);
+        paymentCountYestday.addAll(h);
+        h = new HashSet(paymentCountMouth);
         paymentCountMouth.clear();
-        paymentCountMouth.addAll(h3);
-        HashSet h4 = new HashSet(paymentCountLastMouth);
+        paymentCountMouth.addAll(h);
+        h = new HashSet(paymentCountLastMouth);
         paymentCountLastMouth.clear();
-        paymentCountLastMouth.addAll(h4);
+        paymentCountLastMouth.addAll(h);
+        HfUserBrowseRecordExample browseRecordExample = new HfUserBrowseRecordExample();
+        browseRecordExample.createCriteria().andBossIdEqualTo(bossId).andBrowseDateBetween(dayStart, dayEnd);
+        List<HfUserBrowseRecord> browseCountsDay = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+        browseRecordExample.clear();
+        browseRecordExample.createCriteria().andBossIdEqualTo(bossId).andBrowseDateBetween(yestdayStart, yestdayEnd);
+        List<HfUserBrowseRecord> browseCountsYestday = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+        browseRecordExample.clear();
+        browseRecordExample.createCriteria().andBossIdEqualTo(bossId).andBrowseDateBetween(mouthStart, mouthEnd);
+        List<HfUserBrowseRecord> browseCountsMouth = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+        browseRecordExample.clear();
+        browseRecordExample.createCriteria().andBossIdEqualTo(bossId).andBrowseDateBetween(lastMouthStart, lastMouthEnd);
+        List<HfUserBrowseRecord> browseCountsLastMouth = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
         HomePageInfo info = new HomePageInfo();
         info.setAmountDay(amountDay);
         info.setOrderCountsDay(orderCountDay);
         info.setOrderCountsYestday(orderCountYestday);
         info.setPaymentConutsDay(paymentCountDay.size());
         info.setPaymentConutsYestday(paymentCountYestday.size());
+        info.setBrowseCountsDay(browseCountsDay.size());
+        info.setBrowseCountsYestday(browseCountsYestday.size());
         info.setAmountMouth(amountMouth);
         info.setOrderConutsMouth(orderCountMouth);
         info.setOrderConutsLastMouth(orderCountLastMouth);
         info.setPaymentConutsMouth(paymentCountMouth.size());
         info.setPaymentConutsLastMouth(paymentCountLastMouth.size());
+        info.setBrowseCountsMouth(browseCountsMouth.size());
+        info.setBrowseCountsLastMouth(browseCountsLastMouth.size());
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	public static void main(String[] args) {

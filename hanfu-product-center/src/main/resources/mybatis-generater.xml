@@ -248,8 +248,8 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_order_detail"
-               domainObjectName="HfOrderDetail">
+        <table schema="user_center" tableName="hf_user_browse_record"
+               domainObjectName="HfUserBrowseRecord">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
