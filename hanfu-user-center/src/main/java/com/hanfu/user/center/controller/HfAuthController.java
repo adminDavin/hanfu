@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hanfu.inner.model.product.center.HfOrders;
 import com.hanfu.user.center.dao.CancelMapper;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
@@ -42,7 +43,9 @@ import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.dao.hfStoreMenberMapper;
+import com.hanfu.user.center.manual.dao.HfBossInfoDao;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.HfBossInfo;
 import com.hanfu.user.center.manual.model.HfLevelDescribeInfo;
 import com.hanfu.user.center.manual.model.HfMemberLevelInfo;
 import com.hanfu.user.center.manual.model.HfUserMemberInfo;
@@ -119,6 +122,9 @@ public class HfAuthController {
 
 	@Autowired
 	private HfUserMemberMapper hfUserMemberMapper;
+	
+	@Autowired
+	private HfBossInfoDao hfBossInfoDao;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
@@ -361,6 +367,33 @@ public class HfAuthController {
 		example.createCriteria().andUserIdEqualTo(userId);
 		hfAuthMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+	
+	
+	@RequestMapping(value = "/findBossInfo", method = RequestMethod.GET)
+	@ApiOperation(value = "商家基本信息", notes = "商家基本信息")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findBossInfo(Integer bossId) throws Exception {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		double amount = 0;
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfStone> list = hfStoneMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfStone hfStone = list.get(i);
+			System.out.println(hfStone);
+			Double a = hfBossInfoDao.selectAllOrderByBossId(hfStone.getId());
+			if(a != null) {
+				amount += a;
+			}
+		}
+		Integer count = hfBossInfoDao.selectBrowseCountsByBossId(bossId);
+		HfBossInfo bossInfo = new HfBossInfo();
+		bossInfo.setAmount(amount);
+		bossInfo.setBrowseCounts(count);
+		bossInfo.setStones(list);
+		return builder.body(ResponseUtils.getResponseBody(bossInfo));
 	}
 
 	@RequestMapping(value = "/selectStoneAdmin", method = RequestMethod.GET)

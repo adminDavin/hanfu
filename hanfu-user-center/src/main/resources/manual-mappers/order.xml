@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.manual.dao.HfBossInfoDao">
+
+   <select id="selectAllOrderByBossId" resultType="Double">
+   		select sum(amount) from hf_order where stone_id = #{stoneId} and order_status = "complete"
+   </select>
+   
+   <select id="selectBrowseCountsByBossId" resultType="Integer">
+   		select count(*) from hf_user_browse_record where boss_id = #{bossId}
+   </select>
+</mapper>
