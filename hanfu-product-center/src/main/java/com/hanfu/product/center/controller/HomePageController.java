@@ -1,9 +1,11 @@
 package com.hanfu.product.center.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +56,7 @@ import com.hanfu.product.center.manual.model.HfProductDisplay;
 import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
+import com.hanfu.product.center.manual.model.HomePageInfo.MouthEnum;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
@@ -282,6 +285,7 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HomePageInfo info = new HomePageInfo();
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -291,7 +295,15 @@ public class HomePageController {
 		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
 		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
-        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
+		String[] str = new String[homePageInfos.size()];
+		Integer[] str2 = new Integer[homePageInfos.size()];
+		for (int i = 0; i < homePageInfos.size(); i++) {
+			str[i] = homePageInfos.get(i).getOrderType();
+			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+		}
+		info.setOrderTypeStr(str);
+		info.setOrderTypeCountsStr(str2);
+        return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	
 //	@ApiOperation(value = "获取首页年访问量数据", notes = "获取首页年访问量数据")
@@ -311,15 +323,50 @@ public class HomePageController {
 //	}
 	
 	
-//	@ApiOperation(value = "获取销售情况", notes = "获取销售情况")
-//	@RequestMapping(value = "/findSaleMouthData", method = RequestMethod.GET)
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		for(HomePageInfo.MouthEnum e:HomePageInfo.MouthEnum.values()) {
-//			
-//		}
-//        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
-//	}
+	@ApiOperation(value = "获取销售情况", notes = "获取销售情况")
+	@RequestMapping(value = "/findSaleMouthData", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		Integer quantity = 0;
+		HomePageInfo info = new HomePageInfo();
+		String[] month = new String[12];
+		Integer[] count = new Integer[12];
+		LocalDateTime mouthStart;
+		LocalDateTime mouthEnd;
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfStone> list = hfStoneMapper.selectByExample(example);
+		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+		HfOrderExample example2 = new HfOrderExample();
+		example2.createCriteria().andStoneIdIn(stoneId);
+		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample example3 = new HfOrderDetailExample();
+		example3.createCriteria().andOrderIdIn(orderId);
+		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
+		for (int i = 0; i < 12; i++) {
+			quantity = 0;
+			month[i] = MouthEnum.getPaymentTypeEnum(i+1);
+ 			mouthStart = LocalDateTime.of(Integer.valueOf(sdf.format(date)), i+1, 1, 0, 0);
+ 			System.out.println(mouthStart);
+			mouthEnd = LocalDateTime.of(mouthStart.with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX);
+			System.out.println(mouthEnd);
+			for (int j = 0; j < hfOrderDetails.size(); j++) {
+				HfOrderDetail detail = hfOrderDetails.get(j);
+				System.out.println(detail.getCreateTime().isAfter(mouthStart) && detail.getCreateTime().isBefore(mouthEnd));
+				if(detail.getCreateTime().isAfter(mouthStart) && detail.getCreateTime().isBefore(mouthEnd)) {
+					quantity += detail.getQuantity();
+				}
+			}
+			count[i] = quantity;
+		}
+		info.setMouth(month);
+		info.setSalesCountMonth(count);
+        return builder.body(ResponseUtils.getResponseBody(info));
+	}
+	
 }
