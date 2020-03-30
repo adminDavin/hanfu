@@ -90,16 +90,16 @@ public class HfProductActivityController {
         hfActivity.setActivityName(request.getActivityName());
         hfActivity.setActivityType(request.getActivityType());
         if (!StringUtils.isEmpty(request.getStartTime())) {
-            Instant instant = request.getStartTime().toInstant();
-            ZoneId zoneId = ZoneId.systemDefault();
-            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-            hfActivity.setStartTime(new Date());
+//            Instant instant = request.getStartTime().toInstant();
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+            hfActivity.setStartTime(request.getStartTime());
         }
         if (!StringUtils.isEmpty(request.getEndTime())) {
             Instant instant = request.getEndTime().toInstant();
             ZoneId zoneId = ZoneId.systemDefault();
             LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-            hfActivity.setEndTime(new Date());
+            hfActivity.setEndTime(request.getEndTime());
         }
         HfUser hfUser = manualDao.select(request.getUserId());
         if (hfUser != null) {

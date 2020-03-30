@@ -276,6 +276,12 @@ public class HomePageController {
 			info.setProductName(product.getHfName());
 			infos.add(info);
 		}
+		infos.sort(new Comparator<HomePageInfo>() {//Comparator 比较器. 需要实现比较方法
+            @Override
+            public int compare(HomePageInfo o1, HomePageInfo o2) {
+                return o2.getSalesCountAll()-o1.getSalesCountAll();//从小到大 , 如果是o2.age-o1.age 则表示从大到小
+            }
+        });
         return builder.body(ResponseUtils.getResponseBody(infos));
 	}
 	
@@ -312,14 +318,11 @@ public class HomePageController {
 //			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 //	public ResponseEntity<JSONObject> findBrowseCountData(Integer bossId) throws Exception {
 //		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		Date date = new Date();
+////		mouthStart = LocalDateTime.of(Integer.valueOf(sdf.format(date)), i+1, 1, 0, 0);
 //		LocalDateTime yearStart = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
 //		LocalDateTime yearEnd = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
-//		
 //        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
-//	}
-//	
-//	public static void main(String[] args) {
-//		System.out.println();
 //	}
 	
 	
