@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hanfu.product.center.dao.HfProductPictrueMapper;
+import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.model.IsDelete;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.manual.model.ProductNameSelect;
@@ -30,11 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.product.center.dao.HfActivityMapper;
-import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
-import com.hanfu.product.center.dao.HfStoneMapper;
-import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
-import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDisplayDao;
 import com.hanfu.product.center.manual.dao.HfProductDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
@@ -84,6 +79,10 @@ public class HfProductController {
 	
 	@Autowired
 	private HfUserBrowseRecordMapper hfUserBrowseRecordMapper;
+	@Autowired
+	private HfBossMapper hfBossMapper;
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -130,7 +129,12 @@ public class HfProductController {
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfProductDisplay product = hfProductDao.selectProduct(productId,stoneId);
-
+		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+		productInstanceExample.createCriteria().andProductIdEqualTo(product.getId()).andStoneIdEqualTo(stoneId);
+		List<ProductInstance> productInstances= productInstanceMapper.selectByExample(productInstanceExample);
+		HfBoss hfBoss = hfBossMapper.selectByPrimaryKey(productInstances.get(0).getBossId());
+		product.setBossId(hfBoss.getId());
+		product.setBossName(hfBoss.getName());
 		HfStoneExample hfStoneExample = new HfStoneExample();
 		hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(product.getStoneId()));
 		List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
