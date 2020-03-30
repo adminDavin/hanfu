@@ -13,9 +13,46 @@ public class HomePageInfo implements Serializable {
 	
 	
 	public static enum MouthEnum {
-		January,February,March,April,May,June,July,August,September,October,November,December;
+		January(1,"Jan"),
+		February(2,"Feb"),
+		March(3,"Mar"),
+		April(4,"Apr"),
+		May(5,"May"),
+		June(6,"June"),
+		July(7,"July"),
+		August(8,"Aug"),
+		September(9,"Sept"),
+		October(10,"Oct"),
+		November(11,"Nov"),
+		December(12,"Dec");
+		private Integer month;
+		private String monthStr;
+		private MouthEnum(Integer month,String monthStr) {
+			this.month = month;
+			this.monthStr = monthStr;
+		}
+		public Integer getMonth() {
+			return month;
+		}
+		public void setMonth(Integer month) {
+			this.month = month;
+		}
+		public String getMonthStr() {
+			return monthStr;
+		}
+		public void setMonthStr(String monthStr) {
+			this.monthStr = monthStr;
+		}
+		public static String getPaymentTypeEnum(Integer month) {
+	           for(MouthEnum mouthEnum: MouthEnum.values()) {
+	               if (mouthEnum.getMonth().equals(month)) {
+	                   return mouthEnum.getMonthStr();
+	               }
+	           }
+	           return "Jan";
+	        }
     }
-
+	
     /**
      *
      */
@@ -66,7 +103,13 @@ public class HomePageInfo implements Serializable {
     @ApiModelProperty(required = true, value = "订单类型数量")
     private Integer orderTypeCounts;
     @ApiModelProperty(required = true, value = "月份")
-    private String mouth;
+    private String[] mouth;
+    @ApiModelProperty(required = true, value = "月销售量")
+    private Integer[] salesCountMonth;
+    @ApiModelProperty(required = true, value = "订单类型数组")
+    private String[] orderTypeStr;
+    @ApiModelProperty(required = true, value = "订单类型数目数组")
+    private Integer[] orderTypeCountsStr;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -224,16 +267,12 @@ public class HomePageInfo implements Serializable {
 		this.goodsInfo = goodsInfo;
 	}
 
-	public LocalDateTime getCreateTime() {
-		return createTime;
+	public String getProductName() {
+		return productName;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
-		this.createTime = createTime;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setProductName(String productName) {
+		this.productName = productName;
 	}
 
 	public String getOrderType() {
@@ -252,11 +291,48 @@ public class HomePageInfo implements Serializable {
 		this.orderTypeCounts = orderTypeCounts;
 	}
 
-	public String getProductName() {
-		return productName;
+	public String[] getMouth() {
+		return mouth;
 	}
 
-	public void setProductName(String productName) {
-		this.productName = productName;
+	public void setMouth(String[] mouth) {
+		this.mouth = mouth;
 	}
+
+	public Integer[] getSalesCountMonth() {
+		return salesCountMonth;
+	}
+
+	public void setSalesCountMonth(Integer[] salesCountMonth) {
+		this.salesCountMonth = salesCountMonth;
+	}
+
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String[] getOrderTypeStr() {
+		return orderTypeStr;
+	}
+
+	public void setOrderTypeStr(String[] orderTypeStr) {
+		this.orderTypeStr = orderTypeStr;
+	}
+
+	public Integer[] getOrderTypeCountsStr() {
+		return orderTypeCountsStr;
+	}
+
+	public void setOrderTypeCountsStr(Integer[] orderTypeCountsStr) {
+		this.orderTypeCountsStr = orderTypeCountsStr;
+	}
+
 }
