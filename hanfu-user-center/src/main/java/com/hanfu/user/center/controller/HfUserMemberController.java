@@ -1,11 +1,9 @@
 package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.user.center.dao.HfLevelDescribleMapper;
 import com.hanfu.user.center.dao.HfMemberLevelMapper;
 import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.manual.model.HfUserMember;
-import com.hanfu.user.center.model.HfLevelDescribleExample;
 import com.hanfu.user.center.model.HfMemberLevel;
 import com.hanfu.user.center.model.HfSetBuyMember;
 import com.hanfu.user.center.model.HfUserMemberExample;
