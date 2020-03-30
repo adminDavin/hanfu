@@ -521,6 +521,7 @@ public class HfProductController {
 					products.get(j).setActivityState(index);
 					products.get(j).setStartTime(activity.getStartTime());
 					products.get(j).setEndTime(activity.getEndTime());
+					products.get(j).setActivityId(activity.getId());
 				}
 
 				List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());

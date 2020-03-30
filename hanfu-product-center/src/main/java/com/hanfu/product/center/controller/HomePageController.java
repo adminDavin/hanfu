@@ -98,6 +98,9 @@ public class HomePageController {
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
 	
+	@Autowired
+	private ProductMapper productMapper;
+	
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -254,6 +257,7 @@ public class HomePageController {
 		productId.clear();
 		productId.addAll(h);
 		for (int i = 0; i < productId.size(); i++) {
+			Product product = productMapper.selectByPrimaryKey(productId.get(i));
 			salesCountAll = 0;
 			List<HomePageInfo> pageInfos = new ArrayList<HomePageInfo>();
 			for (int j = 0; j < result.size(); j++) {
@@ -266,6 +270,7 @@ public class HomePageController {
 			info.setSalesCountAll(salesCountAll);
 			info.setProductId(productId.get(i));
 			info.setGoodsInfo(pageInfos);
+			info.setProductName(product.getHfName());
 			infos.add(info);
 		}
         return builder.body(ResponseUtils.getResponseBody(infos));
@@ -303,5 +308,18 @@ public class HomePageController {
 //	
 //	public static void main(String[] args) {
 //		System.out.println();
+//	}
+	
+	
+//	@ApiOperation(value = "获取销售情况", notes = "获取销售情况")
+//	@RequestMapping(value = "/findSaleMouthData", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		for(HomePageInfo.MouthEnum e:HomePageInfo.MouthEnum.values()) {
+//			
+//		}
+//        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
 //	}
 }

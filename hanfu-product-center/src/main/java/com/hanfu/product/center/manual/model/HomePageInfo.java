@@ -10,6 +10,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 
 public class HomePageInfo implements Serializable {
+	
+	
+	public static enum MouthEnum {
+		January,February,March,April,May,June,July,August,September,October,November,December;
+    }
 
     /**
      *
@@ -54,10 +59,14 @@ public class HomePageInfo implements Serializable {
     private Integer salesCountAll;
     @ApiModelProperty(required = true, value = "商品下物品销售量")
     private List<HomePageInfo> goodsInfo;
+    @ApiModelProperty(required = true, value = "商品名字")
+    private String productName;
     @ApiModelProperty(required = true, value = "订单类型")
     private String orderType;
     @ApiModelProperty(required = true, value = "订单类型数量")
     private Integer orderTypeCounts;
+    @ApiModelProperty(required = true, value = "月份")
+    private String mouth;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -243,4 +252,11 @@ public class HomePageInfo implements Serializable {
 		this.orderTypeCounts = orderTypeCounts;
 	}
 
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
 }
