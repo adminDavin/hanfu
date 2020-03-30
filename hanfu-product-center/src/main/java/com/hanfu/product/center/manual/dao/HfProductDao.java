@@ -9,7 +9,7 @@ public interface HfProductDao {
 
     public List<HfProductDisplay> selectProductForRotation(Integer quantity);
     
-    public HfProductDisplay selectProduct(Integer productId);
+    public HfProductDisplay selectProduct(Integer productId,Integer stoneId);
     List<HfProductDisplay> selectProductCategory(Integer cagetoryId);
     List<HfProductDisplay> selectProductByStoneId(IsDelete isDelete);
     List<HfProductDisplay> selectProductByUserId( Integer userId);

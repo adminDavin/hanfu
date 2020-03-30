@@ -484,7 +484,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "团购列表", notes = "团购列表")
     @RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId) throws JSONException {
+    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfGroup> hfGroupList = hfGroupDao.groupList(groupId);
 
@@ -503,69 +503,72 @@ public class HfProductActivityController {
             hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
             List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
             Product product = productMapper.selectByPrimaryKey(hfActivityGroup.get(0).getProductId());
-            //时间
-            Date date1 = new Date();
-            Date date2 = new Date();
-            Date date3 = new Date();
-            Date date4 = new Date();
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if (product.getId()==productId) {
+                //时间
+                Date date1 = new Date();
+                Date date2 = new Date();
+                Date date3 = new Date();
+                Date date4 = new Date();
+                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            try {
-                date1 = f.parse(f.format(new Date())); //这是获取当前时间
-                date2 = f.parse(f.format(hfActivity.getStartTime()));
-                date3 = f.parse(f.format(hfActivity.getEndTime()));
-                date4 = f.parse(f.format(hfActivityGroup.get(0).getClusteringTime()));
+                try {
+                    date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                    date2 = f.parse(f.format(hfActivity.getStartTime()));
+                    date3 = f.parse(f.format(hfActivity.getEndTime()));
+                    date4 = f.parse(f.format(hfActivityGroup.get(0).getClusteringTime()));
 
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
-            if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
+                if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
 //				long hours = (date3.getTime()-date1.getTime()) / (1000 * 60 * 60);
 //				long minutes = ((date3.getTime()-date1.getTime())-hours*(1000 * 60 * 60 ))/(1000* 60);
-                String[] arr = hfGroup.getUserId().split(",");
-                HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup.get(0).getUserId());
-                List<String> list = Arrays.asList(arr);
-                //list
-                List<Map<String, String>> lists = new ArrayList<>();
-                Map<String, String> map = new HashMap<>();
+                    String[] arr = hfGroup.getUserId().split(",");
+                    HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup.get(0).getUserId());
+                    List<String> list = Arrays.asList(arr);
+                    //list
+                    List<Map<String, String>> lists = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
 //				map.put("groupSum", String.valueOf(hfActivityProduct.get(0).getGroupNum()));
 //				map.put("nowSum", String.valueOf(list.size()));
-                //团购详情
-                if (groupId != null && hfGroup.getGroupId().equals(groupId)) {
+                    //团购详情
+                    if (groupId != null && hfGroup.getGroupId().equals(groupId)) {
 //                    list.forEach(list1 -> {
-                        for (int i=0;i<arr.length;i++){
-                        HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(Integer.valueOf(arr[i]));
-                        map.put("userName", hfUsers1.getNickName());
-                        map.put("fileId", String.valueOf(hfUsers1.getFileId()));
-                        lists.add(map);
+                        for (int i = 0; i < arr.length; i++) {
+                            HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(Integer.valueOf(arr[i]));
+                            map.put("userName", hfUsers1.getNickName());
+                            map.put("fileId", String.valueOf(hfUsers1.getFileId()));
+                            lists.add(map);
+                            groupList.setUser(lists);
+                        }
+                        ;
+                        groupList.setGroupId(hfGroup.getGroupId());
+                        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+                        groupList.setNowSum(list.size());
+                        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+                        groupList.setGroupUserName(hfUsers.getNickName());
+                        groupList.setGroupFileId(hfUsers.getFileId());
+                        groupList.setProductId(product.getId());
+                        groupList.setProductName(product.getHfName());
+                        groupList.setProductFileId(product.getFileId());
+                        groupList.setSellPrice(price(product.getId()).get("sellPrice"));
+                        groupList.setLinePrice(price(product.getId()).get("linePrice"));
+                        groupLists.add(groupList);
+                    } else {
+                        groupList.setGroupId(hfGroup.getGroupId());
                         groupList.setUser(lists);
-                    };
-                    groupList.setGroupId(hfGroup.getGroupId());
-                    groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
-                    groupList.setNowSum(list.size());
-                    groupList.setTime(86400000-(date1.getTime() - date4.getTime()));
-                    groupList.setGroupUserName(hfUsers.getNickName());
-                    groupList.setGroupFileId(hfUsers.getFileId());
-                    groupList.setProductId(product.getId());
-                    groupList.setProductName(product.getHfName());
-                    groupList.setProductFileId(product.getFileId());
-                    groupList.setSellPrice(price(product.getId()).get("sellPrice"));
-                    groupList.setLinePrice(price(product.getId()).get("linePrice"));
-                    groupLists.add(groupList);
-                } else {
-                    groupList.setGroupId(hfGroup.getGroupId());
-                    groupList.setUser(lists);
-                    groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
-                    groupList.setNowSum(list.size());
-                    groupList.setTime(86400000-(date1.getTime() - date4.getTime()));
-                    groupList.setGroupUserName(hfUsers.getNickName());
-                    groupList.setGroupFileId(hfUsers.getFileId());
-                    groupLists.add(groupList);
-                }
+                        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+                        groupList.setNowSum(list.size());
+                        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+                        groupList.setGroupUserName(hfUsers.getNickName());
+                        groupList.setGroupFileId(hfUsers.getFileId());
+                        groupLists.add(groupList);
+                    }
 //				map.put("userName", hfUsers.getNickName());
 //				map.put("fileId", String.valueOf(hfUsers.getFileId()));
 //				map.put("time", String.valueOf(date1.getTime()-date4.getTime()));
+                }
             }
         });
         return builder.body(ResponseUtils.getResponseBody(groupLists));
