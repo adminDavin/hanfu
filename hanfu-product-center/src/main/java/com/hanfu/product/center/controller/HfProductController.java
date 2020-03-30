@@ -469,10 +469,40 @@ public class HfProductController {
 //            pageSize=0;
 //        }
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer index = 0;
 		List<ProductActivityInfo> result = new ArrayList<ProductActivityInfo>();
 		List<ProductActivityInfo> list = manualDao.selectProductActivityList(activityType);
 		for (int i = 0; i < list.size(); i++) {
 			ProductActivityInfo activity = list.get(i);
+			HfActivity productActivityInfo = hfActivityMapper.selectByPrimaryKey(activity.getId());
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
+			activity.setStartTimes(sdf.format(activity.getStartTime()));
+			activity.setEndTimes(sdf.format(activity.getEndTime()));
+			Date date = new Date();
+			if (date.before(activity.getStartTime())) {
+				System.out.println("活动未开始");
+				activity.setActivityState(-1);
+				index = -1;
+//				productActivityInfo.setActivityState(-1);
+//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
+			}
+			if (date.after(activity.getStartTime()) && date.after(activity.getEndTime())) {
+				System.out.println("活动开始中");
+				activity.setActivityState(0);
+				index = 0;
+//				productActivityInfo.setActivityState(0);
+//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
+			}
+			if (date.after(activity.getEndTime())) {
+				System.out.println("活动结束了");
+				activity.setActivityState(1);
+				index = 1;
+//				productActivityInfo.setActivityState(1);
+//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
+			}
+			manualDao.updateActivityState(activity);
+			
+			
 //        PageHelper.startPage(pageNum,pageSize);
 			List<HfProductDisplay> products = hfProductDao.selectActivityProductList(activity.getId());
 			if (!products.isEmpty()) {
@@ -486,6 +516,13 @@ public class HfProductController {
 				Map<Integer, String> stones = stoneInfos.stream()
 						.collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
 				products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+				
+				for (int j = 0; j < products.size(); j++) {
+					products.get(j).setActivityState(index);
+					products.get(j).setStartTime(activity.getStartTime());
+					products.get(j).setEndTime(activity.getEndTime());
+					products.get(j).setActivityId(activity.getId());
+				}
 
 				List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
 				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
@@ -507,30 +544,6 @@ public class HfProductController {
 				});
 				activity.setProductList(products);
 			}
-//			HfActivity productActivityInfo = hfActivityMapper.selectByPrimaryKey(activity.getId());
-			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
-			activity.setStartTimes(sdf.format(activity.getStartTime()));
-			activity.setEndTimes(sdf.format(activity.getEndTime()));
-			Date date = new Date();
-			if (date.before(activity.getStartTime())) {
-				System.out.println("活动未开始");
-				activity.setActivityState(-1);
-//				productActivityInfo.setActivityState(-1);
-//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
-			}
-			if (date.after(activity.getStartTime()) && date.after(activity.getEndTime())) {
-				System.out.println("活动开始中");
-				activity.setActivityState(0);
-//				productActivityInfo.setActivityState(0);
-//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
-			}
-			if (date.after(activity.getEndTime())) {
-				System.out.println("活动结束了");
-				activity.setActivityState(1);
-//				productActivityInfo.setActivityState(1);
-//				hfActivityMapper.updateByPrimaryKey(productActivityInfo);
-			}
-			manualDao.updateActivityState(activity);
 			result.add(activity);
 
 //        PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);

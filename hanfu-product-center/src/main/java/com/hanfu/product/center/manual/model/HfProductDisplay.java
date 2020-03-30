@@ -2,6 +2,7 @@ package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -52,6 +53,14 @@ public class HfProductDisplay implements Serializable {
     private Double favoravlePrice;
     @ApiModelProperty(required = false, value = "库存上线")
     private Integer inventoryCelling;
+    @ApiModelProperty(required = false, value = "活动状态")
+    private Integer activityState;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @ApiModelProperty(required = false, value = "开始时间")
+    private Date startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @ApiModelProperty(required = false, value = "结束时间")
+    private Date endTime;
     @ApiModelProperty(required = false, value = "分销比例")
     private String distributionRatio;
     private Short isDeleted;
@@ -200,6 +209,24 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setCreateTime(LocalDateTime createTime) {
 		this.createTime = createTime;
+	}
+	public Integer getActivityState() {
+		return activityState;
+	}
+	public void setActivityState(Integer activityState) {
+		this.activityState = activityState;
+	}
+	public Date getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 	@Override
 	public String toString() {
