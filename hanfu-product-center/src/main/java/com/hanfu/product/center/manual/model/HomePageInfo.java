@@ -3,6 +3,7 @@ package com.hanfu.product.center.manual.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -43,6 +44,20 @@ public class HomePageInfo implements Serializable {
     private Integer paymentConutsLastMouth;
     @ApiModelProperty(required = true, value = "上月浏览人数")
     private Integer browseCountsLastMouth;
+    @ApiModelProperty(required = true, value = "物品id")
+    private Integer goodId;
+    @ApiModelProperty(required = true, value = "商品id")
+    private Integer productId;
+    @ApiModelProperty(required = true, value = "销售量")
+    private Integer salesCount;
+    @ApiModelProperty(required = true, value = "商品销售量")
+    private Integer salesCountAll;
+    @ApiModelProperty(required = true, value = "商品下物品销售量")
+    private List<HomePageInfo> goodsInfo;
+    @ApiModelProperty(required = true, value = "订单类型")
+    private String orderType;
+    @ApiModelProperty(required = true, value = "订单类型数量")
+    private Integer orderTypeCounts;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -160,6 +175,46 @@ public class HomePageInfo implements Serializable {
 		this.browseCountsLastMouth = browseCountsLastMouth;
 	}
 
+	public Integer getGoodId() {
+		return goodId;
+	}
+
+	public void setGoodId(Integer goodId) {
+		this.goodId = goodId;
+	}
+
+	public Integer getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	public Integer getSalesCount() {
+		return salesCount;
+	}
+
+	public void setSalesCount(Integer salesCount) {
+		this.salesCount = salesCount;
+	}
+
+	public Integer getSalesCountAll() {
+		return salesCountAll;
+	}
+
+	public void setSalesCountAll(Integer salesCountAll) {
+		this.salesCountAll = salesCountAll;
+	}
+
+	public List<HomePageInfo> getGoodsInfo() {
+		return goodsInfo;
+	}
+
+	public void setGoodsInfo(List<HomePageInfo> goodsInfo) {
+		this.goodsInfo = goodsInfo;
+	}
+
 	public LocalDateTime getCreateTime() {
 		return createTime;
 	}
@@ -171,5 +226,21 @@ public class HomePageInfo implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-    
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
+	public Integer getOrderTypeCounts() {
+		return orderTypeCounts;
+	}
+
+	public void setOrderTypeCounts(Integer orderTypeCounts) {
+		this.orderTypeCounts = orderTypeCounts;
+	}
+
 }

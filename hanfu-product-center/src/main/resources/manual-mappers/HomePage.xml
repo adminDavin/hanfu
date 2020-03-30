@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.product.center.manual.dao.HomePageDaoImpl">
+    <resultMap type="com.hanfu.product.center.manual.model.HomePageInfo" id="HomePageInfo">
+        <result column="goods_id" jdbcType="INTEGER" property="goodId"/>
+        <result column="count" jdbcType="INTEGER" property="salesCount"/>
+        <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
+        <result column="num" jdbcType="INTEGER" property="orderTypeCounts"/>
+    </resultMap>
+	
+	<select id="findSalesVolume" resultMap="HomePageInfo">
+		select goods_id, sum(quantity) as count from hf_order_detail 
+		where id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+		group by goods_id ORDER BY count DESC LIMIT 0,10
+	</select>
+	
+	<select id="findOrderTypeCount" resultMap="HomePageInfo">
+		select order_type, count(*) as num from hf_order
+		where id in
+		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+		group by order_type
+	</select>
+</mapper>

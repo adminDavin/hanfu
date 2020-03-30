@@ -37,6 +37,7 @@ import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
+import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
@@ -87,6 +88,15 @@ public class HomePageController {
 	
 	@Autowired
 	private HfUserBrowseRecordMapper hfUserBrowseRecordMapper;
+	
+	@Autowired
+	private HfOrderDetailMapper hfOrderDetailMapper;
+	
+	@Autowired
+	private HomePageDao homePageDao;
+	
+	@Autowired
+	private HfGoodsMapper hfGoodsMapper;
 	
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -208,11 +218,90 @@ public class HomePageController {
         info.setBrowseCountsLastMouth(browseCountsLastMouth.size());
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
-	public static void main(String[] args) {
-		LocalDateTime date = LocalDateTime.now();
-		LocalDateTime firstday = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth());
-		LocalDateTime lastDay = LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth());
-		
-		System.out.println(LocalDateTime.now().plusMonths(-1));
+	
+	
+	@ApiOperation(value = "获取首页销量排行数据", notes = "获取首页销量排行数据")
+	@RequestMapping(value = "/findSalesVolumeData", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findSalesVolumeData(Integer bossId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer salesCountAll = 0;
+		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfStone> list = hfStoneMapper.selectByExample(example);
+		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+		HfOrderExample example2 = new HfOrderExample();
+		example2.createCriteria().andStoneIdIn(stoneId);
+		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample example3 = new HfOrderDetailExample();
+		example3.createCriteria().andOrderIdIn(orderId);
+		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
+		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
+		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
+		List<Integer> productId = new ArrayList<Integer>();
+		for (int i = 0; i < result.size(); i++) {
+			HomePageInfo info = result.get(i);
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(info.getGoodId());
+			if(goods != null) {
+				info.setProductId(goods.getProductId());
+				productId.add(goods.getProductId());
+			}
+		}
+		HashSet h = new HashSet(productId);
+		productId.clear();
+		productId.addAll(h);
+		for (int i = 0; i < productId.size(); i++) {
+			salesCountAll = 0;
+			List<HomePageInfo> pageInfos = new ArrayList<HomePageInfo>();
+			for (int j = 0; j < result.size(); j++) {
+				if (productId.get(i) == result.get(j).getProductId()) {
+					salesCountAll += result.get(j).getSalesCount();
+					pageInfos.add(result.get(j));
+				}
+			}
+			HomePageInfo info = new HomePageInfo();
+			info.setSalesCountAll(salesCountAll);
+			info.setProductId(productId.get(i));
+			info.setGoodsInfo(pageInfos);
+			infos.add(info);
+		}
+        return builder.body(ResponseUtils.getResponseBody(infos));
 	}
+	
+	@ApiOperation(value = "获取首页订单类型数据", notes = "获取首页订单类型数据")
+	@RequestMapping(value = "/findOrderTypeData", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfStone> list = hfStoneMapper.selectByExample(example);
+		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+		HfOrderExample example2 = new HfOrderExample();
+		example2.createCriteria().andStoneIdIn(stoneId);
+		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
+        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
+	}
+	
+//	@ApiOperation(value = "获取首页年访问量数据", notes = "获取首页年访问量数据")
+//	@RequestMapping(value = "/findBrowseCountData", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> findBrowseCountData(Integer bossId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		LocalDateTime yearStart = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
+//		LocalDateTime yearEnd = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
+//		
+//        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
+//	}
+//	
+//	public static void main(String[] args) {
+//		System.out.println();
+//	}
 }
