@@ -126,10 +126,10 @@ public class HfProductController {
 	@RequestMapping(value = "/getDetail", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getDetail(@RequestParam(name = "productId") Integer productId)
+	public ResponseEntity<JSONObject> getDetail(@RequestParam(name = "productId") Integer productId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfProductDisplay product = hfProductDao.selectProduct(productId);
+		HfProductDisplay product = hfProductDao.selectProduct(productId,stoneId);
 
 		HfStoneExample hfStoneExample = new HfStoneExample();
 		hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(product.getStoneId()));
