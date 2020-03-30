@@ -66,6 +66,8 @@ public class HfProductDisplay implements Serializable {
     private Short isDeleted;
     private String lastModifier;
     private LocalDateTime createTime;
+    private Integer bossId;
+    private String bossName;
 	public Integer getId() {
 		return id;
 	}
@@ -228,6 +230,23 @@ public class HfProductDisplay implements Serializable {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
+
+	public Integer getBossId() {
+		return bossId;
+	}
+
+	public void setBossId(Integer bossId) {
+		this.bossId = bossId;
+	}
+
+	public String getBossName() {
+		return bossName;
+	}
+
+	public void setBossName(String bossName) {
+		this.bossName = bossName;
+	}
+
 	@Override
 	public String toString() {
 		return "HfProductDisplay [id=" + id + ", productName=" + productName + ", productDesc=" + productDesc
