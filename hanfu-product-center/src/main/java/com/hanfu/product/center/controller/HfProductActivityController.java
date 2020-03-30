@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -543,7 +544,7 @@ public class HfProductActivityController {
                     groupList.setGroupId(hfGroup.getGroupId());
                     groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
                     groupList.setNowSum(list.size());
-                    groupList.setTime(date1.getTime() - date4.getTime());
+                    groupList.setTime(86400000-(date1.getTime() - date4.getTime()));
                     groupList.setGroupUserName(hfUsers.getNickName());
                     groupList.setGroupFileId(hfUsers.getFileId());
                     groupList.setProductId(product.getId());
@@ -557,7 +558,7 @@ public class HfProductActivityController {
                     groupList.setUser(lists);
                     groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
                     groupList.setNowSum(list.size());
-                    groupList.setTime(date1.getTime() - date4.getTime());
+                    groupList.setTime(86400000-(date1.getTime() - date4.getTime()));
                     groupList.setGroupUserName(hfUsers.getNickName());
                     groupList.setGroupFileId(hfUsers.getFileId());
                     groupLists.add(groupList);
@@ -633,5 +634,45 @@ public class HfProductActivityController {
         }
         ;
         return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    @Scheduled(cron="0/5 * * * * ? ")
+    @ApiOperation(value = "团购", notes = "团购")
+    @RequestMapping(value = "/TimeGroup", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public void TimeGroup()
+            throws Exception {
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());0
+        HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
+        hfActivityGroupExample.createCriteria().andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
+       List<HfActivityGroup> hfActivityGroupList = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
+        hfActivityGroupList.forEach(discountCoupon -> {
+
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(discountCoupon.getClusteringTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>86400000){
+                discountCoupon.setState(1);
+                hfActivityGroupMapper.updateByPrimaryKeySelective(discountCoupon);
+                HfActivityCount hfActivityCount = new HfActivityCount();
+                hfActivityCount.setState(1);
+                HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+                hfActivityCountExample.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
+                hfActivityCountMapper.updateByExampleSelective(hfActivityCount,hfActivityCountExample);
+            }
+        });
+//        Random r = new Random();
+        try{
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
