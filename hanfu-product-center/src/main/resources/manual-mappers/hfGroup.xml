@@ -13,6 +13,9 @@ FROM
 	hf_activity_count
 WHERE
 	state = 0 and is_deleted=0
+        <if test="groupId!=null and groupId!=''">
+        and group_id=#{groupId}
+    </if>
 GROUP BY
 	group_id
     </select>

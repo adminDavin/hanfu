@@ -485,11 +485,12 @@ public class HfProductActivityController {
     @RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        List<HfGroup> hfGroupList = hfGroupDao.groupList();
-        GroupList groupList = new GroupList();
+        List<HfGroup> hfGroupList = hfGroupDao.groupList(groupId);
+
+        List<GroupList> groupLists = new ArrayList<>();
 //		List<Map<String, String>> groupLists = new ArrayList<>();
-        System.out.println(hfGroupList.get(0).getUserId());
         hfGroupList.forEach(hfGroup -> {
+            GroupList groupList = new GroupList();
             //成团
             HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
             hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
@@ -518,7 +519,6 @@ public class HfProductActivityController {
                 e.printStackTrace();
             }
             long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
-            System.out.println(hours);
             if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
 //				long hours = (date3.getTime()-date1.getTime()) / (1000 * 60 * 60);
 //				long minutes = ((date3.getTime()-date1.getTime())-hours*(1000 * 60 * 60 ))/(1000* 60);
@@ -532,16 +532,15 @@ public class HfProductActivityController {
 //				map.put("nowSum", String.valueOf(list.size()));
                 //团购详情
                 if (groupId != null && hfGroup.getGroupId().equals(groupId)) {
-                    list.forEach(list1 -> {
-                        int i = 0;
+//                    list.forEach(list1 -> {
+                        for (int i=0;i<arr.length;i++){
                         HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(Integer.valueOf(arr[i]));
                         map.put("userName", hfUsers1.getNickName());
                         map.put("fileId", String.valueOf(hfUsers1.getFileId()));
-                        i++;
                         lists.add(map);
-                    });
+                        groupList.setUser(lists);
+                    };
                     groupList.setGroupId(hfGroup.getGroupId());
-                    groupList.setUser(lists);
                     groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
                     groupList.setNowSum(list.size());
                     groupList.setTime(date1.getTime() - date4.getTime());
@@ -552,6 +551,7 @@ public class HfProductActivityController {
                     groupList.setProductFileId(product.getFileId());
                     groupList.setSellPrice(price(product.getId()).get("sellPrice"));
                     groupList.setLinePrice(price(product.getId()).get("linePrice"));
+                    groupLists.add(groupList);
                 } else {
                     groupList.setGroupId(hfGroup.getGroupId());
                     groupList.setUser(lists);
@@ -560,13 +560,14 @@ public class HfProductActivityController {
                     groupList.setTime(date1.getTime() - date4.getTime());
                     groupList.setGroupUserName(hfUsers.getNickName());
                     groupList.setGroupFileId(hfUsers.getFileId());
+                    groupLists.add(groupList);
                 }
 //				map.put("userName", hfUsers.getNickName());
 //				map.put("fileId", String.valueOf(hfUsers.getFileId()));
 //				map.put("time", String.valueOf(date1.getTime()-date4.getTime()));
             }
         });
-        return builder.body(ResponseUtils.getResponseBody(groupList));
+        return builder.body(ResponseUtils.getResponseBody(groupLists));
     }
 
     private Map<String, Integer> price(Integer proudctId) {
