@@ -68,6 +68,9 @@ public class HfGoodsController {
     @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId)
             throws JSONException {
+        if (activityId==null){
+            activityId=0;
+        }
         Amount amount = new Amount();
         amount.setGoodsId(goodsId);
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -92,13 +95,13 @@ public class HfGoodsController {
                   if (hfActivityProductList.get(0).getDiscountRatio()==null||hfActivityProductList.get(0).getDiscountRatio()==0){
                       return product(goodsId,GoodsNum);
                   } else {
-                      amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")*hfActivityProductList.get(0).getDiscountRatio())/100);
-                      amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")*hfActivityProductList.get(0).getDiscountRatio())/100);
+                      amount.setMoney((int) ((selectPriceResp(goodsId).get("hfPrices")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
+                      amount.setDiscountMoney((int) ((selectPriceResp(goodsId).get("linePrice")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
                       return builder.body(ResponseUtils.getResponseBody(amount));
                   }
                 } else {
-                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice()));
-                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")-hfActivityProductList.get(0).getFavoravlePrice()));
+                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
+                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
             }
