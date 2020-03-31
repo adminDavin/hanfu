@@ -7,8 +7,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cedarsoftware.util.io.JsonObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.inner.model.product.center.HfOrders;
@@ -822,5 +825,12 @@ public class HfAuthController {
 			code = code.replaceAll(num, "");
 		}
 		return str;
+	}
+	
+	public static void main(String[] args) {
+		JsonObject<String, Integer> js = new JsonObject<String, Integer>();
+		js.put("swd", 1);
+		js.put("ss", 2);
+		System.out.println(js);
 	}
 }

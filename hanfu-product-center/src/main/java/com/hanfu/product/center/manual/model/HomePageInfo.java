@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -114,6 +115,8 @@ public class HomePageInfo implements Serializable {
     private Integer[] year;
     @ApiModelProperty(required = true, value = "浏览数量")
     private Integer[] browseCountForYeay;
+    @ApiModelProperty(required = true, value = "类型")
+    private JSONArray typeJson;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -353,6 +356,14 @@ public class HomePageInfo implements Serializable {
 
 	public void setBrowseCountForYeay(Integer[] browseCountForYeay) {
 		this.browseCountForYeay = browseCountForYeay;
+	}
+
+	public JSONArray getTypeJson() {
+		return typeJson;
+	}
+
+	public void setTypeJson(JSONArray typeJson) {
+		this.typeJson = typeJson;
 	}
 	
 }

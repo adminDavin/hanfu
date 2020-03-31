@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -292,6 +294,7 @@ public class HomePageController {
 	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HomePageInfo info = new HomePageInfo();
+		List<HomePageInfo> result = new ArrayList<HomePageInfo>();
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -304,9 +307,24 @@ public class HomePageController {
 		String[] str = new String[homePageInfos.size()];
 		Integer[] str2 = new Integer[homePageInfos.size()];
 		for (int i = 0; i < homePageInfos.size(); i++) {
-			str[i] = homePageInfos.get(i).getOrderType();
+			HomePageInfo homePageInfo = new HomePageInfo();
+			if("nomalOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageInfo.setOrderType("普通订单");
+				str[i] = "普通订单";
+			}
+			if("rechargeOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageInfo.setOrderType("充值订单");
+				str[i] = "充值订单";
+			}
+			if("shoppingOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageInfo.setOrderType("到店支付订单");
+				str[i] = "到店支付订单";
+			}
+			homePageInfo.setOrderTypeCounts(homePageInfos.get(i).getOrderTypeCounts());
 			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+			result.add(homePageInfo);
 		}
+		info.setTypeJson(JSONArray.parseArray(JSON.toJSONString(result)));
 		info.setOrderTypeStr(str);
 		info.setOrderTypeCountsStr(str2);
         return builder.body(ResponseUtils.getResponseBody(info));
