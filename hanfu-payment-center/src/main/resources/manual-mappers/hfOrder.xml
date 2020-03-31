@@ -70,7 +70,7 @@
     </select>
     
     <select id="selectHfUser" resultMap="HfUserResultMap">
-    select user_id, auth_key from hf_auth where user_id=#{userId} and auth_type=1 and auth_status=0; 
+    select user_id, auth_key from hf_auth where user_id=#{userId} and auth_status=0; 
     </select>
     
     <update id="updateHfOrderStatus" parameterType="map">

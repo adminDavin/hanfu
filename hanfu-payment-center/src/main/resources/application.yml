@@ -73,7 +73,7 @@ spring:
 #      enabled: false
 
 logging:
-  file: ./target/payment-center.log
+  file: ./logs/payment-center.log
 
 mybatis:
   mapper-locations:
