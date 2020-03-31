@@ -59,6 +59,7 @@ import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.HomePageInfo.MouthEnum;
+import com.hanfu.product.center.manual.model.HomePageOrderType;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
@@ -293,8 +294,8 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HomePageInfo info = new HomePageInfo();
-		List<HomePageInfo> result = new ArrayList<HomePageInfo>();
+		HomePageOrderType info = new HomePageOrderType();
+		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -307,26 +308,26 @@ public class HomePageController {
 		String[] str = new String[homePageInfos.size()];
 		Integer[] str2 = new Integer[homePageInfos.size()];
 		for (int i = 0; i < homePageInfos.size(); i++) {
-			HomePageInfo homePageInfo = new HomePageInfo();
+			HomePageOrderType homePageOrderType = new HomePageOrderType();
 			if("nomalOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageInfo.setOrderType("普通订单");
+				homePageOrderType.setName("普通订单");
 				str[i] = "普通订单";
 			}
 			if("rechargeOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageInfo.setOrderType("充值订单");
+				homePageOrderType.setName("充值订单");
 				str[i] = "充值订单";
 			}
 			if("shoppingOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageInfo.setOrderType("到店支付订单");
+				homePageOrderType.setName("到店支付订单");
 				str[i] = "到店支付订单";
 			}
-			homePageInfo.setOrderTypeCounts(homePageInfos.get(i).getOrderTypeCounts());
-			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
-			result.add(homePageInfo);
+			homePageOrderType.setValue(homePageInfos.get(i).getOrderTypeCounts());
+//			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+			result.add(homePageOrderType);
 		}
-		info.setTypeJson(JSONArray.parseArray(JSON.toJSONString(result)));
-		info.setOrderTypeStr(str);
-		info.setOrderTypeCountsStr(str2);
+		info.setJs(JSONArray.parseArray(JSON.toJSONString(result)));
+		info.setData(str);
+//		info.setOrderTypeCountsStr(str2);
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	
