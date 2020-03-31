@@ -342,7 +342,7 @@ public class HomePageController {
 		HomePageInfo info = new HomePageInfo();
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-		Integer index = Integer.valueOf(sdf.format(date))-count/2;
+		Integer index = Integer.valueOf(sdf.format(date))-(count-1);
 		for (int j = 0; j < count; j++) {
 			a[j] = index;
 			LocalDateTime mouthStartOfYear = LocalDateTime.of(index++, 1, 1, 0, 0);
