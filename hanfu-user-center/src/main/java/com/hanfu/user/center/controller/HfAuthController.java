@@ -459,12 +459,17 @@ public class HfAuthController {
 	@ApiOperation(value = "添加用户会员等级", notes = "添加用户会员等级")
 	@RequestMapping(value = "/addUserMemberLevel", method = RequestMethod.POST)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String") })
-	public ResponseEntity<JSONObject> addUserMemberLevel(String name) throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String")})
+	public ResponseEntity<JSONObject> addUserMemberLevel(String name,Integer level,
+			String levelDescribe) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
+		hfMemberLevel.setLevel(level);
+		hfMemberLevel.setLevelDescribe(levelDescribe);
 		hfMemberLevel.setCreateTime(LocalDateTime.now());
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevel.setIsDeleted((byte) 0);
@@ -476,8 +481,11 @@ public class HfAuthController {
 	@RequestMapping(value = "/updateUserMemberLevel", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> updateUserMemberLevel(String name, Integer id) throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String")})
+	public ResponseEntity<JSONObject> updateUserMemberLevel(@RequestParam(required = false)String name,
+			Integer id ,@RequestParam(required = false) Integer level,@RequestParam(required = false) String levelDescribe) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(id);
@@ -487,6 +495,12 @@ public class HfAuthController {
 		}
 		if (!StringUtils.isEmpty(name)) {
 			hfMemberLevel.setLevelName(name);
+		}
+		if (!StringUtils.isEmpty(level)) {
+			hfMemberLevel.setLevel(level);
+		}
+		if (!StringUtils.isEmpty(levelDescribe)) {
+			hfMemberLevel.setLevelDescribe(levelDescribe);
 		}
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevelMapper.updateByPrimaryKey(hfMemberLevel);
@@ -532,9 +546,11 @@ public class HfAuthController {
 			HfMemberLevelInfo info = new HfMemberLevelInfo();
 			info.setId(hfMemberLevel.getId());
 			info.setLevelName(hfMemberLevel.getLevelName());
+			info.setLevel(hfMemberLevel.getLevel());
 			info.setCreateTime(hfMemberLevel.getCreateTime());
 			info.setModifyTime(hfMemberLevel.getModifyTime());
 			info.setIsDeleted(hfMemberLevel.getIsDeleted());
+			info.setLevelDescribe(hfMemberLevel.getLevelDescribe());
 			result.add(info);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -668,7 +684,7 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "prerogative", value = "特权名称", required = true, type = "String") })
 	public ResponseEntity<JSONObject> addMemberLevelDescribe(Integer levelId, String levelDescribe, String prerogative,
-			Date expireTime) throws JSONException {
+			Date expireTime,Date startTime) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Date date = new Date();
@@ -682,6 +698,10 @@ public class HfAuthController {
 		ZoneId zoneId = ZoneId.systemDefault();
 		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 		describe.setExpireTime(localDateTime);
+		instant = startTime.toInstant();
+		zoneId = ZoneId.systemDefault();
+		localDateTime = instant.atZone(zoneId).toLocalDateTime();
+		describe.setStartTime(localDateTime);
 		describe.setLevelDescribe(levelDescribe);
 		describe.setCreateTime(LocalDateTime.now());
 		describe.setModifyTime(LocalDateTime.now());
@@ -697,7 +717,8 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "prerogative", value = "特权名称", required = false, type = "String")})
 	public ResponseEntity<JSONObject> updateMemberLevelDescribe(Integer id, @RequestParam(required = false)String levelDescribe, 
-			@RequestParam(required = false)String prerogative,@RequestParam(required = false)Date expireTime) throws JSONException {
+			@RequestParam(required = false)String prerogative,@RequestParam(required = false)Date expireTime,
+			@RequestParam(required = false) Date startTime) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
@@ -717,6 +738,12 @@ public class HfAuthController {
 		}
 		if(expireTime != null) {
 			Instant instant = expireTime.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+			describle.setExpireTime(localDateTime);
+		}
+		if(startTime != null) {
+			Instant instant = startTime.toInstant();
 			ZoneId zoneId = ZoneId.systemDefault();
 			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
 			describle.setExpireTime(localDateTime);
@@ -765,12 +792,15 @@ public class HfAuthController {
 			info.setId(describle.getId());
 			info.setLevelId(describle.getLevelId());
 			info.setPrerogative(describle.getPrerogative());
-			if(describle.getExpireTime().isBefore(LocalDateTime.now())) {
+			if(LocalDateTime.now().isBefore(describle.getStartTime()) || LocalDateTime.now().isAfter(describle.getExpireTime())) {
 				info.setPrerogativeState(-1);
+				describle.setPrerogativeState(-1);
 			}
-			if(describle.getExpireTime().isAfter(LocalDateTime.now())) {
+			if(LocalDateTime.now().isAfter(describle.getStartTime()) && LocalDateTime.now().isBefore(describle.getExpireTime())) {
 				info.setPrerogativeState(1);
+				describle.setPrerogativeState(1);
 			}
+			info.setStartTime(describle.getStartTime());
 			info.setLevelDescribe(describle.getLevelDescribe());
 			info.setExpireTime(describle.getExpireTime());
 			info.setCreateTime(describle.getCreateTime());
