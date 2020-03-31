@@ -18,6 +18,8 @@ public class HfLevelDescribeInfo {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime modifyTime;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private LocalDateTime startTime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime expireTime;
 	private byte isDeleted;
 	public Integer getId() {
@@ -61,6 +63,12 @@ public class HfLevelDescribeInfo {
 	}
 	public void setModifyTime(LocalDateTime modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
 	}
 	public LocalDateTime getExpireTime() {
 		return expireTime;

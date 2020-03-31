@@ -9,6 +9,8 @@ public class HfMemberLevelInfo {
 	
 	private Integer id;
 	private String levelName;
+	private Integer level;
+	private String levelDescribe;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 //	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
@@ -26,6 +28,18 @@ public class HfMemberLevelInfo {
 	}
 	public void setLevelName(String levelName) {
 		this.levelName = levelName;
+	}
+	public Integer getLevel() {
+		return level;
+	}
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+	public String getLevelDescribe() {
+		return levelDescribe;
+	}
+	public void setLevelDescribe(String levelDescribe) {
+		this.levelDescribe = levelDescribe;
 	}
 	public LocalDateTime getCreateTime() {
 		return createTime;

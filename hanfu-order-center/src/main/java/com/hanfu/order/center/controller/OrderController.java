@@ -291,6 +291,7 @@ public class OrderController {
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrderDetail);
 		return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
 	} 
+	
 	@ApiOperation(value = "填写物流信息", notes = "填写物流信息")
 	@RequestMapping(value = "/insertLogistics", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> insertLogistics(HfOrderLogisticsRequest request)

@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -57,6 +59,7 @@ import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.HomePageInfo.MouthEnum;
+import com.hanfu.product.center.manual.model.HomePageOrderType;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
@@ -291,7 +294,8 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HomePageInfo info = new HomePageInfo();
+		HomePageOrderType info = new HomePageOrderType();
+		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
 		HfStoneExample example = new HfStoneExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
@@ -304,11 +308,26 @@ public class HomePageController {
 		String[] str = new String[homePageInfos.size()];
 		Integer[] str2 = new Integer[homePageInfos.size()];
 		for (int i = 0; i < homePageInfos.size(); i++) {
-			str[i] = homePageInfos.get(i).getOrderType();
-			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+			HomePageOrderType homePageOrderType = new HomePageOrderType();
+			if("nomalOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageOrderType.setName("普通订单");
+				str[i] = "普通订单";
+			}
+			if("rechargeOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageOrderType.setName("充值订单");
+				str[i] = "充值订单";
+			}
+			if("shoppingOrder".equals(homePageInfos.get(i).getOrderType())) {
+				homePageOrderType.setName("到店支付订单");
+				str[i] = "到店支付订单";
+			}
+			homePageOrderType.setValue(homePageInfos.get(i).getOrderTypeCounts());
+//			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+			result.add(homePageOrderType);
 		}
-		info.setOrderTypeStr(str);
-		info.setOrderTypeCountsStr(str2);
+		info.setJs(JSONArray.parseArray(JSON.toJSONString(result)));
+		info.setData(str);
+//		info.setOrderTypeCountsStr(str2);
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	
@@ -323,7 +342,7 @@ public class HomePageController {
 		HomePageInfo info = new HomePageInfo();
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-		Integer index = Integer.valueOf(sdf.format(date))-count/2;
+		Integer index = Integer.valueOf(sdf.format(date))-(count-1);
 		for (int j = 0; j < count; j++) {
 			a[j] = index;
 			LocalDateTime mouthStartOfYear = LocalDateTime.of(index++, 1, 1, 0, 0);
