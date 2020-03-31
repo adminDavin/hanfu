@@ -110,6 +110,10 @@ public class HomePageInfo implements Serializable {
     private String[] orderTypeStr;
     @ApiModelProperty(required = true, value = "订单类型数目数组")
     private Integer[] orderTypeCountsStr;
+    @ApiModelProperty(required = true, value = "年份")
+    private Integer[] year;
+    @ApiModelProperty(required = true, value = "浏览数量")
+    private Integer[] browseCountForYeay;
     
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(required = false, value = "创建时间")
@@ -335,4 +339,20 @@ public class HomePageInfo implements Serializable {
 		this.orderTypeCountsStr = orderTypeCountsStr;
 	}
 
+	public Integer[] getYear() {
+		return year;
+	}
+
+	public void setYear(Integer[] year) {
+		this.year = year;
+	}
+
+	public Integer[] getBrowseCountForYeay() {
+		return browseCountForYeay;
+	}
+
+	public void setBrowseCountForYeay(Integer[] browseCountForYeay) {
+		this.browseCountForYeay = browseCountForYeay;
+	}
+	
 }

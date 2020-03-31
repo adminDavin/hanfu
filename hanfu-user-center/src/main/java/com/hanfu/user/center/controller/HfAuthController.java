@@ -37,7 +37,7 @@ import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfBossMapper;
-import com.hanfu.user.center.dao.HfLevelDescribleMapper;
+import com.hanfu.user.center.dao.HfLevelDescribeMapper;
 import com.hanfu.user.center.dao.HfMemberLevelMapper;
 import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
@@ -57,8 +57,8 @@ import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfBoss;
 import com.hanfu.user.center.model.HfBossExample;
-import com.hanfu.user.center.model.HfLevelDescrible;
-import com.hanfu.user.center.model.HfLevelDescribleExample;
+import com.hanfu.user.center.model.HfLevelDescribe;
+import com.hanfu.user.center.model.HfLevelDescribeExample;
 import com.hanfu.user.center.model.HfMemberLevel;
 import com.hanfu.user.center.model.HfStone;
 import com.hanfu.user.center.model.HfStoneExample;
@@ -118,14 +118,14 @@ public class HfAuthController {
 	private HfMemberLevelMapper hfMemberLevelMapper;
 
 	@Autowired
-	private HfLevelDescribleMapper hfLevelDescribleMapper;
+	private HfLevelDescribeMapper hfLevelDescribleMapper;
 
 	@Autowired
 	private HfUserMemberMapper hfUserMemberMapper;
-	
+
 	@Autowired
 	private HfBossInfoDao hfBossInfoDao;
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -368,8 +368,7 @@ public class HfAuthController {
 		hfAuthMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
-	
-	
+
 	@RequestMapping(value = "/findBossInfo", method = RequestMethod.GET)
 	@ApiOperation(value = "商家基本信息", notes = "商家基本信息")
 	@ApiImplicitParams({
@@ -386,7 +385,7 @@ public class HfAuthController {
 			HfStone hfStone = list.get(i);
 			System.out.println(hfStone);
 			Double a = hfBossInfoDao.selectAllOrderByBossId(hfStone.getId());
-			if(a != null) {
+			if (a != null) {
 				amount += a;
 			}
 		}
@@ -431,27 +430,27 @@ public class HfAuthController {
 //		            }        
 //		        }        
 //		      }        
-		HashSet h = new HashSet(result);   
-		result.clear();   
+		HashSet h = new HashSet(result);
+		result.clear();
 		result.addAll(h);
 		for (int i = 0; i < result.size(); i++) {
 			StoreUser storeUser = new StoreUser();
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
-			if(hfUser != null) {
-				if(!StringUtils.isEmpty(hfUser.getInvitationCode())) {
+			if (hfUser != null) {
+				if (!StringUtils.isEmpty(hfUser.getInvitationCode())) {
 					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
 				}
-				if(!StringUtils.isEmpty(hfUser.getNickName())) {
+				if (!StringUtils.isEmpty(hfUser.getNickName())) {
 					storeUser.setUserName(hfUser.getNickName());
 				}
-				if(!StringUtils.isEmpty(hfUser.getRealName())) {
+				if (!StringUtils.isEmpty(hfUser.getRealName())) {
 					storeUser.setRealName(hfUser.getRealName());
 				}
-				if(!StringUtils.isEmpty(hfUser.getPhone())) {
+				if (!StringUtils.isEmpty(hfUser.getPhone())) {
 					storeUser.setUserPhone(hfUser.getPhone());
 				}
-					storeUser.setUserId(hfUser.getId());
-					storeUsers.add(storeUser);
+				storeUser.setUserId(hfUser.getId());
+				storeUsers.add(storeUser);
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
@@ -462,7 +461,7 @@ public class HfAuthController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String") })
 	public ResponseEntity<JSONObject> addUserMemberLevel(String name) throws JSONException {
-		
+
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
@@ -507,7 +506,7 @@ public class HfAuthController {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
 		hfMemberLevelMapper.deleteByPrimaryKey(id);
-		HfLevelDescribleExample example = new HfLevelDescribleExample();
+		HfLevelDescribeExample example = new HfLevelDescribeExample();
 		example.createCriteria().andLevelIdEqualTo(id);
 		hfLevelDescribleMapper.deleteByExample(example);
 		HfUserMemberExample example2 = new HfUserMemberExample();
@@ -571,8 +570,8 @@ public class HfAuthController {
 	@ApiOperation(value = "修改会员信息", notes = "修改会员信息")
 	@RequestMapping(value = "/updateUserMember", method = RequestMethod.POST)
 //	Date startTime, Date endTime, 
-	public ResponseEntity<JSONObject> updateUserMember(HfUserMember hfUserMember,
-			Integer levelId) throws JSONException {
+	public ResponseEntity<JSONObject> updateUserMember(HfUserMember hfUserMember, Integer levelId)
+			throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
@@ -623,8 +622,8 @@ public class HfAuthController {
 			info.setId(member.getId());
 			info.setUserId(member.getUserId());
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(member.getUserId());
-			if(hfUser != null) {
-				if(!StringUtils.isEmpty(hfUser.getRealName())) {
+			if (hfUser != null) {
+				if (!StringUtils.isEmpty(hfUser.getRealName())) {
 					info.setName(hfUser.getRealName());
 				}
 			}
@@ -666,84 +665,121 @@ public class HfAuthController {
 	@RequestMapping(value = "/addMemberLevelDescribe", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "levelId", value = "等级id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "等级描述", required = true, type = "String")})
-	public ResponseEntity<JSONObject> addMemberLevelDescribe(Integer levelId,String levelDescribe) throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = true, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "prerogative", value = "特权名称", required = true, type = "String") })
+	public ResponseEntity<JSONObject> addMemberLevelDescribe(Integer levelId, String levelDescribe, String prerogative,
+			Date expireTime) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfLevelDescrible describle = new HfLevelDescrible();
-		describle.setLevelId(levelId);
-		describle.setLevelDescribe(levelDescribe);
-		describle.setCreateTime(LocalDateTime.now());
-		describle.setModifyTime(LocalDateTime.now());
-		describle.setIsDeleted((byte) 0);
-		hfLevelDescribleMapper.insert(describle);
-		return builder.body(ResponseUtils.getResponseBody(describle.getId()));
+		Date date = new Date();
+		Instant instant2 = date.toInstant();
+		ZoneId zoneId2 = ZoneId.systemDefault();
+		LocalDateTime ldt = instant2.atZone(zoneId2).toLocalDateTime();
+		HfLevelDescribe describe = new HfLevelDescribe();
+		describe.setLevelId(levelId);
+		describe.setPrerogative(prerogative);
+		Instant instant = expireTime.toInstant();
+		ZoneId zoneId = ZoneId.systemDefault();
+		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+		describe.setExpireTime(localDateTime);
+		describe.setLevelDescribe(levelDescribe);
+		describe.setCreateTime(LocalDateTime.now());
+		describe.setModifyTime(LocalDateTime.now());
+		describe.setIsDeleted((byte) 0);
+		hfLevelDescribleMapper.insert(describe);
+		return builder.body(ResponseUtils.getResponseBody(describe.getId()));
 	}
 
-	@ApiOperation(value="更新等级描述",notes="更新等级描述")
-	@RequestMapping(value="/updateMemberLevelDescribe",method=RequestMethod.POST)
+	@ApiOperation(value = "更新等级描述", notes = "更新等级描述")
+	@RequestMapping(value = "/updateMemberLevelDescribe", method = RequestMethod.POST)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "等级描述", required = true, type = "String")})
-	public ResponseEntity<JSONObject> updateMemberLevelDescribe(Integer id,String levelDescribe) throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "prerogative", value = "特权名称", required = false, type = "String")})
+	public ResponseEntity<JSONObject> updateMemberLevelDescribe(Integer id, @RequestParam(required = false)String levelDescribe, 
+			@RequestParam(required = false)String prerogative,@RequestParam(required = false)Date expireTime) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		
-		HfLevelDescrible describle = hfLevelDescribleMapper.selectByPrimaryKey(id);
-		if(describle == null) {
+
+		HfLevelDescribe describle = hfLevelDescribleMapper.selectByPrimaryKey(id);
+		if (describle == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
 		describle.setModifyTime(LocalDateTime.now());
-		describle.setLevelDescribe(levelDescribe);
+		if(!StringUtils.isEmpty(levelDescribe)) {
+			describle.setLevelDescribe(levelDescribe);
+		}
+		if(!StringUtils.isEmpty(levelDescribe)) {
+			describle.setLevelDescribe(levelDescribe);
+		}
+		if(!StringUtils.isEmpty(prerogative)) {
+			describle.setPrerogative(prerogative);
+		}
+		if(expireTime != null) {
+			Instant instant = expireTime.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+			describle.setExpireTime(localDateTime);
+		}
+		
 		hfLevelDescribleMapper.updateByPrimaryKey(describle);
 		return builder.body(ResponseUtils.getResponseBody("更新成功"));
 	}
-	
-	@ApiOperation(value="删除等级输入框",notes="删除等级输入框")
-	@RequestMapping(value="/deleteMemberLevelDescribe",method=RequestMethod.GET)
+
+	@ApiOperation(value = "删除等级输入框", notes = "删除等级输入框")
+	@RequestMapping(value = "/deleteMemberLevelDescribe", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer")})
+			@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteMemberLevelDescribe(Integer id) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		
-		HfLevelDescrible describle = hfLevelDescribleMapper.selectByPrimaryKey(id);
-		if(describle == null) {
+
+		HfLevelDescribe describle = hfLevelDescribleMapper.selectByPrimaryKey(id);
+		if (describle == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
-		
+
 		hfLevelDescribleMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
-	
-	@ApiOperation(value="查询等级描述",notes="查询等级描述根据等级")
-	@RequestMapping(value="/findMemberLevelDescribe",method=RequestMethod.GET)
+
+	@ApiOperation(value = "查询等级描述", notes = "查询等级描述根据等级")
+	@RequestMapping(value = "/findMemberLevelDescribe", method = RequestMethod.GET)
 	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "levelId", value = "levelId", required = true, type = "Integer")})
+			@ApiImplicitParam(paramType = "query", name = "levelId", value = "levelId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findMemberLevelDescribe(Integer levelId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		
+
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(levelId);
-		if(hfMemberLevel == null) {
+		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
-		HfLevelDescribleExample example = new HfLevelDescribleExample();
+		HfLevelDescribeExample example = new HfLevelDescribeExample();
 		example.createCriteria().andLevelIdEqualTo(levelId);
-		List<HfLevelDescrible> list = hfLevelDescribleMapper.selectByExample(example);
+		List<HfLevelDescribe> list = hfLevelDescribleMapper.selectByExample(example);
 		List<HfLevelDescribeInfo> result = new ArrayList<HfLevelDescribeInfo>();
 		for (int i = 0; i < list.size(); i++) {
-			HfLevelDescrible describle = list.get(i);
+			HfLevelDescribe describle = list.get(i);
 			HfLevelDescribeInfo info = new HfLevelDescribeInfo();
 			info.setId(describle.getId());
 			info.setLevelId(describle.getLevelId());
+			info.setPrerogative(describle.getPrerogative());
+			if(describle.getExpireTime().isBefore(LocalDateTime.now())) {
+				info.setPrerogativeState(-1);
+			}
+			if(describle.getExpireTime().isAfter(LocalDateTime.now())) {
+				info.setPrerogativeState(1);
+			}
 			info.setLevelDescribe(describle.getLevelDescribe());
+			info.setExpireTime(describle.getExpireTime());
 			info.setCreateTime(describle.getCreateTime());
 			info.setModifyTime(describle.getModifyTime());
+			hfLevelDescribleMapper.updateByPrimaryKey(describle);
 			info.setIsDeleted((byte) 0);
 			result.add(info);
 		}
-		
+
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 

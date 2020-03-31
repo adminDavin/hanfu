@@ -312,19 +312,32 @@ public class HomePageController {
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
 	
-//	@ApiOperation(value = "获取首页年访问量数据", notes = "获取首页年访问量数据")
-//	@RequestMapping(value = "/findBrowseCountData", method = RequestMethod.GET)
-//	@ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
-//	public ResponseEntity<JSONObject> findBrowseCountData(Integer bossId) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		Date date = new Date();
-////		mouthStart = LocalDateTime.of(Integer.valueOf(sdf.format(date)), i+1, 1, 0, 0);
-//		LocalDateTime yearStart = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
-//		LocalDateTime yearEnd = LocalDateTime.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfYear()).toLocalDate(), LocalTime.MIN);
-//        return builder.body(ResponseUtils.getResponseBody(homePageInfos));
-//	}
-	
+	@ApiOperation(value = "获取首页年访问量数据", notes = "获取首页年访问量数据")
+	@RequestMapping(value = "/findBrowseCountData", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findBrowseCountData(Integer bossId,Integer count) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer[] a = new Integer[count];
+		Integer[] a2 = new Integer[count];
+		HomePageInfo info = new HomePageInfo();
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		Integer index = Integer.valueOf(sdf.format(date))-count/2;
+		for (int j = 0; j < count; j++) {
+			a[j] = index;
+			LocalDateTime mouthStartOfYear = LocalDateTime.of(index++, 1, 1, 0, 0);
+//			LocalDateTime lastMouthOfYear = LocalDateTime.of(index++, 12, 1, 0, 0);
+			LocalDateTime monthEndOfYear = LocalDateTime.of(mouthStartOfYear.with(TemporalAdjusters.lastDayOfYear()).toLocalDate(), LocalTime.MAX);	
+			HfUserBrowseRecordExample example = new HfUserBrowseRecordExample();
+			example.createCriteria().andBossIdEqualTo(bossId).andBrowseDateBetween(mouthStartOfYear, monthEndOfYear);
+			List<HfUserBrowseRecord> list = hfUserBrowseRecordMapper.selectByExample(example);
+			a2[j] = list.size();
+		}
+		info.setYear(a);
+		info.setBrowseCountForYeay(a2);
+        return builder.body(ResponseUtils.getResponseBody(info));
+	}
 	
 	@ApiOperation(value = "获取销售情况", notes = "获取销售情况")
 	@RequestMapping(value = "/findSaleMouthData", method = RequestMethod.GET)
@@ -355,12 +368,9 @@ public class HomePageController {
 			quantity = 0;
 			month[i] = MouthEnum.getPaymentTypeEnum(i+1);
  			mouthStart = LocalDateTime.of(Integer.valueOf(sdf.format(date)), i+1, 1, 0, 0);
- 			System.out.println(mouthStart);
 			mouthEnd = LocalDateTime.of(mouthStart.with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX);
-			System.out.println(mouthEnd);
 			for (int j = 0; j < hfOrderDetails.size(); j++) {
 				HfOrderDetail detail = hfOrderDetails.get(j);
-				System.out.println(detail.getCreateTime().isAfter(mouthStart) && detail.getCreateTime().isBefore(mouthEnd));
 				if(detail.getCreateTime().isAfter(mouthStart) && detail.getCreateTime().isBefore(mouthEnd)) {
 					quantity += detail.getQuantity();
 				}
