@@ -554,20 +554,18 @@ public class HfProductController {
 				display.setDistributionRatio(hfactivityProduct.getDistributionRatio());
 				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
 				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
-				if (hfactivityProduct.getFavoravlePrice() != null) {
-					if (hfactivityProduct.getFavoravlePrice() != 0) {
+				if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
 						String s = String.valueOf(hfactivityProduct.getFavoravlePrice());
 						if (null != s && s.indexOf(".") > 0) {
 							s = s.replaceAll("0+?$", "");// 去掉多余的0
 							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
 						}
 						display.setPriceArea(s);
-					}
 				} else {
 					if (hfactivityProduct.getDiscountRatio() != null) {
 						if (hfactivityProduct.getDiscountRatio() != 0) {
 							String s = String.valueOf(
-									Double.valueOf(display.getPriceArea()) * hfactivityProduct.getDiscountRatio());
+									Double.valueOf(display.getPriceArea()) * (hfactivityProduct.getDiscountRatio()/100));
 							if (null != s && s.indexOf(".") > 0) {
 								s = s.replaceAll("0+?$", "");// 去掉多余的0
 								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
