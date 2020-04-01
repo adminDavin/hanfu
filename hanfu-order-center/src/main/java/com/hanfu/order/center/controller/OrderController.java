@@ -168,7 +168,7 @@ public class OrderController {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, Object> params1 = new HashMap<String, Object>();
 		Map<String, Object> params2 = new HashMap<String, Object>();
-		Map<String, Object> params3 = new HashMap<String, Object>();
+//		Map<String, Object> params3 = new HashMap<String, Object>();
 		params.put("orderType", "nomalOrder");
 		params.put("orderDesc", "普通订单");
 		params1.put("orderType","rechargeOrder");
@@ -177,15 +177,15 @@ public class OrderController {
 		params2.put("orderType","shoppingOrder");
 		params2.put("orderDesc","到店支付订单");
 
-		params3.put("orderType","balancePayment");
-		params3.put("orderDesc","余额支付订单");
+//		params3.put("orderType","balancePayment");
+//		params3.put("orderDesc","余额支付订单");
 
 
 			List<Object> list = new ArrayList<>();
 			list.add(0,params);
 			list.add(1,params1);
 			list.add(2,params2);
-			list.add(3,params3);
+//			list.add(3,params3);
 
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}

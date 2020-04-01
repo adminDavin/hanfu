@@ -498,6 +498,7 @@ public class HfProductActivityController {
             List<HfActivityGroup> hfActivityGroup = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
             //活动
             HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
+            System.out.println(hfActivity);
             //活动商品
             HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
             hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
