@@ -50,4 +50,10 @@ public class UserDaoImpl implements UserDao {
         return result;
     }
 
+	@Override
+	public List<HfUser> selectUser(String name) {
+		List<HfUser> result = sqlSessionTemplate.selectList("selectUser",name);
+        return result;
+	}
+
 }

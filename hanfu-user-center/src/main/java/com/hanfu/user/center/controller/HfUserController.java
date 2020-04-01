@@ -235,5 +235,9 @@ public class HfUserController {
         hfAuthMapper.insert(record);
         return hfUser;
     }
-
+    @RequestMapping(value = "/selectuser", method = RequestMethod.GET)
+    public List<HfUser> selectUser(String name) {
+    	List<HfUser> user = userDao.selectUser(name);
+    	return user;
+    }
 }

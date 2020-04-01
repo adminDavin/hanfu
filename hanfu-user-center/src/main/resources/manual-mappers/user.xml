@@ -166,4 +166,7 @@
         WHERE
         id = #{departmentId}
     </select>
+        <select id="selectUser" resultType="String">
+            select * from hf_user where nick_name like '%#{name}%'
+    </select>
 </mapper>

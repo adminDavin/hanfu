@@ -24,4 +24,6 @@ public interface UserDao {
 
     List<ActivityUserInfo> findActivityUserInfoTP(UserQuery userQuery);
 
+	List<HfUser> selectUser(String name);
+
 }
