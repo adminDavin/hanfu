@@ -1,5 +1,6 @@
 package com.hanfu.user.center.controller;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -21,14 +22,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cedarsoftware.util.io.JsonObject;
@@ -715,7 +720,14 @@ public class HfAuthController {
 		hfLevelDescribleMapper.insert(describe);
 		return builder.body(ResponseUtils.getResponseBody(describe.getId()));
 	}
-
+	
+	@InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        //转换日期
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
+	
 	@ApiOperation(value = "更新等级描述", notes = "更新等级描述")
 	@RequestMapping(value = "/updateMemberLevelDescribe", method = RequestMethod.POST)
 	@ApiImplicitParams({
