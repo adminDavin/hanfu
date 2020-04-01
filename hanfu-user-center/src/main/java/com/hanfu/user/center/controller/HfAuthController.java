@@ -645,6 +645,9 @@ public class HfAuthController {
 				if (!StringUtils.isEmpty(hfUser.getRealName())) {
 					info.setName(hfUser.getRealName());
 				}
+				if (!StringUtils.isEmpty(hfUser.getPhone())) {
+					info.setPhone(hfUser.getPhone());
+				}
 			}
 			info.setCreateTime(member.getCreateTime());
 			info.setModifyTime(member.getModifyTime());
