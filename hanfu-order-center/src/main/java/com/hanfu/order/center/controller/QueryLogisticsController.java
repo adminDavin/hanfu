@@ -1,6 +1,7 @@
 package com.hanfu.order.center.controller;
 
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
+import com.hanfu.order.center.manual.model.Logistics;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderLogisticsExample;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -47,14 +46,19 @@ public class QueryLogisticsController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
         try {
-            String result = kdniaoTrackQueryAPI.getOrderTracesByJson(logisticselect(expNo), expNo);
+            String result = kdniaoTrackQueryAPI.getOrderTracesByJson(logisticselect(expNo).get("ShipperCode"), expNo);
             System.out.println(result);
-            result = result.substring(0, result.length() - 1);
-            result = result.substring(1, result.length());
-            result = "{"+result+"\", \"total\":\"" + logisticselect(expNo) + "\"}";
-            System.out.println(result);
-//            JSONObject json = JSONObject.parseObject(result);
-            return builder.body(ResponseUtils.getResponseBody(result));
+            JSONObject json = JSONObject.parseObject(result);
+//            result = result.substring(0, result.length() - 1);
+//            result = result.substring(1, result.length());
+            Logistics logistics = new Logistics();
+            logistics.setLogisticCode(json.get("LogisticCode"));
+            logistics.setShipperCode(json.get("ShipperCode"));
+            logistics.setTraces(json.get("Traces"));
+            logistics.setState(json.get("State"));
+            logistics.seteBusinessID(json.get("EBusinessID"));
+            logistics.setCompany(logisticselect(expNo).get("ShipperName"));
+            return builder.body(ResponseUtils.getResponseBody(logistics));
         } catch (Exception e) {
             e.printStackTrace();
             return builder.body(ResponseUtils.getResponseBody("查询失败"));
@@ -67,11 +71,12 @@ public class QueryLogisticsController {
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "expNo", value = "快递单号", required = true, type = "String")
 //    })
-    public String logisticselect(String expNo)
+    public Map<String,String> logisticselect(String expNo)
             throws Exception {
         String ShipperCode = null;
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+        Map<String,String> map = new HashMap<>();
         try {
             String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expNo);
             JSONObject json = JSONObject.parseObject(result);
@@ -88,16 +93,25 @@ public class QueryLogisticsController {
 			String key = iterator.next();
 			String value = specs.getString(key);
 			strings.add(key);
-//			System.out.println("key: "+key+",value:"+value);
+			System.out.println("key: "+key+",value:"+value);
             if (key.equals("ShipperCode")){
-                ShipperCode=value;
+                map.put("ShipperCode",value);
+//                map.put("ShipperName",value)
+//                ShipperCode=value;
             }
+            if (key.equals("ShipperName")){
+//                map.put("ShipperCode",key);
+                map.put("ShipperName",value);
+//                ShipperCode=value;
+            }
+//            System.out.println(map);
 		}
 //            System.out.println(ShipperCode);
-            return ShipperCode;
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
-            return "查询失败";
+            map.put("0","0");
+            return map;
         }
 
     }
