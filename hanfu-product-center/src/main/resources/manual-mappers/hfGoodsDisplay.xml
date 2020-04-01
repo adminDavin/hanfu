@@ -15,6 +15,7 @@
         <result column="is_use_price_mode" jdbcType="SMALLINT" property="isUsePriceMode"/>
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
         <result column="line_price" jdbcType="INTEGER" property="linePrice"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
     </resultMap>
     <resultMap id="HfGoodsSpecDisplay" type="com.hanfu.product.center.manual.model.HfGoodsSpecDisplay">
         <result column="id" jdbcType="INTEGER" property="id"/>
@@ -28,7 +29,7 @@
 
     <select id="selectHfGoodsDisplay" parameterType="java.util.List" resultMap="HfGoodsDisplayInfo">
     select g.id, g.hf_name, g.product_id, g.goods_desc, g.modify_time, r.warehouse_id, r.quantity, r.hf_status resp_status,
-     g.price_id, p.price_mode_id, p.sell_price, p.is_use_price_mode  ,p.line_price
+     g.price_id, p.price_mode_id, p.sell_price, p.is_use_price_mode  ,p.line_price ,g.stone_id
     from hf_goods g left join hf_price p on g.price_id=p.id
     left join hf_resp r on r.googs_id=g.id
     where g.product_id in 
