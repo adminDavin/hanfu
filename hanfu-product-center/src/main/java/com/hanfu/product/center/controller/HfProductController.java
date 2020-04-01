@@ -556,7 +556,12 @@ public class HfProductController {
 				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
 				if (hfactivityProduct.getFavoravlePrice() != null) {
 					if (hfactivityProduct.getFavoravlePrice() != 0) {
-						display.setPriceArea(String.valueOf(hfactivityProduct.getFavoravlePrice()));
+						String s = String.valueOf(hfactivityProduct.getFavoravlePrice());
+						if (null != s && s.indexOf(".") > 0) {
+							s = s.replaceAll("0+?$", "");// 去掉多余的0
+							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+						}
+						display.setPriceArea(s);
 					}
 				} else {
 					if (hfactivityProduct.getDiscountRatio() != null) {
