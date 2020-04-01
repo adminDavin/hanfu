@@ -305,6 +305,7 @@ public class OrderController {
 			hfOrderLogistics.setLastModifier("");
 			hfOrderLogistics.setModifyTime(LocalDateTime.now());
 			hfOrderLogistics.setCreateTime(LocalDateTime.now());
+			hfOrderLogistics.setLogisticsOrdersId(request.getLogisticsOrdersId());
 			hfOrderLogistics.setIsDeleted((short) 0 );
 			hfOrderLogistics.setOrderDetailId(request.getOrderDetailId());
 			hfOrderLogistics.setOrdersId(request.getOrdersId());

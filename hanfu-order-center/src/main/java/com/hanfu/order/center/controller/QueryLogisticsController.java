@@ -48,11 +48,13 @@ public class QueryLogisticsController {
         KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
         try {
             String result = kdniaoTrackQueryAPI.getOrderTracesByJson(logisticselect(expNo), expNo);
-//            System.out.println(result);
-//            result = result.substring(0, result.length() - 1);
-//            result = result.substring(1, result.length());
-            JSONObject json = JSONObject.parseObject(result);
-            return builder.body(ResponseUtils.getResponseBody(json));
+            System.out.println(result);
+            result = result.substring(0, result.length() - 1);
+            result = result.substring(1, result.length());
+            result = "{"+result+"\", \"total\":\"" + logisticselect(expNo) + "\"}";
+            System.out.println(result);
+//            JSONObject json = JSONObject.parseObject(result);
+            return builder.body(ResponseUtils.getResponseBody(result));
         } catch (Exception e) {
             e.printStackTrace();
             return builder.body(ResponseUtils.getResponseBody("查询失败"));
@@ -73,7 +75,7 @@ public class QueryLogisticsController {
         try {
             String result = kdniaoTrackQueryAPI.getOrderTracesByJson(expNo);
             JSONObject json = JSONObject.parseObject(result);
-            System.out.println(json.getString("Shippers"));
+//            System.out.println(json.getString("Shippers"));
             String a= json.getString("Shippers").replace("[","");
             String b= a.replace("]","");
 
@@ -86,12 +88,12 @@ public class QueryLogisticsController {
 			String key = iterator.next();
 			String value = specs.getString(key);
 			strings.add(key);
-			System.out.println("key: "+key+",value:"+value);
+//			System.out.println("key: "+key+",value:"+value);
             if (key.equals("ShipperCode")){
                 ShipperCode=value;
             }
 		}
-            System.out.println(ShipperCode);
+//            System.out.println(ShipperCode);
             return ShipperCode;
         } catch (Exception e) {
             e.printStackTrace();
