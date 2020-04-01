@@ -534,6 +534,7 @@ public class HfProductController {
 				if (hfGood.get().getLinePrice() != null) {
 					display.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
 				}
+				display.setId(hfactivityProduct.getProductId());
 				display.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
 				display.setDefaultGoodsId(hfGood.get().getId());
 				display.setActivityId(activity.getId());
