@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -364,12 +365,13 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		LocalDateTime ldt = LocalDateTime.now();
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
 		Integer quantity = 0;
 		HomePageInfo info = new HomePageInfo();
-		String[] month = new String[12];
-		Integer[] count = new Integer[12];
+		String[] month = new String[ldt.getMonthValue()];
+		Integer[] count = new Integer[ldt.getMonthValue()];
 		LocalDateTime mouthStart;
 		LocalDateTime mouthEnd;
 		HfStoneExample example = new HfStoneExample();
@@ -383,7 +385,7 @@ public class HomePageController {
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
 		example3.createCriteria().andOrderIdIn(orderId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < ldt.getMonthValue(); i++) {
 			quantity = 0;
 			month[i] = MouthEnum.getPaymentTypeEnum(i+1);
  			mouthStart = LocalDateTime.of(Integer.valueOf(sdf.format(date)), i+1, 1, 0, 0);
@@ -400,5 +402,4 @@ public class HomePageController {
 		info.setSalesCountMonth(count);
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
-	
 }

@@ -15,6 +15,7 @@ public class HfUserMemberInfo {
 	private Integer userId;
 	private Integer levelId;
 	private String levelName;
+	private String phone;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 //	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
@@ -86,6 +87,12 @@ public class HfUserMemberInfo {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	
 }
