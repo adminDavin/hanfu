@@ -652,8 +652,8 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> deleteUserMember(Integer id) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		hfUserMemberMapper.deleteByPrimaryKey(id);
 		HfUserMember member = hfUserMemberMapper.selectByPrimaryKey(id);
+		hfUserMemberMapper.deleteByPrimaryKey(id);
 		HfUserPrivilegeExample example = new HfUserPrivilegeExample();
 		example.createCriteria().andUserIdEqualTo(member.getUserId());
 		hfUserPrivilegeMapper.deleteByExample(example);
