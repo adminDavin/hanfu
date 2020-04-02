@@ -94,7 +94,7 @@ public class PaymentOrderController {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     private Map<String, String> wxPay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
         MiniProgramConfig config = new MiniProgramConfig();
         Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
