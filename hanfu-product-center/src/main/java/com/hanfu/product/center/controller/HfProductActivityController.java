@@ -384,7 +384,8 @@ public class HfProductActivityController {
     public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId, Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
-
+        List<GroupList> groupLists = new ArrayList<>();
+        GroupList groupList = new GroupList();
         HfActivityGroup hfActivityGroup = new HfActivityGroup();
         hfActivityGroup.setCreateTime(LocalDateTime.now());
         hfActivityGroup.setModifyTime(LocalDateTime.now());
@@ -408,19 +409,69 @@ public class HfProductActivityController {
         hfActivityCount.setGroupId(hfActivityGroup.getId());
         hfActivityCount.setOrderId(orderId);
         hfActivityCountMapper.insert(hfActivityCount);
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
-        hfActivityCountExample.createCriteria().andGroupIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
-        map.put("num", hfActivityCountMapper.selectByExample(hfActivityCountExample).size());
-        map.put("hfActivityGroupId", hfActivityGroup.getId());
-        return builder.body(ResponseUtils.getResponseBody(map));
+        //---------
+        HfActivityCountExample hfActivityCountExample3 = new HfActivityCountExample();
+        hfActivityCountExample3.createCriteria().andGroupIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0);
+        List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample3);
+        Map<String,String> map = new HashMap<>();
+        List<Map<String, String>> lists = new ArrayList<>();
+        hfActivityCountList.forEach(hfActivityCount4 -> {
+            HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
+            map.put("userName", hfUsers1.getNickName());
+            map.put("fileId", String.valueOf(hfUsers1.getFileId()));
+            lists.add(map);
+            groupList.setUser(lists);
+        });
+        //成团
+        HfActivityGroupExample hfActivityGroupExample7 = new HfActivityGroupExample();
+        hfActivityGroupExample7.createCriteria().andIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0);
+        List<HfActivityGroup> hfActivityGroup7 = hfActivityGroupMapper.selectByExample(hfActivityGroupExample7);
+        //活动
+        HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getActivityId());
+        //活动商品
+        HfActivityProductExample hfActivityProductExample7 = new HfActivityProductExample();
+        hfActivityProductExample7.createCriteria().andActivityIdEqualTo(hfActivityGroup7.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup7.get(0).getProductId());
+        List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample7);
+
+        Date date1 = new Date();
+        Date date4 = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date1 = f.parse(f.format(new Date()));
+            date4 = f.parse(f.format(hfActivityGroup7.get(0).getClusteringTime()));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getUserId());
+        Product product = productMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getProductId());
+        groupList.setGroupId(hfActivityGroup.getId());
+        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+        groupList.setNowSum(hfActivityCountList.size());
+        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+        groupList.setGroupUserName(hfUsers.getNickName());
+        groupList.setGroupFileId(hfUsers.getFileId());
+        groupList.setProductId(product.getId());
+        groupList.setProductName(product.getHfName());
+        groupList.setProductFileId(product.getFileId());
+        groupList.setSellPrice(price(product.getId()).get("sellPrice"));
+        groupList.setLinePrice(price(product.getId()).get("linePrice"));
+        groupLists.add(groupList);
+        //---------
+//        Map<String, Integer> map1 = new HashMap<String, Integer>();
+//        HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+//        hfActivityCountExample.createCriteria().andGroupIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
+//        map1.put("num", hfActivityCountMapper.selectByExample(hfActivityCountExample).size());
+//        map1.put("hfActivityGroupId", hfActivityGroup.getId());
+        return builder.body(ResponseUtils.getResponseBody(groupList));
     }
 
     @ApiOperation(value = "进团", notes = "进团")
     @RequestMapping(value = "/entranceGroup", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId,Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-
+        List<GroupList> groupLists = new ArrayList<>();
+        GroupList groupList = new GroupList();
         HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();
         hfActivityCountExample2.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0).andUserIdEqualTo(userId);
         List<HfActivityCount> hfActivityCount2 = hfActivityCountMapper.selectByExample(hfActivityCountExample2);
@@ -456,7 +507,55 @@ public class HfProductActivityController {
         hfActivityCount1.setGroupId(hfActivityGroupId);
         hfActivityCount1.setOrderId(orderId);
         hfActivityCountMapper.insert(hfActivityCount1);
+//----
+        HfActivityCountExample hfActivityCountExample3 = new HfActivityCountExample();
+        hfActivityCountExample3.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0);
+        List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample3);
+        Map<String,String> map = new HashMap<>();
+        List<Map<String, String>> lists = new ArrayList<>();
+        hfActivityCountList.forEach(hfActivityCount4 -> {
+            HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
+            map.put("userName", hfUsers1.getNickName());
+            map.put("fileId", String.valueOf(hfUsers1.getFileId()));
+            lists.add(map);
+            groupList.setUser(lists);
+        });
+        //成团
+        HfActivityGroupExample hfActivityGroupExample7 = new HfActivityGroupExample();
+        hfActivityGroupExample7.createCriteria().andIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0);
+        List<HfActivityGroup> hfActivityGroup7 = hfActivityGroupMapper.selectByExample(hfActivityGroupExample7);
+        //活动
+        HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getActivityId());
+        //活动商品
+        HfActivityProductExample hfActivityProductExample7 = new HfActivityProductExample();
+        hfActivityProductExample7.createCriteria().andActivityIdEqualTo(hfActivityGroup7.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup7.get(0).getProductId());
+        List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample7);
 
+        Date date1 = new Date();
+        Date date4 = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date1 = f.parse(f.format(new Date()));
+            date4 = f.parse(f.format(hfActivityGroup7.get(0).getClusteringTime()));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getUserId());
+        Product product = productMapper.selectByPrimaryKey(hfActivityGroup7.get(0).getProductId());
+        groupList.setGroupId(hfActivityGroupId);
+        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+        groupList.setNowSum(hfActivityCountList.size());
+        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+        groupList.setGroupUserName(hfUsers.getNickName());
+        groupList.setGroupFileId(hfUsers.getFileId());
+        groupList.setProductId(product.getId());
+        groupList.setProductName(product.getHfName());
+        groupList.setProductFileId(product.getFileId());
+        groupList.setSellPrice(price(product.getId()).get("sellPrice"));
+        groupList.setLinePrice(price(product.getId()).get("linePrice"));
+        groupLists.add(groupList);
+        //----
         HfActivityCountExample hfActivityCountExample5 = new HfActivityCountExample();
         hfActivityCountExample5.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
         List<HfActivityCount> hfActivityCount5 = hfActivityCountMapper.selectByExample(hfActivityCountExample);
@@ -471,11 +570,11 @@ public class HfProductActivityController {
             HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
             hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
             hfActivityCountMapper.updateByExampleSelective(hfActivityCount3,hfActivityCountExample1);
-            return builder.body(ResponseUtils.getResponseBody("Please wait for shipment"));
+            return builder.body(ResponseUtils.getResponseBody(groupLists));
         }
         HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
         hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
-        return builder.body(ResponseUtils.getResponseBody(hfActivityCountMapper.selectByExample(hfActivityCountExample)));
+        return builder.body(ResponseUtils.getResponseBody(groupLists));
     }
 
     @ApiOperation(value = "取消成团", notes = "取消成团")
@@ -513,7 +612,7 @@ public class HfProductActivityController {
             GroupList groupList = new GroupList();
             //成团
             HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
-            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
+            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0);
             List<HfActivityGroup> hfActivityGroup = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
             //活动
             HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
@@ -562,7 +661,6 @@ public class HfProductActivityController {
                             lists.add(map);
                             groupList.setUser(lists);
                         }
-                        ;
                         groupList.setGroupId(hfGroup.getGroupId());
                         groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
                         groupList.setNowSum(list.size());
@@ -592,6 +690,9 @@ public class HfProductActivityController {
             }
         });
         if (sum!=null){
+            if (groupLists.size()==0){
+                return builder.body(ResponseUtils.getResponseBody(groupLists));
+            }
             if (groupLists.size()<2){
                 return builder.body(ResponseUtils.getResponseBody(groupLists.subList(0,1)));
             }
