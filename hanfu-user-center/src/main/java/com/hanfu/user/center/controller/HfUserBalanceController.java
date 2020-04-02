@@ -20,7 +20,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
 import com.hanfu.user.center.dao.HfUserBalanceMapper;
 import com.hanfu.user.center.dao.HfUserCouponsMapper;
-import com.hanfu.user.center.manual.model.BalanceType.BalanceTypeEnum;
 import com.hanfu.user.center.model.HUserBalanceExample;
 import com.hanfu.user.center.model.HfUserBalance;
 import com.hanfu.user.center.model.HfUserBalanceExample;
@@ -168,41 +167,5 @@ public class HfUserBalanceController {
 			return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
 		}
 	}
-	
-	@ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
-    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
-            throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        
-        HfUserBalance balance = null;
-        
-        HfUserCoupons coupons = new HfUserCoupons();
-        coupons.setCouponsId(couponId);
-        coupons.setUserId(userId);
-        hfUserCouponsMapper.insert(coupons);
-        
-        HfUserBalanceExample example = new HfUserBalanceExample();
-        example.createCriteria().andBalanceTypeEqualTo(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"))
-        .andUserIdEqualTo(userId);
-        
-        List<HfUserBalance> hfBalance = hfUserBalanceMapper.selectByExample(example);
-        
-        if(hfBalance.isEmpty()) {
-        	balance = new HfUserBalance();
-            balance.setBalanceType(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"));
-            balance.setUserId(userId);
-            balance.setHfBalance(1);
-            hfUserBalanceMapper.insert(balance);
-        }else {
-        	balance = hfBalance.get(0);
-        }
-        
-        
-        return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
-    }
 	
 }
