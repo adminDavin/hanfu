@@ -11,6 +11,8 @@ import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,6 +234,25 @@ public class discountCouponController {
         }
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    
+//    @ApiOperation(value = "给用户添加优惠券", notes = "给用户添加优惠券")
+//    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+//    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
+//            throws Exception {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+//        FileMangeService fileManageService = new FileMangeService();
+//        if(fileDesc!=null) {
+//            fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+//            fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
+//        }
+//        return builder.body(ResponseUtils.getResponseBody(0));
+//    }
+    
+    
     @Scheduled(cron="0/5 * * * * ? ")
     @ApiOperation(value = "优惠券", notes = "优惠券")
     @RequestMapping(value = "/TimeDiscountCoupon", method = RequestMethod.GET)

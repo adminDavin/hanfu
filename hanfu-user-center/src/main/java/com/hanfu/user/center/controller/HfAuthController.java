@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -50,6 +51,7 @@ import com.hanfu.user.center.dao.HfMemberLevelMapper;
 import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.HfUserMemberMapper;
+import com.hanfu.user.center.dao.HfUserPrivilegeMapper;
 import com.hanfu.user.center.dao.hfStoreMenberMapper;
 import com.hanfu.user.center.manual.dao.HfBossInfoDao;
 import com.hanfu.user.center.manual.dao.UserDao;
@@ -74,6 +76,8 @@ import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.HfUserExample;
 import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.model.HfUserMemberExample;
+import com.hanfu.user.center.model.HfUserPrivilege;
+import com.hanfu.user.center.model.HfUserPrivilegeExample;
 import com.hanfu.user.center.model.hfStoreMenber;
 import com.hanfu.user.center.model.hfStoreMenberExample;
 import com.hanfu.user.center.request.UserInfoRequest;
@@ -133,6 +137,9 @@ public class HfAuthController {
 
 	@Autowired
 	private HfBossInfoDao hfBossInfoDao;
+	
+	@Autowired
+	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
@@ -254,6 +261,7 @@ public class HfAuthController {
 			info.setInvitationCode(hfUser.getInvitationCode());
 			info.setOwnInvitationCode(hfUser.getOwnInvitationCode());
 			info.setNickName(hfUser.getNickName());
+			info.setRealName(hfUser.getRealName());
 			info.setPhone(hfUser.getPhone());
 			info.setId(hfUser.getId());
 			HUserBalanceExample example2 = new HUserBalanceExample();
@@ -523,7 +531,13 @@ public class HfAuthController {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(id);
-
+		HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
+		describeExample.createCriteria().andLevelIdEqualTo(id);
+		List<HfLevelDescribe> describes = hfLevelDescribleMapper.selectByExample(describeExample);
+		List<Integer> prerogative = describes.stream().map(HfLevelDescribe::getId).collect(Collectors.toList());
+		HfUserPrivilegeExample privilegeExample = new HfUserPrivilegeExample();
+		privilegeExample.createCriteria().andPrivilegeIdIn(prerogative);
+		hfUserPrivilegeMapper.deleteByExample(privilegeExample);
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
@@ -570,6 +584,9 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
+		describeExample.createCriteria().andLevelIdEqualTo(levelId);
+		List<HfLevelDescribe> describes = hfLevelDescribleMapper.selectByExample(describeExample);
 //		Instant instant = startTime.toInstant();
 //		ZoneId zoneId = ZoneId.systemDefault();
 //		LocalDateTime ldt = instant.atZone(zoneId).toLocalDateTime();
@@ -580,6 +597,12 @@ public class HfAuthController {
 			HfUserMember member = new HfUserMember();
 			member.setUserId(userId[i]);
 			member.setLevelId(levelId);
+			for (int j = 0; j < describes.size(); j++) {
+				HfUserPrivilege privilege = new HfUserPrivilege();
+				privilege.setUserId(userId[i]);
+				privilege.setPrivilegeId(describes.get(j).getId());;
+				hfUserPrivilegeMapper.insert(privilege);
+			}
 //			member.setStartTme(ldt);
 //			member.setEndTime(ldt2);
 			member.setCreateTime(LocalDateTime.now());
@@ -630,6 +653,10 @@ public class HfAuthController {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		hfUserMemberMapper.deleteByPrimaryKey(id);
+		HfUserMember member = hfUserMemberMapper.selectByPrimaryKey(id);
+		HfUserPrivilegeExample example = new HfUserPrivilegeExample();
+		example.createCriteria().andUserIdEqualTo(member.getUserId());
+		hfUserPrivilegeMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
 
@@ -718,6 +745,15 @@ public class HfAuthController {
 		describe.setModifyTime(LocalDateTime.now());
 		describe.setIsDeleted((byte) 0);
 		hfLevelDescribleMapper.insert(describe);
+		HfUserMemberExample example = new HfUserMemberExample();
+		example.createCriteria().andLevelIdEqualTo(levelId);
+		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfUserMember member = list.get(i);
+			HfUserPrivilege privilege = new HfUserPrivilege();
+			privilege.setUserId(member.getUserId());
+			privilege.setPrivilegeId(describe.getId());;
+		}
 		return builder.body(ResponseUtils.getResponseBody(describe.getId()));
 	}
 	
@@ -783,7 +819,16 @@ public class HfAuthController {
 		if (describle == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
-
+		
+		HfUserMemberExample example = new HfUserMemberExample();
+		example.createCriteria().andLevelIdEqualTo(id);
+		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfUserMember member = list.get(i);
+			HfUserPrivilegeExample example2 = new HfUserPrivilegeExample();
+			example2.createCriteria().andUserIdEqualTo(member.getUserId()).andPrivilegeIdEqualTo(id);
+			hfUserPrivilegeMapper.deleteByExample(example2);
+		}
 		hfLevelDescribleMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}

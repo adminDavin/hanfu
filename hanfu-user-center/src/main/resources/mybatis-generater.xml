@@ -135,7 +135,7 @@
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="hf_level_describe"
+		<!-- <table schema="user_center" tableName="hf_level_describe"
                domainObjectName="HfLevelDescribe">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
@@ -143,6 +143,12 @@
         </table>
 		<table schema="user_center" tableName="hf_member_level"
                domainObjectName="HfMemberLevel">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="hf_user_privilege"
+               domainObjectName="HfUserPrivilege">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
