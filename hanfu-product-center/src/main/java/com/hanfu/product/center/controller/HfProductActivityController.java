@@ -413,15 +413,15 @@ public class HfProductActivityController {
         HfActivityCountExample hfActivityCountExample3 = new HfActivityCountExample();
         hfActivityCountExample3.createCriteria().andGroupIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0);
         List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample3);
-        Map<String,String> map = new HashMap<>();
         List<Map<String, String>> lists = new ArrayList<>();
         hfActivityCountList.forEach(hfActivityCount4 -> {
+            Map<String,String> map = new HashMap<>();
             HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
             map.put("userName", hfUsers1.getNickName());
             map.put("fileId", String.valueOf(hfUsers1.getFileId()));
             lists.add(map);
-            groupList.setUser(lists);
         });
+        groupList.setUser(lists);
         //成团
         HfActivityGroupExample hfActivityGroupExample7 = new HfActivityGroupExample();
         hfActivityGroupExample7.createCriteria().andIdEqualTo(hfActivityGroup.getId()).andIsDeletedEqualTo((byte) 0);
@@ -511,15 +511,16 @@ public class HfProductActivityController {
         HfActivityCountExample hfActivityCountExample3 = new HfActivityCountExample();
         hfActivityCountExample3.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0);
         List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample3);
-        Map<String,String> map = new HashMap<>();
+
         List<Map<String, String>> lists = new ArrayList<>();
         hfActivityCountList.forEach(hfActivityCount4 -> {
+            Map<String,String> map = new HashMap<>();
             HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
             map.put("userName", hfUsers1.getNickName());
             map.put("fileId", String.valueOf(hfUsers1.getFileId()));
             lists.add(map);
-            groupList.setUser(lists);
         });
+        groupList.setUser(lists);
         //成团
         HfActivityGroupExample hfActivityGroupExample7 = new HfActivityGroupExample();
         hfActivityGroupExample7.createCriteria().andIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0);
@@ -582,7 +583,7 @@ public class HfProductActivityController {
     public ResponseEntity<JSONObject> cancelGroup(Integer userId, Integer hfActivityGroupId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivityCount hfActivityCount = new HfActivityCount();
-        hfActivityCount.setState(1);
+        hfActivityCount.setIsDeleted((byte) 1);
         HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();
         hfActivityCountExample2.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0).andUserIdEqualTo(userId);
         hfActivityCountMapper.updateByExampleSelective(hfActivityCount, hfActivityCountExample2);
@@ -591,7 +592,7 @@ public class HfProductActivityController {
         List<HfActivityCount> hfActivityCount3 = hfActivityCountMapper.selectByExample(hfActivityCountExample);
         if (hfActivityCount3.size() == 0) {
             HfActivityGroup hfActivityGroup = new HfActivityGroup();
-            hfActivityGroup.setState(1);
+            hfActivityGroup.setIsDeleted((byte) 1);
             HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
             hfActivityGroupExample.createCriteria().andIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
             hfActivityGroupMapper.updateByExampleSelective(hfActivityGroup, hfActivityGroupExample);
@@ -789,10 +790,10 @@ public class HfProductActivityController {
                 e.printStackTrace();
             }
             if ((date1.getTime()-date2.getTime())>86400000){
-                discountCoupon.setState(1);
+                discountCoupon.setIsDeleted((byte) 1);
                 hfActivityGroupMapper.updateByPrimaryKeySelective(discountCoupon);
                 HfActivityCount hfActivityCount = new HfActivityCount();
-                hfActivityCount.setState(1);
+                hfActivityCount.setIsDeleted((byte) 1);
                 HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
                 hfActivityCountExample.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
                 hfActivityCountMapper.updateByExampleSelective(hfActivityCount,hfActivityCountExample);
