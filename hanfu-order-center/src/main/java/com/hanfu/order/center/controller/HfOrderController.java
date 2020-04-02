@@ -9,8 +9,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
-import com.hanfu.order.center.model.HfOrderDetailExample;
-import com.hanfu.order.center.model.HfOrderExample;
+import com.hanfu.order.center.dao.HfActivityCountMapper;
+import com.hanfu.order.center.dao.HfActivityGroupMapper;
+import com.hanfu.order.center.model.*;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,6 @@ import com.hanfu.order.center.manual.dao.HfOrderDao;
 import com.hanfu.order.center.manual.model.HfGoodsDisplay;
 import com.hanfu.order.center.manual.model.HfOrderDisplay;
 import com.hanfu.order.center.manual.model.HfOrderStatistics;
-import com.hanfu.order.center.model.HfOrder;
-import com.hanfu.order.center.model.HfOrderDetail;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderTypeEnum;
@@ -56,6 +55,12 @@ public class HfOrderController {
     
     @Autowired
     private HfOrderDetailMapper hfOrderDetailMapper;
+
+    @Autowired
+    private HfActivityGroupMapper hfActivityGroupMapper;
+
+    @Autowired
+    private HfActivityCountMapper hfActivityCountMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -168,6 +173,16 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (targetOrderStatus.equals("transport")){
+            HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+            hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
+            List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+            if (hfActivityCountList.size()!=0){
+                if (hfActivityCountList.get(0).getState()!=3){
+                    return builder.body(ResponseUtils.getResponseBody("In spelling"));
+                }
+            }
+        }
         HfOrder hfOrder = new HfOrder();
         hfOrder.setId(Id);
         hfOrder.setOrderStatus(targetOrderStatus);

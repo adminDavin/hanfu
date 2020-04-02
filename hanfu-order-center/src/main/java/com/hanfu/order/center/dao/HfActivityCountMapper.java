@@ -1,9 +1,10 @@
-package com.hanfu.product.center.dao;
+package com.hanfu.order.center.dao;
 
-import com.hanfu.product.center.model.HfActivityCount;
-import com.hanfu.product.center.model.HfActivityCountExample;
-import java.util.List;
+import com.hanfu.order.center.model.HfActivityCount;
+import com.hanfu.order.center.model.HfActivityCountExample;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface HfActivityCountMapper {
     /**

@@ -100,8 +100,9 @@ public class HfGoodsController {
                       return builder.body(ResponseUtils.getResponseBody(amount));
                   }
                 } else {
-                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
-                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
+//                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
+                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
+                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice"))*GoodsNum);
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
             }

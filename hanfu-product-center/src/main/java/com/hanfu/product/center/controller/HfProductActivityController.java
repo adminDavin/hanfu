@@ -381,7 +381,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "开团", notes = "开团")
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId) throws JSONException {
+    public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId, Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
 
@@ -406,6 +406,7 @@ public class HfProductActivityController {
         hfActivityCount.setClusteringTime(LocalDateTime.now());
         hfActivityCount.setState(0);
         hfActivityCount.setGroupId(hfActivityGroup.getId());
+        hfActivityCount.setOrderId(orderId);
         hfActivityCountMapper.insert(hfActivityCount);
         Map<String, Integer> map = new HashMap<String, Integer>();
         HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
@@ -417,7 +418,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "进团", notes = "进团")
     @RequestMapping(value = "/entranceGroup", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId) throws JSONException {
+    public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId,Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
         HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();
@@ -453,7 +454,25 @@ public class HfProductActivityController {
         hfActivityCount1.setClusteringTime(LocalDateTime.now());
         hfActivityCount1.setState(0);
         hfActivityCount1.setGroupId(hfActivityGroupId);
+        hfActivityCount1.setOrderId(orderId);
         hfActivityCountMapper.insert(hfActivityCount1);
+
+        HfActivityCountExample hfActivityCountExample5 = new HfActivityCountExample();
+        hfActivityCountExample5.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
+        List<HfActivityCount> hfActivityCount5 = hfActivityCountMapper.selectByExample(hfActivityCountExample);
+        if (hfActivityProductList.get(0).getGroupNum() == hfActivityCount5.size()) {
+            HfActivityGroup hfActivityGroup1 = new HfActivityGroup();
+            hfActivityGroup1.setState(3);
+            HfActivityGroupExample hfActivityGroupExample1 = new HfActivityGroupExample();
+            hfActivityGroupExample1.createCriteria().andIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
+            hfActivityGroupMapper.updateByExampleSelective(hfActivityGroup1,hfActivityGroupExample1);
+            HfActivityCount hfActivityCount3 = new HfActivityCount();
+            hfActivityCount3.setState(3);
+            HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
+            hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
+            hfActivityCountMapper.updateByExampleSelective(hfActivityCount3,hfActivityCountExample1);
+            return builder.body(ResponseUtils.getResponseBody("Please wait for shipment"));
+        }
         HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
         hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityGroupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0);
         return builder.body(ResponseUtils.getResponseBody(hfActivityCountMapper.selectByExample(hfActivityCountExample)));
@@ -573,6 +592,9 @@ public class HfProductActivityController {
             }
         });
         if (sum!=null){
+            if (groupLists.size()<2){
+                return builder.body(ResponseUtils.getResponseBody(groupLists.subList(0,1)));
+            }
             return builder.body(ResponseUtils.getResponseBody(groupLists.subList(0,sum)));
         }
         return builder.body(ResponseUtils.getResponseBody(groupLists));

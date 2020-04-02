@@ -1,4 +1,4 @@
-package com.hanfu.product.center.model;
+package com.hanfu.order.center.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
