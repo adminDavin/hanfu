@@ -9,6 +9,7 @@ import com.hanfu.user.center.utils.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
+import com.hanfu.user.center.dao.HfUserBalanceMapper;
+import com.hanfu.user.center.dao.HfUserCouponsMapper;
+import com.hanfu.user.center.manual.model.BalanceType.BalanceTypeEnum;
 import com.hanfu.user.center.model.HUserBalanceExample;
+import com.hanfu.user.center.model.HfUserBalance;
+import com.hanfu.user.center.model.HfUserBalanceExample;
+import com.hanfu.user.center.model.HfUserCoupons;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -30,6 +37,7 @@ import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -46,6 +54,12 @@ public class HfUserBalanceController {
 
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	
+	@Autowired
+	private HfUserCouponsMapper hfUserCouponsMapper;
+	
+	@Autowired
+	private HfUserBalanceMapper hfUserBalanceMapper;
 
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
@@ -154,4 +168,41 @@ public class HfUserBalanceController {
 			return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
 		}
 	}
+	
+	@ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
+    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        
+        HfUserBalance balance = null;
+        
+        HfUserCoupons coupons = new HfUserCoupons();
+        coupons.setCouponsId(couponId);
+        coupons.setUserId(userId);
+        hfUserCouponsMapper.insert(coupons);
+        
+        HfUserBalanceExample example = new HfUserBalanceExample();
+        example.createCriteria().andBalanceTypeEqualTo(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"))
+        .andUserIdEqualTo(userId);
+        
+        List<HfUserBalance> hfBalance = hfUserBalanceMapper.selectByExample(example);
+        
+        if(hfBalance.isEmpty()) {
+        	balance = new HfUserBalance();
+            balance.setBalanceType(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"));
+            balance.setUserId(userId);
+            balance.setHfBalance(1);
+            hfUserBalanceMapper.insert(balance);
+        }else {
+        	balance = hfBalance.get(0);
+        }
+        
+        
+        return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
+    }
+	
 }

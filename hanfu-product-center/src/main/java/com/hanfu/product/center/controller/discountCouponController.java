@@ -4,13 +4,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.DiscountCouponMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfUserCouponsMapper;
 import com.hanfu.product.center.manual.model.DiscountCouponScope;
 import com.hanfu.product.center.model.DiscountCoupon;
 import com.hanfu.product.center.model.DiscountCouponExample;
 import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.HfUserCoupons;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +42,8 @@ public class discountCouponController {
     private DiscountCouponMapper discountCouponMapper;
     @Autowired
     private FileDescMapper fileDescMapper;
+    @Autowired
+    private HfUserCouponsMapper hfUserCouponsMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
@@ -232,6 +238,7 @@ public class discountCouponController {
         }
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    
     @Scheduled(cron="0/5 * * * * ? ")
     @ApiOperation(value = "优惠券", notes = "优惠券")
     @RequestMapping(value = "/TimeDiscountCoupon", method = RequestMethod.GET)
