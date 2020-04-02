@@ -753,6 +753,7 @@ public class HfAuthController {
 			HfUserPrivilege privilege = new HfUserPrivilege();
 			privilege.setUserId(member.getUserId());
 			privilege.setPrivilegeId(describe.getId());;
+			hfUserPrivilegeMapper.insert(privilege);
 		}
 		return builder.body(ResponseUtils.getResponseBody(describe.getId()));
 	}

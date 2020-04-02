@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.DiscountCouponMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfUserCouponsMapper;
 import com.hanfu.product.center.manual.model.DiscountCouponScope;
 import com.hanfu.product.center.model.DiscountCoupon;
 import com.hanfu.product.center.model.DiscountCouponExample;
 import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.HfUserCoupons;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -40,6 +42,8 @@ public class discountCouponController {
     private DiscountCouponMapper discountCouponMapper;
     @Autowired
     private FileDescMapper fileDescMapper;
+    @Autowired
+    private HfUserCouponsMapper hfUserCouponsMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
@@ -235,22 +239,20 @@ public class discountCouponController {
         return builder.body(ResponseUtils.getResponseBody(0));
     }
     
-//    @ApiOperation(value = "给用户添加优惠券", notes = "给用户添加优惠券")
-//    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-//    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
-//            throws Exception {
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
-//        FileMangeService fileManageService = new FileMangeService();
-//        if(fileDesc!=null) {
-//            fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-//            fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
-//        }
-//        return builder.body(ResponseUtils.getResponseBody(0));
-//    }
+    @ApiOperation(value = "给用户添加优惠券", notes = "给用户添加优惠券")
+    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfUserCoupons coupons = new HfUserCoupons();
+        coupons.setCouponsId(couponId);
+        coupons.setUserId(userId);
+        hfUserCouponsMapper.insert(coupons);
+        return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
+    }
     
     
     @Scheduled(cron="0/5 * * * * ? ")
