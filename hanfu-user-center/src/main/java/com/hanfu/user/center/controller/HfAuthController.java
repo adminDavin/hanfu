@@ -876,6 +876,55 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	
+	@ApiOperation(value = "查询特权根据用户id", notes = "查询特权根据用户id")
+	@RequestMapping(value = "/findMemberPrerogative", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findMemberPrerogative(Integer userId) throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+		HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+		if (hfUser == null) {
+			return builder.body(ResponseUtils.getResponseBody("数据异常"));
+		}
+		
+		HfUserPrivilegeExample privilegeExample = new HfUserPrivilegeExample();
+		privilegeExample.createCriteria().andUserIdEqualTo(userId);
+		List<HfUserPrivilege> privileges = hfUserPrivilegeMapper.selectByExample(privilegeExample);
+		List<Integer> privilegeId = privileges.stream().map(HfUserPrivilege::getPrivilegeId).collect(Collectors.toList());
+		
+		HfLevelDescribeExample example = new HfLevelDescribeExample();
+		example.createCriteria().andIdIn(privilegeId);
+		List<HfLevelDescribe> list = hfLevelDescribleMapper.selectByExample(example);
+		List<HfLevelDescribeInfo> result = new ArrayList<HfLevelDescribeInfo>();
+		for (int i = 0; i < list.size(); i++) {
+			HfLevelDescribe describle = list.get(i);
+			HfLevelDescribeInfo info = new HfLevelDescribeInfo();
+			info.setId(describle.getId());
+			info.setLevelId(describle.getLevelId());
+			info.setPrerogative(describle.getPrerogative());
+			if(LocalDateTime.now().isBefore(describle.getStartTime()) || LocalDateTime.now().isAfter(describle.getExpireTime())) {
+				info.setPrerogativeState(-1);
+				describle.setPrerogativeState(-1);
+			}
+			if(LocalDateTime.now().isAfter(describle.getStartTime()) && LocalDateTime.now().isBefore(describle.getExpireTime())) {
+				info.setPrerogativeState(1);
+				describle.setPrerogativeState(1);
+			}
+			info.setStartTime(describle.getStartTime());
+			info.setLevelDescribe(describle.getLevelDescribe());
+			info.setExpireTime(describle.getExpireTime());
+			info.setCreateTime(describle.getCreateTime());
+			info.setModifyTime(describle.getModifyTime());
+			hfLevelDescribleMapper.updateByPrimaryKey(describle);
+			info.setIsDeleted((byte) 0);
+			result.add(info);
+		}
+
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
 
 	public static String create() {
 		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";

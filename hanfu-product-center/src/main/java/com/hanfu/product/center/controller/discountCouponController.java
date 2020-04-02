@@ -239,22 +239,6 @@ public class discountCouponController {
         return builder.body(ResponseUtils.getResponseBody(0));
     }
     
-    @ApiOperation(value = "给用户添加优惠券", notes = "给用户添加优惠券")
-    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
-            throws Exception {
-        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfUserCoupons coupons = new HfUserCoupons();
-        coupons.setCouponsId(couponId);
-        coupons.setUserId(userId);
-        hfUserCouponsMapper.insert(coupons);
-        return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
-    }
-    
-    
     @Scheduled(cron="0/5 * * * * ? ")
     @ApiOperation(value = "优惠券", notes = "优惠券")
     @RequestMapping(value = "/TimeDiscountCoupon", method = RequestMethod.GET)
