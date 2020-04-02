@@ -484,7 +484,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "团购列表", notes = "团购列表")
     @RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId) throws JSONException {
+    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId,Integer sum) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfGroup> hfGroupList = hfGroupDao.groupList(groupId);
 
@@ -572,6 +572,9 @@ public class HfProductActivityController {
                 }
             }
         });
+        if (sum!=null){
+            return builder.body(ResponseUtils.getResponseBody(groupLists.subList(0,sum)));
+        }
         return builder.body(ResponseUtils.getResponseBody(groupLists));
     }
 
