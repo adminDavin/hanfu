@@ -12,7 +12,7 @@
 FROM
 	hf_activity_count
 WHERE
-	state = 0 or state = 3 and is_deleted=0
+	state = 0 and is_deleted=0
         <if test="groupId!=null and groupId!=''">
         and group_id=#{groupId}
     </if>
