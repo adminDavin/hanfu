@@ -297,6 +297,9 @@ public class OrderController {
 	public ResponseEntity<JSONObject> insertLogistics(HfOrderLogisticsRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrderLogisticsExample hfOrderLogisticsExample = new HfOrderLogisticsExample();
+		hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
+		List<HfOrderLogistics> hfOrderLogisticss = hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
 		HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
 		for (Integer goodsId : request.getGoogsId()) {
 			hfOrderLogistics.setGoogsId(goodsId);
@@ -311,7 +314,15 @@ public class OrderController {
 			hfOrderLogistics.setOrdersId(request.getOrdersId());
 			hfOrderLogistics.setUserId(request.getUserId());
 			hfOrderLogistics.setUserAddressId(request.getUserAddressId());
+			if (hfOrderLogisticss.size()==0){
+				hfOrderLogisticsMapper.insert(hfOrderLogistics);
+			} else {
+				HfOrderLogisticsExample hfOrderLogisticsExample1 = new HfOrderLogisticsExample();
+				hfOrderLogisticsExample1.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
+				hfOrderLogisticsMapper.updateByExampleSelective(hfOrderLogistics,hfOrderLogisticsExample1);
+			}
+
 		}
-		return builder.body(ResponseUtils.getResponseBody(hfOrderLogisticsMapper.insert(hfOrderLogistics)));
+		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 }
