@@ -14,6 +14,7 @@ public class PurseInfo implements Serializable{
 	private Integer surplus;
 	private Integer integral;
 	private Integer couponCount;
+	private Integer member;
 	
 	public String getPrerogative() {
 		return prerogative;
@@ -42,5 +43,10 @@ public class PurseInfo implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+	public Integer getMember() {
+		return member;
+	}
+	public void setMember(Integer member) {
+		this.member = member;
+	}
 }
