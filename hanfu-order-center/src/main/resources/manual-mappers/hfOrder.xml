@@ -71,7 +71,7 @@
         <if test="userId != null and userId!= ''">
             and  o.user_id =#{userId}
         </if>
-           and o.order_type not in ('rechargeOrder')
+--            and o.order_type not in ('rechargeOrder')
      <if test="orderStatus!='all'">
         and o.order_status = #{orderStatus}
     </if >
