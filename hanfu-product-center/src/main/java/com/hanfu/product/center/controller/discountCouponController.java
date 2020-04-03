@@ -410,10 +410,14 @@ public class discountCouponController {
             balance.setBalanceType(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"));
             balance.setUserId(userId);
             balance.setHfBalance(1);
+            balance.setCreateTime(LocalDateTime.now());
+            balance.setModifyTime(LocalDateTime.now());
+            balance.setIsDeleted((short) 0);
             hfUserBalanceMapper.insert(balance);
         }else {
         	balance = hfBalance.get(0);
         	balance.setHfBalance(balance.getHfBalance()+1);
+        	balance.setModifyTime(LocalDateTime.now());
         	hfUserBalanceMapper.updateByPrimaryKey(balance);
         }
         return builder.body(ResponseUtils.getResponseBody(coupons.getId()));

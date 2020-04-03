@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.hanfu.payment.center.config.MiniProgramConfig;
+import com.hanfu.payment.center.dao.HfIntegralMapper;
 import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
 import com.hanfu.payment.center.dao.HfUserBalanceMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
@@ -66,6 +67,9 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfUserBalanceMapper hfUserBalanceMapper;
+	
+	@Autowired
+	private HfIntegralMapper hfIntegralMapper;
 
 	@Autowired
 	HttpServletRequest req;
@@ -292,7 +296,18 @@ public class PaymentOrderController {
 			return builder.body(ResponseUtils.getResponseBody(hfOrder));
 		}
 	}
-
+	
+	
+	@ApiOperation(value = "测试", notes = "测试")
+	@RequestMapping(value = "/qqqqqqc", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		rechangeBalance(userId,totalFee);
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
 	private void rechangeBalance(Integer userId, Integer totalFee) {
 		HfUserBalanceExample example = new HfUserBalanceExample();
 		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
@@ -305,6 +320,7 @@ public class PaymentOrderController {
 			userBalance.setHfBalance(Integer.valueOf(totalFee));
 			userBalance.setLastModifier(String.valueOf(userId));
 			userBalance.setModifyTime(LocalDateTime.now());
+			userBalance.setUserId(userId);
 			hfUserBalanceMapper.insertSelective(userBalance);
 		} else {
 			HfUserBalance userBalance = hfUserBalance.get(0);
@@ -322,6 +338,7 @@ public class PaymentOrderController {
 			userBalance.setBalanceType("integral");
 			userBalance.setCreateTime(LocalDateTime.now());
 			userBalance.setHfBalance(Integer.valueOf(totalFee));
+			userBalance.setUserId(userId);
 			userBalance.setLastModifier(String.valueOf(userId));
 			userBalance.setModifyTime(LocalDateTime.now());
 			hfUserBalanceMapper.insertSelective(userBalance);
@@ -338,6 +355,7 @@ public class PaymentOrderController {
 		hfIntegral.setCreateTime(LocalDateTime.now());
 		hfIntegral.setModifyTime(LocalDateTime.now());
 		hfIntegral.setIsDeleted((byte) 0);
+		hfIntegralMapper.insert(hfIntegral);
 	}
 
 	private Integer paymentBalance(Integer userId, Integer totalFee) {
