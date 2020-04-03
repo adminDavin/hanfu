@@ -353,7 +353,6 @@ public class discountCouponController {
         List<Integer> couponId = coupons.stream().map(HfUserCoupons::getCouponsId).collect(Collectors.toList());
         List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
         if(!couponId.isEmpty()) {
-        	
             DiscountCouponExample couponExample = new DiscountCouponExample();
             if(state == 0) {
             	couponExample.createCriteria().andIdIn(couponId).andIdDeletedEqualTo((byte) 0)
@@ -361,7 +360,11 @@ public class discountCouponController {
             	list = discountCouponMapper.selectByExample(couponExample);
             }
             if(state == 1) {
-            	couponExample.createCriteria().andIdIn(couponId).andIdDeletedEqualTo((byte) 1)
+            	userCouponsExample.clear();
+            	userCouponsExample.createCriteria().andUserIdEqualTo(userId).andIdDeletedEqualTo((byte) 1);
+            	coupons = hfUserCouponsMapper.selectByExample(userCouponsExample);
+            	couponId = coupons.stream().map(HfUserCoupons::getCouponsId).collect(Collectors.toList());
+            	couponExample.createCriteria().andIdIn(couponId)
             	.andStopTimeGreaterThan(LocalDateTime.now());
             	list = discountCouponMapper.selectByExample(couponExample);
             }

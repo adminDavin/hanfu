@@ -42,12 +42,14 @@ import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
+import com.hanfu.product.center.dao.HfIntegralMapper;
 import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
+import com.hanfu.product.center.dao.HfUsersMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
@@ -61,6 +63,7 @@ import com.hanfu.product.center.manual.model.PriceRanking;
 import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.HomePageInfo.MouthEnum;
 import com.hanfu.product.center.manual.model.HomePageOrderType;
+import com.hanfu.product.center.manual.model.OrderRecord;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
 import com.hanfu.product.center.request.GoodsPriceInfo;
 import com.hanfu.product.center.request.GoodsSpecRequest;
@@ -107,6 +110,12 @@ public class HomePageController {
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private HfUsersMapper hfUsersMapper;
+	
+	@Autowired
+	private HfIntegralMapper hfIntegralMapper;
 	
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -402,4 +411,50 @@ public class HomePageController {
 		info.setSalesCountMonth(count);
         return builder.body(ResponseUtils.getResponseBody(info));
 	}
+	
+	@ApiOperation(value = "获取余额充值记录通过用户id", notes = "获取充值记录通过用户id")
+	@RequestMapping(value = "/findRechargeRecord", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findRechargeRecord(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<OrderRecord> result = new ArrayList<OrderRecord>();
+		HfOrderExample example = new HfOrderExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfOrder order = list.get(i);
+			OrderRecord orderRecord = new OrderRecord();
+			orderRecord.setAmount(String.valueOf(order.getAmount()));
+			orderRecord.setPaymentMethod(order.getPaymentName());
+			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(order.getUserId());
+			orderRecord.setPaymentName(hfUser.getRealName());
+			orderRecord.setDateTime(order.getCreateTime());
+			result.add(orderRecord);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "获取积分充值记录通过用户id", notes = "获取积分充值记录通过用户id")
+	@RequestMapping(value = "/findIntegralRechargeRecord", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findIntegralRechargeRecord(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<OrderRecord> result = new ArrayList<OrderRecord>();
+		HfIntegralExample example = new HfIntegralExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<HfIntegral> list = hfIntegralMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfIntegral hfIntegral = list.get(i);
+			OrderRecord orderRecord = new OrderRecord();
+			orderRecord.setAmount(String.valueOf(hfIntegral.getAmount()));
+			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(hfIntegral.getUserId());
+			orderRecord.setPaymentName(hfUser.getRealName());
+			orderRecord.setDateTime(hfIntegral.getCreateTime());
+			result.add(orderRecord);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
 }
