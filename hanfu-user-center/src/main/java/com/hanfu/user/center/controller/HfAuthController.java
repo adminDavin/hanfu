@@ -936,6 +936,7 @@ public class HfAuthController {
 		}else {
 			HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.get(0).getLevelId());
 			info.setPrerogative(level.getLevelName());
+			info.setMember(1);
 		}
 		return builder.body(ResponseUtils.getResponseBody(info));
 	}

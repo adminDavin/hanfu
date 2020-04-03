@@ -397,6 +397,9 @@ public class discountCouponController {
         HfUserCoupons coupons = new HfUserCoupons();
         coupons.setCouponsId(couponId);
         coupons.setUserId(userId);
+        coupons.setIdDeleted((byte) 0);
+        coupons.setCreateDate(LocalDateTime.now());
+        coupons.setModifyDate(LocalDateTime.now());
         hfUserCouponsMapper.insert(coupons);
         
         HfUserBalanceExample example = new HfUserBalanceExample();
