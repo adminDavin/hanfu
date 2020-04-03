@@ -281,7 +281,10 @@ public class PaymentOrderController {
                 throw new Exception("交易柳树不存在, 或者已完成支付");
             }
         } else {
-            paymentBalance(userId, hfOrder.getAmount());
+            Integer result = paymentBalance(userId, hfOrder.getAmount());
+            if(result == -1) {
+            	return builder.body(ResponseUtils.getResponseBody(-1));
+            }
             if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                 hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(), LocalDateTime.now());
             } else {
@@ -314,25 +317,28 @@ public class PaymentOrderController {
         }
     }
 
-    private void paymentBalance(Integer userId, Integer totalFee) {
+    private Integer paymentBalance(Integer userId, Integer totalFee) {
         HfUserBalanceExample example = new HfUserBalanceExample();
         example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
                 .andBalanceTypeEqualTo("rechargeAmount");
         List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
         if (hfUserBalance.isEmpty()) {
-            HfUserBalance userBalance = new HfUserBalance();
-            userBalance.setBalanceType("rechargeAmount");
-            userBalance.setCreateTime(LocalDateTime.now());
-            userBalance.setHfBalance(Integer.valueOf(totalFee));
-            userBalance.setLastModifier(String.valueOf(userId));
-            userBalance.setModifyTime(LocalDateTime.now());
-            hfUserBalanceMapper.insertSelective(userBalance);
+//            HfUserBalance userBalance = new HfUserBalance();
+//            userBalance.setBalanceType("rechargeAmount");
+//            userBalance.setCreateTime(LocalDateTime.now());
+//            userBalance.setHfBalance(Integer.valueOf(totalFee));
+//            userBalance.setLastModifier(String.valueOf(userId));
+//            userBalance.setModifyTime(LocalDateTime.now());
+//            userBalance.setUserId(userId);
+//            hfUserBalanceMapper.insertSelective(userBalance);
+        	return -1;
         } else {
             HfUserBalance userBalance = hfUserBalance.get(0);
             userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
             userBalance.setModifyTime(LocalDateTime.now());
             userBalance.setLastModifier(String.valueOf(userId));
             hfUserBalanceMapper.updateByPrimaryKey(userBalance);
+            return 1;
         }
     }
 
