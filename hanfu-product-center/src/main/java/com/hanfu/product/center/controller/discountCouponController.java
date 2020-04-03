@@ -311,8 +311,10 @@ public class discountCouponController {
         	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
         	list = discountCouponMapper.selectByExample(coupons);
         	for (int i = 0; i < list.size(); i++) {
+        		List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
+        		example.clear();
         		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
-        		List<HfUserCoupons> userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		userCoupons = hfUserCouponsMapper.selectByExample(example);
         		if(userCoupons.isEmpty()) {
         			list.get(i).setUseState(1);
         		}else {
@@ -325,8 +327,10 @@ public class discountCouponController {
         	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
         	list = discountCouponMapper.selectByExample(coupons);
         	for (int i = 0; i < list.size(); i++) {
+        		List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
+        		example.clear();
         		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
-        		List<HfUserCoupons> userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		userCoupons = hfUserCouponsMapper.selectByExample(example);
         		if(userCoupons.isEmpty()) {
         			list.get(i).setUseState(1);
         		}else {
