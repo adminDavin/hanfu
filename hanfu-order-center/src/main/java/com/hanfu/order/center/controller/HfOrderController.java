@@ -1,16 +1,13 @@
 package com.hanfu.order.center.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
-import com.hanfu.order.center.dao.HfActivityCountMapper;
-import com.hanfu.order.center.dao.HfActivityGroupMapper;
+import com.hanfu.order.center.dao.*;
 import com.hanfu.order.center.model.*;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.order.center.dao.HfOrderDetailMapper;
-import com.hanfu.order.center.dao.HfOrderMapper;
 import com.hanfu.order.center.manual.dao.HfOrderDao;
 import com.hanfu.order.center.manual.model.HfGoodsDisplay;
 import com.hanfu.order.center.manual.model.HfOrderDisplay;
@@ -61,6 +56,9 @@ public class HfOrderController {
 
     @Autowired
     private HfActivityCountMapper hfActivityCountMapper;
+
+    @Autowired
+    private HfActivityProductMapper hfActivityProductMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -147,6 +145,36 @@ public class HfOrderController {
                     hfOrder.setGoodsName(goods.getHfName());
                     hfOrder.setStoneName(goods.getStoneName());
                     hfOrder.setFileId(goods.getFileId());
+                }
+                //活动判断
+                HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+                hfActivityCountExample.createCriteria().andIsDeletedEqualTo((byte) 0).andOrderIdEqualTo(hfOrder.getId());
+                List<HfActivityCount> hfActivityCount= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+                if (hfActivityCount.size()!=0){
+                    //查询拼团人数
+                    HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
+                    hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityCount.get(0).getGroupId()).andIsDeletedEqualTo((byte) 0);
+                    List<HfActivityCount> hfActivityCount1= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+                    //查询总拼团人数
+                    HfActivityGroup hfActivityGroup= hfActivityGroupMapper.selectByPrimaryKey(hfActivityCount1.get(0).getGroupId());
+                    HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+                    hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.getActivityId()).andProductIdEqualTo(hfActivityGroup.getProductId());
+                    List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
+                    hfOrder.setActivityState(hfActivityCount.get(0).getState());
+                    hfOrder.setNowSum(hfActivityProduct.get(0).getGroupNum());
+                    hfOrder.setGroupSum(hfActivityCount1.size());
+                    hfOrder.setActivity("group");
+
+                    Date date1 = new Date();
+                    Date date2 = new Date();
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    try {
+                        date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                        date2 = f.parse(f.format(hfActivityGroup.getClusteringTime()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    hfOrder.setActivityTime(86400000 - (date1.getTime() - date2.getTime()));
                 }
             });
         }

@@ -15,7 +15,7 @@ public class HfOrderDisplay {
     private String paymentName;
     private Integer paymentType;
     private Integer userId;
-    
+
     // 订单详情
     private Integer stoneId;
     private String stoneName;
@@ -26,7 +26,7 @@ public class HfOrderDisplay {
     private Integer quantity;
     private String takingType;
     private Integer freight;
-    private String hfDesc;   
+    private String hfDesc;
     // 地址管理
     private Integer addressId;
     private String address;
@@ -36,8 +36,14 @@ public class HfOrderDisplay {
     private String addressDesc;
     private Integer distributorId;
 
-    
-    
+    private String activity;
+    private Long activityTime;
+    private Integer nowSum;
+    private Integer groupSum;
+    private Integer activityState;
+
+
+
     public Integer getDistributorId() {
         return distributorId;
     }
@@ -206,6 +212,45 @@ public class HfOrderDisplay {
     public void setAddressDesc(String addressDesc) {
         this.addressDesc = addressDesc;
     }
-        
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public Long getActivityTime() {
+        return activityTime;
+    }
+
+    public void setActivityTime(Long activityTime) {
+        this.activityTime = activityTime;
+    }
+
+    public Integer getNowSum() {
+        return nowSum;
+    }
+
+    public void setNowSum(Integer nowSum) {
+        this.nowSum = nowSum;
+    }
+
+    public Integer getGroupSum() {
+        return groupSum;
+    }
+
+    public void setGroupSum(Integer groupSum) {
+        this.groupSum = groupSum;
+    }
+
+    public Integer getActivityState() {
+        return activityState;
+    }
+
+    public void setActivityState(Integer activityState) {
+        this.activityState = activityState;
+    }
 }
 

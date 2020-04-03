@@ -110,6 +110,7 @@ public class discountCouponController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
+        discountCouponExample.setOrderByClause("use_state ASC");
         List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
         discountCoupons.forEach(discountCoupon -> {
             Date date1 = new Date();
