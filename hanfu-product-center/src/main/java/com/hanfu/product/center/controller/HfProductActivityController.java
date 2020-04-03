@@ -417,6 +417,7 @@ public class HfProductActivityController {
         hfActivityCountList.forEach(hfActivityCount4 -> {
             Map<String,String> map = new HashMap<>();
             HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
+            map.put("userId", String.valueOf(hfUsers1.getId()));
             map.put("userName", hfUsers1.getNickName());
             map.put("fileId", String.valueOf(hfUsers1.getFileId()));
             lists.add(map);
@@ -518,6 +519,7 @@ public class HfProductActivityController {
             HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(hfActivityCount4.getUserId());
             map.put("userName", hfUsers1.getNickName());
             map.put("fileId", String.valueOf(hfUsers1.getFileId()));
+            map.put("userId", String.valueOf(hfUsers1.getId()));
             lists.add(map);
         });
         groupList.setUser(lists);
