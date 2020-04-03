@@ -766,6 +766,20 @@ public class HfProductActivityController {
         ;
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    @ApiOperation(value = "拼团状态", notes = "拼团状态")
+    @RequestMapping(value = "/groupStatus",method = RequestMethod.GET)
+
+    public  ResponseEntity<JSONObject> groupStatus(Integer groupId,Integer userId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();
+        hfActivityCountExample2.createCriteria().andGroupIdEqualTo(groupId).andIsDeletedEqualTo((byte) 0).andStateEqualTo(0).andUserIdEqualTo(userId);
+        List<HfActivityCount> hfActivityCount2 = hfActivityCountMapper.selectByExample(hfActivityCountExample2);
+        if (hfActivityCount2.size() != 0) {
+            return builder.body(ResponseUtils.getResponseBody("-1"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("0"));
+    }
+
 
     @Scheduled(cron="0/5 * * * * ? ")
     @ApiOperation(value = "团购", notes = "团购")
