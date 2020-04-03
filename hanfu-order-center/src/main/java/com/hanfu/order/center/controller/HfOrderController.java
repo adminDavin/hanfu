@@ -150,11 +150,12 @@ public class HfOrderController {
                 HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
                 hfActivityCountExample.createCriteria().andIsDeletedEqualTo((byte) 0).andOrderIdEqualTo(hfOrder.getId());
                 List<HfActivityCount> hfActivityCount= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+                System.out.println(hfActivityCount.get(0).getGroupId());
                 if (hfActivityCount.size()!=0){
                     //查询拼团人数
                     HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
                     hfActivityCountExample1.createCriteria().andGroupIdEqualTo(hfActivityCount.get(0).getGroupId()).andIsDeletedEqualTo((byte) 0);
-                    List<HfActivityCount> hfActivityCount1= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+                    List<HfActivityCount> hfActivityCount1= hfActivityCountMapper.selectByExample(hfActivityCountExample1);
                     //查询总拼团人数
                     HfActivityGroup hfActivityGroup= hfActivityGroupMapper.selectByPrimaryKey(hfActivityCount1.get(0).getGroupId());
                     HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
@@ -162,6 +163,8 @@ public class HfOrderController {
                     List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
                     hfOrder.setActivityState(hfActivityCount.get(0).getState());
                     hfOrder.setNowSum(hfActivityProduct.get(0).getGroupNum());
+                    System.out.println(hfActivityCount1);
+                    System.out.println(hfActivityCount1.size());
                     hfOrder.setGroupSum(hfActivityCount1.size());
                     hfOrder.setActivity("group");
 
