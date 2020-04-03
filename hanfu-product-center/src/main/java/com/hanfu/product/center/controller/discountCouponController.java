@@ -298,22 +298,41 @@ public class discountCouponController {
     @ApiOperation(value = "领券大厅", notes = "领券大厅")
     @RequestMapping(value = "/couponHall", method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "scope", value = "优惠券范围", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> couponHall(Integer scope)
+            @ApiImplicitParam(paramType = "query", name = "scope", value = "优惠券范围", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> couponHall(Integer scope,Integer userId)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        
+        HfUserCouponsExample example = new HfUserCouponsExample();
         List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
         DiscountCouponExample coupons = new DiscountCouponExample();
         if(scope == 0) {
         	coupons.createCriteria().andScopeEqualTo("allUser").andIdDeletedEqualTo((byte) 0)
         	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
         	list = discountCouponMapper.selectByExample(coupons);
+        	for (int i = 0; i < list.size(); i++) {
+        		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
+        		List<HfUserCoupons> userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		if(userCoupons.isEmpty()) {
+        			list.get(i).setUseState(1);
+        		}else {
+        			list.get(i).setUseState(-1);
+        		}
+			}
         }
         if(scope == 1) {
         	coupons.createCriteria().andScopeEqualTo("vipUser").andIdDeletedEqualTo((byte) 0)
         	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
         	list = discountCouponMapper.selectByExample(coupons);
+        	for (int i = 0; i < list.size(); i++) {
+        		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
+        		List<HfUserCoupons> userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		if(userCoupons.isEmpty()) {
+        			list.get(i).setUseState(1);
+        		}else {
+        			list.get(i).setUseState(-1);
+        		}
+			}
         }
         return builder.body(ResponseUtils.getResponseBody(list));
     }
