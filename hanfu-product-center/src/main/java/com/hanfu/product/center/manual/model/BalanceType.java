@@ -3,7 +3,7 @@ package com.hanfu.product.center.manual.model;
 public class BalanceType {
 
 	public static enum BalanceTypeEnum {
-		DISCOUNT_COUPON("discountCoupon"), RECHARGE("recharge"), INTEGRAL("integral");
+		DISCOUNT_COUPON("discountCoupon"), RECHARGE_AMOUNT("rechargeAmount"), INTEGRAL("integral");
 
 		private String balanceType;
 

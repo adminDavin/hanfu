@@ -49,6 +49,7 @@ import com.hanfu.user.center.dao.HfBossMapper;
 import com.hanfu.user.center.dao.HfLevelDescribeMapper;
 import com.hanfu.user.center.dao.HfMemberLevelMapper;
 import com.hanfu.user.center.dao.HfStoneMapper;
+import com.hanfu.user.center.dao.HfUserBalanceMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.HfUserMemberMapper;
 import com.hanfu.user.center.dao.HfUserPrivilegeMapper;
@@ -59,6 +60,7 @@ import com.hanfu.user.center.manual.model.HfBossInfo;
 import com.hanfu.user.center.manual.model.HfLevelDescribeInfo;
 import com.hanfu.user.center.manual.model.HfMemberLevelInfo;
 import com.hanfu.user.center.manual.model.HfUserMemberInfo;
+import com.hanfu.user.center.manual.model.PurseInfo;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.model.CancelExample;
@@ -73,6 +75,8 @@ import com.hanfu.user.center.model.HfMemberLevel;
 import com.hanfu.user.center.model.HfStone;
 import com.hanfu.user.center.model.HfStoneExample;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.HfUserBalance;
+import com.hanfu.user.center.model.HfUserBalanceExample;
 import com.hanfu.user.center.model.HfUserExample;
 import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.model.HfUserMemberExample;
@@ -140,7 +144,9 @@ public class HfAuthController {
 
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
-
+	
+	@Autowired
+	private HfUserBalanceMapper hfUserBalanceMapper;
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -594,23 +600,30 @@ public class HfAuthController {
 //		Instant instant2 = endTime.toInstant();
 //		ZoneId zoneId2 = ZoneId.systemDefault();
 //		LocalDateTime ldt2 = instant2.atZone(zoneId2).toLocalDateTime();
+		HfUserMemberExample hfUserMemberExample = new HfUserMemberExample();
 		for (int i = 0; i < userId.length; i++) {
-			HfUserMember member = new HfUserMember();
-			member.setUserId(userId[i]);
-			member.setLevelId(levelId);
-			for (int j = 0; j < describes.size(); j++) {
-				HfUserPrivilege privilege = new HfUserPrivilege();
-				privilege.setUserId(userId[i]);
-				privilege.setPrivilegeId(describes.get(j).getId());
-				;
-				hfUserPrivilegeMapper.insert(privilege);
-			}
+			hfUserMemberExample.clear();
+			hfUserMemberExample.createCriteria().andUserIdEqualTo(userId[i]);
+			List<HfUserMember> members = hfUserMemberMapper.selectByExample(hfUserMemberExample);
+			if (members.isEmpty()) {
+
+				HfUserMember member = new HfUserMember();
+				member.setUserId(userId[i]);
+				member.setLevelId(levelId);
+				for (int j = 0; j < describes.size(); j++) {
+					HfUserPrivilege privilege = new HfUserPrivilege();
+					privilege.setUserId(userId[i]);
+					privilege.setPrivilegeId(describes.get(j).getId());
+					;
+					hfUserPrivilegeMapper.insert(privilege);
+				}
 //			member.setStartTme(ldt);
 //			member.setEndTime(ldt2);
-			member.setCreateTime(LocalDateTime.now());
-			member.setModifyTime(LocalDateTime.now());
-			member.setIsDeleted((byte) 0);
-			hfUserMemberMapper.insert(member);
+				member.setCreateTime(LocalDateTime.now());
+				member.setModifyTime(LocalDateTime.now());
+				member.setIsDeleted((byte) 0);
+				hfUserMemberMapper.insert(member);
+			}
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(userId.length));
@@ -883,6 +896,50 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
+	@ApiOperation(value = "查询小程序我的基本信息根据用户id", notes = "查询小程序我的基本信息根据用户id")
+	@RequestMapping(value = "/findInfoByUserId", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findInfoByUserId(Integer userId) throws JSONException {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfUserMemberExample example = new HfUserMemberExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<HfUserMember> member = hfUserMemberMapper.selectByExample(example);
+		HfUserBalanceExample example2 = new HfUserBalanceExample();
+		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
+		List<HfUserBalance> balance = hfUserBalanceMapper.selectByExample(example2);
+		example2.clear();
+		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("integral");
+		List<HfUserBalance> balance2 = hfUserBalanceMapper.selectByExample(example2);
+		example2.clear();
+		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("discountCoupon");
+		List<HfUserBalance> balance3 = hfUserBalanceMapper.selectByExample(example2);
+		PurseInfo info = new PurseInfo();
+		if(balance3.isEmpty()) {
+			info.setCouponCount(0);
+		}else {
+			info.setCouponCount(balance3.get(0).getHfBalance());
+		}
+		if(balance2.isEmpty()) {
+			info.setIntegral(0);
+		}else {
+			info.setIntegral(balance2.get(0).getHfBalance());
+		}
+		if(balance.isEmpty()) {
+			info.setSurplus(0);
+		}else {
+			info.setSurplus(balance.get(0).getHfBalance());
+		}
+		if(member.isEmpty()) {
+			info.setPrerogative("普通用户");
+		}else {
+			HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.get(0).getLevelId());
+			info.setPrerogative(level.getLevelName());
+		}
+		return builder.body(ResponseUtils.getResponseBody(info));
+	}
+
 	@ApiOperation(value = "查询特权根据用户id", notes = "查询特权根据用户id")
 	@RequestMapping(value = "/findMemberPrerogative", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -906,7 +963,7 @@ public class HfAuthController {
 			HfLevelDescribeExample example = new HfLevelDescribeExample();
 			example.createCriteria().andIdIn(privilegeId);
 			List<HfLevelDescribe> list = hfLevelDescribleMapper.selectByExample(example);
-			
+
 			for (int i = 0; i < list.size(); i++) {
 				HfLevelDescribe describle = list.get(i);
 				HfLevelDescribeInfo info = new HfLevelDescribeInfo();
