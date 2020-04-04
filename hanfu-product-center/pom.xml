@@ -183,5 +183,10 @@
             <artifactId>hanfu-user-center</artifactId>
             <version>0.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
     </dependencies>
 </project>

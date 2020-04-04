@@ -1,6 +1,8 @@
 package com.hanfu.product.center.manual.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.SelectProductGoods;
@@ -23,8 +25,11 @@ public class HfProductDaoImpl implements HfProductDao {
     }
     
     @Override
-    public HfProductDisplay selectProduct(Integer productId) {
-        HfProductDisplay result = sqlSessionTemplate.selectOne("selectProductByProductId", productId);
+    public HfProductDisplay selectProduct(Integer productId,Integer stoneId) {
+        Map<String,Integer> map = new HashMap<>();
+        map.put("productId",productId);
+        map.put("stoneId",stoneId);
+        HfProductDisplay result = sqlSessionTemplate.selectOne("selectProductByProductId", map);
         return result;
     }
 

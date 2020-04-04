@@ -33,12 +33,12 @@ spring:
       auto-commit: true
   redis:
     database: 0
-    host: 47.105.72.216
-    port: 6379
-    timeout: 10000
+    host: 39.100.86.77
+    port: 16379
+    timeout: 3000000
     jedis:
       pool:
-        max-active: 16
+        max-active: 1000
         max-idle: 4
 
 logging:

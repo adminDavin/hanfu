@@ -4,13 +4,23 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.DiscountCouponMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfUserBalanceMapper;
+import com.hanfu.product.center.dao.HfUserCouponsMapper;
+import com.hanfu.product.center.manual.dao.HfMemberDao;
+import com.hanfu.product.center.manual.model.BalanceType.BalanceTypeEnum;
 import com.hanfu.product.center.manual.model.DiscountCouponScope;
 import com.hanfu.product.center.model.DiscountCoupon;
 import com.hanfu.product.center.model.DiscountCouponExample;
 import com.hanfu.product.center.model.FileDesc;
+import com.hanfu.product.center.model.HfUserBalance;
+import com.hanfu.product.center.model.HfUserBalanceExample;
+import com.hanfu.product.center.model.HfUserCoupons;
+import com.hanfu.product.center.model.HfUserCouponsExample;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -38,6 +49,12 @@ public class discountCouponController {
     private DiscountCouponMapper discountCouponMapper;
     @Autowired
     private FileDescMapper fileDescMapper;
+    @Autowired
+    private HfUserCouponsMapper hfUserCouponsMapper;
+    @Autowired
+    private HfUserBalanceMapper hfUserBalanceMapper;
+    @Autowired
+    private HfMemberDao hfMemberDao;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
@@ -93,6 +110,7 @@ public class discountCouponController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
+        discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
         List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
         discountCoupons.forEach(discountCoupon -> {
             Date date1 = new Date();
@@ -232,6 +250,7 @@ public class discountCouponController {
         }
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    
     @Scheduled(cron="0/5 * * * * ? ")
     @ApiOperation(value = "优惠券", notes = "优惠券")
     @RequestMapping(value = "/TimeDiscountCoupon", method = RequestMethod.GET)
@@ -275,4 +294,141 @@ public class discountCouponController {
             e.printStackTrace();
         }
     }
+    
+    @ApiOperation(value = "领券大厅", notes = "领券大厅")
+    @RequestMapping(value = "/couponHall", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "scope", value = "优惠券范围", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> couponHall(Integer scope,Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfUserCouponsExample example = new HfUserCouponsExample();
+        List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
+        DiscountCouponExample coupons = new DiscountCouponExample();
+        if(scope == 0) {
+        	coupons.createCriteria().andScopeEqualTo("allUser").andIdDeletedEqualTo((byte) 0)
+        	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
+        	list = discountCouponMapper.selectByExample(coupons);
+        	for (int i = 0; i < list.size(); i++) {
+        		List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
+        		example.clear();
+        		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
+        		userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		if(userCoupons.isEmpty()) {
+        			list.get(i).setUseState(1);
+        		}else {
+        			list.get(i).setUseState(-1);
+        		}
+			}
+        }
+        if(scope == 1) {
+        	coupons.createCriteria().andScopeEqualTo("vipUser").andIdDeletedEqualTo((byte) 0)
+        	.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
+        	list = discountCouponMapper.selectByExample(coupons);
+        	for (int i = 0; i < list.size(); i++) {
+        		List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
+        		example.clear();
+        		example.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(list.get(i).getId());
+        		userCoupons = hfUserCouponsMapper.selectByExample(example);
+        		if(userCoupons.isEmpty()) {
+        			list.get(i).setUseState(1);
+        		}else {
+        			list.get(i).setUseState(-1);
+        		}
+			}
+        }
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
+    
+    
+    @ApiOperation(value = "我的优惠券", notes = "我的优惠券")
+    @RequestMapping(value = "/couponMy", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "state", value = "优惠券状态", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> couponMy(Integer state,Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        
+        HfUserCouponsExample userCouponsExample = new HfUserCouponsExample();
+        userCouponsExample.createCriteria().andUserIdEqualTo(userId);
+        List<HfUserCoupons> coupons = hfUserCouponsMapper.selectByExample(userCouponsExample);
+        List<Integer> couponId = coupons.stream().map(HfUserCoupons::getCouponsId).collect(Collectors.toList());
+        List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
+        if(!couponId.isEmpty()) {
+            DiscountCouponExample couponExample = new DiscountCouponExample();
+            if(state == 0) {
+            	couponExample.createCriteria().andIdIn(couponId).andIdDeletedEqualTo((byte) 0)
+            	.andStopTimeGreaterThan(LocalDateTime.now());
+            	list = discountCouponMapper.selectByExample(couponExample);
+            }
+            if(state == 1) {
+            	userCouponsExample.clear();
+            	userCouponsExample.createCriteria().andUserIdEqualTo(userId).andIdDeletedEqualTo((byte) 1);
+            	coupons = hfUserCouponsMapper.selectByExample(userCouponsExample);
+            	if(!coupons.isEmpty()) {
+            		couponId = coupons.stream().map(HfUserCoupons::getCouponsId).collect(Collectors.toList());
+                	couponExample.createCriteria().andIdIn(couponId).andStopTimeGreaterThan(LocalDateTime.now());
+                	list = discountCouponMapper.selectByExample(couponExample);
+            	}
+            }
+            if(state == 2) {
+            	couponExample.createCriteria().andIdIn(couponId)
+            	.andStopTimeLessThan(LocalDateTime.now());
+            	list = discountCouponMapper.selectByExample(couponExample);
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
+    
+    @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
+    @RequestMapping(value = "/addCouponForUser", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> addCouponForUser(Integer couponId,Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        
+        Integer result = hfMemberDao.selectIsMember(userId);
+        DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(couponId);
+        if(result == 0 && "vipUser".equals(discountCoupon.getScope())) {
+        	 return builder.body(ResponseUtils.getResponseBody(-1));
+        }
+        
+        HfUserBalance balance = null;
+        
+        HfUserCoupons coupons = new HfUserCoupons();
+        coupons.setCouponsId(couponId);
+        coupons.setUserId(userId);
+        coupons.setIdDeleted((byte) 0);
+        coupons.setCreateDate(LocalDateTime.now());
+        coupons.setModifyDate(LocalDateTime.now());
+        hfUserCouponsMapper.insert(coupons);
+        
+        HfUserBalanceExample example = new HfUserBalanceExample();
+        example.createCriteria().andBalanceTypeEqualTo(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"))
+        .andUserIdEqualTo(userId);
+        
+        List<HfUserBalance> hfBalance = hfUserBalanceMapper.selectByExample(example);
+        
+        if(hfBalance.isEmpty()) {
+        	balance = new HfUserBalance();
+            balance.setBalanceType(BalanceTypeEnum.getBalanceType("DISCOUNT_COUPON"));
+            balance.setUserId(userId);
+            balance.setHfBalance(1);
+            balance.setCreateTime(LocalDateTime.now());
+            balance.setModifyTime(LocalDateTime.now());
+            balance.setIsDeleted((short) 0);
+            hfUserBalanceMapper.insert(balance);
+        }else {
+        	balance = hfBalance.get(0);
+        	balance.setHfBalance(balance.getHfBalance()+1);
+        	balance.setModifyTime(LocalDateTime.now());
+        	hfUserBalanceMapper.updateByPrimaryKey(balance);
+        }
+        return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
+    }
+    
 }

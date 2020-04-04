@@ -70,7 +70,6 @@ public class HfUserAddressManager {
     @ApiOperation(value = "添加用戶地址", notes = "添加用戶地址")
     public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        HfUser hfUser = new HfUser();
         HfUserAddresse hfUserAddress = new HfUserAddresse();
         hfUserAddress.setUserId(request.getUserId());
         hfUserAddress.setContact(request.getContact());
@@ -80,16 +79,20 @@ public class HfUserAddressManager {
         hfUserAddress.setHfCity(request.getHfCity());
         hfUserAddress.setHfDesc(request.getHfDesc());
         hfUserAddress.setHfProvince(request.getHfProvince());
-        hfUserAddress.setIsFaultAddress(request.getIsFaultAddress());
+        if (request.getIsFaultAddress()==1){
+            HfUserAddresse hfUserAddresse1= new HfUserAddresse();
+            HfUserAddresseExample hfUserAddresseExample = new HfUserAddresseExample();
+            hfUserAddresse1.setIsFaultAddress(0);
+            hfUserAddresseExample.createCriteria().andIsFaultAddressEqualTo(1).andUserIdEqualTo(request.getUserId());
+            hfUserAddresseMapper.updateByExampleSelective(hfUserAddresse1,hfUserAddresseExample);
+            hfUserAddress.setIsFaultAddress(1);
+        }else {
+            hfUserAddress.setIsFaultAddress(request.getIsFaultAddress());
+        }
         hfUserAddress.setModifyTime(LocalDateTime.now());
         hfUserAddress.setIsDeleted((short) 0);
         hfUserAddress.setLastModifier("1");
         hfUserAddress.setPhoneNumber(request.getPhoneNumber());
-        if (StringUtils.isEmpty(hfUser.getAddress())) {
-            hfUserAddress.setIsFaultAddress(1);
-        }
-        @SuppressWarnings("unused")
-		int i = addressDao.updateAddress(request.getId());
         return builder.body(ResponseUtils.getResponseBody(hfUserAddresseMapper.insert(hfUserAddress)));
     }
 
@@ -129,7 +132,14 @@ public class HfUserAddressManager {
         if (!StringUtils.isEmpty(request.getHfProvince())) {
             hfUserAddresse.setHfProvince(request.getHfProvince());
         }
-        if (StringUtils.isEmpty(request.getIsFaultAddress())) {
+        if (request.getIsFaultAddress()==1){
+            HfUserAddresse hfUserAddresse1= new HfUserAddresse();
+            HfUserAddresseExample hfUserAddresseExample = new HfUserAddresseExample();
+            hfUserAddresse1.setIsFaultAddress(0);
+            hfUserAddresseExample.createCriteria().andIsFaultAddressEqualTo(1).andUserIdEqualTo(request.getUserId());
+            hfUserAddresseMapper.updateByExampleSelective(hfUserAddresse1,hfUserAddresseExample);
+            hfUserAddresse.setIsFaultAddress(request.getIsFaultAddress());
+        }else {
             hfUserAddresse.setIsFaultAddress(request.getIsFaultAddress());
         }
         if (!StringUtils.isEmpty(request.getUserId())) {

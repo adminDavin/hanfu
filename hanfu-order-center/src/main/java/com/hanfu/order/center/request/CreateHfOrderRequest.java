@@ -246,9 +246,4 @@ public class CreateHfOrderRequest extends CommonRequest {
     }
 
 
-
-
-     
-
-
 }

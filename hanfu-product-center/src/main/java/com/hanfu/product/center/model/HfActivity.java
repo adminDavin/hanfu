@@ -2,6 +2,7 @@ package com.hanfu.product.center.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class HfActivity implements Serializable {
     /**
@@ -47,7 +48,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    private LocalDateTime startTime;
+    private Date startTime;
 
     /**
      *
@@ -56,7 +57,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    private LocalDateTime endTime;
+    private Date endTime;
 
     /**
      *
@@ -215,7 +216,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
@@ -227,7 +228,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
@@ -239,7 +240,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    public LocalDateTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
@@ -251,7 +252,7 @@ public class HfActivity implements Serializable {
      *
      * @mbg.generated Sat Mar 28 15:42:24 CST 2020
      */
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 

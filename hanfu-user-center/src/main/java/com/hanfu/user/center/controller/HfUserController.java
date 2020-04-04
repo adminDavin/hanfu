@@ -221,6 +221,7 @@ public class HfUserController {
             hfUser.setCancelId(0);
             hfUser.setRegion(userInfo.getString("province"));
             hfUser.setUserStatus((byte) 0);
+            hfUser.setNickName(userInfo.getString("nickName"));
             hfUserMapper.insert(hfUser);
         } else {
             hfUser = list.get(0);

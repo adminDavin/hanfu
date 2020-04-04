@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="C:\Users\administor\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -45,7 +45,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="user_center" tableName="hf_order"
+        <!-- <table schema="user_center" tableName="hf_order"
                domainObjectName="HfOrder">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
@@ -79,6 +79,12 @@
         </table>
         <table schema="user_center" tableName="hf_user_coupons"
                domainObjectName="HfUserCoupons">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="hf_integral"
+               domainObjectName="HfIntegral">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

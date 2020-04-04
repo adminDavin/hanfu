@@ -9,6 +9,7 @@ import com.hanfu.user.center.utils.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.HUserBalanceMapper;
+import com.hanfu.user.center.dao.HfUserBalanceMapper;
+import com.hanfu.user.center.dao.HfUserCouponsMapper;
 import com.hanfu.user.center.model.HUserBalanceExample;
+import com.hanfu.user.center.model.HfUserBalance;
+import com.hanfu.user.center.model.HfUserBalanceExample;
+import com.hanfu.user.center.model.HfUserCoupons;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -30,6 +36,7 @@ import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -46,6 +53,12 @@ public class HfUserBalanceController {
 
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
+	
+	@Autowired
+	private HfUserCouponsMapper hfUserCouponsMapper;
+	
+	@Autowired
+	private HfUserBalanceMapper hfUserBalanceMapper;
 
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ApiOperation(value = "获取用戶余额", notes = "获取用戶余额")
@@ -154,4 +167,5 @@ public class HfUserBalanceController {
 			return builder.body(ResponseUtils.getResponseBody("余额不足，请充值"));
 		}
 	}
+	
 }

@@ -168,7 +168,7 @@ public class OrderController {
 		Map<String, Object> params = new HashMap<String, Object>();
 		Map<String, Object> params1 = new HashMap<String, Object>();
 		Map<String, Object> params2 = new HashMap<String, Object>();
-		Map<String, Object> params3 = new HashMap<String, Object>();
+//		Map<String, Object> params3 = new HashMap<String, Object>();
 		params.put("orderType", "nomalOrder");
 		params.put("orderDesc", "普通订单");
 		params1.put("orderType","rechargeOrder");
@@ -177,15 +177,15 @@ public class OrderController {
 		params2.put("orderType","shoppingOrder");
 		params2.put("orderDesc","到店支付订单");
 
-		params3.put("orderType","balancePayment");
-		params3.put("orderDesc","余额支付订单");
+//		params3.put("orderType","balancePayment");
+//		params3.put("orderDesc","余额支付订单");
 
 
 			List<Object> list = new ArrayList<>();
 			list.add(0,params);
 			list.add(1,params1);
 			list.add(2,params2);
-			list.add(3,params3);
+//			list.add(3,params3);
 
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
@@ -291,11 +291,15 @@ public class OrderController {
 		hfOrdersDetailMapper.updateByPrimaryKeySelective(hfOrderDetail);
 		return builder.body(ResponseUtils.getResponseBody("修改订单状态"));
 	} 
+	
 	@ApiOperation(value = "填写物流信息", notes = "填写物流信息")
 	@RequestMapping(value = "/insertLogistics", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> insertLogistics(HfOrderLogisticsRequest request)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrderLogisticsExample hfOrderLogisticsExample = new HfOrderLogisticsExample();
+		hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
+		List<HfOrderLogistics> hfOrderLogisticss = hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
 		HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
 		for (Integer goodsId : request.getGoogsId()) {
 			hfOrderLogistics.setGoogsId(goodsId);
@@ -304,12 +308,21 @@ public class OrderController {
 			hfOrderLogistics.setLastModifier("");
 			hfOrderLogistics.setModifyTime(LocalDateTime.now());
 			hfOrderLogistics.setCreateTime(LocalDateTime.now());
+			hfOrderLogistics.setLogisticsOrdersId(request.getLogisticsOrdersId());
 			hfOrderLogistics.setIsDeleted((short) 0 );
 			hfOrderLogistics.setOrderDetailId(request.getOrderDetailId());
 			hfOrderLogistics.setOrdersId(request.getOrdersId());
 			hfOrderLogistics.setUserId(request.getUserId());
 			hfOrderLogistics.setUserAddressId(request.getUserAddressId());
+			if (hfOrderLogisticss.size()==0){
+				hfOrderLogisticsMapper.insert(hfOrderLogistics);
+			} else {
+				HfOrderLogisticsExample hfOrderLogisticsExample1 = new HfOrderLogisticsExample();
+				hfOrderLogisticsExample1.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
+				hfOrderLogisticsMapper.updateByExampleSelective(hfOrderLogistics,hfOrderLogisticsExample1);
+			}
+
 		}
-		return builder.body(ResponseUtils.getResponseBody(hfOrderLogisticsMapper.insert(hfOrderLogistics)));
+		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 }
