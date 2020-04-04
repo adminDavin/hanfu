@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +147,7 @@ public class PaymentOrderController {
         data.put("fee_type", "CNY");
         data.put("total_fee", String.valueOf(1));
         data.put("spbill_create_ip", req.getRemoteAddr());
-        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/zslwxpayment/hf-payment/handleWxpay");
 
         data.put("out_trade_no", hfOrder.getOrderCode());
         data.put("op_user_id", config.getMchID());
@@ -194,7 +195,7 @@ public class PaymentOrderController {
         data.put("fee_type", "CNY");
         data.put("total_fee", String.valueOf(1));
         data.put("spbill_create_ip", req.getRemoteAddr());
-        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/zslwxpayment/hf-payment/handleWxpay");
         data.put("trade_type", "JSAPI");
         data.put("openid", openId);
         String sign = WXPayUtil.generateSignature(data, config.getKey());

@@ -181,5 +181,8 @@ public class HfOrderController {
         hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
         return builder.body(ResponseUtils.getResponseBody("0"));
     }
-
+    
+    public static void main(String[] args) {
+		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
+	}
 }
