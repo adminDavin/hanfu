@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 
 import com.hanfu.order.center.dao.*;
+import com.hanfu.order.center.manual.model.payment;
 import com.hanfu.order.center.model.*;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import com.hanfu.order.center.request.CreateHfOrderRequest.TakingTypeEnum;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin
 @RestController
@@ -41,6 +43,9 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 public class HfOrderController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private HfOrderMapper hfOrderMapper;
@@ -210,6 +215,16 @@ public class HfOrderController {
                     return builder.body(ResponseUtils.getResponseBody("In spelling"));
                 }
             }
+        }
+        if (targetOrderStatus.equals("cancel")&&originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")){
+            HfOrderExample hfOrderExample1 = new HfOrderExample();
+            hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+
+            payment payment = new payment();
+            payment.setOutTradeNo(orderCode);
+            payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+//            Map map = (Map) payment;
+            restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,orderCode,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
         }
         HfOrder hfOrder = new HfOrder();
         hfOrder.setId(Id);

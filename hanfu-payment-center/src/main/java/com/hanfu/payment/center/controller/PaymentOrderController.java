@@ -2,6 +2,7 @@ package com.hanfu.payment.center.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hanfu.payment.center.dao.HfOrderMapper;
+import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +34,12 @@ import com.hanfu.payment.center.dao.HfIntegralMapper;
 import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
 import com.hanfu.payment.center.dao.HfUserBalanceMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
-import com.hanfu.payment.center.manual.dao.UserMemberDao;
 import com.hanfu.payment.center.manual.model.HfOrderDisplay;
 import com.hanfu.payment.center.manual.model.HfUser;
 import com.hanfu.payment.center.manual.model.OrderStatus;
 import com.hanfu.payment.center.manual.model.OrderTypeEnum;
 import com.hanfu.payment.center.manual.model.PaymentTypeEnum;
 import com.hanfu.payment.center.manual.model.TansactionFlowStatusEnum;
-import com.hanfu.payment.center.manual.model.UserMemberInfo;
-import com.hanfu.payment.center.model.HfIntegral;
-import com.hanfu.payment.center.model.HfTansactionFlow;
-import com.hanfu.payment.center.model.HfTansactionFlowExample;
-import com.hanfu.payment.center.model.HfUserBalance;
-import com.hanfu.payment.center.model.HfUserBalanceExample;
 import com.hanfu.payment.center.util.PayUtil;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -72,12 +68,12 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private HfIntegralMapper hfIntegralMapper;
-	
-	@Autowired
-	private UserMemberDao userMemberDao;
 
 	@Autowired
 	HttpServletRequest req;
+
+	@Autowired
+	private HfOrderMapper hfOrderMapper;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -98,7 +94,29 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 
-	private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) {
+	private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
+//		MiniProgramConfig config = new MiniProgramConfig();
+//		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
+//		WXPay wxpay = new WXPay(config);
+//		Map<String, String> resp = wxpay.unifiedOrder(data);
+
+
+		HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
+		hfUserBalanceExample.createCriteria().andUserIdEqualTo(hfUser.getUserId()).andBalanceTypeEqualTo("rechargeAmount");
+		List<HfUserBalance> hfUserBalance= hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
+		HfOrderExample hfOrderExample = new HfOrderExample();
+		hfOrderExample.createCriteria().andOrderCodeEqualTo(hfOrder.getOrderCode());
+		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
+		if (hfUserBalance.size()!=0&&hfOrders.get(0).getAmount()<hfUserBalance.get(0).getHfBalance()){
+				HfUserBalance hfUserBalance1 = new HfUserBalance();
+				hfUserBalance1.setId(hfUserBalance.get(0).getId());
+				hfUserBalance1.setModifyTime(LocalDateTime.now());
+				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
+				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-hfOrders.get(0).getAmount());
+				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
+		} else {
+			throw new Exception("return_msg");
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -133,7 +151,7 @@ public class PaymentOrderController {
 
 	}
 
-	@ApiOperation(value = "支付订单", notes = "")
+	@ApiOperation(value = "退款订单", notes = "")
 	@RequestMapping(value = "/refund", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
@@ -142,8 +160,18 @@ public class PaymentOrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
-
-		MiniProgramConfig config = new MiniProgramConfig();
+		if (hfOrder.getPaymentName().equals("balance") && hfOrder.getPaymentType().equals(0)) {
+			HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
+			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
+			List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
+                 HfUserBalance hfUserBalance = new HfUserBalance();
+                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+hfOrder.getAmount());
+                 hfUserBalance.setModifyTime(LocalDateTime.now());
+                 hfUserBalance.setId(hfUserBalances.get(0).getId());
+                 hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
+			return builder.body(ResponseUtils.getResponseBody(0));
+		} else{
+			MiniProgramConfig config = new MiniProgramConfig();
 		WXPay wxpay = new WXPay(config);
 		Map<String, String> data = new HashMap<>();
 		data.put("appid", config.getAppID());
@@ -186,7 +214,7 @@ public class PaymentOrderController {
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(resp));
-
+	}
 	}
 
 	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode)
@@ -255,11 +283,9 @@ public class PaymentOrderController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "transactionType", value = "订单id", required = true, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "level", value = "会员等级", required = false, type = "Integer")})
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> completePaymentAfter(@RequestParam("outTradeNo") String outTradeNo,
-			@RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId,
-			@RequestParam(required = false) Integer level)
+			@RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
@@ -274,7 +300,7 @@ public class PaymentOrderController {
 				hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
 
 				if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()));
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 							LocalDateTime.now());
 				} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
@@ -307,72 +333,62 @@ public class PaymentOrderController {
 	
 	@ApiOperation(value = "测试", notes = "测试")
 	@RequestMapping(value = "/qqqqqqc", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee ,Integer level)
+	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		rechangeBalance(userId,totalFee ,level);
+		rechangeBalance(userId,totalFee);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
 	
-	private void rechangeBalance(Integer userId, Integer totalFee ,Integer level) {
-		if(level == null) {
-			HfUserBalanceExample example = new HfUserBalanceExample();
-			example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
-					.andBalanceTypeEqualTo("rechargeAmount");
-			List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
-			if (hfUserBalance.isEmpty()) {
-				HfUserBalance userBalance = new HfUserBalance();
-				userBalance.setBalanceType("rechargeAmount");
-				userBalance.setCreateTime(LocalDateTime.now());
-				userBalance.setHfBalance(Integer.valueOf(totalFee));
-				userBalance.setLastModifier(String.valueOf(userId));
-				userBalance.setModifyTime(LocalDateTime.now());
-				userBalance.setUserId(userId);
-				hfUserBalanceMapper.insertSelective(userBalance);
-			} else {
-				HfUserBalance userBalance = hfUserBalance.get(0);
-				userBalance.setHfBalance(Integer.valueOf(totalFee) + userBalance.getHfBalance());
-				userBalance.setModifyTime(LocalDateTime.now());
-				userBalance.setLastModifier(String.valueOf(userId));
-				hfUserBalanceMapper.updateByPrimaryKey(userBalance);
-			}
-			example.clear();
-			example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
-					.andBalanceTypeEqualTo("integral");
-			hfUserBalance = hfUserBalanceMapper.selectByExample(example);
-			if (hfUserBalance.isEmpty()) {
-				HfUserBalance userBalance = new HfUserBalance();
-				userBalance.setBalanceType("integral");
-				userBalance.setCreateTime(LocalDateTime.now());
-				userBalance.setHfBalance(Integer.valueOf(totalFee));
-				userBalance.setUserId(userId);
-				userBalance.setLastModifier(String.valueOf(userId));
-				userBalance.setModifyTime(LocalDateTime.now());
-				hfUserBalanceMapper.insertSelective(userBalance);
-			} else {
-				HfUserBalance userBalance = hfUserBalance.get(0);
-				userBalance.setHfBalance(Integer.valueOf(totalFee) + userBalance.getHfBalance());
-				userBalance.setModifyTime(LocalDateTime.now());
-				userBalance.setLastModifier(String.valueOf(userId));
-				hfUserBalanceMapper.updateByPrimaryKey(userBalance);
-			}
-			HfIntegral hfIntegral = new HfIntegral();
-			hfIntegral.setUserId(userId);
-			hfIntegral.setAmount(totalFee);
-			hfIntegral.setCreateTime(LocalDateTime.now());
-			hfIntegral.setModifyTime(LocalDateTime.now());
-			hfIntegral.setIsDeleted((byte) 0);
-			hfIntegralMapper.insert(hfIntegral);
+	private void rechangeBalance(Integer userId, Integer totalFee) {
+		HfUserBalanceExample example = new HfUserBalanceExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+				.andBalanceTypeEqualTo("rechargeAmount");
+		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
+		if (hfUserBalance.isEmpty()) {
+			HfUserBalance userBalance = new HfUserBalance();
+			userBalance.setBalanceType("rechargeAmount");
+			userBalance.setCreateTime(LocalDateTime.now());
+			userBalance.setHfBalance(Integer.valueOf(totalFee));
+			userBalance.setLastModifier(String.valueOf(userId));
+			userBalance.setModifyTime(LocalDateTime.now());
+			userBalance.setUserId(userId);
+			hfUserBalanceMapper.insertSelective(userBalance);
+		} else {
+			HfUserBalance userBalance = hfUserBalance.get(0);
+			userBalance.setHfBalance(Integer.valueOf(totalFee) + userBalance.getHfBalance());
+			userBalance.setModifyTime(LocalDateTime.now());
+			userBalance.setLastModifier(String.valueOf(userId));
+			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
 		}
-		if(level != null) {
-			UserMemberInfo info = new UserMemberInfo();
-			info.setUserId(userId);
-			info.setLevel(level);
-			info.setStartTime(LocalDateTime.now());
-			info.setEndTime(LocalDateTime.now().plusMonths(1));
-			userMemberDao.isMemberByUserId(info);
+		example.clear();
+		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+				.andBalanceTypeEqualTo("integral");
+		hfUserBalance = hfUserBalanceMapper.selectByExample(example);
+		if (hfUserBalance.isEmpty()) {
+			HfUserBalance userBalance = new HfUserBalance();
+			userBalance.setBalanceType("integral");
+			userBalance.setCreateTime(LocalDateTime.now());
+			userBalance.setHfBalance(Integer.valueOf(totalFee));
+			userBalance.setUserId(userId);
+			userBalance.setLastModifier(String.valueOf(userId));
+			userBalance.setModifyTime(LocalDateTime.now());
+			hfUserBalanceMapper.insertSelective(userBalance);
+		} else {
+			HfUserBalance userBalance = hfUserBalance.get(0);
+			userBalance.setHfBalance(Integer.valueOf(totalFee) + userBalance.getHfBalance());
+			userBalance.setModifyTime(LocalDateTime.now());
+			userBalance.setLastModifier(String.valueOf(userId));
+			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
 		}
+		HfIntegral hfIntegral = new HfIntegral();
+		hfIntegral.setUserId(userId);
+		hfIntegral.setAmount(totalFee);
+		hfIntegral.setCreateTime(LocalDateTime.now());
+		hfIntegral.setModifyTime(LocalDateTime.now());
+		hfIntegral.setIsDeleted((byte) 0);
+		hfIntegralMapper.insert(hfIntegral);
 	}
 
 	private Integer paymentBalance(Integer userId, Integer totalFee) {
