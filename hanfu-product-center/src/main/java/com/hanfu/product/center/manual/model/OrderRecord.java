@@ -9,6 +9,7 @@ public class OrderRecord implements Serializable{
 
 	private String paymentName;
 	private String paymentMethod;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private LocalDateTime dateTime;
 	private String amount;
 	public String getPaymentName() {
