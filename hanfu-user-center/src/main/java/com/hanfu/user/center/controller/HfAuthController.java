@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +73,7 @@ import com.hanfu.user.center.model.HfBossExample;
 import com.hanfu.user.center.model.HfLevelDescribe;
 import com.hanfu.user.center.model.HfLevelDescribeExample;
 import com.hanfu.user.center.model.HfMemberLevel;
+import com.hanfu.user.center.model.HfMemberLevelExample;
 import com.hanfu.user.center.model.HfStone;
 import com.hanfu.user.center.model.HfStoneExample;
 import com.hanfu.user.center.model.HfUser;
@@ -242,7 +244,7 @@ public class HfAuthController {
 	@RequestMapping(value = "/findAdminUser", method = RequestMethod.GET)
 	@ApiOperation(value = "查询后台用户", notes = "查询后台用户")
 
-	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize) throws Exception {
+	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize ,String phone) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (pageNum == null) {
@@ -251,9 +253,15 @@ public class HfAuthController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-
-		PageHelper.startPage(pageNum, pageSize);
-		List<HfUser> list = hfUserMapper.selectByExample(null);
+		List<HfUser> list = new ArrayList<HfUser>();
+		if(!StringUtils.isEmpty(phone)) {
+			HfUserExample example = new HfUserExample();
+			example.createCriteria().andPhoneLike(phone);
+			PageHelper.startPage(pageNum, pageSize);
+			list = hfUserMapper.selectByExample(example);
+		}else {
+			list = hfUserMapper.selectByExample(null);
+		}
 		List<UserInfo> result = new ArrayList<UserInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			HfUser hfUser = list.get(i);
@@ -483,14 +491,25 @@ public class HfAuthController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String") })
-	public ResponseEntity<JSONObject> addUserMemberLevel(String name, Integer level, String levelDescribe)
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String")})
+	public ResponseEntity<JSONObject> addUserMemberLevel(String name, Integer level, String levelDescribe ,String amount)
 			throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		
+		HfMemberLevelExample example = new HfMemberLevelExample();
+		example.createCriteria().andLevelEqualTo(level);
+		
+		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
+		if(!list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
 		hfMemberLevel.setLevel(level);
+		hfMemberLevel.setAmount(amount);
 		hfMemberLevel.setLevelDescribe(levelDescribe);
 		hfMemberLevel.setCreateTime(LocalDateTime.now());
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
@@ -505,9 +524,11 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String") })
+			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String")})
 	public ResponseEntity<JSONObject> updateUserMemberLevel(@RequestParam(required = false) String name, Integer id,
-			@RequestParam(required = false) Integer level, @RequestParam(required = false) String levelDescribe)
+			@RequestParam(required = false) Integer level, @RequestParam(required = false) String levelDescribe,
+			@RequestParam(required = false) String amount)
 			throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -516,14 +537,30 @@ public class HfAuthController {
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
+		
+		if (!StringUtils.isEmpty(level)) {
+			
+			HfMemberLevelExample example = new HfMemberLevelExample();
+			example.createCriteria().andLevelEqualTo(level);
+			
+			List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
+			if(!list.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody(-1));
+			}
+			
+			hfMemberLevel.setLevel(level);
+		}
+		
 		if (!StringUtils.isEmpty(name)) {
 			hfMemberLevel.setLevelName(name);
 		}
-		if (!StringUtils.isEmpty(level)) {
-			hfMemberLevel.setLevel(level);
-		}
+		
 		if (!StringUtils.isEmpty(levelDescribe)) {
 			hfMemberLevel.setLevelDescribe(levelDescribe);
+		}
+		
+		if (!StringUtils.isEmpty(amount)) {
+			hfMemberLevel.setAmount(amount);
 		}
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevelMapper.updateByPrimaryKey(hfMemberLevel);
@@ -580,8 +617,15 @@ public class HfAuthController {
 			info.setModifyTime(hfMemberLevel.getModifyTime());
 			info.setIsDeleted(hfMemberLevel.getIsDeleted());
 			info.setLevelDescribe(hfMemberLevel.getLevelDescribe());
+			info.setAmount(hfMemberLevel.getAmount());
 			result.add(info);
 		}
+		result.sort(new Comparator<HfMemberLevelInfo>() {
+			@Override
+			public int compare(HfMemberLevelInfo o1, HfMemberLevelInfo o2) {
+				return o1.getLevel()-o2.getLevel();
+			}
+		});
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 

@@ -11,6 +11,7 @@ public class HfMemberLevelInfo {
 	private String levelName;
 	private Integer level;
 	private String levelDescribe;
+	private String amount;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 //	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
@@ -59,5 +60,10 @@ public class HfMemberLevelInfo {
 	public void setIsDeleted(byte isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	
+	public String getAmount() {
+		return amount;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
 }
