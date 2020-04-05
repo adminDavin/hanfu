@@ -1,6 +1,7 @@
 package com.hanfu.user.center.controller;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -724,13 +726,16 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> findUserMember() throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		List<HfUserMember> list = hfUserMemberMapper.selectByExample(null);
+		HfUserMemberExample example = new HfUserMemberExample();
+		example.setOrderByClause("use_state DESC");
+		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
 		List<HfUserMemberInfo> result = new ArrayList<HfUserMemberInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			HfUserMember member = list.get(i);
 			HfUserMemberInfo info = new HfUserMemberInfo();
 			info.setId(member.getId());
 			info.setUserId(member.getUserId());
+			info.setUseState(member.getUseState());
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(member.getUserId());
 			if (hfUser != null) {
 				if (!StringUtils.isEmpty(hfUser.getRealName())) {
@@ -1037,6 +1042,23 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	
+	
+	@Scheduled(cron="0/5 * * * * ? ")
+    public void TimeDiscountCoupon()
+            throws Exception {
+		HfUserMemberExample example = new HfUserMemberExample();
+		example.createCriteria().andEndTimeLessThan(LocalDateTime.now());
+		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).setUseState(0);
+		}
+        try{
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 	public static String create() {
 		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
