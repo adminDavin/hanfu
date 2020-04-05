@@ -39,6 +39,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfBalanceDetailMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
@@ -116,6 +117,9 @@ public class HomePageController {
 	
 	@Autowired
 	private HfIntegralMapper hfIntegralMapper;
+	
+	@Autowired
+	private HfBalanceDetailMapper hfBalanceDetailMapper;
 	
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -420,11 +424,11 @@ public class HomePageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<OrderRecord> result = new ArrayList<OrderRecord>();
 		
-		HfOrderExample example = new HfOrderExample();
-		example.createCriteria().andUserIdEqualTo(userId).andOrderTypeEqualTo("rechargeOrder");
-		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+		HfBalanceDetailExample example = new HfBalanceDetailExample();
+		example.createCriteria().andUserIdEqualTo(userId);
+		List<HfBalanceDetail> list = hfBalanceDetailMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
-			HfOrder order = list.get(i);
+			HfBalanceDetail order = list.get(i);
 			OrderRecord orderRecord = new OrderRecord();
 			orderRecord.setAmount(String.valueOf(order.getAmount()));
 			orderRecord.setPaymentMethod(order.getPaymentName());

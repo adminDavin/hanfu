@@ -30,9 +30,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.hanfu.payment.center.config.MiniProgramConfig;
+import com.hanfu.payment.center.dao.HfBalanceDetailMapper;
 import com.hanfu.payment.center.dao.HfIntegralMapper;
+import com.hanfu.payment.center.dao.HfLevelDescribeMapper;
 import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
 import com.hanfu.payment.center.dao.HfUserBalanceMapper;
+import com.hanfu.payment.center.dao.HfUserMemberMapper;
+import com.hanfu.payment.center.dao.HfUserPrivilegeMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
 import com.hanfu.payment.center.manual.dao.UserMemberDao;
 import com.hanfu.payment.center.manual.model.HfOrderDisplay;
@@ -79,6 +83,18 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private UserMemberDao userMemberDao;
+	
+	@Autowired
+	private HfUserMemberMapper hfUserMemberMapper;
+	
+	@Autowired
+	private HfBalanceDetailMapper hfBalanceDetailMapper;
+	
+	@Autowired
+	private HfLevelDescribeMapper hfLevelDescribeMapper;
+	
+	@Autowired
+	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -119,6 +135,13 @@ public class PaymentOrderController {
 				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
 				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-hfOrders.get(0).getAmount());
 				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
+				HfBalanceDetail detail = new HfBalanceDetail();
+				detail.setUserId(hfUser.getUserId());
+				detail.setAmount(String.valueOf(-hfOrders.get(0).getAmount()));
+				detail.setCreateTime(LocalDateTime.now());
+				detail.setModifyTime(LocalDateTime.now());
+				detail.setIsDeleted((byte) 0);
+				hfBalanceDetailMapper.insert(detail);
 		} else {
 			throw new Exception("return_msg");
 		}
@@ -322,10 +345,10 @@ public class PaymentOrderController {
 				throw new Exception("交易柳树不存在, 或者已完成支付");
 			}
 		} else {
-			Integer result = paymentBalance(userId, hfOrder.getAmount());
-			if (result == -1) {
-				return builder.body(ResponseUtils.getResponseBody(-1));
-			}
+//			Integer result = paymentBalance(userId, hfOrder.getAmount());
+//			if (result == -1) {
+//				return builder.body(ResponseUtils.getResponseBody(-1));
+//			}
 			if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 						LocalDateTime.now());
@@ -338,18 +361,26 @@ public class PaymentOrderController {
 	}
 	
 	
-//	@ApiOperation(value = "测试", notes = "测试")
-//	@RequestMapping(value = "/qqqqqqc", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee)
-//			throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		rechangeBalance(userId,totalFee);
-//		return builder.body(ResponseUtils.getResponseBody(null));
-//	}
+	@ApiOperation(value = "测试", notes = "测试")
+	@RequestMapping(value = "/qqqqqqc", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee, Integer level)
+			throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		rechangeBalance(userId,totalFee,level);
+		return builder.body(ResponseUtils.getResponseBody(null));
+	}
 	
 	
 	private void rechangeBalance(Integer userId, Integer totalFee ,Integer level) {
 		if(level == null) {
+			HfBalanceDetail detail = new HfBalanceDetail();
+			detail.setUserId(userId);
+			detail.setAmount(String.valueOf(totalFee));
+			detail.setCreateTime(LocalDateTime.now());
+			detail.setModifyTime(LocalDateTime.now());
+			detail.setIsDeleted((byte) 0);
+			hfBalanceDetailMapper.insert(detail);
+			
 			HfUserBalanceExample example = new HfUserBalanceExample();
 			example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
 					.andBalanceTypeEqualTo("rechargeAmount");
@@ -399,22 +430,32 @@ public class PaymentOrderController {
 			hfIntegralMapper.insert(hfIntegral);
 		}
 		if(level != null) {
-			UserMemberInfo info = new UserMemberInfo();
-			info.setUserId(userId);
-			info.setLevel(level);
-			info.setStartTime(LocalDateTime.now());
-			info.setEndTime(LocalDateTime.now().plusMonths(1));
-			userMemberDao.addMember(info);
+			HfUserMember member = new HfUserMember();
+			member.setLevelId(level);
+			member.setUserId(userId);
+			member.setCreateTime(LocalDateTime.now());
+			member.setModifyTime(LocalDateTime.now());
+			member.setIsDeleted((byte) 0);
+			hfUserMemberMapper.insert(member);
+			HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
+			describeExample.createCriteria().andLevelIdEqualTo(level);
+			List<HfLevelDescribe> describes = hfLevelDescribeMapper.selectByExample(describeExample);
+			for (int j = 0; j < describes.size(); j++) {
+				HfUserPrivilege privilege = new HfUserPrivilege();
+				privilege.setUserId(userId);
+				privilege.setPrivilegeId(describes.get(j).getId());
+				hfUserPrivilegeMapper.insert(privilege);
+			}
 		}
 		
 	}
 
-	private Integer paymentBalance(Integer userId, Integer totalFee) {
-		HfUserBalanceExample example = new HfUserBalanceExample();
-		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
-				.andBalanceTypeEqualTo("rechargeAmount");
-		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
-		if (hfUserBalance.isEmpty()) {
+//	private Integer paymentBalance(Integer userId, Integer totalFee) {
+//		HfUserBalanceExample example = new HfUserBalanceExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+//				.andBalanceTypeEqualTo("rechargeAmount");
+//		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
+//		if (hfUserBalance.isEmpty()) {
 //            HfUserBalance userBalance = new HfUserBalance();
 //            userBalance.setBalanceType("rechargeAmount");
 //            userBalance.setCreateTime(LocalDateTime.now());
@@ -423,16 +464,16 @@ public class PaymentOrderController {
 //            userBalance.setModifyTime(LocalDateTime.now());
 //            userBalance.setUserId(userId);
 //            hfUserBalanceMapper.insertSelective(userBalance);
-			return -1;
-		} else {
-			HfUserBalance userBalance = hfUserBalance.get(0);
-			userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
-			userBalance.setModifyTime(LocalDateTime.now());
-			userBalance.setLastModifier(String.valueOf(userId));
-			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
-			return 1;
-		}
-	}
+//			return -1;
+//		} else {
+//			HfUserBalance userBalance = hfUserBalance.get(0);
+//			userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
+//			userBalance.setModifyTime(LocalDateTime.now());
+//			userBalance.setLastModifier(String.valueOf(userId));
+//			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
+//			return 1;
+//		}
+//	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
