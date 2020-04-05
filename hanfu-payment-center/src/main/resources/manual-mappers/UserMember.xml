@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.payment.center.manual.dao.UserMemberDao">
+    <select id="isMemberByUserId" resultType="Integer">
+    	select count(*) from hf_user_member where user_id = #{userId} and level = #{level}
+    </select>
+    
+    <insert id="addMember">
+    	insert into hf_user_member values(#{startTime},#{endTime},1,#{userId},#{level},CURRENT_DATE,CURRENT_DATE,0)
+    </insert>
+</mapper>

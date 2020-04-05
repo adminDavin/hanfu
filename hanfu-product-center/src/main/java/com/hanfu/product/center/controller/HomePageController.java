@@ -419,8 +419,9 @@ public class HomePageController {
 	public ResponseEntity<JSONObject> findRechargeRecord(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<OrderRecord> result = new ArrayList<OrderRecord>();
+		
 		HfOrderExample example = new HfOrderExample();
-		example.createCriteria().andUserIdEqualTo(userId);
+		example.createCriteria().andUserIdEqualTo(userId).andOrderTypeEqualTo("rechargeOrder");
 		List<HfOrder> list = hfOrderMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfOrder order = list.get(i);
