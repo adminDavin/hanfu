@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
@@ -45,6 +46,10 @@ public class HfProductActivityController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
+
+    @Autowired
+    RestTemplate restTemplate;
     private final String KEY_NAME = "name";
 
     @Autowired
@@ -790,7 +795,7 @@ public class HfProductActivityController {
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
     public void TimeGroup()
             throws Exception {
-//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());0
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
         HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
         hfActivityGroupExample.createCriteria().andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
        List<HfActivityGroup> hfActivityGroupList = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
@@ -806,6 +811,20 @@ public class HfProductActivityController {
                 e.printStackTrace();
             }
             if ((date1.getTime()-date2.getTime())>86400000){
+                HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
+                hfActivityCountExample1.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
+                List<HfActivityCount> hfActivityCounts= hfActivityCountMapper.selectByExample(hfActivityCountExample1);
+                hfActivityCounts.forEach(hfActivityCount1 -> {
+                    HfOrder hfOrder= hfOrderMapper.selectByPrimaryKey(hfActivityCount1.getOrderId());
+                    payment payment = new payment();
+                    payment.setOutTradeNo(hfOrder.getOrderCode());
+                    payment.setUserId(hfOrder.getId());
+//            Map map = (Map) payment;
+                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,hfOrder.getOrderCode(),hfOrder.getUserId());
+                    logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date()+"--orderId:"+hfOrder.getId()+"money:"+hfOrder.getAmount());
+                });
+
+
                 discountCoupon.setIsDeleted((byte) 1);
                 hfActivityGroupMapper.updateByPrimaryKeySelective(discountCoupon);
                 HfActivityCount hfActivityCount = new HfActivityCount();
@@ -813,6 +832,7 @@ public class HfProductActivityController {
                 HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
                 hfActivityCountExample.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
                 hfActivityCountMapper.updateByExampleSelective(hfActivityCount,hfActivityCountExample);
+
             }
         });
 //        Random r = new Random();
