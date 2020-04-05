@@ -132,7 +132,7 @@ public class PaymentOrderController {
 				HfUserBalance hfUserBalance1 = new HfUserBalance();
 				hfUserBalance1.setId(hfUserBalance.get(0).getId());
 				hfUserBalance1.setModifyTime(LocalDateTime.now());
-				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
+//				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
 				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-hfOrders.get(0).getAmount());
 				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
 				HfBalanceDetail detail = new HfBalanceDetail();
