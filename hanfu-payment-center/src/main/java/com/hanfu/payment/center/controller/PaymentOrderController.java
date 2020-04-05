@@ -337,10 +337,10 @@ public class PaymentOrderController {
 				throw new Exception("交易柳树不存在, 或者已完成支付");
 			}
 		} else {
-			Integer result = paymentBalance(userId, hfOrder.getAmount());
-			if (result == -1) {
-				return builder.body(ResponseUtils.getResponseBody(-1));
-			}
+//			Integer result = paymentBalance(userId, hfOrder.getAmount());
+//			if (result == -1) {
+//				return builder.body(ResponseUtils.getResponseBody(-1));
+//			}
 			if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 						LocalDateTime.now());
