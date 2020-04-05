@@ -89,8 +89,14 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_balance_detail"
+        <!-- <table schema="user_center" tableName="hf_balance_detail"
                domainObjectName="HfBalanceDetail">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="hf_user_member"
+               domainObjectName="HfUserMember">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

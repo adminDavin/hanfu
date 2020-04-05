@@ -1044,21 +1044,21 @@ public class HfAuthController {
 	}
 	
 	
-	@Scheduled(cron="0/5 * * * * ? ")
-    public void TimeDiscountCoupon()
-            throws Exception {
-		HfUserMemberExample example = new HfUserMemberExample();
-		example.createCriteria().andEndTimeLessThan(LocalDateTime.now());
-		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
-		for (int i = 0; i < list.size(); i++) {
-			list.get(i).setUseState(0);
-		}
-        try{
-            Thread.sleep(2000);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
+//	@Scheduled(cron="0/5 * * * * ? ")
+//    public void TimeDiscountCoupon()
+//            throws Exception {
+//		HfUserMemberExample example = new HfUserMemberExample();
+//		example.createCriteria().andEndTimeLessThan(LocalDateTime.now());
+//		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
+//		for (int i = 0; i < list.size(); i++) {
+//			list.get(i).setUseState(0);
+//		}
+//        try{
+//            Thread.sleep(2000);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 
 	public static String create() {
 		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
