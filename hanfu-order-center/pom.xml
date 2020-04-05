@@ -194,5 +194,11 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.62</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.hanfu.payment.center</groupId>
+            <artifactId>hanfu-payment-center</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 </project>

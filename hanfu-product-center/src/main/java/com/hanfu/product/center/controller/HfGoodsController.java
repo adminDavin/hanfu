@@ -48,6 +48,8 @@ public class HfGoodsController {
     private HfActivityMapper hfActivityMapper;
     @Autowired
     private HfActivityProductMapper hfActivityProductMapper;
+    @Autowired
+    private DiscountCouponMapper discountCouponMapper;
     @ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
     @RequestMapping(value = "/getHfGoodsByProductId", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = false,
@@ -66,7 +68,7 @@ public class HfGoodsController {
 
     @ApiOperation(value = "校检库存", notes = "校检库存")
     @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId)
+    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId)
             throws JSONException {
         if (activityId==null){
             activityId=0;
@@ -93,7 +95,7 @@ public class HfGoodsController {
                 }
                 if (hfActivityProductList.get(0).getFavoravlePrice()==null||hfActivityProductList.get(0).getFavoravlePrice()==0){
                   if (hfActivityProductList.get(0).getDiscountRatio()==null||hfActivityProductList.get(0).getDiscountRatio()==0){
-                      return product(goodsId,GoodsNum);
+                      return product(goodsId,GoodsNum,discountCouponId);
                   } else {
                       amount.setMoney((int) ((selectPriceResp(goodsId).get("hfPrices")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
                       amount.setDiscountMoney((int) ((selectPriceResp(goodsId).get("linePrice")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
@@ -106,21 +108,67 @@ public class HfGoodsController {
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
             }
-            return product(goodsId,GoodsNum);
+            return product(goodsId,GoodsNum,discountCouponId);
         }
         return builder.body(ResponseUtils.getResponseBody("goods null"));
     }
 
-    private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum) throws JSONException {
+    private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum,Integer[] discountCouponId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Integer moneys =selectPriceResp(goodsId).get("hfPrices");
         if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
             return builder.body(ResponseUtils.getResponseBody("understock"));
         }
         Amount amount = new Amount();
         amount.setGoodsId(goodsId);
         amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
-        amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
-        amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
+        List<Integer> SUP = new ArrayList<>();
+if (discountCouponId.length!=0){
+    for (Integer dis: discountCouponId){
+        DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+        discountCouponExample.createCriteria().andIdEqualTo(dis).andUseStateEqualTo(0).andIdDeletedEqualTo((byte) 0);
+        List<DiscountCoupon> discountCoupons= discountCouponMapper.selectByExample(discountCouponExample);
+        if (discountCoupons.get(0).getSuperposition().equals(1)){
+            SUP.add(dis);
+        }
+        if (SUP.size()!=discountCouponId.length&&(SUP.size()+1)!=discountCouponId.length){
+            return builder.body(ResponseUtils.getResponseBody("coupon select error"));
+        }
+//        SUP.forEach(sups ->{
+            for (Integer sups:SUP){
+           DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(sups);
+           if (discountCoupon.getDiscountCouponType().equals("1")){
+               JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+		Iterator<String> iterator = specs.keySet().iterator();
+		while(iterator.hasNext()){
+// 获得key
+			String key = iterator.next();
+			String value = specs.getString(key);
+if (key.equals("minus")){
+        moneys=moneys-Integer.valueOf(value);
+}
+		}
+           }else {
+               JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+               Iterator<String> iterator = specs.keySet().iterator();
+               while(iterator.hasNext()){
+                   String key = iterator.next();
+                   String value = specs.getString(key);
+                   if (key.equals("minus")){
+                       moneys=(moneys*Integer.valueOf(value))/100;
+                   }
+               }
+           }
+        }
+    }
+    amount.setMoney(moneys*GoodsNum);
+    amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice"));
+}else {
+    amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
+    amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
+}
+
+
         return builder.body(ResponseUtils.getResponseBody(amount));
     }
 

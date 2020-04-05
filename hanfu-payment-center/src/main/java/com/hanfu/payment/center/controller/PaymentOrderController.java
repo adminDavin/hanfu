@@ -2,6 +2,7 @@ package com.hanfu.payment.center.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hanfu.payment.center.dao.HfOrderMapper;
+import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,6 @@ import com.hanfu.payment.center.manual.model.OrderStatus;
 import com.hanfu.payment.center.manual.model.OrderTypeEnum;
 import com.hanfu.payment.center.manual.model.PaymentTypeEnum;
 import com.hanfu.payment.center.manual.model.TansactionFlowStatusEnum;
-import com.hanfu.payment.center.model.HfIntegral;
-import com.hanfu.payment.center.model.HfTansactionFlow;
-import com.hanfu.payment.center.model.HfTansactionFlowExample;
-import com.hanfu.payment.center.model.HfUserBalance;
-import com.hanfu.payment.center.model.HfUserBalanceExample;
 import com.hanfu.payment.center.util.PayUtil;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -74,6 +72,9 @@ public class PaymentOrderController {
 	@Autowired
 	HttpServletRequest req;
 
+	@Autowired
+	private HfOrderMapper hfOrderMapper;
+
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -93,7 +94,29 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 
-	private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) {
+	private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
+//		MiniProgramConfig config = new MiniProgramConfig();
+//		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
+//		WXPay wxpay = new WXPay(config);
+//		Map<String, String> resp = wxpay.unifiedOrder(data);
+
+
+		HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
+		hfUserBalanceExample.createCriteria().andUserIdEqualTo(hfUser.getUserId()).andBalanceTypeEqualTo("rechargeAmount");
+		List<HfUserBalance> hfUserBalance= hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
+		HfOrderExample hfOrderExample = new HfOrderExample();
+		hfOrderExample.createCriteria().andOrderCodeEqualTo(hfOrder.getOrderCode());
+		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
+		if (hfUserBalance.size()!=0&&hfOrders.get(0).getAmount()<hfUserBalance.get(0).getHfBalance()){
+				HfUserBalance hfUserBalance1 = new HfUserBalance();
+				hfUserBalance1.setId(hfUserBalance.get(0).getId());
+				hfUserBalance1.setModifyTime(LocalDateTime.now());
+				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
+				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-hfOrders.get(0).getAmount());
+				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
+		} else {
+			throw new Exception("return_msg");
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -128,7 +151,7 @@ public class PaymentOrderController {
 
 	}
 
-	@ApiOperation(value = "支付订单", notes = "")
+	@ApiOperation(value = "退款订单", notes = "")
 	@RequestMapping(value = "/refund", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
@@ -137,8 +160,18 @@ public class PaymentOrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
-
-		MiniProgramConfig config = new MiniProgramConfig();
+		if (hfOrder.getPaymentName().equals("balance") && hfOrder.getPaymentType().equals(0)) {
+			HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
+			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
+			List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
+                 HfUserBalance hfUserBalance = new HfUserBalance();
+                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+hfOrder.getAmount());
+                 hfUserBalance.setModifyTime(LocalDateTime.now());
+                 hfUserBalance.setId(hfUserBalances.get(0).getId());
+                 hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
+			return builder.body(ResponseUtils.getResponseBody(0));
+		} else{
+			MiniProgramConfig config = new MiniProgramConfig();
 		WXPay wxpay = new WXPay(config);
 		Map<String, String> data = new HashMap<>();
 		data.put("appid", config.getAppID());
@@ -181,7 +214,7 @@ public class PaymentOrderController {
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(resp));
-
+	}
 	}
 
 	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode)
