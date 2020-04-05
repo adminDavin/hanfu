@@ -32,9 +32,11 @@ import com.github.wxpay.sdk.WXPayUtil;
 import com.hanfu.payment.center.config.MiniProgramConfig;
 import com.hanfu.payment.center.dao.HfBalanceDetailMapper;
 import com.hanfu.payment.center.dao.HfIntegralMapper;
+import com.hanfu.payment.center.dao.HfLevelDescribeMapper;
 import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
 import com.hanfu.payment.center.dao.HfUserBalanceMapper;
 import com.hanfu.payment.center.dao.HfUserMemberMapper;
+import com.hanfu.payment.center.dao.HfUserPrivilegeMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
 import com.hanfu.payment.center.manual.dao.UserMemberDao;
 import com.hanfu.payment.center.manual.model.HfOrderDisplay;
@@ -87,6 +89,12 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private HfBalanceDetailMapper hfBalanceDetailMapper;
+	
+	@Autowired
+	private HfLevelDescribeMapper hfLevelDescribeMapper;
+	
+	@Autowired
+	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -429,16 +437,25 @@ public class PaymentOrderController {
 			member.setModifyTime(LocalDateTime.now());
 			member.setIsDeleted((byte) 0);
 			hfUserMemberMapper.insert(member);
+			HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
+			describeExample.createCriteria().andLevelIdEqualTo(level);
+			List<HfLevelDescribe> describes = hfLevelDescribeMapper.selectByExample(describeExample);
+			for (int j = 0; j < describes.size(); j++) {
+				HfUserPrivilege privilege = new HfUserPrivilege();
+				privilege.setUserId(userId);
+				privilege.setPrivilegeId(describes.get(j).getId());
+				hfUserPrivilegeMapper.insert(privilege);
+			}
 		}
 		
 	}
 
-	private Integer paymentBalance(Integer userId, Integer totalFee) {
-		HfUserBalanceExample example = new HfUserBalanceExample();
-		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
-				.andBalanceTypeEqualTo("rechargeAmount");
-		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
-		if (hfUserBalance.isEmpty()) {
+//	private Integer paymentBalance(Integer userId, Integer totalFee) {
+//		HfUserBalanceExample example = new HfUserBalanceExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
+//				.andBalanceTypeEqualTo("rechargeAmount");
+//		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(example);
+//		if (hfUserBalance.isEmpty()) {
 //            HfUserBalance userBalance = new HfUserBalance();
 //            userBalance.setBalanceType("rechargeAmount");
 //            userBalance.setCreateTime(LocalDateTime.now());
@@ -447,16 +464,16 @@ public class PaymentOrderController {
 //            userBalance.setModifyTime(LocalDateTime.now());
 //            userBalance.setUserId(userId);
 //            hfUserBalanceMapper.insertSelective(userBalance);
-			return -1;
-		} else {
-			HfUserBalance userBalance = hfUserBalance.get(0);
-			userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
-			userBalance.setModifyTime(LocalDateTime.now());
-			userBalance.setLastModifier(String.valueOf(userId));
-			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
-			return 1;
-		}
-	}
+//			return -1;
+//		} else {
+//			HfUserBalance userBalance = hfUserBalance.get(0);
+//			userBalance.setHfBalance(userBalance.getHfBalance() - totalFee);
+//			userBalance.setModifyTime(LocalDateTime.now());
+//			userBalance.setLastModifier(String.valueOf(userId));
+//			hfUserBalanceMapper.updateByPrimaryKey(userBalance);
+//			return 1;
+//		}
+//	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
