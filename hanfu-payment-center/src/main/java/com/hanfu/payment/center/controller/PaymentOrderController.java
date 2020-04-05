@@ -197,6 +197,13 @@ public class PaymentOrderController {
                  hfUserBalance.setModifyTime(LocalDateTime.now());
                  hfUserBalance.setId(hfUserBalances.get(0).getId());
                  hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
+                 HfBalanceDetail detail = new HfBalanceDetail();
+ 				detail.setUserId(hfUser.getUserId());
+ 				detail.setAmount(String.valueOf(+hfOrder.getAmount()));
+ 				detail.setCreateTime(LocalDateTime.now());
+ 				detail.setModifyTime(LocalDateTime.now());
+ 				detail.setIsDeleted((byte) 0);
+ 				hfBalanceDetailMapper.insert(detail);
 			return builder.body(ResponseUtils.getResponseBody(0));
 		} else{
 			MiniProgramConfig config = new MiniProgramConfig();
@@ -375,7 +382,7 @@ public class PaymentOrderController {
 		if(level == null) {
 			HfBalanceDetail detail = new HfBalanceDetail();
 			detail.setUserId(userId);
-			detail.setAmount(String.valueOf(totalFee));
+			detail.setAmount("+"+String.valueOf(totalFee));
 			detail.setCreateTime(LocalDateTime.now());
 			detail.setModifyTime(LocalDateTime.now());
 			detail.setIsDeleted((byte) 0);

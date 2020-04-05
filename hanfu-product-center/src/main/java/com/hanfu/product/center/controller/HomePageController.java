@@ -434,7 +434,7 @@ public class HomePageController {
 			orderRecord.setPaymentMethod(order.getPaymentName());
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(order.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
-			orderRecord.setDateTime(order.getCreateTime());
+			orderRecord.setDateTime(order.getCreateTime().plusHours(8));
 			result.add(orderRecord);
 		}
         return builder.body(ResponseUtils.getResponseBody(result));
@@ -456,7 +456,7 @@ public class HomePageController {
 			orderRecord.setAmount(String.valueOf(hfIntegral.getAmount()));
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(hfIntegral.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
-			orderRecord.setDateTime(hfIntegral.getCreateTime());
+			orderRecord.setDateTime(hfIntegral.getCreateTime().plusHours(8));
 			result.add(orderRecord);
 		}
         return builder.body(ResponseUtils.getResponseBody(result));
