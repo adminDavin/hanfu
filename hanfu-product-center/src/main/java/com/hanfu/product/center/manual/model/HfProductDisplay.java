@@ -68,6 +68,8 @@ public class HfProductDisplay implements Serializable {
     private LocalDateTime createTime;
     private Integer bossId;
     private String bossName;
+    private Integer isCollect;
+    private Integer isConcern;
 	public Integer getId() {
 		return id;
 	}
@@ -246,7 +248,18 @@ public class HfProductDisplay implements Serializable {
 	public void setBossName(String bossName) {
 		this.bossName = bossName;
 	}
-
+	public Integer getIsCollect() {
+		return isCollect;
+	}
+	public void setIsCollect(Integer isCollect) {
+		this.isCollect = isCollect;
+	}
+	public Integer getIsConcern() {
+		return isConcern;
+	}
+	public void setIsConcern(Integer isConcern) {
+		this.isConcern = isConcern;
+	}
 	@Override
 	public String toString() {
 		return "HfProductDisplay [id=" + id + ", productName=" + productName + ", productDesc=" + productDesc

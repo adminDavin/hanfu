@@ -98,6 +98,12 @@ public class HfProductController {
 
 	@Autowired
 	private UserPersonalBrowseMapper userPersonalBrowseMapper;
+	
+	@Autowired
+	private HfProductCollectMapper hfProductCollectMapper;
+	
+	@Autowired
+	private HfStoneConcernMapper hfStoneConcernMapper;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -179,6 +185,22 @@ public class HfProductController {
 			product.setFileIds(fileIds);
 		}
 		if (userId != null) {
+			HfProductCollectExample collectExample = new HfProductCollectExample();
+			collectExample.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+			if(hfProductCollectMapper.selectByExample(collectExample).isEmpty()) {
+				product.setIsCollect(-1);
+			}else {
+				product.setIsCollect(1);
+			}
+			HfStoneConcernExample concernExample = new HfStoneConcernExample();
+			System.out.println(product.getStoneId());
+			concernExample.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
+			if(hfStoneConcernMapper.selectByExample(concernExample).isEmpty()) {
+				product.setIsConcern(-1);
+			}else {
+				product.setIsConcern(1);
+			}
+			
 			HfUserBrowseRecord browseRecord = new HfUserBrowseRecord();
 			browseRecord.setBrowseDate(LocalDateTime.now());
 			browseRecord.setCreateDate(LocalDateTime.now());
