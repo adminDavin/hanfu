@@ -95,7 +95,7 @@ public class HfProductController {
 
 	@Autowired
 	private HfCategoryMapper hfCategoryMapper;
-	
+
 	@Autowired
 	private UserPersonalBrowseMapper userPersonalBrowseMapper;
 
@@ -141,8 +141,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getDetail(@RequestParam(name = "productId") Integer productId, Integer stoneId,
-			@RequestParam(required = false) Integer userId)
-			throws JSONException {
+			@RequestParam(required = false) Integer userId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfProductDisplay product = hfProductDao.selectProduct(productId, stoneId);
 		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
@@ -179,35 +178,37 @@ public class HfProductController {
 					.collect(Collectors.toList());
 			product.setFileIds(fileIds);
 		}
-		HfUserBrowseRecord browseRecord = new HfUserBrowseRecord();
-		browseRecord.setBrowseDate(LocalDateTime.now());
-		browseRecord.setCreateDate(LocalDateTime.now());
-		browseRecord.setIdDeleted((byte) 0);
-		browseRecord.setModifyDate(LocalDateTime.now());
-		browseRecord.setProductId(productId);
-		browseRecord.setUserId(userId);
-		Product product2 = productMapper.selectByPrimaryKey(productId);
-		browseRecord.setBossId(product2.getBossId());
-		hfUserBrowseRecordMapper.insert(browseRecord);
-		UserPersonalBrowseExample userPersonalBrowseExample = new UserPersonalBrowseExample();
-		userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
-		List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(userPersonalBrowseExample);
-		if(browses.isEmpty()) {
-			UserPersonalBrowse browse = new UserPersonalBrowse();
-			browse.setBrowseTime(LocalDateTime.now());
-			browse.setCount(1);
-			browse.setCreateTime(LocalDateTime.now());
-			browse.setIsDeleted((byte) 0);
-			browse.setModifiyTime(LocalDateTime.now());
-			browse.setProductId(productId);
-			browse.setUserId(userId);
-			userPersonalBrowseMapper.insert(browse);
-		}else {
-			UserPersonalBrowse browse = browses.get(0);
-			browse.setBrowseTime(LocalDateTime.now());
-			browse.setModifiyTime(LocalDateTime.now());
-			browse.setCount(browse.getCount()+1);
-			userPersonalBrowseMapper.updateByPrimaryKey(browse);
+		if (userId != null) {
+			HfUserBrowseRecord browseRecord = new HfUserBrowseRecord();
+			browseRecord.setBrowseDate(LocalDateTime.now());
+			browseRecord.setCreateDate(LocalDateTime.now());
+			browseRecord.setIdDeleted((byte) 0);
+			browseRecord.setModifyDate(LocalDateTime.now());
+			browseRecord.setProductId(productId);
+			browseRecord.setUserId(userId);
+			Product product2 = productMapper.selectByPrimaryKey(productId);
+			browseRecord.setBossId(product2.getBossId());
+			hfUserBrowseRecordMapper.insert(browseRecord);
+			UserPersonalBrowseExample userPersonalBrowseExample = new UserPersonalBrowseExample();
+			userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+			List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(userPersonalBrowseExample);
+			if (browses.isEmpty()) {
+				UserPersonalBrowse browse = new UserPersonalBrowse();
+				browse.setBrowseTime(LocalDateTime.now());
+				browse.setCount(1);
+				browse.setCreateTime(LocalDateTime.now());
+				browse.setIsDeleted((byte) 0);
+				browse.setModifiyTime(LocalDateTime.now());
+				browse.setProductId(productId);
+				browse.setUserId(userId);
+				userPersonalBrowseMapper.insert(browse);
+			} else {
+				UserPersonalBrowse browse = browses.get(0);
+				browse.setBrowseTime(LocalDateTime.now());
+				browse.setModifiyTime(LocalDateTime.now());
+				browse.setCount(browse.getCount() + 1);
+				userPersonalBrowseMapper.updateByPrimaryKey(browse);
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
@@ -579,17 +580,17 @@ public class HfProductController {
 				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
 				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
 				if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
-						String s = String.valueOf(hfactivityProduct.getFavoravlePrice());
-						if (null != s && s.indexOf(".") > 0) {
-							s = s.replaceAll("0+?$", "");// 去掉多余的0
-							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-						}
-						display.setPriceArea(s);
+					String s = String.valueOf(hfactivityProduct.getFavoravlePrice());
+					if (null != s && s.indexOf(".") > 0) {
+						s = s.replaceAll("0+?$", "");// 去掉多余的0
+						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+					}
+					display.setPriceArea(s);
 				} else {
 					if (hfactivityProduct.getDiscountRatio() != null) {
 						if (hfactivityProduct.getDiscountRatio() != 0) {
-							String s = String.valueOf(
-									Double.valueOf(display.getPriceArea()) * (hfactivityProduct.getDiscountRatio()/100));
+							String s = String.valueOf(Double.valueOf(display.getPriceArea())
+									* (hfactivityProduct.getDiscountRatio() / 100));
 							if (null != s && s.indexOf(".") > 0) {
 								s = s.replaceAll("0+?$", "");// 去掉多余的0
 								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
