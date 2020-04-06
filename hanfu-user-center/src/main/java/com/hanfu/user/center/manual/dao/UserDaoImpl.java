@@ -49,5 +49,22 @@ public class UserDaoImpl implements UserDao {
         String result = sqlSessionTemplate.selectOne("findDepartmentName", departmentId);
         return result;
     }
-
+    
+    @Override
+    public Integer selectBrowseCount(Integer userId) {
+    	Integer result = sqlSessionTemplate.selectOne("selectBrowseCount", userId);
+    	return result;
+    }
+    
+    @Override
+    public Integer selectCollectCount(Integer userId) {
+    	Integer result = sqlSessionTemplate.selectOne("selectCollectCount", userId);
+    	return result;
+    }
+    
+    @Override
+    public Integer selectConcernCount(Integer userId) {
+    	Integer result = sqlSessionTemplate.selectOne("selectConcernCount", userId);
+    	return result;
+    }
 }

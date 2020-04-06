@@ -23,5 +23,10 @@ public interface UserDao {
     List<ActivityUserInfo> findActivityUserInfo(test test);
 
     List<ActivityUserInfo> findActivityUserInfoTP(UserQuery userQuery);
+    
+    Integer selectConcernCount(Integer userId);
 
+    Integer selectCollectCount(Integer userId);
+    
+    Integer selectBrowseCount(Integer userId);
 }

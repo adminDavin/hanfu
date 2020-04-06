@@ -151,6 +151,10 @@ public class HfAuthController {
 	
 	@Autowired
 	private HfUserBalanceMapper hfUserBalanceMapper;
+	
+	@Autowired
+	private UserDao userDao;
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -964,7 +968,15 @@ public class HfAuthController {
 		example2.clear();
 		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("discountCoupon");
 		List<HfUserBalance> balance3 = hfUserBalanceMapper.selectByExample(example2);
+		
+		Integer browseCount = userDao.selectBrowseCount(userId);
+		Integer collectCount = userDao.selectCollectCount(userId);
+		Integer concernCount = userDao.selectConcernCount(userId);		
+		
 		PurseInfo info = new PurseInfo();
+		info.setBrowseCount(browseCount);
+		info.setCollectCount(collectCount);
+		info.setConcernCount(concernCount);
 		if(balance3.isEmpty()) {
 			info.setCouponCount(0);
 		}else {

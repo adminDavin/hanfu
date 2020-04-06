@@ -15,6 +15,9 @@ public class PurseInfo implements Serializable{
 	private Integer integral;
 	private Integer couponCount;
 	private Integer member;
+	private Integer collectCount;
+	private Integer concernCount;
+	private Integer browseCount;
 	
 	public String getPrerogative() {
 		return prerogative;
@@ -48,5 +51,23 @@ public class PurseInfo implements Serializable{
 	}
 	public void setMember(Integer member) {
 		this.member = member;
+	}
+	public Integer getCollectCount() {
+		return collectCount;
+	}
+	public void setCollectCount(Integer collectCount) {
+		this.collectCount = collectCount;
+	}
+	public Integer getConcernCount() {
+		return concernCount;
+	}
+	public void setConcernCount(Integer concernCount) {
+		this.concernCount = concernCount;
+	}
+	public Integer getBrowseCount() {
+		return browseCount;
+	}
+	public void setBrowseCount(Integer browseCount) {
+		this.browseCount = browseCount;
 	}
 }
