@@ -166,4 +166,16 @@
         WHERE
         id = #{departmentId}
     </select>
+    
+    <select id="selectBrowseCount" resultType="Integer">
+    	select count(*) from user_personal_browse where user_id = #{userId}
+    </select>
+    
+    <select id="selectCollectCount" resultType="Integer">
+    	select count(*) from hf_product_collect where user_id = #{userId}
+    </select>
+    
+    <select id="selectConcernCount" resultType="Integer">
+    	select count(*) from hf_stone_concern where user_id = #{userId}
+    </select>
 </mapper>
