@@ -123,7 +123,7 @@ public class HfGoodsController {
         amount.setGoodsId(goodsId);
         amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
         List<Integer> SUP = new ArrayList<>();
-if (discountCouponId.length!=0){
+if (discountCouponId!=null){
     for (Integer dis: discountCouponId){
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdEqualTo(dis).andUseStateEqualTo(0).andIdDeletedEqualTo((byte) 0);
