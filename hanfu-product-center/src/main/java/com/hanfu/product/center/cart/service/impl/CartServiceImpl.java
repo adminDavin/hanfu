@@ -8,12 +8,16 @@ import com.hanfu.product.center.cart.model.Cart;
 import com.hanfu.product.center.cart.service.CartService;
 import com.hanfu.product.center.cart.service.RedisService;
 import com.hanfu.product.center.cart.utils.CartPrefix;
+import com.hanfu.product.center.dao.HfGoodsSpecMapper;
 import com.hanfu.product.center.dao.ProductMapper;
+import com.hanfu.product.center.dao.ProductSpecMapper;
+import com.hanfu.product.center.model.HfGoodsSpec;
+import com.hanfu.product.center.model.HfGoodsSpecExample;
+import com.hanfu.product.center.model.ProductSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -23,6 +27,10 @@ public class CartServiceImpl implements CartService {
     HfGoodDao hfGoodDao;
     @Autowired
     ProductMapper productMapper;
+    @Autowired
+    private HfGoodsSpecMapper hfGoodsSpecMapper;
+    @Autowired
+    private ProductSpecMapper productSpecMapper;
 
     @Override
     public int addCart(String userId, String productId, int num) {
@@ -46,8 +54,23 @@ public class CartServiceImpl implements CartService {
         if (hfGoods == null) {
             return 0;
         }
-        //设置购物车值
         Cart cart = new Cart();
+        HfGoodsSpecExample hfGoodsSpecExample = new HfGoodsSpecExample();
+        hfGoodsSpecExample.createCriteria().andGoodsIdEqualTo(hfGoods.getId());
+        List<HfGoodsSpec> hfGoodsSpecs= hfGoodsSpecMapper.selectByExample(hfGoodsSpecExample);
+        List<Map<String,String>> list = new ArrayList<>();
+        hfGoodsSpecs.forEach(hfGoodsSpec -> {
+            Map<String,String> map = new HashMap<>();
+            ProductSpec productSpec= productSpecMapper.selectByPrimaryKey(Integer.valueOf(hfGoodsSpec.getHfSpecId()));
+            map.put("productSpec",productSpec.getHfName());
+            map.put("productUnit",productSpec.getSpecUnit());
+            map.put("goodsSpec",hfGoodsSpec.getHfValue());
+            list.add(map);
+            cart.setGoodsSpec(list);
+        });
+        //设置购物车值
+
+        cart.setProductsId(String.valueOf(hfGoods.getProductId()));
         cart.setProductId(productId);
         cart.setProductName(hfGoods.getGoodName());
         cart.setProductPrice(hfGoods.getSellPrice());

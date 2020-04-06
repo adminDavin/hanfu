@@ -1,9 +1,12 @@
 package com.hanfu.product.center.cart.model;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class Cart implements Serializable {
+    private String productsId;
     private String productId;
     private Integer productPrice;
     private Integer productNum;
@@ -17,6 +20,8 @@ public class Cart implements Serializable {
 
     /* 商品小图*/
     private Integer productIcon;
+
+    private List<Map<String,String>> goodsSpec;
 
     public String getCheck() {
         return check;
@@ -73,5 +78,21 @@ public class Cart implements Serializable {
 
     public void setProductIcon(Integer productIcon) {
         this.productIcon = productIcon;
+    }
+
+    public String getProductsId() {
+        return productsId;
+    }
+
+    public void setProductsId(String productsId) {
+        this.productsId = productsId;
+    }
+
+    public List<Map<String, String>> getGoodsSpec() {
+        return goodsSpec;
+    }
+
+    public void setGoodsSpec(List<Map<String, String>> goodsSpec) {
+        this.goodsSpec = goodsSpec;
     }
 }

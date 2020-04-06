@@ -158,7 +158,7 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> OftenBuy(Integer userId,Integer goodsId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		   int effectNum = productService.addCart(userId.toString(),goodsId.toString());
+		   int effectNum = productService.addCart("often"+userId.toString(),goodsId.toString());
 	        if (effectNum<=0){
 	            return builder.body(ResponseUtils.getResponseBody("设置失败"));
 	        }
@@ -171,7 +171,7 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> selectOftenBuy(Integer userId,Integer goodsId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		List<Product> cartDtoList = productService.getCartList(userId.toString());
+		List<Product> cartDtoList = productService.getCartList("often"+userId.toString());
         return builder.body(ResponseUtils.getResponseBody(cartDtoList));
 	}
 	@ApiOperation(value = "取消常买", notes = "取消常买")
@@ -182,7 +182,7 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> delOftenbuy(Integer userId,Integer goodsId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		int effectNum = cartService.delCartProduct(userId.toString(), goodsId.toString());
+		int effectNum = cartService.delCartProduct("often"+userId.toString(), goodsId.toString());
 		   if (effectNum <=0){
 	            return builder.body(ResponseUtils.getResponseBody("取消失败"));
 	        }
@@ -196,7 +196,7 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> Concern(String openId,Integer goodsId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		redisTemplate.opsForValue().set(openId, goodsId);
+		redisTemplate.opsForValue().set("attention"+openId, goodsId);
 		return builder.body(ResponseUtils.getResponseBody("关注成功"));
 	}
 	@ApiOperation(value = "取消关注", notes = "取消关注")
@@ -207,7 +207,7 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> delConcern(String openId,Integer goodsId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		int effectNum = cartService.delCartProduct(openId, goodsId.toString());
+		int effectNum = cartService.delCartProduct("attention"+openId, goodsId.toString());
 		   if (effectNum <=0){
 	            return builder.body(ResponseUtils.getResponseBody("取消失败"));
 	        }
@@ -220,6 +220,6 @@ public class CartCenterController {
 	public ResponseEntity<JSONObject> selectConcern(Integer openId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(openId)));
+		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get("attention"+openId)));
 	}
 }
