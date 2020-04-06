@@ -501,7 +501,7 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findBrowseRecordByUserId(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<UserBrowseInfo> result = new ArrayList<UserBrowseInfo>();
 		List<String> list = homePageDao.groupBytime(userId);
 		for (int i = 0; i < list.size(); i++) {
@@ -567,7 +567,7 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findProductCollectByUserId(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<UserBrowseInfo> result = new ArrayList<UserBrowseInfo>();
 		List<String> list = homePageDao.groupBytimeCollect(userId);
 		for (int i = 0; i < list.size(); i++) {
@@ -632,7 +632,7 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findStoneConcernByUserId(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<UserBrowseInfo> result = new ArrayList<UserBrowseInfo>();
 		List<String> list = homePageDao.groupBytimeConcern(userId);
 		for (int i = 0; i < list.size(); i++) {
