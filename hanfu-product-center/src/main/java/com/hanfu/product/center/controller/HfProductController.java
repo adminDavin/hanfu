@@ -95,6 +95,9 @@ public class HfProductController {
 
 	@Autowired
 	private HfCategoryMapper hfCategoryMapper;
+	
+	@Autowired
+	private UserPersonalBrowseMapper userPersonalBrowseMapper;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -137,7 +140,8 @@ public class HfProductController {
 	@RequestMapping(value = "/getDetail", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getDetail(@RequestParam(name = "productId") Integer productId, Integer stoneId)
+	public ResponseEntity<JSONObject> getDetail(@RequestParam(name = "productId") Integer productId, Integer stoneId,
+			@RequestParam(required = false) Integer userId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfProductDisplay product = hfProductDao.selectProduct(productId, stoneId);
@@ -181,10 +185,30 @@ public class HfProductController {
 		browseRecord.setIdDeleted((byte) 0);
 		browseRecord.setModifyDate(LocalDateTime.now());
 		browseRecord.setProductId(productId);
-		browseRecord.setUserId(1);
+		browseRecord.setUserId(userId);
 		Product product2 = productMapper.selectByPrimaryKey(productId);
 		browseRecord.setBossId(product2.getBossId());
 		hfUserBrowseRecordMapper.insert(browseRecord);
+		UserPersonalBrowseExample userPersonalBrowseExample = new UserPersonalBrowseExample();
+		userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+		List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(userPersonalBrowseExample);
+		if(browses.isEmpty()) {
+			UserPersonalBrowse browse = new UserPersonalBrowse();
+			browse.setBrowseTime(LocalDateTime.now());
+			browse.setCount(1);
+			browse.setCreateTime(LocalDateTime.now());
+			browse.setIsDeleted((byte) 0);
+			browse.setModifiyTime(LocalDateTime.now());
+			browse.setProductId(productId);
+			browse.setUserId(userId);
+			userPersonalBrowseMapper.insert(browse);
+		}else {
+			UserPersonalBrowse browse = browses.get(0);
+			browse.setBrowseTime(LocalDateTime.now());
+			browse.setModifiyTime(LocalDateTime.now());
+			browse.setCount(browse.getCount()+1);
+			userPersonalBrowseMapper.updateByPrimaryKey(browse);
+		}
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
 

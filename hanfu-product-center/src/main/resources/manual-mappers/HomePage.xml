@@ -25,4 +25,19 @@
 		</foreach>
 		group by order_type
 	</select>
+	
+	<select id="groupBytime" resultType="list">
+		select DATE_FORMAT(browse_time, '%Y-%m-%d') from user_personal_browse where user_id = #{userId}
+		GROUP BY DATE_FORMAT(browse_time, '%Y-%m-%d') ORDER BY DATE_FORMAT(browse_time, '%Y-%m-%d') DESC
+	</select>
+	
+	<select id="groupBytimeCollect" resultType="list">
+		select DATE_FORMAT(collect_time, '%Y-%m-%d') from hf_product_collect where user_id = #{userId}
+		GROUP BY DATE_FORMAT(collect_time, '%Y-%m-%d') ORDER BY DATE_FORMAT(collect_time, '%Y-%m-%d') DESC
+	</select>
+	
+	<select id="groupBytimeConcern" resultType="list">
+		select DATE_FORMAT(concern_time, '%Y-%m-%d') from hf_stone_concern where user_id = #{userId}
+		GROUP BY DATE_FORMAT(concern_time, '%Y-%m-%d') ORDER BY DATE_FORMAT(concern_time, '%Y-%m-%d') DESC
+	</select>
 </mapper>

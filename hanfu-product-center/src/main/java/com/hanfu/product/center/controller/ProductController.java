@@ -88,6 +88,10 @@ public class ProductController {
 	private HfStoneMapper hfStoneMapper;
 	@Autowired
 	private HfActivityProductMapper hfActivityProductMapper;
+	@Autowired
+	private HfProductCollectMapper hfProductCollectMapper;
+	@Autowired
+	private HfStoneConcernMapper hfStoneConcernMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -820,4 +824,75 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
+	
+	@ApiOperation(value = "添加商品收藏", notes = "添加商品收藏")
+	@RequestMapping(value = "/addProductCollect", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addProductCollect(Integer userId,Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfProductCollectExample example = new HfProductCollectExample();
+		HfProductCollect collect = null;
+		example.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+		List<HfProductCollect> list = hfProductCollectMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			collect = new HfProductCollect();
+			collect.setCollectTime(LocalDateTime.now());
+			collect.setCreateTime(LocalDateTime.now());
+			collect.setModifyTime(LocalDateTime.now());
+			collect.setIsDeleted((byte) 0);
+			collect.setProductId(productId);
+			collect.setUserId(userId);
+			hfProductCollectMapper.insert(collect);
+		}else {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		return builder.body(ResponseUtils.getResponseBody(collect.getId()));
+	}
+	
+	@ApiOperation(value = "删除商品收藏", notes = "删除商品收藏")
+	@RequestMapping(value = "/deleteProductCollect", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteProductCollect(Integer userId,Integer productId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfProductCollectExample example = new HfProductCollectExample();
+		example.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+		hfProductCollectMapper.deleteByExample(example);
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+	
+	@ApiOperation(value = "关注店铺", notes = "关注店铺")
+	@RequestMapping(value = "/addStoneConcern", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addStoneConcern(Integer userId,Integer stoneId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneConcernExample example = new HfStoneConcernExample();
+		HfStoneConcern concern = null;
+		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
+		List<HfStoneConcern> list = hfStoneConcernMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			concern = new HfStoneConcern();
+			concern.setConcernTime(LocalDateTime.now());
+			concern.setCreateTime(LocalDateTime.now());
+			concern.setIsDeleted((byte) 0);
+			concern.setModifyTime(LocalDateTime.now());
+			concern.setUserId(userId);
+			concern.setStoneId(stoneId);
+			hfStoneConcernMapper.insert(concern);
+		}else {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		return builder.body(ResponseUtils.getResponseBody(concern.getId()));
+	}
+	
+	@ApiOperation(value = "删除店铺关注", notes = "删除店铺关注")
+	@RequestMapping(value = "/deleteStoneConcern", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteStoneConcern(Integer userId,Integer stoneId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneConcernExample example = new HfStoneConcernExample();
+		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
+		hfStoneConcernMapper.deleteByExample(example);
+		return builder.body(ResponseUtils.getResponseBody("删除成功"));
+	}
+	
 }
