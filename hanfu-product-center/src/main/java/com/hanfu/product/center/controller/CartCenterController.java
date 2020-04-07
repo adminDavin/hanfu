@@ -1,6 +1,7 @@
 package com.hanfu.product.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.domain.Coupon;
 import com.hanfu.product.center.cart.model.Cart;
 import com.hanfu.product.center.cart.model.Product;
 import com.hanfu.product.center.cart.service.CartService;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -61,7 +64,8 @@ public class CartCenterController {
     public ResponseEntity<JSONObject> getCartList(Integer userId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         List<Cart> cartDtoList = cartService.getCartList(userId.toString());
-        return builder.body(ResponseUtils.getResponseBody(cartDtoList));
+        Map<String, List<Cart>> resultList = cartDtoList.stream().collect(Collectors.groupingBy(Cart::getStoneName));
+        return builder.body(ResponseUtils.getResponseBody(resultList));
     }
 
     @RequestMapping(path = "/updateCartNum", method = RequestMethod.GET)

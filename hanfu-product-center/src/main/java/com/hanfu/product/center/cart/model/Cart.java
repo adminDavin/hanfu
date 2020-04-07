@@ -26,6 +26,7 @@ public class Cart implements Serializable {
 
     private List<Map<String,String>> goodsSpec;
 
+
     public String getCheck() {
         return check;
     }
