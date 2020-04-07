@@ -137,7 +137,7 @@ public class PaymentOrderController {
 				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
 				HfBalanceDetail detail = new HfBalanceDetail();
 				detail.setUserId(hfUser.getUserId());
-				detail.setAmount(String.valueOf(-hfOrders.get(0).getAmount()));
+				detail.setAmount(String.valueOf(hfOrders.get(0).getAmount()));
 				detail.setPaymentName("消费");
 				detail.setCreateTime(LocalDateTime.now());
 				detail.setModifyTime(LocalDateTime.now());
@@ -200,7 +200,7 @@ public class PaymentOrderController {
                  hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
                  HfBalanceDetail detail = new HfBalanceDetail();
  				detail.setUserId(hfUser.getUserId());
- 				detail.setAmount("+"+String.valueOf(hfOrder.getAmount()));
+ 				detail.setAmount(String.valueOf(hfOrder.getAmount()));
  				detail.setPaymentName("退款");
  				detail.setCreateTime(LocalDateTime.now());
  				detail.setModifyTime(LocalDateTime.now());
@@ -385,7 +385,7 @@ public class PaymentOrderController {
 		if(level == null) {
 			HfBalanceDetail detail = new HfBalanceDetail();
 			detail.setUserId(userId);
-			detail.setAmount("+"+String.valueOf(totalFee));
+			detail.setAmount(String.valueOf(totalFee));
 			detail.setPaymentName("充值");
 			detail.setCreateTime(LocalDateTime.now());
 			detail.setModifyTime(LocalDateTime.now());
