@@ -60,6 +60,12 @@
                 property="departmentId"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
     </resultMap>   
+    
+    <resultMap type="com.hanfu.user.center.manual.model.UserOrderInfo"
+               id="UserOrderInfo">
+        <result column="orderCount" jdbcType="INTEGER" property="orderCount"/>
+        <result column="orderStatus" jdbcType="VARCHAR" property="orderStatus"/>
+    </resultMap>   
 
     <select id="selectAuthList" resultMap="BaseResultMap">
         SELECT
@@ -177,5 +183,9 @@
     
     <select id="selectConcernCount" resultType="Integer">
     	select count(*) from hf_stone_concern where user_id = #{userId}
+    </select>
+    
+    <select id="selectUserOrderInfo" resultMap="UserOrderInfo">
+    	select order_status orderStatus,count(*) orderCount from hf_order where user_id = #{userId} group by order_status
     </select>
 </mapper>

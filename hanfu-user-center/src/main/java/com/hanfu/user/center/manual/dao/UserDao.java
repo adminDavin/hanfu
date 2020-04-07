@@ -3,6 +3,7 @@ package com.hanfu.user.center.manual.dao;
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserInfo;
+import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
@@ -29,4 +30,6 @@ public interface UserDao {
     Integer selectCollectCount(Integer userId);
     
     Integer selectBrowseCount(Integer userId);
+    
+    List<UserOrderInfo> selectUserOrderInfo(Integer userId);
 }

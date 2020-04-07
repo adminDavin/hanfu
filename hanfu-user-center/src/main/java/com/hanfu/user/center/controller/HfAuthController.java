@@ -66,6 +66,7 @@ import com.hanfu.user.center.manual.model.HfUserMemberInfo;
 import com.hanfu.user.center.manual.model.PurseInfo;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
+import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.model.CancelExample;
 import com.hanfu.user.center.model.HUserBalanceExample;
 import com.hanfu.user.center.model.HfAuth;
@@ -973,10 +974,13 @@ public class HfAuthController {
 		Integer collectCount = userDao.selectCollectCount(userId);
 		Integer concernCount = userDao.selectConcernCount(userId);		
 		
+		List<UserOrderInfo> order = userDao.selectUserOrderInfo(userId);
+		
 		PurseInfo info = new PurseInfo();
 		info.setBrowseCount(browseCount);
 		info.setCollectCount(collectCount);
 		info.setConcernCount(concernCount);
+		info.setOrder(order);
 		if(balance3.isEmpty()) {
 			info.setCouponCount(0);
 		}else {

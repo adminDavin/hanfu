@@ -1,6 +1,7 @@
 package com.hanfu.user.center.manual.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PurseInfo implements Serializable{
 
@@ -18,6 +19,7 @@ public class PurseInfo implements Serializable{
 	private Integer collectCount;
 	private Integer concernCount;
 	private Integer browseCount;
+	private List<UserOrderInfo> order;
 	
 	public String getPrerogative() {
 		return prerogative;
@@ -69,5 +71,11 @@ public class PurseInfo implements Serializable{
 	}
 	public void setBrowseCount(Integer browseCount) {
 		this.browseCount = browseCount;
+	}
+	public List<UserOrderInfo> getOrder() {
+		return order;
+	}
+	public void setOrder(List<UserOrderInfo> order) {
+		this.order = order;
 	}
 }
