@@ -464,7 +464,7 @@ public class HomePageController {
 			HfBalanceDetail order = list.get(i);
 			OrderRecord orderRecord = new OrderRecord();
 			orderRecord.setAmount(String.valueOf(order.getAmount()));
-			orderRecord.setPaymentMethod(order.getPaymentName());
+			orderRecord.setType(order.getPaymentName());
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(order.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
 			orderRecord.setDateTime(order.getCreateTime().plusHours(8));
@@ -487,6 +487,7 @@ public class HomePageController {
 			HfIntegral hfIntegral = list.get(i);
 			OrderRecord orderRecord = new OrderRecord();
 			orderRecord.setAmount(String.valueOf(hfIntegral.getAmount()));
+			orderRecord.setType(hfIntegral.getPaymentName());
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(hfIntegral.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
 			orderRecord.setDateTime(hfIntegral.getCreateTime().plusHours(8));

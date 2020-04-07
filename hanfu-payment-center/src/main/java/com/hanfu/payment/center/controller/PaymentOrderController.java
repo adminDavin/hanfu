@@ -435,6 +435,7 @@ public class PaymentOrderController {
 			HfIntegral hfIntegral = new HfIntegral();
 			hfIntegral.setUserId(userId);
 			hfIntegral.setAmount(totalFee);
+			hfIntegral.setPaymentName("充值");
 			hfIntegral.setCreateTime(LocalDateTime.now());
 			hfIntegral.setModifyTime(LocalDateTime.now());
 			hfIntegral.setIsDeleted((byte) 0);
