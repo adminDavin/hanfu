@@ -337,7 +337,8 @@ public class PaymentOrderController {
 				hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
 
 				if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+					rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 							LocalDateTime.now());
 				} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
