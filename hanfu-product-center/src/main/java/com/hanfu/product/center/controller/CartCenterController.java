@@ -6,6 +6,7 @@ import com.hanfu.product.center.cart.model.Cart;
 import com.hanfu.product.center.cart.model.Product;
 import com.hanfu.product.center.cart.service.CartService;
 import com.hanfu.product.center.cart.service.ProductService;
+import com.hanfu.product.center.manual.model.CartList;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -24,8 +25,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -64,8 +69,16 @@ public class CartCenterController {
     public ResponseEntity<JSONObject> getCartList(Integer userId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         List<Cart> cartDtoList = cartService.getCartList(userId.toString());
+        List<CartList> result = new ArrayList<CartList>();
         Map<String, List<Cart>> resultList = cartDtoList.stream().collect(Collectors.groupingBy(Cart::getStoneName));
-        return builder.body(ResponseUtils.getResponseBody(resultList));
+        Set<Entry<String, List<Cart>>> set = resultList.entrySet();
+        for(Entry<String, List<Cart>> entry:set) {
+        	CartList cartList = new CartList();
+        	cartList.setName(entry.getKey());
+        	cartList.setGoodList(entry.getValue());
+        	result.add(cartList);
+        }
+        return builder.body(ResponseUtils.getResponseBody(result));
     }
 
     @RequestMapping(path = "/updateCartNum", method = RequestMethod.GET)
@@ -226,4 +239,5 @@ public class CartCenterController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get("attention"+openId)));
 	}
+		
 }
