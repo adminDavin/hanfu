@@ -3,6 +3,7 @@ package com.hanfu.user.center.manual.dao;
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserInfo;
+import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
@@ -65,6 +66,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Integer selectConcernCount(Integer userId) {
     	Integer result = sqlSessionTemplate.selectOne("selectConcernCount", userId);
+    	return result;
+    }
+    
+    @Override
+    public List<UserOrderInfo> selectUserOrderInfo(Integer userId) {
+    	List<UserOrderInfo> result = sqlSessionTemplate.selectList("selectUserOrderInfo", userId);
     	return result;
     }
 }

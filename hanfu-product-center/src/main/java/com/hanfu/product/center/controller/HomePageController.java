@@ -139,10 +139,10 @@ public class HomePageController {
 
 	@Autowired
 	private HfCategoryMapper hfCategoryMapper;
-	
+
 	@Autowired
 	private HfProductCollectMapper hfProductCollectMapper;
-	
+
 	@Autowired
 	private HfStoneConcernMapper hfStoneConcernMapper;
 
@@ -464,7 +464,7 @@ public class HomePageController {
 			HfBalanceDetail order = list.get(i);
 			OrderRecord orderRecord = new OrderRecord();
 			orderRecord.setAmount(String.valueOf(order.getAmount()));
-			orderRecord.setPaymentMethod(order.getPaymentName());
+			orderRecord.setType(order.getPaymentName());
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(order.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
 			orderRecord.setDateTime(order.getCreateTime().plusHours(8));
@@ -487,6 +487,7 @@ public class HomePageController {
 			HfIntegral hfIntegral = list.get(i);
 			OrderRecord orderRecord = new OrderRecord();
 			orderRecord.setAmount(String.valueOf(hfIntegral.getAmount()));
+			orderRecord.setType(hfIntegral.getPaymentName());
 			HfUsers hfUser = hfUsersMapper.selectByPrimaryKey(hfIntegral.getUserId());
 			orderRecord.setPaymentName(hfUser.getRealName());
 			orderRecord.setDateTime(hfIntegral.getCreateTime().plusHours(8));
@@ -559,8 +560,7 @@ public class HomePageController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
-	
+
 	@ApiOperation(value = "查询某一个用户的商品收藏", notes = "查询某一个用户的商品收藏")
 	@RequestMapping(value = "/findProductCollectByUserId", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -625,7 +625,7 @@ public class HomePageController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
+
 	@ApiOperation(value = "查询某一个用户的店铺关注", notes = "查询某一个用户的店铺关注")
 	@RequestMapping(value = "/findStoneConcernByUserId", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -637,7 +637,7 @@ public class HomePageController {
 		List<String> list = homePageDao.groupBytimeConcern(userId);
 		for (int i = 0; i < list.size(); i++) {
 			UserBrowseInfo info = new UserBrowseInfo();
-			
+
 			List<StoneConcernInfo> concernInfos = new ArrayList<StoneConcernInfo>();
 			String str = list.get(i);
 			LocalDateTime dayStart = LocalDate.parse(str, df).atStartOfDay();
@@ -648,7 +648,7 @@ public class HomePageController {
 			for (int j = 0; j < browses.size(); j++) {
 				HfStoneConcern concern = browses.get(j);
 				StoneConcernInfo concernInfo = new StoneConcernInfo();
-				HfStone stone = hfStoneMapper.selectByPrimaryKey(concern.getId());
+				HfStone stone = hfStoneMapper.selectByPrimaryKey(concern.getStoneId());
 				concernInfo.setName(stone.getHfName());
 				concernInfo.setStoneId(concern.getStoneId());
 				concernInfo.setCreateTime(stone.getCreateTime());

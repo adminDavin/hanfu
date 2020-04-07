@@ -137,7 +137,8 @@ public class PaymentOrderController {
 				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
 				HfBalanceDetail detail = new HfBalanceDetail();
 				detail.setUserId(hfUser.getUserId());
-				detail.setAmount(String.valueOf(-hfOrders.get(0).getAmount()));
+				detail.setAmount(String.valueOf(hfOrders.get(0).getAmount()));
+				detail.setPaymentName("消费");
 				detail.setCreateTime(LocalDateTime.now());
 				detail.setModifyTime(LocalDateTime.now());
 				detail.setIsDeleted((byte) 0);
@@ -199,7 +200,8 @@ public class PaymentOrderController {
                  hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
                  HfBalanceDetail detail = new HfBalanceDetail();
  				detail.setUserId(hfUser.getUserId());
- 				detail.setAmount(String.valueOf(+hfOrder.getAmount()));
+ 				detail.setAmount(String.valueOf(hfOrder.getAmount()));
+ 				detail.setPaymentName("退款");
  				detail.setCreateTime(LocalDateTime.now());
  				detail.setModifyTime(LocalDateTime.now());
  				detail.setIsDeleted((byte) 0);
@@ -337,7 +339,8 @@ public class PaymentOrderController {
 				hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
 
 				if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+					rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 							LocalDateTime.now());
 				} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
@@ -382,7 +385,8 @@ public class PaymentOrderController {
 		if(level == null) {
 			HfBalanceDetail detail = new HfBalanceDetail();
 			detail.setUserId(userId);
-			detail.setAmount("+"+String.valueOf(totalFee));
+			detail.setAmount(String.valueOf(totalFee));
+			detail.setPaymentName("充值");
 			detail.setCreateTime(LocalDateTime.now());
 			detail.setModifyTime(LocalDateTime.now());
 			detail.setIsDeleted((byte) 0);
@@ -431,6 +435,7 @@ public class PaymentOrderController {
 			HfIntegral hfIntegral = new HfIntegral();
 			hfIntegral.setUserId(userId);
 			hfIntegral.setAmount(totalFee);
+			hfIntegral.setPaymentName("充值");
 			hfIntegral.setCreateTime(LocalDateTime.now());
 			hfIntegral.setModifyTime(LocalDateTime.now());
 			hfIntegral.setIsDeleted((byte) 0);
