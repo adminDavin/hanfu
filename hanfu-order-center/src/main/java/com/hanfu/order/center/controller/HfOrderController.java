@@ -280,27 +280,40 @@ public class HfOrderController {
 
         hfOrderMapper.insertSelective(hfOrder);
         //
-
-        for (CreatesOrder goods:list){
+        if (request.getDisconuntId()!=null) {
+            for (CreatesOrder goods : list) {
 //        .forEach(goods->{
 //            JSONObject jsonObject= JSON.parseObject(goods);
 //            CreatesOrder createsOrder = JSON.toJavaObject(jsonObject,CreatesOrder.class);
 //            createsOrderList.add(createsOrder);
-            Map map= money(goods.getGoodsId(),request.getDisconuntId(),request.getActivityId(),goods.getQuantity());
-            moneys = (Integer) map.get("money")+moneys;
-            HfPriceExample hfPriceExample = new HfPriceExample();
-            hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
-            List<HfPrice> hfPrices= hfPriceMappers.selectByExample(hfPriceExample);
-            request.setActualPrice(hfPrices.get(0).getSellPrice()*goods.getQuantity());
-            request.setGoodsId(goods.getGoodsId());
-            request.setHfDesc(goods.getHfDesc());
-            request.setQuantity(goods.getQuantity());
-            request.setSellPrice(hfPrices.get(0).getSellPrice());
-            //详情
-            if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-            detailNomalOrders(request, hfOrder);
+                Map map = money(goods.getGoodsId(), null, request.getActivityId(), goods.getQuantity(), null);
+                moneys = (Integer) map.get("money") + moneys;
+                HfPriceExample hfPriceExample = new HfPriceExample();
+                hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
+                List<HfPrice> hfPrices = hfPriceMappers.selectByExample(hfPriceExample);
+                request.setActualPrice(hfPrices.get(0).getSellPrice() * goods.getQuantity());
+                request.setGoodsId(goods.getGoodsId());
+                request.setHfDesc(goods.getHfDesc());
+                request.setQuantity(goods.getQuantity());
+                request.setSellPrice(hfPrices.get(0).getSellPrice());
+                //详情
+                if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+                    detailNomalOrders(request, hfOrder);
+                }
+            }
+        }else {
+//            List<Integer> goodsIds = list.stream().map(CreatesOrder::getGoodsId).collect(Collectors.toList());
+            Integer actualPrice = 0;
+            for (CreatesOrder goods : list){
+                HfPrice hfPrice= hfPriceMappers.selectByPrimaryKey(goods.getGoodsId());
+                actualPrice = actualPrice+(hfPrice.getSellPrice()*goods.getQuantity());
+            }
+            if (request.getDisconuntId()!=null){
+                Map map1= money(null,request.getDisconuntId(),null,null,actualPrice);
+                moneys= (Integer) map1.get("money");
+            }
         }
-        }
+
         HfOrder hfOrder1 = new HfOrder();
         hfOrder1.setId(hfOrder.getId());
         hfOrder1.setAmount(moneys);
@@ -334,7 +347,7 @@ public class HfOrderController {
 
     }
 
-    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num){
+    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice){
         Map map = new HashMap();
         if (activityId!=null){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
@@ -345,10 +358,11 @@ public class HfOrderController {
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
             System.out.println(map.get("money")+"活动");
-        } else if (disconuntId!=null){
+        } else if (disconuntId!=null && actualPrice!=null){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
+            paramMap.add("",actualPrice);
             for (Integer integer:disconuntId){
                 paramMap.add("discountCouponId",integer);
             }

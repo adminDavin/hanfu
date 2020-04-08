@@ -68,7 +68,7 @@ public class HfGoodsController {
 
     @ApiOperation(value = "校检库存", notes = "校检库存")
     @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId)
+    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId,Integer actualPrice)
             throws JSONException {
         if (activityId==null){
             activityId=0;
@@ -95,7 +95,7 @@ public class HfGoodsController {
                 }
                 if (hfActivityProductList.get(0).getFavoravlePrice()==null||hfActivityProductList.get(0).getFavoravlePrice()==0){
                   if (hfActivityProductList.get(0).getDiscountRatio()==null||hfActivityProductList.get(0).getDiscountRatio()==0){
-                      return product(goodsId,GoodsNum,discountCouponId);
+                      return product(goodsId,GoodsNum,discountCouponId,actualPrice);
                   } else {
                       amount.setMoney((int) ((selectPriceResp(goodsId).get("hfPrices")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
                       amount.setDiscountMoney((int) ((selectPriceResp(goodsId).get("linePrice")*hfActivityProductList.get(0).getDiscountRatio())/100)*GoodsNum);
@@ -108,14 +108,14 @@ public class HfGoodsController {
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
             }
-            return product(goodsId,GoodsNum,discountCouponId);
+            return product(goodsId,GoodsNum,discountCouponId,actualPrice);
         }
         return builder.body(ResponseUtils.getResponseBody("goods null"));
     }
 
-    private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum,Integer[] discountCouponId) throws JSONException {
+    private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum,Integer[] discountCouponId,Integer actualPrice) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Integer moneys =selectPriceResp(goodsId).get("hfPrices");
+
         if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
             return builder.body(ResponseUtils.getResponseBody("understock"));
         }
@@ -134,7 +134,11 @@ if (discountCouponId!=null){
         if (SUP.size()!=discountCouponId.length&&(SUP.size()+1)!=discountCouponId.length){
             return builder.body(ResponseUtils.getResponseBody("coupon select error"));
         }
+    }
+
 //        SUP.forEach(sups ->{
+    System.out.println(SUP+"-------SUP");
+    Integer moneys =selectPriceResp(goodsId).get("hfPrices");
             for (Integer sups:SUP){
            DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(sups);
            if (discountCoupon.getDiscountCouponType().equals("1")){
@@ -145,7 +149,12 @@ if (discountCouponId!=null){
 			String key = iterator.next();
 			String value = specs.getString(key);
 if (key.equals("minus")){
+    if (actualPrice!=null){
+        actualPrice = actualPrice-Integer.valueOf(value);
+        System.out.println(moneys+"价格");
+    } else {
         moneys=(moneys*GoodsNum)-Integer.valueOf(value);
+    }
 }
 		}
            }else {
@@ -155,13 +164,21 @@ if (key.equals("minus")){
                    String key = iterator.next();
                    String value = specs.getString(key);
                    if (key.equals("minus")){
-                       moneys=((moneys*GoodsNum)*Integer.valueOf(value))/100;
+                       if (actualPrice!=null){
+                           System.out.println(moneys+"折扣");
+                           actualPrice = (actualPrice * Integer.valueOf(value)) / 100;
+                       }else {
+                           moneys = ((moneys * GoodsNum) * Integer.valueOf(value)) / 100;
+                       }
                    }
                }
            }
         }
-    }
+if (actualPrice!=null){
+    amount.setMoney(actualPrice);
+}else {
     amount.setMoney(moneys);
+}
     amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice"));
 }else {
     amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
@@ -187,9 +204,9 @@ if (key.equals("minus")){
 
         Map<String, Integer> params = new HashMap<>();
         params.put("hfPrices", hfPrices.get(0).getSellPrice());
-        System.out.println(hfPrices.get(0).getSellPrice());
-        System.out.println(hfResps.get(0).getQuantity());
-        System.out.println(hfPrices.get(0).getLinePrice());
+//        System.out.println(hfPrices.get(0).getSellPrice());
+//        System.out.println(hfResps.get(0).getQuantity());
+//        System.out.println(hfPrices.get(0).getLinePrice());
         params.put("hfResps", hfResps.get(0).getQuantity());
         params.put("linePrice",hfPrices.get(0).getLinePrice());
 
