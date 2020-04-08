@@ -280,7 +280,6 @@ public class HfOrderController {
 
         hfOrderMapper.insertSelective(hfOrder);
         //
-        if (request.getDisconuntId()!=null) {
             for (CreatesOrder goods : list) {
 //        .forEach(goods->{
 //            JSONObject jsonObject= JSON.parseObject(goods);
@@ -301,19 +300,6 @@ public class HfOrderController {
                     detailNomalOrders(request, hfOrder);
                 }
             }
-        }else {
-//            List<Integer> goodsIds = list.stream().map(CreatesOrder::getGoodsId).collect(Collectors.toList());
-            Integer actualPrice = 0;
-            for (CreatesOrder goods : list){
-                HfPrice hfPrice= hfPriceMappers.selectByPrimaryKey(goods.getGoodsId());
-                actualPrice = actualPrice+(hfPrice.getSellPrice()*goods.getQuantity());
-            }
-            if (request.getDisconuntId()!=null){
-                Map map1= money(null,request.getDisconuntId(),null,null,actualPrice);
-                moneys= (Integer) map1.get("money");
-            }
-        }
-
         HfOrder hfOrder1 = new HfOrder();
         hfOrder1.setId(hfOrder.getId());
         hfOrder1.setAmount(moneys);
