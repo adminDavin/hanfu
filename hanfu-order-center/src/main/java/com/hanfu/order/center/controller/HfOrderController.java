@@ -261,7 +261,7 @@ public class HfOrderController {
 //        CreatesOrder createsOrder1 = JSONArray.toJavaObject(jsonObject1,CreatesOrder.class);
         //转list
         List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
-        if (chock(list)!=null){
+        if (chock(list).size()!=0){
             return builder.body(ResponseUtils.getResponseBody(chock(list)));
         }
         LocalDateTime time = LocalDateTime.now();
