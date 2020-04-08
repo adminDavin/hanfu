@@ -22,7 +22,7 @@ public class CreateOrderRequest extends CommonRequest {
     private Integer actualPrice;
     @ApiModelProperty(required = false, value = "物品id")
     private Integer goodsId;
-    @ApiModelProperty(required = true, value = "运费")
+    @ApiModelProperty(required = false, value = "运费")
     private Integer freight;
     @ApiModelProperty(required = false, value = "描述")
     private String hfDesc;
