@@ -1,5 +1,7 @@
 package com.hanfu.order.center.model;
 
+import com.hanfu.order.center.manual.model.DetailRequest;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

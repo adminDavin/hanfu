@@ -14,6 +14,7 @@ import com.hanfu.order.center.cancel.dao.HfGoodsMapper;
 import com.hanfu.order.center.dao.*;
 import com.hanfu.order.center.manual.model.*;
 import com.hanfu.order.center.model.*;
+import com.hanfu.payment.center.request.HfStoneRequest;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,8 @@ public class HfOrderController {
     private HfPriceMappers hfPriceMappers;
     @Autowired
     private HfRespMapper hfRespMapper;
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -153,15 +156,32 @@ public class HfOrderController {
             Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
             List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
             
-            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
+//            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
             hfOrders.forEach(hfOrder -> {
-                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
-                if (java.util.Optional.ofNullable(goods).isPresent()) {
-                    hfOrder.setGoodsName(goods.getHfName());
-                    hfOrder.setStoneName(goods.getStoneName());
-                    hfOrder.setFileId(goods.getFileId());
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+                List<HfOrderDetail> hfOrderDetailList = hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+//                hfOrder.setOrderDetailList(hfOrderDetailMapper.selectByExample(hfOrderDetailExample));
+                Map<Integer, List<HfOrderDetail>> resultList = hfOrderDetailList.stream().collect(Collectors.groupingBy(HfOrderDetail::getStoneId));
+                List<DetailRequest> detailRequest = new ArrayList<>();
+                Set<Map.Entry<Integer, List<HfOrderDetail>>> set = resultList.entrySet();
+                for(Map.Entry<Integer, List<HfOrderDetail>> entry:set) {
+                    DetailRequest cartList = new DetailRequest();
+                    cartList.setStoneId(entry.getKey());
+                    HfStone hfStone= hfStoneMapper.selectByPrimaryKey(entry.getKey());
+                    cartList.setStoneName(hfStone.getHfName());
+                    cartList.setHfOrderDetailList(entry.getValue());
+                    detailRequest.add(cartList);
                 }
+                hfOrder.setDetailRequestList(detailRequest);
+
+//                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
+//                if (java.util.Optional.ofNullable(goods).isPresent()) {
+//                    hfOrder.setGoodsName(goods.getHfName());
+//                    hfOrder.setStoneName(goods.getStoneName());
+//                    hfOrder.setFileId(goods.getFileId());
+//                }
                 //活动判断
                 HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
                 hfActivityCountExample.createCriteria().andIsDeletedEqualTo((byte) 0).andOrderIdEqualTo(hfOrder.getId());
