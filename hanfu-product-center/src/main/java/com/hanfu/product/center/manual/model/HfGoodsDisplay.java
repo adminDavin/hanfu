@@ -16,6 +16,8 @@ public class HfGoodsDisplay extends CommonRequest {
     private String goodName;
     @ApiModelProperty(required = false, value = "仓库名称")
     private String warehouseName;
+    @ApiModelProperty(required = false, value = "仓库id")
+    private Integer warehouseId;
     @ApiModelProperty(required = false, value = "商品类目名称")
     private String productCategoryName;
     @ApiModelProperty(required = false, value = "物品描述")
@@ -339,4 +341,12 @@ public class HfGoodsDisplay extends CommonRequest {
     public void setFrames(Integer frames) {
         this.frames = frames;
     }
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
 }

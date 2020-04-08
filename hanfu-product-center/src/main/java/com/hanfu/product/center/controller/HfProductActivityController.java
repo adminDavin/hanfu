@@ -3,6 +3,7 @@ package com.hanfu.product.center.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.domain.RatioDetail;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfGroupDao;
@@ -94,16 +95,16 @@ public class HfProductActivityController {
         HfActivity hfActivity = new HfActivity();
         hfActivity.setActivityName(request.getActivityName());
         hfActivity.setActivityType(request.getActivityType());
-        if (!StringUtils.isEmpty(request.getStartTime())) {
+        if (request.getStartTime() != null) {
 //            Instant instant = request.getStartTime().toInstant();
 //            ZoneId zoneId = ZoneId.systemDefault();
 //            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
             hfActivity.setStartTime(request.getStartTime());
         }
-        if (!StringUtils.isEmpty(request.getEndTime())) {
-            Instant instant = request.getEndTime().toInstant();
-            ZoneId zoneId = ZoneId.systemDefault();
-            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+        if (request.getEndTime() != null) {
+//            Instant instant = request.getEndTime().toInstant();
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
             hfActivity.setEndTime(request.getEndTime());
         }
         HfUser hfUser = manualDao.select(request.getUserId());
@@ -225,7 +226,7 @@ public class HfProductActivityController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),})
-    public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true) Integer id,
+    public ResponseEntity<JSONObject>     intoActivityProduct(@RequestParam(required = true) Integer id,
                                                           @RequestParam(required = true) Integer productId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivityProduct hfActivityProduct = new HfActivityProduct();
@@ -278,6 +279,28 @@ public class HfProductActivityController {
             return builder.body(ResponseUtils.getResponseBody(result));
         }
         return builder.body(ResponseUtils.getResponseBody("还未添加信息"));
+    }
+    
+    @ApiOperation(value = "查询轮播图", notes = "查询轮播图")
+    @RequestMapping(value = "/getActivityRatation", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> getActivityRatation() throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<RatationInfo> result = new ArrayList<RatationInfo>(); 
+        HfActivityExample example = new HfActivityExample();
+        example.createCriteria().andActivityTypeEqualTo("ratationActivity");
+        List<HfActivity> list = hfActivityMapper.selectByExample(example);
+        HfActivityProductExample productExample = new HfActivityProductExample();
+        list.stream().forEach(a -> {
+        	productExample.clear();
+        	RatationInfo info = new RatationInfo();
+        	info.setActivityId(a.getId());
+        	info.setFileId(a.getFileId());
+        	productExample.createCriteria().andActivityIdEqualTo(a.getId());
+        	List<HfActivityProduct> products = hfActivityProductMapper.selectByExample(productExample);
+        	info.setProductId(products.get(0).getProductId());
+        	result.add(info);
+        });
+            return builder.body(ResponseUtils.getResponseBody(result));
     }
 
     @ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")

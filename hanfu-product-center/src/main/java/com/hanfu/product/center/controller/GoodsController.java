@@ -321,25 +321,26 @@ public class GoodsController {
 			;
 		}
 		hfGoods.setModifyTime(LocalDateTime.now());
-		if(hfGoods.getPriceId()==null || hfGoods.getRespId() == null) {
+//		if(hfGoods.getPriceId()==null || hfGoods.getRespId() == null) {
 			GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
 			goodsPriceInfo.setHfGoodsId(hfGoods.getId());
 			goodsPriceInfo.setSellPrice(hfGoodsDisplay.getSellPrice());
 			goodsPriceInfo.setQuantity(hfGoodsDisplay.getQuantity());
+			goodsPriceInfo.setWareHouseId(hfGoodsDisplay.getWarehouseId());
 			//        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
 			setGoodsPrice(goodsPriceInfo);
-		}else {
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
-				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-				hfPriceMapper.updateByPrimaryKey(hfPrice);
-			}
-			HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-			if(!StringUtils.isEmpty(hfGoodsDisplay.getQuantity())) {
-				hfResp.setQuantity(hfGoodsDisplay.getQuantity());
-				hfRespMapper.updateByPrimaryKey(hfResp);
-			}
-		}
+//		}else {
+//			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
+//			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
+//				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+//				hfPriceMapper.updateByPrimaryKey(hfPrice);
+//			}
+//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+//			if(!StringUtils.isEmpty(hfGoodsDisplay.getQuantity())) {
+//				hfResp.setQuantity(hfGoodsDisplay.getQuantity());
+//				hfRespMapper.updateByPrimaryKey(hfResp);
+//			}
+//		}
 //		HfResp hfResp = new HfResp();
 //		HfGoodsSpec goodsSpec = new HfGoodsSpec();
 //		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
@@ -527,7 +528,7 @@ public class GoodsController {
 			if (!StringUtils.isEmpty(request.getUsername())) {
 				resp.setLastModifier(request.getUsername());
 			}
-			if (!StringUtils.isEmpty(String.valueOf(request.getWareHouseId()))) {
+			if (!StringUtils.isEmpty(request.getWareHouseId())) {
 				resp.setWarehouseId(request.getWareHouseId());
 			}
 			hfRespMapper.updateByPrimaryKey(resp);
@@ -1181,4 +1182,5 @@ public class GoodsController {
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
 	}
+	
 }
