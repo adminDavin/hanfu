@@ -63,4 +63,16 @@ public class CreatesOrder {
     public void setStoneId(Integer stoneId) {
         this.stoneId = stoneId;
     }
+
+    @Override
+    public String toString() {
+        return "CreatesOrder{" +
+                "goodsId=" + goodsId +
+                ", actualPrice=" + actualPrice +
+                ", hfDesc='" + hfDesc + '\'' +
+                ", quantity=" + quantity +
+                ", sellPrice=" + sellPrice +
+                ", stoneId=" + stoneId +
+                '}';
+    }
 }

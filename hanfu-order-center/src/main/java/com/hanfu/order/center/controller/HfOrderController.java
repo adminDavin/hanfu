@@ -6,9 +6,13 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.hanfu.order.center.cancel.dao.HfGoodsMapper;
 import com.hanfu.order.center.dao.*;
-import com.hanfu.order.center.manual.model.payment;
+import com.hanfu.order.center.manual.model.*;
 import com.hanfu.order.center.model.*;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -16,15 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.fastjson.JSONObject;
+
 import com.hanfu.order.center.manual.dao.HfOrderDao;
-import com.hanfu.order.center.manual.model.HfGoodsDisplay;
-import com.hanfu.order.center.manual.model.HfOrderDisplay;
-import com.hanfu.order.center.manual.model.HfOrderStatistics;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderStatus;
 import com.hanfu.order.center.request.CreateHfOrderRequest.OrderTypeEnum;
@@ -44,6 +47,7 @@ public class HfOrderController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
+    private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
     @Autowired
     private RestTemplate restTemplate;
 
@@ -64,6 +68,11 @@ public class HfOrderController {
 
     @Autowired
     private HfActivityProductMapper hfActivityProductMapper;
+
+    @Autowired
+    private HfGoodsMapper hfGoodsMapper;
+    @Autowired
+    private HfPriceMappers hfPriceMappers;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -239,7 +248,125 @@ public class HfOrderController {
         hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
         return builder.body(ResponseUtils.getResponseBody("0"));
     }
-    
+
+    @ApiOperation(value = "创建订单", notes = "创建订单")
+    @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Integer moneys = 0;
+        JSONArray jsonArray= JSONArray.parseArray(request.getGoodsList());
+//        JSONObject jsonObject1= JSON.parseObject(request.getGoodsList());
+//        CreatesOrder createsOrder1 = JSONArray.toJavaObject(jsonObject1,CreatesOrder.class);
+        //转list
+        List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
+        LocalDateTime time = LocalDateTime.now();
+        HfOrder hfOrder = new HfOrder();
+        hfOrder.setCreateTime(time);
+        hfOrder.setModifyTime(time);
+
+        hfOrder.setAmount(moneys);
+        hfOrder.setHfRemark(request.getHfRemark());
+        hfOrder.setUserId(request.getUserId());
+        hfOrder.setOrderType(request.getOrderType());
+        hfOrder.setPaymentName(request.getPaymentName());
+//        hfOrder.setStoneId(request.getStoneId());
+//        hfOrder.setDistributorId(request.getDistributorId());
+        hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
+        hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
+        Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
+        hfOrder.setPaymentType(paymentType);
+        hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
+        hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
+
+        hfOrderMapper.insertSelective(hfOrder);
+        //
+
+        for (CreatesOrder goods:list){
+//        .forEach(goods->{
+//            JSONObject jsonObject= JSON.parseObject(goods);
+//            CreatesOrder createsOrder = JSON.toJavaObject(jsonObject,CreatesOrder.class);
+//            createsOrderList.add(createsOrder);
+            Map map= money(goods.getGoodsId(),request.getDisconuntId(),request.getActivityId(),goods.getQuantity());
+            moneys = (Integer) map.get("money")+moneys;
+            HfPriceExample hfPriceExample = new HfPriceExample();
+            hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
+            List<HfPrice> hfPrices= hfPriceMappers.selectByExample(hfPriceExample);
+            request.setActualPrice(hfPrices.get(0).getSellPrice()*goods.getQuantity());
+            request.setGoodsId(goods.getGoodsId());
+            request.setHfDesc(goods.getHfDesc());
+            request.setQuantity(goods.getQuantity());
+            request.setSellPrice(hfPrices.get(0).getSellPrice());
+            //详情
+            if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+            detailNomalOrders(request, hfOrder);
+        }
+        }
+        HfOrder hfOrder1 = new HfOrder();
+        hfOrder1.setId(hfOrder.getId());
+        hfOrder1.setAmount(moneys);
+        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
+        LocalDateTime time = LocalDateTime.now();
+
+        HfOrderDetail detail = new HfOrderDetail();
+        detail.setActualPrice(request.getActualPrice());
+        detail.setCreateTime(time);
+        detail.setGoodsId(request.getGoodsId());
+        detail.setFreight(request.getFreight());
+        detail.setHfDesc(request.getHfDesc());
+        detail.setHfStatus(OrderStatus.PAYMENT.getOrderStatus());
+        detail.setLastModifier(String.valueOf(request.getUserId()));
+        detail.setModifyTime(time);
+        detail.setOrderId(hfOrder.getId());
+        detail.setQuantity(request.getQuantity());
+        detail.setSellPrice(request.getSellPrice());
+        CreateHfOrderRequest request1 = new CreateHfOrderRequest();
+        detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).getTakingType());
+        hfOrderDetailMapper.insertSelective(detail);
+        if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
+            if (TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
+                hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
+            }
+        }
+
+    }
+
+    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num){
+        Map map = new HashMap();
+        if (activityId!=null){
+            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("goodsId",goodsId);
+            paramMap.add("GoodsNum",num);
+            paramMap.add("activityId",activityId);
+            JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
+            JSONObject data=entity.getJSONObject("data");
+            map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+            System.out.println(map.get("money")+"活动");
+        } else if (disconuntId!=null){
+            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("goodsId",goodsId);
+            paramMap.add("GoodsNum",num);
+            for (Integer integer:disconuntId){
+                paramMap.add("discountCouponId",integer);
+            }
+            JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
+            JSONObject data=entity.getJSONObject("data");
+            map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+            System.out.println(map.get("money")+"优惠券");
+        } else {
+            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("goodsId",goodsId);
+            paramMap.add("GoodsNum",num);
+            JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
+            JSONObject data=entity.getJSONObject("data");
+            map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+            System.out.println(map.get("money")+"普通");
+        }
+        return map;
+    }
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
 	}

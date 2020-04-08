@@ -145,7 +145,7 @@ if (discountCouponId!=null){
 			String key = iterator.next();
 			String value = specs.getString(key);
 if (key.equals("minus")){
-        moneys=moneys-Integer.valueOf(value);
+        moneys=(moneys*GoodsNum)-Integer.valueOf(value);
 }
 		}
            }else {
@@ -155,13 +155,13 @@ if (key.equals("minus")){
                    String key = iterator.next();
                    String value = specs.getString(key);
                    if (key.equals("minus")){
-                       moneys=(moneys*Integer.valueOf(value))/100;
+                       moneys=((moneys*GoodsNum)*Integer.valueOf(value))/100;
                    }
                }
            }
         }
     }
-    amount.setMoney(moneys*GoodsNum);
+    amount.setMoney(moneys);
     amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice"));
 }else {
     amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
