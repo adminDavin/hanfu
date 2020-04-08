@@ -328,7 +328,9 @@ public class GoodsController {
 			goodsPriceInfo.setQuantity(hfGoodsDisplay.getQuantity());
 			goodsPriceInfo.setWareHouseId(hfGoodsDisplay.getWarehouseId());
 			//        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
-			setGoodsPrice(goodsPriceInfo);
+			if(hfGoodsDisplay.getSellPrice() != null || hfGoodsDisplay.getQuantity() != null || hfGoodsDisplay.getWarehouseId() != null) {
+				setGoodsPrice(goodsPriceInfo);
+			}
 //		}else {
 //			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
 //			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
