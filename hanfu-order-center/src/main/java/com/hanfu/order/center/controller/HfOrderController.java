@@ -73,6 +73,8 @@ public class HfOrderController {
     private HfGoodsMapper hfGoodsMapper;
     @Autowired
     private HfPriceMappers hfPriceMappers;
+    @Autowired
+    private HfRespMapper hfRespMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -259,6 +261,9 @@ public class HfOrderController {
 //        CreatesOrder createsOrder1 = JSONArray.toJavaObject(jsonObject1,CreatesOrder.class);
         //转list
         List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
+        if (chock(list)!=null){
+            return builder.body(ResponseUtils.getResponseBody(chock(list)));
+        }
         LocalDateTime time = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
         hfOrder.setCreateTime(time);
@@ -309,6 +314,8 @@ public class HfOrderController {
                 request.setHfDesc(goods.getHfDesc());
                 request.setQuantity(goods.getQuantity());
                 request.setSellPrice(hfPrices.get(0).getSellPrice());
+                request.setStoneId(goods.getStoneId());
+
                 //详情
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
@@ -342,6 +349,7 @@ public class HfOrderController {
         detail.setOrderId(hfOrder.getId());
         detail.setQuantity(request.getQuantity());
         detail.setSellPrice(request.getSellPrice());
+        detail.setStoneId(request.getStoneId());
         CreateHfOrderRequest request1 = new CreateHfOrderRequest();
         detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
@@ -387,7 +395,18 @@ public class HfOrderController {
         }
         return map;
     }
-
+private Map<String,String> chock(List<CreatesOrder> list){
+        Map<String,String> map = new HashMap<>();
+        for (CreatesOrder createsOrder:list){
+            HfRespExample hfRespExample = new HfRespExample();
+            hfRespExample.createCriteria().andGoogsIdEqualTo(createsOrder.getGoodsId());
+            List<HfResp> hfResps= hfRespMapper.selectByExample(hfRespExample);
+            if (hfResps.get(0).getQuantity()<createsOrder.getQuantity()){
+                map.put("goodsId", String.valueOf(createsOrder.getGoodsId()));
+            }
+        }
+        return map;
+}
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
 	}
