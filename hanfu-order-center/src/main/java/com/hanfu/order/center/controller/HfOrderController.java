@@ -280,13 +280,27 @@ public class HfOrderController {
 
         hfOrderMapper.insertSelective(hfOrder);
         //
+        Integer actualPrice = null;
+        if (request.getDisconuntId()!=null) {
+            actualPrice=0;
+            for (CreatesOrder goodss : list) {
+                System.out.println(goodss.getGoodsId());
+                HfPriceExample hfPriceExample = new HfPriceExample();
+                hfPriceExample.createCriteria().andGoogsIdEqualTo(goodss.getGoodsId());
+                List<HfPrice> hfPriceList = hfPriceMappers.selectByExample(hfPriceExample);
+                actualPrice = (hfPriceList.get(0).getSellPrice() * goodss.getQuantity())+actualPrice;
+            }
+        }
+        System.out.println(actualPrice);
+        List<Integer> sss = new ArrayList<>();
             for (CreatesOrder goods : list) {
 //        .forEach(goods->{
 //            JSONObject jsonObject= JSON.parseObject(goods);
 //            CreatesOrder createsOrder = JSON.toJavaObject(jsonObject,CreatesOrder.class);
 //            createsOrderList.add(createsOrder);
-                Map map = money(goods.getGoodsId(), null, request.getActivityId(), goods.getQuantity(), null);
+                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice);
                 moneys = (Integer) map.get("money") + moneys;
+                sss.add(moneys);
                 HfPriceExample hfPriceExample = new HfPriceExample();
                 hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
                 List<HfPrice> hfPrices = hfPriceMappers.selectByExample(hfPriceExample);
@@ -302,9 +316,15 @@ public class HfOrderController {
             }
         HfOrder hfOrder1 = new HfOrder();
         hfOrder1.setId(hfOrder.getId());
-        hfOrder1.setAmount(moneys);
+        if (actualPrice!=null){
+            moneys=sss.get(0);
+        }
+            hfOrder1.setAmount(moneys);
+
+
         hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
-        return builder.body(ResponseUtils.getResponseBody(0));
+
+        return builder.body(ResponseUtils.getResponseBody(hfOrderMapper.selectByPrimaryKey(hfOrder.getId()).getOrderCode()));
     }
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
@@ -348,7 +368,7 @@ public class HfOrderController {
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
-            paramMap.add("",actualPrice);
+            paramMap.add("actualPrice",actualPrice);
             for (Integer integer:disconuntId){
                 paramMap.add("discountCouponId",integer);
             }
@@ -367,6 +387,7 @@ public class HfOrderController {
         }
         return map;
     }
+
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
 	}
