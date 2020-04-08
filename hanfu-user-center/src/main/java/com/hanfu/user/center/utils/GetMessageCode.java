@@ -18,8 +18,8 @@ public class GetMessageCode {
     //产品域名,开发者无需替换
     static final String domain = "dysmsapi.aliyuncs.com";
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    static final String accessKeyId = "LTAI4FcwjjugxzJCxcfTDwUX";  // TODO 修改成自己的
-    static final String accessKeySecret = "vs6blWodGEAsvlIoOsah69WeXVwvmh";   // TODO 修改成自己的
+    static final String accessKeyId = "LTAI4FpsA6NCdbYiTbmtxVE3";  // TODO 修改成自己的
+    static final String accessKeySecret = "EDzxMGHmjswUKf55D3b6AH9xuioFz9";   // TODO 修改成自己的
 
     public static Integer sendSms(String telephone) throws ClientException {
         //可自助调整超时时间
