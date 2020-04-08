@@ -52,9 +52,9 @@ public class CartCenterController {
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num) throws Exception {
+    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num ,Integer stoneId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num);
+        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num,stoneId);
         if (effectNum <= 0) {
             return builder.body(ResponseUtils.getResponseBody("添加购物车失败"));
         }

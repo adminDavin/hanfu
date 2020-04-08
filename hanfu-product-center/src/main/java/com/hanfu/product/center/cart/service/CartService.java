@@ -14,7 +14,7 @@ public interface CartService {
 
     int updateCartNum(String userId, String productId, int num);
 
-    int addCart(String userId, String productId, int num);
+    int addCart(String userId, String productId, int num,Integer stontId);
 
 	int delCartProduct(String userId, String productId);
 

@@ -36,17 +36,17 @@ public class CartServiceImpl implements CartService {
     private HfStoneMapper hfStoneMapper;
 
     @Override
-    public int addCart(String userId, String productId, int num) {
+    public int addCart(String userId, String productId, int num ,Integer stoneId) {
         //key为 userId_cart,校验是否已存在
-        Boolean exists = redisService.existsValue(CartPrefix.getCartList, userId, productId);
+        Boolean exists = redisService.existsValue(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
         if (exists) {
             //获取现有的购物车中的数据
-            String json = redisService.hget(CartPrefix.getCartList, userId, productId);
+            String json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
             if (json != null) {
                 //转换为java实体类
                 Cart cart = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
                 cart.setProductNum(cart.getProductNum() + num);
-                redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cart).toString());
+                redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
             } else {
                 return 0;
             }
@@ -72,8 +72,8 @@ public class CartServiceImpl implements CartService {
             cart.setGoodsSpec(list);
         });
         //设置购物车值
-        cart.setStoneId(productInstanceMapper.selectByPrimaryKey(hfGoods.getProductId()).getStoneId());
-        HfStone hfStone = hfStoneMapper.selectByPrimaryKey(productInstanceMapper.selectByPrimaryKey(hfGoods.getProductId()).getStoneId());
+        cart.setStoneId(stoneId);
+        HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
         cart.setStoneName(hfStone.getHfName());
         cart.setProductsId(String.valueOf(hfGoods.getProductId()));
         cart.setProductId(productId);
@@ -83,7 +83,7 @@ public class CartServiceImpl implements CartService {
         cart.setCheck("1");
         cart.setProductStatus(hfGoods.getIsDeleted());
         cart.setProductIcon(productMapper.selectByPrimaryKey(hfGoods.getProductId()).getFileId());
-        redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cart).toString());
+        redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
         return 1;
     }
 
