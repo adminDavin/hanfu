@@ -243,6 +243,7 @@ public class ProductController {
 		map.put("createTime",product.getCreateTime());
 		map.put("productName",request.getHfName());
 		map.put("CategoryId",request.getCategoryId());
+		map.put("stoneId", productInstance.getStoneId());
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 

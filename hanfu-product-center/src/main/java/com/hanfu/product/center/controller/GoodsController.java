@@ -321,25 +321,31 @@ public class GoodsController {
 			;
 		}
 		hfGoods.setModifyTime(LocalDateTime.now());
-		if(hfGoods.getPriceId()==null) {
+		if(hfGoods.getPriceId()==null || hfGoods.getRespId() == null) {
 			GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
 			goodsPriceInfo.setHfGoodsId(hfGoods.getId());
 			goodsPriceInfo.setSellPrice(hfGoodsDisplay.getSellPrice());
+			goodsPriceInfo.setQuantity(hfGoodsDisplay.getQuantity());
 			//        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
 			setGoodsPrice(goodsPriceInfo);
 		}else {
 			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
 			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
 				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+				hfPriceMapper.updateByPrimaryKey(hfPrice);
 			}
-			hfPriceMapper.updateByPrimaryKey(hfPrice);
+			HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+			if(!StringUtils.isEmpty(hfGoodsDisplay.getQuantity())) {
+				hfResp.setQuantity(hfGoodsDisplay.getQuantity());
+				hfRespMapper.updateByPrimaryKey(hfResp);
+			}
 		}
-		HfResp hfResp = new HfResp();
-		HfGoodsSpec goodsSpec = new HfGoodsSpec();
-		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
-		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
+//		HfResp hfResp = new HfResp();
+//		HfGoodsSpec goodsSpec = new HfGoodsSpec();
+//		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
+//		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
 		//        goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
-		hfRespMapper.insert(hfResp);
+//		hfRespMapper.insert(hfResp);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")

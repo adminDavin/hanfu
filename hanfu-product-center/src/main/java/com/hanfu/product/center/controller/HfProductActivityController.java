@@ -364,6 +364,7 @@ public class HfProductActivityController {
         Map<String, Object> params1 = new HashMap<String, Object>();
         Map<String, Object> params2 = new HashMap<String, Object>();
         Map<String, Object> params3 = new HashMap<String, Object>();
+        Map<String, Object> params4 = new HashMap<String, Object>();
         params.put("activityType", "seckillActivity");
         params.put("activityDesc", "秒杀");
         params1.put("activityType", "groupActivity");
@@ -374,12 +375,16 @@ public class HfProductActivityController {
 
         params3.put("activityType", "distributionActivity");
         params3.put("activityDesc", "分销");
+        
+        params4.put("activityType", "ratationActivity");
+        params4.put("activityDesc", "轮播图");
 
         List<Object> list = new ArrayList<>();
         list.add(0, params);
         list.add(1, params1);
         list.add(2, params2);
         list.add(3, params3);
+        list.add(4, params4);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
 
