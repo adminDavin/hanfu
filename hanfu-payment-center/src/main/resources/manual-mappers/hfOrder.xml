@@ -61,11 +61,9 @@
     </select>
     
     <select id="selectHfOrderbyCode" resultMap="BaseResultMap">
-    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.stone_id, o.payment_name, o.payment_type, o.user_id, 
-    d.goods_id, d.actual_price, d.quantity, d.taking_type, d.freight, d.hf_desc,
+    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.stone_id, o.payment_name, o.payment_type, o.user_id,
     a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
-     from hf_order o left join hf_order_detail d on o.id=d.order_id
-     left join hf_order_address a on o.id=a.order_id
+     from hf_order o left join hf_order_address a on o.id=a.order_id
      where o.order_code =#{orderCode}
     </select>
     
