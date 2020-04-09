@@ -8,6 +8,6 @@
 	</select>
 	
 	<select id="selectNameByUserId" resultType="Integer">
-		select CONCAT_WS(',',real_name,phone) from hf_user where user_id = #{userId};
+		select CONCAT_WS(',',real_name,phone) from hf_user where id = #{userId};
 	</select>
 </mapper>
