@@ -705,6 +705,9 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	public ResponseEntity<JSONObject> selectProductGoods(SelectProductGoods productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(productId.getStoneId() == null) {
+			return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
+		}
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
 		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
