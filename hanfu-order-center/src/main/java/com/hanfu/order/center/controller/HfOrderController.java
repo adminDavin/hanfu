@@ -366,11 +366,11 @@ public class HfOrderController {
         detail.setQuantity(request.getQuantity());
         detail.setSellPrice(request.getSellPrice());
         detail.setStoneId(request.getStoneId());
-        CreateHfOrderRequest request1 = new CreateHfOrderRequest();
+//        CreateHfOrderRequest request1 = new CreateHfOrderRequest();
         detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
         if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
-            if (TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
+            if (TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
                 hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
             }
         }
