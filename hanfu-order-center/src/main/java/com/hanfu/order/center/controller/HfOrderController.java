@@ -367,7 +367,7 @@ public class HfOrderController {
         detail.setSellPrice(request.getSellPrice());
         detail.setStoneId(request.getStoneId());
         CreateHfOrderRequest request1 = new CreateHfOrderRequest();
-        detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).getTakingType());
+        detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
         if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
             if (TakingTypeEnum.getTakingTypeEnum(request1.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {

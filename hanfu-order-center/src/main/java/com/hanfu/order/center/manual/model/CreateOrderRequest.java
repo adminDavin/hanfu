@@ -33,6 +33,7 @@ public class CreateOrderRequest extends CommonRequest {
     @ApiModelProperty(required = true, value = "邮寄地址")
     private Integer userAddressId;
     private Integer stoneId;
+    private String takingType;
 
     public Integer getSellPrice() {
         return sellPrice;
@@ -144,5 +145,13 @@ public class CreateOrderRequest extends CommonRequest {
 
     public void setStoneId(Integer stoneId) {
         this.stoneId = stoneId;
+    }
+
+    public String getTakingType() {
+        return takingType;
+    }
+
+    public void setTakingType(String takingType) {
+        this.takingType = takingType;
     }
 }
