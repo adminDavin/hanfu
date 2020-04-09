@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
-	namespace="com.hanfu.product.center.manual.dao.HfMemberDaoImpl">
+	namespace="com.hanfu.product.center.manual.dao.HfMemberDao">
 	
 	<select id="selectIsMember" resultType="Integer">
 		select count(*) from hf_user_member where user_id = #{userId};
 	</select>
 	
+	<select id="selectNameByUserId" resultType="Integer">
+		select CONCAT_WS(',',real_name,phone) from hf_user where id = #{userId};
+	</select>
 </mapper>

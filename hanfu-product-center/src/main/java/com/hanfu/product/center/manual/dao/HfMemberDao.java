@@ -16,4 +16,6 @@ import com.hanfu.product.center.model.HfGoods;
 public interface HfMemberDao {
 
 	public Integer selectIsMember(Integer userId);
+	
+	public String selectNameByUserId(Integer userId);
 }
