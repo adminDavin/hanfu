@@ -319,10 +319,6 @@ public class HfOrderController {
         System.out.println(actualPrice);
         List<Integer> sss = new ArrayList<>();
             for (CreatesOrder goods : list) {
-//        .forEach(goods->{
-//            JSONObject jsonObject= JSON.parseObject(goods);
-//            CreatesOrder createsOrder = JSON.toJavaObject(jsonObject,CreatesOrder.class);
-//            createsOrderList.add(createsOrder);
                 Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice);
                 moneys = (Integer) map.get("money") + moneys;
                 sss.add(moneys);

@@ -113,14 +113,14 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public int updateCartNum(String userId, String productId, int num) {
-        String json = redisService.hget(CartPrefix.getCartList, userId, productId);
+    public int updateCartNum(String userId, String productId, int num,Integer stoneId) {
+        String json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
         if (json == null) {
             return 0;
         }
         Cart cartDto = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
         cartDto.setProductNum(num);
-        redisService.hset(CartPrefix.getCartList, userId, productId, JSON.toJSON(cartDto).toString());
+        redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cartDto).toString());
         return 1;
     }
 
