@@ -7,7 +7,7 @@
 		select count(*) from hf_user_member where user_id = #{userId};
 	</select>
 	
-	<select id="selectNameByUserId" resultType="Integer">
+	<select id="selectNameByUserId" resultType="String">
 		select CONCAT_WS(',',real_name,phone) from hf_user where id = #{userId};
 	</select>
 </mapper>

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
@@ -303,10 +304,10 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfCategory category = new HfCategory();
 		String uuid = UUID.randomUUID().toString();
-		uuid = uuid.replace("-", "");
-		if(fileInfo != null) {
-			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
-		}
+//		uuid = uuid.replace("-", "");
+//		if(fileInfo != null) {
+//			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+//		}
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());
@@ -408,10 +409,31 @@ public class ProductController {
 
 		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
 
-		String uuid = UUID.randomUUID().toString();
-		uuid = uuid.replace("-", "");
+//		String uuid = UUID.randomUUID().toString();
+//		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			hfCategory.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+			if(hfCategory.getFileId() == null) {
+				FileDesc fileDesc = new FileDesc();
+				fileDesc.setFileName(fileInfo.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				fileDescMapper.insert(fileDesc);
+				hfCategory.setFileId(fileDesc.getId());
+			}else {
+				FileDesc desc = fileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
+				fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+				desc.setGroupName(arr[0]);
+				desc.setRemoteFilename(arr[1]);
+				desc.setModifyTime(LocalDateTime.now());
+				fileDescMapper.updateByPrimaryKey(desc);
+			}
+			
 		}
 		if(!StringUtils.isEmpty(request.getLevelId())) {
 			hfCategory.setLevelId(request.getLevelId());
@@ -425,61 +447,61 @@ public class ProductController {
 		hfCategory.setModifyTime(LocalDateTime.now());
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
 	}
+	
+//	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
+//	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
+//	public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
+//		FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//		arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+//		if("类目页面图片".equals(type)) {
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName("类目页面图片");
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(-1);
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			return -1;
+//		}
+//		Integer fileId = null;
+//		FileDescExample example = new FileDescExample();
+//		example.createCriteria().andFileNameEqualTo(uuid);
+//		List<FileDesc> list = fileDescMapper.selectByExample(example);
+//		if (list.isEmpty()) {
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(uuid);
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(-1);
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			fileId = fileDesc.getId();
+//		} else {
+//			FileDesc fileDesc = list.get(0);
+//			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDescMapper.updateByPrimaryKey(fileDesc);
+//			fileId = fileDesc.getId();
+//		}
+//		return fileId;
+//	}
 
-	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
-	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
-	public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
-		FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-		arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
-		if("类目页面图片".equals(type)) {
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName("类目页面图片");
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(-1);
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			return -1;
-		}
-		Integer fileId = null;
-		FileDescExample example = new FileDescExample();
-		example.createCriteria().andFileNameEqualTo(uuid);
-		List<FileDesc> list = fileDescMapper.selectByExample(example);
-		if (list.isEmpty()) {
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(uuid);
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(-1);
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			fileId = fileDesc.getId();
-		} else {
-			FileDesc fileDesc = list.get(0);
-			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDescMapper.updateByPrimaryKey(fileDesc);
-			fileId = fileDesc.getId();
-		}
-		return fileId;
-	}
-
-	@ApiOperation(value = "查询类目页面图片", notes = "查询类目页面图片")
-	@RequestMapping(value = "/findCategoryPagePicture", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findCategoryPagePicture() throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		FileDescExample example = new FileDescExample();
-		example.createCriteria().andFileNameEqualTo("类目页面图片");
-		List<FileDesc> list = fileDescMapper.selectByExample(example);
-		return builder.body(ResponseUtils.getResponseBody(list));
-	}
+//	@ApiOperation(value = "查询类目页面图片", notes = "查询类目页面图片")
+//	@RequestMapping(value = "/findCategoryPagePicture", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> findCategoryPagePicture() throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		FileDescExample example = new FileDescExample();
+//		example.createCriteria().andFileNameEqualTo("类目页面图片");
+//		List<FileDesc> list = fileDescMapper.selectByExample(example);
+//		return builder.body(ResponseUtils.getResponseBody(list));
+//	}
 
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
