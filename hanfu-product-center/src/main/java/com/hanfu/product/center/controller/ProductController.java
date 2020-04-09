@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
+import com.hanfu.product.center.manual.dao.HfMemberDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
@@ -93,6 +94,8 @@ public class ProductController {
 	private HfProductCollectMapper hfProductCollectMapper;
 	@Autowired
 	private HfStoneConcernMapper hfStoneConcernMapper;
+	@Autowired
+	private HfMemberDao hfMemberDao;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -211,7 +214,6 @@ public class ProductController {
 		product.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		product.setHfName(request.getHfName());
 		
-		product.setLastModifier(request.getLastModifier());
 		product.setCreateTime(LocalDateTime.now());
 		product.setModifyTime(LocalDateTime.now());
 		product.setIsDeleted((short) 0);
@@ -227,6 +229,7 @@ public class ProductController {
 			product.setProductVip((short) 0);
 		}
 		productMapper.insert(product);
+		LastModifier.setLastModifier(request.getUserId(), product.getId(), productMapper, hfMemberDao);
 //		if (request.getClaim()==1){
 //			if (cancelId==null){
 //				productMapper.deleteByPrimaryKey(product.getId());
@@ -335,6 +338,7 @@ public class ProductController {
 		if(product == null) {
 			return builder.body(ResponseUtils.getResponseBody(""));
 		}
+//		LastModifier.setLastModifier(userId, productId, productMapper, hfMemberDao);
 		String arr[];
 		arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
 		FileDesc fileDesc = new FileDesc();

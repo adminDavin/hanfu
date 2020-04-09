@@ -29,5 +29,9 @@ public class HfMemberDaoImpl implements HfMemberDao {
     	return result;
     }
    
-
+    @Override
+    public String selectNameByUserId(Integer userId) {
+    	String result = sqlSessionTemplate.selectOne("selectNameByUserId", userId);
+    	return result;
+    }
 }
