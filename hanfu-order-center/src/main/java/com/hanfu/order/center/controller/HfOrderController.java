@@ -358,7 +358,15 @@ public class HfOrderController {
         detail.setCreateTime(time);
         detail.setGoodsId(request.getGoodsId());
         detail.setFreight(request.getFreight());
-        detail.setHfDesc(request.getHfDesc());
+//Map map = new HashMap();
+        MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+        paramMap.add("productId",request.getGoodsId());
+        paramMap.add("quantity",request.getQuantity());
+        JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"goods/getDetail/?goodsId={goodsId}&quantity={quantity}",JSONObject.class,request.getGoodsId(),request.getQuantity());
+        JSONObject data=entity.getJSONObject("data");
+//        map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+
+        detail.setHfDesc(String.valueOf(data));
         detail.setHfStatus(OrderStatus.PAYMENT.getOrderStatus());
         detail.setLastModifier(String.valueOf(request.getUserId()));
         detail.setModifyTime(time);
