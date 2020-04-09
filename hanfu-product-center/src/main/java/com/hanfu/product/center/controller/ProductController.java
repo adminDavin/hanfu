@@ -3,6 +3,7 @@ package com.hanfu.product.center.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
@@ -165,6 +166,8 @@ public class ProductController {
 			CategoryInfo info = new CategoryInfo();
 			info.setId(hfCategory.getId());
 			info.setHfName(hfCategory.getHfName());
+			info.setDate(hfCategory.getCreateTime().plusHours(8));
+			info.setLevel(1);
 			example.clear();
 			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId());
 			List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
@@ -172,8 +175,10 @@ public class ProductController {
 			for (int j = 0; j < list2.size(); j++) {
 				HfCategory hfCategory2 = list2.get(j);
 				Categories categories = new Categories();
+				categories.setLevel(2);
 				categories.setId(hfCategory2.getId());
 				categories.setHfName(hfCategory2.getHfName());
+				categories.setDate(hfCategory2.getCreateTime().plusHours(8));
 				example.clear();
 				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId());
 				categorieList = new ArrayList<Categories>();
@@ -183,6 +188,8 @@ public class ProductController {
 					Categories categorie = new Categories();
 					categorie.setId(hfCategory3.getId());
 					categorie.setHfName(hfCategory3.getHfName());
+					categorie.setLevel(3);
+					categorie.setDate(hfCategory3.getCreateTime().plusHours(8));
 					categorieList.add(categorie);
 				}
 				categories.setCategories(categorieList);
@@ -203,6 +210,7 @@ public class ProductController {
 		product.setBrandId(1);
 		product.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		product.setHfName(request.getHfName());
+		
 		product.setLastModifier(request.getLastModifier());
 		product.setCreateTime(LocalDateTime.now());
 		product.setModifyTime(LocalDateTime.now());
@@ -693,7 +701,13 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	public ResponseEntity<JSONObject> selectProductGoods(SelectProductGoods productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
+		ProductInstanceExample example = new ProductInstanceExample();
+		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
+		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
+		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
+		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
+				.collect(Collectors.toList());
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "获取商品图片", notes = "获取商品图片")

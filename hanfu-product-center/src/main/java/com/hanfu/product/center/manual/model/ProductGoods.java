@@ -24,6 +24,7 @@ public class ProductGoods {
     private String linePrice;
     private String warehouseName;
     private String hfRegion;
+    private Integer instanceId;
 
     public Integer getGoodsId() {
         return goodsId;
@@ -160,4 +161,12 @@ public class ProductGoods {
     public void setHfRegion(String hfRegion) {
         this.hfRegion = hfRegion;
     }
+
+	public Integer getInstanceId() {
+		return instanceId;
+	}
+
+	public void setInstanceId(Integer instanceId) {
+		this.instanceId = instanceId;
+	}
 }
