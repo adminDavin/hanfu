@@ -169,6 +169,7 @@ public class ProductController {
 			HfCategory hfCategory = list.get(i);
 			CategoryInfo info = new CategoryInfo();
 			info.setId(hfCategory.getId());
+			info.setFileId(hfCategory.getFileId());
 			info.setHfName(hfCategory.getHfName());
 			info.setDate(hfCategory.getCreateTime().plusHours(8));
 			info.setLevel(1);
@@ -180,6 +181,7 @@ public class ProductController {
 				HfCategory hfCategory2 = list2.get(j);
 				Categories categories = new Categories();
 				categories.setLevel(2);
+				categories.setFileId(hfCategory2.getFileId());
 				categories.setId(hfCategory2.getId());
 				categories.setHfName(hfCategory2.getHfName());
 				categories.setDate(hfCategory2.getCreateTime().plusHours(8));
@@ -192,6 +194,7 @@ public class ProductController {
 					Categories categorie = new Categories();
 					categorie.setId(hfCategory3.getId());
 					categorie.setHfName(hfCategory3.getHfName());
+					categorie.setFileId(hfCategory3.getFileId());
 					categorie.setLevel(3);
 					categorie.setDate(hfCategory3.getCreateTime().plusHours(8));
 					categorieList.add(categorie);
