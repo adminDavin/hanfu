@@ -3,6 +3,7 @@ package com.hanfu.product.center.model;
 public class SelectProductGoods {
     private Integer productId;
     private Integer goodsId;
+    private Integer stoneId;
 
     public Integer getProductId() {
         return productId;
@@ -19,4 +20,12 @@ public class SelectProductGoods {
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
     }
+
+	public Integer getStoneId() {
+		return stoneId;
+	}
+
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
+	}
 }

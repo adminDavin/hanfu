@@ -209,7 +209,9 @@ public class GoodsController {
 			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 			record.setProductId(hfGoodsInfo.getProductId());
 			record.setHfName(hfGoodsInfo.getGoodName());
-			record.setStoneId(1);
+			if(!StringUtils.isEmpty(hfGoodsInfo.getStoneId())) {
+				record.setStoneId(hfGoodsInfo.getStoneId());
+			}
 			record.setBrandId(1);
 //			record.setPriceId(1);
 //			record.setRespId(1);

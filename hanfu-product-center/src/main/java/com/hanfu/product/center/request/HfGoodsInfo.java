@@ -35,6 +35,9 @@ public class HfGoodsInfo extends CommonRequest {
 	private Integer productSpecId;
 	@ApiModelProperty(required = true, value = "类目规格id")
 	private Integer catrgorySpecId;
+	@ApiModelProperty(required = true, value = "店铺id")
+	private Integer stoneId;
+	
 	public String getCategoryName() {
 		return categoryName;
 	}
@@ -155,5 +158,13 @@ public class HfGoodsInfo extends CommonRequest {
 
 	public void setCatrgorySpecId(Integer catrgorySpecId) {
 		this.catrgorySpecId = catrgorySpecId;
+	}
+
+	public Integer getStoneId() {
+		return stoneId;
+	}
+
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
 	}
 }

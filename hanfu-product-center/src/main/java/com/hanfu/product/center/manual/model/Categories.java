@@ -1,7 +1,10 @@
 package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Categories implements Serializable {
 
@@ -18,6 +21,9 @@ public class Categories implements Serializable {
     private String hfName;
     private String ChildCategories;
     private Integer fileId;
+    private Integer level;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime date;
     private List<Categories> categories;
 
     public Integer getId() {
@@ -68,4 +74,23 @@ public class Categories implements Serializable {
 		this.categories = categories;
 	}
 
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public LocalDateTime getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
 }
