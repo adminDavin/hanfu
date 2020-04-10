@@ -65,7 +65,7 @@ public class HfStoreMenberController {
                     hfStoreMenbers.setModifyTime(LocalDateTime.now());
                     hfStoreMenbers.setStoreRole(1);
                     if (hfStoreMenbers.getIsCancel() != 0) {
-                        hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId()));
+                        hfStoreMenbers.setIsCancel(addCancel(hfStoreMenbers.getUserId(),hfStoreMenbers.getStoreId()));
                     }
                     hfStoreMenberMappers.insert(hfStoreMenbers);
                 }
