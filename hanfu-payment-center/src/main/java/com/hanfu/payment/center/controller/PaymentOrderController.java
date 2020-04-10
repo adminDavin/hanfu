@@ -366,8 +366,20 @@ public class PaymentOrderController {
 			if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 						LocalDateTime.now());
-			} else {
+			} else if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+				rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
+				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
+						LocalDateTime.now());
+			}else {
 				hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+				HfOrderDetail hfOrderDetail = new HfOrderDetail();
+				hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
+				System.out.println(OrderStatus.PROCESS.getOrderStatus());
+				Example example = new Example(HfOrderDetail.class);
+				Example.Criteria criteria = example.createCriteria();
+				criteria.andEqualTo("orderId",hfOrder.getId());
+				hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 			}
 
 			return builder.body(ResponseUtils.getResponseBody(hfOrder));
