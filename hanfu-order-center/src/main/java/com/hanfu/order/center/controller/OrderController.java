@@ -301,8 +301,7 @@ public class OrderController {
 		hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
 		List<HfOrderLogistics> hfOrderLogisticss = hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
 		HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
-		for (Integer goodsId : request.getGoogsId()) {
-			hfOrderLogistics.setGoogsId(goodsId);
+		hfOrderLogistics.setStoneId(request.getStoneId());
 			hfOrderLogistics.setLogisticsCompany(request.getLogisticsCompany());
 			hfOrderLogistics.setLogisticsOrderName(request.getLogisticsOrderName());
 			hfOrderLogistics.setLastModifier("");
@@ -322,7 +321,6 @@ public class OrderController {
 				hfOrderLogisticsMapper.updateByExampleSelective(hfOrderLogistics,hfOrderLogisticsExample1);
 			}
 
-		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 }

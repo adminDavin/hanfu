@@ -153,8 +153,8 @@ public class HfOrderController {
         params.put("orderCode",orderCode);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
-            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
-            List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
+//            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
+//            List<HfGoodsDisplay> goodses = hfOrderDao.selectGoodsInfo(goodsIds);
             
 //            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
@@ -235,7 +235,7 @@ public class HfOrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "Id", value = "订单id", required = true,
                     type = "Integer")})
-    public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus) throws JSONException {
+    public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
@@ -245,6 +245,24 @@ public class HfOrderController {
                 if (hfActivityCountList.get(0).getState()!=3){
                     return builder.body(ResponseUtils.getResponseBody("In spelling"));
                 }
+            } else if (targetOrderStatus.equals("transport")){
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusGreaterThan("transport");
+                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+                if (hfOrderDetail1==null){
+                    HfOrder hfOrder = new HfOrder();
+                    hfOrder.setId(Id);
+                    hfOrder.setOrderStatus(targetOrderStatus);
+                    HfOrderExample hfOrderExample = new HfOrderExample();
+                    hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                    hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+                }
+                return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
         if (targetOrderStatus.equals("cancel")&&originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")){
@@ -306,7 +324,7 @@ public class HfOrderController {
         hfOrderMapper.insertSelective(hfOrder);
         //
         Integer actualPrice = null;
-        if (request.getDisconuntId()!=null) {
+        if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
             actualPrice=0;
             for (CreatesOrder goodss : list) {
                 System.out.println(goodss.getGoodsId());
@@ -396,7 +414,7 @@ public class HfOrderController {
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
             System.out.println(map.get("money")+"活动");
-        } else if (disconuntId!=null && actualPrice!=null){
+        } else if (disconuntId!=null && actualPrice!=null && disconuntId.length!=0){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);

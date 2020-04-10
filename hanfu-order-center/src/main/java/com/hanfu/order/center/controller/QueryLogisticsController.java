@@ -37,33 +37,35 @@ public class QueryLogisticsController {
 //            @ApiImplicitParam(paramType = "query", name = "expCode", value = "快递名称", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单号", required = true, type = "Integer")
     })
-    public ResponseEntity<JSONObject> logistics(Integer orderId)
+    public ResponseEntity<JSONObject> logistics(Integer orderId,Integer stoneId)
             throws Exception {
-        HfOrderLogisticsExample hfOrderLogisticsExample = new HfOrderLogisticsExample();
-        hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(orderId).andIsDeletedEqualTo((short) 0);
-        List<HfOrderLogistics> hfOrderLogistics= hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
-        String expNo=hfOrderLogistics.get(0).getLogisticsOrdersId();
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
-        try {
-            String result = kdniaoTrackQueryAPI.getOrderTracesByJson(logisticselect(expNo).get("ShipperCode"), expNo);
-            System.out.println(result);
-            JSONObject json = JSONObject.parseObject(result);
+        HfOrderLogisticsExample hfOrderLogisticsExample = new HfOrderLogisticsExample();
+        hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(orderId).andIsDeletedEqualTo((short) 0).andStoneIdEqualTo(stoneId);
+        List<HfOrderLogistics> hfOrderLogistics= hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
+        if (hfOrderLogistics.size()!=0) {
+            String expNo = hfOrderLogistics.get(0).getLogisticsOrdersId();
+            KdniaoTrackQueryAPI kdniaoTrackQueryAPI = new KdniaoTrackQueryAPI();
+            try {
+                String result = kdniaoTrackQueryAPI.getOrderTracesByJson(logisticselect(expNo).get("ShipperCode"), expNo);
+                System.out.println(result);
+                JSONObject json = JSONObject.parseObject(result);
 //            result = result.substring(0, result.length() - 1);
 //            result = result.substring(1, result.length());
-            Logistics logistics = new Logistics();
-            logistics.setLogisticCode(json.get("LogisticCode"));
-            logistics.setShipperCode(json.get("ShipperCode"));
-            logistics.setTraces(json.get("Traces"));
-            logistics.setState(json.get("State"));
-            logistics.seteBusinessID(json.get("EBusinessID"));
-            logistics.setCompany(logisticselect(expNo).get("ShipperName"));
-            return builder.body(ResponseUtils.getResponseBody(logistics));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return builder.body(ResponseUtils.getResponseBody("查询失败"));
+                Logistics logistics = new Logistics();
+                logistics.setLogisticCode(json.get("LogisticCode"));
+                logistics.setShipperCode(json.get("ShipperCode"));
+                logistics.setTraces(json.get("Traces"));
+                logistics.setState(json.get("State"));
+                logistics.seteBusinessID(json.get("EBusinessID"));
+                logistics.setCompany(logisticselect(expNo).get("ShipperName"));
+                return builder.body(ResponseUtils.getResponseBody(logistics));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return builder.body(ResponseUtils.getResponseBody("查询失败"));
+            }
         }
-
+return builder.body(ResponseUtils.getResponseBody("查询失败"));
     }
 
 //    @ApiOperation(value = "单号识别", notes = "查询物流")
