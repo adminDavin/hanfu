@@ -18,6 +18,7 @@ public class CategoryInfo implements Serializable{
 	private Integer id;
 	private String hfName;
 	private Integer level;
+	private Integer fileId;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime date;
 	private List<Categories> categories;
@@ -65,5 +66,11 @@ public class CategoryInfo implements Serializable{
 	}
 	public void setDate(LocalDateTime date) {
 		this.date = date;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
 	}
 }
