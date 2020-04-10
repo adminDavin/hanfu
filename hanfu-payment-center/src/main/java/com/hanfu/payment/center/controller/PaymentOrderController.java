@@ -346,12 +346,11 @@ public class PaymentOrderController {
 				} else {
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(),
 							LocalDateTime.now());
-					HfOrderExample hfOrderExample = new HfOrderExample();
-					hfOrderExample.createCriteria().andOrderCodeEqualTo(hfOrder.getOrderCode()).andIdDeletedEqualTo((byte) 0);
 					HfOrderDetail hfOrderDetail = new HfOrderDetail();
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
+					System.out.println(OrderStatus.PROCESS.getOrderStatus());
 					Example example = new Example(HfOrderDetail.class);
-					example.createCriteria().andEqualTo("orderId",hfOrderMapper.selectByExample(hfOrderExample).get(0).getId());
+					example.createCriteria().andEqualTo("orderId",hfOrder.getId());
 					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 				}
 				return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
