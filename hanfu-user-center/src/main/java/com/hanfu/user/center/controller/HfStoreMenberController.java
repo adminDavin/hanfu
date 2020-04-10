@@ -185,7 +185,11 @@ public class HfStoreMenberController {
             cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
             CancelExample cancelExample1 = new CancelExample();
             cancelExample1.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
-            if (cancelMapper.selectByExample(cancelExample1).size()!=0){
+
+            CancelExample cancelExample2 = new CancelExample();
+            cancelExample2.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0);
+
+            if (cancelMapper.selectByExample(cancelExample1).size()!=0&&cancelMapper.selectByExample(cancelExample2).size()!=0){
                 return builder.body(ResponseUtils.getResponseBody("已经是核销员"));
             }
             if (cancelMapper.selectByExample(cancelExample).size()!=0){
@@ -193,7 +197,7 @@ public class HfStoreMenberController {
                 cancelMapper.updateByExampleSelective(cancel,cancelExample);
             } else {
                 hfStoreMenber hfStoreMenber1 = new hfStoreMenber();
-                hfStoreMenber1.setIsCancel(addCancel(userId));
+                hfStoreMenber1.setIsCancel(addCancel(userId,stoneId));
                 hfStoreMenberMappers.updateByExampleSelective(hfStoreMenber1,hfStoreMenbersExample);
             }
         }else {
@@ -206,7 +210,7 @@ public class HfStoreMenberController {
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
-    private Integer addCancel(Integer userId){
+    private Integer addCancel(Integer userId,Integer stoneId){
         Cancel cancel = new Cancel();
         cancel.setUserId(userId);
         cancel.setIsDeleted(0);
