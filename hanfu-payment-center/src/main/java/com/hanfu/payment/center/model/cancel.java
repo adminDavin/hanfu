@@ -22,6 +22,8 @@ public class cancel {
 //    private Integer goodsId;
     private Integer presentMoney;
     private LocalDateTime emptyDate;
+    private Integer isDeleted;
+    private Integer stoneId;
 
     public LocalDateTime getEmptyDate() {
         return emptyDate;
@@ -95,5 +97,21 @@ public class cancel {
 
     public void setRecordId(Integer recordId) {
         this.recordId = recordId;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Integer getStoneId() {
+        return stoneId;
+    }
+
+    public void setStoneId(Integer stoneId) {
+        this.stoneId = stoneId;
     }
 }
