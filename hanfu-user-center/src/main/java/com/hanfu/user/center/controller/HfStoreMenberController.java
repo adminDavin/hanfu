@@ -212,6 +212,7 @@ public class HfStoreMenberController {
 
     private Integer addCancel(Integer userId,Integer stoneId){
         Cancel cancel = new Cancel();
+        cancel.setStoneId(stoneId);
         cancel.setUserId(userId);
         cancel.setIsDeleted(0);
         cancel.setCreateDate(LocalDateTime.now());
