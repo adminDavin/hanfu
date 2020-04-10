@@ -286,12 +286,12 @@ public class HomePageController {
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
 		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
-		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdIn(stoneId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andOrderIdIn(orderId);
+		example3.createCriteria().andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
 		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
@@ -423,12 +423,12 @@ public class HomePageController {
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
 		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
-		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdIn(stoneId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andOrderIdIn(orderId);
+		example3.createCriteria().andHfStatusEqualTo("complete").andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		for (int i = 0; i < ldt.getMonthValue(); i++) {
 			quantity = 0;
