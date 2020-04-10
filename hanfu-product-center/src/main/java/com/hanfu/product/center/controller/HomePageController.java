@@ -515,6 +515,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			UserPersonalBrowseExample example = new UserPersonalBrowseExample();
 			example.createCriteria().andUserIdEqualTo(userId).andBrowseTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("browse_time DESC");
 			List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				UserPersonalBrowse browse = browses.get(j);
@@ -580,6 +581,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			HfProductCollectExample example = new HfProductCollectExample();
 			example.createCriteria().andUserIdEqualTo(userId).andCollectTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("collect_time DESC");
 			List<HfProductCollect> browses = hfProductCollectMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				HfProductCollect browse = browses.get(j);
@@ -644,6 +646,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			HfStoneConcernExample example = new HfStoneConcernExample();
 			example.createCriteria().andUserIdEqualTo(userId).andConcernTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("concern_time DESC");
 			List<HfStoneConcern> browses = hfStoneConcernMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				HfStoneConcern concern = browses.get(j);
@@ -662,5 +665,4 @@ public class HomePageController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-
 }

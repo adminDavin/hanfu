@@ -14,6 +14,7 @@
 		<foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
+		and hf_status = "complete"
 		group by goods_id ORDER BY count DESC LIMIT 0,10
 	</select>
 	

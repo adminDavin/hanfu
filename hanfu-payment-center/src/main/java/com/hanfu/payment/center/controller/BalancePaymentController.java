@@ -48,6 +48,8 @@ public class BalancePaymentController {
     private CancelPaymentMapper cancelPaymentMapper;
     @Autowired
     private CancelRecordPaymentMapper cancelRecordPaymentMapper;
+    @Autowired
+    private HfBalanceDetailMapper hfBalanceDetailMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @GetMapping(value = "/activity/payment/activity-code")
@@ -247,6 +249,7 @@ public class BalancePaymentController {
         hfUserBalance.setModifyTime(LocalDateTime.now());
         hfUserBalance.setIsDeleted((short) 0);
         hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money));
+        
 //        QR ttt = new QR();
 //        ttt.setQrCodeType(decrypt);
 //        ttt.setUserId(decrypt1);
@@ -260,6 +263,14 @@ public class BalancePaymentController {
 //        List<QR> list = new ArrayList<QR>();
 //        list.add(ttt);
         balanceMapper.updateByExampleSelective(hfUserBalance,example);
+        HfBalanceDetail detail = new HfBalanceDetail();
+		detail.setUserId(Integer.valueOf(qr.getUserId()));
+		detail.setAmount(String.valueOf(money));
+		detail.setPaymentName("消费");
+		detail.setCreateTime(LocalDateTime.now());
+		detail.setModifyTime(LocalDateTime.now());
+		detail.setIsDeleted((byte) 0);
+		hfBalanceDetailMapper.insert(detail);
         //创建流水
         LocalDateTime timeOrder = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
