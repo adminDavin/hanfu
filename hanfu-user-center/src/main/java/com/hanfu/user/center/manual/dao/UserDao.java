@@ -2,6 +2,7 @@ package com.hanfu.user.center.manual.dao;
 
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
+import com.hanfu.user.center.manual.model.Order;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
@@ -31,5 +32,5 @@ public interface UserDao {
     
     Integer selectBrowseCount(Integer userId);
     
-    List<UserOrderInfo> selectUserOrderInfo(Integer userId);
+    Integer selectUserOrderInfo(Order order);
 }
