@@ -269,8 +269,8 @@ public class BalancePaymentController {
         hfOrder.setAmount(Integer.valueOf(money));
         hfOrder.setHfRemark("余额扫码支付");
         hfOrder.setUserId(Integer.valueOf(decrypt1));
-        hfOrder.setOrderType("balancePayment");
-        hfOrder.setPaymentName(decrypt);
+        hfOrder.setOrderType("shoppingOrder");
+        hfOrder.setPaymentName("balance");
         hfOrder.setStoneId(0);
         hfOrder.setDistributorId(DistributorId);
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
