@@ -7,9 +7,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 @SuppressWarnings("serial")
 public class HfOrderLogisticsRequest implements Serializable {
+    @ApiModelProperty(required = true, value = "店铺id")
+    private Integer stoneId;
     @ApiModelProperty(required = false, value = "id")
     private Integer id;
-    @ApiModelProperty(required = false, value = "订单id")
+    @ApiModelProperty(required = true, value = "订单id")
     private Integer ordersId;
     @ApiModelProperty(required = false, value = "订单详情id")
     private Integer orderDetailId;
@@ -21,7 +23,7 @@ public class HfOrderLogisticsRequest implements Serializable {
     private String logisticsOrderName;
     @ApiModelProperty(required = false, value = "仓库id")
     private Integer respId;
-    @ApiModelProperty(required = false, value = "物流订单号")
+    @ApiModelProperty(required = true, value = "物流订单号")
     private String logisticsOrdersId;
     @ApiModelProperty(required = false, value = "物流公司")
     private String logisticsCompany;
@@ -128,4 +130,11 @@ public class HfOrderLogisticsRequest implements Serializable {
         this.createTime = createTime;
     }
 
+    public Integer getStoneId() {
+        return stoneId;
+    }
+
+    public void setStoneId(Integer stoneId) {
+        this.stoneId = stoneId;
+    }
 }
