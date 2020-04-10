@@ -324,7 +324,7 @@ public class HfOrderController {
         hfOrderMapper.insertSelective(hfOrder);
         //
         Integer actualPrice = null;
-        if (request.getDisconuntId()!=null) {
+        if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
             actualPrice=0;
             for (CreatesOrder goodss : list) {
                 System.out.println(goodss.getGoodsId());
@@ -414,7 +414,7 @@ public class HfOrderController {
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
             System.out.println(map.get("money")+"活动");
-        } else if (disconuntId!=null && actualPrice!=null){
+        } else if (disconuntId!=null && actualPrice!=null && disconuntId.length!=0){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
