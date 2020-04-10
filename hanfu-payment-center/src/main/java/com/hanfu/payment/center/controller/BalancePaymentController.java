@@ -19,10 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -57,7 +54,7 @@ public class BalancePaymentController {
                     type = "String"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true,
                     type = "Integer") })
-    public void getCode(HttpServletResponse response, Integer money,Integer userId) throws Exception {
+    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("money") Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
         String key1=String.valueOf(userId)+"BalancePayment";
         redisTemplate.opsForValue().set(key1, money);
