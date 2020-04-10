@@ -182,9 +182,9 @@ public class HfStoreMenberController {
         Cancel cancel = new Cancel();
         if (isCancel==1){
             CancelExample cancelExample = new CancelExample();
-            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(stoneId);
             CancelExample cancelExample1 = new CancelExample();
-            cancelExample1.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0).andIdEqualTo(hfStoreMenber.get(0).getIsCancel());
+            cancelExample1.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0).andStoneIdEqualTo(stoneId);
 
             CancelExample cancelExample2 = new CancelExample();
             cancelExample2.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0);
