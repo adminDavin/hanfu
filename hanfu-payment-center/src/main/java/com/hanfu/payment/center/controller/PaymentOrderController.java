@@ -350,7 +350,8 @@ public class PaymentOrderController {
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
 					System.out.println(OrderStatus.PROCESS.getOrderStatus());
 					Example example = new Example(HfOrderDetail.class);
-					example.createCriteria().andEqualTo("orderId",hfOrder.getId());
+					Example.Criteria criteria = example.createCriteria();
+					criteria.andEqualTo("orderId",hfOrder.getId());
 					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 				}
 				return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
