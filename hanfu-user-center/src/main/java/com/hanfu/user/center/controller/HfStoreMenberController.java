@@ -181,8 +181,7 @@ public class HfStoreMenberController {
 
         Cancel cancel = new Cancel();
         if (isCancel==1){
-            CancelExample cancelExample = new CancelExample();
-            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andIdEqualTo(stoneId);
+
             CancelExample cancelExample1 = new CancelExample();
             cancelExample1.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0).andStoneIdEqualTo(stoneId);
 
@@ -192,6 +191,8 @@ public class HfStoreMenberController {
             if (cancelMapper.selectByExample(cancelExample1).size()!=0||cancelMapper.selectByExample(cancelExample2).size()!=0){
                 return builder.body(ResponseUtils.getResponseBody("已经是核销员"));
             }
+            CancelExample cancelExample = new CancelExample();
+            cancelExample.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(1).andStoneIdEqualTo(stoneId);
             if (cancelMapper.selectByExample(cancelExample).size()!=0){
                 cancel.setIsDeleted(0);
                 cancelMapper.updateByExampleSelective(cancel,cancelExample);
