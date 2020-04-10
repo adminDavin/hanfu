@@ -54,9 +54,9 @@ public class BalancePaymentController {
                     type = "String"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true,
                     type = "Integer") })
-    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("userId") Integer userId) throws Exception {
+    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("userld") Integer userld) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        String key1=String.valueOf(userId)+"BalancePayment";
+        String key1=String.valueOf(userld)+"BalancePayment";
         redisTemplate.opsForValue().set(key1, money);
         redisTemplate.expire(key1,300 , TimeUnit.SECONDS);
         System.out.println(key1);
@@ -100,7 +100,7 @@ public class BalancePaymentController {
 
         //字符串
         String QrCodeType = "BalancePayment";
-        String UserId = String.valueOf(userId);
+        String UserId = String.valueOf(userld);
 //        String Money= String.valueOf(money);
         //加密
         String encrypt = PageTool.encrypt(QrCodeType, key);
