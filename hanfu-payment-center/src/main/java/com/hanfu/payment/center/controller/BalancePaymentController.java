@@ -54,7 +54,7 @@ public class BalancePaymentController {
                     type = "String"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true,
                     type = "Integer") })
-    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("money") Integer userId) throws Exception {
+    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("userId") Integer userId) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
         String key1=String.valueOf(userId)+"BalancePayment";
         redisTemplate.opsForValue().set(key1, money);
