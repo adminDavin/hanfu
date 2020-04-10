@@ -189,7 +189,7 @@ public class HfStoreMenberController {
             CancelExample cancelExample2 = new CancelExample();
             cancelExample2.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo(0);
 
-            if (cancelMapper.selectByExample(cancelExample1).size()!=0&&cancelMapper.selectByExample(cancelExample2).size()!=0){
+            if (cancelMapper.selectByExample(cancelExample1).size()!=0||cancelMapper.selectByExample(cancelExample2).size()!=0){
                 return builder.body(ResponseUtils.getResponseBody("已经是核销员"));
             }
             if (cancelMapper.selectByExample(cancelExample).size()!=0){
