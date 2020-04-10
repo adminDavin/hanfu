@@ -52,7 +52,7 @@ public class BalancePaymentController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "money", value = "金额", required = true,
                     type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true,
+            @ApiImplicitParam(paramType = "query", name = "userld", value = "用户id", required = true,
                     type = "Integer") })
     public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("userld") Integer userld) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -171,7 +171,7 @@ public class BalancePaymentController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("userId",userCancelId);
+        criteria1.andEqualTo("userId",userCancelId).andEqualTo("isDeleted",0);
         List<cancel> cancelList = cancelPaymentMapper.selectByExample(example1);
         if (cancelList.size()==0){
             return builder.body(ResponseUtils.getResponseBody("您不是核销人员"));
