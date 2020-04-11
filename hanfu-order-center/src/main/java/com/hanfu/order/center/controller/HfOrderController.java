@@ -85,6 +85,7 @@ public class HfOrderController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> creatOrder(CreateHfOrderRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        
         LocalDateTime time = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
         hfOrder.setCreateTime(time);
