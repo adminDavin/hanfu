@@ -371,16 +371,16 @@ public class HfProductController {
 								oldList.addAll(newList);
 								return oldList;
 							}));
-			products.forEach(product -> {
-				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
-				if (Optional.ofNullable(hfGoods).isPresent()) {
-					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
-							.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
-							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
-					product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
-					product.setDefaultGoodsId(hfGood.get().getId());
-				}
-			});
+//			products.forEach(product -> {
+//				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+//				if (Optional.ofNullable(hfGoods).isPresent()) {
+//					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
+//							.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
+//							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+//					product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+//					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
+//				}
+//			});
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
