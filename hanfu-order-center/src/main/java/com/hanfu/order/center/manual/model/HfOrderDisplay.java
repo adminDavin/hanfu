@@ -1,6 +1,9 @@
 package com.hanfu.order.center.manual.model;
 
+import com.hanfu.order.center.model.HfOrderDetail;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public class HfOrderDisplay {
@@ -35,6 +38,7 @@ public class HfOrderDisplay {
     private String phone;
     private String addressDesc;
     private Integer distributorId;
+    private List<DetailRequest> detailRequestList;
 
     private String activity;
     private Long activityTime;
@@ -251,6 +255,14 @@ public class HfOrderDisplay {
 
     public void setActivityState(Integer activityState) {
         this.activityState = activityState;
+    }
+
+    public List<DetailRequest> getDetailRequestList() {
+        return detailRequestList;
+    }
+
+    public void setDetailRequestList(List<DetailRequest> detailRequestList) {
+        this.detailRequestList = detailRequestList;
     }
 }
 

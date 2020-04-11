@@ -19,10 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -48,6 +45,8 @@ public class BalancePaymentController {
     private CancelPaymentMapper cancelPaymentMapper;
     @Autowired
     private CancelRecordPaymentMapper cancelRecordPaymentMapper;
+    @Autowired
+    private HfBalanceDetailMapper hfBalanceDetailMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @GetMapping(value = "/activity/payment/activity-code")
@@ -55,11 +54,11 @@ public class BalancePaymentController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "money", value = "金额", required = true,
                     type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true,
+            @ApiImplicitParam(paramType = "query", name = "userld", value = "用户id", required = true,
                     type = "Integer") })
-    public void getCode(HttpServletResponse response, Integer money,Integer userId) throws Exception {
+    public void getCode(HttpServletResponse response,@RequestParam("money") Integer money,@RequestParam("userld") Integer userld) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
-        String key1=String.valueOf(userId)+"BalancePayment";
+        String key1=String.valueOf(userld)+"BalancePayment";
         redisTemplate.opsForValue().set(key1, money);
         redisTemplate.expire(key1,300 , TimeUnit.SECONDS);
         System.out.println(key1);
@@ -103,7 +102,7 @@ public class BalancePaymentController {
 
         //字符串
         String QrCodeType = "BalancePayment";
-        String UserId = String.valueOf(userId);
+        String UserId = String.valueOf(userld);
 //        String Money= String.valueOf(money);
         //加密
         String encrypt = PageTool.encrypt(QrCodeType, key);
@@ -174,7 +173,7 @@ public class BalancePaymentController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("userId",userCancelId);
+        criteria1.andEqualTo("userId",userCancelId).andEqualTo("isDeleted",0);
         List<cancel> cancelList = cancelPaymentMapper.selectByExample(example1);
         if (cancelList.size()==0){
             return builder.body(ResponseUtils.getResponseBody("您不是核销人员"));
@@ -247,6 +246,7 @@ public class BalancePaymentController {
         hfUserBalance.setModifyTime(LocalDateTime.now());
         hfUserBalance.setIsDeleted((short) 0);
         hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()-Integer.valueOf(money));
+        
 //        QR ttt = new QR();
 //        ttt.setQrCodeType(decrypt);
 //        ttt.setUserId(decrypt1);
@@ -260,6 +260,14 @@ public class BalancePaymentController {
 //        List<QR> list = new ArrayList<QR>();
 //        list.add(ttt);
         balanceMapper.updateByExampleSelective(hfUserBalance,example);
+        HfBalanceDetail detail = new HfBalanceDetail();
+		detail.setUserId(Integer.valueOf(qr.getUserId()));
+		detail.setAmount(String.valueOf(money));
+		detail.setPaymentName("消费");
+		detail.setCreateTime(LocalDateTime.now());
+		detail.setModifyTime(LocalDateTime.now());
+		detail.setIsDeleted((byte) 0);
+		hfBalanceDetailMapper.insert(detail);
         //创建流水
         LocalDateTime timeOrder = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
@@ -269,8 +277,8 @@ public class BalancePaymentController {
         hfOrder.setAmount(Integer.valueOf(money));
         hfOrder.setHfRemark("余额扫码支付");
         hfOrder.setUserId(Integer.valueOf(decrypt1));
-        hfOrder.setOrderType("balancePayment");
-        hfOrder.setPaymentName(decrypt);
+        hfOrder.setOrderType("shoppingOrder");
+        hfOrder.setPaymentName("balance");
         hfOrder.setStoneId(0);
         hfOrder.setDistributorId(DistributorId);
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));

@@ -3,6 +3,7 @@ package com.hanfu.product.center.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
+import com.hanfu.product.center.manual.dao.HfMemberDao;
 import com.hanfu.product.center.manual.dao.ProductDao;
 import com.hanfu.product.center.request.CategoryRequest;
 import com.hanfu.product.center.request.ProductInfoRequest;
@@ -92,6 +95,8 @@ public class ProductController {
 	private HfProductCollectMapper hfProductCollectMapper;
 	@Autowired
 	private HfStoneConcernMapper hfStoneConcernMapper;
+	@Autowired
+	private HfMemberDao hfMemberDao;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -164,7 +169,10 @@ public class ProductController {
 			HfCategory hfCategory = list.get(i);
 			CategoryInfo info = new CategoryInfo();
 			info.setId(hfCategory.getId());
+			info.setFileId(hfCategory.getFileId());
 			info.setHfName(hfCategory.getHfName());
+			info.setDate(hfCategory.getCreateTime().plusHours(8));
+			info.setLevel(1);
 			example.clear();
 			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId());
 			List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
@@ -172,8 +180,11 @@ public class ProductController {
 			for (int j = 0; j < list2.size(); j++) {
 				HfCategory hfCategory2 = list2.get(j);
 				Categories categories = new Categories();
+				categories.setLevel(2);
+				categories.setFileId(hfCategory2.getFileId());
 				categories.setId(hfCategory2.getId());
 				categories.setHfName(hfCategory2.getHfName());
+				categories.setDate(hfCategory2.getCreateTime().plusHours(8));
 				example.clear();
 				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId());
 				categorieList = new ArrayList<Categories>();
@@ -183,6 +194,9 @@ public class ProductController {
 					Categories categorie = new Categories();
 					categorie.setId(hfCategory3.getId());
 					categorie.setHfName(hfCategory3.getHfName());
+					categorie.setFileId(hfCategory3.getFileId());
+					categorie.setLevel(3);
+					categorie.setDate(hfCategory3.getCreateTime().plusHours(8));
 					categorieList.add(categorie);
 				}
 				categories.setCategories(categorieList);
@@ -203,7 +217,7 @@ public class ProductController {
 		product.setBrandId(1);
 		product.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		product.setHfName(request.getHfName());
-		product.setLastModifier(request.getLastModifier());
+		
 		product.setCreateTime(LocalDateTime.now());
 		product.setModifyTime(LocalDateTime.now());
 		product.setIsDeleted((short) 0);
@@ -219,6 +233,7 @@ public class ProductController {
 			product.setProductVip((short) 0);
 		}
 		productMapper.insert(product);
+		LastModifier.setLastModifier(request.getUserId(), product.getId(), productMapper, hfMemberDao);
 //		if (request.getClaim()==1){
 //			if (cancelId==null){
 //				productMapper.deleteByPrimaryKey(product.getId());
@@ -243,6 +258,7 @@ public class ProductController {
 		map.put("createTime",product.getCreateTime());
 		map.put("productName",request.getHfName());
 		map.put("CategoryId",request.getCategoryId());
+		map.put("stoneId", productInstance.getStoneId());
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 
@@ -291,10 +307,10 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfCategory category = new HfCategory();
 		String uuid = UUID.randomUUID().toString();
-		uuid = uuid.replace("-", "");
-		if(fileInfo != null) {
-			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
-		}
+//		uuid = uuid.replace("-", "");
+//		if(fileInfo != null) {
+//			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+//		}
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());
@@ -326,6 +342,7 @@ public class ProductController {
 		if(product == null) {
 			return builder.body(ResponseUtils.getResponseBody(""));
 		}
+//		LastModifier.setLastModifier(userId, productId, productMapper, hfMemberDao);
 		String arr[];
 		arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
 		FileDesc fileDesc = new FileDesc();
@@ -395,10 +412,31 @@ public class ProductController {
 
 		HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(catrgoryId);
 
-		String uuid = UUID.randomUUID().toString();
-		uuid = uuid.replace("-", "");
+//		String uuid = UUID.randomUUID().toString();
+//		uuid = uuid.replace("-", "");
 		if(fileInfo != null) {
-			hfCategory.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+			if(hfCategory.getFileId() == null) {
+				FileDesc fileDesc = new FileDesc();
+				fileDesc.setFileName(fileInfo.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				fileDescMapper.insert(fileDesc);
+				hfCategory.setFileId(fileDesc.getId());
+			}else {
+				FileDesc desc = fileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
+				fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+				desc.setGroupName(arr[0]);
+				desc.setRemoteFilename(arr[1]);
+				desc.setModifyTime(LocalDateTime.now());
+				fileDescMapper.updateByPrimaryKey(desc);
+			}
+			
 		}
 		if(!StringUtils.isEmpty(request.getLevelId())) {
 			hfCategory.setLevelId(request.getLevelId());
@@ -412,61 +450,61 @@ public class ProductController {
 		hfCategory.setModifyTime(LocalDateTime.now());
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.updateByPrimaryKey(hfCategory)));
 	}
+	
+//	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
+//	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
+//	public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
+//		FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//		arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
+//		if("类目页面图片".equals(type)) {
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName("类目页面图片");
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(-1);
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			return -1;
+//		}
+//		Integer fileId = null;
+//		FileDescExample example = new FileDescExample();
+//		example.createCriteria().andFileNameEqualTo(uuid);
+//		List<FileDesc> list = fileDescMapper.selectByExample(example);
+//		if (list.isEmpty()) {
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(uuid);
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(-1);
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			fileId = fileDesc.getId();
+//		} else {
+//			FileDesc fileDesc = list.get(0);
+//			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDescMapper.updateByPrimaryKey(fileDesc);
+//			fileId = fileDesc.getId();
+//		}
+//		return fileId;
+//	}
 
-	@RequestMapping(value = "/updateCategoryPicture", method = RequestMethod.POST)
-	@ApiOperation(value = "更新类目图片", notes = "更新类目图片")
-	public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
-		FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-		arr = fileMangeService.uploadFile(fileInfo.getBytes(),"-1");
-		if("类目页面图片".equals(type)) {
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName("类目页面图片");
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(-1);
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			return -1;
-		}
-		Integer fileId = null;
-		FileDescExample example = new FileDescExample();
-		example.createCriteria().andFileNameEqualTo(uuid);
-		List<FileDesc> list = fileDescMapper.selectByExample(example);
-		if (list.isEmpty()) {
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(uuid);
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(-1);
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			fileId = fileDesc.getId();
-		} else {
-			FileDesc fileDesc = list.get(0);
-			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDescMapper.updateByPrimaryKey(fileDesc);
-			fileId = fileDesc.getId();
-		}
-		return fileId;
-	}
-
-	@ApiOperation(value = "查询类目页面图片", notes = "查询类目页面图片")
-	@RequestMapping(value = "/findCategoryPagePicture", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findCategoryPagePicture() throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		FileDescExample example = new FileDescExample();
-		example.createCriteria().andFileNameEqualTo("类目页面图片");
-		List<FileDesc> list = fileDescMapper.selectByExample(example);
-		return builder.body(ResponseUtils.getResponseBody(list));
-	}
+//	@ApiOperation(value = "查询类目页面图片", notes = "查询类目页面图片")
+//	@RequestMapping(value = "/findCategoryPagePicture", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> findCategoryPagePicture() throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		FileDescExample example = new FileDescExample();
+//		example.createCriteria().andFileNameEqualTo("类目页面图片");
+//		List<FileDesc> list = fileDescMapper.selectByExample(example);
+//		return builder.body(ResponseUtils.getResponseBody(list));
+//	}
 
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id查询商品列表")
 	@RequestMapping(value = "/categoryId", method = RequestMethod.GET)
@@ -692,7 +730,16 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	public ResponseEntity<JSONObject> selectProductGoods(SelectProductGoods productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
+		if(productId.getStoneId() == null) {
+			return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
+		}
+		ProductInstanceExample example = new ProductInstanceExample();
+		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
+		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
+		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
+		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
+				.collect(Collectors.toList());
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "获取商品图片", notes = "获取商品图片")

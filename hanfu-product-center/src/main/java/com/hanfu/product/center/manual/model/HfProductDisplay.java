@@ -70,6 +70,7 @@ public class HfProductDisplay implements Serializable {
     private String bossName;
     private Integer isCollect;
     private Integer isConcern;
+    private Integer saleCount;
 	public Integer getId() {
 		return id;
 	}
@@ -259,6 +260,13 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setIsConcern(Integer isConcern) {
 		this.isConcern = isConcern;
+	}
+	
+	public Integer getSaleCount() {
+		return saleCount;
+	}
+	public void setSaleCount(Integer saleCount) {
+		this.saleCount = saleCount;
 	}
 	@Override
 	public String toString() {

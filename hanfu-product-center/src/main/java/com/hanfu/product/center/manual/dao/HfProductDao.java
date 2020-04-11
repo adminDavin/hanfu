@@ -17,4 +17,5 @@ public interface HfProductDao {
     List<HfProductDisplay> selectProductName(ProductNameSelect productNameSelect);
     List<HfProductDisplay> selectActivityProductList(Integer activityId);
     List<ProductGoods> selectProductGoods(SelectProductGoods ProductId);
+    List<HomePageInfo> selectProductCount(List<Integer> goodsId);
 }

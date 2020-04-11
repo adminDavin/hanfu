@@ -16,12 +16,14 @@ public class cancel {
     private Integer userId;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
-    private Integer ordersId;
+//    private Integer ordersId;
     private String site;
     private Integer recordId;
-    private Integer goodsId;
+//    private Integer goodsId;
     private Integer presentMoney;
     private LocalDateTime emptyDate;
+    private Integer isDeleted;
+    private Integer stoneId;
 
     public LocalDateTime getEmptyDate() {
         return emptyDate;
@@ -39,13 +41,6 @@ public class cancel {
         this.presentMoney = presentMoney;
     }
 
-    public Integer getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(Integer goodsId) {
-        this.goodsId = goodsId;
-    }
 
     public Integer getId() {
         return id;
@@ -87,13 +82,6 @@ public class cancel {
         this.modifyDate = modifyDate;
     }
 
-    public Integer getOrdersId() {
-        return ordersId;
-    }
-
-    public void setOrdersId(Integer ordersId) {
-        this.ordersId = ordersId;
-    }
 
     public String getSite() {
         return site;
@@ -109,5 +97,21 @@ public class cancel {
 
     public void setRecordId(Integer recordId) {
         this.recordId = recordId;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Integer getStoneId() {
+        return stoneId;
+    }
+
+    public void setStoneId(Integer stoneId) {
+        this.stoneId = stoneId;
     }
 }

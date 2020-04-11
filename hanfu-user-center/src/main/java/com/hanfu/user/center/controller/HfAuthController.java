@@ -63,6 +63,7 @@ import com.hanfu.user.center.manual.model.HfBossInfo;
 import com.hanfu.user.center.manual.model.HfLevelDescribeInfo;
 import com.hanfu.user.center.manual.model.HfMemberLevelInfo;
 import com.hanfu.user.center.manual.model.HfUserMemberInfo;
+import com.hanfu.user.center.manual.model.Order;
 import com.hanfu.user.center.manual.model.PurseInfo;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
@@ -974,13 +975,27 @@ public class HfAuthController {
 		Integer collectCount = userDao.selectCollectCount(userId);
 		Integer concernCount = userDao.selectConcernCount(userId);		
 		
-		List<UserOrderInfo> order = userDao.selectUserOrderInfo(userId);
+		List<UserOrderInfo> orders = new ArrayList<UserOrderInfo>();
+		Order order = new Order();
+		order.setType("payment");
+		order.setUserId(userId);
+		Integer count = userDao.selectUserOrderInfo(order);
+		orders.add(new UserOrderInfo(count,"payment"));
+		order.setType("process");
+		count = userDao.selectUserOrderInfo(order);
+		orders.add(new UserOrderInfo(count,"process"));
+		order.setType("complete");
+		count = userDao.selectUserOrderInfo(order);
+		orders.add(new UserOrderInfo(count,"complete"));
+		order.setType("evaluate");
+		count = userDao.selectUserOrderInfo(order);
+		orders.add(new UserOrderInfo(count,"evaluate"));
 		
 		PurseInfo info = new PurseInfo();
 		info.setBrowseCount(browseCount);
 		info.setCollectCount(collectCount);
 		info.setConcernCount(concernCount);
-		info.setOrder(order);
+		info.setOrder(orders);
 		if(balance3.isEmpty()) {
 			info.setCouponCount(0);
 		}else {

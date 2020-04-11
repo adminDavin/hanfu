@@ -46,6 +46,7 @@
         <result column="line_price" jdbcType="INTEGER" property="linePrice"/>
         <result column="warehouseName" jdbcType="INTEGER" property="warehouseName"/>
         <result column="hf_region" jdbcType="INTEGER" property="hfRegion"/>
+        <result column="instance_id" jdbcType="INTEGER" property="instanceId"/>
     </resultMap>
 
     <select id="selectProductById" resultMap="BaseResultMap">
@@ -132,6 +133,7 @@
 	h1.create_time,
 	h1.goods_desc,
 	h1.hf_name,
+	h1.instance_id,
         h2.sell_price,
         h2.line_price,
         <if test="goodsId != null and goodsId != ''">

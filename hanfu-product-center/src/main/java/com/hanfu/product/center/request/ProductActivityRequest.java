@@ -17,7 +17,8 @@ public class ProductActivityRequest extends CommonRequest {
         SECKILL_ACTIVITY("秒杀","seckillActivity"),
         GROUP_ACTIVITY("团购","groupActivity"),
         SENIORITY_ACTIVITY("精选","seniorityActivity"),
-		DISTRIBUTION_ACTIVITY("分销","distributionActivity");
+		DISTRIBUTION_ACTIVITY("分销","distributionActivity"),
+		RATATION_Activity("轮播图","ratationActivity");
         private String activityType;
         private String name;
         ActivityTypeEnum(String name,String activityType) {

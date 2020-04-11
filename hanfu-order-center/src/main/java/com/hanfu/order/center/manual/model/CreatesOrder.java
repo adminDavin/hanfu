@@ -5,16 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 public class CreatesOrder {
     @ApiModelProperty(required = true, value = "物品id")
     private Integer goodsId;
-    @ApiModelProperty(required = true, value = "实际价格")
-    private Integer actualPrice;
     @ApiModelProperty(required = true, value = "描述")
     private String hfDesc;
     @ApiModelProperty(required = true, value = "购买数量")
     private Integer quantity;
-    @ApiModelProperty(required = true, value = "售卖价格")
-    private Integer sellPrice;
     @ApiModelProperty(required = true, value = "店铺id")
     private Integer stoneId;
+
 
     public Integer getGoodsId() {
         return goodsId;
@@ -22,14 +19,6 @@ public class CreatesOrder {
 
     public void setGoodsId(Integer goodsId) {
         this.goodsId = goodsId;
-    }
-
-    public Integer getActualPrice() {
-        return actualPrice;
-    }
-
-    public void setActualPrice(Integer actualPrice) {
-        this.actualPrice = actualPrice;
     }
 
     public String getHfDesc() {
@@ -48,13 +37,6 @@ public class CreatesOrder {
         this.quantity = quantity;
     }
 
-    public Integer getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(Integer sellPrice) {
-        this.sellPrice = sellPrice;
-    }
 
     public Integer getStoneId() {
         return stoneId;
@@ -62,5 +44,16 @@ public class CreatesOrder {
 
     public void setStoneId(Integer stoneId) {
         this.stoneId = stoneId;
+    }
+
+
+    @Override
+    public String toString() {
+        return "CreatesOrder{" +
+                "goodsId=" + goodsId +
+                ", hfDesc='" + hfDesc + '\'' +
+                ", quantity=" + quantity +
+                ", stoneId=" + stoneId +
+                '}';
     }
 }

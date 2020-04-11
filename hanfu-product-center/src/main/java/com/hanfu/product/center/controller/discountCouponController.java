@@ -1,11 +1,13 @@
 package com.hanfu.product.center.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfMemberDao;
 import com.hanfu.product.center.manual.model.BalanceType.BalanceTypeEnum;
 import com.hanfu.product.center.manual.model.DiscountCouponScope;
+import com.hanfu.product.center.manual.model.GoodsList;
 import com.hanfu.product.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -343,7 +345,7 @@ public class discountCouponController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "state", value = "优惠券状态", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> couponMy(Integer state, Integer userId, Integer goodsId ,Integer GoodsNum)
+    public ResponseEntity<JSONObject> couponMy(Integer state, Integer userId, Integer goodsId ,Integer GoodsNum, String goodsList)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
@@ -358,6 +360,33 @@ public class discountCouponController {
                 couponExample.createCriteria().andIdIn(couponId).andIdDeletedEqualTo((byte) 0)
                         .andStopTimeGreaterThan(LocalDateTime.now());
                 list = discountCouponMapper.selectByExample(couponExample);
+                if (goodsList!=null){
+                    JSONArray jsonArray= JSONArray.parseArray(goodsList);
+                    List<GoodsList> lists = JSONObject.parseArray(jsonArray.toJSONString(), GoodsList.class);
+                    Integer moneys = 0;
+                    for (GoodsList goodsList1:lists){
+                        moneys= hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsList1.getGoodsId()).getPriceId()).getSellPrice()*goodsList1.getQuantity()+moneys;
+                    }
+
+//                    list.forEach(list1 -> {
+                        for (DiscountCoupon list1:list){
+                        JSONObject specs = JSONObject.parseObject(list1.getUseLimit());
+                        Iterator<String> iterator = specs.keySet().iterator();
+                        while (iterator.hasNext()) {
+// 获得key
+                            String key = iterator.next();
+                            String value = specs.getString(key);
+                            if (key.equals("full")){
+//                                System.out.println(value);
+                                if (Integer.valueOf(value)>moneys){
+//                                    System.out.println("-----------"+hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsId).getPriceId()).getSellPrice());
+                                    list1.setIdDeleted((byte) 1);
+                                }
+                            }
+                        }
+
+                    }
+                }
                 if (goodsId != null) {
                     list.forEach(lists -> {
                         JSONObject specs = JSONObject.parseObject(lists.getUseLimit());

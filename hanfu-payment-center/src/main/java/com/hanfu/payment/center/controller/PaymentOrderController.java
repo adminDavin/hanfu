@@ -14,7 +14,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.hanfu.payment.center.dao.HfOrderMapper;
+import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +30,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.hanfu.payment.center.config.MiniProgramConfig;
-import com.hanfu.payment.center.dao.HfBalanceDetailMapper;
-import com.hanfu.payment.center.dao.HfIntegralMapper;
-import com.hanfu.payment.center.dao.HfLevelDescribeMapper;
-import com.hanfu.payment.center.dao.HfTansactionFlowMapper;
-import com.hanfu.payment.center.dao.HfUserBalanceMapper;
-import com.hanfu.payment.center.dao.HfUserMemberMapper;
-import com.hanfu.payment.center.dao.HfUserPrivilegeMapper;
 import com.hanfu.payment.center.manual.dao.HfOrderDao;
 import com.hanfu.payment.center.manual.dao.UserMemberDao;
 import com.hanfu.payment.center.manual.model.HfOrderDisplay;
@@ -55,6 +48,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import tk.mybatis.mapper.entity.Example;
 
 @CrossOrigin
 @RestController
@@ -95,6 +89,9 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
+
+	@Autowired
+	private HfOrderDetailMapper hfOrderDetailMapper;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -349,6 +346,13 @@ public class PaymentOrderController {
 				} else {
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(),
 							LocalDateTime.now());
+					HfOrderDetail hfOrderDetail = new HfOrderDetail();
+					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
+					System.out.println(OrderStatus.PROCESS.getOrderStatus());
+					Example example = new Example(HfOrderDetail.class);
+					Example.Criteria criteria = example.createCriteria();
+					criteria.andEqualTo("orderId",hfOrder.getId());
+					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 				}
 				return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
 			} else {
@@ -362,8 +366,20 @@ public class PaymentOrderController {
 			if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 						LocalDateTime.now());
-			} else {
+			} else if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+				rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
+				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
+						LocalDateTime.now());
+			}else {
 				hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+				HfOrderDetail hfOrderDetail = new HfOrderDetail();
+				hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
+				System.out.println(OrderStatus.PROCESS.getOrderStatus());
+				Example example = new Example(HfOrderDetail.class);
+				Example.Criteria criteria = example.createCriteria();
+				criteria.andEqualTo("orderId",hfOrder.getId());
+				hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 			}
 
 			return builder.body(ResponseUtils.getResponseBody(hfOrder));

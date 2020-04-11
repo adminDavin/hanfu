@@ -209,7 +209,9 @@ public class GoodsController {
 			record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 			record.setProductId(hfGoodsInfo.getProductId());
 			record.setHfName(hfGoodsInfo.getGoodName());
-			record.setStoneId(1);
+			if(!StringUtils.isEmpty(hfGoodsInfo.getStoneId())) {
+				record.setStoneId(hfGoodsInfo.getStoneId());
+			}
 			record.setBrandId(1);
 //			record.setPriceId(1);
 //			record.setRespId(1);
@@ -321,25 +323,34 @@ public class GoodsController {
 			;
 		}
 		hfGoods.setModifyTime(LocalDateTime.now());
-		if(hfGoods.getPriceId()==null) {
+//		if(hfGoods.getPriceId()==null || hfGoods.getRespId() == null) {
 			GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
 			goodsPriceInfo.setHfGoodsId(hfGoods.getId());
 			goodsPriceInfo.setSellPrice(hfGoodsDisplay.getSellPrice());
+			goodsPriceInfo.setQuantity(hfGoodsDisplay.getQuantity());
+			goodsPriceInfo.setWareHouseId(hfGoodsDisplay.getWarehouseId());
 			//        	goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
-			setGoodsPrice(goodsPriceInfo);
-		}else {
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
-				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+			if(hfGoodsDisplay.getSellPrice() != null || hfGoodsDisplay.getQuantity() != null || hfGoodsDisplay.getWarehouseId() != null) {
+				setGoodsPrice(goodsPriceInfo);
 			}
-			hfPriceMapper.updateByPrimaryKey(hfPrice);
-		}
-		HfResp hfResp = new HfResp();
-		HfGoodsSpec goodsSpec = new HfGoodsSpec();
-		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
-		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
+//		}else {
+//			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
+//			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
+//				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
+//				hfPriceMapper.updateByPrimaryKey(hfPrice);
+//			}
+//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+//			if(!StringUtils.isEmpty(hfGoodsDisplay.getQuantity())) {
+//				hfResp.setQuantity(hfGoodsDisplay.getQuantity());
+//				hfRespMapper.updateByPrimaryKey(hfResp);
+//			}
+//		}
+//		HfResp hfResp = new HfResp();
+//		HfGoodsSpec goodsSpec = new HfGoodsSpec();
+//		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
+//		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
 		//        goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
-		hfRespMapper.insert(hfResp);
+//		hfRespMapper.insert(hfResp);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")
@@ -521,7 +532,7 @@ public class GoodsController {
 			if (!StringUtils.isEmpty(request.getUsername())) {
 				resp.setLastModifier(request.getUsername());
 			}
-			if (!StringUtils.isEmpty(String.valueOf(request.getWareHouseId()))) {
+			if (!StringUtils.isEmpty(request.getWareHouseId())) {
 				resp.setWarehouseId(request.getWareHouseId());
 			}
 			hfRespMapper.updateByPrimaryKey(resp);
@@ -1175,4 +1186,5 @@ public class GoodsController {
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
 	}
+	
 }

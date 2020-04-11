@@ -1,7 +1,10 @@
 package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class CategoryInfo implements Serializable{
 
@@ -14,6 +17,10 @@ public class CategoryInfo implements Serializable{
 	private Integer TwoLevelId;
 	private Integer id;
 	private String hfName;
+	private Integer level;
+	private Integer fileId;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime date;
 	private List<Categories> categories;
 	public String getTwoLevelName() {
 		return TwoLevelName;
@@ -44,5 +51,26 @@ public class CategoryInfo implements Serializable{
 	}
 	public void setHfName(String hfName) {
 		this.hfName = hfName;
+	}
+	public Integer getLevel() {
+		return level;
+	}
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public LocalDateTime getDate() {
+		return date;
+	}
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+	public Integer getFileId() {
+		return fileId;
+	}
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
 	}
 }
