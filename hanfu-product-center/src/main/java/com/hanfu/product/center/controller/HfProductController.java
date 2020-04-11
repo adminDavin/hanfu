@@ -132,7 +132,13 @@ public class HfProductController {
 							oldList.addAll(newList);
 							return oldList;
 						}));
+		ProductInstanceExample instanceExample = new ProductInstanceExample();
 		products.forEach(product -> {
+			if(product.getStoneId() != null) {
+				instanceExample.clear();
+				instanceExample.createCriteria().andProductIdEqualTo(product.getId()).andStoneIdEqualTo(product.getStoneId());
+				product.setInstanceId(productInstanceMapper.selectByExample(instanceExample).get(0).getId());
+			}
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
@@ -141,8 +147,8 @@ public class HfProductController {
 				product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
 				product.setDefaultGoodsId(hfGood.get().getId());
 			}
-
 		});
+		products = products.stream().filter(p -> p.getInstanceId() != null).collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(products));
 	}
 
@@ -740,15 +746,18 @@ public class HfProductController {
 			HfActivityProduct hfactivityProduct = products.get(j);
 			HfProductDisplay display = new HfProductDisplay();
 			Product product = productMapper.selectByPrimaryKey(hfactivityProduct.getProductId());
+			ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());
 			List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
 					.selectHfGoodsDisplay(hfactivityProduct.getProductId());
-			if (!hfGoodsDisplay.isEmpty()) {
-				if (hfGoodsDisplay.get(0).getStoneId() != null) {
-					display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
-					HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
-					display.setStoneName(hfStone.getHfName());
-				}
-			}
+//			if (!hfGoodsDisplay.isEmpty()) {
+//				if (hfGoodsDisplay.get(0).getStoneId() != null) {
+//					display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
+//					HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
+//					display.setStoneName(hfStone.getHfName());
+//				}
+//			}
+			HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
+			display.setStoneName(hfStone.getHfName());
 			Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
 					.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
 							(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {

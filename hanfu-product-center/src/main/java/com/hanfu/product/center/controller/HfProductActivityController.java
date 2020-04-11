@@ -225,9 +225,11 @@ public class HfProductActivityController {
     @RequestMapping(value = "/intoActivityProduct", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),})
-    public ResponseEntity<JSONObject>     intoActivityProduct(@RequestParam(required = true) Integer id,
-                                                          @RequestParam(required = true) Integer productId) throws JSONException {
+            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "instanceId", value = "实体id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true) Integer id,
+                                                          @RequestParam(required = true) Integer productId,
+                                                          @RequestParam(required = true) Integer instanceId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivityProduct hfActivityProduct = new HfActivityProduct();
         if (productId != null) {
@@ -236,6 +238,7 @@ public class HfProductActivityController {
             hfActivityProduct.setCreateTime(LocalDateTime.now());
             hfActivityProduct.setModifyTime(LocalDateTime.now());
             hfActivityProduct.setIsDeleted((byte) 0);
+            hfActivityProduct.setInstanceId(instanceId);
             hfActivityProductMapper.insert(hfActivityProduct);
             return builder.body(ResponseUtils.getResponseBody("添加成功"));
         }

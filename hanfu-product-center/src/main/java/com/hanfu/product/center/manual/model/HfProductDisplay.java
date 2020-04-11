@@ -71,6 +71,7 @@ public class HfProductDisplay implements Serializable {
     private Integer isCollect;
     private Integer isConcern;
     private Integer saleCount;
+    private Integer instanceId;
 	public Integer getId() {
 		return id;
 	}
@@ -267,6 +268,12 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setSaleCount(Integer saleCount) {
 		this.saleCount = saleCount;
+	}
+	public Integer getInstanceId() {
+		return instanceId;
+	}
+	public void setInstanceId(Integer instanceId) {
+		this.instanceId = instanceId;
 	}
 	@Override
 	public String toString() {
