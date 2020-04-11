@@ -78,6 +78,8 @@ public class HfOrderController {
     private HfRespMapper hfRespMapper;
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    @Autowired
+    private DiscountCouponOrderMapper discountCouponOrderMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -361,10 +363,24 @@ public class HfOrderController {
             moneys=sss.get(0);
         }
             hfOrder1.setAmount(moneys);
-
-
-        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
-
+//平台优惠券记录
+        for (Integer discountId:request.getDisconuntId()){
+            hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
+            DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
+            discountCouponOrder.setCreateDate(LocalDateTime.now());
+            discountCouponOrder.setModifyDate(LocalDateTime.now());
+            discountCouponOrder.setIsDeleted(0);
+            discountCouponOrder.setUseState(1);
+            discountCouponOrder.setOrderId(hfOrder.getId());
+            discountCouponOrder.setDiscountCouponId(discountId);
+            discountCouponOrderMapper.insertSelective(discountCouponOrder);
+        }
+//清购物车
+//        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+//        paramMap.add("productStoneId",request.getGoodsList());
+//        paramMap.add("userId", String.valueOf(request.getUserId()));
+//        JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"cart/getCartList/",JSONObject.class,request.getGoodsId(),request.getQuantity());
+//        JSONObject data=entity.getJSONObject("data");
         return builder.body(ResponseUtils.getResponseBody(hfOrderMapper.selectByPrimaryKey(hfOrder.getId()).getOrderCode()));
     }
 

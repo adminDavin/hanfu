@@ -157,8 +157,8 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public int delCartProduct(String userId, String productId) {
-            redisService.hdel(CartPrefix.getCartList, userId, productId);
+    public int delCartProduct(String userId, String productId,String stontId) {
+            redisService.hdel(CartPrefix.getCartList, userId, productId+stontId);
             return 1;
     }
 

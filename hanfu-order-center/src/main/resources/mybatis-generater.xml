@@ -44,8 +44,8 @@
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table schema="user_center" tableName="hf_order_logistics"
-               domainObjectName="HfOrderLogistics">
+        <table schema="user_center" tableName="discount_coupon_order"
+               domainObjectName="DiscountCouponOrder">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

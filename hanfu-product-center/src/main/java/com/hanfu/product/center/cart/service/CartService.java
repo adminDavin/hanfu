@@ -16,6 +16,6 @@ public interface CartService {
 
     int addCart(String userId, String productId, int num,Integer stontId);
 
-	int delCartProduct(String userId, String productId);
+	int delCartProduct(String userId, String productId,String stoneId);
 
 }
