@@ -11,6 +11,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.hanfu.order.center.cancel.dao.HfGoodsMapper;
+import com.hanfu.order.center.cancel.dao.ProductMapper;
+import com.hanfu.order.center.cancel.model.Product;
 import com.hanfu.order.center.dao.*;
 import com.hanfu.order.center.manual.model.*;
 import com.hanfu.order.center.model.*;
@@ -71,7 +73,9 @@ public class HfOrderController {
     private HfActivityProductMapper hfActivityProductMapper;
 
     @Autowired
-    private HfGoodsMapper hfGoodsMapper;
+    private HfGoodMapper hfGoodMapper;
+    @Autowired
+    private ProductMapper productMapper;
     @Autowired
     private HfPriceMappers hfPriceMappers;
     @Autowired
@@ -497,7 +501,11 @@ private Map<String,String> chock(List<CreatesOrder> list){
             hfRespExample.createCriteria().andGoogsIdEqualTo(createsOrder.getGoodsId());
             List<HfResp> hfResps= hfRespMapper.selectByExample(hfRespExample);
             if (hfResps.get(0).getQuantity()<createsOrder.getQuantity()){
+                HfGoods hfGoods= hfGoodMapper.selectByPrimaryKey(createsOrder.getGoodsId());
+                Product product = productMapper.selectByPrimaryKey(hfGoods.getProductId());
                 map.put("goodsId", String.valueOf(createsOrder.getGoodsId()));
+                map.put("productName",product.getHfName());
+                map.put("goodsName",hfGoods.getHfName());
             }
         }
         return map;
