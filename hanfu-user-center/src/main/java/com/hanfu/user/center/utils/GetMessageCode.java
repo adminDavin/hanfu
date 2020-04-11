@@ -21,7 +21,7 @@ public class GetMessageCode {
     static final String accessKeyId = "LTAI4FcwjjugxzJCxcfTDwUX";  // TODO 修改成自己的
     static final String accessKeySecret = "vs6blWodGEAsvlIoOsah69WeXVwvmh";   // TODO 修改成自己的
 
-    public static Integer sendSms(String telephone) throws ClientException {
+    public static Integer sendSms(String telephone) throws ClientException{
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -59,7 +59,5 @@ public class GetMessageCode {
         return newcode;
     }
 }
-
- 
 
 
