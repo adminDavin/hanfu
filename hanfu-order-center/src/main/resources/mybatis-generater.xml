@@ -68,12 +68,12 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <table schema="user_center" tableName="hf_order"
+        <!-- <table schema="user_center" tableName="hf_order"
                domainObjectName="HfOrder">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
         <!--<table schema="user_center" tableName="hf_order_detail"-->
                <!--domainObjectName="HfOrderDetail">-->
             <!--<property name="useActualColumnNames" value="false"/>-->
@@ -113,7 +113,7 @@
 		<!--identity="true"/> -->
 		<!--</table> -->
 		<!--<table schema="user_center" tableName="discover_pictrue" -->
-		<!--domainObjectName="DiscoverPictrue"> -->
+		<!--djlomainObjectName="DiscoverPictrue"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
@@ -125,8 +125,8 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<table schema="user_center" tableName=" hf_request_id"
-			domainObjectName=" HfRequestId">
+		<table schema="user_center" tableName="hf_request_id"
+			domainObjectName="HfRequestId">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />

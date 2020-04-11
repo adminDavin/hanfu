@@ -80,11 +80,25 @@ public class HfOrderController {
     private HfStoneMapper hfStoneMapper;
     @Autowired
     private DiscountCouponOrderMapper discountCouponOrderMapper;
+    @Autowired
+    private HfRequestIdMapper hfRequestIdMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> creatOrder(CreateHfOrderRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfRequestIdExample idExample = new HfRequestIdExample();
+        idExample.createCriteria().andRequestIdEqualTo(request.getRequestId());
+        if(!hfRequestIdMapper.selectByExample(idExample).isEmpty()) {
+        	return builder.body(ResponseUtils.getResponseBody(-1));
+        }else {
+        	HfRequestId id = new HfRequestId();
+        	id.setRequestId(request.getRequestId());
+        	id.setCreateTime(LocalDateTime.now());
+        	id.setModifTime(LocalDateTime.now());
+        	id.setIsDeleted((byte) 0);
+        	hfRequestIdMapper.insert(id);
+        }
         
         LocalDateTime time = LocalDateTime.now();
         HfOrder hfOrder = new HfOrder();
@@ -296,6 +310,18 @@ public class HfOrderController {
     @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfRequestIdExample idExample = new HfRequestIdExample();
+        idExample.createCriteria().andRequestIdEqualTo(request.getRequestId());
+        if(!hfRequestIdMapper.selectByExample(idExample).isEmpty()) {
+        	return builder.body(ResponseUtils.getResponseBody(-1));
+        }else {
+        	HfRequestId id = new HfRequestId();
+        	id.setRequestId(request.getRequestId());
+        	id.setCreateTime(LocalDateTime.now());
+        	id.setModifTime(LocalDateTime.now());
+        	id.setIsDeleted((byte) 0);
+        	hfRequestIdMapper.insert(id);
+        }
         Integer moneys = 0;
         JSONArray jsonArray= JSONArray.parseArray(request.getGoodsList());
 //        JSONObject jsonObject1= JSON.parseObject(request.getGoodsList());
