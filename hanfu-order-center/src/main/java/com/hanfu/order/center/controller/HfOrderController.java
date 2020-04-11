@@ -335,6 +335,18 @@ public class HfOrderController {
                 List<HfPrice> hfPriceList = hfPriceMappers.selectByExample(hfPriceExample);
                 actualPrice = (hfPriceList.get(0).getSellPrice() * goodss.getQuantity())+actualPrice;
             }
+            //平台优惠券记录
+            for (Integer discountId:request.getDisconuntId()){
+                DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
+                discountCouponOrder.setCreateDate(LocalDateTime.now());
+                discountCouponOrder.setModifyDate(LocalDateTime.now());
+                discountCouponOrder.setIsDeleted(0);
+                discountCouponOrder.setUseState(1);
+                discountCouponOrder.setOrderId(hfOrder.getId());
+                discountCouponOrder.setDiscountCouponId(discountId);
+                discountCouponOrderMapper.insertSelective(discountCouponOrder);
+                restTemplate.getForObject(REST_URL_CHECK+"discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}",JSONObject.class,discountId,request.getUserId());
+            }
         }
         System.out.println(actualPrice);
         List<Integer> sss = new ArrayList<>();
@@ -363,24 +375,22 @@ public class HfOrderController {
             moneys=sss.get(0);
         }
             hfOrder1.setAmount(moneys);
-//平台优惠券记录
-        for (Integer discountId:request.getDisconuntId()){
-            hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
-            DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
-            discountCouponOrder.setCreateDate(LocalDateTime.now());
-            discountCouponOrder.setModifyDate(LocalDateTime.now());
-            discountCouponOrder.setIsDeleted(0);
-            discountCouponOrder.setUseState(1);
-            discountCouponOrder.setOrderId(hfOrder.getId());
-            discountCouponOrder.setDiscountCouponId(discountId);
-            discountCouponOrderMapper.insertSelective(discountCouponOrder);
-        }
+        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
 //清购物车
+        List<ProductStone> productStoneList = new ArrayList<>();
+        for (CreatesOrder goodss : list) {
+            ProductStone productStone = new ProductStone();
+            productStone.setProductId(String.valueOf(goodss.getGoodsId()));
+            productStone.setStoneId(String.valueOf(goodss.getStoneId()));
+            productStoneList.add(productStone);
+        }
+        String productStone = JSON.toJSONString(productStoneList);
+        System.out.println(productStone);
+        System.out.println(request.getUserId());
 //        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-//        paramMap.add("productStoneId",request.getGoodsList());
+//        paramMap.add("productStoneId",productStone);
 //        paramMap.add("userId", String.valueOf(request.getUserId()));
-//        JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"cart/getCartList/",JSONObject.class,request.getGoodsId(),request.getQuantity());
-//        JSONObject data=entity.getJSONObject("data");
+        JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
         return builder.body(ResponseUtils.getResponseBody(hfOrderMapper.selectByPrimaryKey(hfOrder.getId()).getOrderCode()));
     }
 

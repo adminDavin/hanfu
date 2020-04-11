@@ -474,5 +474,19 @@ public class discountCouponController {
         }
         return builder.body(ResponseUtils.getResponseBody(coupons.getId()));
     }
-
+    @ApiOperation(value = "使用", notes = "使用")
+    @RequestMapping(value = "/useDis", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public ResponseEntity<JSONObject> useDis(Integer discountCouponId, Integer userId)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfUserCoupons coupons = new HfUserCoupons();
+        coupons.setIdDeleted((byte) 1);
+        coupons.setModifyDate(LocalDateTime.now());
+        HfUserCouponsExample userCouponsExample = new HfUserCouponsExample();
+        userCouponsExample.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(discountCouponId);
+        hfUserCouponsMapper.updateByExampleSelective(coupons,userCouponsExample);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
