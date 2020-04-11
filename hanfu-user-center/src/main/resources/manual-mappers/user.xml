@@ -185,7 +185,7 @@
     	select count(*) from hf_stone_concern where user_id = #{userId}
     </select>
     
-    <select id="selectUserOrderInfo" resultMap="UserOrderInfo">
-    	select order_status orderStatus,count(*) orderCount from hf_order where user_id = #{userId} group by order_status
+    <select id="selectUserOrderInfo" resultType="Integer">
+    	select count(*) orderCount from hf_order where user_id = #{userId} and order_status = #{type}
     </select>
 </mapper>

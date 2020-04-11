@@ -286,12 +286,12 @@ public class HomePageController {
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
 		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
-		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdIn(stoneId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andOrderIdIn(orderId);
+		example3.createCriteria().andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
 		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
@@ -423,12 +423,12 @@ public class HomePageController {
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfStone> list = hfStoneMapper.selectByExample(example);
 		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
-		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdIn(stoneId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andOrderIdIn(orderId);
+		example3.createCriteria().andHfStatusEqualTo("complete").andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		for (int i = 0; i < ldt.getMonthValue(); i++) {
 			quantity = 0;
@@ -515,6 +515,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			UserPersonalBrowseExample example = new UserPersonalBrowseExample();
 			example.createCriteria().andUserIdEqualTo(userId).andBrowseTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("browse_time DESC");
 			List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				UserPersonalBrowse browse = browses.get(j);
@@ -580,6 +581,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			HfProductCollectExample example = new HfProductCollectExample();
 			example.createCriteria().andUserIdEqualTo(userId).andCollectTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("collect_time DESC");
 			List<HfProductCollect> browses = hfProductCollectMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				HfProductCollect browse = browses.get(j);
@@ -644,6 +646,7 @@ public class HomePageController {
 			LocalDateTime dayEnd = dayStart.plusHours(24);
 			HfStoneConcernExample example = new HfStoneConcernExample();
 			example.createCriteria().andUserIdEqualTo(userId).andConcernTimeBetween(dayStart, dayEnd);
+			example.setOrderByClause("concern_time DESC");
 			List<HfStoneConcern> browses = hfStoneConcernMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
 				HfStoneConcern concern = browses.get(j);
@@ -662,5 +665,4 @@ public class HomePageController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-
 }

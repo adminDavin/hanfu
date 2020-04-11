@@ -308,13 +308,13 @@ public class HfOrderController {
         HfOrder hfOrder = new HfOrder();
         hfOrder.setCreateTime(time);
         hfOrder.setModifyTime(time);
-
+        
         hfOrder.setAmount(moneys);
         hfOrder.setHfRemark(request.getHfRemark());
         hfOrder.setUserId(request.getUserId());
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
-//        hfOrder.setStoneId(request.getStoneId());
+//        hfOrder.setStoneId(1);
 //        hfOrder.setDistributorId(request.getDistributorId());
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
