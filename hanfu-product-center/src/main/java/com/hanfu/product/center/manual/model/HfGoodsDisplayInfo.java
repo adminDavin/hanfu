@@ -24,6 +24,7 @@ public class HfGoodsDisplayInfo implements Serializable {
     private short isUsePriceMode;
     private Integer linePrice;
     private Integer stoneId;
+    private Integer instanceId;
     private List<HfGoodsSpecDisplay> hfGoodsSpecs;
     public Integer getId() {
         return id;
@@ -122,6 +123,12 @@ public class HfGoodsDisplayInfo implements Serializable {
 	}
 	public void setStoneId(Integer stoneId) {
 		this.stoneId = stoneId;
+	}
+	public Integer getInstanceId() {
+		return instanceId;
+	}
+	public void setInstanceId(Integer instanceId) {
+		this.instanceId = instanceId;
 	}
 	@Override
 	public String toString() {
