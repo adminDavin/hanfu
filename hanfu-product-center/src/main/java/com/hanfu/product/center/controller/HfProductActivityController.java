@@ -14,6 +14,7 @@ import com.hanfu.product.center.request.ProductActivityInfoRequest;
 import com.hanfu.product.center.request.ProductActivityRequest;
 import com.hanfu.product.center.request.ProductActivityRequest.ActivityTypeEnum;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.hfStoreMenber;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -38,6 +39,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -87,6 +89,10 @@ public class HfProductActivityController {
     private HfGroupDao hfGroupDao;
     @Autowired
     private HfPriceMapper hfPriceMapper;
+    @Autowired
+    private ProductInstanceMapper productInstanceMapper;
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
 
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -232,6 +238,36 @@ public class HfProductActivityController {
                                                           @RequestParam(required = true) Integer instanceId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivityProduct hfActivityProduct = new HfActivityProduct();
+        HfActivityProductExample example = new HfActivityProductExample();
+    	example.createCriteria().andInstanceIdEqualTo(instanceId).andActivityIdEqualTo(id);
+    	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
+    		return builder.body(ResponseUtils.getResponseBody(-1));
+    	}
+    	HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
+    	if("seckillActivity".equals(activity.getActivityType())) {
+    		HfActivityExample example2 = new HfActivityExample();
+    		example2.createCriteria().andActivityTypeEqualTo("groupActivity");
+    		List<HfActivity> activities = hfActivityMapper.selectByExample(example2);
+    		List<Integer> activityId = activities.stream().map(HfActivity::getId).collect(Collectors.toList());
+    		example.clear();
+    		example.createCriteria().andActivityIdIn(activityId).andInstanceIdEqualTo(instanceId);
+    		List<HfActivityProduct> activityProducts = hfActivityProductMapper.selectByExample(example);
+    		if(!activityProducts.isEmpty()) {
+    			return builder.body(ResponseUtils.getResponseBody(-1));
+    		}
+    	}
+    	if("groupActivity".equals(activity.getActivityType())) {
+    		HfActivityExample example2 = new HfActivityExample();
+    		example2.createCriteria().andActivityTypeEqualTo("seckillActivity");
+    		List<HfActivity> activities = hfActivityMapper.selectByExample(example2);
+    		List<Integer> activityId = activities.stream().map(HfActivity::getId).collect(Collectors.toList());
+    		example.clear();
+    		example.createCriteria().andActivityIdIn(activityId).andInstanceIdEqualTo(instanceId);
+    		List<HfActivityProduct> activityProducts = hfActivityProductMapper.selectByExample(example);
+    		if(!activityProducts.isEmpty()) {
+    			return builder.body(ResponseUtils.getResponseBody(-1));
+    		}
+    	}
         if (productId != null) {
             hfActivityProduct.setActivityId(id);
             hfActivityProduct.setProductId(productId);
@@ -264,7 +300,9 @@ public class HfProductActivityController {
             List<ActivityProductInfo> result = new ArrayList<ActivityProductInfo>();
             for (int i = 0; i < list.size(); i++) {
                 HfActivityProduct activityProduct = list.get(i);
+                ProductInstance instance = productInstanceMapper.selectByPrimaryKey(activityProduct.getInstanceId());
                 ActivityProductInfo activityProductInfo = new ActivityProductInfo();
+                activityProductInfo.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
                 activityProductInfo.setId(activityProduct.getId());
                 activityProductInfo.setAcivityId(activityProduct.getActivityId());
                 activityProductInfo.setProductId(activityProduct.getProductId());
