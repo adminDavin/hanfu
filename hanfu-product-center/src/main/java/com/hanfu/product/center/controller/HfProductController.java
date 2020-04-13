@@ -145,7 +145,7 @@ public class HfProductController {
 						.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
 						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
 				product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
-				product.setDefaultGoodsId(hfGood.get().getId());
+//				product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : );
 			}
 		});
 		products = products.stream().filter(p -> p.getInstanceId() != null).collect(Collectors.toList());
