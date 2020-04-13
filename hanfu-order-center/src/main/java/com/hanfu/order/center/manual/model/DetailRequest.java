@@ -9,7 +9,7 @@ public class DetailRequest {
     private Integer stoneId;
     private String stoneName;
     private List<HfOrderDetail> hfOrderDetailList;
-
+    private String detailStatus;
     public Integer getStoneId() {
         return stoneId;
     }
@@ -32,5 +32,13 @@ public class DetailRequest {
 
     public void setHfOrderDetailList(List<HfOrderDetail> hfOrderDetailList) {
         this.hfOrderDetailList = hfOrderDetailList;
+    }
+
+    public String getDetailStatus() {
+        return detailStatus;
+    }
+
+    public void setDetailStatus(String detailStatus) {
+        this.detailStatus = detailStatus;
     }
 }

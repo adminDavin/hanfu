@@ -193,6 +193,7 @@ public class HfOrderController {
                     HfStone hfStone= hfStoneMapper.selectByPrimaryKey(entry.getKey());
                     cartList.setStoneName(hfStone.getHfName());
                     cartList.setHfOrderDetailList(entry.getValue());
+                    cartList.setDetailStatus(entry.getValue().get(0).getHfStatus());
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
