@@ -237,35 +237,29 @@ public class HfProductActivityController {
                                                           @RequestParam(required = true) Integer productId,
                                                           @RequestParam(required = true) Integer instanceId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
+        if(activity == null) {
+        	return builder.body(ResponseUtils.getResponseBody("数据异常"));
+        }
         HfActivityProduct hfActivityProduct = new HfActivityProduct();
         HfActivityProductExample example = new HfActivityProductExample();
     	example.createCriteria().andInstanceIdEqualTo(instanceId).andActivityIdEqualTo(id);
     	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
     		return builder.body(ResponseUtils.getResponseBody(-1));
     	}
-    	HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
+    	
     	if("seckillActivity".equals(activity.getActivityType())) {
-    		HfActivityExample example2 = new HfActivityExample();
-    		example2.createCriteria().andActivityTypeEqualTo("groupActivity");
-    		List<HfActivity> activities = hfActivityMapper.selectByExample(example2);
-    		List<Integer> activityId = activities.stream().map(HfActivity::getId).collect(Collectors.toList());
     		example.clear();
-    		example.createCriteria().andActivityIdIn(activityId).andInstanceIdEqualTo(instanceId);
-    		List<HfActivityProduct> activityProducts = hfActivityProductMapper.selectByExample(example);
-    		if(!activityProducts.isEmpty()) {
-    			return builder.body(ResponseUtils.getResponseBody(-1));
+    		example.createCriteria().andProductActivityTypeEqualTo("groupActivity").andInstanceIdEqualTo(instanceId);
+    		if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
+    			return builder.body(ResponseUtils.getResponseBody(-2));
     		}
     	}
     	if("groupActivity".equals(activity.getActivityType())) {
-    		HfActivityExample example2 = new HfActivityExample();
-    		example2.createCriteria().andActivityTypeEqualTo("seckillActivity");
-    		List<HfActivity> activities = hfActivityMapper.selectByExample(example2);
-    		List<Integer> activityId = activities.stream().map(HfActivity::getId).collect(Collectors.toList());
     		example.clear();
-    		example.createCriteria().andActivityIdIn(activityId).andInstanceIdEqualTo(instanceId);
-    		List<HfActivityProduct> activityProducts = hfActivityProductMapper.selectByExample(example);
-    		if(!activityProducts.isEmpty()) {
-    			return builder.body(ResponseUtils.getResponseBody(-1));
+    		example.createCriteria().andProductActivityTypeEqualTo("seckillActivity").andInstanceIdEqualTo(instanceId);
+    		if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
+    			return builder.body(ResponseUtils.getResponseBody(-2));
     		}
     	}
         if (productId != null) {
@@ -275,6 +269,7 @@ public class HfProductActivityController {
             hfActivityProduct.setModifyTime(LocalDateTime.now());
             hfActivityProduct.setIsDeleted((byte) 0);
             hfActivityProduct.setInstanceId(instanceId);
+            hfActivityProduct.setProductActivityType(activity.getActivityType());
             hfActivityProductMapper.insert(hfActivityProduct);
             return builder.body(ResponseUtils.getResponseBody("添加成功"));
         }
