@@ -6,6 +6,8 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.hanfu.order.center.cancel.dao.*;
 import com.hanfu.order.center.cancel.model.*;
+import com.hanfu.order.center.model.HfOrderDetailExample;
+import com.hanfu.order.center.model.HfOrderExample;
 import com.hanfu.order.center.tool.PageTool;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -26,9 +28,7 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -70,31 +70,31 @@ public class logicController {
     @ApiOperation(value = "核销逻辑", notes = "核销逻辑")
     public ResponseEntity<JSONObject> testCancel(
             @RequestParam(value = "userId", required = true) Integer userId,
-            @RequestParam(value = "UgoodsId", required = true) String UgoodsId,
+//            @RequestParam(value = "UgoodsId", required = true) String UgoodsId,
             @RequestParam(value = "UorderId", required = true) String UorderId
     ) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         String key = "MIGfMA0GCSqGSIb3";
-        String goodId = String.valueOf(UgoodsId).replace("思维创造", "");
+//        String goodId = String.valueOf(UgoodsId).replace("思维创造", "");
         String ordersId = String.valueOf(UorderId).replace("思维创造", "");
         String decrypt = PageTool.decrypt(ordersId, key);
-        String decrypt1 = PageTool.decrypt(goodId, key);
-        Integer goodsId=Integer.valueOf(decrypt1);
+//        String decrypt1 = PageTool.decrypt(goodId, key);
+//        Integer goodsId=Integer.valueOf(decrypt1);
         Integer orderId=Integer.valueOf(decrypt);
 
-        Integer goodsid= (Integer) redisTemplate.opsForValue().get(decrypt);
-        if (redisTemplate.opsForValue().get(decrypt)==null){
+        Integer stoneId= (Integer) redisTemplate.opsForValue().get(decrypt);
+        if (stoneId==null){
             return builder.body(ResponseUtils.getResponseBody("二维码已失效"));
         }
         //核销员查询
         Example example1 = new Example(cancel.class);
         Example.Criteria criteria1 = example1.createCriteria();
-        criteria1.andEqualTo("userId", userId);
+        criteria1.andEqualTo("userId", userId).andEqualTo("stoneId",stoneId).andEqualTo("isDeleted",0);
         List<cancel> cancelList = cancelsMapper.selectByExample(example1);
         //
         HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
         String unionId = hfUser.getUsername();
-        if (goodsId == null) {
+        if (stoneId == null) {
             return builder.body(ResponseUtils.getResponseBody("goodsId为空"));
         }
         if (orderId == null) {
@@ -112,73 +112,65 @@ public class logicController {
         if (cancelList.size() == 0) {
             return builder.body(ResponseUtils.getResponseBody("对不起你不是核销员无法核销商品"));
         }
-//        System.out.println(hfUser1.getCancelId() + "hfUser1.getCancelId()");
-        //判断核销的商品是否为自提商品
-        int productId=hfGoodsMapper.selectByPrimaryKey(goodsId).getProductId();
-        System.out.println(productId);
-        if (productMapper.selectByPrimaryKey(productId).getClaim()!=1) {
-            return builder.body(ResponseUtils.getResponseBody("该商品不是自提商品"));
-        }
 
-        //判断核销员是否为该商品的核销员
-        cancel cancel1 = cancelsMapper.selectByPrimaryKey(cancelList.get(0).getId());
-//        CancelProduct cancelProduct = cancelProductMapper.selectByExample(examplecancel).get(0);
-        Example examplecancel = new Example(CancelProduct.class);
-        Example.Criteria criteriacancel = examplecancel.createCriteria();
-        criteriacancel.andEqualTo("productId",productId).andEqualTo("cancelId",cancelList.get(0).getId());
-        if (cancelProductMapper.selectByExample(examplecancel).size()==0) {
-            return builder.body(ResponseUtils.getResponseBody("你不是该商品的核销员"));
-        }
         //判断订单的商品与核销商品是否一致
         //价格，根据订单id，设置订单状态
         Example example2 = new Example(HfOrderDetail.class);
         Example.Criteria criteria2 = example2.createCriteria();
-        criteria2.andEqualTo("orderId", orderId).andEqualTo("goodsId",goodsId);
+        criteria2.andEqualTo("orderId", orderId).andEqualTo("stoneId",stoneId);
         List<HfOrderDetail> hfPriceList = hfOrdersCancelDetailMapper.selectByExample(example2);
         HfOrder hfOrder=hfOrdersCancelMapper.selectByPrimaryKey(orderId);
         if (hfPriceList.size() == 0||hfOrder==null) {
             return builder.body(ResponseUtils.getResponseBody("订单不不存在"));
         }
 
+
         if (hfOrder.getOrderStatus().equals("complete")) {
             return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
         }
-        HfOrderDetail hfPrice = hfOrdersCancelDetailMapper.selectByPrimaryKey(hfPriceList.get(0).getId());
-        if (hfPrice.getHfStatus().equals("已完成")) {
-            return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
-        }
-        if (!hfPrice.getGoodsId().equals(goodsId)) {
-            return builder.body(ResponseUtils.getResponseBody("订单核销的商品与实际不符合"));
-        }
         HfOrderDetail hfOrdersDetail = new HfOrderDetail();
         hfOrdersDetail.setModifyTime(LocalDateTime.now());
-        hfOrdersDetail.setId(hfPrice.getId());
-        hfOrdersDetail.setHfStatus("已完成");
-        hfOrdersCancelDetailMapper.updateByPrimaryKeySelective(hfOrdersDetail);
-        HfOrder hfOrder1 = new HfOrder();
-        hfOrder1.setId(orderId);
-        hfOrder1.setOrderStatus("complete");
-        hfOrder1.setModifyTime(LocalDateTime.now());
-        hfOrdersCancelMapper.updateByPrimaryKeySelective(hfOrder1);
-        //添加核销记录
+        hfOrdersDetail.setHfStatus("complete");
+        Example example3 = new Example(HfOrderDetail.class);
+        Example.Criteria criteria3 = example3.createCriteria();
+        criteria3.andEqualTo("orderId",orderId).andEqualTo("stoneId",stoneId);
+        hfOrdersCancelDetailMapper.updateByExampleSelective(hfOrdersDetail,example3);
+//        HfOrder hfOrder1 = new HfOrder();
+//        hfOrder1.setId(orderId);
+//        hfOrder1.setOrderStatus("complete");
+//        hfOrder1.setModifyTime(LocalDateTime.now());
+//        hfOrdersCancelMapper.updateByPrimaryKeySelective(hfOrder1);
+
+        List<HfOrderDetail> hfOrderDetail= hfOrdersCancelDetailMapper.selectByExample(example3);
+        hfOrderDetail.forEach(hfOrderDetail1 -> {
+            //添加核销记录
         CancelRecord cancelRecord = new CancelRecord();
         cancelRecord.setCreateDate(LocalDateTime.now());
         cancelRecord.setModifyDate(LocalDateTime.now());
-        cancelRecord.setGoodsId(goodsId);
-        cancelRecord.setCancelId(cancel1.getId());
+        cancelRecord.setGoodsId(hfOrderDetail1.getGoodsId());
+        cancelRecord.setCancelId(cancelList.get(0).getId());
         cancelRecord.setOrderId(orderId);
-        Example example3 = new Example(HfPrice.class);
-        Example.Criteria criteria3 = example3.createCriteria();
-        criteria3.andEqualTo("googsId", goodsId);
-        List<HfPrice> hfPriceList1 = hfPriceMapper.selectByExample(example3);
-        cancelRecord.setAmount(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity());
-        hfLogMapper.insert(cancelRecord);
-        //添加核销员核销额记录
-        cancel cancel = new cancel();
-        cancel.setId(cancel1.getId());
-        cancel.setMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getMoney());
-        cancel.setPresentMoney(hfPriceList1.get(0).getSellPrice() * hfPrice.getQuantity() + cancel1.getPresentMoney());
-        cancelsMapper.updateByPrimaryKeySelective(cancel);
+            //添加核销员核销额记录
+            cancel cancel = new cancel();
+            cancel.setId(cancelList.get(0).getId());
+            cancel.setMoney(cancelList.get(0).getMoney()+hfOrderDetail1.getActualPrice());
+            cancel.setPresentMoney( cancelList.get(0).getPresentMoney()+hfOrderDetail1.getActualPrice());
+            cancelsMapper.updateByPrimaryKeySelective(cancel);
+        });
+        Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
+        Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
+        criteriaOrderDetail.andEqualTo("orderId",orderId).andGreaterThan("hfStatus","transport");
+        List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
+        if (hfOrderDetail1.size()==0){
+            HfOrder hfOrders = new HfOrder();
+            hfOrders.setId(orderId);
+            hfOrders.setOrderStatus("complete");
+            hfOrders.setModifyTime(LocalDateTime.now());
+            Example hfOrderExample = new Example(HfOrder.class);
+            Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
+            criteriaOrder.andEqualTo("id",orderId).andEqualTo("orderStatus","transport");
+            hfOrdersCancelMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+        }
         redisTemplate.delete(decrypt);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
@@ -225,13 +217,16 @@ public class logicController {
      */
     @GetMapping(value = "/activity/create/activity-code")
     @ApiOperation("生成活动详情二维码")
-    public void getCode(HttpServletResponse response, Integer orderId, Integer goodsId) throws Exception {
+    public void getCode(HttpServletResponse response, Integer orderId, Integer stoneId) throws Exception {
         //uuid生成不重复主键
 //        String uuid1=UUID.randomUUID().toString();
 //        String uuid=UUID.randomUUID().toString().replace("-", "");
 //        System.out.println(uuid1);
 //        System.out.println(uuid);
-        redisTemplate.opsForValue().set(String.valueOf(orderId), goodsId);
+//        Map map = new HashMap();
+//        map.put("stoneId",stoneId);
+//        map.put("goodsId",goodsId);
+        redisTemplate.opsForValue().set(String.valueOf(orderId), stoneId);
         redisTemplate.expire(String.valueOf(orderId),300 , TimeUnit.SECONDS);
         System.out.println("hahha"+redisTemplate.opsForValue().get(String.valueOf(orderId)));
         System.out.println(redisTemplate.getExpire(String.valueOf(String.valueOf(orderId)),TimeUnit.SECONDS));
@@ -240,7 +235,7 @@ public class logicController {
 
         //字符串
         String orderId123 = String.valueOf(orderId);
-        String goodsId123 = String.valueOf(goodsId);
+        String goodsId123 = String.valueOf(stoneId);
 
         //加密
         String encrypt = PageTool.encrypt(orderId123, key);
@@ -251,7 +246,7 @@ public class logicController {
 //            System.out.println("加密前：" + orderId123);
 //            System.out.println("加密后：" + encrypt);
 //            System.out.println("解密后：" + decrypt);
-        System.out.println("goodsId:" + encrypt1);
+        System.out.println("stoneId:" + encrypt1);
         System.out.println("orderId:" + encrypt);
 
         // 设置响应流信息

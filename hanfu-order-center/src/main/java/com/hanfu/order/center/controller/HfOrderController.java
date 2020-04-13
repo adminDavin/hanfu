@@ -275,7 +275,7 @@ public class HfOrderController {
                 HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
                 hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusGreaterThan("transport");
                 List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
-                if (hfOrderDetail1==null){
+                if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
