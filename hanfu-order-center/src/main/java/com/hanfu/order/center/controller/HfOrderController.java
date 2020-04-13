@@ -194,6 +194,7 @@ public class HfOrderController {
                     cartList.setStoneName(hfStone.getHfName());
                     cartList.setHfOrderDetailList(entry.getValue());
                     cartList.setDetailStatus(entry.getValue().get(0).getHfStatus());
+                    cartList.setTakingType(entry.getValue().get(0).getTakingType());
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
