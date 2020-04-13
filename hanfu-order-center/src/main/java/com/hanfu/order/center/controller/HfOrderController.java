@@ -286,7 +286,7 @@ public class HfOrderController {
                 return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
-        if (targetOrderStatus.equals("cancel")&&originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")){
+        if (targetOrderStatus.equals("cancel")&&originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")){
             HfOrderExample hfOrderExample1 = new HfOrderExample();
             hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
 

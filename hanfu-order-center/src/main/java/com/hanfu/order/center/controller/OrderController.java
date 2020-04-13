@@ -298,7 +298,7 @@ public class OrderController {
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderLogisticsExample hfOrderLogisticsExample = new HfOrderLogisticsExample();
-		hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(request.getOrdersId());
+		hfOrderLogisticsExample.createCriteria().andOrdersIdEqualTo(request.getOrdersId()).andStoneIdEqualTo(request.getStoneId());
 		List<HfOrderLogistics> hfOrderLogisticss = hfOrderLogisticsMapper.selectByExample(hfOrderLogisticsExample);
 		HfOrderLogistics hfOrderLogistics = new HfOrderLogistics();
 		hfOrderLogistics.setStoneId(request.getStoneId());

@@ -135,12 +135,6 @@ public class logicController {
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("orderId",orderId).andEqualTo("stoneId",stoneId);
         hfOrdersCancelDetailMapper.updateByExampleSelective(hfOrdersDetail,example3);
-//        HfOrder hfOrder1 = new HfOrder();
-//        hfOrder1.setId(orderId);
-//        hfOrder1.setOrderStatus("complete");
-//        hfOrder1.setModifyTime(LocalDateTime.now());
-//        hfOrdersCancelMapper.updateByPrimaryKeySelective(hfOrder1);
-
         List<HfOrderDetail> hfOrderDetail= hfOrdersCancelDetailMapper.selectByExample(example3);
         hfOrderDetail.forEach(hfOrderDetail1 -> {
             //添加核销记录
@@ -150,6 +144,8 @@ public class logicController {
         cancelRecord.setGoodsId(hfOrderDetail1.getGoodsId());
         cancelRecord.setCancelId(cancelList.get(0).getId());
         cancelRecord.setOrderId(orderId);
+            cancelRecord.setAmount(hfOrderDetail1.getActualPrice());
+            hfLogMapper.insertSelective(cancelRecord);
             //添加核销员核销额记录
             cancel cancel = new cancel();
             cancel.setId(cancelList.get(0).getId());
@@ -159,7 +155,7 @@ public class logicController {
         });
         Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
         Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
-        criteriaOrderDetail.andEqualTo("orderId",orderId).andGreaterThan("hfStatus","transport");
+        criteriaOrderDetail.andEqualTo("orderId",orderId).andGreaterThan("hfStatus","complete");
         List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
         if (hfOrderDetail1.size()==0){
             HfOrder hfOrders = new HfOrder();
@@ -168,7 +164,7 @@ public class logicController {
             hfOrders.setModifyTime(LocalDateTime.now());
             Example hfOrderExample = new Example(HfOrder.class);
             Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
-            criteriaOrder.andEqualTo("id",orderId).andEqualTo("orderStatus","transport");
+            criteriaOrder.andEqualTo("id",orderId);
             hfOrdersCancelMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
         redisTemplate.delete(decrypt);
