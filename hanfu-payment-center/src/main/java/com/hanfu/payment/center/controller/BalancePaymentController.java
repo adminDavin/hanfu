@@ -261,7 +261,7 @@ public class BalancePaymentController {
 //        list.add(ttt);
         balanceMapper.updateByExampleSelective(hfUserBalance,example);
         HfBalanceDetail detail = new HfBalanceDetail();
-		detail.setUserId(Integer.valueOf(qr.getUserId()));
+		detail.setUserId(Integer.valueOf(decrypt1));
 		detail.setAmount(String.valueOf(money));
 		detail.setPaymentName("消费");
 		detail.setCreateTime(LocalDateTime.now());
