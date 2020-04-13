@@ -72,6 +72,7 @@ public class HfProductDisplay implements Serializable {
     private Integer isConcern;
     private Integer saleCount;
     private Integer instanceId;
+    private String productActivityType;
 	public Integer getId() {
 		return id;
 	}
@@ -274,6 +275,12 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setInstanceId(Integer instanceId) {
 		this.instanceId = instanceId;
+	}
+	public String getProductActivityType() {
+		return productActivityType;
+	}
+	public void setProductActivityType(String productActivityType) {
+		this.productActivityType = productActivityType;
 	}
 	@Override
 	public String toString() {
