@@ -245,6 +245,9 @@ public class GoodsController {
 			record.setHfName(hfGoodsInfo.getGoodName());
 			if(!StringUtils.isEmpty(hfGoodsInfo.getStoneId())) {
 				record.setStoneId(hfGoodsInfo.getStoneId());
+				ProductInstanceExample example = new ProductInstanceExample();
+				example.createCriteria().andProductIdEqualTo(hfGoodsInfo.getProductId()).andStoneIdEqualTo(hfGoodsInfo.getStoneId());
+				record.setInstanceId(productInstanceMapper.selectByExample(example).get(0).getId()); 
 			}
 			record.setBrandId(1);
 //			record.setPriceId(1);
