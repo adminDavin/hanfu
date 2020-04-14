@@ -424,7 +424,7 @@ public class HfOrderController {
 //        paramMap.add("productStoneId",productStone);
 //        paramMap.add("userId", String.valueOf(request.getUserId()));
         JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
-        return builder.body(ResponseUtils.getResponseBody(hfOrderMapper.selectByPrimaryKey(hfOrder.getId()).getOrderCode()));
+        return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
