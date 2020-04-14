@@ -216,12 +216,12 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!-- </table> -->
-        <table schema="user_center" tableName="hf_activity_product"
+        <!-- <table schema="user_center" tableName="hf_activity_product"
                domainObjectName="HfActivityProduct">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
         <!-- <table schema="user_center" tableName="hf_activity"
                domainObjectName="HfActivity">
             <property name="useActualColumnNames" value="false"/>
@@ -284,8 +284,20 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_integral"
+        <!-- <table schema="user_center" tableName="hf_integral"
                domainObjectName="HfIntegral">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="hf_evaluate"
+               domainObjectName="HfEvaluate">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="evaluate_picture"
+               domainObjectName="EvaluatePicture">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
