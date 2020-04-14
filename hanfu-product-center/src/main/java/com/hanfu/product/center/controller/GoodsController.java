@@ -143,7 +143,7 @@ public class GoodsController {
 	private EvaluatePictureMapper evaluatePictureMapper;
 	
 	@Autowired
-	private HfUserMapper hfUserMapper;
+	private ManualDao manualDao;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -1296,7 +1296,7 @@ public class GoodsController {
 	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id,Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		if(hfUserMapper.selectByPrimaryKey(userId) == null) {
+		if(manualDao.select(userId) == null) {
 			return builder.body(ResponseUtils.getResponseBody("-1"));
 		}
 		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
