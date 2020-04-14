@@ -342,5 +342,5 @@ public class SeniorityController {
         }
         return builder.body(ResponseUtils.getResponseBody(null));
     }
-
+   
 }
