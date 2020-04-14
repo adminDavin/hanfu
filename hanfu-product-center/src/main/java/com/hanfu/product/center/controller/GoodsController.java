@@ -1227,7 +1227,7 @@ public class GoodsController {
 	}
 	
 	@ApiOperation(value = "添加评价", notes = "添加评价")
-	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.GET)
+	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId,Integer userId,Integer goodId,Integer stoneId,Integer star
 			,String evaluate,@RequestPart MultipartFile[] file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -1293,7 +1293,7 @@ public class GoodsController {
 	}
 	
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
-	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.GET)
+	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id,Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		if(manualDao.select(userId) == null) {
