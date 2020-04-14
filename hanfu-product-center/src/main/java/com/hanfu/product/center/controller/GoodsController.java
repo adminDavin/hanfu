@@ -33,6 +33,7 @@ import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.EvaluateInstanceMapper;
 import com.hanfu.product.center.dao.EvaluatePictureMapper;
+import com.hanfu.product.center.dao.EvluateInstancePictureMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfEvaluateMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -48,6 +49,8 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.model.CheckResp;
+import com.hanfu.product.center.manual.model.Evaluate;
+import com.hanfu.product.center.manual.model.EvaluateEntity;
 import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.HfGoodsDisplayInfo;
 import com.hanfu.product.center.manual.model.HfGoodsSpecDisplay;
@@ -148,6 +151,9 @@ public class GoodsController {
 	
 	@Autowired
 	private EvaluateInstanceMapper evaluateInstanceMapper;
+	
+	@Autowired
+	private EvluateInstancePictureMapper evluateInstancePictureMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -1244,6 +1250,7 @@ public class GoodsController {
 		hfEvaluate.setInstanceId(instance.get(0).getId());
 		hfEvaluate.setOrderDetailId(orderDetailId);
 		hfEvaluate.setPraise(0);
+		hfEvaluate.setCommentCount(0);
 		hfEvaluate.setUserId(userId);
 		hfEvaluate.setStar(star);
 		hfEvaluate.setCreateTime(LocalDateTime.now());
@@ -1290,13 +1297,57 @@ public class GoodsController {
 	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer instanceId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<EvaluateEntity> rs = new ArrayList<EvaluateEntity>();
 		HfEvaluateExample example = new HfEvaluateExample();
 		example.createCriteria().andInstanceIdEqualTo(instanceId);
 		List<HfEvaluate> result = hfEvaluateMapper.selectByExample(example);
+		EvaluateInstanceExample instanceExample = new EvaluateInstanceExample();
+		List<EvaluateInstance> instances = new ArrayList<EvaluateInstance>();
+		EvaluatePictureExample pictureExample = new EvaluatePictureExample();
+		List<EvaluatePicture> pictures = new ArrayList<EvaluatePicture>();
+		List<Integer> pictureId = new ArrayList<Integer>();
+		EvluateInstancePictureExample instancePictureExample = new EvluateInstancePictureExample();
+		List<EvluateInstancePicture> instancePictures = new ArrayList<EvluateInstancePicture>();
+		List<Integer> instancePictureId = new ArrayList<Integer>();
 		for (int i = 0; i < result.size(); i++) {
+			Evaluate e = new Evaluate();
+			List<Evaluate> es = new ArrayList<Evaluate>();
+			EvaluateEntity entity = new EvaluateEntity();
 			HfEvaluate evaluate = result.get(i);
+			instanceExample.clear();
+			pictureExample.clear();
+			instanceExample.createCriteria().andParentEvaluateIdEqualTo(evaluate.getId());
+			instances = evaluateInstanceMapper.selectByExample(instanceExample);
+			e.setUserId(evaluate.getUserId());
+			e.setStar(evaluate.getStar());
+			e.setComment(evaluate.getEvaluate());
+			e.setComment_count(evaluate.getCommentCount());
+			e.setTime(evaluate.getCreateTime());
+			pictureExample.createCriteria().andEvaluateEqualTo(evaluate.getId());
+			pictures = evaluatePictureMapper.selectByExample(pictureExample);
+			pictureId = pictures.stream().map(EvaluatePicture::getId).collect(Collectors.toList());
+			e.setFileId(pictureId);
+			entity.setParentEvaluate(e);
+			for (int j = 0; j < instances.size(); j++) {
+				EvaluateInstance instance = instances.get(j);
+				Evaluate e1 = new Evaluate();
+				e1.setOutId(instance.getOutEvaluateId());
+				e1.setInId(instance.getInEvaluateId());
+				e1.setComment(instance.getEvaluateContent());
+				e1.setOutName(manualDao.select(instance.getOutEvaluateId()).getNickName());
+				e1.setInName(manualDao.select(instance.getInEvaluateId()).getNickName());
+				e1.setTime(instance.getCreateTime());
+				instancePictureExample.clear();
+				instancePictureExample.createCriteria().andEvaluateInstanceIdEqualTo(instance.getId());
+				instancePictures = evluateInstancePictureMapper.selectByExample(instancePictureExample);
+				instancePictureId = instancePictures.stream().map(EvluateInstancePicture::getId).collect(Collectors.toList());
+				e1.setFileId(instancePictureId);
+				es.add(e1);
+			}
+			entity.setChildEvaluate(es);
+			rs.add(entity);
 		}
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(rs));
 	}
 	
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
@@ -1326,6 +1377,9 @@ public class GoodsController {
 		evaluateInstance.setModifyTime(LocalDateTime.now());
 		evaluateInstance.setIsDeleted((byte) 0);
 		evaluateInstanceMapper.insert(evaluateInstance);
+		HfEvaluate hfEvaluate = hfEvaluateMapper.selectByPrimaryKey(evaluateId);
+		hfEvaluate.setCommentCount(hfEvaluate.getCommentCount()+1);
+		hfEvaluateMapper.updateByPrimaryKey(hfEvaluate);
 		for(MultipartFile f:file) {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
@@ -1346,6 +1400,7 @@ public class GoodsController {
 			picture.setCreateTime(LocalDateTime.now());
 			picture.setModifyTime(LocalDateTime.now());
 			picture.setIsDeleted((byte) 0);
+			evluateInstancePictureMapper.insert(picture);
 		}
 		return builder.body(ResponseUtils.getResponseBody(evaluateInstance.getId()));
 	}
