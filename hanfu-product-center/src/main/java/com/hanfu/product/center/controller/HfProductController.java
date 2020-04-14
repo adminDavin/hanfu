@@ -434,6 +434,9 @@ public class HfProductController {
 //					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
 //				}
 //			});
+			if(isDelete.getBossId() != null) {
+				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
+			}
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
