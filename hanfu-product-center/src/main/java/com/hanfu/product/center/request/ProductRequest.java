@@ -20,6 +20,7 @@ public class ProductRequest extends CommonRequest {
     private Short claim;
     @ApiModelProperty(required = false, value = "是否会员商品，0否1是")
     private Short vip;
+    private Integer stoneId;
 
 	public Integer getId() {
         return id;
@@ -84,4 +85,12 @@ public class ProductRequest extends CommonRequest {
     public void setVip(Short vip) {
         this.vip = vip;
     }
+
+	public Integer getStoneId() {
+		return stoneId;
+	}
+
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
+	}
 }

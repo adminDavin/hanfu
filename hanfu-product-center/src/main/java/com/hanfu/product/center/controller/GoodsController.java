@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.product.center.dao.EvaluateInstanceMapper;
 import com.hanfu.product.center.dao.EvaluatePictureMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfEvaluateMapper;
@@ -144,6 +145,9 @@ public class GoodsController {
 	
 	@Autowired
 	private ManualDao manualDao;
+	
+	@Autowired
+	private EvaluateInstanceMapper evaluateInstanceMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -1229,7 +1233,7 @@ public class GoodsController {
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId,Integer userId,Integer goodId,Integer stoneId,Integer star
-			,String evaluate,@RequestPart MultipartFile[] file) throws Exception {
+			,String evaluate,@RequestPart(required = false) MultipartFile[] file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		ProductInstanceExample example = new ProductInstanceExample();
@@ -1289,6 +1293,9 @@ public class GoodsController {
 		HfEvaluateExample example = new HfEvaluateExample();
 		example.createCriteria().andInstanceIdEqualTo(instanceId);
 		List<HfEvaluate> result = hfEvaluateMapper.selectByExample(example);
+		for (int i = 0; i < result.size(); i++) {
+			HfEvaluate evaluate = result.get(i);
+		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
@@ -1303,6 +1310,44 @@ public class GoodsController {
 		evaluate.setPraise(evaluate.getPraise()+1);
 		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
+	}
+	
+	@ApiOperation(value = "回复评价", notes = "回复评价")
+	@RequestMapping(value = "/replyEvaluate", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> replyEvaluate(Integer evaluateId,Integer outId,Integer inId,String evaluate,
+			@RequestPart(required = false)MultipartFile[] file) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		EvaluateInstance evaluateInstance = new EvaluateInstance();
+		evaluateInstance.setInEvaluateId(evaluateId);
+		evaluateInstance.setOutEvaluateId(outId);
+		evaluateInstance.setInEvaluateId(inId);
+		evaluateInstance.setEvaluateContent(evaluate);
+		evaluateInstance.setCreateTime(LocalDateTime.now());
+		evaluateInstance.setModifyTime(LocalDateTime.now());
+		evaluateInstance.setIsDeleted((byte) 0);
+		evaluateInstanceMapper.insert(evaluateInstance);
+		for(MultipartFile f:file) {
+			String arr[];
+			FileMangeService fileMangeService = new FileMangeService();
+			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(outId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(f.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			EvluateInstancePicture picture = new EvluateInstancePicture();
+			picture.setEvaluateInstanceId(evaluateId);
+			picture.setFileId(fileDesc.getId());
+			picture.setHfName("评价图片");
+			picture.setHfDesc("评价图片描述");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+		}
+		return builder.body(ResponseUtils.getResponseBody(evaluateInstance.getId()));
 	}
 	
 }
