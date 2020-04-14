@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,14 +31,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.product.center.dao.EvaluatePictureMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfEvaluateMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
+import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
@@ -56,6 +61,7 @@ import com.hanfu.product.center.request.RespInfo;
 import com.hanfu.product.center.service.GoodsRespService;
 import com.hanfu.product.center.service.GoodsService;
 import com.hanfu.product.center.service.SpecsService;
+import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
@@ -120,6 +126,24 @@ public class GoodsController {
 	
 	@Autowired
 	private SpecsService specsService;
+	
+	@Autowired
+	private HfOrderMapper hfOrderMapper;
+	
+	@Autowired
+	private HfOrderDetailMapper hfOrderDetailMapper;
+	
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
+	
+	@Autowired
+	private HfEvaluateMapper hfEvaluateMapper;
+	
+	@Autowired
+	private EvaluatePictureMapper evaluatePictureMapper;
+	
+	@Autowired
+	private HfUserMapper hfUserMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -1185,6 +1209,100 @@ public class GoodsController {
 			hfGoodsPictrueMapper.deleteByExample(example);
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
+	}
+	
+	@ApiOperation(value = "查询待评价物品", notes = "查询待评价物品")
+	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectEvaluateGoods(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrderExample example = new HfOrderExample();
+		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("evaluate");
+		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+		List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample example2 = new HfOrderDetailExample();
+		example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("evaluate");
+		example2.setOrderByClause("create_time DESC");
+		List<HfOrderDetail> list2 = hfOrderDetailMapper.selectByExample(example2);
+		return builder.body(ResponseUtils.getResponseBody(list2));
+	}
+	
+	@ApiOperation(value = "添加评价", notes = "添加评价")
+	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId,Integer userId,Integer goodId,Integer stoneId,Integer star
+			,String evaluate,@RequestPart MultipartFile[] file) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
+		ProductInstanceExample example = new ProductInstanceExample();
+		example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
+		List<ProductInstance> instance = productInstanceMapper.selectByExample(example);
+		HfEvaluate hfEvaluate = new HfEvaluate();
+		hfEvaluate.setEvaluate(evaluate);
+		hfEvaluate.setInstanceId(instance.get(0).getId());
+		hfEvaluate.setOrderDetailId(orderDetailId);
+		hfEvaluate.setPraise(0);
+		hfEvaluate.setUserId(userId);
+		hfEvaluate.setStar(star);
+		hfEvaluate.setCreateTime(LocalDateTime.now());
+		hfEvaluate.setModifyTime(LocalDateTime.now());
+		hfEvaluate.setIsDeleted((byte) 0);
+		hfEvaluateMapper.insert(hfEvaluate);
+		for(MultipartFile f:file) {
+			String arr[];
+			FileMangeService fileMangeService = new FileMangeService();
+			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(userId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(f.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(userId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			EvaluatePicture picture = new EvaluatePicture();
+			picture.setEvaluate(hfEvaluate.getId());
+			picture.setFileId(fileDesc.getId());
+			picture.setHfDesc("评价图片描述");
+			picture.setHfName("评价图片");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifieyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+			evaluatePictureMapper.insert(picture);
+		}
+		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
+		detail.setHfStatus("complete");
+		hfOrderDetailMapper.updateByPrimaryKey(detail);
+		HfOrderDetailExample example2 = new HfOrderDetailExample();
+		example2.createCriteria().andOrderIdEqualTo(detail.getOrderId()).andHfStatusEqualTo("evaluate");
+		if(hfOrderDetailMapper.selectByExample(example2).isEmpty()) {
+			HfOrder hfOrder = hfOrderMapper.selectByPrimaryKey(detail.getOrderId());
+			hfOrder.setOrderStatus("complete");
+			hfOrderMapper.updateByPrimaryKey(hfOrder);
+		}
+		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
+	}
+	
+	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
+	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer instanceId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluateExample example = new HfEvaluateExample();
+		example.createCriteria().andInstanceIdEqualTo(instanceId);
+		List<HfEvaluate> result = hfEvaluateMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
+	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id,Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if(hfUserMapper.selectByPrimaryKey(userId) == null) {
+			return builder.body(ResponseUtils.getResponseBody("-1"));
+		}
+		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+		evaluate.setPraise(evaluate.getPraise()+1);
+		hfEvaluateMapper.updateByPrimaryKey(evaluate);
+		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 	
 }
