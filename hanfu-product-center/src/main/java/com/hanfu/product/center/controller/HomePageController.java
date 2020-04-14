@@ -521,6 +521,7 @@ public class HomePageController {
 				UserPersonalBrowse browse = browses.get(j);
 				HfProductDisplay display = new HfProductDisplay();
 				Product product = productMapper.selectByPrimaryKey(browse.getProductId());
+				if(product != null) {
 				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(browse.getProductId());
 				if (!hfGoodsDisplay.isEmpty()) {
 					if (hfGoodsDisplay.get(0).getStoneId() != null) {
@@ -553,6 +554,7 @@ public class HomePageController {
 				display.setCategoryName(category.getHfName());
 				display.setBossId(product.getBossId());
 				displays.add(display);
+				}
 			}
 			info.setList(displays);
 			info.setDate(str);
