@@ -1,6 +1,7 @@
 package com.hanfu.order.center.manual.model;
 
 import com.hanfu.order.center.model.HfOrderDetail;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,8 @@ public class HfOrderDisplay {
     private String paymentName;
     private Integer paymentType;
     private Integer userId;
+    @ApiModelProperty(required = true, value = "用户昵称")
+    private String nickName;
 
     // 订单详情
     private Integer stoneId;
@@ -263,6 +266,14 @@ public class HfOrderDisplay {
 
     public void setDetailRequestList(List<DetailRequest> detailRequestList) {
         this.detailRequestList = detailRequestList;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }
 

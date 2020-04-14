@@ -27,6 +27,7 @@
         <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
         <result column="distributor_id" jdbcType="INTEGER" property="distributorId"/>
         <result column="address_desc" jdbcType="VARCHAR" property="addressDesc"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     </resultMap>
     
     <resultMap id="HfGoodsDisplayResultMap" type="com.hanfu.order.center.manual.model.HfGoodsDisplay">
@@ -62,10 +63,11 @@
     
     <select id="selectHfOrder" resultMap="BaseResultMap">
     select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.stone_id, o.distributor_id, o.payment_name, o.stone_id, o.payment_type, o.user_id, 
-
+u.nick_name,
     a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
      from hf_order o
      left join hf_order_address a on o.id=a.order_id
+     left join hf_user u on u.id=o.user_id
      where
         o.id_deleted=0
         <if test="userId != null and userId!= ''">
