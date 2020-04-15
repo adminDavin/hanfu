@@ -434,10 +434,54 @@ public class HfProductController {
 //					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
 //				}
 //			});
+			if(isDelete.getBossId() != null) {
+				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
+			}
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
+	
+	@ApiOperation(value = "获取商品列表boss", notes = "获取商品列表boss")
+	@RequestMapping(value = "/getProductListBoss", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getProductListBoss(IsDelete isDelete, Integer pageNum, Integer pageSize)
+			throws JSONException {
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+		if (pageSize == null) {
+			pageSize = 0;
+		}
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		PageHelper.startPage(pageNum, pageSize);
+		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
+		products.forEach(hfProductDisplay -> {
+			System.out.println(hfProductDisplay.getStoneId());
+		});
+		if (products.size() != 0) {
+			Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
+			System.out.println(stoneIds);
+			HfStoneExample hfStoneExample = new HfStoneExample();
+			hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
+			List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
+			Map<Integer, String> stones = stoneInfos.stream()
+					.collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
+			products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+
+			List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
+			List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
+			Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
+					.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+							(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+								oldList.addAll(newList);
+								return oldList;
+							}));
+			products = products.stream().sorted(Comparator.comparing(HfProductDisplay::getStoneId, Comparator.nullsFirst(Integer::compareTo))).collect(Collectors.toList());
+		}
+		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
+		return builder.body(ResponseUtils.getResponseBody(page));
+	}
+	
 
 	@ApiOperation(value = "获取商品列表收藏", notes = "根据用户id收藏商品列表")
 	@RequestMapping(value = "/getcollect", method = RequestMethod.GET)
@@ -986,5 +1030,5 @@ public class HfProductController {
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(displays);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-
+	
 }

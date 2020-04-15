@@ -243,7 +243,7 @@ public class ProductController {
 //		}
 		ProductInstance productInstance = new ProductInstance();
 		productInstance.setBossId(request.getBossId());
-		productInstance.setStoneId(1);
+		productInstance.setStoneId(request.getStoneId());
 		productInstance.setProductId(product.getId());
 		productInstance.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		productInstance.setBrandId(1);
