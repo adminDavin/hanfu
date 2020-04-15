@@ -402,6 +402,15 @@ public class HfProductActivityController {
             hfActivityProduct.setDiscountRatio(request.getDiscountRatio());
         }
         if (!StringUtils.isEmpty(String.valueOf(request.getFavoravlePrice()))) {
+        	HfGoodsExample goodsExample = new HfGoodsExample();
+        	goodsExample.createCriteria().andProductIdEqualTo(hfActivityProduct.getProductId());
+        	List<HfGoods> goods = hfGoodsMapper.selectByExample(goodsExample);
+        	for (int i = 0; i < goods.size(); i++) {
+				HfPrice price = hfPriceMapper.selectByPrimaryKey(goods.get(i).getPriceId());
+				if(price.getSellPrice()-request.getFavoravlePrice()<0) {
+					return builder.body(ResponseUtils.getResponseBody(-1));
+				}
+			}
             hfActivityProduct.setFavoravlePrice(request.getFavoravlePrice());
         }
         if (!StringUtils.isEmpty(request.getGroupNum())) {

@@ -39,6 +39,7 @@ import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample;
 import com.hanfu.product.center.model.HfStonePicture;
+import com.hanfu.product.center.model.HfStonePictureExample;
 import com.hanfu.product.center.request.HfStoneRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -92,7 +93,16 @@ public class StoneController {
         example.createCriteria().andBossIdEqualTo(bossId);
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByExample(example)));
     }
-
+    
+    @ApiOperation(value = "获取店铺图片", notes = "获取店铺图片")
+    @RequestMapping(value = "/getStonePicture", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> getStonePicture(Integer stoneId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStonePictureExample example = new HfStonePictureExample();
+        example.createCriteria().andStoneIdEqualTo(stoneId);
+        List<HfStonePicture> list = hfStonePictureMapper.selectByExample(example);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
 
     @ApiOperation(value = "添加商铺", notes = "添加一个新的商铺")
     @RequestMapping(value = "/addStone", method = RequestMethod.POST)

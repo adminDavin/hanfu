@@ -324,7 +324,7 @@ public class HfProductController {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String.valueOf(list.get(0).getFavoravlePrice());
+					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -424,16 +424,16 @@ public class HfProductController {
 								oldList.addAll(newList);
 								return oldList;
 							}));
-//			products.forEach(product -> {
-//				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
-//				if (Optional.ofNullable(hfGoods).isPresent()) {
-//					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
-//							.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
-//							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
-//					product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
-//					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
-//				}
-//			});
+			products.forEach(product -> {
+				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+				if (Optional.ofNullable(hfGoods).isPresent()) {
+					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
+							.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
+							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+					product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
+				}
+			});
 			if(isDelete.getBossId() != null) {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
@@ -684,7 +684,7 @@ public class HfProductController {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String.valueOf(list.get(0).getFavoravlePrice());
+					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -835,7 +835,7 @@ public class HfProductController {
 				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
 				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
 				if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
-					String s = String.valueOf(hfactivityProduct.getFavoravlePrice());
+					String s = String.valueOf(Integer.valueOf(display.getPriceArea())-hfactivityProduct.getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -966,7 +966,7 @@ public class HfProductController {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String.valueOf(list.get(0).getFavoravlePrice());
+					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
