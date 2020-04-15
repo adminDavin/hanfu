@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -42,6 +43,8 @@ import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/hf-order")
@@ -53,6 +56,8 @@ public class HfOrderController {
     private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
     @Autowired
     private RestTemplate restTemplate;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private HfOrderMapper hfOrderMapper;
@@ -260,6 +265,14 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (targetOrderStatus.equals("controversial")){
+            redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
+        }
+        if (targetOrderStatus.equals("reject")){
+            originOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+        }
+
+
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
