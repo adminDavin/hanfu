@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.domain.RatioDetail;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.manual.dao.HfGoodsDisplayDao;
 import com.hanfu.product.center.manual.dao.HfGroupDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.model.*;
@@ -93,6 +94,8 @@ public class HfProductActivityController {
     private ProductInstanceMapper productInstanceMapper;
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    @Autowired
+    private HfGoodsDisplayDao hfGoodsDisplayDao;
 
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -297,6 +300,15 @@ public class HfProductActivityController {
                 HfActivityProduct activityProduct = list.get(i);
                 ProductInstance instance = productInstanceMapper.selectByPrimaryKey(activityProduct.getInstanceId());
                 ActivityProductInfo activityProductInfo = new ActivityProductInfo();
+                List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(activityProduct.getProductId());
+                
+                if (Optional.ofNullable(hfGoodsDisplay).isPresent()) {
+    				Optional<HfGoodsDisplayInfo> hfGood = hfGoodsDisplay.stream()
+    						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+    				activityProductInfo.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+//    				activityProductInfo.setDefaultGoodsId(hfGood.get().getId());
+    			}
+                
                 activityProductInfo.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
                 activityProductInfo.setId(activityProduct.getId());
                 activityProductInfo.setAcivityId(activityProduct.getActivityId());
