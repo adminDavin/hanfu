@@ -1,5 +1,6 @@
 package com.hanfu.product.center.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,9 @@ import com.hanfu.product.center.dao.HfGoodsSpecMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
+import com.hanfu.product.center.model.EvluateInstancePicture;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
@@ -35,6 +38,8 @@ import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample;
+import com.hanfu.product.center.model.HfStonePicture;
+import com.hanfu.product.center.model.HfStonePictureExample;
 import com.hanfu.product.center.request.HfStoneRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -74,7 +79,10 @@ public class StoneController {
 
     @Autowired
     private HfPriceMapper hfPriceMapper;
-
+    
+    @Autowired
+    private HfStonePictureMapper hfStonePictureMapper;
+    
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -85,7 +93,16 @@ public class StoneController {
         example.createCriteria().andBossIdEqualTo(bossId);
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByExample(example)));
     }
-
+    
+    @ApiOperation(value = "获取店铺图片", notes = "获取店铺图片")
+    @RequestMapping(value = "/getStonePicture", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> getStonePicture(Integer stoneId) throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStonePictureExample example = new HfStonePictureExample();
+        example.createCriteria().andStoneIdEqualTo(stoneId);
+        List<HfStonePicture> list = hfStonePictureMapper.selectByExample(example);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
 
     @ApiOperation(value = "添加商铺", notes = "添加一个新的商铺")
     @RequestMapping(value = "/addStone", method = RequestMethod.POST)
@@ -97,6 +114,7 @@ public class StoneController {
         item.setHfDesc(request.getHfDesc());
         item.setHfStatus(request.getHfStatus());
         item.setUserId(request.getUserId());
+        item.setConcernCount(0);
         item.setCreateTime(LocalDateTime.now());
         LocalDateTime expireTime = LocalDateTime.now();
         expireTime.plusYears(10);
@@ -104,6 +122,36 @@ public class StoneController {
         item.setIsDeleted((short) 0);
         item.setAddress(request.getAddress());
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
+    }
+    
+    @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
+    @RequestMapping(value = "/addStonePicture", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addStonePicture(Integer stoneId,@RequestPart(required = false) MultipartFile[] file) throws JSONException, IOException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
+        for(MultipartFile f:file) {
+			String arr[];
+			FileMangeService fileMangeService = new FileMangeService();
+			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(0));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(f.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfStonePicture picture = new HfStonePicture();
+			picture.setStoneId(stoneId);
+			picture.setFileId(fileDesc.getId());
+			picture.setHfName("店铺图片");
+			picture.setHfDesc("店铺图片描述");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+			hfStonePictureMapper.insert(picture);
+		}
+        return builder.body(ResponseUtils.getResponseBody(stone.getId()));
     }
 
     @ApiOperation(value = "删除商铺", notes = "删除商铺")

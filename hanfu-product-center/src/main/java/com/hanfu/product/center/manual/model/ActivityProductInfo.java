@@ -40,6 +40,7 @@ public class ActivityProductInfo implements Serializable {
     @ApiModelProperty(required = false, value = "修改时间")
     private LocalDateTime modifyTime;
     private String stoneName;
+    private String priceArea;
 	public Integer getId() {
 		return id;
 	}
@@ -114,5 +115,11 @@ public class ActivityProductInfo implements Serializable {
 	}
 	public void setStoneName(String stoneName) {
 		this.stoneName = stoneName;
+	}
+	public String getPriceArea() {
+		return priceArea;
+	}
+	public void setPriceArea(String priceArea) {
+		this.priceArea = priceArea;
 	}
 }

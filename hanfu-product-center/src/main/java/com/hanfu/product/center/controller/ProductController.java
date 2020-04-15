@@ -912,6 +912,9 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	public ResponseEntity<JSONObject> addStoneConcern(Integer userId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
+		hfStone.setConcernCount(hfStone.getConcernCount()+1);
+		hfStoneMapper.updateByPrimaryKey(hfStone);
 		HfStoneConcernExample example = new HfStoneConcernExample();
 		HfStoneConcern concern = null;
 		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
