@@ -463,6 +463,7 @@ public class HomePageController {
 
 		HfBalanceDetailExample example = new HfBalanceDetailExample();
 		example.createCriteria().andUserIdEqualTo(userId);
+		example.setOrderByClause("create_time DESC");
 		List<HfBalanceDetail> list = hfBalanceDetailMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfBalanceDetail order = list.get(i);
@@ -486,6 +487,7 @@ public class HomePageController {
 		List<OrderRecord> result = new ArrayList<OrderRecord>();
 		HfIntegralExample example = new HfIntegralExample();
 		example.createCriteria().andUserIdEqualTo(userId);
+		example.setOrderByClause("create_time DESC");
 		List<HfIntegral> list = hfIntegralMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfIntegral hfIntegral = list.get(i);
