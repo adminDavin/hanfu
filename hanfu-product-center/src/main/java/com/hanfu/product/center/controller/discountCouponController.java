@@ -492,6 +492,17 @@ public class discountCouponController {
         HfUserCouponsExample userCouponsExample = new HfUserCouponsExample();
         userCouponsExample.createCriteria().andUserIdEqualTo(userId).andCouponsIdEqualTo(discountCouponId);
         hfUserCouponsMapper.updateByExampleSelective(coupons,userCouponsExample);
+        HfUserBalanceExample balanceExample = new HfUserBalanceExample();
+        balanceExample.createCriteria().andBalanceTypeEqualTo("discountCoupon").andUserIdEqualTo(userId);
+        List<HfUserBalance> balances = hfUserBalanceMapper.selectByExample(balanceExample);
+        if(balances.isEmpty()) {
+        	return builder.body(ResponseUtils.getResponseBody("数据异常"));
+        }
+        HfUserBalance balance = balances.get(0);
+        if(balance.getHfBalance() -1 < 0) {
+        	return builder.body(ResponseUtils.getResponseBody("数据异常"));
+        }
+        balance.setHfBalance(balance.getHfBalance()-1);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 }
