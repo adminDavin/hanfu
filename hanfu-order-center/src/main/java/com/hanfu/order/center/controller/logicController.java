@@ -155,7 +155,7 @@ public class logicController {
         });
         Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
         Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
-        criteriaOrderDetail.andEqualTo("orderId",orderId).andGreaterThan("hfStatus","complete");
+        criteriaOrderDetail.andEqualTo("orderId",orderId).andNotEqualTo("hfStatus","complete");
         List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
         if (hfOrderDetail1.size()==0){
             HfOrder hfOrders = new HfOrder();
