@@ -11,6 +11,7 @@ public class DetailRequest {
     private List<HfOrderDetail> hfOrderDetailList;
     private String detailStatus;
     private String takingType;
+    private String wuliu;
     public Integer getStoneId() {
         return stoneId;
     }
@@ -49,5 +50,13 @@ public class DetailRequest {
 
     public void setTakingType(String takingType) {
         this.takingType = takingType;
+    }
+
+    public String getWuliu() {
+        return wuliu;
+    }
+
+    public void setWuliu(String wuliu) {
+        this.wuliu = wuliu;
     }
 }

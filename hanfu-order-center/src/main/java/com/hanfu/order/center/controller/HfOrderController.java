@@ -200,6 +200,7 @@ public class HfOrderController {
                     cartList.setHfOrderDetailList(entry.getValue());
                     cartList.setDetailStatus(entry.getValue().get(0).getHfStatus());
                     cartList.setTakingType(entry.getValue().get(0).getTakingType());
+                    cartList.setWuliu(String.valueOf(0));
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
