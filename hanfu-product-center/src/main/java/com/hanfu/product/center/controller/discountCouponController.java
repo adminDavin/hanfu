@@ -503,6 +503,7 @@ public class discountCouponController {
         	return builder.body(ResponseUtils.getResponseBody("数据异常"));
         }
         balance.setHfBalance(balance.getHfBalance()-1);
+        hfUserBalanceMapper.updateByPrimaryKey(balance);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 }
