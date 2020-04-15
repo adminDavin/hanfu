@@ -669,7 +669,7 @@ public class HomePageController {
 				concernInfo.setConcernCount(stone.getConcernCount());
 				pictureExample.createCriteria().andStoneIdEqualTo(stone.getId());
 				pictures = hfStonePictureMapper.selectByExample(pictureExample);
-				picturesId = pictures.stream().map(HfStonePicture::getId).collect(Collectors.toList());
+				picturesId = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
 				concernInfo.setFileId(picturesId);
 				concernInfos.add(concernInfo);
 			}
