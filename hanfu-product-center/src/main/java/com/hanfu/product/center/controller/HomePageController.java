@@ -52,6 +52,7 @@ import com.hanfu.product.center.dao.HfProductCollectMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneConcernMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.HfUsersMapper;
 import com.hanfu.product.center.dao.ProductMapper;
@@ -145,6 +146,9 @@ public class HomePageController {
 
 	@Autowired
 	private HfStoneConcernMapper hfStoneConcernMapper;
+	
+	@Autowired
+	private HfStonePictureMapper hfStonePictureMapper;
 
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -639,6 +643,9 @@ public class HomePageController {
 		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<UserBrowseInfo> result = new ArrayList<UserBrowseInfo>();
 		List<String> list = homePageDao.groupBytimeConcern(userId);
+		HfStonePictureExample pictureExample = new HfStonePictureExample();
+		List<HfStonePicture> pictures = new ArrayList<HfStonePicture>();
+		List<Integer> picturesId = new ArrayList<Integer>();
 		for (int i = 0; i < list.size(); i++) {
 			UserBrowseInfo info = new UserBrowseInfo();
 
@@ -651,6 +658,7 @@ public class HomePageController {
 			example.setOrderByClause("concern_time DESC");
 			List<HfStoneConcern> browses = hfStoneConcernMapper.selectByExample(example);
 			for (int j = 0; j < browses.size(); j++) {
+				pictureExample.clear();
 				HfStoneConcern concern = browses.get(j);
 				StoneConcernInfo concernInfo = new StoneConcernInfo();
 				HfStone stone = hfStoneMapper.selectByPrimaryKey(concern.getStoneId());
@@ -658,6 +666,10 @@ public class HomePageController {
 				concernInfo.setStoneId(concern.getStoneId());
 				concernInfo.setCreateTime(stone.getCreateTime());
 				concernInfo.setStoneDesc(stone.getHfDesc());
+				pictureExample.createCriteria().andStoneIdEqualTo(stone.getId());
+				pictures = hfStonePictureMapper.selectByExample(pictureExample);
+				picturesId = pictures.stream().map(HfStonePicture::getId).collect(Collectors.toList());
+				concernInfo.setFileId(picturesId);
 				concernInfos.add(concernInfo);
 			}
 			info.setStoneInfo(concernInfos);
