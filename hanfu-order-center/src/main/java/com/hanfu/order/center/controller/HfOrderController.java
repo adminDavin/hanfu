@@ -204,7 +204,7 @@ public class HfOrderController {
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
-
+                hfOrder.setTakingType(detailRequest.get(0).getTakingType());
 //                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
 //                if (java.util.Optional.ofNullable(goods).isPresent()) {
 //                    hfOrder.setGoodsName(goods.getHfName());
@@ -269,8 +269,6 @@ public class HfOrderController {
         if (targetOrderStatus.equals("controversial")){
             redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
         }
-
-
 
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
