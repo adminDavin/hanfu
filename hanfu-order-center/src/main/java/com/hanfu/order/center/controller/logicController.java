@@ -165,7 +165,7 @@ public class logicController {
             Example hfOrderExample = new Example(HfOrder.class);
             Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
             criteriaOrder.andEqualTo("id",orderId);
-            hfOrdersCancelMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+            hfOrdersCancelMapper.updateByExampleSelective(hfOrders,hfOrderExample);
         }
         redisTemplate.delete(decrypt);
         return builder.body(ResponseUtils.getResponseBody(0));
