@@ -1303,7 +1303,7 @@ public class GoodsController {
 	}
 
 	@ApiOperation(value = "添加评价", notes = "添加评价", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST, consumes = "multipart/*", headers = "content-type=multipart/form-data")
+	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST, consumes = "multipart/*", headers = {"content-type=multipart/form-data","application/x-www-form-urlencoded"})
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
 			Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile[] file) throws Exception {
 		
