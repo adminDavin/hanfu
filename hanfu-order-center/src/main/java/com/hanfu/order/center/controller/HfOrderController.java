@@ -303,9 +303,21 @@ public class HfOrderController {
                 return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
-        //-----
+        //-----cancel
         if (targetOrderStatus.equals("cancel")){
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+                HfOrder hfOrder = new HfOrder();
+                hfOrder.setId(Id);
+                hfOrder.setOrderStatus(targetOrderStatus);
+                HfOrderExample hfOrderExample = new HfOrderExample();
+                hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+
                 HfOrderExample hfOrderExample1 = new HfOrderExample();
                 hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
 
@@ -316,27 +328,59 @@ public class HfOrderController {
                 restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
             }
             }
-            //----
-//            if (targetOrderStatus.equals("evaluate")){
-//                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-//                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate");
-//                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
-//            }
+            //----evaluate
+            if (targetOrderStatus.equals("evaluate")){
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+
+
+                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
+                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+//                if (hfOrderDetail1.size()==0){
+                    HfOrder hfOrder = new HfOrder();
+                    hfOrder.setId(Id);
+                    hfOrder.setOrderStatus(targetOrderStatus);
+                    HfOrderExample hfOrderExample = new HfOrderExample();
+                    hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                    hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+//                }
+            }
+            //--complete
+            if (targetOrderStatus.equals("complete")){
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+
+                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("complete");
+                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+                if (hfOrderDetail1.size()==0){
+                    HfOrder hfOrder = new HfOrder();
+                    hfOrder.setId(Id);
+                    hfOrder.setOrderStatus(targetOrderStatus);
+                    HfOrderExample hfOrderExample = new HfOrderExample();
+                    hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                    hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+                }
+            }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setId(Id);
+            hfOrder.setOrderStatus(targetOrderStatus);
+            HfOrderExample hfOrderExample = new HfOrderExample();
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
 
-        HfOrder hfOrder = new HfOrder();
-        hfOrder.setId(Id);
-        hfOrder.setOrderStatus(targetOrderStatus);
-        HfOrderExample hfOrderExample = new HfOrderExample();
-        hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
-        hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
-        HfOrderDetail hfOrderDetail = new HfOrderDetail();
-        hfOrderDetail.setHfStatus(targetOrderStatus);
-        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
-        hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+
+
         return builder.body(ResponseUtils.getResponseBody("0"));
     }
 
