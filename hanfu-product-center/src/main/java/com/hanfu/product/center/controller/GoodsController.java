@@ -1400,7 +1400,7 @@ public class GoodsController {
 				instancePictureExample.clear();
 				instancePictureExample.createCriteria().andEvaluateInstanceIdEqualTo(instance.getId());
 				instancePictures = evluateInstancePictureMapper.selectByExample(instancePictureExample);
-				instancePictureId = instancePictures.stream().map(EvluateInstancePicture::getId)
+				instancePictureId = instancePictures.stream().map(EvluateInstancePicture::getFileId)
 						.collect(Collectors.toList());
 				e1.setFileId(instancePictureId);
 				es.add(e1);

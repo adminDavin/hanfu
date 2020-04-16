@@ -939,6 +939,12 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	public ResponseEntity<JSONObject> deleteStoneConcern(Integer userId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
+		if(hfStone.getConcernCount()-1 <0) {
+			return builder.body(ResponseUtils.getResponseBody("数据异常"));
+		}
+		hfStone.setConcernCount(hfStone.getConcernCount()-1);
+		hfStoneMapper.updateByPrimaryKey(hfStone);
 		HfStoneConcernExample example = new HfStoneConcernExample();
 		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
 		hfStoneConcernMapper.deleteByExample(example);

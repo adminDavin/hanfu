@@ -463,6 +463,7 @@ public class HomePageController {
 
 		HfBalanceDetailExample example = new HfBalanceDetailExample();
 		example.createCriteria().andUserIdEqualTo(userId);
+		example.setOrderByClause("create_time DESC");
 		List<HfBalanceDetail> list = hfBalanceDetailMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfBalanceDetail order = list.get(i);
@@ -486,6 +487,7 @@ public class HomePageController {
 		List<OrderRecord> result = new ArrayList<OrderRecord>();
 		HfIntegralExample example = new HfIntegralExample();
 		example.createCriteria().andUserIdEqualTo(userId);
+		example.setOrderByClause("create_time DESC");
 		List<HfIntegral> list = hfIntegralMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfIntegral hfIntegral = list.get(i);
@@ -669,7 +671,7 @@ public class HomePageController {
 				concernInfo.setConcernCount(stone.getConcernCount());
 				pictureExample.createCriteria().andStoneIdEqualTo(stone.getId());
 				pictures = hfStonePictureMapper.selectByExample(pictureExample);
-				picturesId = pictures.stream().map(HfStonePicture::getId).collect(Collectors.toList());
+				picturesId = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
 				concernInfo.setFileId(picturesId);
 				concernInfos.add(concernInfo);
 			}
