@@ -123,6 +123,7 @@ public class HfGoodsController {
         amount.setGoodsId(goodsId);
         amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
         List<Integer> SUP = new ArrayList<>();
+//        List<Integer> SUP1 = new ArrayList<>();
 if (discountCouponId!=null){
     for (Integer dis: discountCouponId){
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
@@ -137,9 +138,9 @@ if (discountCouponId!=null){
     }
 
 //        SUP.forEach(sups ->{
-    System.out.println(SUP+"-------SUP");
+    System.out.println(discountCouponId+"-------SUP");
     Integer moneys =selectPriceResp(goodsId).get("hfPrices");
-            for (Integer sups:SUP){
+            for (Integer sups:discountCouponId){
            DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(sups);
            if (discountCoupon.getDiscountCouponType().equals("1")){
                JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
@@ -148,6 +149,7 @@ if (discountCouponId!=null){
 // 获得key
 			String key = iterator.next();
 			String value = specs.getString(key);
+            System.out.println(value);
 if (key.equals("minus")){
     if (actualPrice!=null){
         actualPrice = actualPrice-Integer.valueOf(value);
