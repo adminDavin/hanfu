@@ -204,7 +204,7 @@ public class HfOrderController {
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
-                hfOrder.setTakingType(detailRequest.get(0).getTakingType());
+                hfOrder.setTakingType(hfOrderDetailList.get(0).getTakingType());
 //                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
 //                if (java.util.Optional.ofNullable(goods).isPresent()) {
 //                    hfOrder.setGoodsName(goods.getHfName());
@@ -298,16 +298,18 @@ public class HfOrderController {
                 return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
-        if (targetOrderStatus.equals("cancel")&&originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")){
-            HfOrderExample hfOrderExample1 = new HfOrderExample();
-            hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+        if (targetOrderStatus.equals("cancel")){
+            if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
+                HfOrderExample hfOrderExample1 = new HfOrderExample();
+                hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
 
-            payment payment = new payment();
-            payment.setOutTradeNo(orderCode);
-            payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+                payment payment = new payment();
+                payment.setOutTradeNo(orderCode);
+                payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-            restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,orderCode,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
-        }
+                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+            }
+            }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
         }
