@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -1301,12 +1302,14 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(list2));
 	}
 
-	@ApiOperation(value = "添加评价", notes = "添加评价")
-	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
+	@ApiOperation(value = "添加评价", notes = "添加评价", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST, consumes = "multipart/*", headers = "content-type=multipart/form-data")
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
 			Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile[] file) throws Exception {
 		
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println("111111111111111"+file);
+		
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
@@ -1324,6 +1327,7 @@ public class GoodsController {
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
 			for (MultipartFile f : file) {
+				System.out.println("插入图片");
 				String arr[];
 				FileMangeService fileMangeService = new FileMangeService();
 				arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(userId));
