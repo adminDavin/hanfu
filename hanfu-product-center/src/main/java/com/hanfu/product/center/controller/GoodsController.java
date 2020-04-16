@@ -1305,7 +1305,7 @@ public class GoodsController {
 			Integer stoneId, Integer star, String evaluate, HttpServletRequest request) throws Exception {
 		MultipartHttpServletRequest multipartResolver = WebUtils.getNativeRequest(request,
 				MultipartHttpServletRequest.class);
-		List<MultipartFile> file = multipartResolver.getFiles("modifFile");
+		List<MultipartFile> file = multipartResolver.getFiles("file");
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		ProductInstanceExample example = new ProductInstanceExample();
