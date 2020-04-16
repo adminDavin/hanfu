@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.util.WebUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -1185,8 +1189,8 @@ public class GoodsController {
 		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
 			if (!list.isEmpty()) {
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String
-							.valueOf(Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
+					String s = String.valueOf(
+							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -1195,8 +1199,8 @@ public class GoodsController {
 				} else {
 					if (list.get(0).getDiscountRatio() != null) {
 						if (list.get(0).getDiscountRatio() != 0) {
-							String s = String.valueOf(
-									Double.valueOf(hfGoodsDisplay.get(i).getSellPrice()) * (list.get(0).getDiscountRatio() / 100));
+							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
+									* (list.get(0).getDiscountRatio() / 100));
 							if (null != s && s.indexOf(".") > 0) {
 								s = s.replaceAll("0+?$", "");// 去掉多余的0
 								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -1298,8 +1302,10 @@ public class GoodsController {
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
-			Integer stoneId, Integer star, String evaluate, @RequestPart(required = false) MultipartFile[] file)
-			throws Exception {
+			Integer stoneId, Integer star, String evaluate, HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multipartResolver = WebUtils.getNativeRequest(request,
+				MultipartHttpServletRequest.class);
+		List<MultipartFile> file = multipartResolver.getFiles("modifFile");
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		ProductInstanceExample example = new ProductInstanceExample();
@@ -1317,28 +1323,31 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-		for (MultipartFile f : file) {
-			String arr[];
-			FileMangeService fileMangeService = new FileMangeService();
-			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(userId));
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(f.getName());
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(userId);
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			EvaluatePicture picture = new EvaluatePicture();
-			picture.setEvaluate(hfEvaluate.getId());
-			picture.setFileId(fileDesc.getId());
-			picture.setHfDesc("评价图片描述");
-			picture.setHfName("评价图片");
-			picture.setCreateTime(LocalDateTime.now());
-			picture.setModifieyTime(LocalDateTime.now());
-			picture.setIsDeleted((byte) 0);
-			evaluatePictureMapper.insert(picture);
+//		System.out.println("1111111111111111111"+file.length);
+		if (!StringUtils.isEmpty(file.get(0).getOriginalFilename())) {
+			for (MultipartFile f : file) {
+				String arr[];
+				FileMangeService fileMangeService = new FileMangeService();
+				arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(userId));
+				FileDesc fileDesc = new FileDesc();
+				fileDesc.setFileName(f.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setUserId(userId);
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				fileDescMapper.insert(fileDesc);
+				EvaluatePicture picture = new EvaluatePicture();
+				picture.setEvaluate(hfEvaluate.getId());
+				picture.setFileId(fileDesc.getId());
+				picture.setHfDesc("评价图片描述");
+				picture.setHfName("评价图片");
+				picture.setCreateTime(LocalDateTime.now());
+				picture.setModifieyTime(LocalDateTime.now());
+				picture.setIsDeleted((byte) 0);
+				evaluatePictureMapper.insert(picture);
+			}
 		}
 		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
 		detail.setHfStatus("complete");

@@ -316,15 +316,17 @@ public class HfProductController {
 		type.add("seckillActivity");
 		
 		for (int i = 0; i < products.size(); i++) {
+			Date date = new Date();
 			HfProductDisplay product = products.get(i);
 			activityProductExample.clear();
 			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
 					.andProductActivityTypeIn(type);
 			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if (!list.isEmpty()) {
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+			if (!list.isEmpty() && activity.getEndTime().after(date)) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+				
 				product.setStartTime(activity.getStartTime());
 				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
@@ -679,15 +681,16 @@ public class HfProductController {
 		type.add("seckillActivity");
 		
 		for (int i = 0; i < products.size(); i++) {
+			Date date = new Date();
 			HfProductDisplay product = products.get(i);
 			activityProductExample.clear();
 			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
 					.andProductActivityTypeIn(type);
 			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if (!list.isEmpty()) {
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+			if (!list.isEmpty() && activity.getEndTime().after(date)) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
 				product.setStartTime(activity.getStartTime());
 				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
@@ -964,15 +967,16 @@ public class HfProductController {
 		type.add("seckillActivity");
 		
 		for (int i = 0; i < displays.size(); i++) {
+			Date date = new Date();
 			HfProductDisplay product = displays.get(i);
 			activityProductExample.clear();
 			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
 					.andProductActivityTypeIn(type);
 			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if (!list.isEmpty()) {
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+			if (!list.isEmpty() && activity.getEndTime().after(date)) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
 				product.setStartTime(activity.getStartTime());
 				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
