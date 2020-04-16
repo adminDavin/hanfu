@@ -902,11 +902,14 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	
 	@ApiOperation(value = "删除商品收藏", notes = "删除商品收藏")
 	@RequestMapping(value = "/deleteProductCollect", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteProductCollect(Integer userId,Integer instanceId)
+	public ResponseEntity<JSONObject> deleteProductCollect(Integer userId,Integer stoneId,Integer productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductInstanceExample instanceExample = new ProductInstanceExample();
+		instanceExample.createCriteria().andProductIdEqualTo(productId).andStoneIdEqualTo(stoneId);
+		List<ProductInstance> instanceId = productInstanceMapper.selectByExample(instanceExample);
 		HfProductCollectExample example = new HfProductCollectExample();
-		example.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(instanceId);
+		example.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(instanceId.get(0).getId());
 		hfProductCollectMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
