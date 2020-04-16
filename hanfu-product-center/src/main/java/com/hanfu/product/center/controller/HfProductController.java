@@ -323,6 +323,9 @@ public class HfProductController {
 			if (!list.isEmpty()) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
+				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+				product.setStartTime(activity.getStartTime());
+				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
 					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
@@ -683,6 +686,9 @@ public class HfProductController {
 			if (!list.isEmpty()) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
+				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+				product.setStartTime(activity.getStartTime());
+				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
 					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
@@ -965,6 +971,9 @@ public class HfProductController {
 			if (!list.isEmpty()) {
 				product.setProductActivityType(list.get(0).getProductActivityType());
 				product.setActivityId(list.get(0).getActivityId());
+				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+				product.setStartTime(activity.getStartTime());
+				product.setEndTime(activity.getEndTime());
 				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
 					String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
