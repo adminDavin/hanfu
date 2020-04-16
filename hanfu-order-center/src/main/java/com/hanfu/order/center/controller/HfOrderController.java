@@ -269,9 +269,7 @@ public class HfOrderController {
         if (targetOrderStatus.equals("controversial")){
             redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
         }
-        if (targetOrderStatus.equals("reject")){
-            originOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
-        }
+
 
 
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
@@ -312,6 +310,10 @@ public class HfOrderController {
 //            Map map = (Map) payment;
             restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,orderCode,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
         }
+        if (targetOrderStatus.equals("reject")){
+            targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+        }
+
         HfOrder hfOrder = new HfOrder();
         hfOrder.setId(Id);
         hfOrder.setOrderStatus(targetOrderStatus);
