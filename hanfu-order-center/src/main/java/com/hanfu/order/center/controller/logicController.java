@@ -125,12 +125,12 @@ public class logicController {
         }
 
 
-        if (hfOrder.getOrderStatus().equals("complete")) {
+        if (hfOrder.getOrderStatus().equals("complete")||hfOrder.getOrderStatus().equals("evaluate")) {
             return builder.body(ResponseUtils.getResponseBody("该订单已被核销"));
         }
         HfOrderDetail hfOrdersDetail = new HfOrderDetail();
         hfOrdersDetail.setModifyTime(LocalDateTime.now());
-        hfOrdersDetail.setHfStatus("complete");
+        hfOrdersDetail.setHfStatus("evaluate");
         Example example3 = new Example(HfOrderDetail.class);
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("orderId",orderId).andEqualTo("stoneId",stoneId);
@@ -155,12 +155,12 @@ public class logicController {
         });
         Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
         Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
-        criteriaOrderDetail.andEqualTo("orderId",orderId).andNotEqualTo("hfStatus","complete");
+        criteriaOrderDetail.andEqualTo("orderId",orderId).andNotEqualTo("hfStatus","complete").andNotEqualTo("hfStatus","evaluate");
         List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
         if (hfOrderDetail1.size()==0){
             HfOrder hfOrders = new HfOrder();
             hfOrders.setId(orderId);
-            hfOrders.setOrderStatus("complete");
+            hfOrders.setOrderStatus("evaluate");
             hfOrders.setModifyTime(LocalDateTime.now());
             Example hfOrderExample = new Example(HfOrder.class);
             Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
