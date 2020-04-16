@@ -39,6 +39,8 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfActivityMapper;
+import com.hanfu.product.center.dao.HfActivityProductMapper;
 import com.hanfu.product.center.dao.HfBalanceDetailMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -55,6 +57,7 @@ import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.HfUsersMapper;
+import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.UserPersonalBrowseMapper;
@@ -149,6 +152,15 @@ public class HomePageController {
 	
 	@Autowired
 	private HfStonePictureMapper hfStonePictureMapper;
+	
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
+	
+	@Autowired
+	private HfActivityProductMapper hfActivityProductMapper;
+	
+	@Autowired
+	private HfActivityMapper hfActivityMapper;
 
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -526,16 +538,16 @@ public class HomePageController {
 			for (int j = 0; j < browses.size(); j++) {
 				UserPersonalBrowse browse = browses.get(j);
 				HfProductDisplay display = new HfProductDisplay();
+				
+				ProductInstance instance = productInstanceMapper.selectByPrimaryKey(browse.getInstanceId());
+				display.setInstanceId(browse.getInstanceId());
+				display.setStoneId(instance.getStoneId());
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
+				display.setStoneName(hfStone.getHfName());
+				
 				Product product = productMapper.selectByPrimaryKey(browse.getProductId());
 				if(product != null) {
 				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(browse.getProductId());
-				if (!hfGoodsDisplay.isEmpty()) {
-					if (hfGoodsDisplay.get(0).getStoneId() != null) {
-						display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
-						HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
-						display.setStoneName(hfStone.getHfName());
-					}
-				}
 				Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
 						.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
 								(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
@@ -567,6 +579,49 @@ public class HomePageController {
 			info.setUserId(userId);
 			result.add(info);
 		}
+		
+		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+		List<String> type = new ArrayList<String>();
+		type.add("groupActivity");
+		type.add("seckillActivity");
+		for (int j = 0; j < result.size(); j++) {
+			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+			for (int j2 = 0; j2 < products.size(); j2++) {
+				HfProductDisplay product = products.get(j2);
+				activityProductExample.clear();
+				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+						.andProductActivityTypeIn(type);
+				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
+				if (!lists.isEmpty()) {
+					product.setProductActivityType(lists.get(0).getProductActivityType());
+					product.setActivityId(lists.get(0).getActivityId());
+					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
+					product.setStartTime(activity.getStartTime());
+					product.setEndTime(activity.getEndTime());
+					if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
+						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
+						if (null != s && s.indexOf(".") > 0) {
+							s = s.replaceAll("0+?$", "");// 去掉多余的0
+							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+						}
+						product.setPriceArea(s);
+					} else {
+						if (lists.get(0).getDiscountRatio() != null) {
+							if (lists.get(0).getDiscountRatio() != 0) {
+								String s = String.valueOf(Double.valueOf(product.getPriceArea())
+										* (lists.get(0).getDiscountRatio() / 100));
+								if (null != s && s.indexOf(".") > 0) {
+									s = s.replaceAll("0+?$", "");// 去掉多余的0
+									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+								}
+								product.setPriceArea(s);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
@@ -595,14 +650,13 @@ public class HomePageController {
 				HfProductCollect browse = browses.get(j);
 				HfProductDisplay display = new HfProductDisplay();
 				Product product = productMapper.selectByPrimaryKey(browse.getProductId());
+				
+				ProductInstance instance = productInstanceMapper.selectByPrimaryKey(browse.getInstanceId());
+				display.setInstanceId(browse.getInstanceId());
+				display.setStoneId(instance.getStoneId());
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
+				display.setStoneName(hfStone.getHfName());
 				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(browse.getProductId());
-				if (!hfGoodsDisplay.isEmpty()) {
-					if (hfGoodsDisplay.get(0).getStoneId() != null) {
-						display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
-						HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
-						display.setStoneName(hfStone.getHfName());
-					}
-				}
 				Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
 						.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
 								(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
@@ -632,6 +686,48 @@ public class HomePageController {
 			info.setDate(str);
 			info.setUserId(userId);
 			result.add(info);
+		}
+		
+		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+		List<String> type = new ArrayList<String>();
+		type.add("groupActivity");
+		type.add("seckillActivity");
+		for (int j = 0; j < result.size(); j++) {
+			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+			for (int j2 = 0; j2 < products.size(); j2++) {
+				HfProductDisplay product = products.get(j2);
+				activityProductExample.clear();
+				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+						.andProductActivityTypeIn(type);
+				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
+				if (!lists.isEmpty()) {
+					product.setProductActivityType(lists.get(0).getProductActivityType());
+					product.setActivityId(lists.get(0).getActivityId());
+					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
+					product.setStartTime(activity.getStartTime());
+					product.setEndTime(activity.getEndTime());
+					if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
+						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
+						if (null != s && s.indexOf(".") > 0) {
+							s = s.replaceAll("0+?$", "");// 去掉多余的0
+							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+						}
+						product.setPriceArea(s);
+					} else {
+						if (lists.get(0).getDiscountRatio() != null) {
+							if (lists.get(0).getDiscountRatio() != 0) {
+								String s = String.valueOf(Double.valueOf(product.getPriceArea())
+										* (lists.get(0).getDiscountRatio() / 100));
+								if (null != s && s.indexOf(".") > 0) {
+									s = s.replaceAll("0+?$", "");// 去掉多余的0
+									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+								}
+								product.setPriceArea(s);
+							}
+						}
+					}
+				}
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}

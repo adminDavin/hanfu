@@ -224,12 +224,13 @@ public class HfProductController {
 			browseRecord.setBossId(product2.getBossId());
 			hfUserBrowseRecordMapper.insert(browseRecord);
 			UserPersonalBrowseExample userPersonalBrowseExample = new UserPersonalBrowseExample();
-			userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+			userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(productInstances.get(0).getId());
 			List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(userPersonalBrowseExample);
 			if (browses.isEmpty()) {
 				UserPersonalBrowse browse = new UserPersonalBrowse();
 				browse.setBrowseTime(LocalDateTime.now());
 				browse.setCount(1);
+				browse.setInstanceId(productInstances.get(0).getId());
 				browse.setCreateTime(LocalDateTime.now());
 				browse.setIsDeleted((byte) 0);
 				browse.setModifiyTime(LocalDateTime.now());
