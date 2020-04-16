@@ -26,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.util.WebUtils;
 
@@ -1302,10 +1304,8 @@ public class GoodsController {
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
-			Integer stoneId, Integer star, String evaluate, HttpServletRequest request) throws Exception {
-		MultipartHttpServletRequest multipartResolver = WebUtils.getNativeRequest(request,
-				MultipartHttpServletRequest.class);
-		List<MultipartFile> file = multipartResolver.getFiles("file");
+			Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile[] file) throws Exception {
+		
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		ProductInstanceExample example = new ProductInstanceExample();
@@ -1323,8 +1323,6 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-//		System.out.println("1111111111111111111"+file.length);
-		if (!StringUtils.isEmpty(file.get(0).getOriginalFilename())) {
 			for (MultipartFile f : file) {
 				String arr[];
 				FileMangeService fileMangeService = new FileMangeService();
@@ -1348,7 +1346,6 @@ public class GoodsController {
 				picture.setIsDeleted((byte) 0);
 				evaluatePictureMapper.insert(picture);
 			}
-		}
 		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
 		detail.setHfStatus("complete");
 		hfOrderDetailMapper.updateByPrimaryKey(detail);
