@@ -204,7 +204,12 @@ public class HfOrderController {
                     detailRequest.add(cartList);
                 }
                 hfOrder.setDetailRequestList(detailRequest);
-                hfOrder.setTakingType(hfOrderDetailList.get(0).getTakingType());
+                hfOrderDetailList.forEach(hfOrderDetail -> {
+                    if (hfOrderDetail.getTakingType()!=null){
+                        hfOrder.setTakingType(hfOrderDetail.getTakingType());
+                    }
+                });
+
 //                HfGoodsDisplay goods = hfGoodsDisplayMap.get(hfOrder.getGoodsId());
 //                if (java.util.Optional.ofNullable(goods).isPresent()) {
 //                    hfOrder.setGoodsName(goods.getHfName());
