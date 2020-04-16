@@ -274,7 +274,7 @@ public class HfOrderController {
         if (targetOrderStatus.equals("controversial")){
             redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
         }
-
+//---
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
@@ -290,7 +290,7 @@ public class HfOrderController {
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
                 HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("transport");
+                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("transport").andHfStatusNotEqualTo("complete").andHfStatusNotEqualTo("evaluate");
                 List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
                 if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
@@ -303,6 +303,7 @@ public class HfOrderController {
                 return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
+        //-----
         if (targetOrderStatus.equals("cancel")){
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
                 HfOrderExample hfOrderExample1 = new HfOrderExample();
@@ -315,6 +316,12 @@ public class HfOrderController {
                 restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
             }
             }
+            //----
+//            if (targetOrderStatus.equals("evaluate")){
+//                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+//                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate");
+//                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+//            }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
         }
