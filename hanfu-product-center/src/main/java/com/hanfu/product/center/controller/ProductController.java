@@ -874,15 +874,19 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	
 	@ApiOperation(value = "添加商品收藏", notes = "添加商品收藏")
 	@RequestMapping(value = "/addProductCollect", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProductCollect(Integer userId,Integer productId)
+	public ResponseEntity<JSONObject> addProductCollect(Integer userId,Integer productId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductInstanceExample instanceExample = new ProductInstanceExample();
+		instanceExample.createCriteria().andProductIdEqualTo(productId).andStoneIdEqualTo(stoneId);
+		List<ProductInstance> instanceId = productInstanceMapper.selectByExample(instanceExample);
 		HfProductCollectExample example = new HfProductCollectExample();
 		HfProductCollect collect = null;
-		example.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+		example.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(instanceId.get(0).getId());
 		List<HfProductCollect> list = hfProductCollectMapper.selectByExample(example);
 		if(list.isEmpty()) {
 			collect = new HfProductCollect();
+			collect.setInstanceId(instanceId.get(0).getId());
 			collect.setCollectTime(LocalDateTime.now());
 			collect.setCreateTime(LocalDateTime.now());
 			collect.setModifyTime(LocalDateTime.now());
@@ -898,11 +902,11 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	
 	@ApiOperation(value = "删除商品收藏", notes = "删除商品收藏")
 	@RequestMapping(value = "/deleteProductCollect", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> deleteProductCollect(Integer userId,Integer productId)
+	public ResponseEntity<JSONObject> deleteProductCollect(Integer userId,Integer instanceId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfProductCollectExample example = new HfProductCollectExample();
-		example.createCriteria().andUserIdEqualTo(userId).andProductIdEqualTo(productId);
+		example.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(instanceId);
 		hfProductCollectMapper.deleteByExample(example);
 		return builder.body(ResponseUtils.getResponseBody("删除成功"));
 	}
