@@ -308,7 +308,7 @@ public class HfProductController {
 			}
 		});
 
-		products = products.stream().filter(p -> p.getInstanceId() != null && !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
 		
 //		HfActivityProductExample activityProductExample = new HfActivityProductExample();
 //		List<String> type = new ArrayList<String>();
