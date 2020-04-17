@@ -102,8 +102,8 @@ public class HfGoodsController {
                       return builder.body(ResponseUtils.getResponseBody(amount));
                   }
                 } else {
-//                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
-                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
+                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
+//                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
                     amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice"))*GoodsNum);
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
@@ -211,6 +211,7 @@ if (actualPrice!=null){
 //        System.out.println(hfPrices.get(0).getLinePrice());
         params.put("hfResps", hfResps.get(0).getQuantity());
         params.put("linePrice",hfPrices.get(0).getLinePrice());
+        System.out.println(hfPrices.get(0).getLinePrice());
 
         return params;
     }
