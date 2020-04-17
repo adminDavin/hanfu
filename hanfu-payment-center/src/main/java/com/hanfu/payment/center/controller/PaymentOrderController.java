@@ -149,7 +149,7 @@ public class PaymentOrderController {
 
 	private Map<String, String> wxPay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
 		MiniProgramConfig config = new MiniProgramConfig();
-		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
+		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode(),hfOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
 
 		WXPay wxpay = new WXPay(config);
@@ -219,7 +219,7 @@ public class PaymentOrderController {
 		data.put("out_trade_no", hfOrder.getOrderCode());
 		data.put("op_user_id", config.getMchID());
 		data.put("refund_fee_type", "CNY");
-		data.put("refund_fee", String.valueOf(1));
+		data.put("refund_fee", String.valueOf(hfOrder.getAmount()));
 		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
 		String sign = WXPayUtil.generateSignature(data, config.getKey());
 		data.put("sign", sign);
@@ -251,7 +251,7 @@ public class PaymentOrderController {
 	}
 	}
 
-	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode)
+	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode,Integer Amount)
 			throws Exception {
 		Map<String, String> data = new HashMap<>();
 		data.put("appid", config.getAppID());
@@ -260,7 +260,7 @@ public class PaymentOrderController {
 		data.put("out_trade_no", orderCode);
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
-		data.put("total_fee", String.valueOf(1));
+		data.put("total_fee", String.valueOf(Amount));
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 		data.put("trade_type", "JSAPI");
