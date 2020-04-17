@@ -104,7 +104,7 @@ public class HfGoodsController {
                 } else {
                     amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
 //                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
-                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice"))*GoodsNum);
+                    amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePricce"))*GoodsNum);
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
             }
