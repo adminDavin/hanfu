@@ -1185,7 +1185,7 @@ public class GoodsController {
 
 		List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productId);
 
-		if (activityId != null || activityId !=0) {
+		if (activityId != null && activityId !=0) {
 			HfActivity activity = hfActivityMapper.selectByPrimaryKey(activityId);
 			if ("groupActivity".equals(activity.getActivityType())
 					|| "seckillActivity".equals(activity.getActivityType())) {
