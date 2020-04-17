@@ -344,7 +344,7 @@ public class HfOrderController {
                 hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
 
                 HfOrderExample hfOrderExample1 = new HfOrderExample();
-                hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode);
 
                 payment payment = new payment();
                 payment.setOutTradeNo(orderCode);
