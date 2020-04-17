@@ -346,6 +346,17 @@ public class HfProductActivityController {
         	productExample.createCriteria().andActivityIdEqualTo(a.getId());
         	List<HfActivityProduct> products = hfActivityProductMapper.selectByExample(productExample);
         	info.setProductId(products.get(0).getProductId());
+        	ProductInstance instance = productInstanceMapper.selectByPrimaryKey(products.get(0).getInstanceId());
+        	info.setStoneId(instance.getStoneId());
+        	info.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
+        	List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(products.get(0).getProductId());
+        	if (Optional.ofNullable(hfGoodsDisplay).isPresent()) {
+				Optional<HfGoodsDisplayInfo> hfGood = hfGoodsDisplay.stream()
+						.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
+						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+				info.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+//				product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : );
+			}
         	result.add(info);
         });
             return builder.body(ResponseUtils.getResponseBody(result));
@@ -873,58 +884,58 @@ public class HfProductActivityController {
     }
 
 
-//    @Scheduled(cron="0/5 * * * * ? ")
-//    @ApiOperation(value = "团购", notes = "团购")
-//    @RequestMapping(value = "/TimeGroup", method = RequestMethod.GET)
-////    @ApiImplicitParams({
-////            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-//    public void TimeGroup()
-//            throws Exception {
-////        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
-//        HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
-//        hfActivityGroupExample.createCriteria().andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
-//       List<HfActivityGroup> hfActivityGroupList = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
-//        hfActivityGroupList.forEach(discountCoupon -> {
-//
-//            Date date1 = new Date();
-//            Date date2 = new Date();
-//            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            try {
-//                date1 = f.parse(f.format(new Date())); //这是获取当前时间
-//                date2 = f.parse(f.format(discountCoupon.getClusteringTime()));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            if ((date1.getTime()-date2.getTime())>86400000){
-//                HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
-//                hfActivityCountExample1.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
-//                List<HfActivityCount> hfActivityCounts= hfActivityCountMapper.selectByExample(hfActivityCountExample1);
-//                hfActivityCounts.forEach(hfActivityCount1 -> {
-//                    HfOrder hfOrder= hfOrderMapper.selectByPrimaryKey(hfActivityCount1.getOrderId());
-//                    payment payment = new payment();
-//                    payment.setOutTradeNo(hfOrder.getOrderCode());
-//                    payment.setUserId(hfOrder.getId());
-////            Map map = (Map) payment;
-//                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,hfOrder.getOrderCode(),hfOrder.getUserId());
-//                    logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date()+"--orderId:"+hfOrder.getId()+"money:"+hfOrder.getAmount());
-//                });
-//
-//
-//                discountCoupon.setIsDeleted((byte) 1);
-//                hfActivityGroupMapper.updateByPrimaryKeySelective(discountCoupon);
-//                HfActivityCount hfActivityCount = new HfActivityCount();
-//                hfActivityCount.setIsDeleted((byte) 1);
-//                HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
-//                hfActivityCountExample.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
-//                hfActivityCountMapper.updateByExampleSelective(hfActivityCount,hfActivityCountExample);
-//
-//            }
-//        });
-////        Random r = new Random();
-//        try{
-//            Thread.sleep(2000);
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//    }
+    @Scheduled(cron="0/5 * * * * ? ")
+    @ApiOperation(value = "团购", notes = "团购")
+    @RequestMapping(value = "/TimeGroup", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
+    public void TimeGroup()
+            throws Exception {
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
+        HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
+        hfActivityGroupExample.createCriteria().andStateEqualTo(0).andIsDeletedEqualTo((byte) 0);
+       List<HfActivityGroup> hfActivityGroupList = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
+        hfActivityGroupList.forEach(discountCoupon -> {
+
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(discountCoupon.getClusteringTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>86400000){
+                HfActivityCountExample hfActivityCountExample1 = new HfActivityCountExample();
+                hfActivityCountExample1.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
+                List<HfActivityCount> hfActivityCounts= hfActivityCountMapper.selectByExample(hfActivityCountExample1);
+                hfActivityCounts.forEach(hfActivityCount1 -> {
+                    HfOrder hfOrder= hfOrderMapper.selectByPrimaryKey(hfActivityCount1.getOrderId());
+                    payment payment = new payment();
+                    payment.setOutTradeNo(hfOrder.getOrderCode());
+                    payment.setUserId(hfOrder.getId());
+//            Map map = (Map) payment;
+                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,hfOrder.getOrderCode(),hfOrder.getUserId());
+                    logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date()+"--orderId:"+hfOrder.getId()+"money:"+hfOrder.getAmount());
+                });
+
+
+                discountCoupon.setIsDeleted((byte) 1);
+                hfActivityGroupMapper.updateByPrimaryKeySelective(discountCoupon);
+                HfActivityCount hfActivityCount = new HfActivityCount();
+                hfActivityCount.setIsDeleted((byte) 1);
+                HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+                hfActivityCountExample.createCriteria().andGroupIdEqualTo(discountCoupon.getId());
+                hfActivityCountMapper.updateByExampleSelective(hfActivityCount,hfActivityCountExample);
+
+            }
+        });
+//        Random r = new Random();
+        try{
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

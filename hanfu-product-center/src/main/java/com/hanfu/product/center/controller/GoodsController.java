@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.util.WebUtils;
 
@@ -1189,31 +1191,31 @@ public class GoodsController {
 				.andProductActivityTypeIn(type);
 		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(hfActivityProductExample);
 
-		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
-			if (!list.isEmpty()) {
-				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String.valueOf(
-							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
-					if (null != s && s.indexOf(".") > 0) {
-						s = s.replaceAll("0+?$", "");// 去掉多余的0
-						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-					}
-					hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-				} else {
-					if (list.get(0).getDiscountRatio() != null) {
-						if (list.get(0).getDiscountRatio() != 0) {
-							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
-									* (list.get(0).getDiscountRatio() / 100));
-							if (null != s && s.indexOf(".") > 0) {
-								s = s.replaceAll("0+?$", "");// 去掉多余的0
-								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-							}
-							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-						}
-					}
-				}
-			}
-		}
+//		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
+//			if (!list.isEmpty()) {
+//				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+//					String s = String.valueOf(
+//							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
+//					if (null != s && s.indexOf(".") > 0) {
+//						s = s.replaceAll("0+?$", "");// 去掉多余的0
+//						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//					}
+//					hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+//				} else {
+//					if (list.get(0).getDiscountRatio() != null) {
+//						if (list.get(0).getDiscountRatio() != 0) {
+//							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
+//									* (list.get(0).getDiscountRatio() / 100));
+//							if (null != s && s.indexOf(".") > 0) {
+//								s = s.replaceAll("0+?$", "");// 去掉多余的0
+//								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//							}
+//							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+//						}
+//					}
+//				}
+//			}
+//		}
 
 		List<Integer> goodsIds = hfGoodsDisplay.stream().map(HfGoodsDisplayInfo::getId).collect(Collectors.toList());
 
@@ -1302,10 +1304,11 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(list2));
 	}
 
-	@ApiOperation(value = "添加评价", notes = "添加评价", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = "multipart/*", headers = {"content-type=multipart/form-data","application/x-www-form-urlencoded"})
-	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
-			Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile[] file) throws Exception {
+	@ApiOperation(value = "添加评价", notes = "添加评价")
+	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
+	
+	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, 
+			Integer goodId,Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
 		
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		System.out.println("111111111111111"+file);
@@ -1326,30 +1329,30 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-			for (MultipartFile f : file) {
-				System.out.println("插入图片");
-				String arr[];
-				FileMangeService fileMangeService = new FileMangeService();
-				arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(userId));
-				FileDesc fileDesc = new FileDesc();
-				fileDesc.setFileName(f.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(userId);
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				fileDescMapper.insert(fileDesc);
-				EvaluatePicture picture = new EvaluatePicture();
-				picture.setEvaluate(hfEvaluate.getId());
-				picture.setFileId(fileDesc.getId());
-				picture.setHfDesc("评价图片描述");
-				picture.setHfName("评价图片");
-				picture.setCreateTime(LocalDateTime.now());
-				picture.setModifieyTime(LocalDateTime.now());
-				picture.setIsDeleted((byte) 0);
-				evaluatePictureMapper.insert(picture);
-			}
+//			for (MultipartFile f : file) {
+//				System.out.println("插入图片");
+//				String arr[];
+//				FileMangeService fileMangeService = new FileMangeService();
+//				arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+//				FileDesc fileDesc = new FileDesc();
+//				fileDesc.setFileName(file.getName());
+//				fileDesc.setGroupName(arr[0]);
+//				fileDesc.setRemoteFilename(arr[1]);
+//				fileDesc.setUserId(userId);
+//				fileDesc.setCreateTime(LocalDateTime.now());
+//				fileDesc.setModifyTime(LocalDateTime.now());
+//				fileDesc.setIsDeleted((short) 0);
+//				fileDescMapper.insert(fileDesc);
+//				EvaluatePicture picture = new EvaluatePicture();
+//				picture.setEvaluate(hfEvaluate.getId());
+//				picture.setFileId(fileDesc.getId());
+//				picture.setHfDesc("评价图片描述");
+//				picture.setHfName("评价图片");
+//				picture.setCreateTime(LocalDateTime.now());
+//				picture.setModifieyTime(LocalDateTime.now());
+//				picture.setIsDeleted((byte) 0);
+//				evaluatePictureMapper.insert(picture);
+//			}
 		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
 		detail.setHfStatus("complete");
 		hfOrderDetailMapper.updateByPrimaryKey(detail);
@@ -1362,6 +1365,7 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
 	}
+
 
 	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
 	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
