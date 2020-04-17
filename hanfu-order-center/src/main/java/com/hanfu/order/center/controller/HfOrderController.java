@@ -351,6 +351,18 @@ public class HfOrderController {
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
                 restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+            }else {
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+                HfOrder hfOrder = new HfOrder();
+                hfOrder.setId(Id);
+                hfOrder.setOrderStatus(targetOrderStatus);
+                HfOrderExample hfOrderExample = new HfOrderExample();
+                hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
             }
             }
             //----evaluate
