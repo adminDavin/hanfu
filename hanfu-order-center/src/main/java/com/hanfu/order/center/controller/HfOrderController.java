@@ -411,7 +411,7 @@ public class HfOrderController {
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
             hfOrderDetail.setHfStatus(targetOrderStatus);
             HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
             hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
             HfOrder hfOrder = new HfOrder();
             hfOrder.setId(Id);
