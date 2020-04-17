@@ -1191,31 +1191,31 @@ public class GoodsController {
 				.andProductActivityTypeIn(type);
 		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(hfActivityProductExample);
 
-		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
-			if (!list.isEmpty()) {
-				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-					String s = String.valueOf(
-							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
-					if (null != s && s.indexOf(".") > 0) {
-						s = s.replaceAll("0+?$", "");// 去掉多余的0
-						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-					}
-					hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-				} else {
-					if (list.get(0).getDiscountRatio() != null) {
-						if (list.get(0).getDiscountRatio() != 0) {
-							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
-									* (list.get(0).getDiscountRatio() / 100));
-							if (null != s && s.indexOf(".") > 0) {
-								s = s.replaceAll("0+?$", "");// 去掉多余的0
-								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-							}
-							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-						}
-					}
-				}
-			}
-		}
+//		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
+//			if (!list.isEmpty()) {
+//				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+//					String s = String.valueOf(
+//							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
+//					if (null != s && s.indexOf(".") > 0) {
+//						s = s.replaceAll("0+?$", "");// 去掉多余的0
+//						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//					}
+//					hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+//				} else {
+//					if (list.get(0).getDiscountRatio() != null) {
+//						if (list.get(0).getDiscountRatio() != 0) {
+//							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
+//									* (list.get(0).getDiscountRatio() / 100));
+//							if (null != s && s.indexOf(".") > 0) {
+//								s = s.replaceAll("0+?$", "");// 去掉多余的0
+//								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//							}
+//							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+//						}
+//					}
+//				}
+//			}
+//		}
 
 		List<Integer> goodsIds = hfGoodsDisplay.stream().map(HfGoodsDisplayInfo::getId).collect(Collectors.toList());
 
