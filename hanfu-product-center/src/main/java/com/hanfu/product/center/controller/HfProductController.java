@@ -310,49 +310,49 @@ public class HfProductController {
 
 		products = products.stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
 		
-		HfActivityProductExample activityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		
-		for (int i = 0; i < products.size(); i++) {
-			Date date = new Date();
-			HfProductDisplay product = products.get(i);
-			activityProductExample.clear();
-			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
-					.andProductActivityTypeIn(type);
-			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if(!list.isEmpty()) {
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
-				if (!list.isEmpty() && activity.getEndTime().after(date)) {
-					product.setProductActivityType(list.get(0).getProductActivityType());
-					product.setActivityId(list.get(0).getActivityId());
-					
-					product.setStartTime(activity.getStartTime());
-					product.setEndTime(activity.getEndTime());
-					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
-						if (null != s && s.indexOf(".") > 0) {
-							s = s.replaceAll("0+?$", "");// 去掉多余的0
-							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-						}
-						product.setPriceArea(s);
-					} else {
-						if (list.get(0).getDiscountRatio() != null) {
-							if (list.get(0).getDiscountRatio() != 0) {
-								String s = String.valueOf(Double.valueOf(product.getPriceArea())
-										* (list.get(0).getDiscountRatio() / 100));
-								if (null != s && s.indexOf(".") > 0) {
-									s = s.replaceAll("0+?$", "");// 去掉多余的0
-									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-								}
-								product.setPriceArea(s);
-							}
-						}
-					}
-				}
-			}
-		}
+//		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+//		List<String> type = new ArrayList<String>();
+//		type.add("groupActivity");
+//		type.add("seckillActivity");
+//		
+//		for (int i = 0; i < products.size(); i++) {
+//			Date date = new Date();
+//			HfProductDisplay product = products.get(i);
+//			activityProductExample.clear();
+//			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+//					.andProductActivityTypeIn(type);
+//			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
+//			if(!list.isEmpty()) {
+//				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+//				if (!list.isEmpty() && activity.getEndTime().after(date)) {
+//					product.setProductActivityType(list.get(0).getProductActivityType());
+//					product.setActivityId(list.get(0).getActivityId());
+//					
+//					product.setStartTime(activity.getStartTime());
+//					product.setEndTime(activity.getEndTime());
+//					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+//						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
+//						if (null != s && s.indexOf(".") > 0) {
+//							s = s.replaceAll("0+?$", "");// 去掉多余的0
+//							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//						}
+//						product.setPriceArea(s);
+//					} else {
+//						if (list.get(0).getDiscountRatio() != null) {
+//							if (list.get(0).getDiscountRatio() != 0) {
+//								String s = String.valueOf(Double.valueOf(product.getPriceArea())
+//										* (list.get(0).getDiscountRatio() / 100));
+//								if (null != s && s.indexOf(".") > 0) {
+//									s = s.replaceAll("0+?$", "");// 去掉多余的0
+//									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//								}
+//								product.setPriceArea(s);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		if (sort != null) {
 			if (sort == 1) {
 				for (int i = 0; i < products.size(); i++) {
@@ -677,49 +677,49 @@ public class HfProductController {
 
 		});
 		products = products.stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-		HfActivityProductExample activityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		
-		for (int i = 0; i < products.size(); i++) {
-			Date date = new Date();
-			HfProductDisplay product = products.get(i);
-			activityProductExample.clear();
-			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
-					.andProductActivityTypeIn(type);
-			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if(!list.isEmpty()) {
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
-				if (!list.isEmpty() && activity.getEndTime().after(date)) {
-					product.setProductActivityType(list.get(0).getProductActivityType());
-					product.setActivityId(list.get(0).getActivityId());
-					product.setStartTime(activity.getStartTime());
-					product.setEndTime(activity.getEndTime());
-					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
-						if (null != s && s.indexOf(".") > 0) {
-							s = s.replaceAll("0+?$", "");// 去掉多余的0
-							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-						}
-						product.setPriceArea(s);
-					} else {
-						if (list.get(0).getDiscountRatio() != null) {
-							if (list.get(0).getDiscountRatio() != 0) {
-								String s = String.valueOf(Double.valueOf(product.getPriceArea())
-										* (list.get(0).getDiscountRatio() / 100));
-								if (null != s && s.indexOf(".") > 0) {
-									s = s.replaceAll("0+?$", "");// 去掉多余的0
-									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-								}
-								product.setPriceArea(s);
-							}
-						}
-					}
-				}
-			}
-		}
-		
+//		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+//		List<String> type = new ArrayList<String>();
+//		type.add("groupActivity");
+//		type.add("seckillActivity");
+//		
+//		for (int i = 0; i < products.size(); i++) {
+//			Date date = new Date();
+//			HfProductDisplay product = products.get(i);
+//			activityProductExample.clear();
+//			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+//					.andProductActivityTypeIn(type);
+//			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
+//			if(!list.isEmpty()) {
+//				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+//				if (!list.isEmpty() && activity.getEndTime().after(date)) {
+//					product.setProductActivityType(list.get(0).getProductActivityType());
+//					product.setActivityId(list.get(0).getActivityId());
+//					product.setStartTime(activity.getStartTime());
+//					product.setEndTime(activity.getEndTime());
+//					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+//						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
+//						if (null != s && s.indexOf(".") > 0) {
+//							s = s.replaceAll("0+?$", "");// 去掉多余的0
+//							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//						}
+//						product.setPriceArea(s);
+//					} else {
+//						if (list.get(0).getDiscountRatio() != null) {
+//							if (list.get(0).getDiscountRatio() != 0) {
+//								String s = String.valueOf(Double.valueOf(product.getPriceArea())
+//										* (list.get(0).getDiscountRatio() / 100));
+//								if (null != s && s.indexOf(".") > 0) {
+//									s = s.replaceAll("0+?$", "");// 去掉多余的0
+//									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//								}
+//								product.setPriceArea(s);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		
 		
 		if (sort != null) {
 			if (sort == 1) {
@@ -965,48 +965,48 @@ public class HfProductController {
 		}
 		displays = displays.stream().filter(p -> !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
 		
-		HfActivityProductExample activityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		
-		for (int i = 0; i < displays.size(); i++) {
-			Date date = new Date();
-			HfProductDisplay product = displays.get(i);
-			activityProductExample.clear();
-			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
-					.andProductActivityTypeIn(type);
-			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
-			if(!list.isEmpty()) {
-				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
-				if (!list.isEmpty() && activity.getEndTime().after(date)) {
-					product.setProductActivityType(list.get(0).getProductActivityType());
-					product.setActivityId(list.get(0).getActivityId());
-					product.setStartTime(activity.getStartTime());
-					product.setEndTime(activity.getEndTime());
-					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
-						if (null != s && s.indexOf(".") > 0) {
-							s = s.replaceAll("0+?$", "");// 去掉多余的0
-							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-						}
-						product.setPriceArea(s);
-					} else {
-						if (list.get(0).getDiscountRatio() != null) {
-							if (list.get(0).getDiscountRatio() != 0) {
-								String s = String.valueOf(Double.valueOf(product.getPriceArea())
-										* (list.get(0).getDiscountRatio() / 100));
-								if (null != s && s.indexOf(".") > 0) {
-									s = s.replaceAll("0+?$", "");// 去掉多余的0
-									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-								}
-								product.setPriceArea(s);
-							}
-						}
-					}
-				}
-			}
-		}
+//		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+//		List<String> type = new ArrayList<String>();
+//		type.add("groupActivity");
+//		type.add("seckillActivity");
+//		
+//		for (int i = 0; i < displays.size(); i++) {
+//			Date date = new Date();
+//			HfProductDisplay product = displays.get(i);
+//			activityProductExample.clear();
+//			activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+//					.andProductActivityTypeIn(type);
+//			List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(activityProductExample);
+//			if(!list.isEmpty()) {
+//				HfActivity activity = hfActivityMapper.selectByPrimaryKey(list.get(0).getActivityId());
+//				if (!list.isEmpty() && activity.getEndTime().after(date)) {
+//					product.setProductActivityType(list.get(0).getProductActivityType());
+//					product.setActivityId(list.get(0).getActivityId());
+//					product.setStartTime(activity.getStartTime());
+//					product.setEndTime(activity.getEndTime());
+//					if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+//						String s = String.valueOf(Integer.valueOf(product.getPriceArea())-list.get(0).getFavoravlePrice());
+//						if (null != s && s.indexOf(".") > 0) {
+//							s = s.replaceAll("0+?$", "");// 去掉多余的0
+//							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//						}
+//						product.setPriceArea(s);
+//					} else {
+//						if (list.get(0).getDiscountRatio() != null) {
+//							if (list.get(0).getDiscountRatio() != 0) {
+//								String s = String.valueOf(Double.valueOf(product.getPriceArea())
+//										* (list.get(0).getDiscountRatio() / 100));
+//								if (null != s && s.indexOf(".") > 0) {
+//									s = s.replaceAll("0+?$", "");// 去掉多余的0
+//									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//								}
+//								product.setPriceArea(s);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		
 		
 		if (sort != null) {
