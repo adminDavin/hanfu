@@ -44,6 +44,7 @@ import com.hanfu.product.center.dao.EvaluateInstanceMapper;
 import com.hanfu.product.center.dao.EvaluatePictureMapper;
 import com.hanfu.product.center.dao.EvluateInstancePictureMapper;
 import com.hanfu.product.center.dao.FileDescMapper;
+import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
 import com.hanfu.product.center.dao.HfEvaluateMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -167,6 +168,9 @@ public class GoodsController {
 
 	@Autowired
 	private HfActivityProductMapper hfActivityProductMapper;
+
+	@Autowired
+	private HfActivityMapper hfActivityMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -1175,48 +1179,54 @@ public class GoodsController {
 			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "quantity", value = "数量", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getGoodDetailByProductId(@RequestParam(name = "productId") Integer productId,
-			@RequestParam(name = "quantity") Integer quantity, Integer stoneId) throws JSONException {
+			@RequestParam(name = "quantity") Integer quantity, Integer stoneId, Integer activityId)
+			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
 		List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productId);
 
-		HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		ProductInstanceExample instanceExample = new ProductInstanceExample();
-		instanceExample.createCriteria().andProductIdEqualTo(productId).andStoneIdEqualTo(stoneId);
-		List<ProductInstance> instance = productInstanceMapper.selectByExample(instanceExample);
-		hfActivityProductExample.createCriteria().andInstanceIdEqualTo(instance.get(0).getId())
-				.andProductActivityTypeIn(type);
-		List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(hfActivityProductExample);
+		if (activityId != null || activityId !=0) {
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(activityId);
+			if ("groupActivity".equals(activity.getActivityType())
+					|| "seckillActivity".equals(activity.getActivityType())) {
+				HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+				List<String> type = new ArrayList<String>();
+				type.add("groupActivity");
+				type.add("seckillActivity");
+				ProductInstanceExample instanceExample = new ProductInstanceExample();
+				instanceExample.createCriteria().andProductIdEqualTo(productId).andStoneIdEqualTo(stoneId);
+				List<ProductInstance> instance = productInstanceMapper.selectByExample(instanceExample);
+				hfActivityProductExample.createCriteria().andInstanceIdEqualTo(instance.get(0).getId())
+						.andProductActivityTypeIn(type);
+				List<HfActivityProduct> list = hfActivityProductMapper.selectByExample(hfActivityProductExample);
 
-//		for (int i = 0; i < hfGoodsDisplay.size(); i++) {
-//			if (!list.isEmpty()) {
-//				if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
-//					String s = String.valueOf(
-//							Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice()) - list.get(0).getFavoravlePrice());
-//					if (null != s && s.indexOf(".") > 0) {
-//						s = s.replaceAll("0+?$", "");// 去掉多余的0
-//						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-//					}
-//					hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-//				} else {
-//					if (list.get(0).getDiscountRatio() != null) {
-//						if (list.get(0).getDiscountRatio() != 0) {
-//							String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
-//									* (list.get(0).getDiscountRatio() / 100));
-//							if (null != s && s.indexOf(".") > 0) {
-//								s = s.replaceAll("0+?$", "");// 去掉多余的0
-//								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-//							}
-//							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
-//						}
-//					}
-//				}
-//			}
-//		}
-
+				for (int i = 0; i < hfGoodsDisplay.size(); i++) {
+					if (!list.isEmpty()) {
+						if (list.get(0).getFavoravlePrice() != null && list.get(0).getFavoravlePrice() != 0) {
+							String s = String.valueOf(Integer.valueOf(hfGoodsDisplay.get(i).getSellPrice())
+									- list.get(0).getFavoravlePrice());
+							if (null != s && s.indexOf(".") > 0) {
+								s = s.replaceAll("0+?$", "");// 去掉多余的0
+								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+							}
+							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+						} else {
+							if (list.get(0).getDiscountRatio() != null) {
+								if (list.get(0).getDiscountRatio() != 0) {
+									String s = String.valueOf(Double.valueOf(hfGoodsDisplay.get(i).getSellPrice())
+											* (list.get(0).getDiscountRatio() / 100));
+									if (null != s && s.indexOf(".") > 0) {
+										s = s.replaceAll("0+?$", "");// 去掉多余的0
+										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+									}
+									hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		List<Integer> goodsIds = hfGoodsDisplay.stream().map(HfGoodsDisplayInfo::getId).collect(Collectors.toList());
 
 		List<HfGoodsSpecDisplay> goodsSpec = hfGoodsDisplayDao.selectHfGoodsSpec(goodsIds);
@@ -1306,14 +1316,15 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
-	
-	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, 
-			Integer goodId,Integer stoneId, Integer star, String evaluate, @RequestParam("file") MultipartFile file,HttpServletRequest request) throws Exception {
-		
+
+	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
+			Integer stoneId, Integer star, String evaluate) throws Exception {
+
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		System.out.println("111111111111111"+file);
-		
+
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
+
+		System.out.println("物品" + goods + "-----------" + "店铺id" + stoneId);
 		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
 		List<ProductInstance> instance = productInstanceMapper.selectByExample(example);
@@ -1365,7 +1376,6 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
 	}
-
 
 	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
 	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
