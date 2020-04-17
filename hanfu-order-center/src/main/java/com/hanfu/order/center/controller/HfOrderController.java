@@ -272,7 +272,7 @@ public class HfOrderController {
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (targetOrderStatus.equals("controversial")){
-            redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
+            redisTemplate.opsForValue().set(orderCode+"controversial", originOrderStatus);
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
             hfOrderDetail.setHfStatus(targetOrderStatus);
             HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
