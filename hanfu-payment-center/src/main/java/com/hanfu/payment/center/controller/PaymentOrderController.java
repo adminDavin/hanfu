@@ -212,7 +212,7 @@ public class PaymentOrderController {
 		data.put("mch_id", config.getMchID());
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
-		data.put("total_fee", String.valueOf(1));
+		data.put("total_fee", String.valueOf(hfOrder.getAmount()));
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
