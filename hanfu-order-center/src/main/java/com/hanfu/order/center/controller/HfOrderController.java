@@ -285,6 +285,20 @@ public class HfOrderController {
             hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
             hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
+        //----
+        if (targetOrderStatus.equals("process")){
+            HfOrderDetail hfOrderDetail = new HfOrderDetail();
+            hfOrderDetail.setHfStatus(targetOrderStatus);
+            HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+            hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setId(Id);
+            hfOrder.setOrderStatus(targetOrderStatus);
+            HfOrderExample hfOrderExample = new HfOrderExample();
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+        }
 //---
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
