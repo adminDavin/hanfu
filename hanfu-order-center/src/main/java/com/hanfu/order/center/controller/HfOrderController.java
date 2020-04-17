@@ -408,11 +408,16 @@ public class HfOrderController {
             }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+            HfOrderDetail hfOrderDetail = new HfOrderDetail();
+            hfOrderDetail.setHfStatus(targetOrderStatus);
+            HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+            hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
             HfOrder hfOrder = new HfOrder();
             hfOrder.setId(Id);
             hfOrder.setOrderStatus(targetOrderStatus);
             HfOrderExample hfOrderExample = new HfOrderExample();
-            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode);
             hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
 
