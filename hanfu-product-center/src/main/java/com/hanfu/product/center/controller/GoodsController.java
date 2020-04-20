@@ -1379,11 +1379,14 @@ public class GoodsController {
 
 	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
 	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer instanceId) throws Exception {
+	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer stoneId,Integer productId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+		productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+		List<ProductInstance> instanceList = productInstanceMapper.selectByExample(productInstanceExample);
 		List<EvaluateEntity> rs = new ArrayList<EvaluateEntity>();
 		HfEvaluateExample example = new HfEvaluateExample();
-		example.createCriteria().andInstanceIdEqualTo(instanceId);
+		example.createCriteria().andInstanceIdEqualTo(instanceList.get(0).getId());
 		List<HfEvaluate> result = hfEvaluateMapper.selectByExample(example);
 		EvaluateInstanceExample instanceExample = new EvaluateInstanceExample();
 		List<EvaluateInstance> instances = new ArrayList<EvaluateInstance>();
