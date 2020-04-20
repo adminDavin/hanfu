@@ -1321,6 +1321,21 @@ public class GoodsController {
 		List<HfOrderDetail> list2 = hfOrderDetailMapper.selectByExample(example2);
 		return builder.body(ResponseUtils.getResponseBody(list2));
 	}
+	
+	@ApiOperation(value = "查询已经评价物品", notes = "查询已经评价物品")
+	@RequestMapping(value = "/selectEvaluateCompleteGoods", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectEvaluateCompleteGoods(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfOrderExample example = new HfOrderExample();
+		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("complete");
+		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+		List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample example2 = new HfOrderDetailExample();
+		example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("complete");
+		example2.setOrderByClause("create_time DESC");
+		List<HfOrderDetail> list2 = hfOrderDetailMapper.selectByExample(example2);
+		return builder.body(ResponseUtils.getResponseBody(list2));
+	}
 
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
@@ -1476,7 +1491,7 @@ public class GoodsController {
 		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
-
+	
 	@ApiOperation(value = "回复评价", notes = "回复评价")
 	@RequestMapping(value = "/replyEvaluate", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> replyEvaluate(Integer evaluateId, Integer outId, Integer inId, String evaluate,
