@@ -105,12 +105,12 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <!--<table schema="user_center" tableName="product_instance"-->
-               <!--domainObjectName="ProductInstance">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<generatedKey column="id" sqlStatement="mysql"-->
-                          <!--identity="true"/>-->
-        <!--</table>-->
+        <table schema="user_center" tableName="product_instance"
+               domainObjectName="ProductInstance">
+            <property name="useActualColumnNames" value="false"/>
+           <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
         <!--<table schema="user_center" tableName="product_source"-->
                <!--domainObjectName="ProductSource">-->
             <!--<property name="useActualColumnNames" value="false"/>-->
@@ -320,11 +320,11 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_user_browse_record"
+        <!-- <table schema="user_center" tableName="hf_user_browse_record"
                domainObjectName="HfUserBrowseRecord">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> 
+        </table>  -->
     </context>
 </generatorConfiguration>

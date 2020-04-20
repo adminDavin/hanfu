@@ -40,6 +40,7 @@ import org.springframework.web.util.WebUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.EvaluateInstanceMapper;
@@ -1371,6 +1372,11 @@ public class GoodsController {
 //				picture.setIsDeleted((byte) 0);
 //				evaluatePictureMapper.insert(picture);
 //			}
+		if(instance.get(0).getEvaluateCount() == null) {
+			instance.get(0).setEvaluateCount(0);
+		}else {
+			instance.get(0).setEvaluateCount(instance.get(0).getEvaluateCount()+1);
+		}
 		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
 		detail.setHfStatus("complete");
 		hfOrderDetailMapper.updateByPrimaryKey(detail);
@@ -1386,14 +1392,21 @@ public class GoodsController {
 
 	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
 	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer stoneId,Integer productId) throws Exception {
+	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer stoneId,Integer productId,Integer pageNum, Integer pageSize) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+		if (pageSize == null) {
+			pageSize = 0;
+		}
 		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
 		productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
 		List<ProductInstance> instanceList = productInstanceMapper.selectByExample(productInstanceExample);
 		List<EvaluateEntity> rs = new ArrayList<EvaluateEntity>();
 		HfEvaluateExample example = new HfEvaluateExample();
 		example.createCriteria().andInstanceIdEqualTo(instanceList.get(0).getId());
+		PageHelper.startPage(pageNum, pageSize);
 		List<HfEvaluate> result = hfEvaluateMapper.selectByExample(example);
 		EvaluateInstanceExample instanceExample = new EvaluateInstanceExample();
 		List<EvaluateInstance> instances = new ArrayList<EvaluateInstance>();
@@ -1447,7 +1460,8 @@ public class GoodsController {
 			entity.setChildEvaluate(es);
 			rs.add(entity);
 		}
-		return builder.body(ResponseUtils.getResponseBody(rs));
+		PageInfo<EvaluateEntity> page = new PageInfo<EvaluateEntity>(rs);
+		return builder.body(ResponseUtils.getResponseBody(page));
 	}
 
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
