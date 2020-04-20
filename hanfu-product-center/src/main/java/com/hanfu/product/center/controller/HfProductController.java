@@ -676,7 +676,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
-			Integer sort) throws JSONException {
+			Integer sort,Integer stoneId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -759,6 +759,9 @@ public class HfProductController {
 //			}
 //		}
 //		
+		if(stoneId != null) {
+			products = products.stream().filter(p -> p.getStoneId() == stoneId).collect(Collectors.toList());
+		}
 		
 		if (sort != null) {
 			if (sort == 1) {
