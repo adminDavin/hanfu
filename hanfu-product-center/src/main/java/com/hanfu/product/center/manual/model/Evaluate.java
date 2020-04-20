@@ -12,6 +12,8 @@ public class Evaluate implements Serializable{
 	private String comment;
 	private Integer star;
 	private Integer comment_count;
+	private String username;
+	private String levelName;
 	private List<Integer> fileId;
 	private Integer outId;
 	private Integer inId;
@@ -42,6 +44,18 @@ public class Evaluate implements Serializable{
 	}
 	public void setComment_count(Integer comment_count) {
 		this.comment_count = comment_count;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getLevelName() {
+		return levelName;
+	}
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
 	}
 	public List<Integer> getFileId() {
 		return fileId;

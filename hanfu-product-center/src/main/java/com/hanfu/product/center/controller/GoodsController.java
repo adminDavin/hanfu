@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,6 +37,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.util.WebUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -94,7 +96,12 @@ import tk.mybatis.mapper.entity.Example;
 @Api
 public class GoodsController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+	
+	@Autowired
+    RestTemplate restTemplate;
+	
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
 
@@ -171,7 +178,7 @@ public class GoodsController {
 
 	@Autowired
 	private HfActivityMapper hfActivityMapper;
-
+	
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -1406,6 +1413,11 @@ public class GoodsController {
 			instanceExample.createCriteria().andParentEvaluateIdEqualTo(evaluate.getId());
 			instances = evaluateInstanceMapper.selectByExample(instanceExample);
 			e.setUserId(evaluate.getUserId());
+			System.out.println(evaluate.getUserId());
+			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",JSONObject.class,evaluate.getUserId());
+			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",JSONObject.class,evaluate.getUserId());
+			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
+			e.setUsername(js1.getJSONObject("data").getString("nickName"));
 			e.setStar(evaluate.getStar());
 			e.setComment(evaluate.getEvaluate());
 			e.setComment_count(evaluate.getCommentCount());

@@ -220,6 +220,7 @@ public class HfProductController {
 			browseRecord.setModifyDate(LocalDateTime.now());
 			browseRecord.setProductId(productId);
 			browseRecord.setUserId(userId);
+			browseRecord.setStoneId(stoneId);
 			Product product2 = productMapper.selectByPrimaryKey(productId);
 			browseRecord.setBossId(product2.getBossId());
 			hfUserBrowseRecordMapper.insert(browseRecord);
@@ -400,7 +401,7 @@ public class HfProductController {
 	@RequestMapping(value = "/getstone", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false, type = "Integer") })
-	public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize)
+	public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize, Integer sort)
 			throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
@@ -444,6 +445,44 @@ public class HfProductController {
 			});
 			if(isDelete.getBossId() != null) {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
+			}
+		}
+		if (sort != null) {
+			if (sort == 1) {
+				for (int i = 0; i < products.size(); i++) {
+					Integer saleCount = 0;
+					HfGoodsExample goodsExample = new HfGoodsExample();
+					goodsExample.createCriteria().andProductIdEqualTo(products.get(i).getId());
+					List<HfGoods> hfGoods = hfGoodsMapper.selectByExample(goodsExample);
+					List<Integer> goodsId = hfGoods.stream().map(HfGoods::getId).collect(Collectors.toList());
+					List<HomePageInfo> pageInfos = hfProductDao.selectProductCount(goodsId);
+					for (int j = 0; j < pageInfos.size(); j++) {
+						saleCount += pageInfos.get(j).getSalesCount();
+					}
+					products.get(i).setSaleCount(saleCount);
+				}
+				products.sort(new Comparator<HfProductDisplay>() {
+					@Override
+					public int compare(HfProductDisplay o1, HfProductDisplay o2) {
+						return o2.getSaleCount() - o1.getSaleCount();
+					}
+				});
+			}
+			if (sort == -1) {
+				products.sort(new Comparator<HfProductDisplay>() {
+					@Override
+					public int compare(HfProductDisplay o1, HfProductDisplay o2) {
+						return Integer.valueOf(o1.getPriceArea()) - Integer.valueOf(o2.getPriceArea());
+					}
+				});
+			}
+			if (sort == 0) {
+				products.sort(new Comparator<HfProductDisplay>() {
+					@Override
+					public int compare(HfProductDisplay o1, HfProductDisplay o2) {
+						return Integer.valueOf(o2.getPriceArea()) - Integer.valueOf(o1.getPriceArea());
+					}
+				});
 			}
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);

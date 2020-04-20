@@ -278,18 +278,18 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="user_personal_browse"
+        <!-- <table schema="user_center" tableName="user_personal_browse"
                domainObjectName="UserPersonalBrowse">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_product_collect"
+        </table> -->
+        <!-- <table schema="user_center" tableName="hf_product_collect"
                domainObjectName="HfProductCollect">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> 
+        </table>  -->
         <!-- <table schema="user_center" tableName="hf_integral"
                domainObjectName="HfIntegral">
             <property name="useActualColumnNames" value="false"/>
@@ -320,5 +320,11 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
+        <table schema="user_center" tableName="hf_user_browse_record"
+               domainObjectName="HfUserBrowseRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> 
     </context>
 </generatorConfiguration>
