@@ -1462,12 +1462,13 @@ public class GoodsController {
 			instanceExample.createCriteria().andParentEvaluateIdEqualTo(evaluate.getId());
 			instances = evaluateInstanceMapper.selectByExample(instanceExample);
 			e.setUserId(evaluate.getUserId());
-			System.out.println(evaluate.getUserId());
+			HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
 			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",JSONObject.class,evaluate.getUserId());
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",JSONObject.class,evaluate.getUserId());
 			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			e.setUsername(js1.getJSONObject("data").getString("nickName"));
 			e.setStar(evaluate.getStar());
+			e.setHfDesc(detail.getHfDesc());
 			e.setComment(evaluate.getEvaluate());
 			e.setComment_count(evaluate.getCommentCount());
 			e.setTime(evaluate.getCreateTime());
