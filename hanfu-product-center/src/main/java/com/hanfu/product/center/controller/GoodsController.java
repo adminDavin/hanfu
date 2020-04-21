@@ -1311,14 +1311,17 @@ public class GoodsController {
 	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectEvaluateGoods(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfOrderDetail> list2 = new ArrayList<HfOrderDetail>();
 		HfOrderExample example = new HfOrderExample();
 		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("evaluate");
 		List<HfOrder> list = hfOrderMapper.selectByExample(example);
-		List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
-		HfOrderDetailExample example2 = new HfOrderDetailExample();
-		example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("evaluate");
-		example2.setOrderByClause("create_time DESC");
-		List<HfOrderDetail> list2 = hfOrderDetailMapper.selectByExample(example2);
+		if(!list.isEmpty()) {
+			List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+			HfOrderDetailExample example2 = new HfOrderDetailExample();
+			example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("evaluate");
+			example2.setOrderByClause("create_time DESC");
+			list2 = hfOrderDetailMapper.selectByExample(example2);
+		}
 		return builder.body(ResponseUtils.getResponseBody(list2));
 	}
 	
@@ -1326,15 +1329,30 @@ public class GoodsController {
 	@RequestMapping(value = "/selectEvaluateCompleteGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectEvaluateCompleteGoods(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfOrderDetail> list2 = new ArrayList<HfOrderDetail>();
+		List<Evaluate> result = new ArrayList<Evaluate>();
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		HfOrderExample example = new HfOrderExample();
 		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("complete");
 		List<HfOrder> list = hfOrderMapper.selectByExample(example);
-		List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
-		HfOrderDetailExample example2 = new HfOrderDetailExample();
-		example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("complete");
-		example2.setOrderByClause("create_time DESC");
-		List<HfOrderDetail> list2 = hfOrderDetailMapper.selectByExample(example2);
-		return builder.body(ResponseUtils.getResponseBody(list2));
+		if(!list.isEmpty()) {
+			List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+			HfOrderDetailExample example2 = new HfOrderDetailExample();
+			example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("complete");
+			example2.setOrderByClause("create_time DESC");
+			list2 = hfOrderDetailMapper.selectByExample(example2);
+		}
+		for (int i = 0; i < list2.size(); i++) {
+			evaluateExample.clear();
+			Evaluate evaluate = new Evaluate();
+			evaluate.setList(list2);
+			evaluateExample.createCriteria().andOrderDetailIdEqualTo(list2.get(i).getId());
+			HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
+			evaluate.setComment(hfEvaluate.getEvaluate());
+			evaluate.setStar(hfEvaluate.getStar());
+			result.add(evaluate);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "添加评价", notes = "添加评价")

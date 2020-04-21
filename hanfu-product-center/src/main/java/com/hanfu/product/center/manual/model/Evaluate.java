@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanfu.product.center.model.HfOrderDetail;
 
 public class Evaluate implements Serializable{
 	
@@ -21,6 +22,7 @@ public class Evaluate implements Serializable{
 	private String inName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
+	private List<HfOrderDetail> list;
 	public Integer getUserId() {
 		return userId;
 	}
@@ -92,5 +94,11 @@ public class Evaluate implements Serializable{
 	}
 	public void setTime(LocalDateTime time) {
 		this.time = time;
+	}
+	public List<HfOrderDetail> getList() {
+		return list;
+	}
+	public void setList(List<HfOrderDetail> list) {
+		this.list = list;
 	}
 }
