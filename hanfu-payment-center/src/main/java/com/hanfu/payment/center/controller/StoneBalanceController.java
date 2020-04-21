@@ -109,10 +109,15 @@ public class StoneBalanceController {
         List<StoneChargeOff> stoneChargeOffs= stoneChargeOffMapper.selectByExample(stoneChargeOffExample);
         Integer money = stoneChargeOffs.stream().mapToInt(StoneChargeOff::getActualPrice).sum();
 
+        StoneChargeOffExample stoneChargeOffExample1 = new StoneChargeOffExample();
+        stoneChargeOffExample1.createCriteria().andStoneIdEqualTo(stoneId).andChargeOffStateEqualTo(2);
+        List<StoneChargeOff> stoneChargeOffs1= stoneChargeOffMapper.selectByExample(stoneChargeOffExample1);
+        Integer money1 = stoneChargeOffs1.stream().mapToInt(StoneChargeOff::getActualPrice).sum();
         Map<String,Integer> map = new HashMap<>();
         map.put("all",money+stoneBalance.get(0).getStoneBalance());
         map.put("use",stoneBalance.get(0).getStoneBalance());
         map.put("process",money);
+        map.put("payment",money1);
         return builder.body(ResponseUtils.getResponseBody(map));
     }
 }

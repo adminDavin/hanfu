@@ -19,6 +19,7 @@ import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,6 +93,11 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
+	@Autowired
+	private StoneChargeOffMapper stoneChargeOffMapper;
+	@Autowired
+	private StoneBalanceMapper stoneBalanceMapper;
+
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -325,6 +331,13 @@ public class PaymentOrderController {
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+		//流水状态
+		StoneChargeOff stoneChargeOff = new StoneChargeOff();
+		stoneChargeOff.setChargeOffState(1);
+		StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+		stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+		stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
+		//
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			HfTansactionFlowExample e = new HfTansactionFlowExample();
 			e.createCriteria().andOutTradeNoEqualTo(outTradeNo);

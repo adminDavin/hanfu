@@ -577,7 +577,7 @@ public class HfOrderController {
         MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
         paramMap1.add("balanceType","order");
         paramMap1.add("price",request.getActualPrice());
-        paramMap1.add("state",1);
+        paramMap1.add("state",2);
         paramMap1.add("stoneId",request.getStoneId());
         paramMap1.add("orderId",hfOrder.getId());
         restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
