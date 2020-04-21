@@ -1412,6 +1412,7 @@ public class GoodsController {
 		}else {
 			instance.get(0).setEvaluateCount(instance.get(0).getEvaluateCount()+1);
 		}
+		productInstanceMapper.updateByPrimaryKey(instance.get(0));
 		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
 		detail.setHfStatus("complete");
 		hfOrderDetailMapper.updateByPrimaryKey(detail);

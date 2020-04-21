@@ -310,7 +310,11 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			if(product.getEvaluateCount() == 0 || product.getEvaluateCount() == null) {
+				product.setEvaluateRatio("0");
+			}else {
+				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			}
 			
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
@@ -723,7 +727,11 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			if(product.getEvaluateCount() == 0 || product.getEvaluateCount() == null) {
+				product.setEvaluateRatio("0");
+			}else {
+				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			}
 			
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
 			if (Optional.ofNullable(hfGoods).isPresent()) {
@@ -981,8 +989,11 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(hfactivityProduct.getInstanceId()).andStarIn(star);
-			display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
-			
+			if(instance.getEvaluateCount() == 0 || instance.getEvaluateCount() == null) {
+				display.setEvaluateRatio("0");
+			}else {
+				display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
+			}
 			
 			hfGoodsDisplay = hfGoodsDisplay.stream()
 					.filter(h -> h.getInstanceId() == null || h.getInstanceId() == hfactivityProduct.getInstanceId())
