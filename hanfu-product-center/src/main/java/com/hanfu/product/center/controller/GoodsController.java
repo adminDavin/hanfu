@@ -1345,7 +1345,7 @@ public class GoodsController {
 		for (int i = 0; i < list2.size(); i++) {
 			evaluateExample.clear();
 			Evaluate evaluate = new Evaluate();
-			evaluate.setList(list2);
+			evaluate.setList(list2.get(i));
 			evaluateExample.createCriteria().andOrderDetailIdEqualTo(list2.get(i).getId());
 			HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
 			evaluate.setComment(hfEvaluate.getEvaluate());

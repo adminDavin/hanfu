@@ -22,7 +22,7 @@ public class Evaluate implements Serializable{
 	private String inName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
-	private List<HfOrderDetail> list;
+	private HfOrderDetail list;
 	public Integer getUserId() {
 		return userId;
 	}
@@ -95,10 +95,10 @@ public class Evaluate implements Serializable{
 	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
-	public List<HfOrderDetail> getList() {
+	public HfOrderDetail getList() {
 		return list;
 	}
-	public void setList(List<HfOrderDetail> list) {
+	public void setList(HfOrderDetail list) {
 		this.list = list;
 	}
 }
