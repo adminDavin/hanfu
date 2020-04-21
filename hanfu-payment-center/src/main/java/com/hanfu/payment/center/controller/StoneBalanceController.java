@@ -1,11 +1,10 @@
 package com.hanfu.payment.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.payment.center.dao.StoneBalanceMapper;
 import com.hanfu.payment.center.dao.StoneChargeOffMapper;
 import com.hanfu.payment.center.manual.model.StoneBalanceDis;
-import com.hanfu.payment.center.model.HfUserBalance;
-import com.hanfu.payment.center.model.StoneChargeOff;
-import com.hanfu.payment.center.model.StoneChargeOffExample;
+import com.hanfu.payment.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -19,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api
@@ -27,6 +29,8 @@ import java.time.LocalDateTime;
 public class StoneBalanceController {
     @Autowired
     private StoneChargeOffMapper stoneChargeOffMapper;
+    @Autowired
+    private StoneBalanceMapper stoneBalanceMapper;
     @ApiOperation(value = "余额流水", notes = "余额流水")
     @RequestMapping(value = "/addStoneBalance", method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -64,5 +68,51 @@ public class StoneBalanceController {
         stoneChargeOffExample.createCriteria().andOrderIdEqualTo(orderId);
         stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
         return builder.body(ResponseUtils.getResponseBody(0));
+    }
+    @ApiOperation(value = "店铺余额变化", notes = "店铺余额变化")
+    @RequestMapping(value = "/upStoneBalance", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> upStoneBalance(Integer stoneId,String balanceType,Integer money)
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
+        stoneBalanceExample.createCriteria().andStoneIdEqualTo(stoneId).andBalanceTypeEqualTo(balanceType);
+        List<StoneBalance> stoneBalance= stoneBalanceMapper.selectByExample(stoneBalanceExample);
+//        System.out.println(stoneBalance.size());
+        if (stoneBalance.size()==0){
+            StoneBalance stoneBalance1 = new StoneBalance();
+            stoneBalance1.setBalanceType(balanceType);
+            stoneBalance1.setCreateTime(LocalDateTime.now());
+            stoneBalance1.setModifyTime(LocalDateTime.now());
+            stoneBalance1.setIsDeleted((short) 0);
+            stoneBalance1.setStoneId(stoneId);
+            stoneBalance1.setStoneBalance(money);
+            stoneBalanceMapper.insert(stoneBalance1);
+        } else {
+            stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance()+money);
+            stoneBalanceMapper.updateByPrimaryKey(stoneBalance.get(0));
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    @ApiOperation(value = "余额查询", notes = "余额查询")
+    @RequestMapping(value = "/selectStoneBalance", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectStoneBalance(Integer stoneId,String balanceType)
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        //
+        StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
+        stoneBalanceExample.createCriteria().andStoneIdEqualTo(stoneId).andBalanceTypeEqualTo(balanceType);
+        List<StoneBalance> stoneBalance= stoneBalanceMapper.selectByExample(stoneBalanceExample);
+        //
+        StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+        stoneChargeOffExample.createCriteria().andStoneIdEqualTo(stoneId).andChargeOffStateEqualTo(1);
+        List<StoneChargeOff> stoneChargeOffs= stoneChargeOffMapper.selectByExample(stoneChargeOffExample);
+        Integer money = stoneChargeOffs.stream().mapToInt(StoneChargeOff::getActualPrice).sum();
+
+        Map<String,Integer> map = new HashMap<>();
+        map.put("all",money+stoneBalance.get(0).getStoneBalance());
+        map.put("use",stoneBalance.get(0).getStoneBalance());
+        map.put("process",money);
+        return builder.body(ResponseUtils.getResponseBody(map));
     }
 }

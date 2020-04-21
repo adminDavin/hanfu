@@ -61,6 +61,8 @@ public class HfOrderController {
     private String itemUrl;
     @Value("${myspcloud.item1.url1}")
     private String itemUrl1;
+    @Value("${myspcloud.item2.url2}")
+    private String itemUrl2;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -393,16 +395,29 @@ public class HfOrderController {
             }
             //--complete
             if (targetOrderStatus.equals("complete")){
-
+                HfOrderDetail hfOrderDetail3 = new HfOrderDetail();
+                hfOrderDetail3.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample3 = new HfOrderDetailExample();
+                hfOrderDetailExample3.createCriteria().andOrderIdEqualTo(Id);
+                List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample3);
+//                Integer money = hfOrderDetailList.stream().mapToInt(HfOrderDetail::getActualPrice).sum();
                 //lius
                 MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
                 paramMap1.add("orderId",Id);
                 restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);
+                hfOrderDetailList.forEach(hfOrderDetail -> {
+                    MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+                    paramMap2.add("stoneId",hfOrderDetail.getStoneId());
+                    paramMap2.add("balanceType","rechargeAmount");
+                    paramMap2.add("money",hfOrderDetail.getActualPrice());
+                    restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+                });
+
                 //
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
                 HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
