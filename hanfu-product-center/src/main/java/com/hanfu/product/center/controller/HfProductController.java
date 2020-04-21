@@ -310,7 +310,7 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			if(product.getEvaluateCount() == 0 || product.getEvaluateCount() == null) {
+			if(product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
 				product.setEvaluateRatio("0");
 			}else {
 				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
@@ -727,7 +727,7 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			if(product.getEvaluateCount() == 0 || product.getEvaluateCount() == null) {
+			if(product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
 				product.setEvaluateRatio("0");
 			}else {
 				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
@@ -989,7 +989,7 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(hfactivityProduct.getInstanceId()).andStarIn(star);
-			if(instance.getEvaluateCount() == 0 || instance.getEvaluateCount() == null) {
+			if(instance.getEvaluateCount() == null || instance.getEvaluateCount() == 0) {
 				display.setEvaluateRatio("0");
 			}else {
 				display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
