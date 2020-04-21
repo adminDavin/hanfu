@@ -14,6 +14,7 @@ public class Evaluate implements Serializable{
 	private String comment;
 	private Integer star;
 	private Integer comment_count;
+	private String hfDesc;
 	private String username;
 	private String levelName;
 	private List<Integer> fileId;
@@ -107,5 +108,11 @@ public class Evaluate implements Serializable{
 	}
 	public void setList(HfOrderDetail list) {
 		this.list = list;
+	}
+	public String getHfDesc() {
+		return hfDesc;
+	}
+	public void setHfDesc(String hfDesc) {
+		this.hfDesc = hfDesc;
 	}
 }
