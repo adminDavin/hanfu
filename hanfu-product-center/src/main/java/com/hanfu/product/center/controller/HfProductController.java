@@ -109,6 +109,9 @@ public class HfProductController {
 
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
+	
+	@Autowired
+	private HfEvaluateMapper hfEvaluateMapper;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -298,8 +301,16 @@ public class HfProductController {
 							oldList.addAll(newList);
 							return oldList;
 						}));
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		products.forEach(product -> {
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+			
+			List<Integer> star = new ArrayList<Integer>();
+			star.add(4);
+			star.add(5);
+			evaluateExample.clear();
+			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
+			product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
 			
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
@@ -704,8 +715,16 @@ public class HfProductController {
 							oldList.addAll(newList);
 							return oldList;
 						}));
-
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		products.forEach(product -> {
+			
+			List<Integer> star = new ArrayList<Integer>();
+			star.add(4);
+			star.add(5);
+			evaluateExample.clear();
+			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
+			product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
@@ -932,6 +951,7 @@ public class HfProductController {
 			pageSize = 0;
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		List<HfProductDisplay> displays = new ArrayList<HfProductDisplay>();
 		HfActivityProductExample example = new HfActivityProductExample();
 		example.createCriteria().andActivityIdEqualTo(activityId);
@@ -955,6 +975,15 @@ public class HfProductController {
 			display.setStoneName(hfStone.getHfName());
 			display.setStoneId(hfStone.getId());
 			display.setInstanceId(hfactivityProduct.getInstanceId());
+			
+			List<Integer> star = new ArrayList<Integer>();
+			star.add(4);
+			star.add(5);
+			evaluateExample.clear();
+			evaluateExample.createCriteria().andInstanceIdEqualTo(hfactivityProduct.getInstanceId()).andStarIn(star);
+			display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
+			
+			
 			hfGoodsDisplay = hfGoodsDisplay.stream()
 					.filter(h -> h.getInstanceId() == null || h.getInstanceId() == hfactivityProduct.getInstanceId())
 					.collect(Collectors.toList());

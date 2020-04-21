@@ -1350,6 +1350,8 @@ public class GoodsController {
 			HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
 			evaluate.setComment(hfEvaluate.getEvaluate());
 			evaluate.setStar(hfEvaluate.getStar());
+			evaluate.setId(hfEvaluate.getId());
+			evaluate.setTime(hfEvaluate.getCreateTime());
 			result.add(evaluate);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -1551,5 +1553,20 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(evaluateInstance.getId()));
 	}
-
+	
+	@ApiOperation(value = "查询单个评价详情", notes = "查询单个评价详情")
+	@RequestMapping(value = "/findEvaluateDetail", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findEvaluateDetail(Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+		HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
+		Evaluate evaluateInstance = new Evaluate();
+		evaluateInstance.setList(detail);
+		evaluateInstance.setComment(evaluate.getEvaluate());
+		evaluateInstance.setStar(evaluate.getStar());
+		evaluateInstance.setTime(evaluate.getCreateTime());
+		evaluateInstance.setComment_count(evaluate.getCommentCount());
+		return builder.body(ResponseUtils.getResponseBody(evaluateInstance));
+	}
+	
 }

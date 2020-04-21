@@ -309,7 +309,7 @@ public class StoneController {
     @ApiOperation(value = "获取店铺收入金额数据", notes = "获取店铺收入金额数据")
 	@RequestMapping(value = "/findAmountDataByStone", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "店铺id", value = "stoneId", required = true, type = "Integer") })
+			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findAmountDataByStone(Integer stoneId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		double amountDay = 0;
@@ -432,7 +432,7 @@ public class StoneController {
     @ApiOperation(value = "获取店铺销量排行数据", notes = "获取店铺销量排行数据")
 	@RequestMapping(value = "/findSalesVolumeDataByStone", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "店铺id", value = "stoneId", required = true, type = "Integer") })
+			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findSalesVolumeDataByStone(Integer stoneId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer salesCountAll = 0;

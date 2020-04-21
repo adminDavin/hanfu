@@ -9,6 +9,7 @@ import com.hanfu.product.center.model.HfOrderDetail;
 
 public class Evaluate implements Serializable{
 	
+	private Integer id;
 	private Integer userId;
 	private String comment;
 	private Integer star;
@@ -23,6 +24,12 @@ public class Evaluate implements Serializable{
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
 	private HfOrderDetail list;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
