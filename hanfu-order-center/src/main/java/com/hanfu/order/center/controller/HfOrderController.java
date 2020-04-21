@@ -21,6 +21,7 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,10 @@ public class HfOrderController {
     private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${myspcloud.item.url}")
+    private String itemUrl;
+    @Value("${myspcloud.item1.url1}")
+    private String itemUrl1;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -388,6 +393,12 @@ public class HfOrderController {
             }
             //--complete
             if (targetOrderStatus.equals("complete")){
+
+                //lius
+                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+                paramMap1.add("orderId",Id);
+                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);
+                //
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -547,7 +558,15 @@ public class HfOrderController {
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
         LocalDateTime time = LocalDateTime.now();
-
+//流水
+        MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+        paramMap1.add("balanceType","order");
+        paramMap1.add("price",request.getActualPrice());
+        paramMap1.add("state",1);
+        paramMap1.add("stoneId",request.getStoneId());
+        paramMap1.add("orderId",hfOrder.getId());
+        restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
+        //
         HfOrderDetail detail = new HfOrderDetail();
         detail.setActualPrice(request.getActualPrice());
         detail.setCreateTime(time);

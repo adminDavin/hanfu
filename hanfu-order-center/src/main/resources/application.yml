@@ -1,6 +1,10 @@
 server:
   port: 9097
-
+myspcloud:
+  item:
+    url: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/addStoneBalance
+  item1:
+    url1: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/updateStoneBalance
 dubbo:
   registry:
     address: 39.100.86.77:2181
