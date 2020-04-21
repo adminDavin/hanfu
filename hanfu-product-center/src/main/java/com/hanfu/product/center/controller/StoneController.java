@@ -1,11 +1,17 @@
 package com.hanfu.product.center.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +28,17 @@ import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
+import com.hanfu.product.center.dao.HfOrderDetailMapper;
+import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
+import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
+import com.hanfu.product.center.dao.ProductMapper;
+import com.hanfu.product.center.manual.dao.HomePageDao;
+import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.model.EvluateInstancePicture;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
@@ -34,12 +46,19 @@ import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfGoodsSpecExample;
+import com.hanfu.product.center.model.HfOrder;
+import com.hanfu.product.center.model.HfOrderDetail;
+import com.hanfu.product.center.model.HfOrderDetailExample;
+import com.hanfu.product.center.model.HfOrderExample;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneExample;
 import com.hanfu.product.center.model.HfStonePicture;
 import com.hanfu.product.center.model.HfStonePictureExample;
+import com.hanfu.product.center.model.HfUserBrowseRecord;
+import com.hanfu.product.center.model.HfUserBrowseRecordExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.request.HfStoneRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -82,6 +101,21 @@ public class StoneController {
     
     @Autowired
     private HfStonePictureMapper hfStonePictureMapper;
+    
+    @Autowired
+    private HfOrderMapper hfOrderMapper;
+    
+    @Autowired
+    private HfUserBrowseRecordMapper hfUserBrowseRecordMapper;
+    
+    @Autowired
+    private HfOrderDetailMapper hfOrderDetailMapper;
+    
+    @Autowired
+    private HomePageDao homePageDao;
+    
+    @Autowired
+    private ProductMapper productMapper;
     
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
@@ -271,5 +305,187 @@ public class StoneController {
         Scope.add(params1);
         return builder.body(ResponseUtils.getResponseBody(Scope));
     }
+    
+    @ApiOperation(value = "获取店铺收入金额数据", notes = "获取店铺收入金额数据")
+	@RequestMapping(value = "/findAmountDataByStone", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findAmountDataByStone(Integer stoneId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		double amountDay = 0;
+		double amountMouth = 0;
+		List<Integer> paymentCountDay = new ArrayList<Integer>();
+		List<Integer> paymentCountYestday = new ArrayList<Integer>();
+		List<Integer> paymentCountMouth = new ArrayList<Integer>();
+		List<Integer> paymentCountLastMouth = new ArrayList<Integer>();
+		Integer orderCountDay = 0;
+		Integer orderCountYestday = 0;
+		Integer orderCountMouth = 0;
+		Integer orderCountLastMouth = 0;
+		LocalDateTime dayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+		LocalDateTime dayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+		LocalDateTime yestdayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(-1);
+		LocalDateTime yestdayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX).plusDays(-1);
+		LocalDateTime mouthStart = LocalDateTime
+				.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN);
+		LocalDateTime mouthEnd = LocalDateTime
+				.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX);
+		LocalDateTime lastMouthStart = LocalDateTime
+				.of(LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth()).toLocalDate(), LocalTime.MIN)
+				.plusMonths(-1);
+		LocalDateTime lastMouthEnd = LocalDateTime
+				.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX)
+				.plusMonths(-1);
+			HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
+			HfOrderExample example2 = new HfOrderExample();
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+					.andCreateTimeBetween(dayStart, dayEnd);
+			List<HfOrder> hfOrderDays = hfOrderMapper.selectByExample(example2);
 
+			example2.clear();
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+					.andCreateTimeBetween(yestdayStart, yestdayEnd);
+			List<HfOrder> hfOrderYesterday = hfOrderMapper.selectByExample(example2);
+
+			example2.clear();
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+					.andCreateTimeBetween(mouthStart, mouthEnd);
+			List<HfOrder> hfOrderMouths = hfOrderMapper.selectByExample(example2);
+
+			example2.clear();
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+					.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
+			List<HfOrder> hfOrderLastMouths = hfOrderMapper.selectByExample(example2);
+
+			for (int j = 0; j < hfOrderDays.size(); j++) {
+				HfOrder order = hfOrderDays.get(j);
+				paymentCountDay.add(order.getUserId());
+				amountDay += order.getAmount();
+			}
+
+			orderCountDay += hfOrderDays.size();
+
+			for (int j = 0; j < hfOrderYesterday.size(); j++) {
+				HfOrder order = hfOrderYesterday.get(j);
+				paymentCountYestday.add(order.getUserId());
+			}
+
+			orderCountYestday += hfOrderYesterday.size();
+
+			for (int j = 0; j < hfOrderMouths.size(); j++) {
+				HfOrder order = hfOrderMouths.get(j);
+				paymentCountMouth.add(order.getUserId());
+				amountMouth += order.getAmount();
+			}
+
+			orderCountMouth += hfOrderMouths.size();
+
+			for (int j = 0; j < hfOrderLastMouths.size(); j++) {
+				HfOrder order = hfOrderLastMouths.get(j);
+				paymentCountLastMouth.add(order.getUserId());
+			}
+
+			orderCountLastMouth += hfOrderLastMouths.size();
+		HashSet h = new HashSet(paymentCountDay);
+		paymentCountDay.clear();
+		paymentCountDay.addAll(h);
+		h = new HashSet(paymentCountYestday);
+		paymentCountYestday.clear();
+		paymentCountYestday.addAll(h);
+		h = new HashSet(paymentCountMouth);
+		paymentCountMouth.clear();
+		paymentCountMouth.addAll(h);
+		h = new HashSet(paymentCountLastMouth);
+		paymentCountLastMouth.clear();
+		paymentCountLastMouth.addAll(h);
+		HfUserBrowseRecordExample browseRecordExample = new HfUserBrowseRecordExample();
+		browseRecordExample.createCriteria().andStoneIdEqualTo(stoneId).andBrowseDateBetween(dayStart, dayEnd);
+		List<HfUserBrowseRecord> browseCountsDay = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+		browseRecordExample.clear();
+		browseRecordExample.createCriteria().andStoneIdEqualTo(stoneId).andBrowseDateBetween(yestdayStart, yestdayEnd);
+		List<HfUserBrowseRecord> browseCountsYestday = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+		browseRecordExample.clear();
+		browseRecordExample.createCriteria().andStoneIdEqualTo(stoneId).andBrowseDateBetween(mouthStart, mouthEnd);
+		List<HfUserBrowseRecord> browseCountsMouth = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+		browseRecordExample.clear();
+		browseRecordExample.createCriteria().andStoneIdEqualTo(stoneId).andBrowseDateBetween(lastMouthStart,
+				lastMouthEnd);
+		List<HfUserBrowseRecord> browseCountsLastMouth = hfUserBrowseRecordMapper.selectByExample(browseRecordExample);
+		HomePageInfo info = new HomePageInfo();
+		info.setAmountDay(amountDay);
+		info.setOrderCountsDay(orderCountDay);
+		info.setOrderCountsYestday(orderCountYestday);
+		info.setPaymentConutsDay(paymentCountDay.size());
+		info.setPaymentConutsYestday(paymentCountYestday.size());
+		info.setBrowseCountsDay(browseCountsDay.size());
+		info.setBrowseCountsYestday(browseCountsYestday.size());
+		info.setAmountMouth(amountMouth);
+		info.setOrderConutsMouth(orderCountMouth);
+		info.setOrderConutsLastMouth(orderCountLastMouth);
+		info.setPaymentConutsMouth(paymentCountMouth.size());
+		info.setPaymentConutsLastMouth(paymentCountLastMouth.size());
+		info.setBrowseCountsMouth(browseCountsMouth.size());
+		info.setBrowseCountsLastMouth(browseCountsLastMouth.size());
+		return builder.body(ResponseUtils.getResponseBody(info));
+	}
+    
+    @ApiOperation(value = "获取店铺销量排行数据", notes = "获取店铺销量排行数据")
+	@RequestMapping(value = "/findSalesVolumeDataByStone", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> findSalesVolumeDataByStone(Integer stoneId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer salesCountAll = 0;
+		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
+//		HfStoneExample example = new HfStoneExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		List<HfStone> list = hfStoneMapper.selectByExample(example);
+//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdIn(stoneId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample example3 = new HfOrderDetailExample();
+		example3.createCriteria().andStoneIdEqualTo(stoneId);
+		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
+		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
+		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
+		List<Integer> productId = new ArrayList<Integer>();
+		for (int i = 0; i < result.size(); i++) {
+			HomePageInfo info = result.get(i);
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(info.getGoodId());
+			if (goods != null) {
+				info.setProductId(goods.getProductId());
+				productId.add(goods.getProductId());
+			}
+		}
+		HashSet h = new HashSet(productId);
+		productId.clear();
+		productId.addAll(h);
+		for (int i = 0; i < productId.size(); i++) {
+			Product product = productMapper.selectByPrimaryKey(productId.get(i));
+			salesCountAll = 0;
+			List<HomePageInfo> pageInfos = new ArrayList<HomePageInfo>();
+			for (int j = 0; j < result.size(); j++) {
+				if (productId.get(i) == result.get(j).getProductId()) {
+					salesCountAll += result.get(j).getSalesCount();
+					pageInfos.add(result.get(j));
+				}
+			}
+			HomePageInfo info = new HomePageInfo();
+			info.setSalesCountAll(salesCountAll);
+			info.setProductId(productId.get(i));
+			info.setGoodsInfo(pageInfos);
+			info.setProductName(product.getHfName());
+			infos.add(info);
+		}
+		infos.sort(new Comparator<HomePageInfo>() {// Comparator 比较器. 需要实现比较方法
+			@Override
+			public int compare(HomePageInfo o1, HomePageInfo o2) {
+				return o2.getSalesCountAll() - o1.getSalesCountAll();// 从小到大 , 如果是o2.age-o1.age 则表示从大到小
+			}
+		});
+		return builder.body(ResponseUtils.getResponseBody(infos));
+	}
+    
 }

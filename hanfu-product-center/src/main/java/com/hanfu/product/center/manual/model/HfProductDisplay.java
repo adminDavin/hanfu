@@ -73,6 +73,8 @@ public class HfProductDisplay implements Serializable {
     private Integer saleCount;
     private Integer instanceId;
     private String productActivityType;
+    private Integer evaluateCount;
+    private String evaluateRatio;
 	public Integer getId() {
 		return id;
 	}
@@ -281,6 +283,18 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setProductActivityType(String productActivityType) {
 		this.productActivityType = productActivityType;
+	}
+	public Integer getEvaluateCount() {
+		return evaluateCount;
+	}
+	public void setEvaluateCount(Integer evaluateCount) {
+		this.evaluateCount = evaluateCount;
+	}
+	public String getEvaluateRatio() {
+		return evaluateRatio;
+	}
+	public void setEvaluateRatio(String evaluateRatio) {
+		this.evaluateRatio = evaluateRatio;
 	}
 	@Override
 	public String toString() {

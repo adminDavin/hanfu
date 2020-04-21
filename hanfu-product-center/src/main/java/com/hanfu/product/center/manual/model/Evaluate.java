@@ -5,13 +5,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanfu.product.center.model.HfOrderDetail;
 
 public class Evaluate implements Serializable{
 	
+	private Integer id;
 	private Integer userId;
 	private String comment;
 	private Integer star;
 	private Integer comment_count;
+	private String username;
+	private String levelName;
 	private List<Integer> fileId;
 	private Integer outId;
 	private Integer inId;
@@ -19,6 +23,13 @@ public class Evaluate implements Serializable{
 	private String inName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
+	private HfOrderDetail list;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
@@ -42,6 +53,18 @@ public class Evaluate implements Serializable{
 	}
 	public void setComment_count(Integer comment_count) {
 		this.comment_count = comment_count;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getLevelName() {
+		return levelName;
+	}
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
 	}
 	public List<Integer> getFileId() {
 		return fileId;
@@ -78,5 +101,11 @@ public class Evaluate implements Serializable{
 	}
 	public void setTime(LocalDateTime time) {
 		this.time = time;
+	}
+	public HfOrderDetail getList() {
+		return list;
+	}
+	public void setList(HfOrderDetail list) {
+		this.list = list;
 	}
 }
