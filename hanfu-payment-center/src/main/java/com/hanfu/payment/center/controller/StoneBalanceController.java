@@ -78,18 +78,20 @@ public class StoneBalanceController {
         stoneBalanceExample.createCriteria().andStoneIdEqualTo(stoneId).andBalanceTypeEqualTo(balanceType);
         List<StoneBalance> stoneBalance= stoneBalanceMapper.selectByExample(stoneBalanceExample);
 //        System.out.println(stoneBalance.size());
-        if (stoneBalance.size()==0){
-            StoneBalance stoneBalance1 = new StoneBalance();
-            stoneBalance1.setBalanceType(balanceType);
-            stoneBalance1.setCreateTime(LocalDateTime.now());
-            stoneBalance1.setModifyTime(LocalDateTime.now());
-            stoneBalance1.setIsDeleted((short) 0);
-            stoneBalance1.setStoneId(stoneId);
-            stoneBalance1.setStoneBalance(money);
-            stoneBalanceMapper.insert(stoneBalance1);
-        } else {
-            stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance()+money);
-            stoneBalanceMapper.updateByPrimaryKey(stoneBalance.get(0));
+        synchronized (this) {
+            if (stoneBalance.size() == 0) {
+                StoneBalance stoneBalance1 = new StoneBalance();
+                stoneBalance1.setBalanceType(balanceType);
+                stoneBalance1.setCreateTime(LocalDateTime.now());
+                stoneBalance1.setModifyTime(LocalDateTime.now());
+                stoneBalance1.setIsDeleted((short) 0);
+                stoneBalance1.setStoneId(stoneId);
+                stoneBalance1.setStoneBalance(money);
+                stoneBalanceMapper.insert(stoneBalance1);
+            } else {
+                stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
+                stoneBalanceMapper.updateByPrimaryKey(stoneBalance.get(0));
+            }
         }
         return builder.body(ResponseUtils.getResponseBody(0));
     }
