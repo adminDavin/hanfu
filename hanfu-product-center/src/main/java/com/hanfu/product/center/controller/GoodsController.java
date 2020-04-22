@@ -1358,6 +1358,7 @@ public class GoodsController {
 			}
 			result.add(evaluate);
 		}
+		result = result.stream().filter(r -> r.getId() != null).collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
