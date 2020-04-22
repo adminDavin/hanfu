@@ -1361,7 +1361,7 @@ public class GoodsController {
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 
 	public ResponseEntity<JSONObject> addEvaluateProduct(Integer orderDetailId, Integer userId, Integer goodId,
-			Integer stoneId, Integer star, String evaluate, MultipartFile file) throws Exception {
+			Integer stoneId, Integer star, String evaluate, Integer ...fileId) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
@@ -1383,30 +1383,30 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-//			for (MultipartFile f : file) {
-				System.out.println("插入图片");
-				String arr[];
-				FileMangeService fileMangeService = new FileMangeService();
-				arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-				FileDesc fileDesc = new FileDesc();
-				fileDesc.setFileName(file.getName());
-				fileDesc.setGroupName(arr[0]);
-				fileDesc.setRemoteFilename(arr[1]);
-				fileDesc.setUserId(userId);
-				fileDesc.setCreateTime(LocalDateTime.now());
-				fileDesc.setModifyTime(LocalDateTime.now());
-				fileDesc.setIsDeleted((short) 0);
-				fileDescMapper.insert(fileDesc);
+			for (Integer f : fileId) {
+//				System.out.println("插入图片");
+//				String arr[];
+//				FileMangeService fileMangeService = new FileMangeService();
+//				arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+//				FileDesc fileDesc = new FileDesc();
+//				fileDesc.setFileName(file.getName());
+//				fileDesc.setGroupName(arr[0]);
+//				fileDesc.setRemoteFilename(arr[1]);
+//				fileDesc.setUserId(userId);
+//				fileDesc.setCreateTime(LocalDateTime.now());
+//				fileDesc.setModifyTime(LocalDateTime.now());
+//				fileDesc.setIsDeleted((short) 0);
+//				fileDescMapper.insert(fileDesc);
 				EvaluatePicture picture = new EvaluatePicture();
 				picture.setEvaluate(hfEvaluate.getId());
-				picture.setFileId(fileDesc.getId());
+				picture.setFileId(f);
 				picture.setHfDesc("评价图片描述");
 				picture.setHfName("评价图片");
 				picture.setCreateTime(LocalDateTime.now());
 				picture.setModifieyTime(LocalDateTime.now());
 				picture.setIsDeleted((byte) 0);
 				evaluatePictureMapper.insert(picture);
-//			}
+			}
 		if(instance.get(0).getEvaluateCount() == null) {
 			instance.get(0).setEvaluateCount(1);
 		}else {
@@ -1569,6 +1569,25 @@ public class GoodsController {
 		evaluateInstance.setTime(evaluate.getCreateTime());
 		evaluateInstance.setComment_count(evaluate.getCommentCount());
 		return builder.body(ResponseUtils.getResponseBody(evaluateInstance));
+	}
+	
+	@ApiOperation(value = "上传图片", notes = "上传图片")
+	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file,Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		String arr[];
+		FileMangeService fileMangeService = new FileMangeService();
+		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+		FileDesc fileDesc = new FileDesc();
+		fileDesc.setFileName(file.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setUserId(userId);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		fileDescMapper.insert(fileDesc);
+		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
 	}
 	
 }
