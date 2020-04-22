@@ -312,7 +312,9 @@ public class HfProductActivityController {
     				activityProductInfo.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
 //    				activityProductInfo.setDefaultGoodsId(hfGood.get().getId());
     			}
-                
+                if(activityProduct.getDistributionRatio() == null) {
+                	activityProductInfo.setDistributionRatio("[]");
+                }
                 activityProductInfo.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
                 activityProductInfo.setId(activityProduct.getId());
                 activityProductInfo.setAcivityId(activityProduct.getActivityId());
