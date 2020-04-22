@@ -994,6 +994,7 @@ public class HfProductController {
 			}else {
 				display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
 			}
+			display.setEvaluateCount(instance.getEvaluateCount());
 			
 			hfGoodsDisplay = hfGoodsDisplay.stream()
 					.filter(h -> h.getInstanceId() == null || h.getInstanceId() == hfactivityProduct.getInstanceId())
