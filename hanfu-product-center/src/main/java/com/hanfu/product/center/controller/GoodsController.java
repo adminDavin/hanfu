@@ -1572,7 +1572,7 @@ public class GoodsController {
 	}
 	
 	@ApiOperation(value = "上传图片", notes = "上传图片")
-	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.GET)
+	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr[];
