@@ -1474,7 +1474,7 @@ public class GoodsController {
 			e.setTime(evaluate.getCreateTime());
 			pictureExample.createCriteria().andEvaluateEqualTo(evaluate.getId());
 			pictures = evaluatePictureMapper.selectByExample(pictureExample);
-			pictureId = pictures.stream().map(EvaluatePicture::getId).collect(Collectors.toList());
+			pictureId = pictures.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
 			e.setFileId(pictureId);
 			entity.setParentEvaluate(e);
 			for (int j = 0; j < instances.size(); j++) {
