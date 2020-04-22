@@ -1573,16 +1573,16 @@ public class GoodsController {
 	
 	@ApiOperation(value = "上传图片", notes = "上传图片")
 	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file,Integer userId) throws Exception {
+	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr[];
 		FileMangeService fileMangeService = new FileMangeService();
-		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
 		FileDesc fileDesc = new FileDesc();
 		fileDesc.setFileName(file.getName());
 		fileDesc.setGroupName(arr[0]);
 		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(userId);
+		fileDesc.setUserId(-1);
 		fileDesc.setCreateTime(LocalDateTime.now());
 		fileDesc.setModifyTime(LocalDateTime.now());
 		fileDesc.setIsDeleted((short) 0);
