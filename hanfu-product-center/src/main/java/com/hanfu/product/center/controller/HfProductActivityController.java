@@ -96,6 +96,8 @@ public class HfProductActivityController {
     private HfStoneMapper hfStoneMapper;
     @Autowired
     private HfGoodsDisplayDao hfGoodsDisplayDao;
+    @Autowired
+    private DistributionRecordMapper distributionRecordMapper;
 
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -855,7 +857,7 @@ public class HfProductActivityController {
                 for (HfActivityProduct hfActivityProduct : hfActivityProductList) {
 //            hfActivityProductList.forEach(hfActivityProduct -> {
                     HfActivityExample hfActivityExample = new HfActivityExample();
-                    hfActivityExample.createCriteria().andIdEqualTo(hfActivityProduct.getActivityId()).andStartTimeGreaterThan(LocalDateTime.now()).andEndTimeLessThan(LocalDateTime.now());
+                    hfActivityExample.createCriteria().andIdEqualTo(hfActivityProduct.getActivityId()).andStartTimeLessThan(LocalDateTime.now()).andEndTimeGreaterThan(LocalDateTime.now());
                     hfActivities = hfActivityMapper.selectByExample(hfActivityExample);
                     if (hfActivities.size() != 0) {
                         Integer actId = hfActivities.get(0).getId();
@@ -867,7 +869,7 @@ public class HfProductActivityController {
                 return builder.body(ResponseUtils.getResponseBody(1));
             }
             if (hfActivities.size()==0){
-                return builder.body(ResponseUtils.getResponseBody(1));
+                return builder.body(ResponseUtils.getResponseBody(2));
             }
         //
             //转对象
@@ -894,6 +896,19 @@ public class HfProductActivityController {
                 HfUserBalance hfUserBalance = new HfUserBalance();
                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance() + ((hfOrder.getAmount() * lists.getRatio()) / 100));
                 hfUserBalanceMapper.updateByExampleSelective(hfUserBalance, hfUsersExample2);
+                //分销流水 distributionRecordMapper
+                DistributionRecord distributionRecord = new DistributionRecord();
+                distributionRecord.setCreateDate(LocalDateTime.now());
+                distributionRecord.setModifyDate(LocalDateTime.now());
+                distributionRecord.setIsDeleted((byte) 0);
+                distributionRecord.setStoneId(hfOrderDetail1.getStoneId());
+                distributionRecord.setOrderId(hfOrderDetail1.getOrderId());
+                distributionRecord.setInvitationUserId(hfUsers1.get(0).getId());
+                distributionRecord.setQuiltUserId(userId);
+                distributionRecord.setDisState(0);
+                distributionRecord.setDisType("distributionRecord");
+                distributionRecord.setDistributionMoney(((hfOrder.getAmount() * lists.getRatio()) / 100));
+                distributionRecordMapper.insert(distributionRecord);
             }
 
         }
