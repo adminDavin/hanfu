@@ -654,7 +654,6 @@ public class HfProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductSeniorityId(seniorityId);
-		System.out.println(products);
 		Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
 		System.out.println(stoneIds);
 		HfStoneExample hfStoneExample = new HfStoneExample();
