@@ -9,10 +9,7 @@ import com.hanfu.product.center.cart.service.CartService;
 import com.hanfu.product.center.cart.service.RedisService;
 import com.hanfu.product.center.cart.utils.CartPrefix;
 import com.hanfu.product.center.dao.*;
-import com.hanfu.product.center.model.HfGoodsSpec;
-import com.hanfu.product.center.model.HfGoodsSpecExample;
-import com.hanfu.product.center.model.HfStone;
-import com.hanfu.product.center.model.ProductSpec;
+import com.hanfu.product.center.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +68,9 @@ public class CartServiceImpl implements CartService {
             list.add(map);
             cart.setGoodsSpec(list);
         });
+        ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+        productInstanceExample.createCriteria().andProductIdEqualTo(hfGoods.getProductId()).andStoneIdEqualTo(stoneId);
+
         //设置购物车值
         cart.setStoneId(stoneId);
         HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
@@ -81,6 +81,7 @@ public class CartServiceImpl implements CartService {
         cart.setProductPrice(hfGoods.getSellPrice());
         cart.setProductNum(num);
         cart.setCheck("1");
+        cart.setInstanceId(productInstanceMapper.selectByExample(productInstanceExample).get(0).getId());
         cart.setProductStatus(hfGoods.getIsDeleted());
         cart.setProductIcon(productMapper.selectByPrimaryKey(hfGoods.getProductId()).getFileId());
         redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());

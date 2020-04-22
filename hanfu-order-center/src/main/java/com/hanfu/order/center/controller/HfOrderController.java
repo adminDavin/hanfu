@@ -524,7 +524,7 @@ public class HfOrderController {
         System.out.println(actualPrice);
         List<Integer> sss = new ArrayList<>();
             for (CreatesOrder goods : list) {
-                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice);
+                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice, Integer.valueOf(goods.getHfDesc()));
                 moneys = (Integer) map.get("money") + moneys;
                 sss.add(moneys);
                 HfPriceExample hfPriceExample = new HfPriceExample();
@@ -614,13 +614,14 @@ public class HfOrderController {
 
     }
 
-    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice){
+    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice,Integer instanceId){
         Map map = new HashMap();
         if (activityId!=null){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
             paramMap.add("activityId",activityId);
+            paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
@@ -630,6 +631,7 @@ public class HfOrderController {
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
             paramMap.add("actualPrice",actualPrice);
+            paramMap.add("instanceId",instanceId);
             for (Integer integer:disconuntId){
                 paramMap.add("discountCouponId",integer);
             }
@@ -641,6 +643,7 @@ public class HfOrderController {
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
+            paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
