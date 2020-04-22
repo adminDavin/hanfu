@@ -1424,7 +1424,9 @@ public class GoodsController {
 		HfOrderDetailExample example2 = new HfOrderDetailExample();
 		example2.createCriteria().andOrderIdEqualTo(detail.getOrderId()).andHfStatusEqualTo("evaluate");
 		if (hfOrderDetailMapper.selectByExample(example2).isEmpty()) {
-			restTemplate.getForEntity(MODIFY_ORDER_PREFIX + "/hf-order/modifyStatus", String.class,detail.getOrderId(),
+			restTemplate.getForEntity(MODIFY_ORDER_PREFIX + "/hf-order/modifyStatus?Id={Id}"
+					+ "&orderCode={orderCode}&originOrderStatus={originOrderStatus}&targetOrderStatus={targetOrderStatus}&stoneId={stoneId}",
+					String.class,detail.getOrderId(),
 					detail.getOrderId(),"evaluate","complete",stoneId);
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
