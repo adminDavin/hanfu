@@ -990,10 +990,13 @@ public class HfProductController {
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(hfactivityProduct.getInstanceId()).andStarIn(star);
+			System.out.println(hfEvaluateMapper.selectByExample(evaluateExample).size()+"大小大小大小");
 			if(instance.getEvaluateCount() == null || instance.getEvaluateCount() == 0) {
 				display.setEvaluateRatio("0");
 			}else {
-				display.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/instance.getEvaluateCount()));
+				DecimalFormat format = new DecimalFormat("0.00");
+				String str = format.format(hfEvaluateMapper.selectByExample(evaluateExample).size()/Double.valueOf(instance.getEvaluateCount()));
+				display.setEvaluateRatio(String.valueOf(Double.valueOf(str)*100));
 			}
 			display.setEvaluateCount(instance.getEvaluateCount());
 			
