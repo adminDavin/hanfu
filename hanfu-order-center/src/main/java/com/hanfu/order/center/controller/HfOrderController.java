@@ -398,7 +398,7 @@ public class HfOrderController {
                 HfOrderDetail hfOrderDetail3 = new HfOrderDetail();
                 hfOrderDetail3.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample3 = new HfOrderDetailExample();
-                hfOrderDetailExample3.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailExample3.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample3);
 //                Integer money = hfOrderDetailList.stream().mapToInt(HfOrderDetail::getActualPrice).sum();
                 //lius
@@ -417,7 +417,7 @@ public class HfOrderController {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
                 HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();

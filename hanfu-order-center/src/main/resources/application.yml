@@ -76,7 +76,7 @@ myspcloud:
   item1:
     url1: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/updateStoneBalance
   item2:
-      url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
+    url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
 logging:
   file: ./target/king-words.log
 
