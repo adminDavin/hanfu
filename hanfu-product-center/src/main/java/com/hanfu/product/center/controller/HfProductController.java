@@ -885,6 +885,7 @@ public class HfProductController {
 				ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
 				display.setStoneName(hfStone.getHfName());
+				display.setInstanceId(hfactivityProduct.getInstanceId());
 				display.setStoneId(hfStone.getId());
 				Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
 						.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
