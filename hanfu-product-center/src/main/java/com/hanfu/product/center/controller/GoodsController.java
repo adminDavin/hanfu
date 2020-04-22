@@ -100,6 +100,8 @@ public class GoodsController {
 	
 	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
 	
+	private static final String MODIFY_ORDER_PREFIX = "https://www.tjsichuang.cn:1443/api/order/";
+	
 	@Autowired
     RestTemplate restTemplate;
 	
@@ -1347,11 +1349,13 @@ public class GoodsController {
 			Evaluate evaluate = new Evaluate();
 			evaluate.setList(list2.get(i));
 			evaluateExample.createCriteria().andOrderDetailIdEqualTo(list2.get(i).getId());
-			HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
-			evaluate.setComment(hfEvaluate.getEvaluate());
-			evaluate.setStar(hfEvaluate.getStar());
-			evaluate.setId(hfEvaluate.getId());
-			evaluate.setTime(hfEvaluate.getCreateTime());
+			if(!hfEvaluateMapper.selectByExample(evaluateExample).isEmpty()) {
+				HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
+				evaluate.setComment(hfEvaluate.getEvaluate());
+				evaluate.setStar(hfEvaluate.getStar());
+				evaluate.setId(hfEvaluate.getId());
+				evaluate.setTime(hfEvaluate.getCreateTime());
+			}
 			result.add(evaluate);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -1420,8 +1424,8 @@ public class GoodsController {
 		example2.createCriteria().andOrderIdEqualTo(detail.getOrderId()).andHfStatusEqualTo("evaluate");
 		if (hfOrderDetailMapper.selectByExample(example2).isEmpty()) {
 			HfOrder hfOrder = hfOrderMapper.selectByPrimaryKey(detail.getOrderId());
-			hfOrder.setOrderStatus("complete");
-			hfOrderMapper.updateByPrimaryKey(hfOrder);
+			restTemplate.getForEntity(MODIFY_ORDER_PREFIX + "/hf-order/modifyStatus", String.class,hfOrder.getId(),
+					hfOrder.getId(),"evaluate","complete",stoneId);
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
 	}
