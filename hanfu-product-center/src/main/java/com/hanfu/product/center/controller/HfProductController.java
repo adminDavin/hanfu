@@ -109,7 +109,7 @@ public class HfProductController {
 
 	@Autowired
 	private HfGoodsMapper hfGoodsMapper;
-	
+
 	@Autowired
 	private HfEvaluateMapper hfEvaluateMapper;
 
@@ -228,7 +228,8 @@ public class HfProductController {
 			browseRecord.setBossId(product2.getBossId());
 			hfUserBrowseRecordMapper.insert(browseRecord);
 			UserPersonalBrowseExample userPersonalBrowseExample = new UserPersonalBrowseExample();
-			userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId).andInstanceIdEqualTo(productInstances.get(0).getId());
+			userPersonalBrowseExample.createCriteria().andUserIdEqualTo(userId)
+					.andInstanceIdEqualTo(productInstances.get(0).getId());
 			List<UserPersonalBrowse> browses = userPersonalBrowseMapper.selectByExample(userPersonalBrowseExample);
 			if (browses.isEmpty()) {
 				UserPersonalBrowse browse = new UserPersonalBrowse();
@@ -251,12 +252,13 @@ public class HfProductController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
-	
+
 	@ApiOperation(value = "获取商品信息", notes = "获取商品信息")
 	@RequestMapping(value = "/getProductInfo", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> getProductInfo(@RequestParam(name = "productId") Integer productId) throws JSONException {
+	public ResponseEntity<JSONObject> getProductInfo(@RequestParam(name = "productId") Integer productId)
+			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfProductDisplay product = new HfProductDisplay();
 		Product product2 = productMapper.selectByPrimaryKey(productId);
@@ -267,7 +269,6 @@ public class HfProductController {
 		product.setCategoryName(category.getHfName());
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
-	
 
 	@ApiOperation(value = "获取商品列表", notes = "根据类目id商品列表")
 	@RequestMapping(value = "/getCategory", method = RequestMethod.GET)
@@ -304,18 +305,19 @@ public class HfProductController {
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		products.forEach(product -> {
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
-			
+
 			List<Integer> star = new ArrayList<Integer>();
 			star.add(4);
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			if(product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
+			if (product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
 				product.setEvaluateRatio("0");
-			}else {
-				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			} else {
+				product.setEvaluateRatio(String.valueOf(
+						hfEvaluateMapper.selectByExample(evaluateExample).size() / product.getEvaluateCount()));
 			}
-			
+
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
 						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
@@ -324,8 +326,9 @@ public class HfProductController {
 			}
 		});
 
-		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-		
+		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea()))
+				.collect(Collectors.toList());
+
 //		HfActivityProductExample activityProductExample = new HfActivityProductExample();
 //		List<String> type = new ArrayList<String>();
 //		type.add("groupActivity");
@@ -458,7 +461,7 @@ public class HfProductController {
 					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
 				}
 			});
-			if(isDelete.getBossId() != null) {
+			if (isDelete.getBossId() != null) {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
 		}
@@ -503,7 +506,7 @@ public class HfProductController {
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-	
+
 	@ApiOperation(value = "获取商品列表boss", notes = "获取商品列表boss")
 	@RequestMapping(value = "/getProductListBoss", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getProductListBoss(IsDelete isDelete, Integer pageNum, Integer pageSize)
@@ -538,12 +541,13 @@ public class HfProductController {
 								oldList.addAll(newList);
 								return oldList;
 							}));
-			products = products.stream().sorted(Comparator.comparing(HfProductDisplay::getStoneId, Comparator.nullsFirst(Integer::compareTo))).collect(Collectors.toList());
+			products = products.stream().sorted(
+					Comparator.comparing(HfProductDisplay::getStoneId, Comparator.nullsFirst(Integer::compareTo)))
+					.collect(Collectors.toList());
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-	
 
 	@ApiOperation(value = "获取商品列表收藏", notes = "根据用户id收藏商品列表")
 	@RequestMapping(value = "/getcollect", method = RequestMethod.GET)
@@ -690,7 +694,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
-			Integer sort,Integer stoneId) throws JSONException {
+			Integer sort, Integer stoneId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -720,18 +724,19 @@ public class HfProductController {
 						}));
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		products.forEach(product -> {
-			
+
 			List<Integer> star = new ArrayList<Integer>();
 			star.add(4);
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId()).andStarIn(star);
-			if(product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
+			if (product.getEvaluateCount() == null || product.getEvaluateCount() == 0) {
 				product.setEvaluateRatio("0");
-			}else {
-				product.setEvaluateRatio(String.valueOf(hfEvaluateMapper.selectByExample(evaluateExample).size()/product.getEvaluateCount()));
+			} else {
+				product.setEvaluateRatio(String.valueOf(
+						hfEvaluateMapper.selectByExample(evaluateExample).size() / product.getEvaluateCount()));
 			}
-			
+
 			List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
@@ -741,7 +746,8 @@ public class HfProductController {
 			}
 
 		});
-		products = products.stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+		products = products.stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea()))
+				.collect(Collectors.toList());
 //		HfActivityProductExample activityProductExample = new HfActivityProductExample();
 //		List<String> type = new ArrayList<String>();
 //		type.add("groupActivity");
@@ -785,10 +791,10 @@ public class HfProductController {
 //			}
 //		}
 //		
-		if(stoneId != null) {
+		if (stoneId != null) {
 			products = products.stream().filter(p -> p.getStoneId() == stoneId).collect(Collectors.toList());
 		}
-		
+
 		if (sort != null) {
 			if (sort == 1) {
 				for (int i = 0; i < products.size(); i++) {
@@ -918,7 +924,8 @@ public class HfProductController {
 				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
 				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
 				if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
-					String s = String.valueOf(Integer.valueOf(display.getPriceArea())-hfactivityProduct.getFavoravlePrice());
+					String s = String
+							.valueOf(Integer.valueOf(display.getPriceArea()) - hfactivityProduct.getFavoravlePrice());
 					if (null != s && s.indexOf(".") > 0) {
 						s = s.replaceAll("0+?$", "");// 去掉多余的0
 						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
@@ -983,22 +990,29 @@ public class HfProductController {
 			display.setStoneName(hfStone.getHfName());
 			display.setStoneId(hfStone.getId());
 			display.setInstanceId(hfactivityProduct.getInstanceId());
-			
+
 			List<Integer> star = new ArrayList<Integer>();
 			star.add(4);
 			star.add(5);
 			evaluateExample.clear();
 			evaluateExample.createCriteria().andInstanceIdEqualTo(hfactivityProduct.getInstanceId()).andStarIn(star);
-			System.out.println(hfEvaluateMapper.selectByExample(evaluateExample).size()+"大小大小大小");
-			if(instance.getEvaluateCount() == null || instance.getEvaluateCount() == 0) {
+			System.out.println(hfEvaluateMapper.selectByExample(evaluateExample).size() + "大小大小大小");
+			if (instance.getEvaluateCount() == null || instance.getEvaluateCount() == 0) {
 				display.setEvaluateRatio("0");
-			}else {
+			} else {
 				DecimalFormat format = new DecimalFormat("0.00");
-				String str = format.format(hfEvaluateMapper.selectByExample(evaluateExample).size()/Double.valueOf(instance.getEvaluateCount()));
-				display.setEvaluateRatio(String.valueOf(Double.valueOf(str)*100));
+				String str = format.format(hfEvaluateMapper.selectByExample(evaluateExample).size()
+						/ Double.valueOf(instance.getEvaluateCount()));
+				str = String.valueOf(Double.valueOf(str) * 100);
+
+				if (null != str && str.indexOf(".") > 0) {
+					str = str.replaceAll("0+?$", "");// 去掉多余的0
+					str = str.replaceAll("[.]$", "");// 如最后一位是.则去掉
+				}
+				display.setEvaluateRatio(str);
 			}
 			display.setEvaluateCount(instance.getEvaluateCount());
-			
+
 			hfGoodsDisplay = hfGoodsDisplay.stream()
 					.filter(h -> h.getInstanceId() == null || h.getInstanceId() == hfactivityProduct.getInstanceId())
 					.collect(Collectors.toList());
@@ -1050,7 +1064,7 @@ public class HfProductController {
 			displays.add(display);
 		}
 		displays = displays.stream().filter(p -> !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-		
+
 //		HfActivityProductExample activityProductExample = new HfActivityProductExample();
 //		List<String> type = new ArrayList<String>();
 //		type.add("groupActivity");
@@ -1093,8 +1107,7 @@ public class HfProductController {
 //				}
 //			}
 //		}
-		
-		
+
 		if (sort != null) {
 			if (sort == 1) {
 				for (int i = 0; i < displays.size(); i++) {
@@ -1136,5 +1149,5 @@ public class HfProductController {
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(displays);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-	
+
 }
