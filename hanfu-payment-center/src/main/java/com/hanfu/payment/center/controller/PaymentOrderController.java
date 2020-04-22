@@ -19,8 +19,11 @@ import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,6 +52,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 @CrossOrigin
@@ -60,7 +64,8 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfOrderDao hfOrderDao;
-
+	@Autowired
+	private RestTemplate restTemplate;
 	@Autowired
 	private HfTansactionFlowMapper hfTansactionFlowMapper;
 
@@ -90,13 +95,15 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
-
+	@Value("${myspcloud.item3.url3}")
+	private String itemUrl3;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
 	@Autowired
 	private StoneChargeOffMapper stoneChargeOffMapper;
 	@Autowired
 	private StoneBalanceMapper stoneBalanceMapper;
+
 
 
 	@ApiOperation(value = "支付订单", notes = "")
@@ -338,6 +345,9 @@ public class PaymentOrderController {
 		stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
 		stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
 		//
+		MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+		paramMap2.add("orderId",hfOrder.getId());
+		restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			HfTansactionFlowExample e = new HfTansactionFlowExample();
 			e.createCriteria().andOutTradeNoEqualTo(outTradeNo);

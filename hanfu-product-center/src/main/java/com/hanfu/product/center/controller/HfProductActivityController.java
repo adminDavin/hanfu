@@ -832,7 +832,7 @@ public class HfProductActivityController {
     }
 
     @ApiOperation(value = "分销计算", notes = "分销计算")
-    @RequestMapping(value = "/distributionActivityCalculate", method = RequestMethod.GET)
+    @RequestMapping(value = "/distributionActivityCalculate", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> distributionActivityCalculate(Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfOrder hfOrder = hfOrderMapper.selectByPrimaryKey(orderId);
@@ -851,16 +851,23 @@ public class HfProductActivityController {
             hfActivityProductExample.createCriteria().andInstanceIdEqualTo(productInstance.get(0).getId()).andProductActivityTypeEqualTo("distributionActivity");
             List<HfActivityProduct> hfActivityProductList = hfActivityProductMapper.selectByExample(hfActivityProductExample);
             List<HfActivity> hfActivities =new ArrayList<>();
-            for (HfActivityProduct hfActivityProduct:hfActivityProductList){
+            if (hfActivityProductList.size()!=0) {
+                for (HfActivityProduct hfActivityProduct : hfActivityProductList) {
 //            hfActivityProductList.forEach(hfActivityProduct -> {
-                HfActivityExample hfActivityExample = new HfActivityExample();
-                hfActivityExample.createCriteria().andIdEqualTo(hfActivityProduct.getActivityId()).andStartTimeGreaterThan(LocalDateTime.now()).andEndTimeLessThan(LocalDateTime.now());
-                hfActivities = hfActivityMapper.selectByExample(hfActivityExample);
-                if (hfActivities.size()!=0){
-                    Integer actId= hfActivities.get(0).getId();
-                    hfActivityProductList= hfActivityProductList.stream().filter(collisionEntity -> collisionEntity.getActivityId() == actId)
-                            .collect(Collectors.toList());
+                    HfActivityExample hfActivityExample = new HfActivityExample();
+                    hfActivityExample.createCriteria().andIdEqualTo(hfActivityProduct.getActivityId()).andStartTimeGreaterThan(LocalDateTime.now()).andEndTimeLessThan(LocalDateTime.now());
+                    hfActivities = hfActivityMapper.selectByExample(hfActivityExample);
+                    if (hfActivities.size() != 0) {
+                        Integer actId = hfActivities.get(0).getId();
+                        hfActivityProductList = hfActivityProductList.stream().filter(collisionEntity -> collisionEntity.getActivityId() == actId)
+                                .collect(Collectors.toList());
+                    }
                 }
+            } else {
+                return builder.body(ResponseUtils.getResponseBody(1));
+            }
+            if (hfActivities.size()==0){
+                return builder.body(ResponseUtils.getResponseBody(1));
             }
         //
             //转对象
