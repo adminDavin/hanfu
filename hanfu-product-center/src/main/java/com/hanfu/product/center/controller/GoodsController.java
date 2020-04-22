@@ -1408,7 +1408,7 @@ public class GoodsController {
 //				evaluatePictureMapper.insert(picture);
 //			}
 		if(instance.get(0).getEvaluateCount() == null) {
-			instance.get(0).setEvaluateCount(0);
+			instance.get(0).setEvaluateCount(1);
 		}else {
 			instance.get(0).setEvaluateCount(instance.get(0).getEvaluateCount()+1);
 		}

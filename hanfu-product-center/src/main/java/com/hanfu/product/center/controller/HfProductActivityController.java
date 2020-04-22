@@ -250,7 +250,11 @@ public class HfProductActivityController {
     	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
     		return builder.body(ResponseUtils.getResponseBody(-1));
     	}
-    	
+    	example.clear();
+    	example.createCriteria().andInstanceIdEqualTo(instanceId).andProductActivityTypeEqualTo(activity.getActivityType());
+    	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
+    		return builder.body(ResponseUtils.getResponseBody(-1));
+    	}
     	if("seckillActivity".equals(activity.getActivityType())) {
     		example.clear();
     		example.createCriteria().andProductActivityTypeEqualTo("groupActivity").andInstanceIdEqualTo(instanceId);
@@ -308,7 +312,9 @@ public class HfProductActivityController {
     				activityProductInfo.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
 //    				activityProductInfo.setDefaultGoodsId(hfGood.get().getId());
     			}
-                
+                if(activityProduct.getDistributionRatio() == null) {
+                	activityProductInfo.setDistributionRatio("[]");
+                }
                 activityProductInfo.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
                 activityProductInfo.setId(activityProduct.getId());
                 activityProductInfo.setAcivityId(activityProduct.getActivityId());
