@@ -179,12 +179,14 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
                                                  String paymentName,String today,String yesterday,String sevenDays,String month,
-                                                 @RequestParam(value = "stateTime") Date stateTime,@RequestParam(value = "endTime") Date endTime) throws JSONException {
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("stateTime",stateTime);
-        params.put("endTime",endTime);
+        if (stateTime!=null && endTime!=null){
+            params.put("stateTime",stateTime);
+            params.put("endTime",endTime);
+        }
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
         params.put("orderType", orderType);
