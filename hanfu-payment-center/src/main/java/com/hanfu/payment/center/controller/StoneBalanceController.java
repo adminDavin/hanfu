@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -123,5 +124,17 @@ public class StoneBalanceController {
         map.put("process",money);
         map.put("payment",money1);
         return builder.body(ResponseUtils.getResponseBody(map));
+    }
+
+    @ApiOperation(value = "余额明细", notes = "余额明细")
+    @RequestMapping(value = "/selectBalanceDetail", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectBalanceDetail(Integer stoneId)
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+        stoneChargeOffExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
+        List<StoneChargeOff> stoneChargeOff= stoneChargeOffMapper.selectByExample(stoneChargeOffExample);
+//        stoneChargeOff.stream().filter(i ->Duration.between(LocalDateTime.now(),i.getCreateTime()).toDays()<1)
+        return builder.body(ResponseUtils.getResponseBody(stoneChargeOff));
     }
 }
