@@ -12,7 +12,13 @@ public class DiscoverDisplay {
     private String discoverContent;
     @ApiModelProperty(required = false, value = "发现描述")
     private String discoverDesc;
+    @ApiModelProperty(required = false, value = "商品id")
     private Integer[] productId;
+    @ApiModelProperty(required = false, value = "发现类型")
+    private String discoverType;
+    @ApiModelProperty(required = false, value = "文件id")
+    private Integer[] fileId;
+    
 
     public Integer getUserId() {
         return userId;
@@ -53,4 +59,20 @@ public class DiscoverDisplay {
     public void setProductId(Integer[] productId) {
         this.productId = productId;
     }
+
+	public String getDiscoverType() {
+		return discoverType;
+	}
+
+	public void setDiscoverType(String discoverType) {
+		this.discoverType = discoverType;
+	}
+
+	public Integer[] getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer[] fileId) {
+		this.fileId = fileId;
+	}
 }
