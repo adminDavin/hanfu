@@ -8,6 +8,7 @@
                 property="authType"/>
         <result column="auth_key" jdbcType="VARCHAR" property="authKey"/>
     </resultMap>
+    
     <resultMap type="com.hanfu.user.center.manual.model.UserInfo"
                id="ResultMap">
         <result column="id" jdbcType="INTEGER" property="id"/>
@@ -66,7 +67,31 @@
         <result column="orderCount" jdbcType="INTEGER" property="orderCount"/>
         <result column="orderStatus" jdbcType="VARCHAR" property="orderStatus"/>
     </resultMap>   
-
+	
+	<resultMap id="HfUser" type="com.hanfu.user.center.model.HfUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="sex" jdbcType="TINYINT" property="sex" />
+    <result column="birth_day" jdbcType="TIMESTAMP" property="birthDay" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
+    <result column="file_id" jdbcType="INTEGER" property="fileId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="user_level" jdbcType="TINYINT" property="userLevel" />
+    <result column="last_auth_time" jdbcType="TIMESTAMP" property="lastAuthTime" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="own_invitation_code" jdbcType="VARCHAR" property="ownInvitationCode" />
+    <result column="invitation_code" jdbcType="VARCHAR" property="invitationCode" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="modify_date" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="id_deleted" jdbcType="TINYINT" property="idDeleted" />
+    <result column="cancel_id" jdbcType="INTEGER" property="cancelId" />
+  </resultMap>
+	
     <select id="selectAuthList" resultMap="BaseResultMap">
         SELECT
         user_id,auth_type,auth_key
@@ -75,6 +100,7 @@
         WHERE
         auth_key=#{authKey}
     </select>
+    
     <select id="selectUserList" resultMap="ResultMap">
         SELECT * FROM
         hf_user h
@@ -188,4 +214,25 @@
     <select id="selectUserOrderInfo" resultType="Integer">
     	select count(*) orderCount from hf_order where user_id = #{userId} and order_status = #{type}
     </select>
+    
+    <select id="selectUserOrderByInfo" resultMap="HfUser">
+        SELECT
+        *
+        FROM
+        hf_user h
+        WHERE 1=1
+        <if test="nickName != null and nickName != ''">
+            AND h.nick_name LIKE concat('%',#{nickName},'%')
+        </if>
+        <if test="phone != null and phone != ''">
+            AND h.phone LIKE concat('%',#{phone},'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND h.real_name LIKE concat('%',#{realName},'%')
+        </if>
+        <if test="ownInvitationCode != null and ownInvitationCode != ''">
+            AND h.own_invitation_code LIKE concat('%',#{ownInvitationCode},'%')
+        </if>
+    </select>
+    
 </mapper>

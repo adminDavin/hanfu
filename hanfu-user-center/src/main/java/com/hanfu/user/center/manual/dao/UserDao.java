@@ -33,4 +33,6 @@ public interface UserDao {
     Integer selectBrowseCount(Integer userId);
     
     Integer selectUserOrderInfo(Order order);
+    
+    List<HfUser> selectUserOrderByInfo(HfUser user);
 }
