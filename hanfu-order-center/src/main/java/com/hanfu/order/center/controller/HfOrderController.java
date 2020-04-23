@@ -1,5 +1,6 @@
 package com.hanfu.order.center.controller;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -22,15 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import com.hanfu.order.center.manual.dao.HfOrderDao;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
@@ -43,6 +43,7 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.annotation.Resource;
 
@@ -176,14 +177,24 @@ public class HfOrderController {
                     type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "orderCode", value = "订单号", required = false,
                     type = "Integer")})
-    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode) throws JSONException {
+    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
+                                                 String paymentName,String today,String yesterday,String sevenDays,String month,
+                                                 @RequestParam(value = "stateTime") Date stateTime,@RequestParam(value = "endTime") Date endTime) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
+        params.put("stateTime",stateTime);
+        params.put("endTime",endTime);
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
         params.put("orderType", orderType);
         params.put("orderCode",orderCode);
+//        params.put("productName",productName);
+        params.put("paymentName",paymentName);
+        params.put("today",today);
+        params.put("yesterday",yesterday);
+        params.put("sevenDays",sevenDays);
+        params.put("months",month);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
 //            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
@@ -259,7 +270,11 @@ public class HfOrderController {
         
         return builder.body(ResponseUtils.getResponseBody(hfOrders));
     }
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
     @ApiOperation(value = "订单统计", notes = "订单查询")
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     @ApiImplicitParams({
