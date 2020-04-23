@@ -52,16 +52,13 @@ private DiscoverDao discoverDao;
 private FileDescMapper fileDescMapper;
     @RequestMapping(value = "/addDiscover", method = RequestMethod.POST)
     @ApiOperation(value = "添加发现", notes = "添加发现")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "pageNum", value = "第几页", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "pageSize", value = "每页的数量", required = false, type = "Integer")
-//    })
     public ResponseEntity<JSONObject> addDiscover(DiscoverDisplay discoverDisplay) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Discover discover = new Discover();
         discover.setCreateTime(LocalDateTime.now());
         discover.setModifyTime(LocalDateTime.now());
         discover.setIsDeleted((short) 0);
+        discover.setDiscoverType(discoverDisplay.getDiscoverType());
         discover.setDiscoverHeadline(discoverDisplay.getDiscoverHeadline());
         discover.setDiscoverContent(discoverDisplay.getDiscoverContent());
         discover.setDiscoverDesc(discoverDisplay.getDiscoverDesc());
@@ -70,14 +67,19 @@ private FileDescMapper fileDescMapper;
         if (discoverDisplay.getProductId().length!=0){
             addproduct(discoverDisplay.getProductId(),discover.getId());
         }
-//        FileMangeService fileMangeService = new FileMangeService();
-//        String arr[];
-//		for (MultipartFile multipartFile : files) {
-//            arr = fileMangeService.uploadFile(multipartFile.getBytes(), String.valueOf(discoverDisplay.getUserId()));
-//            System.out.println(multipartFile.getName());
-//            System.out.println(arr[0]);
-//            System.out.println(arr[1]);
-//        }
+        Integer[] fileId = discoverDisplay.getFileId();
+        if(fileId != null) {
+        	for (int i = 0; i < fileId.length; i++) {
+    			DiscoverPictrue pictrue = new DiscoverPictrue();
+    			pictrue.setDiscoverId(discover.getId());
+    			pictrue.setFileId(fileId[i]);
+    			pictrue.setCreateTime(LocalDateTime.now());
+    			pictrue.setModifyTime(LocalDateTime.now());
+    			pictrue.setIsDeleted((short) 0);
+    			discoverPictrueMapper.insert(pictrue);
+    		}
+        }
+        
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
@@ -93,6 +95,7 @@ private FileDescMapper fileDescMapper;
         }
 
     }
+    
     @RequestMapping(value = "/selectproductId", method = RequestMethod.GET)
     @ApiOperation(value = "查询用户订单商品", notes = "查询用户订单商品")
     public ResponseEntity<JSONObject> selectproductId(Integer userId) throws JSONException {
@@ -182,4 +185,15 @@ private FileDescMapper fileDescMapper;
         discoverMapper.updateByPrimaryKeySelective(discover);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    
+//    @RequestMapping(value = "/selectDiscoverAll", method = RequestMethod.GET)
+//    @ApiOperation(value = "查询发现", notes = "删除发现")
+//    public ResponseEntity<JSONObject> delleteDiscover(Integer discoverId) throws JSONException {
+//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        Discover discover = new Discover();
+//        discover.setId(discoverId);
+//        discover.setIsDeleted((short) 1);
+//        discoverMapper.updateByPrimaryKeySelective(discover);
+//        return builder.body(ResponseUtils.getResponseBody(0));
+//    }
 }

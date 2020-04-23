@@ -168,6 +168,9 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findAmountData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		double amountDay = 0;
 		double amountMouth = 0;
 		List<Integer> paymentCountDay = new ArrayList<Integer>();
@@ -192,28 +195,28 @@ public class HomePageController {
 		LocalDateTime lastMouthEnd = LocalDateTime
 				.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX)
 				.plusMonths(-1);
-		HfStoneExample example = new HfStoneExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
-		List<HfStone> hfStones = hfStoneMapper.selectByExample(example);
-		for (int i = 0; i < hfStones.size(); i++) {
-			HfStone hfStone = hfStones.get(i);
+//		HfStoneExample example = new HfStoneExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		List<HfStone> hfStones = hfStoneMapper.selectByExample(example);
+//		for (int i = 0; i < hfStones.size(); i++) {
+//			HfStone hfStone = hfStones.get(i);
 			HfOrderExample example2 = new HfOrderExample();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(dayStart, dayEnd);
 			List<HfOrder> hfOrderDays = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(yestdayStart, yestdayEnd);
 			List<HfOrder> hfOrderYesterday = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(mouthStart, mouthEnd);
 			List<HfOrder> hfOrderMouths = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
 			List<HfOrder> hfOrderLastMouths = hfOrderMapper.selectByExample(example2);
 
@@ -246,7 +249,7 @@ public class HomePageController {
 			}
 
 			orderCountLastMouth += hfOrderLastMouths.size();
-		}
+//		}
 		HashSet h = new HashSet(paymentCountDay);
 		paymentCountDay.clear();
 		paymentCountDay.addAll(h);
@@ -357,12 +360,12 @@ public class HomePageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HomePageOrderType info = new HomePageOrderType();
 		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
-		HfStoneExample example = new HfStoneExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
-		List<HfStone> list = hfStoneMapper.selectByExample(example);
-		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+//		HfStoneExample example = new HfStoneExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		List<HfStone> list = hfStoneMapper.selectByExample(example);
+//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
 		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
+		example2.createCriteria().andStoneIdEqualTo(bossId);
 		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
 		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
@@ -426,6 +429,9 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		LocalDateTime ldt = LocalDateTime.now();
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
@@ -444,7 +450,7 @@ public class HomePageController {
 //		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
 //		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andHfStatusEqualTo("complete").andStoneIdIn(stoneId);
+		example3.createCriteria().andHfStatusIn(status).andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		for (int i = 0; i < ldt.getMonthValue(); i++) {
 			quantity = 0;

@@ -312,6 +312,9 @@ public class StoneController {
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findAmountDataByStone(Integer stoneId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		double amountDay = 0;
 		double amountMouth = 0;
 		List<Integer> paymentCountDay = new ArrayList<Integer>();
@@ -337,53 +340,64 @@ public class StoneController {
 				.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX)
 				.plusMonths(-1);
 			HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
-			HfOrderExample example2 = new HfOrderExample();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-					.andCreateTimeBetween(dayStart, dayEnd);
-			List<HfOrder> hfOrderDays = hfOrderMapper.selectByExample(example2);
+			HfOrderDetailExample example2 = new HfOrderDetailExample();
+//			HfOrderExample example2 = new HfOrderExample();
+//			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+//					.andCreateTimeBetween(dayStart, dayEnd);
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andHfStatusIn(status)
+			.andCreateTimeBetween(dayStart, dayEnd);
+			List<HfOrderDetail> hfOrderDays = hfOrderDetailMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-					.andCreateTimeBetween(yestdayStart, yestdayEnd);
-			List<HfOrder> hfOrderYesterday = hfOrderMapper.selectByExample(example2);
+//			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+//					.andCreateTimeBetween(yestdayStart, yestdayEnd);
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andHfStatusIn(status)
+			.andCreateTimeBetween(yestdayStart, yestdayEnd);
+			List<HfOrderDetail> hfOrderYesterday = hfOrderDetailMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-					.andCreateTimeBetween(mouthStart, mouthEnd);
-			List<HfOrder> hfOrderMouths = hfOrderMapper.selectByExample(example2);
+//			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+//					.andCreateTimeBetween(mouthStart, mouthEnd);
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andHfStatusIn(status)
+			.andCreateTimeBetween(mouthStart, mouthEnd);
+			List<HfOrderDetail> hfOrderMouths = hfOrderDetailMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
-					.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
-			List<HfOrder> hfOrderLastMouths = hfOrderMapper.selectByExample(example2);
+//			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+//					.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
+			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andHfStatusIn(status)
+			.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
+			List<HfOrderDetail> hfOrderLastMouths = hfOrderDetailMapper.selectByExample(example2);
 
 			for (int j = 0; j < hfOrderDays.size(); j++) {
-				HfOrder order = hfOrderDays.get(j);
-				paymentCountDay.add(order.getUserId());
-				amountDay += order.getAmount();
+				HfOrderDetail order = hfOrderDays.get(j);
+//				paymentCountDay.add(order.getUserId());
+//				amountDay += order.getAmount();
+				amountDay += order.getActualPrice();
 			}
 
 			orderCountDay += hfOrderDays.size();
 
-			for (int j = 0; j < hfOrderYesterday.size(); j++) {
-				HfOrder order = hfOrderYesterday.get(j);
-				paymentCountYestday.add(order.getUserId());
-			}
+//			for (int j = 0; j < hfOrderYesterday.size(); j++) {
+//				HfOrder order = hfOrderYesterday.get(j);
+//				paymentCountYestday.add(order.getUserId());
+//			}
 
 			orderCountYestday += hfOrderYesterday.size();
 
 			for (int j = 0; j < hfOrderMouths.size(); j++) {
-				HfOrder order = hfOrderMouths.get(j);
-				paymentCountMouth.add(order.getUserId());
-				amountMouth += order.getAmount();
+				HfOrderDetail order = hfOrderMouths.get(j);
+//				paymentCountMouth.add(order.getUserId());
+//				amountMouth += order.getAmount();
+				amountMouth += order.getActualPrice();
 			}
 
 			orderCountMouth += hfOrderMouths.size();
 
-			for (int j = 0; j < hfOrderLastMouths.size(); j++) {
-				HfOrder order = hfOrderLastMouths.get(j);
-				paymentCountLastMouth.add(order.getUserId());
-			}
+//			for (int j = 0; j < hfOrderLastMouths.size(); j++) {
+//				HfOrder order = hfOrderLastMouths.get(j);
+//				paymentCountLastMouth.add(order.getUserId());
+//			}
 
 			orderCountLastMouth += hfOrderLastMouths.size();
 		HashSet h = new HashSet(paymentCountDay);
