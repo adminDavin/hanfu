@@ -97,6 +97,12 @@
 			and i.boss_id=#{bossId}
 -- 			and i.stone_id=0
 		</if>
+		<if test="productName != null and productName!= ''">
+			AND  p.hf_name like concat('%',#{productName},'%')
+		</if>
+		<if test="category != null and category!= ''">
+			AND  h.hf_name like concat('%',#{category},'%')
+		</if>
 		ORDER BY p.create_time DESC
 	</select>
 
