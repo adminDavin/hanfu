@@ -71,7 +71,7 @@ public class DiscoverController {
 		discover.setDiscoverDesc(discoverDisplay.getDiscoverDesc());
 		discover.setUserId(discoverDisplay.getUserId());
 		discoverMapper.insert(discover);
-		if(!discoverDisplay.getProductId().isEmpty()) {
+		if(discoverDisplay.getProductId() != null) {
 			if (discoverDisplay.getProductId().size() != 0) {
 				addproduct(discoverDisplay.getProductId(), discover.getId());
 			}
