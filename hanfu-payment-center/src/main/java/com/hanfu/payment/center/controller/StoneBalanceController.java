@@ -3,7 +3,6 @@ package com.hanfu.payment.center.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.payment.center.dao.StoneBalanceMapper;
 import com.hanfu.payment.center.dao.StoneChargeOffMapper;
-import com.hanfu.payment.center.manual.model.StoneBalanceDis;
 import com.hanfu.payment.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -12,16 +11,19 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Example;
+import org.springframework.web.context.request.WebRequest;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.xml.crypto.Data;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @Api
@@ -125,16 +127,40 @@ public class StoneBalanceController {
         map.put("payment",money1);
         return builder.body(ResponseUtils.getResponseBody(map));
     }
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
     @ApiOperation(value = "余额明细", notes = "余额明细")
     @RequestMapping(value = "/selectBalanceDetail", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectBalanceDetail(Integer stoneId)
+    public ResponseEntity<JSONObject> selectBalanceDetail(Integer stoneId, Integer today, Integer yesterday, Integer sevenDays, Integer month , @RequestParam(value = "stateTime",required = false) Date stateTime, @RequestParam(value = "endTime",required = false) Date endTime)
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
         stoneChargeOffExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
         List<StoneChargeOff> stoneChargeOff= stoneChargeOffMapper.selectByExample(stoneChargeOffExample);
-//        stoneChargeOff.stream().filter(i ->Duration.between(LocalDateTime.now(),i.getCreateTime()).toDays()<1)
+//        System.out.println(Duration.between(stoneChargeOff.get(0).getCreateTime(),LocalDateTime.now()).toHours());
+        if (today!=null){
+            stoneChargeOff=stoneChargeOff.stream().filter(i ->Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()<=24&&Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()>=0).collect(Collectors.toList());
+        }
+        if (yesterday!=null){
+            stoneChargeOff=stoneChargeOff.stream().filter(i ->Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()<=48&&Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()>=24).collect(Collectors.toList());
+        }
+        if (sevenDays!=null){
+            stoneChargeOff=stoneChargeOff.stream().filter(i ->Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()<=168&&Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()>=0).collect(Collectors.toList());
+        }
+        if (month!=null){
+            stoneChargeOff=stoneChargeOff.stream().filter(i ->Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()<720&&Duration.between(i.getCreateTime(),LocalDateTime.now()).toHours()>0).collect(Collectors.toList());
+        }
+        if (stateTime!=null && endTime!=null){
+            LocalDateTime dateTime1 = LocalDateTime.ofInstant(stateTime.toInstant(),ZoneId.systemDefault());
+            LocalDateTime dateTime2 = LocalDateTime.ofInstant(endTime.toInstant(),ZoneId.systemDefault());
+
+            StoneChargeOffExample stoneChargeOffExample1 = new StoneChargeOffExample();
+            stoneChargeOffExample1.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andCreateTimeGreaterThan(dateTime1).andCreateTimeLessThan(dateTime2);
+            stoneChargeOff = stoneChargeOffMapper.selectByExample(stoneChargeOffExample1);
+        }
         return builder.body(ResponseUtils.getResponseBody(stoneChargeOff));
     }
 }
