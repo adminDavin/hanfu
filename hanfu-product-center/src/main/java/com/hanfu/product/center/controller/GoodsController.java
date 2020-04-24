@@ -1632,6 +1632,7 @@ public class GoodsController {
 			display.setComment(d.getEvaluate());
 //			display.setDiscoverDesc(d.getDiscoverDesc());
 //			display.setDiscoverHeadline(d.getDiscoverHeadline());
+			display.setId(d.getId());
 			display.setType(d.getType());
 			display.setTypeContent(d.getTypeContent());
 			display.setUserId(d.getUserId());
