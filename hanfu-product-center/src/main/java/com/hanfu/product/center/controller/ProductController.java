@@ -548,8 +548,8 @@ public class ProductController {
 
 	@ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/deleteSelectProductId", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
+//	@ApiImplicitParams({
+//		@ApiImplicitParam(paramType = "query", name = "productId", value = "商品ID", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deleteAllProduct(@RequestParam(name = "productId") Integer[] productId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -560,8 +560,9 @@ public class ProductController {
 			example2.createCriteria().andProductIdEqualTo(productId[i]);
 			productSpecMapper.deleteByExample(example);
 			productInfoMapper.deleteByExample(example2);
+			productMapper.deleteByPrimaryKey(productId[i]);
 		}
-		return builder.body(ResponseUtils.getResponseBody(productDao.deleteSelectProduct(productId)));
+		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 
 	@ApiOperation(value = "修改商品列表", notes = "根据商品修改商品列表")
