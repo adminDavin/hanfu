@@ -1508,6 +1508,7 @@ public class GoodsController {
 				}
 			}
 			
+			e.setId(evaluate.getId());
 			e.setStar(evaluate.getStar());
 			e.setComment(evaluate.getEvaluate());
 			e.setComment_count(evaluate.getCommentCount());
