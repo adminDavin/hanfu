@@ -1552,7 +1552,7 @@ public class GoodsController {
 		}
 		
 		EvaluateUserRecordExample example = new EvaluateUserRecordExample();
-		example.createCriteria().andUserIdEqualTo(userId);
+		example.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(id).andTypeEqualTo(1);
 		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
 		if (!records.isEmpty()) {
 			EvaluateUserRecord record = records.get(0);
