@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
+import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
@@ -97,6 +98,8 @@ public class ProductController {
 	private HfStoneConcernMapper hfStoneConcernMapper;
 	@Autowired
 	private HfMemberDao hfMemberDao;
+	@Autowired
+	private ManualDao manualDao;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -154,6 +157,17 @@ public class ProductController {
         }
         return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
     }
+	
+	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
+	@RequestMapping(value = "/getCategoryByInfo", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getCategoryByInfo(Integer level, String name) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategory h = new HfCategory();
+		h.setLevelId(level);
+		h.setHfName(name);
+		List<HfCategory> list = manualDao.findCategoryByInfo(h);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }	
 
 	@ApiOperation(value = "获取所有类目", notes = "获取所有类目全部数据")
 	@RequestMapping(value = "/categoryAll", method = RequestMethod.GET)

@@ -3,6 +3,8 @@ package com.hanfu.product.center.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class HfCategory implements Serializable {
     /**
      *
@@ -47,6 +49,7 @@ public class HfCategory implements Serializable {
      *
      * @mbg.generated Sun Mar 22 17:13:44 CST 2020
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
@@ -56,6 +59,7 @@ public class HfCategory implements Serializable {
      *
      * @mbg.generated Sun Mar 22 17:13:44 CST 2020
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyTime;
 
     /**

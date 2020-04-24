@@ -11,6 +11,7 @@ import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfActivity;
+import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.user.center.model.HfUser;
 
 
@@ -54,5 +55,11 @@ public class ManualDaoImpl implements ManualDao {
     @Override
     public void updateActivityState(ProductActivityInfo activity) {
     	sqlSessionTemplate.update("updateActivityState", activity);
+    }
+    
+    @Override
+    public List<HfCategory> findCategoryByInfo(HfCategory h) {
+    	List<HfCategory> result = sqlSessionTemplate.selectList("findCategoryByInfo", h);
+    	return result;
     }
 }
