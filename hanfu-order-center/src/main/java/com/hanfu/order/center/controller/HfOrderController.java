@@ -554,10 +554,12 @@ public class HfOrderController {
                 request.setSellPrice(hfPrices.get(0).getSellPrice());
                 request.setStoneId(goods.getStoneId());
                 //库存处理
-                HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
-                HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-                hfResp.setQuantity(hfResp.getQuantity()-goods.getQuantity());
-                hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                synchronized (this) {
+                    HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
+                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+                    hfResp.setQuantity(hfResp.getQuantity() - goods.getQuantity());
+                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                }
                 //详情
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
