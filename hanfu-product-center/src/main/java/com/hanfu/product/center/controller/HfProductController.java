@@ -880,13 +880,13 @@ public class HfProductController {
 				Product product = productMapper.selectByPrimaryKey(hfactivityProduct.getProductId());
 				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
 						.selectHfGoodsDisplay(hfactivityProduct.getProductId());
-//				if (!hfGoodsDisplay.isEmpty()) {
-//					if (hfGoodsDisplay.get(0).getStoneId() != null) {
-//						display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
-//						HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
-//						display.setStoneName(hfStone.getHfName());
+//					if (!hfGoodsDisplay.isEmpty()) {
+//						if (hfGoodsDisplay.get(0).getStoneId() != null) {
+//							display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
+//							HfStone hfStone = hfStoneMapper.selectByPrimaryKey(hfGoodsDisplay.get(0).getStoneId());
+//							display.setStoneName(hfStone.getHfName());
+//						}
 //					}
-//				}
 				ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
 				display.setStoneName(hfStone.getHfName());
@@ -911,14 +911,16 @@ public class HfProductController {
 				display.setActivityState(index);
 				display.setStartTime(activity.getStartTime());
 				display.setEndTime(activity.getEndTime());
-				display.setProductName(product.getHfName());
-				display.setProductDesc(product.getProductDesc());
-				display.setFileId(product.getFileId());
-				display.setCategoryId(product.getCategoryId());
-				com.hanfu.product.center.model.HfCategory category = hfCategoryMapper
-						.selectByPrimaryKey(product.getCategoryId());
-				display.setCategoryName(category.getHfName());
-				display.setBossId(product.getBossId());
+				if(product != null) {
+					display.setProductName(product.getHfName());
+					display.setProductDesc(product.getProductDesc());
+					display.setFileId(product.getFileId());
+					display.setCategoryId(product.getCategoryId());
+					com.hanfu.product.center.model.HfCategory category = hfCategoryMapper
+							.selectByPrimaryKey(product.getCategoryId());
+					display.setCategoryName(category.getHfName());
+					display.setBossId(product.getBossId());
+				}
 				display.setDiscountRatio(hfactivityProduct.getDiscountRatio());
 				display.setDistributionRatio(hfactivityProduct.getDistributionRatio());
 				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
