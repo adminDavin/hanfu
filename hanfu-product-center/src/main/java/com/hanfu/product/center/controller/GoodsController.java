@@ -1643,6 +1643,8 @@ public class GoodsController {
 			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
 			fileId = pictrues.stream().map(EvaluatePicture :: getFileId).collect(Collectors.toList());
 			display.setFileId(fileId);
+			display.setComment_count(d.getCommentCount());
+			display.setPraise(d.getPraise());
 			result.add(display);
 //			products = discoverProductMapper.selectByExample(productExample);
 //			productId = products.stream().map(DiscoverProduct :: getProductId).collect(Collectors.toList());

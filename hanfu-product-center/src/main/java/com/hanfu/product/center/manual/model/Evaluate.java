@@ -76,6 +76,7 @@ public static enum EvaluateContentTypeEnum {
 	private String typeContent;
 	private Integer star;
 	private Integer comment_count;
+	private Integer praise;
 	private String hfDesc;
 	private String username;
 	private String levelName;
@@ -128,6 +129,12 @@ public static enum EvaluateContentTypeEnum {
 	}
 	public void setComment_count(Integer comment_count) {
 		this.comment_count = comment_count;
+	}
+	public Integer getPraise() {
+		return praise;
+	}
+	public void setPraise(Integer praise) {
+		this.praise = praise;
 	}
 	public String getUsername() {
 		return username;
