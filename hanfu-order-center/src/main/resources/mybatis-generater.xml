@@ -106,12 +106,12 @@
 		<!--identity="true"/> -->
 		<!--</table> -->
 
-		<table schema="user_center" tableName="discover"
+		<!-- <table schema="user_center" tableName="discover"
 		domainObjectName="Discover">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/>
-		</table>
+		</table> -->
 		<!--<table schema="user_center" tableName="discover_pictrue" -->
 		<!--djlomainObjectName="DiscoverPictrue"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->

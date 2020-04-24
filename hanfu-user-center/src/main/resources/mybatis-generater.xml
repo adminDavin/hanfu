@@ -130,11 +130,11 @@
 		<!-- <table schema="user_center" tableName="hf_user_coupons" domainObjectName="HfUserCoupons"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<table schema="user_center" tableName="hf_member_level"
+		<!-- <table schema="user_center" tableName="hf_member_level"
 			domainObjectName="HfMemberLevel">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
-		</table>
+		</table> -->
 	</context>
 </generatorConfiguration>

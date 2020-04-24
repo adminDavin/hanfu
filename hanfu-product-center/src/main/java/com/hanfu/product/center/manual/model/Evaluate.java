@@ -77,6 +77,7 @@ public static enum EvaluateContentTypeEnum {
 	private Integer star;
 	private Integer comment_count;
 	private Integer praise;
+	private Integer transmitCount;
 	private String hfDesc;
 	private String username;
 	private String levelName;
@@ -88,6 +89,9 @@ public static enum EvaluateContentTypeEnum {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
 	private HfOrderDetail list;
+	
+	private Integer isPraise;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -135,6 +139,12 @@ public static enum EvaluateContentTypeEnum {
 	}
 	public void setPraise(Integer praise) {
 		this.praise = praise;
+	}
+	public Integer getTransmitCount() {
+		return transmitCount;
+	}
+	public void setTransmitCount(Integer transmitCount) {
+		this.transmitCount = transmitCount;
 	}
 	public String getUsername() {
 		return username;
@@ -196,4 +206,11 @@ public static enum EvaluateContentTypeEnum {
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
+	public Integer getIsPraise() {
+		return isPraise;
+	}
+	public void setIsPraise(Integer isPraise) {
+		this.isPraise = isPraise;
+	}
+	
 }

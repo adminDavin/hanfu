@@ -296,12 +296,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-       <!-- <table schema="user_center" tableName="hf_evaluate"
+      <table schema="user_center" tableName="hf_evaluate"
                domainObjectName="HfEvaluate">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> -->
+        </table> 
         <!-- <table schema="user_center" tableName="evaluate_picture"
                domainObjectName="EvaluatePicture">
             <property name="useActualColumnNames" value="false"/>
@@ -326,5 +326,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
+        <!--  <table schema="user_center" tableName="evaluate_user_record"
+               domainObjectName="EvaluateUserRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        
     </context>
 </generatorConfiguration>
