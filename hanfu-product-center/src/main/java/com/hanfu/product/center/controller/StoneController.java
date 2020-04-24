@@ -39,6 +39,7 @@ import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HomePageDao;
 import com.hanfu.product.center.manual.model.HomePageInfo;
+import com.hanfu.product.center.manual.model.ProductStone.StonePictureTypeEnum;
 import com.hanfu.product.center.model.EvluateInstancePicture;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
@@ -130,10 +131,10 @@ public class StoneController {
     
     @ApiOperation(value = "获取店铺图片", notes = "获取店铺图片")
     @RequestMapping(value = "/getStonePicture", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> getStonePicture(Integer stoneId) throws JSONException {
+    public ResponseEntity<JSONObject> getStonePicture(Integer stoneId, String type) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStonePictureExample example = new HfStonePictureExample();
-        example.createCriteria().andStoneIdEqualTo(stoneId);
+        example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo(type);
         List<HfStonePicture> list = hfStonePictureMapper.selectByExample(example);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
@@ -160,7 +161,7 @@ public class StoneController {
     
     @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
     @RequestMapping(value = "/addStonePicture", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addStonePicture(Integer stoneId,@RequestPart(required = false) MultipartFile[] file) throws JSONException, IOException {
+    public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,@RequestPart(required = false) MultipartFile[] file) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
         for(MultipartFile f:file) {
@@ -177,6 +178,7 @@ public class StoneController {
 			fileDescMapper.insert(fileDesc);
 			HfStonePicture picture = new HfStonePicture();
 			picture.setStoneId(stoneId);
+			picture.setType(StonePictureTypeEnum.getStonePictureTypeEnum(type).getStonePictureType());
 			picture.setFileId(fileDesc.getId());
 			picture.setHfName("店铺图片");
 			picture.setHfDesc("店铺图片描述");

@@ -14,20 +14,30 @@ import com.hanfu.order.center.request.CreateHfOrderRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @Api
@@ -36,6 +46,7 @@ import java.util.stream.Collectors;
 public class DiscoverController {
 
 	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+	private static final String LOCK = "lock";
 	@Autowired
     RestTemplate restTemplate;
 	@Autowired
@@ -200,45 +211,4 @@ public class DiscoverController {
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 
-	@RequestMapping(value = "/selectDiscover", method = RequestMethod.GET)
-	@ApiOperation(value = "查询发现", notes = "查询发现")
-	public ResponseEntity<JSONObject> selectDiscover(Integer userId) throws JSONException {
-		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		List<DiscoverDisplay> result = new ArrayList<DiscoverDisplay>();
-		List<Discover> discovers = discoverMapper.selectByExample(null);
-		List<Integer> productId = new ArrayList<Integer>();
-		List<Integer> fileId = new ArrayList<Integer>();
-		DiscoverPictrueExample pictrueExample = new DiscoverPictrueExample();
-		DiscoverProductExample productExample = new DiscoverProductExample();
-		List<DiscoverPictrue> pictrues = new ArrayList<DiscoverPictrue>();
-		List<DiscoverProduct> products = new ArrayList<DiscoverProduct>();
- 		for (int i = 0; i < discovers.size(); i++) {
- 			pictrueExample.clear();
- 			productExample.clear();
-			Discover d = discovers.get(i);
-			DiscoverDisplay display = new DiscoverDisplay();
-			display.setDiscoverContent(d.getDiscoverContent());
-			display.setDiscoverDesc(d.getDiscoverDesc());
-			display.setDiscoverHeadline(d.getDiscoverHeadline());
-			display.setDiscoverType(d.getDiscoverType());
-			display.setUserId(d.getUserId());
-			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
-					JSONObject.class, d.getUserId());
-			display.setUsername(js1.getJSONObject("data").getString("nickName"));
-			display.setTime(d.getCreateTime());
-			pictrueExample.createCriteria().andDiscoverIdEqualTo(d.getId());
-			productExample.createCriteria().andDiscoverIdEqualTo(d.getId());
-			pictrues = discoverPictrueMapper.selectByExample(pictrueExample);
-			products = discoverProductMapper.selectByExample(productExample);
-			fileId = pictrues.stream().map(DiscoverPictrue :: getFileId).collect(Collectors.toList());
-			productId = products.stream().map(DiscoverProduct :: getProductId).collect(Collectors.toList());
-			display.setFileId(fileId);
-			display.setProductId(productId);
-			result.add(display);
-		}
-		if (userId != null) {
-
-		}
-		return builder.body(ResponseUtils.getResponseBody(result));
-	}
 }
