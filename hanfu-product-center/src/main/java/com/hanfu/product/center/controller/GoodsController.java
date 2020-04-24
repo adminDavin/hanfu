@@ -1486,24 +1486,29 @@ public class GoodsController {
 			instanceExample.createCriteria().andParentEvaluateIdEqualTo(evaluate.getId());
 			instances = evaluateInstanceMapper.selectByExample(instanceExample);
 			e.setUserId(evaluate.getUserId());
-			HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
+			if(id == null) {
+				HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
+				e.setHfDesc(detail.getHfDesc());
+			}
 			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
 					JSONObject.class, evaluate.getUserId());
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 					JSONObject.class, evaluate.getUserId());
 			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			e.setUsername(js1.getJSONObject("data").getString("nickName"));
-
-			recordExample.clear();
-			recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
-					.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
-			if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
-				e.setIsPraise(1);
-			} else {
-				e.setIsPraise(0);
+			
+			if(userId != null) {
+				recordExample.clear();
+				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
+				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+					e.setIsPraise(1);
+				} else {
+					e.setIsPraise(0);
+				}
 			}
+			
 			e.setStar(evaluate.getStar());
-			e.setHfDesc(detail.getHfDesc());
 			e.setComment(evaluate.getEvaluate());
 			e.setComment_count(evaluate.getCommentCount());
 			e.setPraise(evaluate.getPraise());
@@ -1556,17 +1561,25 @@ public class GoodsController {
 		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
 		if (!records.isEmpty()) {
 			EvaluateUserRecord record = records.get(0);
-			if (record.getIsDeleted() == 0) {
+			if (record.getIsDeleted() == (byte) 0) {
+				System.out.println("更改点赞状态");
 				record.setIsDeleted((byte) 1);
 				evaluate.setPraise(evaluate.getPraise()+1);
-				
+				record.setModifyTime(LocalDateTime.now());
+				evaluateUserRecordMapper.updateByPrimaryKey(record);
+				hfEvaluateMapper.updateByPrimaryKey(evaluate);
+				return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 			}
-			if (record.getIsDeleted() == 1) {
+			if (record.getIsDeleted() == (byte) 1) {
+				System.out.println("11111111111");
 				record.setIsDeleted((byte) 0);
 				evaluate.setPraise(evaluate.getPraise()-1);
+				record.setModifyTime(LocalDateTime.now());
+				evaluateUserRecordMapper.updateByPrimaryKey(record);
+				hfEvaluateMapper.updateByPrimaryKey(evaluate);
+				return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 			}
-			record.setModifyTime(LocalDateTime.now());
-			evaluateUserRecordMapper.updateByPrimaryKey(record);
+			
 		} else {
 			EvaluateUserRecord record = new EvaluateUserRecord();
 			record.setUserId(userId);
@@ -1577,8 +1590,8 @@ public class GoodsController {
 			record.setType(type);
 			evaluateUserRecordMapper.insert(record);
 			evaluate.setPraise(evaluate.getPraise() + 1);
+			hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		}
-		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 
