@@ -878,8 +878,9 @@ public class HfProductController {
 				HfActivityProduct hfactivityProduct = products.get(j);
 				HfProductDisplay display = new HfProductDisplay();
 				Product product = productMapper.selectByPrimaryKey(hfactivityProduct.getProductId());
-				List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
-						.selectHfGoodsDisplay(hfactivityProduct.getProductId());
+				if (product != null) {
+					List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
+							.selectHfGoodsDisplay(hfactivityProduct.getProductId());
 //					if (!hfGoodsDisplay.isEmpty()) {
 //						if (hfGoodsDisplay.get(0).getStoneId() != null) {
 //							display.setStoneId(hfGoodsDisplay.get(0).getStoneId());
@@ -887,31 +888,32 @@ public class HfProductController {
 //							display.setStoneName(hfStone.getHfName());
 //						}
 //					}
-				ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());
-				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
-				display.setStoneName(hfStone.getHfName());
-				display.setInstanceId(hfactivityProduct.getInstanceId());
-				display.setStoneId(hfStone.getId());
-				Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
-						.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
-								(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
-									oldList.addAll(newList);
-									return oldList;
-								}));
-				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(hfactivityProduct.getProductId());
-				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
-						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
-				if (hfGood.get().getLinePrice() != null) {
-					display.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
-				}
-				display.setId(hfactivityProduct.getProductId());
-				display.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
-				display.setDefaultGoodsId(hfGood.get().getId());
-				display.setActivityId(activity.getId());
-				display.setActivityState(index);
-				display.setStartTime(activity.getStartTime());
-				display.setEndTime(activity.getEndTime());
-				if(product != null) {
+					ProductInstance instance = productInstanceMapper
+							.selectByPrimaryKey(hfactivityProduct.getInstanceId());
+					HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
+					display.setStoneName(hfStone.getHfName());
+					display.setInstanceId(hfactivityProduct.getInstanceId());
+					display.setStoneId(hfStone.getId());
+					Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream().collect(
+							Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+									(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+										oldList.addAll(newList);
+										return oldList;
+									}));
+					List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(hfactivityProduct.getProductId());
+					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
+							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+					if (hfGood.get().getLinePrice() != null) {
+						display.setLinePrice(hfGood.isPresent() ? hfGood.get().getLinePrice() : -1);
+					}
+					display.setId(hfactivityProduct.getProductId());
+					display.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+					display.setDefaultGoodsId(hfGood.get().getId());
+					display.setActivityId(activity.getId());
+					display.setActivityState(index);
+					display.setStartTime(activity.getStartTime());
+					display.setEndTime(activity.getEndTime());
+
 					display.setProductName(product.getHfName());
 					display.setProductDesc(product.getProductDesc());
 					display.setFileId(product.getFileId());
@@ -920,33 +922,34 @@ public class HfProductController {
 							.selectByPrimaryKey(product.getCategoryId());
 					display.setCategoryName(category.getHfName());
 					display.setBossId(product.getBossId());
-				}
-				display.setDiscountRatio(hfactivityProduct.getDiscountRatio());
-				display.setDistributionRatio(hfactivityProduct.getDistributionRatio());
-				display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
-				display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
-				if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
-					String s = String
-							.valueOf(Integer.valueOf(display.getPriceArea()) - hfactivityProduct.getFavoravlePrice());
-					if (null != s && s.indexOf(".") > 0) {
-						s = s.replaceAll("0+?$", "");// 去掉多余的0
-						s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-					}
-					display.setPriceArea(s);
-				} else {
-					if (hfactivityProduct.getDiscountRatio() != null) {
-						if (hfactivityProduct.getDiscountRatio() != 0) {
-							String s = String.valueOf(Double.valueOf(display.getPriceArea())
-									* (hfactivityProduct.getDiscountRatio() / 100));
-							if (null != s && s.indexOf(".") > 0) {
-								s = s.replaceAll("0+?$", "");// 去掉多余的0
-								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+
+					display.setDiscountRatio(hfactivityProduct.getDiscountRatio());
+					display.setDistributionRatio(hfactivityProduct.getDistributionRatio());
+					display.setFavoravlePrice(hfactivityProduct.getFavoravlePrice());
+					display.setInventoryCelling(hfactivityProduct.getInventoryCelling());
+					if (hfactivityProduct.getFavoravlePrice() != null && hfactivityProduct.getFavoravlePrice() != 0) {
+						String s = String.valueOf(
+								Integer.valueOf(display.getPriceArea()) - hfactivityProduct.getFavoravlePrice());
+						if (null != s && s.indexOf(".") > 0) {
+							s = s.replaceAll("0+?$", "");// 去掉多余的0
+							s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+						}
+						display.setPriceArea(s);
+					} else {
+						if (hfactivityProduct.getDiscountRatio() != null) {
+							if (hfactivityProduct.getDiscountRatio() != 0) {
+								String s = String.valueOf(Double.valueOf(display.getPriceArea())
+										* (hfactivityProduct.getDiscountRatio() / 100));
+								if (null != s && s.indexOf(".") > 0) {
+									s = s.replaceAll("0+?$", "");// 去掉多余的0
+									s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+								}
+								display.setPriceArea(s);
 							}
-							display.setPriceArea(s);
 						}
 					}
+					displays.add(display);
 				}
-				displays.add(display);
 			}
 
 			activity.setProductList(displays);
