@@ -1496,7 +1496,7 @@ public class GoodsController {
 
 			recordExample.clear();
 			recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
-					.andIsDeletedEqualTo((byte) 1);
+					.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
 			if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
 				e.setIsPraise(1);
 			} else {
@@ -1542,8 +1542,9 @@ public class GoodsController {
 
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
 	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId) throws Exception {
+	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, Integer type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluate evaluate = new HfEvaluate();
 		JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 				JSONObject.class, userId);
 		if ("此用户不存在".equals(js1.get("data"))) {
@@ -1569,13 +1570,14 @@ public class GoodsController {
 			record.setEvaluate(id);
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
-			record.setIsDeleted((byte) 0);
+			record.setIsDeleted((byte) 1);
+			record.setType(type);
 			evaluateUserRecordMapper.insert(record);
+			evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+			evaluate.setPraise(evaluate.getPraise() + 1);
+			hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		}
-
-		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
-		evaluate.setPraise(evaluate.getPraise() + 1);
-		hfEvaluateMapper.updateByPrimaryKey(evaluate);
+		
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 
@@ -1669,13 +1671,15 @@ public class GoodsController {
 			display.setComment(d.getEvaluate());
 //			display.setDiscoverDesc(d.getDiscoverDesc());
 //			display.setDiscoverHeadline(d.getDiscoverHeadline());
-			recordExample.clear();
-			recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
-					.andIsDeletedEqualTo((byte) 1);
-			if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
-				display.setIsPraise(1);
-			} else {
-				display.setIsPraise(0);
+			if(userId != null) {
+				recordExample.clear();
+				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
+				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+					display.setIsPraise(1);
+				} else {
+					display.setIsPraise(0);
+				}
 			}
 			display.setId(d.getId());
 			display.setType(d.getType());
