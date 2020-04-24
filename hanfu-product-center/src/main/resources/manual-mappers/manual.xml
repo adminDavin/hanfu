@@ -136,7 +136,7 @@
 
 	<select id="findCategoryByInfo" resultMap="HfCategoryMap">
 		select * from hf_category where 1=1
-		<if test="levelId != null and levelId != ''">
+		<if test=" levelId == 0 or (levelId != null and levelId != '')">
 			and level_id = #{levelId}
 		</if>
 		<if test="hfName != null and hfName != ''">

@@ -60,6 +60,7 @@ public class ManualDaoImpl implements ManualDao {
     @Override
     public List<HfCategory> findCategoryByInfo(HfCategory h) {
     	List<HfCategory> result = sqlSessionTemplate.selectList("findCategoryByInfo", h);
+    	System.out.println(h.getLevelId());
     	return result;
     }
 }

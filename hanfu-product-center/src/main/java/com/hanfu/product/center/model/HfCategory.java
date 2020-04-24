@@ -49,7 +49,6 @@ public class HfCategory implements Serializable {
      *
      * @mbg.generated Sun Mar 22 17:13:44 CST 2020
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
@@ -59,7 +58,6 @@ public class HfCategory implements Serializable {
      *
      * @mbg.generated Sun Mar 22 17:13:44 CST 2020
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyTime;
 
     /**

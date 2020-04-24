@@ -165,8 +165,16 @@ public class ProductController {
 		HfCategory h = new HfCategory();
 		h.setLevelId(level);
 		h.setHfName(name);
+		List<Categories> result  = new ArrayList<Categories>();
 		List<HfCategory> list = manualDao.findCategoryByInfo(h);
-        return builder.body(ResponseUtils.getResponseBody(list));
+		for (int i = 0; i < list.size(); i++) {
+			Categories categories = new Categories();
+			categories.setDate(list.get(i).getCreateTime());
+			categories.setHfName(list.get(i).getHfName());
+			categories.setLevel(list.get(i).getLevelId()+1);
+			result.add(categories);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
     }	
 
 	@ApiOperation(value = "获取所有类目", notes = "获取所有类目全部数据")
