@@ -1544,13 +1544,13 @@ public class GoodsController {
 	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, Integer type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfEvaluate evaluate = new HfEvaluate();
+		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
 		JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 				JSONObject.class, userId);
 		if ("此用户不存在".equals(js1.get("data"))) {
 			return builder.body(ResponseUtils.getResponseBody("-1"));
 		}
-
+		
 		EvaluateUserRecordExample example = new EvaluateUserRecordExample();
 		example.createCriteria().andUserIdEqualTo(userId);
 		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
@@ -1558,9 +1558,12 @@ public class GoodsController {
 			EvaluateUserRecord record = records.get(0);
 			if (record.getIsDeleted() == 0) {
 				record.setIsDeleted((byte) 1);
+				evaluate.setPraise(evaluate.getPraise()+1);
+				
 			}
 			if (record.getIsDeleted() == 1) {
 				record.setIsDeleted((byte) 0);
+				evaluate.setPraise(evaluate.getPraise()-1);
 			}
 			record.setModifyTime(LocalDateTime.now());
 			evaluateUserRecordMapper.updateByPrimaryKey(record);
@@ -1573,11 +1576,9 @@ public class GoodsController {
 			record.setIsDeleted((byte) 1);
 			record.setType(type);
 			evaluateUserRecordMapper.insert(record);
-			evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
 			evaluate.setPraise(evaluate.getPraise() + 1);
-			hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		}
-		
+		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 
