@@ -1390,10 +1390,10 @@ public class GoodsController {
 			example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
 			List<ProductInstance> instance = productInstanceMapper.selectByExample(example);
 			hfEvaluate.setInstanceId(instance.get(0).getId());
-			hfEvaluate.setOrderDetailId(orderDetailId);
-			hfEvaluate.setStar(star);
-
-			if (EvaluateTypeEnum.getEvaluateTypeEnum("evaluate").equals(type)) {
+			
+			if (EvaluateTypeEnum.EVALUATE.getEvaluateType().equals(type)) {
+				hfEvaluate.setOrderDetailId(orderDetailId);
+				hfEvaluate.setStar(star);
 				if (instance.get(0).getEvaluateCount() == null) {
 					instance.get(0).setEvaluateCount(1);
 				} else {

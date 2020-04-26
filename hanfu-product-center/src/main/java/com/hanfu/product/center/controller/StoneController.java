@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,12 +33,14 @@ import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.HfStoneConcernMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HomePageDao;
+import com.hanfu.product.center.manual.model.HfStoneInfo;
 import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.ProductStone.StonePictureTypeEnum;
 import com.hanfu.product.center.model.EvluateInstancePicture;
@@ -54,6 +57,7 @@ import com.hanfu.product.center.model.HfOrderExample;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
+import com.hanfu.product.center.model.HfStoneConcernExample;
 import com.hanfu.product.center.model.HfStoneExample;
 import com.hanfu.product.center.model.HfStonePicture;
 import com.hanfu.product.center.model.HfStonePictureExample;
@@ -118,6 +122,9 @@ public class StoneController {
     @Autowired
     private ProductMapper productMapper;
     
+    @Autowired
+    private HfStoneConcernMapper hfStoneConcernMapper;
+    
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -161,15 +168,15 @@ public class StoneController {
     
     @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
     @RequestMapping(value = "/addStonePicture", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,@RequestPart(required = false) MultipartFile[] file) throws JSONException, IOException {
+    public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,MultipartFile file) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
-        for(MultipartFile f:file) {
+//        for(MultipartFile f:file) {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
-			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(0));
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(0));
 			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(f.getName());
+			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setCreateTime(LocalDateTime.now());
@@ -186,7 +193,7 @@ public class StoneController {
 			picture.setModifyTime(LocalDateTime.now());
 			picture.setIsDeleted((byte) 0);
 			hfStonePictureMapper.insert(picture);
-		}
+//		}
         return builder.body(ResponseUtils.getResponseBody(stone.getId()));
     }
 
@@ -272,9 +279,38 @@ public class StoneController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "商铺id", required = true, type = "Integer"),
     })
-    public  ResponseEntity<JSONObject> selectById( Integer id) throws JSONException {
+    public  ResponseEntity<JSONObject> selectById(Integer id, Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByPrimaryKey(id)));
+        HfStone hfStone = hfStoneMapper.selectByPrimaryKey(id);
+        HfStoneInfo info = new HfStoneInfo();
+        info.setStoneName(hfStone.getHfName());
+        info.setStoneDesc(hfStone.getHfDesc());
+        info.setAddress(hfStone.getAddress());
+        info.setConcernCount(hfStone.getConcernCount());
+        info.setCreateTime(hfStone.getCreateTime());
+        info.setExpireTime(hfStone.getExpireTime());
+        HfStonePictureExample example = new HfStonePictureExample();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("avatar");
+        List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setAvatarId(pictures.get(0).getFileId());
+        }
+        example.clear();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("background");
+        pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setBackgroundId(pictures.get(0).getFileId());
+        }
+        if(userId != null) {
+        	 HfStoneConcernExample example2 = new HfStoneConcernExample();
+             example2.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(id);
+             if(CollectionUtils.isEmpty(hfStoneConcernMapper.selectByExample(example2))) {
+             	info.setIsConcern(0);
+             }else {
+             	info.setIsConcern(1);
+             }
+        }
+        return builder.body(ResponseUtils.getResponseBody(info));
     }
 
     @ApiOperation(value = "修改商铺状态", notes = "修改商铺状态")
@@ -453,14 +489,6 @@ public class StoneController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer salesCountAll = 0;
 		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
-//		HfStoneExample example = new HfStoneExample();
-//		example.createCriteria().andBossIdEqualTo(bossId);
-//		List<HfStone> list = hfStoneMapper.selectByExample(example);
-//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-//		HfOrderExample example2 = new HfOrderExample();
-//		example2.createCriteria().andStoneIdIn(stoneId);
-//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
 		example3.createCriteria().andStoneIdEqualTo(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
