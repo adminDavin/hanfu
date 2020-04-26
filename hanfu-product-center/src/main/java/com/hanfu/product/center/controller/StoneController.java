@@ -1,11 +1,13 @@
 package com.hanfu.product.center.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +26,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.FormatException;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.DecoderResult;
+import com.google.zxing.datamatrix.decoder.Decoder;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -196,6 +209,8 @@ public class StoneController {
 //		}
         return builder.body(ResponseUtils.getResponseBody(stone.getId()));
     }
+    
+    
 
     @ApiOperation(value = "删除商铺", notes = "删除商铺")
     @RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
@@ -533,4 +548,68 @@ public class StoneController {
 		return builder.body(ResponseUtils.getResponseBody(infos));
 	}
     
+    public static BitMatrix createCode(String content) throws IOException {
+        //二维码的宽高
+        int width = 200;
+        int height = 200;
+
+        //其他参数，如字符集编码
+        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        //容错级别为H
+        hints.put(EncodeHintType.ERROR_CORRECTION , ErrorCorrectionLevel.H);
+        //白边的宽度，可取0~4
+        hints.put(EncodeHintType.MARGIN , 0);
+
+        BitMatrix bitMatrix = null;
+        try {
+            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
+        	MultiFormatWriter writer = new MultiFormatWriter();
+            bitMatrix = new MultiFormatWriter().encode(content,
+                    BarcodeFormat.QR_CODE, width, height,hints);
+            //bitMatrix = deleteWhite(bitMatrix);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return bitMatrix;
+    }
+    
+   
+//    @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
+//    @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
+//    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
+//        String str = String.valueOf(stoneId);
+//        byte[] b = Base64.getEncoder().encode(str.getBytes());
+//        BitMatrix bitMatrix = createCode(b.toString());
+//        String arr[];
+//		FileMangeService fileMangeService = new FileMangeService();
+//		
+//		DecoderResult decoderResult = null; 
+//	    
+//		decoderResult = new Decoder().decode(bitMatrix);
+//		MatrixToImageWriter.toBufferedImage(bitMatrix).
+//	    byte[] cmd = decoderResult.getRawBytes();
+//		arr = fileMangeService.uploadFile(cmd,String.valueOf(0));
+//		FileDesc fileDesc = new FileDesc();
+//		fileDesc.setFileName("店铺二维码");
+//		fileDesc.setGroupName(arr[0]);
+//		fileDesc.setRemoteFilename(arr[1]);
+//		fileDesc.setCreateTime(LocalDateTime.now());
+//		fileDesc.setModifyTime(LocalDateTime.now());
+//		fileDesc.setIsDeleted((short) 0);
+//		fileDescMapper.insert(fileDesc);
+//		HfStonePicture picture = new HfStonePicture();
+//		picture.setStoneId(stoneId);
+//		picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
+//		picture.setFileId(fileDesc.getId());
+//		picture.setHfName("店铺二维码");
+//		picture.setHfDesc("店铺二维码描述");
+//		picture.setCreateTime(LocalDateTime.now());
+//		picture.setModifyTime(LocalDateTime.now());
+//		picture.setIsDeleted((byte) 0);
+//		hfStonePictureMapper.insert(picture);
+//        return builder.body(ResponseUtils.getResponseBody(stone.getId()));
+//    }
 }

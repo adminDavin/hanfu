@@ -17,6 +17,7 @@ public class StoneConcernInfo implements Serializable{
 	private Integer stoneId;
 	private String stoneDesc;
 	private List<Integer> fileId;
+	private Integer backgroundId;
 	private Integer concernCount;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
@@ -37,6 +38,12 @@ public class StoneConcernInfo implements Serializable{
 	}
 	public void setStoneDesc(String stoneDesc) {
 		this.stoneDesc = stoneDesc;
+	}
+	public Integer getBackgroundId() {
+		return backgroundId;
+	}
+	public void setBackgroundId(Integer backgroundId) {
+		this.backgroundId = backgroundId;
 	}
 	public Integer getConcernCount() {
 		return concernCount;

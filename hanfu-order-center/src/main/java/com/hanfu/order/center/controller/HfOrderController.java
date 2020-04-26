@@ -127,7 +127,7 @@ public class HfOrderController {
         hfOrder.setUserId(request.getUserId());
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
-        hfOrder.setStoneId(request.getStoneId());
+        hfOrder.setStoneId(1);// 暂时用作bossid
         hfOrder.setDistributorId(request.getDistributorId());
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
