@@ -71,7 +71,15 @@ spring:
 #    #可以关闭指定的端点
 #    shutdown:
 #      enabled: false
-
+myspcloud:
+  item:
+    url: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/addStoneBalance
+  item1:
+    url1: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/updateStoneBalance
+  item2:
+    url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
+  item3:
+    url3: https://www.tjsichuang.cn:1443/api/product/hfProductActivity/distributionActivityCalculate
 logging:
   file: ./logs/payment-center.log
 

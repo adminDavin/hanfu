@@ -68,7 +68,7 @@ public class HfGoodsController {
 
     @ApiOperation(value = "校检库存", notes = "校检库存")
     @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId,Integer actualPrice)
+    public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId,Integer actualPrice,Integer instanceId)
             throws JSONException {
         if (activityId==null){
             activityId=0;
@@ -79,7 +79,7 @@ public class HfGoodsController {
         if(goodsId!=null) {
             HfGoods hfGoods= hfGoodsMapper.selectByPrimaryKey(goodsId);
             HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
-            hfActivityProductExample.createCriteria().andActivityIdEqualTo(activityId).andProductIdEqualTo(hfGoods.getProductId());
+            hfActivityProductExample.createCriteria().andActivityIdEqualTo(activityId).andProductIdEqualTo(hfGoods.getProductId()).andInstanceIdEqualTo(instanceId);
             List<HfActivityProduct> hfActivityProductList= hfActivityProductMapper.selectByExample(hfActivityProductExample);
             if (hfActivityProductList.size()!=0){
                 if (hfActivityProductList.get(0).getInventoryCelling()!=null&&hfActivityProductList.get(0).getInventoryCelling()!=0){
@@ -102,8 +102,8 @@ public class HfGoodsController {
                       return builder.body(ResponseUtils.getResponseBody(amount));
                   }
                 } else {
-//                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
-                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
+                    amount.setMoney((int) (selectPriceResp(goodsId).get("hfPrices")-hfActivityProductList.get(0).getFavoravlePrice())*GoodsNum);
+//                    amount.setMoney((int) (hfActivityProductList.get(0).getFavoravlePrice()*GoodsNum));
                     amount.setDiscountMoney((int) (selectPriceResp(goodsId).get("linePrice"))*GoodsNum);
                     return builder.body(ResponseUtils.getResponseBody(amount));
                 }
@@ -211,6 +211,7 @@ if (actualPrice!=null){
 //        System.out.println(hfPrices.get(0).getLinePrice());
         params.put("hfResps", hfResps.get(0).getQuantity());
         params.put("linePrice",hfPrices.get(0).getLinePrice());
+        System.out.println(hfPrices.get(0).getLinePrice());
 
         return params;
     }

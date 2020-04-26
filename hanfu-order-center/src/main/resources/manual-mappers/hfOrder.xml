@@ -29,63 +29,82 @@
         <result column="address_desc" jdbcType="VARCHAR" property="addressDesc"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     </resultMap>
-    
+
     <resultMap id="HfGoodsDisplayResultMap" type="com.hanfu.order.center.manual.model.HfGoodsDisplay">
         <result column="id" jdbcType="INTEGER" property="id"/>
         <result column="hf_name" jdbcType="VARCHAR" property="hfName"/>
         <result column="file_id" jdbcType="INTEGER" property="fileId"/>
         <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
         <result column="stone_name" jdbcType="VARCHAR" property="stoneName"/>
-        
+
     </resultMap>
-    
+
     <resultMap id="HfOrderStatisticsResultMap" type="com.hanfu.order.center.manual.model.HfOrderStatistics">
         <result column="order_status" jdbcType="VARCHAR" property="orderStatus"/>
         <result column="quantity" jdbcType="INTEGER" property="quantity"/>
     </resultMap>
- 
-   
+
+
     <insert id="insertOrderAddress">
        insert into hf_order_address(order_id, origin_address_id, address, detail, contact, phone, hf_desc, create_time, modify_time, last_modifier)
        select #{orderId}, id, hf_city, hf_address_detail, contact, phone_number, hf_desc, now(), now(), user_id from hf_user_address where id=#{addressId};
     </insert>
-    
+
     <select id="selectGoodsInfo" parameterType="java.util.List" resultMap="HfGoodsDisplayResultMap">
-       select g.id, g.hf_name, g.stone_id, s.hf_name stone_name, max(p.file_id) file_id
-       from hf_goods g left join hf_stone s on g.stone_id=s.id 
-       left join hf_goods_pictrue p on g.id=p.goods_id 
-       where g.id in 
-       <foreach collection="list" item="goodsIds" index="index"  open="(" close=")" separator=",">
-         #{goodsIds}
-       </foreach>
-       group by g.id, g.hf_name, g.stone_id, s.hf_name;
+        select g.id, g.hf_name, g.stone_id, s.hf_name stone_name, max(p.file_id) file_id
+        from hf_goods g left join hf_stone s on g.stone_id=s.id
+        left join hf_goods_pictrue p on g.id=p.goods_id
+        where g.id in
+        <foreach collection="list" item="goodsIds" index="index" open="(" close=")" separator=",">
+            #{goodsIds}
+        </foreach>
+        group by g.id, g.hf_name, g.stone_id, s.hf_name;
     </select>
-    
+
     <select id="selectHfOrder" resultMap="BaseResultMap">
-    select  o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status, o.stone_id, o.distributor_id, o.payment_name, o.stone_id, o.payment_type, o.user_id, 
-u.nick_name,
-    a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc 
-     from hf_order o
-     left join hf_order_address a on o.id=a.order_id
-     left join hf_user u on u.id=o.user_id
-     where
+        select o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status,
+        o.stone_id, o.distributor_id, o.payment_name, o.stone_id, o.payment_type, o.user_id,
+        u.nick_name,
+        a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc
+        from hf_order o
+        left join hf_order_address a on o.id=a.order_id
+        left join hf_user u on u.id=o.user_id
+        where
         o.id_deleted=0
         <if test="userId != null and userId!= ''">
-            and  o.user_id =#{userId}
+            and o.user_id =#{userId}
         </if>
---            and o.order_type not in ('rechargeOrder')
-     <if test="orderStatus!='all'">
-        and o.order_status = #{orderStatus}
-    </if >
+        -- and o.order_type not in ('rechargeOrder')
+        <if test="orderStatus!='all'">
+            and o.order_status = #{orderStatus}
+        </if>
         <if test="orderType != null and orderType!= ''">
-            and  o.order_type =#{orderType}
+            and o.order_type =#{orderType}
         </if>
         <if test="orderCode != null and orderCode!= ''">
-            and  o.order_code =#{orderCode}
+            and o.order_code =#{orderCode}
         </if>
-     order by o.modify_time desc;
+        <if test="paymentName != null and paymentName!=''">
+            and o.payment_name = #{paymentName}
+        </if>
+        <if test="today != null and today!=''">
+            and to_days(o.create_time) = to_days(now())
+        </if>
+        <if test="yesterday != null and yesterday!=''">
+            and TO_DAYS(NOW()) - TO_DAYS(o.create_time) &lt;= 1
+        </if>
+        <if test="sevenDays != null and sevenDays!=''">
+            and DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= date(o.create_time)
+        </if>
+        <if test="months != null and months!=''">
+            and DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(o.create_time)
+        </if>
+        <if test="stateTime != null and endTime != null">
+            and o.create_time &gt;= #{stateTime} and o.create_time &lt;= #{endTime}
+        </if>
+        order by o.modify_time desc;
     </select>
-    
+
     <select id="selectHfOrderStatistics" resultMap="HfOrderStatisticsResultMap">
     select order_status, count(1) quantity from hf_order where user_id=965 and id_deleted=0 group by order_status;
     </select>

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -168,6 +169,9 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findAmountData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		double amountDay = 0;
 		double amountMouth = 0;
 		List<Integer> paymentCountDay = new ArrayList<Integer>();
@@ -192,28 +196,28 @@ public class HomePageController {
 		LocalDateTime lastMouthEnd = LocalDateTime
 				.of(LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate(), LocalTime.MAX)
 				.plusMonths(-1);
-		HfStoneExample example = new HfStoneExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
-		List<HfStone> hfStones = hfStoneMapper.selectByExample(example);
-		for (int i = 0; i < hfStones.size(); i++) {
-			HfStone hfStone = hfStones.get(i);
+//		HfStoneExample example = new HfStoneExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		List<HfStone> hfStones = hfStoneMapper.selectByExample(example);
+//		for (int i = 0; i < hfStones.size(); i++) {
+//			HfStone hfStone = hfStones.get(i);
 			HfOrderExample example2 = new HfOrderExample();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(dayStart, dayEnd);
 			List<HfOrder> hfOrderDays = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(yestdayStart, yestdayEnd);
 			List<HfOrder> hfOrderYesterday = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(mouthStart, mouthEnd);
 			List<HfOrder> hfOrderMouths = hfOrderMapper.selectByExample(example2);
 
 			example2.clear();
-			example2.createCriteria().andStoneIdEqualTo(hfStone.getId()).andOrderStatusEqualTo("complete")
+			example2.createCriteria().andStoneIdEqualTo(bossId).andOrderStatusIn(status)
 					.andCreateTimeBetween(lastMouthStart, lastMouthEnd);
 			List<HfOrder> hfOrderLastMouths = hfOrderMapper.selectByExample(example2);
 
@@ -246,7 +250,7 @@ public class HomePageController {
 			}
 
 			orderCountLastMouth += hfOrderLastMouths.size();
-		}
+//		}
 		HashSet h = new HashSet(paymentCountDay);
 		paymentCountDay.clear();
 		paymentCountDay.addAll(h);
@@ -310,6 +314,9 @@ public class HomePageController {
 		example3.createCriteria().andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
+		if(CollectionUtils.isEmpty(orderDetailId)) {
+			return builder.body(ResponseUtils.getResponseBody(infos));
+		}
 		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
 		List<Integer> productId = new ArrayList<Integer>();
 		for (int i = 0; i < result.size(); i++) {
@@ -357,12 +364,12 @@ public class HomePageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HomePageOrderType info = new HomePageOrderType();
 		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
-		HfStoneExample example = new HfStoneExample();
-		example.createCriteria().andBossIdEqualTo(bossId);
-		List<HfStone> list = hfStoneMapper.selectByExample(example);
-		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+//		HfStoneExample example = new HfStoneExample();
+//		example.createCriteria().andBossIdEqualTo(bossId);
+//		List<HfStone> list = hfStoneMapper.selectByExample(example);
+//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
 		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdIn(stoneId);
+		example2.createCriteria().andStoneIdEqualTo(bossId);
 		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
 		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
@@ -426,6 +433,9 @@ public class HomePageController {
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findSaleMouthData(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		LocalDateTime ldt = LocalDateTime.now();
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
@@ -444,7 +454,7 @@ public class HomePageController {
 //		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
 //		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
-		example3.createCriteria().andHfStatusEqualTo("complete").andStoneIdIn(stoneId);
+		example3.createCriteria().andHfStatusIn(status).andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		for (int i = 0; i < ldt.getMonthValue(); i++) {
 			quantity = 0;
@@ -580,50 +590,50 @@ public class HomePageController {
 			result.add(info);
 		}
 		
-		HfActivityProductExample activityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		for (int j = 0; j < result.size(); j++) {
-			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-			for (int j2 = 0; j2 < products.size(); j2++) {
-				Date date = new Date();
-				HfProductDisplay product = products.get(j2);
-				activityProductExample.clear();
-				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
-						.andProductActivityTypeIn(type);
-				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
-				if(!lists.isEmpty()) {
-					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
-					if (!lists.isEmpty() && activity.getEndTime().after(date)) {
-						product.setProductActivityType(lists.get(0).getProductActivityType());
-						product.setActivityId(lists.get(0).getActivityId());
-						product.setStartTime(activity.getStartTime());
-						product.setEndTime(activity.getEndTime());
-						if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
-							String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
-							if (null != s && s.indexOf(".") > 0) {
-								s = s.replaceAll("0+?$", "");// 去掉多余的0
-								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-							}
-							product.setPriceArea(s);
-						} else {
-							if (lists.get(0).getDiscountRatio() != null) {
-								if (lists.get(0).getDiscountRatio() != 0) {
-									String s = String.valueOf(Double.valueOf(product.getPriceArea())
-											* (lists.get(0).getDiscountRatio() / 100));
-									if (null != s && s.indexOf(".") > 0) {
-										s = s.replaceAll("0+?$", "");// 去掉多余的0
-										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-									}
-									product.setPriceArea(s);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+//		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+//		List<String> type = new ArrayList<String>();
+//		type.add("groupActivity");
+//		type.add("seckillActivity");
+//		for (int j = 0; j < result.size(); j++) {
+//			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+//			for (int j2 = 0; j2 < products.size(); j2++) {
+//				Date date = new Date();
+//				HfProductDisplay product = products.get(j2);
+//				activityProductExample.clear();
+//				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+//						.andProductActivityTypeIn(type);
+//				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
+//				if(!lists.isEmpty()) {
+//					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
+//					if (!lists.isEmpty() && activity.getEndTime().after(date)) {
+//						product.setProductActivityType(lists.get(0).getProductActivityType());
+//						product.setActivityId(lists.get(0).getActivityId());
+//						product.setStartTime(activity.getStartTime());
+//						product.setEndTime(activity.getEndTime());
+//						if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
+//							String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
+//							if (null != s && s.indexOf(".") > 0) {
+//								s = s.replaceAll("0+?$", "");// 去掉多余的0
+//								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//							}
+//							product.setPriceArea(s);
+//						} else {
+//							if (lists.get(0).getDiscountRatio() != null) {
+//								if (lists.get(0).getDiscountRatio() != 0) {
+//									String s = String.valueOf(Double.valueOf(product.getPriceArea())
+//											* (lists.get(0).getDiscountRatio() / 100));
+//									if (null != s && s.indexOf(".") > 0) {
+//										s = s.replaceAll("0+?$", "");// 去掉多余的0
+//										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//									}
+//									product.setPriceArea(s);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
 		
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
@@ -691,51 +701,51 @@ public class HomePageController {
 			result.add(info);
 		}
 		
-		HfActivityProductExample activityProductExample = new HfActivityProductExample();
-		List<String> type = new ArrayList<String>();
-		type.add("groupActivity");
-		type.add("seckillActivity");
-		for (int j = 0; j < result.size(); j++) {
-			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-			for (int j2 = 0; j2 < products.size(); j2++) {
-				Date date = new Date();
-				HfProductDisplay product = products.get(j2);
-				activityProductExample.clear();
-				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
-						.andProductActivityTypeIn(type);
-				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
-				if(!lists.isEmpty()) {
-					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
-					if (!lists.isEmpty() && activity.getEndTime().after(date)) {
-						product.setProductActivityType(lists.get(0).getProductActivityType());
-						product.setActivityId(lists.get(0).getActivityId());
-						product.setStartTime(activity.getStartTime());
-						product.setEndTime(activity.getEndTime());
-						if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
-							String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
-							if (null != s && s.indexOf(".") > 0) {
-								s = s.replaceAll("0+?$", "");// 去掉多余的0
-								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-							}
-							product.setPriceArea(s);
-						} else {
-							if (lists.get(0).getDiscountRatio() != null) {
-								if (lists.get(0).getDiscountRatio() != 0) {
-									String s = String.valueOf(Double.valueOf(product.getPriceArea())
-											* (lists.get(0).getDiscountRatio() / 100));
-									if (null != s && s.indexOf(".") > 0) {
-										s = s.replaceAll("0+?$", "");// 去掉多余的0
-										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
-									}
-									product.setPriceArea(s);
-								}
-							}
-						}
-					}
-				}
-				
-			}
-		}
+//		HfActivityProductExample activityProductExample = new HfActivityProductExample();
+//		List<String> type = new ArrayList<String>();
+//		type.add("groupActivity");
+//		type.add("seckillActivity");
+//		for (int j = 0; j < result.size(); j++) {
+//			List<HfProductDisplay> products  = result.get(j).getList().stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
+//			for (int j2 = 0; j2 < products.size(); j2++) {
+//				Date date = new Date();
+//				HfProductDisplay product = products.get(j2);
+//				activityProductExample.clear();
+//				activityProductExample.createCriteria().andInstanceIdEqualTo(product.getInstanceId())
+//						.andProductActivityTypeIn(type);
+//				List<HfActivityProduct> lists = hfActivityProductMapper.selectByExample(activityProductExample);
+//				if(!lists.isEmpty()) {
+//					HfActivity activity = hfActivityMapper.selectByPrimaryKey(lists.get(0).getActivityId());
+//					if (!lists.isEmpty() && activity.getEndTime().after(date)) {
+//						product.setProductActivityType(lists.get(0).getProductActivityType());
+//						product.setActivityId(lists.get(0).getActivityId());
+//						product.setStartTime(activity.getStartTime());
+//						product.setEndTime(activity.getEndTime());
+//						if (lists.get(0).getFavoravlePrice() != null && lists.get(0).getFavoravlePrice() != 0) {
+//							String s = String.valueOf(Integer.valueOf(product.getPriceArea())-lists.get(0).getFavoravlePrice());
+//							if (null != s && s.indexOf(".") > 0) {
+//								s = s.replaceAll("0+?$", "");// 去掉多余的0
+//								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//							}
+//							product.setPriceArea(s);
+//						} else {
+//							if (lists.get(0).getDiscountRatio() != null) {
+//								if (lists.get(0).getDiscountRatio() != 0) {
+//									String s = String.valueOf(Double.valueOf(product.getPriceArea())
+//											* (lists.get(0).getDiscountRatio() / 100));
+//									if (null != s && s.indexOf(".") > 0) {
+//										s = s.replaceAll("0+?$", "");// 去掉多余的0
+//										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+//									}
+//									product.setPriceArea(s);
+//								}
+//							}
+//						}
+//					}
+//				}
+//				
+//			}
+//		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 

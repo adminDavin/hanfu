@@ -75,4 +75,10 @@ public class UserDaoImpl implements UserDao {
     	Integer result = sqlSessionTemplate.selectOne("selectUserOrderInfo", order);
     	return result;
     }
+    
+    @Override
+    public List<HfUser> selectUserOrderByInfo(HfUser user) {
+    	List<HfUser> result = sqlSessionTemplate.selectList("selectUserOrderByInfo", user);
+    	return result;
+    }
 }

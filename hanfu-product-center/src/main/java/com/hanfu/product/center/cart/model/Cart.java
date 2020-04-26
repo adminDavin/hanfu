@@ -23,6 +23,7 @@ public class Cart implements Serializable {
 
     /* 商品小图*/
     private Integer productIcon;
+    private Integer instanceId;
 
     private List<Map<String,String>> goodsSpec;
 
@@ -114,5 +115,13 @@ public class Cart implements Serializable {
 
     public void setStoneName(String stoneName) {
         this.stoneName = stoneName;
+    }
+
+    public Integer getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(Integer instanceId) {
+        this.instanceId = instanceId;
     }
 }

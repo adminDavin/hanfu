@@ -1,5 +1,6 @@
 package com.hanfu.order.center.controller;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -21,15 +22,15 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import com.hanfu.order.center.manual.dao.HfOrderDao;
 import com.hanfu.order.center.request.CreateHfOrderRequest;
@@ -42,6 +43,7 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.annotation.Resource;
 
@@ -56,6 +58,12 @@ public class HfOrderController {
     private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${myspcloud.item.url}")
+    private String itemUrl;
+    @Value("${myspcloud.item1.url1}")
+    private String itemUrl1;
+    @Value("${myspcloud.item2.url2}")
+    private String itemUrl2;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -119,7 +127,7 @@ public class HfOrderController {
         hfOrder.setUserId(request.getUserId());
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
-        hfOrder.setStoneId(request.getStoneId());
+        hfOrder.setStoneId(1);// 暂时用作bossid
         hfOrder.setDistributorId(request.getDistributorId());
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
@@ -169,14 +177,26 @@ public class HfOrderController {
                     type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "orderCode", value = "订单号", required = false,
                     type = "Integer")})
-    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode) throws JSONException {
+    public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
+                                                 String paymentName,String today,String yesterday,String sevenDays,String month,
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
+        if (stateTime!=null && endTime!=null){
+            params.put("stateTime",stateTime);
+            params.put("endTime",endTime);
+        }
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
         params.put("orderType", orderType);
         params.put("orderCode",orderCode);
+//        params.put("productName",productName);
+        params.put("paymentName",paymentName);
+        params.put("today",today);
+        params.put("yesterday",yesterday);
+        params.put("sevenDays",sevenDays);
+        params.put("months",month);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
 //            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
@@ -252,7 +272,11 @@ public class HfOrderController {
         
         return builder.body(ResponseUtils.getResponseBody(hfOrders));
     }
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
     @ApiOperation(value = "订单统计", notes = "订单查询")
     @RequestMapping(value = "/statistics", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -272,7 +296,32 @@ public class HfOrderController {
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (targetOrderStatus.equals("controversial")){
-            redisTemplate.opsForValue().set(orderCode+"controversial", targetOrderStatus);
+            redisTemplate.opsForValue().set(orderCode+"controversial", originOrderStatus);
+            HfOrderDetail hfOrderDetail = new HfOrderDetail();
+            hfOrderDetail.setHfStatus(targetOrderStatus);
+            HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+            hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setId(Id);
+            hfOrder.setOrderStatus(targetOrderStatus);
+            HfOrderExample hfOrderExample = new HfOrderExample();
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
+        }
+        //----
+        if (targetOrderStatus.equals("process")){
+            HfOrderDetail hfOrderDetail = new HfOrderDetail();
+            hfOrderDetail.setHfStatus(targetOrderStatus);
+            HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+            hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setId(Id);
+            hfOrder.setOrderStatus(targetOrderStatus);
+            HfOrderExample hfOrderExample = new HfOrderExample();
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
 //---
         if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
@@ -319,13 +368,25 @@ public class HfOrderController {
                 hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
 
                 HfOrderExample hfOrderExample1 = new HfOrderExample();
-                hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode);
 
                 payment payment = new payment();
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
                 restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+            }else {
+                HfOrderDetail hfOrderDetail = new HfOrderDetail();
+                hfOrderDetail.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
+                HfOrder hfOrder = new HfOrder();
+                hfOrder.setId(Id);
+                hfOrder.setOrderStatus(targetOrderStatus);
+                HfOrderExample hfOrderExample = new HfOrderExample();
+                hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+                hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
             }
             }
             //----evaluate
@@ -351,6 +412,25 @@ public class HfOrderController {
             }
             //--complete
             if (targetOrderStatus.equals("complete")){
+                HfOrderDetail hfOrderDetail3 = new HfOrderDetail();
+                hfOrderDetail3.setHfStatus(targetOrderStatus);
+                HfOrderDetailExample hfOrderDetailExample3 = new HfOrderDetailExample();
+                hfOrderDetailExample3.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
+                List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample3);
+//                Integer money = hfOrderDetailList.stream().mapToInt(HfOrderDetail::getActualPrice).sum();
+                //lius
+                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+                paramMap1.add("orderId",Id);
+                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);
+                hfOrderDetailList.forEach(hfOrderDetail -> {
+                    MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+                    paramMap2.add("stoneId",hfOrderDetail.getStoneId());
+                    paramMap2.add("balanceType","rechargeAmount");
+                    paramMap2.add("money",hfOrderDetail.getActualPrice());
+                    restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+                });
+
+                //
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -371,11 +451,16 @@ public class HfOrderController {
             }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+            HfOrderDetail hfOrderDetail = new HfOrderDetail();
+            hfOrderDetail.setHfStatus(targetOrderStatus);
+            HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+            hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+            hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
             HfOrder hfOrder = new HfOrder();
             hfOrder.setId(Id);
             hfOrder.setOrderStatus(targetOrderStatus);
             HfOrderExample hfOrderExample = new HfOrderExample();
-            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
+            hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode);
             hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
 
@@ -419,7 +504,7 @@ public class HfOrderController {
         hfOrder.setUserId(request.getUserId());
         hfOrder.setOrderType(request.getOrderType());
         hfOrder.setPaymentName(request.getPaymentName());
-//        hfOrder.setStoneId(1);
+        hfOrder.setStoneId(1);//用作bossId
 //        hfOrder.setDistributorId(request.getDistributorId());
         hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
         hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
@@ -456,7 +541,7 @@ public class HfOrderController {
         System.out.println(actualPrice);
         List<Integer> sss = new ArrayList<>();
             for (CreatesOrder goods : list) {
-                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice);
+                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice, Integer.valueOf(goods.getHfDesc()));
                 moneys = (Integer) map.get("money") + moneys;
                 sss.add(moneys);
                 HfPriceExample hfPriceExample = new HfPriceExample();
@@ -469,10 +554,12 @@ public class HfOrderController {
                 request.setSellPrice(hfPrices.get(0).getSellPrice());
                 request.setStoneId(goods.getStoneId());
                 //库存处理
-                HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
-                HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-                hfResp.setQuantity(hfResp.getQuantity()-goods.getQuantity());
-                hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                synchronized (this) {
+                    HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
+                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+                    hfResp.setQuantity(hfResp.getQuantity() - goods.getQuantity());
+                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                }
                 //详情
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
@@ -505,7 +592,15 @@ public class HfOrderController {
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
         LocalDateTime time = LocalDateTime.now();
-
+//流水
+        MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+        paramMap1.add("balanceType","order");
+        paramMap1.add("price",request.getActualPrice());
+        paramMap1.add("state",2);
+        paramMap1.add("stoneId",request.getStoneId());
+        paramMap1.add("orderId",hfOrder.getId());
+        restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
+        //
         HfOrderDetail detail = new HfOrderDetail();
         detail.setActualPrice(request.getActualPrice());
         detail.setCreateTime(time);
@@ -538,13 +633,14 @@ public class HfOrderController {
 
     }
 
-    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice){
+    private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice,Integer instanceId){
         Map map = new HashMap();
         if (activityId!=null){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
             paramMap.add("activityId",activityId);
+            paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
@@ -554,6 +650,7 @@ public class HfOrderController {
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
             paramMap.add("actualPrice",actualPrice);
+            paramMap.add("instanceId",instanceId);
             for (Integer integer:disconuntId){
                 paramMap.add("discountCouponId",integer);
             }
@@ -565,6 +662,7 @@ public class HfOrderController {
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("goodsId",goodsId);
             paramMap.add("GoodsNum",num);
+            paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
             JSONObject data=entity.getJSONObject("data");
             map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});

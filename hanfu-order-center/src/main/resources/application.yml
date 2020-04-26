@@ -1,6 +1,5 @@
 server:
   port: 9097
-
 dubbo:
   registry:
     address: 39.100.86.77:2181
@@ -71,7 +70,13 @@ spring:
 #    #可以关闭指定的端点
 #    shutdown:
 #      enabled: false
-
+myspcloud:
+  item:
+    url: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/addStoneBalance
+  item1:
+    url1: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/updateStoneBalance
+  item2:
+    url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
 logging:
   file: ./target/king-words.log
 

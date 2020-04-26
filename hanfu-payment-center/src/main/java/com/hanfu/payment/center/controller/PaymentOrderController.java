@@ -19,7 +19,11 @@ import com.hanfu.payment.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,6 +52,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 @CrossOrigin
@@ -59,7 +64,8 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfOrderDao hfOrderDao;
-
+	@Autowired
+	private RestTemplate restTemplate;
 	@Autowired
 	private HfTansactionFlowMapper hfTansactionFlowMapper;
 
@@ -89,9 +95,16 @@ public class PaymentOrderController {
 	
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
-
+	@Value("${myspcloud.item3.url3}")
+	private String itemUrl3;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
+	@Autowired
+	private StoneChargeOffMapper stoneChargeOffMapper;
+	@Autowired
+	private StoneBalanceMapper stoneBalanceMapper;
+
+
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -149,7 +162,7 @@ public class PaymentOrderController {
 
 	private Map<String, String> wxPay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
 		MiniProgramConfig config = new MiniProgramConfig();
-		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
+		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode(),hfOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
 
 		WXPay wxpay = new WXPay(config);
@@ -212,14 +225,14 @@ public class PaymentOrderController {
 		data.put("mch_id", config.getMchID());
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
-		data.put("total_fee", String.valueOf(1));
+		data.put("total_fee", String.valueOf(hfOrder.getAmount()));
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
 		data.put("out_trade_no", hfOrder.getOrderCode());
 		data.put("op_user_id", config.getMchID());
 		data.put("refund_fee_type", "CNY");
-		data.put("refund_fee", String.valueOf(1));
+		data.put("refund_fee", String.valueOf(hfOrder.getAmount()));
 		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
 		String sign = WXPayUtil.generateSignature(data, config.getKey());
 		data.put("sign", sign);
@@ -251,7 +264,7 @@ public class PaymentOrderController {
 	}
 	}
 
-	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode)
+	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode,Integer Amount)
 			throws Exception {
 		Map<String, String> data = new HashMap<>();
 		data.put("appid", config.getAppID());
@@ -260,7 +273,7 @@ public class PaymentOrderController {
 		data.put("out_trade_no", orderCode);
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
-		data.put("total_fee", String.valueOf(1));
+		data.put("total_fee", String.valueOf(Amount));
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 		data.put("trade_type", "JSAPI");
@@ -325,6 +338,16 @@ public class PaymentOrderController {
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+		//流水状态
+		StoneChargeOff stoneChargeOff = new StoneChargeOff();
+		stoneChargeOff.setChargeOffState(1);
+		StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+		stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+		stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
+		//
+		MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+		paramMap2.add("orderId",hfOrder.getId());
+		restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			HfTansactionFlowExample e = new HfTansactionFlowExample();
 			e.createCriteria().andOutTradeNoEqualTo(outTradeNo);

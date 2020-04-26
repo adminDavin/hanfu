@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -87,12 +87,12 @@
            <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <!-- <table schema="user_center" tableName="hf_stone_picture"
+        <table schema="user_center" tableName="hf_stone_picture"
                domainObjectName="HfStonePicture">
             <property name="useActualColumnNames" value="false"/>
            <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> -->
+        </table> 
         <!--<table schema="user_center" tableName="product"-->
                <!--domainObjectName="Product">-->
             <!--<property name="useActualColumnNames" value="false"/>-->
@@ -105,12 +105,12 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <!--<table schema="user_center" tableName="product_instance"-->
-               <!--domainObjectName="ProductInstance">-->
-            <!--<property name="useActualColumnNames" value="false"/>-->
-            <!--<generatedKey column="id" sqlStatement="mysql"-->
-                          <!--identity="true"/>-->
-        <!--</table>-->
+        <!-- <table schema="user_center" tableName="product_instance"
+               domainObjectName="ProductInstance">
+            <property name="useActualColumnNames" value="false"/>
+           <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
         <!--<table schema="user_center" tableName="product_source"-->
                <!--domainObjectName="ProductSource">-->
             <!--<property name="useActualColumnNames" value="false"/>-->
@@ -278,30 +278,30 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="user_personal_browse"
+        <!-- <table schema="user_center" tableName="user_personal_browse"
                domainObjectName="UserPersonalBrowse">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_product_collect"
+        </table> -->
+        <!-- <table schema="user_center" tableName="hf_product_collect"
                domainObjectName="HfProductCollect">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> 
+        </table>  -->
         <!-- <table schema="user_center" tableName="hf_integral"
                domainObjectName="HfIntegral">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <!-- <table schema="user_center" tableName="hf_evaluate"
+      <!-- <table schema="user_center" tableName="hf_evaluate"
                domainObjectName="HfEvaluate">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> -->
+        </table>  -->
         <!-- <table schema="user_center" tableName="evaluate_picture"
                domainObjectName="EvaluatePicture">
             <property name="useActualColumnNames" value="false"/>
@@ -320,5 +320,18 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
+         <!-- <table schema="user_center" tableName="distribution_record"
+               domainObjectName="DistributionRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="evaluate_user_record"
+               domainObjectName="EvaluateUserRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        
     </context>
 </generatorConfiguration>

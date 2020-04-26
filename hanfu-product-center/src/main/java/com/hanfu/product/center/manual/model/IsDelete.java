@@ -4,6 +4,8 @@ public class IsDelete {
     private Integer stoneId;
     private Short isDelete;
     private Integer bossId;
+    private String productName;
+    private String category;
 
     public Integer getStoneId() {
         return stoneId;
@@ -27,5 +29,21 @@ public class IsDelete {
 
     public void setBossId(Integer bossId) {
         this.bossId = bossId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

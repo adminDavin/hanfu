@@ -1019,6 +1019,7 @@ public class ActivityManagerController {
             stream.reset();
             OutputStream outputStream = response.getOutputStream();
             ImageIO.write(readImg, "png", outputStream);
+            
             outputStream.close();
         }
     }

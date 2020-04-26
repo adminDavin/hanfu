@@ -252,7 +252,7 @@ public class HfAuthController {
 	@RequestMapping(value = "/findAdminUser", method = RequestMethod.GET)
 	@ApiOperation(value = "查询后台用户", notes = "查询后台用户")
 
-	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize ,String phone) throws Exception {
+	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize ,String phone,String code,String name) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (pageNum == null) {
@@ -262,14 +262,22 @@ public class HfAuthController {
 			pageSize = 0;
 		}
 		List<HfUser> list = new ArrayList<HfUser>();
-		if(!StringUtils.isEmpty(phone)) {
-			HfUserExample example = new HfUserExample();
-			example.createCriteria().andPhoneLike(phone);
-			PageHelper.startPage(pageNum, pageSize);
-			list = hfUserMapper.selectByExample(example);
-		}else {
-			list = hfUserMapper.selectByExample(null);
-		}
+//		if(!StringUtils.isEmpty(phone)) {
+//			HfUserExample example = new HfUserExample();
+//			example.createCriteria().andPhoneLike(phone);
+//			PageHelper.startPage(pageNum, pageSize);
+//			list = hfUserMapper.selectByExample(example);
+//		}else {
+//			list = hfUserMapper.selectByExample(null);
+//		}
+		HfUser user = new HfUser();
+		user.setPhone(phone);
+		user.setOwnInvitationCode(code);
+		user.setNickName(name);
+		user.setRealName(name);
+//		HfUserExample example = new HfUserExample();
+//		example.createCriteria().andPhoneLike(phone).andOwnInvitationCodeLike(code).andNickNameLike(name);
+		list = userDao.selectUserOrderByInfo(user);
 		List<UserInfo> result = new ArrayList<UserInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			HfUser hfUser = list.get(i);

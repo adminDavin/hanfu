@@ -5,13 +5,82 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanfu.product.center.model.HfOrderDetail;
 
 public class Evaluate implements Serializable{
 	
+	
+public static enum EvaluateTypeEnum {
+        
+		DISCOVER("discover"),
+		EVALUATE("evaluate");
+		private String evaluateType;
+
+		private EvaluateTypeEnum(String evaluateType) {
+			this.evaluateType = evaluateType;
+		}
+		
+
+		public String getEvaluateType() {
+			return evaluateType;
+		}
+
+		public void setEvaluateType(String evaluateType) {
+			this.evaluateType = evaluateType;
+		}
+
+		public static EvaluateTypeEnum getEvaluateTypeEnum(String evaluateType) {
+			for(EvaluateTypeEnum d:EvaluateTypeEnum.values()) {
+				if(d.getEvaluateType().equals(evaluateType)) {
+					return d;
+				}
+			}
+			return EVALUATE;
+		}
+    }
+
+public static enum EvaluateContentTypeEnum {
+	
+	HEART("heart"),
+	VIDEO("video"),
+	ARTICLE("article");
+	private String evaluateContentType;
+	
+	private EvaluateContentTypeEnum(String evaluateContentType) {
+		this.evaluateContentType = evaluateContentType;
+	}
+	
+	public String getEvaluateContentType() {
+		return evaluateContentType;
+	}
+
+	public void setEvaluateContentType(String evaluateContentType) {
+		this.evaluateContentType = evaluateContentType;
+	}
+
+
+	public static EvaluateContentTypeEnum getEvaluateContentTypeEnum(String evaluateContentType) {
+		for(EvaluateContentTypeEnum d:EvaluateContentTypeEnum.values()) {
+			if(d.getEvaluateContentType().equals(evaluateContentType)) {
+				return d;
+			}
+		}
+		return HEART;
+	}
+}
+	
+	private Integer id;
 	private Integer userId;
 	private String comment;
+	private String type;
+	private String typeContent;
 	private Integer star;
 	private Integer comment_count;
+	private Integer praise;
+	private Integer transmitCount;
+	private String hfDesc;
+	private String username;
+	private String levelName;
 	private List<Integer> fileId;
 	private Integer outId;
 	private Integer inId;
@@ -19,6 +88,16 @@ public class Evaluate implements Serializable{
 	private String inName;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime time;
+	private HfOrderDetail list;
+	
+	private Integer isPraise;
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getUserId() {
 		return userId;
 	}
@@ -31,6 +110,18 @@ public class Evaluate implements Serializable{
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getTypeContent() {
+		return typeContent;
+	}
+	public void setTypeContent(String typeContent) {
+		this.typeContent = typeContent;
+	}
 	public Integer getStar() {
 		return star;
 	}
@@ -42,6 +133,30 @@ public class Evaluate implements Serializable{
 	}
 	public void setComment_count(Integer comment_count) {
 		this.comment_count = comment_count;
+	}
+	public Integer getPraise() {
+		return praise;
+	}
+	public void setPraise(Integer praise) {
+		this.praise = praise;
+	}
+	public Integer getTransmitCount() {
+		return transmitCount;
+	}
+	public void setTransmitCount(Integer transmitCount) {
+		this.transmitCount = transmitCount;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getLevelName() {
+		return levelName;
+	}
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
 	}
 	public List<Integer> getFileId() {
 		return fileId;
@@ -79,4 +194,23 @@ public class Evaluate implements Serializable{
 	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
+	public HfOrderDetail getList() {
+		return list;
+	}
+	public void setList(HfOrderDetail list) {
+		this.list = list;
+	}
+	public String getHfDesc() {
+		return hfDesc;
+	}
+	public void setHfDesc(String hfDesc) {
+		this.hfDesc = hfDesc;
+	}
+	public Integer getIsPraise() {
+		return isPraise;
+	}
+	public void setIsPraise(Integer isPraise) {
+		this.isPraise = isPraise;
+	}
+	
 }
