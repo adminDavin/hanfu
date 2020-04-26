@@ -301,6 +301,7 @@ public class StoneController {
         if(!CollectionUtils.isEmpty(pictures)) {
         	info.setBackgroundId(pictures.get(0).getFileId());
         }
+        info.setIsConcern(0);
         if(userId != null) {
         	 HfStoneConcernExample example2 = new HfStoneConcernExample();
              example2.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(id);
