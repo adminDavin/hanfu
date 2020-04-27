@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -292,7 +293,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "cagetoryId", value = "类目Id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getCategory(@RequestParam(name = "cagetoryId") Integer cagetoryId,
-			Integer pageNum, Integer pageSize, Integer sort, Integer priceDown, Integer priceUp) throws JSONException {
+			Integer pageNum, Integer pageSize, Integer sort, Integer priceDown, Integer priceUp, List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -346,7 +347,7 @@ public class HfProductController {
 		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea()))
 				.collect(Collectors.toList());
 
-		sort(sort, products, priceDown, priceUp);
+		sort(sort, products, priceDown, priceUp, categoryId);
 
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
@@ -357,7 +358,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize, Integer sort
-			,Integer priceDown, Integer priceUp)
+			,Integer priceDown, Integer priceUp, List<Integer> categoryId)
 			throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
@@ -403,7 +404,7 @@ public class HfProductController {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
 		}
-		sort(sort, products, priceDown, priceUp);
+		sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
@@ -456,7 +457,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
-			Integer sort, Integer stoneId, Integer priceDown, Integer priceUp) throws JSONException {
+			Integer sort, Integer stoneId, Integer priceDown, Integer priceUp, List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -501,7 +502,7 @@ public class HfProductController {
 		if (stoneId != null) {
 			products = products.stream().filter(p -> p.getStoneId() == stoneId).collect(Collectors.toList());
 		}
-		sort(sort, products, priceDown, priceUp);
+		sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
@@ -627,7 +628,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "activityId", value = "活动id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getProductListSeniority(Integer activityId, Integer pageNum, Integer pageSize,
-			Integer sort, Integer priceUp, Integer priceDown) throws JSONException {
+			Integer sort, Integer priceUp, Integer priceDown, @RequestParam(value = "content", required = false) List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -687,12 +688,13 @@ public class HfProductController {
 			displays.add(display);
 		}
 		displays = displays.stream().filter(p -> !StringUtils.isEmpty(p.getPriceArea())).collect(Collectors.toList());
-		displays = sort(sort, displays, priceDown, priceUp);
+		displays = sort(sort, displays, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(displays);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
 	
-	public List<HfProductDisplay> sort(Integer sort, List<HfProductDisplay> list, Integer priceDown,Integer priceUp){
+	public List<HfProductDisplay> sort(Integer sort, List<HfProductDisplay> list, Integer priceDown,Integer priceUp
+			,List<Integer> categoryId){
 		if (sort != null) {
 			if (sort == 1) {
 				for (int i = 0; i < list.size(); i++) {
@@ -735,17 +737,26 @@ public class HfProductController {
 					if(priceDown>priceUp) {
 						return list;
 					}
-					list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown && 
-							Integer.valueOf(l.getPriceArea()) <= priceUp).collect(Collectors.toList());
+					if(CollectionUtils.isEmpty(categoryId)) {
+						list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown && 
+								Integer.valueOf(l.getPriceArea()) <= priceUp).collect(Collectors.toList());
+					}else {
+						list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown && 
+								Integer.valueOf(l.getPriceArea()) <= priceUp && categoryId.contains(l.getCategoryId())).collect(Collectors.toList());
+					}
+					
 				}else {
-					list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown).collect(Collectors.toList());
+					if(CollectionUtils.isEmpty(categoryId)) {
+						list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown).collect(Collectors.toList());
+					}else {
+						list = list.stream().filter(l -> Integer.valueOf(l.getPriceArea()) >= priceDown && categoryId.contains(l.getCategoryId())).collect(Collectors.toList());
+					}
+					
 				}
 			}
 		}
 		return list;
 	}
-	
-	
 	
 	
 	
