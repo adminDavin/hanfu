@@ -215,16 +215,16 @@ public class HfProductActivityController {
                 }
             }
             if (startTime != null) {
-                Instant instant = startTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = startTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setStartTime(startTime);
             }
             if (endTime != null) {
-                Instant instant = endTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = endTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setStartTime(endTime);
             }
             if (!StringUtils.isEmpty(activityName)) {
                 activity.setActivityName(activityName);
