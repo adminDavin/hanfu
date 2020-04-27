@@ -224,7 +224,7 @@ public class HfProductActivityController {
 //                Instant instant = endTime.toInstant();
 //                ZoneId zoneId = ZoneId.systemDefault();
 //                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(endTime);
+                activity.setEndTime(endTime);
             }
             if (!StringUtils.isEmpty(activityName)) {
                 activity.setActivityName(activityName);
