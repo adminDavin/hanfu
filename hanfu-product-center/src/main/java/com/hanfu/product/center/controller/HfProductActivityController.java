@@ -149,6 +149,8 @@ public class HfProductActivityController {
 //			productActivityInfo.setStartTimes(sdf.format(productActivityInfo.getStartTime()));
 //			productActivityInfo.setEndTimes(sdf.format(productActivityInfo.getEndTime()));
 			Date date = new Date();
+			System.out.println("productActivityInfo.getStartTime()"+productActivityInfo.getStartTime());
+			System.out.println("productActivityInfo.getEndTime()"+productActivityInfo.getEndTime());
 			if(productActivityInfo.getStartTime() == null || productActivityInfo.getEndTime() == null) {
 				productActivityInfo.setActivityState(-1);
 				activity.setActivityState(-1);
@@ -159,16 +161,19 @@ public class HfProductActivityController {
 				productActivityInfo.setActivityState(-1);
 				activity.setActivityState(-1);
 				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
 			}
-			if(date.after(productActivityInfo.getStartTime()) && date.after(productActivityInfo.getEndTime())) {
+			if(date.after(productActivityInfo.getStartTime()) && date.before(productActivityInfo.getEndTime())) {
 				productActivityInfo.setActivityState(0);
 				activity.setActivityState(0);
 				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
 			}
 			if(date.after(productActivityInfo.getEndTime())) {
 				productActivityInfo.setActivityState(1);
 				activity.setActivityState(1);
 				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
 			}
         }
         return builder.body(ResponseUtils.getResponseBody(result));
