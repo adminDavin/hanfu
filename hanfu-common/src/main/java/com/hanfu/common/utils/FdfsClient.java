@@ -43,6 +43,7 @@ public class FdfsClient {
             TrackerServer trackerServer = trackerClient.getConnection();
             StorageServer storage = new StorageServer("39.100.237.144", 23000, 0);
             client = new StorageClient(trackerServer, storage);
+            
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {

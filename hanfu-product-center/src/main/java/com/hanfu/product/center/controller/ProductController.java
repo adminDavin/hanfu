@@ -269,6 +269,7 @@ public class ProductController {
 		productInstance.setProductId(product.getId());
 		productInstance.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		productInstance.setBrandId(1);
+		productInstance.setEvaluateCount(0);
 		productInstance.setCreateTime(LocalDateTime.now());
 		productInstance.setLastModifier(request.getLastModifier());
 		productInstance.setModifyTime(LocalDateTime.now());

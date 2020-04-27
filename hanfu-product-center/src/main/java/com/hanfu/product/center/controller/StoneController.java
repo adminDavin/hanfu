@@ -1,7 +1,17 @@
 package com.hanfu.product.center.controller;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -548,11 +560,39 @@ public class StoneController {
 		return builder.body(ResponseUtils.getResponseBody(infos));
 	}
     
-    public static BitMatrix createCode(String content) throws IOException {
+//    public static ByteArrayOutputStream createCode(String content,MultipartFile file) throws IOException {
+//        //二维码的宽高
+//        int width = 200;
+//        int height = 200;
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        
+//        //其他参数，如字符集编码
+//        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+//        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+//        //容错级别为H
+//        hints.put(EncodeHintType.ERROR_CORRECTION , ErrorCorrectionLevel.H);
+//        //白边的宽度，可取0~4
+//        hints.put(EncodeHintType.MARGIN , 0);
+//
+//        BitMatrix bitMatrix = null;
+//        try {
+//            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
+//        	MultiFormatWriter writer = new MultiFormatWriter();
+//            bitMatrix = new MultiFormatWriter().encode(content,
+//                    BarcodeFormat.QR_CODE, width, height,hints);
+//            MatrixToImageWriter.writeToStream(bitMatrix, "png", outputStream);
+//            //bitMatrix = deleteWhite(bitMatrix);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
+//        return outputStream;
+//    }
+   
+    public static BufferedImage createCode(String content) throws IOException {
         //二维码的宽高
         int width = 200;
         int height = 200;
-
+        BufferedImage image = null;
         //其他参数，如字符集编码
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -564,52 +604,61 @@ public class StoneController {
         BitMatrix bitMatrix = null;
         try {
             //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
-        	MultiFormatWriter writer = new MultiFormatWriter();
             bitMatrix = new MultiFormatWriter().encode(content,
                     BarcodeFormat.QR_CODE, width, height,hints);
-            //bitMatrix = deleteWhite(bitMatrix);
+            image = MatrixToImageWriter.toBufferedImage(bitMatrix);
         } catch (WriterException e) {
             e.printStackTrace();
         }
-        return bitMatrix;
+		return image;
     }
-    
    
-//    @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
-//    @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
-//    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
-//        String str = String.valueOf(stoneId);
-//        byte[] b = Base64.getEncoder().encode(str.getBytes());
-//        BitMatrix bitMatrix = createCode(b.toString());
-//        String arr[];
-//		FileMangeService fileMangeService = new FileMangeService();
-//		
-//		DecoderResult decoderResult = null; 
-//	    
-//		decoderResult = new Decoder().decode(bitMatrix);
-//		MatrixToImageWriter.toBufferedImage(bitMatrix).
-//	    byte[] cmd = decoderResult.getRawBytes();
-//		arr = fileMangeService.uploadFile(cmd,String.valueOf(0));
-//		FileDesc fileDesc = new FileDesc();
-//		fileDesc.setFileName("店铺二维码");
-//		fileDesc.setGroupName(arr[0]);
-//		fileDesc.setRemoteFilename(arr[1]);
-//		fileDesc.setCreateTime(LocalDateTime.now());
-//		fileDesc.setModifyTime(LocalDateTime.now());
-//		fileDesc.setIsDeleted((short) 0);
-//		fileDescMapper.insert(fileDesc);
-//		HfStonePicture picture = new HfStonePicture();
-//		picture.setStoneId(stoneId);
-//		picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
-//		picture.setFileId(fileDesc.getId());
-//		picture.setHfName("店铺二维码");
-//		picture.setHfDesc("店铺二维码描述");
-//		picture.setCreateTime(LocalDateTime.now());
-//		picture.setModifyTime(LocalDateTime.now());
-//		picture.setIsDeleted((byte) 0);
-//		hfStonePictureMapper.insert(picture);
-//        return builder.body(ResponseUtils.getResponseBody(stone.getId()));
-//    }
+    @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
+    @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
+        String str = String.valueOf(stoneId);
+        byte[] b = Base64.getEncoder().encode(str.getBytes());
+        BufferedImage bi = createCode(new String(b));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", outputStream);
+        String arr[];
+		FileMangeService fileMangeService = new FileMangeService();
+		arr = fileMangeService.uploadFile(outputStream.toByteArray(),String.valueOf(0));
+		HfStonePictureExample example = new HfStonePictureExample();
+		example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo("code");
+		List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(pictures)) {
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName("店铺二维码");
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfStonePicture picture = new HfStonePicture();
+			picture.setStoneId(stoneId);
+			picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
+			picture.setFileId(fileDesc.getId());
+			picture.setHfName("店铺二维码");
+			picture.setHfDesc("店铺二维码描述");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+			hfStonePictureMapper.insert(picture);
+		}else {
+			HfStonePicture picture = pictures.get(0);
+			FileDesc desc = fileDescMapper.selectByPrimaryKey(picture.getFileId());
+			FileMangeService service = new FileMangeService();
+			service.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+			desc.setModifyTime(LocalDateTime.now());
+			desc.setGroupName(arr[0]);
+			desc.setRemoteFilename(arr[1]);
+			fileDescMapper.updateByPrimaryKey(desc);
+		}
+		
+        return builder.body(ResponseUtils.getResponseBody(stone.getId()));
+    }
 }

@@ -264,5 +264,5 @@ public class CartCenterController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get("attention" + openId)));
     }
-
+    
 }
