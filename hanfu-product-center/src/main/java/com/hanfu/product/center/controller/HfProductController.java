@@ -175,6 +175,7 @@ public class HfProductController {
 		product.setBossId(hfBoss.getId());
 		product.setBossName(hfBoss.getName());
 		HfStone stoneInfos = hfStoneMapper.selectByPrimaryKey(stoneId);
+		product.setStoneAddress(stoneInfos.getAddress());
 		product.setStoneName(stoneInfos.getHfName());
 		
 		List<Integer> star = new ArrayList<Integer>();

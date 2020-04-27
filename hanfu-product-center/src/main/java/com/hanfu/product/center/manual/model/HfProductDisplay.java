@@ -75,6 +75,7 @@ public class HfProductDisplay implements Serializable {
     private String productActivityType;
     private Integer evaluateCount;
     private String evaluateRatio;
+    private String stoneAddress;
 	public Integer getId() {
 		return id;
 	}
@@ -295,6 +296,12 @@ public class HfProductDisplay implements Serializable {
 	}
 	public void setEvaluateRatio(String evaluateRatio) {
 		this.evaluateRatio = evaluateRatio;
+	}
+	public String getStoneAddress() {
+		return stoneAddress;
+	}
+	public void setStoneAddress(String stoneAddress) {
+		this.stoneAddress = stoneAddress;
 	}
 	@Override
 	public String toString() {
