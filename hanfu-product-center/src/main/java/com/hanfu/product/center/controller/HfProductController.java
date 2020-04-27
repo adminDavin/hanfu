@@ -294,7 +294,8 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "cagetoryId", value = "类目Id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getCategory(@RequestParam(name = "cagetoryId") Integer cagetoryId,
-			Integer pageNum, Integer pageSize, Integer sort, Integer priceDown, Integer priceUp, List<Integer> categoryId) throws JSONException {
+			Integer pageNum, Integer pageSize, Integer sort, Integer priceDown, Integer priceUp, 
+			@RequestParam(value = "content", required = false)List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -304,8 +305,9 @@ public class HfProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductCategory(cagetoryId);
+		if(!CollectionUtils.isEmpty(products)) {
 		Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
-		System.out.println(stoneIds);
+		System.out.println(stoneIds+"stoneIds");
 		HfStoneExample hfStoneExample = new HfStoneExample();
 		hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
 		List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
@@ -349,7 +351,7 @@ public class HfProductController {
 				.collect(Collectors.toList());
 
 		sort(sort, products, priceDown, priceUp, categoryId);
-
+		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
@@ -359,7 +361,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize, Integer sort
-			,Integer priceDown, Integer priceUp, List<Integer> categoryId)
+			,Integer priceDown, Integer priceUp,@RequestParam(value = "content", required = false) List<Integer> categoryId)
 			throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
@@ -458,7 +460,7 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
-			Integer sort, Integer stoneId, Integer priceDown, Integer priceUp, List<Integer> categoryId) throws JSONException {
+			Integer sort, Integer stoneId, Integer priceDown, Integer priceUp, @RequestParam(value = "content", required = false) List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
