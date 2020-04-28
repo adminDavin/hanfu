@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CartService {
 
-    List<Cart> getCartList(String string);
+    List<Cart> getCartList(String string,Integer type);
 
     int checkAll(String string, String string2);
 
@@ -14,8 +14,8 @@ public interface CartService {
 
     int updateCartNum(String userId, String productId, int num,Integer stoneId);
 
-    int addCart(String userId, String productId, int num,Integer stontId);
+    int addCart(String userId, String productId, int num,Integer stontId,Integer type);
 
-	int delCartProduct(String userId, String productId,String stoneId);
+	int delCartProduct(String userId, String productId,String stoneId,Integer type);
 
 }

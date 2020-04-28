@@ -53,9 +53,12 @@ public class CartCenterController {
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num, Integer stoneId) throws Exception {
+    public ResponseEntity<JSONObject> addCart(Integer userId, Integer goodsId, Integer num, Integer stoneId, Integer type) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num, stoneId);
+        int effectNum = cartService.addCart(userId.toString(), goodsId.toString(), num, stoneId, type);
+        if(effectNum == -1) {
+        	return builder.body(ResponseUtils.getResponseBody("已经存在常买"));
+        }
         if (effectNum <= 0) {
             return builder.body(ResponseUtils.getResponseBody("添加购物车失败"));
         }
@@ -67,9 +70,9 @@ public class CartCenterController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> getCartList(Integer userId) throws Exception {
+    public ResponseEntity<JSONObject> getCartList(Integer userId,Integer type) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        List<Cart> cartDtoList = cartService.getCartList(userId.toString());
+        List<Cart> cartDtoList = cartService.getCartList(userId.toString(),type);
         List<CartList> result = new ArrayList<CartList>();
         Map<String, List<Cart>> resultList = cartDtoList.stream().collect(Collectors.groupingBy(Cart::getStoneName));
         Set<Entry<String, List<Cart>>> set = resultList.entrySet();
@@ -98,20 +101,20 @@ public class CartCenterController {
         return builder.body(ResponseUtils.getResponseBody("修改数量成功"));
     }
 
-    @RequestMapping(path = "/delCartProduct", method = RequestMethod.GET)
-    @ApiOperation(value = "删除商品数量", notes = "删除商品数量")
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
-    })
-    public ResponseEntity<JSONObject> delCartProduct(Integer goodsId, Integer userId, Integer stontId) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.delCartProduct(userId.toString(), goodsId.toString(), stontId.toString());
-        if (effectNum <= 0) {
-            return builder.body(ResponseUtils.getResponseBody(""));
-        }
-        return builder.body(ResponseUtils.getResponseBody(""));
-    }
+//    @RequestMapping(path = "/delCartProduct", method = RequestMethod.GET)
+//    @ApiOperation(value = "删除商品数量", notes = "删除商品数量")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
+//    })
+//    public ResponseEntity<JSONObject> delCartProduct(Integer goodsId, Integer userId, Integer stontId) throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//        int effectNum = cartService.delCartProduct(userId.toString(), goodsId.toString(), stontId.toString());
+//        if (effectNum <= 0) {
+//            return builder.body(ResponseUtils.getResponseBody(""));
+//        }
+//        return builder.body(ResponseUtils.getResponseBody(""));
+//    }
 
     @RequestMapping(path = "/checkAll", method = RequestMethod.GET)
     @ApiOperation(value = "选择物品", notes = "选择物品")
@@ -144,7 +147,7 @@ public class CartCenterController {
 
     @RequestMapping(path = "/delGoods", method = RequestMethod.GET)
     @ApiOperation(value = "删除物品", notes = "删除物品")
-    public ResponseEntity<JSONObject> delGoods(Integer userId, Integer productId, Integer stoneId, String productStoneId) throws Exception {
+    public ResponseEntity<JSONObject> delGoods(Integer userId, Integer productId, Integer stoneId, String productStoneId, Integer type) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
 
@@ -154,13 +157,13 @@ public class CartCenterController {
             List<ProductStone> list = JSONObject.parseArray(jsonArray.toJSONString(), ProductStone.class);
             for (ProductStone productStone:list){
 //            list.forEach(lists->{
-                int effectNum = cartService.delCartProduct(userId.toString(), productStone.getProductId().toString(),productStone.getStoneId().toString());
+                int effectNum = cartService.delCartProduct(userId.toString(), productStone.getProductId().toString(),productStone.getStoneId().toString(),type);
                 if (effectNum <= 0) {
                     return builder.body(ResponseUtils.getResponseBody("删除物品失败"));
                 }
             }
         }else {
-            int effectNum = cartService.delCartProduct(userId.toString(), productId.toString(), stoneId.toString());
+            int effectNum = cartService.delCartProduct(userId.toString(), productId.toString(), stoneId.toString(), type);
             if (effectNum <= 0) {
                 return builder.body(ResponseUtils.getResponseBody("删除物品失败"));
             }
@@ -191,8 +194,9 @@ public class CartCenterController {
     @RequestMapping(value = "/OftenBuy", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> OftenBuy(Integer userId, Integer goodsId)
+            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer")})
+    public ResponseEntity<JSONObject> OftenBuy(Integer userId, Integer goodsId, Integer stoneId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         int effectNum = productService.addCart("often" + userId.toString(), goodsId.toString());
@@ -213,20 +217,20 @@ public class CartCenterController {
         return builder.body(ResponseUtils.getResponseBody(cartDtoList));
     }
 
-    @ApiOperation(value = "取消常买", notes = "取消常买")
-    @RequestMapping(value = "/delOftenbuy", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer"),})
-    public ResponseEntity<JSONObject> delOftenbuy(Integer userId, Integer goodsId, Integer stoneId)
-            throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        int effectNum = cartService.delCartProduct("often" + userId.toString(), goodsId.toString(), stoneId.toString());
-        if (effectNum <= 0) {
-            return builder.body(ResponseUtils.getResponseBody("取消失败"));
-        }
-        return builder.body(ResponseUtils.getResponseBody("取消成功"));
-    }
+//    @ApiOperation(value = "取消常买", notes = "取消常买")
+//    @RequestMapping(value = "/delOftenbuy", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+//            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "物品id", required = true, type = "Integer"),})
+//    public ResponseEntity<JSONObject> delOftenbuy(Integer userId, Integer goodsId, Integer stoneId)
+//            throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        int effectNum = cartService.delCartProduct("often" + userId.toString(), goodsId.toString(), stoneId.toString());
+//        if (effectNum <= 0) {
+//            return builder.body(ResponseUtils.getResponseBody("取消失败"));
+//        }
+//        return builder.body(ResponseUtils.getResponseBody("取消成功"));
+//    }
 
     @ApiOperation(value = "设置关注", notes = "设置关注")
     @RequestMapping(value = "/Concern", method = RequestMethod.GET)
@@ -240,20 +244,20 @@ public class CartCenterController {
         return builder.body(ResponseUtils.getResponseBody("关注成功"));
     }
 
-    @ApiOperation(value = "取消关注", notes = "取消关注")
-    @RequestMapping(value = "/delConcern", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "goodsId", required = true, type = "Integer"),})
-    public ResponseEntity<JSONObject> delConcern(String openId, Integer goodsId, Integer stoneId)
-            throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        int effectNum = cartService.delCartProduct("attention" + openId, goodsId.toString(), stoneId.toString());
-        if (effectNum <= 0) {
-            return builder.body(ResponseUtils.getResponseBody("取消失败"));
-        }
-        return builder.body(ResponseUtils.getResponseBody("取消成功"));
-    }
+//    @ApiOperation(value = "取消关注", notes = "取消关注")
+//    @RequestMapping(value = "/delConcern", method = RequestMethod.GET)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType = "query", name = "openId", value = "openid", required = true, type = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "goodsId", value = "goodsId", required = true, type = "Integer"),})
+//    public ResponseEntity<JSONObject> delConcern(String openId, Integer goodsId, Integer stoneId)
+//            throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        int effectNum = cartService.delCartProduct("attention" + openId, goodsId.toString(), stoneId.toString());
+//        if (effectNum <= 0) {
+//            return builder.body(ResponseUtils.getResponseBody("取消失败"));
+//        }
+//        return builder.body(ResponseUtils.getResponseBody("取消成功"));
+//    }
 
     @ApiOperation(value = "查看关注", notes = "查看关注")
     @RequestMapping(value = "/selectConcern", method = RequestMethod.GET)
@@ -264,5 +268,7 @@ public class CartCenterController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get("attention" + openId)));
     }
-    
+    public static void main(String[] args) {
+		System.out.println(JSONArray.parseArray("[{\"name\":\"3\",\"ratio\":\"10\"}]"));
+	}
 }
