@@ -6,6 +6,7 @@ import com.hanfu.product.center.cart.model.Cart;
 import com.hanfu.product.center.cart.model.Product;
 import com.hanfu.product.center.cart.service.CartService;
 import com.hanfu.product.center.cart.service.ProductService;
+import com.hanfu.product.center.cart.utils.CartPrefix;
 import com.hanfu.product.center.manual.model.CartList;
 import com.hanfu.product.center.manual.model.ProductStone;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -72,6 +73,7 @@ public class CartCenterController {
     })
     public ResponseEntity<JSONObject> getCartList(Integer userId,Integer type) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Boolean exists = false;
         List<Cart> cartDtoList = cartService.getCartList(userId.toString(),type);
         List<CartList> result = new ArrayList<CartList>();
         Map<String, List<Cart>> resultList = cartDtoList.stream().collect(Collectors.groupingBy(Cart::getStoneName));

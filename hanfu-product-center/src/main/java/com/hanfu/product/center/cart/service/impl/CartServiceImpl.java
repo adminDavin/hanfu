@@ -12,6 +12,7 @@ import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -31,6 +32,8 @@ public class CartServiceImpl implements CartService {
     private ProductInstanceMapper productInstanceMapper;
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    @Autowired
+    private HfProductCollectMapper hfProductCollectMapper;
 
     @Override
     public int addCart(String userId, String productId, int num ,Integer stoneId,Integer type) {
@@ -121,6 +124,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<Cart> getCartList(String userId,Integer type) {
     	List<String> jsonList = new ArrayList<String>();
+    	Boolean exists = false;
     	if(type == 1) {
     		jsonList = redisService.hvals(CartPrefix.getCartList, userId+"ofen");
     	}else {
@@ -130,6 +134,19 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartDtoList = new LinkedList<>();
         for (String json : jsonList) {
             Cart cartDto = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
+            exists = redisService.existsValue(CartPrefix.getCartList, userId+"ofen", cartDto.getProductId()+String.valueOf(cartDto.getStoneId()));
+            if(exists) {
+            	cartDto.setIsOfenBuy(1);
+            }else {
+            	cartDto.setIsOfenBuy(0);
+            }
+            HfProductCollectExample example = new HfProductCollectExample();
+            example.createCriteria().andUserIdEqualTo(Integer.valueOf(userId)).andProductIdEqualTo(Integer.valueOf(cartDto.getProductsId()));
+            if(!CollectionUtils.isEmpty(hfProductCollectMapper.selectByExample(example))) {
+            	cartDto.setIsCollect(1);
+            }else {
+            	cartDto.setIsCollect(1);
+            }
             cartDtoList.add(cartDto);
         }
         return cartDtoList;
