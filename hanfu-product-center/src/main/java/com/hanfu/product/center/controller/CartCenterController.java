@@ -86,6 +86,18 @@ public class CartCenterController {
         }
         return builder.body(ResponseUtils.getResponseBody(result));
     }
+    
+    @RequestMapping(path = "/getCartListInfo", method = RequestMethod.GET)
+    @ApiOperation(value = "获取购物车基础数据", notes = "获取购物车基础数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> getCartListInfo(Integer userId) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        CartList list = new CartList();
+        list = cartService.cartInfo(userId.toString());
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
 
     @RequestMapping(path = "/updateCartNum", method = RequestMethod.GET)
     @ApiOperation(value = "修改购物车数量", notes = "修改购物车数量")
@@ -94,9 +106,9 @@ public class CartCenterController {
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "num", value = "商品数量", required = true, type = "Integer"),
     })
-    public ResponseEntity<JSONObject> updateCartNum(Integer userId, Integer goodsId, Integer num, Integer stoneId) throws Exception {
+    public ResponseEntity<JSONObject> updateCartNum(Integer userId, Integer goodsId, Integer num, Integer stoneId, Integer type) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        int effectNum = cartService.updateCartNum(userId.toString(), goodsId.toString(), num, stoneId);
+        int effectNum = cartService.updateCartNum(userId.toString(), goodsId.toString(), num, stoneId, type);
         if (effectNum <= 0) {
             return builder.body(ResponseUtils.getResponseBody("修改数量失败"));
         }

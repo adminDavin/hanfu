@@ -9,6 +9,8 @@ public class CartList implements Serializable{
 	
 	
 	private String name;
+	private Integer ofenBuyCount;
+	private Integer all;
 	private List<Cart> goodList;
 	public String getName() {
 		return name;
@@ -22,5 +24,16 @@ public class CartList implements Serializable{
 	public void setGoodList(List<Cart> goodList) {
 		this.goodList = goodList;
 	}
-	
+	public Integer getOfenBuyCount() {
+		return ofenBuyCount;
+	}
+	public void setOfenBuyCount(Integer ofenBuyCount) {
+		this.ofenBuyCount = ofenBuyCount;
+	}
+	public Integer getAll() {
+		return all;
+	}
+	public void setAll(Integer all) {
+		this.all = all;
+	}
 }
