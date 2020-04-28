@@ -332,7 +332,7 @@ public class StoneController {
         example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("code");
         pictures = hfStonePictureMapper.selectByExample(example);
         if(!CollectionUtils.isEmpty(pictures)) {
-        	info.setAvatarId(pictures.get(0).getFileId());
+        	info.setCodeId(pictures.get(0).getFileId());
         }
         info.setIsConcern(0);
         if(userId != null) {
