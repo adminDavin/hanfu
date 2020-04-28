@@ -103,13 +103,19 @@ public class discountCouponController {
     @RequestMapping(value = "/selectDiscountCoupon", method = RequestMethod.GET)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId)
+    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId,String DiscountCouponName,String DiscountCouponType)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DiscountCouponExample discountCouponExample = new DiscountCouponExample();
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
         discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
         List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        if (null != DiscountCouponName){
+            discountCoupons = discountCoupons.stream().filter(discountCoupon-> discountCoupon.getDiscountCouponName().contains(DiscountCouponName)).collect(Collectors.toList());
+        }
+        if (null!=DiscountCouponType){
+            discountCoupons = discountCoupons.stream().filter(discountCoupon -> discountCoupon.getDiscountCouponType().equals(DiscountCouponType)).collect(Collectors.toList());
+        }
         discountCoupons.forEach(discountCoupon -> {
             Date date1 = new Date();
             Date date2 = new Date();
