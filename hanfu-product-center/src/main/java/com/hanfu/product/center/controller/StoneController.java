@@ -328,6 +328,12 @@ public class StoneController {
         if(!CollectionUtils.isEmpty(pictures)) {
         	info.setBackgroundId(pictures.get(0).getFileId());
         }
+        example.clear();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("code");
+        pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setBackgroundId(pictures.get(0).getFileId());
+        }
         info.setIsConcern(0);
         if(userId != null) {
         	 HfStoneConcernExample example2 = new HfStoneConcernExample();
