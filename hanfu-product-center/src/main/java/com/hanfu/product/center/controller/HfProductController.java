@@ -3,7 +3,11 @@ package com.hanfu.product.center.controller;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -524,11 +528,19 @@ public class HfProductController {
 		for (int i = 0; i < list.size(); i++) {
 			List<HfProductDisplay> displays = new ArrayList<HfProductDisplay>();
 			ProductActivityInfo activity = list.get(i);
+			Date date = new Date();
+			Instant instant = date.toInstant();
+			ZoneId zoneId = ZoneId.systemDefault();
+			LocalDateTime now = instant.atZone(zoneId).toLocalDateTime();
+			LocalDateTime dayEnd = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+			if(date.after(activity.getEndTime()) || now.isAfter(dayEnd)) {
+				continue;
+			}
 			HfActivity productActivityInfo = hfActivityMapper.selectByPrimaryKey(activity.getId());
 			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
 			activity.setStartTimes(sdf.format(activity.getStartTime()));
 			activity.setEndTimes(sdf.format(activity.getEndTime()));
-			Date date = new Date();
+			
 			if (date.before(activity.getStartTime())) {
 				System.out.println("活动未开始");
 				activity.setActivityState(-1);
