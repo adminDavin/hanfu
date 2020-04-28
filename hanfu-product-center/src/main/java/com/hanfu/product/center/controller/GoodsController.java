@@ -1496,7 +1496,9 @@ public class GoodsController {
 					JSONObject.class, evaluate.getUserId());
 			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			e.setUsername(js1.getJSONObject("data").getString("nickName"));
-			
+			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+				e.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+			}
 			if(userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
