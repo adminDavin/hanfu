@@ -714,7 +714,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "团购列表", notes = "团购列表")
     @RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId,Integer sum) throws JSONException {
+    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId,Integer sum,Integer activityId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfGroup> hfGroupList = hfGroupDao.groupList(groupId);
 
@@ -724,7 +724,7 @@ public class HfProductActivityController {
             GroupList groupList = new GroupList();
             //成团
             HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
-            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0);
+            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0).andActivityIdEqualTo(activityId);
             List<HfActivityGroup> hfActivityGroup = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
             //活动
             HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
