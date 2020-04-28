@@ -47,8 +47,8 @@ public class ManualDaoImpl implements ManualDao {
     }
     
     @Override
-    public List<ProductActivityInfo> selectProductActivityList(String activityType) {
-    	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList",activityType);
+    public List<ProductActivityInfo> selectProductActivityList(ProductActivityInfo pai) {
+    	List<ProductActivityInfo> result = sqlSessionTemplate.selectList("selectProductActivityList",pai);
     	return result;
     }
     

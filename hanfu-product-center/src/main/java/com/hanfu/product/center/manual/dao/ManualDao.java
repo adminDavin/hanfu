@@ -18,7 +18,7 @@ public interface ManualDao {
     
     public HfUser select(Integer userId);
     
-    public List<ProductActivityInfo> selectProductActivityList(String activityType);
+    public List<ProductActivityInfo> selectProductActivityList(ProductActivityInfo pai);
     
     public void updateActivityState(ProductActivityInfo activity);
     

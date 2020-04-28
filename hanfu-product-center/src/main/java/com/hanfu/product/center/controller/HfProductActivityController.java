@@ -138,9 +138,12 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "查询活动", notes = "查询活动")
     @RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(String activityType, String name) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
+        ProductActivityInfo productInfo = new ProductActivityInfo();
+        productInfo.setActivityType(activityType);
+        productInfo.setActivityName(name);
+        List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);
         for (int i = 0; i < result.size(); i++) {
             ProductActivityInfo productActivityInfo = result.get(i);
 			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());

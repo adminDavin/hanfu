@@ -521,10 +521,12 @@ public class HfProductController {
 	public ResponseEntity<JSONObject> getActivityProductList(String activityType, Integer pageNum, Integer pageSize)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		ProductActivityInfo productInfo = new ProductActivityInfo();
+		productInfo.setActivityType(activityType);
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Integer index = 0;
 		List<ProductActivityInfo> result = new ArrayList<ProductActivityInfo>();
-		List<ProductActivityInfo> list = manualDao.selectProductActivityList(activityType);
+		List<ProductActivityInfo> list = manualDao.selectProductActivityList(productInfo);
 		for (int i = 0; i < list.size(); i++) {
 			List<HfProductDisplay> displays = new ArrayList<HfProductDisplay>();
 			ProductActivityInfo activity = list.get(i);
