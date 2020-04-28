@@ -944,8 +944,6 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
-		hfStone.setConcernCount(hfStone.getConcernCount()+1);
-		hfStoneMapper.updateByPrimaryKey(hfStone);
 		HfStoneConcernExample example = new HfStoneConcernExample();
 		HfStoneConcern concern = null;
 		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
@@ -959,6 +957,8 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			concern.setUserId(userId);
 			concern.setStoneId(stoneId);
 			hfStoneConcernMapper.insert(concern);
+			hfStone.setConcernCount(hfStone.getConcernCount()+1);
+			hfStoneMapper.updateByPrimaryKey(hfStone);
 		}else {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		}

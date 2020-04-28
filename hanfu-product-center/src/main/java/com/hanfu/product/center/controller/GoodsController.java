@@ -22,6 +22,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -1343,13 +1344,16 @@ public class GoodsController {
 	@RequestMapping(value = "/selectEvaluateCompleteGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectEvaluateCompleteGoods(Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<String> status = new ArrayList<String>();
+		status.add("complete");
+		status.add("evaluate");
 		List<HfOrderDetail> list2 = new ArrayList<HfOrderDetail>();
 		List<Evaluate> result = new ArrayList<Evaluate>();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		HfOrderExample example = new HfOrderExample();
-		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("complete");
+		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusIn(status);
 		List<HfOrder> list = hfOrderMapper.selectByExample(example);
-		if (!list.isEmpty()) {
+		if (!CollectionUtils.isEmpty(list)) {
 			List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
 			HfOrderDetailExample example2 = new HfOrderDetailExample();
 			example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("complete");
