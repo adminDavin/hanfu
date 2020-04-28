@@ -7,7 +7,8 @@ public class ProductStone {
 public static enum StonePictureTypeEnum {
         
 		BACKGROUND("background"),
-		AVATAR("avatar");
+		AVATAR("avatar"),
+		CODE("code");
 		private String stonePictureType;
 
 		private StonePictureTypeEnum(String stonePictureType) {

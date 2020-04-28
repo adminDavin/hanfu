@@ -26,14 +26,18 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -139,30 +143,38 @@ public class HfProductActivityController {
         List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
         for (int i = 0; i < result.size(); i++) {
             ProductActivityInfo productActivityInfo = result.get(i);
-//			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
             productActivityInfo.setActivityType(ActivityTypeEnum.getActivityTypeEnum(activityType).getName());
 //			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
 //			productActivityInfo.setStartTimes(sdf.format(productActivityInfo.getStartTime()));
 //			productActivityInfo.setEndTimes(sdf.format(productActivityInfo.getEndTime()));
-//			Date date = new Date();
-//			if(date.before(productActivityInfo.getStartTime())) {
-//				System.out.println("活动未开始");
-//				productActivityInfo.setActivityState(-1);
-//				activity.setActivityState(-1);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
-//			if(date.after(productActivityInfo.getStartTime()) && date.after(productActivityInfo.getEndTime())) {
-//				System.out.println("活动开始中");
-//				productActivityInfo.setActivityState(0);
-//				activity.setActivityState(0);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
-//			if(date.after(productActivityInfo.getEndTime())) {
-//				System.out.println("活动结束了");
-//				productActivityInfo.setActivityState(1);
-//				activity.setActivityState(1);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
+			Date date = new Date();
+			System.out.println("productActivityInfo.getStartTime()"+productActivityInfo.getStartTime());
+			System.out.println("productActivityInfo.getEndTime()"+productActivityInfo.getEndTime());
+			if(productActivityInfo.getStartTime() == null || productActivityInfo.getEndTime() == null) {
+				productActivityInfo.setActivityState(-1);
+				activity.setActivityState(-1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.before(productActivityInfo.getStartTime())) {
+				productActivityInfo.setActivityState(-1);
+				activity.setActivityState(-1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.after(productActivityInfo.getStartTime()) && date.before(productActivityInfo.getEndTime())) {
+				productActivityInfo.setActivityState(0);
+				activity.setActivityState(0);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.after(productActivityInfo.getEndTime())) {
+				productActivityInfo.setActivityState(1);
+				activity.setActivityState(1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
         }
         return builder.body(ResponseUtils.getResponseBody(result));
     }
@@ -177,7 +189,14 @@ public class HfProductActivityController {
         hfActivityProductMapper.deleteByExample(example);
         return builder.body(ResponseUtils.getResponseBody("删除成功"));
     }
-
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        //转换日期
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
+    
     @ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
     @RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
@@ -212,16 +231,16 @@ public class HfProductActivityController {
                 }
             }
             if (startTime != null) {
-                Instant instant = startTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = startTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setStartTime(startTime);
             }
             if (endTime != null) {
-                Instant instant = endTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = endTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setEndTime(endTime);
             }
             if (!StringUtils.isEmpty(activityName)) {
                 activity.setActivityName(activityName);

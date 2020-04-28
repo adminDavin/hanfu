@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
+import com.hanfu.product.center.manual.dao.ManualDao;
 import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
@@ -97,6 +98,8 @@ public class ProductController {
 	private HfStoneConcernMapper hfStoneConcernMapper;
 	@Autowired
 	private HfMemberDao hfMemberDao;
+	@Autowired
+	private ManualDao manualDao;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -154,6 +157,25 @@ public class ProductController {
         }
         return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
     }
+	
+	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
+	@RequestMapping(value = "/getCategoryByInfo", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getCategoryByInfo(Integer level, String name) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategory h = new HfCategory();
+		h.setLevelId(level);
+		h.setHfName(name);
+		List<Categories> result  = new ArrayList<Categories>();
+		List<HfCategory> list = manualDao.findCategoryByInfo(h);
+		for (int i = 0; i < list.size(); i++) {
+			Categories categories = new Categories();
+			categories.setDate(list.get(i).getCreateTime());
+			categories.setHfName(list.get(i).getHfName());
+			categories.setLevel(list.get(i).getLevelId()+1);
+			result.add(categories);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+    }	
 
 	@ApiOperation(value = "获取所有类目", notes = "获取所有类目全部数据")
 	@RequestMapping(value = "/categoryAll", method = RequestMethod.GET)
@@ -247,6 +269,7 @@ public class ProductController {
 		productInstance.setProductId(product.getId());
 		productInstance.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		productInstance.setBrandId(1);
+		productInstance.setEvaluateCount(0);
 		productInstance.setCreateTime(LocalDateTime.now());
 		productInstance.setLastModifier(request.getLastModifier());
 		productInstance.setModifyTime(LocalDateTime.now());
@@ -921,8 +944,6 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
-		hfStone.setConcernCount(hfStone.getConcernCount()+1);
-		hfStoneMapper.updateByPrimaryKey(hfStone);
 		HfStoneConcernExample example = new HfStoneConcernExample();
 		HfStoneConcern concern = null;
 		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
@@ -936,6 +957,8 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			concern.setUserId(userId);
 			concern.setStoneId(stoneId);
 			hfStoneConcernMapper.insert(concern);
+			hfStone.setConcernCount(hfStone.getConcernCount()+1);
+			hfStoneMapper.updateByPrimaryKey(hfStone);
 		}else {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		}

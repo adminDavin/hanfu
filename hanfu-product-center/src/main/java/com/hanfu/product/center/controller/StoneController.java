@@ -1,11 +1,23 @@
 package com.hanfu.product.center.controller;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,16 +25,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.FormatException;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.DecoderResult;
+import com.google.zxing.datamatrix.decoder.Decoder;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -32,12 +58,14 @@ import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.HfStoneConcernMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HomePageDao;
+import com.hanfu.product.center.manual.model.HfStoneInfo;
 import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.ProductStone.StonePictureTypeEnum;
 import com.hanfu.product.center.model.EvluateInstancePicture;
@@ -54,6 +82,7 @@ import com.hanfu.product.center.model.HfOrderExample;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
+import com.hanfu.product.center.model.HfStoneConcernExample;
 import com.hanfu.product.center.model.HfStoneExample;
 import com.hanfu.product.center.model.HfStonePicture;
 import com.hanfu.product.center.model.HfStonePictureExample;
@@ -118,6 +147,9 @@ public class StoneController {
     @Autowired
     private ProductMapper productMapper;
     
+    @Autowired
+    private HfStoneConcernMapper hfStoneConcernMapper;
+    
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -161,15 +193,15 @@ public class StoneController {
     
     @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
     @RequestMapping(value = "/addStonePicture", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,@RequestPart(required = false) MultipartFile[] file) throws JSONException, IOException {
+    public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,MultipartFile file) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
-        for(MultipartFile f:file) {
+//        for(MultipartFile f:file) {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
-			arr = fileMangeService.uploadFile(f.getBytes(), String.valueOf(0));
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(0));
 			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(f.getName());
+			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setCreateTime(LocalDateTime.now());
@@ -186,9 +218,11 @@ public class StoneController {
 			picture.setModifyTime(LocalDateTime.now());
 			picture.setIsDeleted((byte) 0);
 			hfStonePictureMapper.insert(picture);
-		}
+//		}
         return builder.body(ResponseUtils.getResponseBody(stone.getId()));
     }
+    
+    
 
     @ApiOperation(value = "删除商铺", notes = "删除商铺")
     @RequestMapping(value = "/deleteStone", method = RequestMethod.GET)
@@ -272,9 +306,45 @@ public class StoneController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "商铺id", required = true, type = "Integer"),
     })
-    public  ResponseEntity<JSONObject> selectById( Integer id) throws JSONException {
+    public  ResponseEntity<JSONObject> selectById(Integer id, Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByPrimaryKey(id)));
+        HfStone hfStone = hfStoneMapper.selectByPrimaryKey(id);
+        HfStoneInfo info = new HfStoneInfo();
+        info.setStoneName(hfStone.getHfName());
+        info.setStoneDesc(hfStone.getHfDesc());
+        info.setAddress(hfStone.getAddress());
+        info.setConcernCount(hfStone.getConcernCount());
+        info.setCreateTime(hfStone.getCreateTime());
+        info.setExpireTime(hfStone.getExpireTime());
+        HfStonePictureExample example = new HfStonePictureExample();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("avatar");
+        List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setAvatarId(pictures.get(0).getFileId());
+        }
+        example.clear();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("background");
+        pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setBackgroundId(pictures.get(0).getFileId());
+        }
+        example.clear();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("code");
+        pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setCodeId(pictures.get(0).getFileId());
+        }
+        info.setIsConcern(0);
+        if(userId != null) {
+        	 HfStoneConcernExample example2 = new HfStoneConcernExample();
+             example2.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(id);
+             if(CollectionUtils.isEmpty(hfStoneConcernMapper.selectByExample(example2))) {
+             	info.setIsConcern(0);
+             }else {
+             	info.setIsConcern(1);
+             }
+        }
+        return builder.body(ResponseUtils.getResponseBody(info));
     }
 
     @ApiOperation(value = "修改商铺状态", notes = "修改商铺状态")
@@ -453,14 +523,6 @@ public class StoneController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer salesCountAll = 0;
 		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
-//		HfStoneExample example = new HfStoneExample();
-//		example.createCriteria().andBossIdEqualTo(bossId);
-//		List<HfStone> list = hfStoneMapper.selectByExample(example);
-//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-//		HfOrderExample example2 = new HfOrderExample();
-//		example2.createCriteria().andStoneIdIn(stoneId);
-//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
 		example3.createCriteria().andStoneIdEqualTo(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
@@ -504,4 +566,105 @@ public class StoneController {
 		return builder.body(ResponseUtils.getResponseBody(infos));
 	}
     
+//    public static ByteArrayOutputStream createCode(String content,MultipartFile file) throws IOException {
+//        //二维码的宽高
+//        int width = 200;
+//        int height = 200;
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        
+//        //其他参数，如字符集编码
+//        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+//        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+//        //容错级别为H
+//        hints.put(EncodeHintType.ERROR_CORRECTION , ErrorCorrectionLevel.H);
+//        //白边的宽度，可取0~4
+//        hints.put(EncodeHintType.MARGIN , 0);
+//
+//        BitMatrix bitMatrix = null;
+//        try {
+//            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
+//        	MultiFormatWriter writer = new MultiFormatWriter();
+//            bitMatrix = new MultiFormatWriter().encode(content,
+//                    BarcodeFormat.QR_CODE, width, height,hints);
+//            MatrixToImageWriter.writeToStream(bitMatrix, "png", outputStream);
+//            //bitMatrix = deleteWhite(bitMatrix);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
+//        return outputStream;
+//    }
+   
+    public static BufferedImage createCode(String content) throws IOException {
+        //二维码的宽高
+        int width = 200;
+        int height = 200;
+        BufferedImage image = null;
+        //其他参数，如字符集编码
+        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        //容错级别为H
+        hints.put(EncodeHintType.ERROR_CORRECTION , ErrorCorrectionLevel.H);
+        //白边的宽度，可取0~4
+        hints.put(EncodeHintType.MARGIN , 0);
+
+        BitMatrix bitMatrix = null;
+        try {
+            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
+            bitMatrix = new MultiFormatWriter().encode(content,
+                    BarcodeFormat.QR_CODE, width, height,hints);
+            image = MatrixToImageWriter.toBufferedImage(bitMatrix);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+		return image;
+    }
+   
+    @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
+    @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
+        String str = String.valueOf(stoneId);
+        byte[] b = Base64.getEncoder().encode(str.getBytes());
+        BufferedImage bi = createCode(new String(b));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", outputStream);
+        String arr[];
+		FileMangeService fileMangeService = new FileMangeService();
+		arr = fileMangeService.uploadFile(outputStream.toByteArray(),String.valueOf(0));
+		HfStonePictureExample example = new HfStonePictureExample();
+		example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo("code");
+		List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(pictures)) {
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName("店铺二维码");
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfStonePicture picture = new HfStonePicture();
+			picture.setStoneId(stoneId);
+			picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
+			picture.setFileId(fileDesc.getId());
+			picture.setHfName("店铺二维码");
+			picture.setHfDesc("店铺二维码描述");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+			hfStonePictureMapper.insert(picture);
+		}else {
+			HfStonePicture picture = pictures.get(0);
+			FileDesc desc = fileDescMapper.selectByPrimaryKey(picture.getFileId());
+			FileMangeService service = new FileMangeService();
+			service.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+			desc.setModifyTime(LocalDateTime.now());
+			desc.setGroupName(arr[0]);
+			desc.setRemoteFilename(arr[1]);
+			fileDescMapper.updateByPrimaryKey(desc);
+		}
+		
+        return builder.body(ResponseUtils.getResponseBody(stone.getId()));
+    }
 }

@@ -3,6 +3,8 @@ package com.hanfu.product.center.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class HfCategory implements Serializable {
     /**
      *

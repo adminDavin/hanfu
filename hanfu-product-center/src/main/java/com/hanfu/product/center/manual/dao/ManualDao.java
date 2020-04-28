@@ -6,6 +6,7 @@ import com.hanfu.product.center.manual.model.Categories;
 import com.hanfu.product.center.manual.model.ProductActivityInfo;
 import com.hanfu.product.center.manual.model.UserInfo;
 import com.hanfu.product.center.model.HfActivity;
+import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.user.center.model.HfUser;
 
 public interface ManualDao {
@@ -20,4 +21,6 @@ public interface ManualDao {
     public List<ProductActivityInfo> selectProductActivityList(String activityType);
     
     public void updateActivityState(ProductActivityInfo activity);
+    
+    public List<HfCategory> findCategoryByInfo(HfCategory h);
 }

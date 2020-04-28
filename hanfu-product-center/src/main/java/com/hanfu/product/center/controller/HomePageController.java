@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -313,6 +314,9 @@ public class HomePageController {
 		example3.createCriteria().andStoneIdIn(stoneId);
 		List<HfOrderDetail> hfOrderDetails = hfOrderDetailMapper.selectByExample(example3);
 		List<Integer> orderDetailId = hfOrderDetails.stream().map(HfOrderDetail::getId).collect(Collectors.toList());
+		if(CollectionUtils.isEmpty(orderDetailId)) {
+			return builder.body(ResponseUtils.getResponseBody(infos));
+		}
 		List<HomePageInfo> result = homePageDao.findSalesVolume(orderDetailId);
 		List<Integer> productId = new ArrayList<Integer>();
 		for (int i = 0; i < result.size(); i++) {
