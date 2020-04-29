@@ -73,6 +73,8 @@ public static enum EvaluateContentTypeEnum {
 	private Integer userId;
 	private String comment;
 	private String type;
+	private Integer levelId;
+	private Integer parentEvaluateId;
 	private String typeContent;
 	private Integer star;
 	private Integer comment_count;
@@ -123,6 +125,22 @@ public static enum EvaluateContentTypeEnum {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public Integer getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(Integer levelId) {
+		this.levelId = levelId;
+	}
+
+	public Integer getParentEvaluateId() {
+		return parentEvaluateId;
+	}
+
+	public void setParentEvaluateId(Integer parentEvaluateId) {
+		this.parentEvaluateId = parentEvaluateId;
 	}
 
 	public String getTypeContent() {
