@@ -1321,7 +1321,7 @@ public class GoodsController {
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
 	}
-
+	
 	@ApiOperation(value = "查询待评价物品", notes = "查询待评价物品")
 	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectEvaluateGoods(Integer userId) throws Exception {
@@ -1506,7 +1506,7 @@ public class GoodsController {
 			if(userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
-						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("1");
 				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
 					e.setIsPraise(1);
 				} else {
@@ -1564,7 +1564,7 @@ public class GoodsController {
 		}
 		
 		EvaluateUserRecordExample example = new EvaluateUserRecordExample();
-		example.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(id).andTypeEqualTo(1);
+		example.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(id).andTypeEqualTo(String.valueOf(1));
 		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
 		if (!records.isEmpty()) {
 			EvaluateUserRecord record = records.get(0);
@@ -1594,7 +1594,7 @@ public class GoodsController {
 			record.setCreateTime(LocalDateTime.now());
 			record.setModifyTime(LocalDateTime.now());
 			record.setIsDeleted((byte) 1);
-			record.setType(type);
+			record.setType(String.valueOf(1));
 			evaluateUserRecordMapper.insert(record);
 			evaluate.setPraise(evaluate.getPraise() + 1);
 			hfEvaluateMapper.updateByPrimaryKey(evaluate);
@@ -1695,7 +1695,7 @@ public class GoodsController {
 			if(userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
-						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(1);
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("1");
 				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
 					display.setIsPraise(1);
 				} else {
@@ -1752,5 +1752,406 @@ public class GoodsController {
 			outputStream.close();
 		}
 	}
+	
+	
+
+//	@ApiOperation(value = "查询待评价物品", notes = "查询待评价物品")
+//	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> selectEvaluateGoods(Integer userId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		List<HfOrderDetail> list2 = new ArrayList<HfOrderDetail>();
+//		HfOrderExample example = new HfOrderExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusEqualTo("evaluate");
+//		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+//		if (!list.isEmpty()) {
+//			List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+//			HfOrderDetailExample example2 = new HfOrderDetailExample();
+//			example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("evaluate");
+//			example2.setOrderByClause("create_time DESC");
+//			list2 = hfOrderDetailMapper.selectByExample(example2);
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(list2));
+//	}
+//
+//	@ApiOperation(value = "查询已经评价物品", notes = "查询已经评价物品")
+//	@RequestMapping(value = "/selectEvaluateCompleteGoods", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> selectEvaluateCompleteGoods(Integer userId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		List<String> status = new ArrayList<String>();
+//		status.add("complete");
+//		status.add("evaluate");
+//		List<HfOrderDetail> list2 = new ArrayList<HfOrderDetail>();
+//		List<Evaluate> result = new ArrayList<Evaluate>();
+//		HfEvaluateExample evaluateExample = new HfEvaluateExample();
+//		HfOrderExample example = new HfOrderExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andOrderStatusIn(status);
+//		List<HfOrder> list = hfOrderMapper.selectByExample(example);
+//		if (!CollectionUtils.isEmpty(list)) {
+//			List<Integer> orderId = list.stream().map(HfOrder::getId).collect(Collectors.toList());
+//			HfOrderDetailExample example2 = new HfOrderDetailExample();
+//			example2.createCriteria().andOrderIdIn(orderId).andHfStatusEqualTo("complete");
+//			example2.setOrderByClause("create_time DESC");
+//			list2 = hfOrderDetailMapper.selectByExample(example2);
+//		}
+//		for (int i = 0; i < list2.size(); i++) {
+//			evaluateExample.clear();
+//			Evaluate evaluate = new Evaluate();
+//			evaluate.setList(list2.get(i));
+//			evaluateExample.createCriteria().andOrderDetailIdEqualTo(list2.get(i).getId());
+//			if (!hfEvaluateMapper.selectByExample(evaluateExample).isEmpty()) {
+//				HfEvaluate hfEvaluate = hfEvaluateMapper.selectByExample(evaluateExample).get(0);
+//				evaluate.setComment(hfEvaluate.getEvaluate());
+//				evaluate.setStar(hfEvaluate.getStar());
+//				evaluate.setId(hfEvaluate.getId());
+//				evaluate.setTime(hfEvaluate.getCreateTime());
+//			}
+//			result.add(evaluate);
+//		}
+//		result = result.stream().filter(r -> r.getId() != null).collect(Collectors.toList());
+//		return builder.body(ResponseUtils.getResponseBody(result));
+//	}
+//
+//	@ApiOperation(value = "添加评价", notes = "添加评价")
+//	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
+//
+//	public ResponseEntity<JSONObject> addEvaluateProduct(String type, String typeContent,
+//			Integer orderDetailId, Integer userId, Integer goodId, Integer stoneId, Integer star, String evaluate,
+//			Integer levelId,Integer parentEvaluateId,Integer... fileId) throws Exception {
+//
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfEvaluate hfEvaluate = new HfEvaluate();
+//		if (goodId != null && stoneId != null) {
+//			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
+//			System.out.println("物品" + goods + "-----------" + "店铺id" + stoneId);
+//			ProductInstanceExample example = new ProductInstanceExample();
+//			example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
+//			List<ProductInstance> instance = productInstanceMapper.selectByExample(example);
+//			hfEvaluate.setInstanceId(instance.get(0).getId());
+//			
+//			if (EvaluateTypeEnum.EVALUATE.getEvaluateType().equals(type)) {
+//				hfEvaluate.setOrderDetailId(orderDetailId);
+//				hfEvaluate.setStar(star);
+//				if (instance.get(0).getEvaluateCount() == null) {
+//					instance.get(0).setEvaluateCount(1);
+//				} else {
+//					instance.get(0).setEvaluateCount(instance.get(0).getEvaluateCount() + 1);
+//				}
+//				productInstanceMapper.updateByPrimaryKey(instance.get(0));
+//				HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(orderDetailId);
+//				detail.setHfStatus("complete");
+//				hfOrderDetailMapper.updateByPrimaryKey(detail);
+//				HfOrderDetailExample example2 = new HfOrderDetailExample();
+//				example2.createCriteria().andOrderIdEqualTo(detail.getOrderId()).andHfStatusEqualTo("evaluate");
+//				if (hfOrderDetailMapper.selectByExample(example2).isEmpty()) {
+//					HfOrder hfOrder = hfOrderMapper.selectByPrimaryKey(detail.getOrderId());
+//					restTemplate.getForEntity(MODIFY_ORDER_PREFIX + "/hf-order/modifyStatus?Id={Id}"
+//							+ "&orderCode={orderCode}&originOrderStatus={originOrderStatus}&targetOrderStatus={targetOrderStatus}&stoneId={stoneId}",
+//							String.class, detail.getOrderId(), hfOrder.getOrderCode(), "evaluate", "complete", stoneId);
+//				}
+//			}
+//
+//		}
+//		hfEvaluate.setType(EvaluateTypeEnum.getEvaluateTypeEnum(type).getEvaluateType());
+//		hfEvaluate.setTypeContent(
+//				EvaluateContentTypeEnum.getEvaluateContentTypeEnum(typeContent).getEvaluateContentType());
+//		hfEvaluate.setEvaluate(evaluate);
+//		hfEvaluate.setLevelId(levelId);
+//		hfEvaluate.setParentEvaluateId(parentEvaluateId);
+//		hfEvaluate.setPraise(0);
+//		hfEvaluate.setCommentCount(0);
+//		hfEvaluate.setTransmit(0);
+//		hfEvaluate.setUserId(userId);
+//		hfEvaluate.setCreateTime(LocalDateTime.now());
+//		hfEvaluate.setModifyTime(LocalDateTime.now());
+//		hfEvaluate.setIsDeleted((byte) 0);
+//		hfEvaluateMapper.insert(hfEvaluate);
+//		if(fileId != null) {
+//			for (Integer f : fileId) {
+//				EvaluatePicture picture = new EvaluatePicture();
+//				picture.setEvaluate(hfEvaluate.getId());
+//				picture.setFileId(f);
+//				picture.setHfDesc("评价图片描述");
+//				picture.setHfName("评价图片");
+//				picture.setCreateTime(LocalDateTime.now());
+//				picture.setModifieyTime(LocalDateTime.now());
+//				picture.setIsDeleted((byte) 0);
+//				evaluatePictureMapper.insert(picture);
+//			}
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(hfEvaluate.getId()));
+//	}
+//
+//	@ApiOperation(value = "查询实体得评价", notes = "查询实体得评价")
+//	@RequestMapping(value = "/selectInstanceEvaluate", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> selectInstanceEvaluate(Integer userId, Integer id, Integer stoneId,
+//			Integer productId, Integer pageNum, Integer pageSize, String type, Integer levelId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		if (pageNum == null) {
+//			pageNum = 0;
+//		}
+//		if (pageSize == null) {
+//			pageSize = 0;
+//		}
+//		List<EvaluateEntity> rs = new ArrayList<EvaluateEntity>();
+//		HfEvaluateExample example = new HfEvaluateExample();
+//		EvaluatePictureExample pictureExample = new EvaluatePictureExample();
+//		List<EvaluatePicture> pictures = new ArrayList<EvaluatePicture>();
+//		List<Integer> pictureId = new ArrayList<Integer>();
+//		EvluateInstancePictureExample instancePictureExample = new EvluateInstancePictureExample();
+//		List<EvluateInstancePicture> instancePictures = new ArrayList<EvluateInstancePicture>();
+//		List<HfEvaluate> result = new ArrayList<HfEvaluate>();
+//		List<Integer> instancePictureId = new ArrayList<Integer>();
+//		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
+//
+//		if (id == null) {
+//			ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+//			productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+//			List<ProductInstance> instanceList = productInstanceMapper.selectByExample(productInstanceExample);
+//			example.createCriteria().andInstanceIdEqualTo(instanceList.get(0).getId());
+//			PageHelper.startPage(pageNum, pageSize);
+//			result = hfEvaluateMapper.selectByExample(example);
+//		} else {
+//			HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+//			result.add(evaluate);
+//		}
+//
+//		for (int i = 0; i < result.size(); i++) {
+//			Evaluate e = new Evaluate();
+//			List<Evaluate> es = new ArrayList<Evaluate>();
+//			EvaluateEntity entity = new EvaluateEntity();
+//			HfEvaluate evaluate = result.get(i);
+//			pictureExample.clear();
+//			e.setUserId(evaluate.getUserId());
+//			if(id == null) {
+//				HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
+//				e.setHfDesc(detail.getHfDesc());
+//			}
+//			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
+//					JSONObject.class, evaluate.getUserId());
+//			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+//					JSONObject.class, evaluate.getUserId());
+//			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
+//			e.setUsername(js1.getJSONObject("data").getString("nickName"));
+//			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+//				e.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+//			}
+//			if(userId != null) {
+//				recordExample.clear();
+//				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
+//						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(type);
+//				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+//					e.setIsPraise(1);
+//				} else {
+//					e.setIsPraise(0);
+//				}
+//			}
+//			
+//			e.setId(evaluate.getId());
+//			e.setLevelId(evaluate.getLevelId());
+//			e.setParentEvaluateId(evaluate.getParentEvaluateId());
+//			e.setStar(evaluate.getStar());
+//			e.setComment(evaluate.getEvaluate());
+//			e.setComment_count(evaluate.getCommentCount());
+//			e.setPraise(evaluate.getPraise());
+//			e.setTransmitCount(evaluate.getTransmit());
+//			e.setTime(evaluate.getCreateTime());
+//			e.setType(evaluate.getType());
+//			e.setTypeContent(evaluate.getTypeContent());
+//			pictureExample.createCriteria().andEvaluateEqualTo(evaluate.getId());
+//			pictures = evaluatePictureMapper.selectByExample(pictureExample);
+//			pictureId = pictures.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
+//			e.setFileId(pictureId);
+//			entity.setParentEvaluate(e);
+//			rs.add(entity);
+//		}
+//		PageInfo<EvaluateEntity> page = new PageInfo<EvaluateEntity>(rs);
+//		return builder.body(ResponseUtils.getResponseBody(page));
+//	}
+//
+//	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
+//	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, String type, Integer levelId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+//		JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+//				JSONObject.class, userId);
+//		if ("此用户不存在".equals(js1.get("data"))) {
+//			return builder.body(ResponseUtils.getResponseBody("-1"));
+//		}
+//		
+//		EvaluateUserRecordExample example = new EvaluateUserRecordExample();
+//		example.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(id).andTypeEqualTo(type);
+//		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
+//		if (!records.isEmpty()) {
+//			EvaluateUserRecord record = records.get(0);
+//			if (record.getIsDeleted() == (byte) 0) {
+//				System.out.println("更改点赞状态");
+//				record.setIsDeleted((byte) 1);
+//				evaluate.setPraise(evaluate.getPraise()+1);
+//				record.setModifyTime(LocalDateTime.now());
+//				evaluateUserRecordMapper.updateByPrimaryKey(record);
+//				hfEvaluateMapper.updateByPrimaryKey(evaluate);
+//				return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
+//			}
+//			if (record.getIsDeleted() == (byte) 1) {
+//				System.out.println("11111111111");
+//				record.setIsDeleted((byte) 0);
+//				evaluate.setPraise(evaluate.getPraise()-1);
+//				record.setModifyTime(LocalDateTime.now());
+//				evaluateUserRecordMapper.updateByPrimaryKey(record);
+//				hfEvaluateMapper.updateByPrimaryKey(evaluate);
+//				return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
+//			}
+//			
+//		} else {
+//			EvaluateUserRecord record = new EvaluateUserRecord();
+//			record.setUserId(userId);
+//			record.setEvaluate(id);
+//			record.setCreateTime(LocalDateTime.now());
+//			record.setModifyTime(LocalDateTime.now());
+//			record.setIsDeleted((byte) 1);
+//			record.setType(type);
+//			evaluateUserRecordMapper.insert(record);
+//			evaluate.setPraise(evaluate.getPraise() + 1);
+//			hfEvaluateMapper.updateByPrimaryKey(evaluate);
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
+//	}
+//
+////	@ApiOperation(value = "回复评价", notes = "回复评价")
+////	@RequestMapping(value = "/replyEvaluate", method = RequestMethod.POST)
+////	public ResponseEntity<JSONObject> replyEvaluate(Integer evaluateId, Integer outId, Integer inId, String evaluate,
+////			Integer... fileId) throws Exception {
+////		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+////		EvaluateInstance evaluateInstance = new EvaluateInstance();
+////		evaluateInstance.setInEvaluateId(evaluateId);
+////		evaluateInstance.setOutEvaluateId(outId);
+////		evaluateInstance.setInEvaluateId(inId);
+////		evaluateInstance.setEvaluateContent(evaluate);
+////		evaluateInstance.setCreateTime(LocalDateTime.now());
+////		evaluateInstance.setModifyTime(LocalDateTime.now());
+////		evaluateInstance.setIsDeleted((byte) 0);
+////		evaluateInstanceMapper.insert(evaluateInstance);
+////		HfEvaluate hfEvaluate = hfEvaluateMapper.selectByPrimaryKey(evaluateId);
+////		hfEvaluate.setCommentCount(hfEvaluate.getCommentCount() + 1);
+////		hfEvaluateMapper.updateByPrimaryKey(hfEvaluate);
+////
+////		for (int i = 0; i < fileId.length; i++) {
+////			EvluateInstancePicture picture = new EvluateInstancePicture();
+////			picture.setEvaluateInstanceId(evaluateId);
+////			picture.setFileId(fileId[i]);
+////			picture.setHfName("评价图片");
+////			picture.setHfDesc("评价图片描述");
+////			picture.setCreateTime(LocalDateTime.now());
+////			picture.setModifyTime(LocalDateTime.now());
+////			picture.setIsDeleted((byte) 0);
+////			evluateInstancePictureMapper.insert(picture);
+////		}
+////		return builder.body(ResponseUtils.getResponseBody(evaluateInstance.getId()));
+////	}
+//
+//	@ApiOperation(value = "上传图片", notes = "上传图片")
+//	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		String arr[];
+//		FileMangeService fileMangeService = new FileMangeService();
+//		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+//		FileDesc fileDesc = new FileDesc();
+//		fileDesc.setFileName(file.getName());
+//		fileDesc.setGroupName(arr[0]);
+//		fileDesc.setRemoteFilename(arr[1]);
+//		fileDesc.setUserId(-1);
+//		fileDesc.setCreateTime(LocalDateTime.now());
+//		fileDesc.setModifyTime(LocalDateTime.now());
+//		fileDesc.setIsDeleted((short) 0);
+//		fileDescMapper.insert(fileDesc);
+//		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
+//	}
+//
+//	@RequestMapping(value = "/selectDiscover", method = RequestMethod.GET)
+//	@ApiOperation(value = "根据类型查询评价", notes = "根据类型查询评价")
+//	public ResponseEntity<JSONObject> selectDiscover(Integer userId, String type, Integer levelId ,Integer parentEvaluateId) throws JSONException {
+//		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
+//		HfEvaluateExample evaluateExample = new HfEvaluateExample();
+//		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId);
+//		List<Evaluate> result = new ArrayList<Evaluate>();
+////		List<Integer> productId = new ArrayList<Integer>();
+//		List<Integer> fileId = new ArrayList<Integer>();
+//		List<HfEvaluate> discovers = hfEvaluateMapper.selectByExample(evaluateExample);
+//
+//		EvaluatePictureExample pictrueExample = new EvaluatePictureExample();
+//		List<EvaluatePicture> pictrues = new ArrayList<EvaluatePicture>();
+////		DiscoverProductExample productExample = new DiscoverProductExample();  多个实体之后
+////		List<DiscoverProduct> products = new ArrayList<DiscoverProduct>();
+//		for (int i = 0; i < discovers.size(); i++) {
+//			pictrueExample.clear();
+//// 			productExample.clear();
+//			HfEvaluate d = discovers.get(i);
+//			Evaluate display = new Evaluate();
+//			display.setComment(d.getEvaluate());
+////			display.setDiscoverDesc(d.getDiscoverDesc());
+////			display.setDiscoverHeadline(d.getDiscoverHeadline());
+//			if(userId != null) {
+//				recordExample.clear();
+//				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
+//						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(type);
+//				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+//					display.setIsPraise(1);
+//				} else {
+//					display.setIsPraise(0);
+//				}
+//			}
+//			display.setId(d.getId());
+//			display.setType(d.getType());
+//			display.setTypeContent(d.getTypeContent());
+//			display.setUserId(d.getUserId());
+//			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+//					JSONObject.class, d.getUserId());
+//			display.setUsername(js1.getJSONObject("data").getString("nickName"));
+//			display.setTime(d.getCreateTime());
+//			pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
+//			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
+//			fileId = pictrues.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
+//			display.setFileId(fileId);
+//			display.setComment_count(d.getCommentCount());
+//			display.setPraise(d.getPraise());
+//			display.setTransmitCount(d.getTransmit());
+//			result.add(display);
+////			products = discoverProductMapper.selectByExample(productExample);
+////			productId = products.stream().map(DiscoverProduct :: getProductId).collect(Collectors.toList());
+////			display.setProductId(productId);
+////			productExample.createCriteria().andDiscoverIdEqualTo(d.getId());
+//		}
+//		if (userId != null) {
+//
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(result));
+//	}
+//
+//	@ApiOperation(value = "获取视频", notes = "获取视频")
+//	@RequestMapping(value = "/getVedio", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer") })
+//	public void getVedio(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
+//		response.addHeader("Access-Control-Allow-Origin", "*");
+//		response.addHeader("Content-Type", "audio/mp4;charset=UTF-8");
+//		FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+//		if (fileDesc == null) {
+//			throw new Exception("file not exists");
+//		}
+//		FileMangeService fileManageService = new FileMangeService();
+//		synchronized (LOCK) {
+//			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+////            ByteArrayInputStream stream = new ByteArrayInputStream(file);
+////            BufferedImage readImg = ImageIO.read(stream);
+////            stream.reset();
+//			OutputStream outputStream = response.getOutputStream();
+////            ImageIO.write(readImg, "png", outputStream);
+//			IOUtils.write(file, outputStream);
+//			outputStream.close();
+//		}
+//	}
 
 }

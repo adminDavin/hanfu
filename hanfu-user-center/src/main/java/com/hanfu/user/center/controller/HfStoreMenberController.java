@@ -93,7 +93,7 @@ public class HfStoreMenberController {
                 storeUser.setCreatetime(hfStoreMenber1.getCreateTime());
                 storeUser.setIsCancel(hfStoreMenber1.getIsCancel());
                 storeUser.setLastModifier(hfStoreMenber1.getLastModifier());
-                storeUser.setPhone(hfStoreMenber1.getPhone());
+                storeUser.setPhone(String.valueOf(hfStoreMenber1.getPhone()));
                 storeUser.setStoreId(hfStoreMenber1.getStoreId());
                 storeUser.setUserId(hfStoreMenber1.getUserId());
                 storeUser.setStoreRole(hfStoreMenber1.getStoreRole());

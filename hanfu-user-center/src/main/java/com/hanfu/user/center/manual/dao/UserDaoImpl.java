@@ -3,6 +3,7 @@ package com.hanfu.user.center.manual.dao;
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.Order;
+import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
@@ -79,6 +80,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<HfUser> selectUserOrderByInfo(HfUser user) {
     	List<HfUser> result = sqlSessionTemplate.selectList("selectUserOrderByInfo", user);
+    	return result;
+    }
+    @Override
+    public List<StoreUser> selectStoneMemberByInfo(StoreUser user) {
+    	List<StoreUser> result = sqlSessionTemplate.selectList("selectStoneMemberByInfo", user);
     	return result;
     }
 }
