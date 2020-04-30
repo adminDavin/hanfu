@@ -452,7 +452,7 @@ public class HfAuthController {
 	@ApiOperation(value = "店铺管理员列表", notes = "店铺管理员列表根据商家id")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> select(Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> select(Integer bossId, String phone, String code, String name) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<StoreUser> storeUsers = new ArrayList<>();
 		List<Integer> result = new ArrayList<Integer>();
@@ -479,26 +479,33 @@ public class HfAuthController {
 		HashSet h = new HashSet(result);
 		result.clear();
 		result.addAll(h);
-		for (int i = 0; i < result.size(); i++) {
-			StoreUser storeUser = new StoreUser();
-			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
-			if (hfUser != null) {
-				if (!StringUtils.isEmpty(hfUser.getInvitationCode())) {
-					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
-				}
-				if (!StringUtils.isEmpty(hfUser.getNickName())) {
-					storeUser.setUserName(hfUser.getNickName());
-				}
-				if (!StringUtils.isEmpty(hfUser.getRealName())) {
-					storeUser.setRealName(hfUser.getRealName());
-				}
-				if (!StringUtils.isEmpty(hfUser.getPhone())) {
-					storeUser.setUserPhone(hfUser.getPhone());
-				}
-				storeUser.setUserId(hfUser.getId());
-				storeUsers.add(storeUser);
-			}
-		}
+//		for (int i = 0; i < result.size(); i++) {
+//			StoreUser storeUser = new StoreUser();
+//			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
+//			if (hfUser != null) {
+//				if (!StringUtils.isEmpty(hfUser.getInvitationCode())) {
+//					storeUser.setOwnInvitationCode(hfUser.getInvitationCode());
+//				}
+//				if (!StringUtils.isEmpty(hfUser.getNickName())) {
+//					storeUser.setUserName(hfUser.getNickName());
+//				}
+//				if (!StringUtils.isEmpty(hfUser.getRealName())) {
+//					storeUser.setRealName(hfUser.getRealName());
+//				}
+//				if (!StringUtils.isEmpty(hfUser.getPhone())) {
+//					storeUser.setUserPhone(hfUser.getPhone());
+//				}
+//				storeUser.setUserId(hfUser.getId());
+//				storeUsers.add(storeUser);
+//			}
+//		}
+		StoreUser user = new StoreUser();
+		user.setPhone(phone);
+		user.setOwnInvitationCode(code);
+		user.setUserName(name);
+		user.setRealName(name);
+		user.setId(result);
+		storeUsers = userDao.selectStoneMemberByInfo(user);
 		return builder.body(ResponseUtils.getResponseBody(storeUsers));
 	}
 

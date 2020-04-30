@@ -4,13 +4,14 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class StoreUser {
     private Integer userId;
     private Integer storeId;
     private Integer storeRole;
     private Integer isCancel;
-    private Integer phone;
+    private String phone;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @JSONField(format= "yyyy-MM-dd HH:mm:ss" )
     private LocalDateTime createtime;
@@ -26,8 +27,18 @@ public class StoreUser {
     private Integer cancelId;
     private String storeRoleName;
     private String ownInvitationCode;
+    private List<Integer> id;
+    
+    
+    public List<Integer> getId() {
+		return id;
+	}
 
-    public Integer getUserId() {
+	public void setId(List<Integer> id) {
+		this.id = id;
+	}
+
+	public Integer getUserId() {
         return userId;
     }
 
@@ -59,15 +70,15 @@ public class StoreUser {
         this.isCancel = isCancel;
     }
 
-    public Integer getPhone() {
-        return phone;
-    }
+    public String getPhone() {
+		return phone;
+	}
 
-    public void setPhone(Integer phone) {
-        this.phone = phone;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public LocalDateTime getCreatetime() {
+	public LocalDateTime getCreatetime() {
         return createtime;
     }
 

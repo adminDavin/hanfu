@@ -3,6 +3,7 @@ package com.hanfu.user.center.manual.dao;
 
 import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.Order;
+import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.manual.model.UserQuery;
@@ -35,4 +36,6 @@ public interface UserDao {
     Integer selectUserOrderInfo(Order order);
     
     List<HfUser> selectUserOrderByInfo(HfUser user);
+    
+    List<StoreUser> selectStoneMemberByInfo(StoreUser user);
 }
