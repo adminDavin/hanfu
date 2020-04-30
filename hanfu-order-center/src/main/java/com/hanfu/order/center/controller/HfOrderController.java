@@ -588,7 +588,7 @@ public class HfOrderController {
 //        paramMap.add("userId", String.valueOf(request.getUserId()));
 
         try {
-        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
+        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}&type={type}",JSONObject.class,productStone,request.getUserId(),0);
         }catch (Exception e) {
             return builder.body(ResponseUtils.getResponseBody(hfOrder));
         }
