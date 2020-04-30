@@ -110,10 +110,10 @@ public class discountCouponController {
         discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
         discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
         List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
-        if (null != DiscountCouponName && !DiscountCouponName.equals("")){
+        if (null != DiscountCouponName && !DiscountCouponName.equals("")&& DiscountCouponName.length()!=0){
             discountCoupons = discountCoupons.stream().filter(discountCoupon-> discountCoupon.getDiscountCouponName().contains(DiscountCouponName)).collect(Collectors.toList());
         }
-        if (null!=DiscountCouponType && !DiscountCouponType.equals("")){
+        if (null!=DiscountCouponType && !DiscountCouponType.equals("") && DiscountCouponType.length()!=0){
             discountCoupons = discountCoupons.stream().filter(discountCoupon -> discountCoupon.getDiscountCouponType().equals(DiscountCouponType)).collect(Collectors.toList());
         }
         discountCoupons.forEach(discountCoupon -> {
