@@ -548,7 +548,7 @@ public class HfProductController {
 				activity.setActivityState(-1);
 				index = -1;
 			}
-			if (date.after(activity.getStartTime()) && date.after(activity.getEndTime())) {
+			if (date.after(activity.getStartTime()) && date.before(activity.getEndTime())) {
 				System.out.println("活动开始中");
 				activity.setActivityState(0);
 				index = 0;
