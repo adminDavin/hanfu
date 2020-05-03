@@ -2110,6 +2110,9 @@ public class GoodsController {
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 					JSONObject.class, d.getUserId());
 			display.setUsername(js1.getJSONObject("data").getString("nickName"));
+			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+			}
 			display.setTime(d.getCreateTime());
 			pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
 			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
