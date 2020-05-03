@@ -2107,8 +2107,11 @@ public class GoodsController {
 			display.setType(d.getType());
 			display.setTypeContent(d.getTypeContent());
 			display.setUserId(d.getUserId());
+			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
+					JSONObject.class, d.getUserId());
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 					JSONObject.class, d.getUserId());
+			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			display.setUsername(js1.getJSONObject("data").getString("nickName"));
 			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
 				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
