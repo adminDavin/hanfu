@@ -586,7 +586,12 @@ public class HfOrderController {
 //        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
 //        paramMap.add("productStoneId",productStone);
 //        paramMap.add("userId", String.valueOf(request.getUserId()));
-        JSONObject entity=restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
+
+        try {
+        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}&type={type}",JSONObject.class,productStone,request.getUserId(),0);
+        }catch (Exception e) {
+            return builder.body(ResponseUtils.getResponseBody(hfOrder));
+        }
         return builder.body(ResponseUtils.getResponseBody(hfOrder));
     }
 

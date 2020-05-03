@@ -9,9 +9,11 @@ import com.hanfu.product.center.cart.service.CartService;
 import com.hanfu.product.center.cart.service.RedisService;
 import com.hanfu.product.center.cart.utils.CartPrefix;
 import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.manual.model.CartList;
 import com.hanfu.product.center.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -31,21 +33,44 @@ public class CartServiceImpl implements CartService {
     private ProductInstanceMapper productInstanceMapper;
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    @Autowired
+    private HfProductCollectMapper hfProductCollectMapper;
 
     @Override
-    public int addCart(String userId, String productId, int num ,Integer stoneId) {
+    public int addCart(String userId, String productId, int num ,Integer stoneId,Integer type) {
         //key为 userId_cart,校验是否已存在
-        Boolean exists = redisService.existsValue(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+    	Boolean exists = true;
+    	String json = "";
+    	Cart cart1 = new Cart();
+        if(type ==1) {
+        	exists = redisService.existsValue(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId));
+        }else {
+        	exists = redisService.existsValue(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+        }
         if (exists) {
             //获取现有的购物车中的数据
-            String json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+            if(type ==1) {
+            	json = redisService.hget(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId));
+            }else {
+            	json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+            }
             if (json != null) {
                 //转换为java实体类
-                Cart cart = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
-                cart.setProductNum(cart.getProductNum() + num);
-                redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
+                cart1 = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
+                if(type == 1) {
+                	cart1.setProductNum(cart1.getProductNum() + num);
+                	redisService.hset(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId), JSON.toJSON(cart1).toString());
+                }else {
+                	cart1.setProductNum(cart1.getProductNum() + num);
+                	redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart1).toString());
+                }
+                
             } else {
-                return 0;
+            	if(type == 1) {
+                	return -1;
+                }else {
+                	return 0;
+                }
             }
             return 1;
         }
@@ -84,7 +109,11 @@ public class CartServiceImpl implements CartService {
         cart.setInstanceId(productInstanceMapper.selectByExample(productInstanceExample).get(0).getId());
         cart.setProductStatus(hfGoods.getIsDeleted());
         cart.setProductIcon(productMapper.selectByPrimaryKey(hfGoods.getProductId()).getFileId());
-        redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
+        if(type == 1) {
+        	redisService.hset(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
+        }else {
+        	redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cart).toString());
+        }
         return 1;
     }
 
@@ -95,11 +124,31 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public List<Cart> getCartList(String userId) {
-        List<String> jsonList = redisService.hvals(CartPrefix.getCartList, userId);
+    public List<Cart> getCartList(String userId,Integer type) {
+    	List<String> jsonList = new ArrayList<String>();
+    	Boolean exists = false;
+    	if(type == 1) {
+    		jsonList = redisService.hvals(CartPrefix.getCartList, userId+"ofen");
+    	}else {
+    		jsonList = redisService.hvals(CartPrefix.getCartList, userId);
+    	}
+        
         List<Cart> cartDtoList = new LinkedList<>();
         for (String json : jsonList) {
             Cart cartDto = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
+            exists = redisService.existsValue(CartPrefix.getCartList, userId+"ofen", cartDto.getProductId()+String.valueOf(cartDto.getStoneId()));
+            if(exists) {
+            	cartDto.setIsOfenBuy(1);
+            }else {
+            	cartDto.setIsOfenBuy(0);
+            }
+            HfProductCollectExample example = new HfProductCollectExample();
+            example.createCriteria().andUserIdEqualTo(Integer.valueOf(userId)).andProductIdEqualTo(Integer.valueOf(cartDto.getProductsId()));
+            if(!CollectionUtils.isEmpty(hfProductCollectMapper.selectByExample(example))) {
+            	cartDto.setIsCollect(1);
+            }else {
+            	cartDto.setIsCollect(1);
+            }
             cartDtoList.add(cartDto);
         }
         return cartDtoList;
@@ -114,14 +163,23 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public int updateCartNum(String userId, String productId, int num,Integer stoneId) {
-        String json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+    public int updateCartNum(String userId, String productId, int num,Integer stoneId, Integer type) {
+    	String json = "";
+    	if(type == 1) {
+    		json = redisService.hget(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId));
+    	}else {
+    		json = redisService.hget(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId));
+    	}
         if (json == null) {
             return 0;
         }
         Cart cartDto = JSON.toJavaObject(JSONObject.parseObject(json), Cart.class);
         cartDto.setProductNum(num);
-        redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cartDto).toString());
+        if(type == 1) {
+        	redisService.hset(CartPrefix.getCartList, userId+"ofen", productId+String.valueOf(stoneId), JSON.toJSON(cartDto).toString());
+        }else {
+        	redisService.hset(CartPrefix.getCartList, userId, productId+String.valueOf(stoneId), JSON.toJSON(cartDto).toString());
+        }
         return 1;
     }
 
@@ -158,8 +216,13 @@ public class CartServiceImpl implements CartService {
      * @return
      */
     @Override
-    public int delCartProduct(String userId, String productId,String stontId) {
-            redisService.hdel(CartPrefix.getCartList, userId, productId+stontId);
+    public int delCartProduct(String userId, String productId,String stontId,Integer type) {
+    		if(type == 1) {
+    			redisService.hdel(CartPrefix.getCartList, userId+"ofen", productId+stontId);
+    		}else {
+    			redisService.hdel(CartPrefix.getCartList, userId, productId+stontId);
+    		}
+            
             return 1;
     }
 
@@ -173,6 +236,30 @@ public class CartServiceImpl implements CartService {
     public int delCart(String userId) {
         redisService.delete(CartPrefix.getCartList, userId);
         return 1;
+    }
+    /**
+     * 购物车基本数据
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public CartList cartInfo(String userId) {
+    	CartList list = new CartList();
+    	List<String> jsonList1 = redisService.hvals(CartPrefix.getCartList, userId);
+    	List<String> jsonList2 = redisService.hvals(CartPrefix.getCartList, userId+"ofen");
+    	if(CollectionUtils.isEmpty(jsonList1)) {
+    		list.setAll(0);
+    	}else {
+    		list.setAll(jsonList1.size());
+    	}
+    	if(CollectionUtils.isEmpty(jsonList2)) {
+    		list.setOfenBuyCount(0);
+    	}else {
+    		list.setOfenBuyCount(jsonList2.size());
+    	}
+    	
+    	return list;
     }
 
 }

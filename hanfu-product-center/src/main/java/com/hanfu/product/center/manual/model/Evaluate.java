@@ -73,12 +73,15 @@ public static enum EvaluateContentTypeEnum {
 	private Integer userId;
 	private String comment;
 	private String type;
+	private Integer levelId;
+	private Integer parentEvaluateId;
 	private String typeContent;
 	private Integer star;
 	private Integer comment_count;
 	private Integer praise;
 	private Integer transmitCount;
 	private String hfDesc;
+	private Integer avatar;
 	private String username;
 	private String levelName;
 	private List<Integer> fileId;
@@ -91,124 +94,187 @@ public static enum EvaluateContentTypeEnum {
 	private HfOrderDetail list;
 	
 	private Integer isPraise;
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public Integer getUserId() {
 		return userId;
 	}
+
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
+
 	public String getComment() {
 		return comment;
 	}
+
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public Integer getLevelId() {
+		return levelId;
+	}
+
+	public void setLevelId(Integer levelId) {
+		this.levelId = levelId;
+	}
+
+	public Integer getParentEvaluateId() {
+		return parentEvaluateId;
+	}
+
+	public void setParentEvaluateId(Integer parentEvaluateId) {
+		this.parentEvaluateId = parentEvaluateId;
+	}
+
 	public String getTypeContent() {
 		return typeContent;
 	}
+
 	public void setTypeContent(String typeContent) {
 		this.typeContent = typeContent;
 	}
+
 	public Integer getStar() {
 		return star;
 	}
+
 	public void setStar(Integer star) {
 		this.star = star;
 	}
+
 	public Integer getComment_count() {
 		return comment_count;
 	}
+
 	public void setComment_count(Integer comment_count) {
 		this.comment_count = comment_count;
 	}
+
 	public Integer getPraise() {
 		return praise;
 	}
+
 	public void setPraise(Integer praise) {
 		this.praise = praise;
 	}
+
 	public Integer getTransmitCount() {
 		return transmitCount;
 	}
+
 	public void setTransmitCount(Integer transmitCount) {
 		this.transmitCount = transmitCount;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getLevelName() {
-		return levelName;
-	}
-	public void setLevelName(String levelName) {
-		this.levelName = levelName;
-	}
-	public List<Integer> getFileId() {
-		return fileId;
-	}
-	public void setFileId(List<Integer> fileId) {
-		this.fileId = fileId;
-	}
-	public Integer getOutId() {
-		return outId;
-	}
-	public void setOutId(Integer outId) {
-		this.outId = outId;
-	}
-	public Integer getInId() {
-		return inId;
-	}
-	public void setInId(Integer inId) {
-		this.inId = inId;
-	}
-	public String getOutName() {
-		return outName;
-	}
-	public void setOutName(String outName) {
-		this.outName = outName;
-	}
-	public String getInName() {
-		return inName;
-	}
-	public void setInName(String inName) {
-		this.inName = inName;
-	}
-	public LocalDateTime getTime() {
-		return time;
-	}
-	public void setTime(LocalDateTime time) {
-		this.time = time;
-	}
-	public HfOrderDetail getList() {
-		return list;
-	}
-	public void setList(HfOrderDetail list) {
-		this.list = list;
-	}
+
 	public String getHfDesc() {
 		return hfDesc;
 	}
+
 	public void setHfDesc(String hfDesc) {
 		this.hfDesc = hfDesc;
 	}
+
+	public Integer getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(Integer avatar) {
+		this.avatar = avatar;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
+	}
+
+	public List<Integer> getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(List<Integer> fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getOutId() {
+		return outId;
+	}
+
+	public void setOutId(Integer outId) {
+		this.outId = outId;
+	}
+
+	public Integer getInId() {
+		return inId;
+	}
+
+	public void setInId(Integer inId) {
+		this.inId = inId;
+	}
+
+	public String getOutName() {
+		return outName;
+	}
+
+	public void setOutName(String outName) {
+		this.outName = outName;
+	}
+
+	public String getInName() {
+		return inName;
+	}
+
+	public void setInName(String inName) {
+		this.inName = inName;
+	}
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
+	}
+
+	public HfOrderDetail getList() {
+		return list;
+	}
+
+	public void setList(HfOrderDetail list) {
+		this.list = list;
+	}
+
 	public Integer getIsPraise() {
 		return isPraise;
 	}
+
 	public void setIsPraise(Integer isPraise) {
 		this.isPraise = isPraise;
 	}

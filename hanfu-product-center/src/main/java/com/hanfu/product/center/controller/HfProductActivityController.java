@@ -26,14 +26,18 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -134,35 +138,46 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "查询活动", notes = "查询活动")
     @RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> addProdcutActivity(String activityType) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(String activityType, String name) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        List<ProductActivityInfo> result = manualDao.selectProductActivityList(activityType);
+        ProductActivityInfo productInfo = new ProductActivityInfo();
+        productInfo.setActivityType(activityType);
+        productInfo.setActivityName(name);
+        List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);
         for (int i = 0; i < result.size(); i++) {
             ProductActivityInfo productActivityInfo = result.get(i);
-//			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
+			HfActivity activity = hfActivityMapper.selectByPrimaryKey(productActivityInfo.getId());
             productActivityInfo.setActivityType(ActivityTypeEnum.getActivityTypeEnum(activityType).getName());
 //			SimpleDateFormat sdf = new SimpleDateFormat("HH:ss:mm");
 //			productActivityInfo.setStartTimes(sdf.format(productActivityInfo.getStartTime()));
 //			productActivityInfo.setEndTimes(sdf.format(productActivityInfo.getEndTime()));
-//			Date date = new Date();
-//			if(date.before(productActivityInfo.getStartTime())) {
-//				System.out.println("活动未开始");
-//				productActivityInfo.setActivityState(-1);
-//				activity.setActivityState(-1);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
-//			if(date.after(productActivityInfo.getStartTime()) && date.after(productActivityInfo.getEndTime())) {
-//				System.out.println("活动开始中");
-//				productActivityInfo.setActivityState(0);
-//				activity.setActivityState(0);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
-//			if(date.after(productActivityInfo.getEndTime())) {
-//				System.out.println("活动结束了");
-//				productActivityInfo.setActivityState(1);
-//				activity.setActivityState(1);
-//				hfActivityMapper.updateByPrimaryKey(activity);
-//			}
+			Date date = new Date();
+			System.out.println("productActivityInfo.getStartTime()"+productActivityInfo.getStartTime());
+			System.out.println("productActivityInfo.getEndTime()"+productActivityInfo.getEndTime());
+			if(productActivityInfo.getStartTime() == null || productActivityInfo.getEndTime() == null) {
+				productActivityInfo.setActivityState(-1);
+				activity.setActivityState(-1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.before(productActivityInfo.getStartTime())) {
+				productActivityInfo.setActivityState(-1);
+				activity.setActivityState(-1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.after(productActivityInfo.getStartTime()) && date.before(productActivityInfo.getEndTime())) {
+				productActivityInfo.setActivityState(0);
+				activity.setActivityState(0);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
+			if(date.after(productActivityInfo.getEndTime())) {
+				productActivityInfo.setActivityState(1);
+				activity.setActivityState(1);
+				hfActivityMapper.updateByPrimaryKey(activity);
+				continue;
+			}
         }
         return builder.body(ResponseUtils.getResponseBody(result));
     }
@@ -177,7 +192,14 @@ public class HfProductActivityController {
         hfActivityProductMapper.deleteByExample(example);
         return builder.body(ResponseUtils.getResponseBody("删除成功"));
     }
-
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        //转换日期
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
+    }
+    
     @ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
     @RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
@@ -212,16 +234,16 @@ public class HfProductActivityController {
                 }
             }
             if (startTime != null) {
-                Instant instant = startTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = startTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setStartTime(startTime);
             }
             if (endTime != null) {
-                Instant instant = endTime.toInstant();
-                ZoneId zoneId = ZoneId.systemDefault();
-                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
-                activity.setStartTime(new Date());
+//                Instant instant = endTime.toInstant();
+//                ZoneId zoneId = ZoneId.systemDefault();
+//                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                activity.setEndTime(endTime);
             }
             if (!StringUtils.isEmpty(activityName)) {
                 activity.setActivityName(activityName);
@@ -714,7 +736,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "团购列表", notes = "团购列表")
     @RequestMapping(value = "/ListGroup", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId,Integer sum) throws JSONException {
+    public ResponseEntity<JSONObject> ListGroup(Integer bossId, Integer groupId,Integer productId,Integer sum,Integer activityId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<HfGroup> hfGroupList = hfGroupDao.groupList(groupId);
 
@@ -724,80 +746,81 @@ public class HfProductActivityController {
             GroupList groupList = new GroupList();
             //成团
             HfActivityGroupExample hfActivityGroupExample = new HfActivityGroupExample();
-            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0);
+            hfActivityGroupExample.createCriteria().andIdEqualTo(hfGroup.getGroupId()).andIsDeletedEqualTo((byte) 0).andActivityIdEqualTo(activityId);
             List<HfActivityGroup> hfActivityGroup = hfActivityGroupMapper.selectByExample(hfActivityGroupExample);
             //活动
-            HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
-            System.out.println(hfActivity);
-            //活动商品
-            HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
-            hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
-            List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
-            Product product = productMapper.selectByPrimaryKey(hfActivityGroup.get(0).getProductId());
-            if (product.getId()==productId) {
-                //时间
-                Date date1 = new Date();
-                Date date2 = new Date();
-                Date date3 = new Date();
-                Date date4 = new Date();
-                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if (hfActivityGroup.size()!=0) {
+                HfActivity hfActivity = hfActivityMapper.selectByPrimaryKey(hfActivityGroup.get(0).getActivityId());
+                //活动商品
+                HfActivityProductExample hfActivityProductExample = new HfActivityProductExample();
+                hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
+                List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
+                Product product = productMapper.selectByPrimaryKey(hfActivityGroup.get(0).getProductId());
+                if (product.getId() == productId) {
+                    //时间
+                    Date date1 = new Date();
+                    Date date2 = new Date();
+                    Date date3 = new Date();
+                    Date date4 = new Date();
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                try {
-                    date1 = f.parse(f.format(new Date())); //这是获取当前时间
-                    date2 = f.parse(f.format(hfActivity.getStartTime()));
-                    date3 = f.parse(f.format(hfActivity.getEndTime()));
-                    date4 = f.parse(f.format(hfActivityGroup.get(0).getClusteringTime()));
+                    try {
+                        date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                        date2 = f.parse(f.format(hfActivity.getStartTime()));
+                        date3 = f.parse(f.format(hfActivity.getEndTime()));
+                        date4 = f.parse(f.format(hfActivityGroup.get(0).getClusteringTime()));
 
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
-                if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
+                    if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
 //				long hours = (date3.getTime()-date1.getTime()) / (1000 * 60 * 60);
 //				long minutes = ((date3.getTime()-date1.getTime())-hours*(1000 * 60 * 60 ))/(1000* 60);
-                    String[] arr = hfGroup.getUserId().split(",");
-                    HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup.get(0).getUserId());
-                    List<String> list = Arrays.asList(arr);
-                    //list
-                    List<Map<String, String>> lists = new ArrayList<>();
-                    Map<String, String> map = new HashMap<>();
+                        String[] arr = hfGroup.getUserId().split(",");
+                        HfUsers hfUsers = hfUsersMapper.selectByPrimaryKey(hfActivityGroup.get(0).getUserId());
+                        List<String> list = Arrays.asList(arr);
+                        //list
+                        List<Map<String, String>> lists = new ArrayList<>();
+                        Map<String, String> map = new HashMap<>();
 //				map.put("groupSum", String.valueOf(hfActivityProduct.get(0).getGroupNum()));
 //				map.put("nowSum", String.valueOf(list.size()));
-                    //团购详情
-                    if (groupId != null && hfGroup.getGroupId().equals(groupId)) {
+                        //团购详情
+                        if (groupId != null && hfGroup.getGroupId().equals(groupId)) {
 //                    list.forEach(list1 -> {
-                        for (int i = 0; i < arr.length; i++) {
-                            HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(Integer.valueOf(arr[i]));
-                            map.put("userName", hfUsers1.getNickName());
-                            map.put("fileId", String.valueOf(hfUsers1.getFileId()));
-                            lists.add(map);
+                            for (int i = 0; i < arr.length; i++) {
+                                HfUsers hfUsers1 = hfUsersMapper.selectByPrimaryKey(Integer.valueOf(arr[i]));
+                                map.put("userName", hfUsers1.getNickName());
+                                map.put("fileId", String.valueOf(hfUsers1.getFileId()));
+                                lists.add(map);
+                                groupList.setUser(lists);
+                            }
+                            groupList.setGroupId(hfGroup.getGroupId());
+                            groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+                            groupList.setNowSum(list.size());
+                            groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+                            groupList.setGroupUserName(hfUsers.getNickName());
+                            groupList.setGroupFileId(hfUsers.getFileId());
+                            groupList.setProductId(product.getId());
+                            groupList.setProductName(product.getHfName());
+                            groupList.setProductFileId(product.getFileId());
+                            groupList.setSellPrice(price(product.getId()).get("sellPrice"));
+                            groupList.setLinePrice(price(product.getId()).get("linePrice"));
+                            groupLists.add(groupList);
+                        } else {
+                            groupList.setGroupId(hfGroup.getGroupId());
                             groupList.setUser(lists);
+                            groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
+                            groupList.setNowSum(list.size());
+                            groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
+                            groupList.setGroupUserName(hfUsers.getNickName());
+                            groupList.setGroupFileId(hfUsers.getFileId());
+                            groupLists.add(groupList);
                         }
-                        groupList.setGroupId(hfGroup.getGroupId());
-                        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
-                        groupList.setNowSum(list.size());
-                        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
-                        groupList.setGroupUserName(hfUsers.getNickName());
-                        groupList.setGroupFileId(hfUsers.getFileId());
-                        groupList.setProductId(product.getId());
-                        groupList.setProductName(product.getHfName());
-                        groupList.setProductFileId(product.getFileId());
-                        groupList.setSellPrice(price(product.getId()).get("sellPrice"));
-                        groupList.setLinePrice(price(product.getId()).get("linePrice"));
-                        groupLists.add(groupList);
-                    } else {
-                        groupList.setGroupId(hfGroup.getGroupId());
-                        groupList.setUser(lists);
-                        groupList.setGroupSum(hfActivityProduct.get(0).getGroupNum());
-                        groupList.setNowSum(list.size());
-                        groupList.setTime(86400000 - (date1.getTime() - date4.getTime()));
-                        groupList.setGroupUserName(hfUsers.getNickName());
-                        groupList.setGroupFileId(hfUsers.getFileId());
-                        groupLists.add(groupList);
-                    }
 //				map.put("userName", hfUsers.getNickName());
 //				map.put("fileId", String.valueOf(hfUsers.getFileId()));
 //				map.put("time", String.valueOf(date1.getTime()-date4.getTime()));
+                    }
                 }
             }
         });

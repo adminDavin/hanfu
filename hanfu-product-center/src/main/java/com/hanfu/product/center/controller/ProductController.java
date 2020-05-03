@@ -269,6 +269,7 @@ public class ProductController {
 		productInstance.setProductId(product.getId());
 		productInstance.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		productInstance.setBrandId(1);
+		productInstance.setEvaluateCount(0);
 		productInstance.setCreateTime(LocalDateTime.now());
 		productInstance.setLastModifier(request.getLastModifier());
 		productInstance.setModifyTime(LocalDateTime.now());
@@ -871,6 +872,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 				productInstance.setLastModifier(String.valueOf(userId));
 				productInstance.setIsDeleted((short) 0);
 				productInstance.setStoneId(stoneId);
+				productInstance.setEvaluateCount(0);
 				productInstance.setProductId(productId);
 				productInstance.setBossId(hfStones.get(0).getBossId());
 
@@ -943,8 +945,6 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStone hfStone = hfStoneMapper.selectByPrimaryKey(stoneId);
-		hfStone.setConcernCount(hfStone.getConcernCount()+1);
-		hfStoneMapper.updateByPrimaryKey(hfStone);
 		HfStoneConcernExample example = new HfStoneConcernExample();
 		HfStoneConcern concern = null;
 		example.createCriteria().andUserIdEqualTo(userId).andStoneIdEqualTo(stoneId);
@@ -958,6 +958,8 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 			concern.setUserId(userId);
 			concern.setStoneId(stoneId);
 			hfStoneConcernMapper.insert(concern);
+			hfStone.setConcernCount(hfStone.getConcernCount()+1);
+			hfStoneMapper.updateByPrimaryKey(hfStone);
 		}else {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		}

@@ -1,16 +1,16 @@
 package com.hanfu.product.center.controller;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.io.ByteArrayInputStream;
+import java.awt.image.ColorConvertOp;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,7 +44,6 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.ImageReader;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.DecoderResult;
@@ -329,6 +328,12 @@ public class StoneController {
         if(!CollectionUtils.isEmpty(pictures)) {
         	info.setBackgroundId(pictures.get(0).getFileId());
         }
+        example.clear();
+        example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("code");
+        pictures = hfStonePictureMapper.selectByExample(example);
+        if(!CollectionUtils.isEmpty(pictures)) {
+        	info.setCodeId(pictures.get(0).getFileId());
+        }
         info.setIsConcern(0);
         if(userId != null) {
         	 HfStoneConcernExample example2 = new HfStoneConcernExample();
@@ -561,15 +566,39 @@ public class StoneController {
 		return builder.body(ResponseUtils.getResponseBody(infos));
 	}
     
-    public BufferedImage createCode(Integer stoneId) throws IOException, JSONException {
-    	
-    	 String str = String.valueOf(stoneId);
-         byte[] b = Base64.getEncoder().encode(str.getBytes());
-         BufferedImage image = null;
+//    public static ByteArrayOutputStream createCode(String content,MultipartFile file) throws IOException {
+//        //二维码的宽高
+//        int width = 200;
+//        int height = 200;
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        
+//        //其他参数，如字符集编码
+//        Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+//        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+//        //容错级别为H
+//        hints.put(EncodeHintType.ERROR_CORRECTION , ErrorCorrectionLevel.H);
+//        //白边的宽度，可取0~4
+//        hints.put(EncodeHintType.MARGIN , 0);
+//
+//        BitMatrix bitMatrix = null;
+//        try {
+//            //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
+//        	MultiFormatWriter writer = new MultiFormatWriter();
+//            bitMatrix = new MultiFormatWriter().encode(content,
+//                    BarcodeFormat.QR_CODE, width, height,hints);
+//            MatrixToImageWriter.writeToStream(bitMatrix, "png", outputStream);
+//            //bitMatrix = deleteWhite(bitMatrix);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
+//        return outputStream;
+//    }
+   
+    public static BufferedImage createCode(String content) throws IOException {
         //二维码的宽高
         int width = 200;
         int height = 200;
-        OutputStream bOut = null;
+        BufferedImage image = null;
         //其他参数，如字符集编码
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -581,90 +610,61 @@ public class StoneController {
         BitMatrix bitMatrix = null;
         try {
             //生成矩阵，因为我的业务场景传来的是编码之后的URL，所以先解码
-        	MultiFormatWriter writer = new MultiFormatWriter();
-            bitMatrix = new MultiFormatWriter().encode(new String(b),
+            bitMatrix = new MultiFormatWriter().encode(content,
                     BarcodeFormat.QR_CODE, width, height,hints);
-            //bitMatrix = deleteWhite(bitMatrix);
-            bOut = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix,"png", bOut);
             image = MatrixToImageWriter.toBufferedImage(bitMatrix);
-//            ResponseEntity<JSONObject> pictures = getStonePicture(stoneId,"avatar");
-//            List<HfStonePicture> list = pictures.getBody().getObject("data",List.class);
-//            if(!CollectionUtils.isEmpty(list)) {
-//            	FileDesc desc = fileDescMapper.selectByPrimaryKey(list.get(0).getFileId());
-//            	FileMangeService fileMangeService = new FileMangeService();
-//            	byte[] file = fileMangeService.downloadFile(desc.getGroupName(), desc.getRemoteFilename());
-//            	ByteArrayInputStream stream = new ByteArrayInputStream(file);
-//                BufferedImage readImg = ImageIO.read(stream);
-//                stream.reset();
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                ImageIO.write(readImg, "png", outputStream);
-//                ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());
-////            	BufferedImage bi = ImageIO.read(is);
-//            	Image im = ImageIO.read(is);
-//            	System.out.println("im" + im);
-//            	Graphics2D g = image.createGraphics();
-////            	int widthLogo = im.getWidth(null);
-////            	int heightLogo = im.getHeight(null);
-//                g.drawImage(im, 10, 10, 30, 30, null);
-//                image.flush();
-//                return image;
-//            }
         } catch (WriterException e) {
             e.printStackTrace();
         }
 		return image;
     }
-    
    
     @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
     @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException {
+    public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
-        
-        BufferedImage stream = createCode(stoneId);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(stream, "png", out);
-        } catch (IOException e) {
-            //log.error(e.getMessage());
-        }
+        String str = String.valueOf(stoneId);
+        byte[] b = Base64.getEncoder().encode(str.getBytes());
+        BufferedImage bi = createCode(new String(b));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", outputStream);
         String arr[];
 		FileMangeService fileMangeService = new FileMangeService();
-		arr = fileMangeService.uploadFile(out.toByteArray(),String.valueOf(0));
-        
-        HfStonePictureExample hfStonePictureExample = new HfStonePictureExample();
-        hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo("code");
-        List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(hfStonePictureExample);
-        if(CollectionUtils.isEmpty(pictures)) {
-        	FileDesc fileDesc = new FileDesc();
-    		fileDesc.setFileName("店铺二维码");
-    		fileDesc.setGroupName(arr[0]);
-    		fileDesc.setRemoteFilename(arr[1]);
-    		fileDesc.setCreateTime(LocalDateTime.now());
-    		fileDesc.setModifyTime(LocalDateTime.now());
-    		fileDesc.setIsDeleted((short) 0);
-    		fileDescMapper.insert(fileDesc);
-    		HfStonePicture picture = new HfStonePicture();
-    		picture.setStoneId(stoneId);
-    		picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
-    		picture.setFileId(fileDesc.getId());
-    		picture.setHfName("店铺二维码");
-    		picture.setHfDesc("店铺二维码描述");
-    		picture.setCreateTime(LocalDateTime.now());
-    		picture.setModifyTime(LocalDateTime.now());
-    		picture.setIsDeleted((byte) 0);
-    		hfStonePictureMapper.insert(picture);
-        }else {
-        	HfStonePicture picture = pictures.get(0);
-        	FileDesc desc = fileDescMapper.selectByPrimaryKey(picture.getFileId());
-        	fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
-        	desc.setModifyTime(LocalDateTime.now());
-        	desc.setGroupName(arr[0]);
-        	desc.setRemoteFilename(arr[1]);
-        	fileDescMapper.updateByPrimaryKey(desc);
-        }
+		arr = fileMangeService.uploadFile(outputStream.toByteArray(),String.valueOf(0));
+		HfStonePictureExample example = new HfStonePictureExample();
+		example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo("code");
+		List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(pictures)) {
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName("店铺二维码");
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfStonePicture picture = new HfStonePicture();
+			picture.setStoneId(stoneId);
+			picture.setType(StonePictureTypeEnum.CODE.getStonePictureType());
+			picture.setFileId(fileDesc.getId());
+			picture.setHfName("店铺二维码");
+			picture.setHfDesc("店铺二维码描述");
+			picture.setCreateTime(LocalDateTime.now());
+			picture.setModifyTime(LocalDateTime.now());
+			picture.setIsDeleted((byte) 0);
+			hfStonePictureMapper.insert(picture);
+		}else {
+			HfStonePicture picture = pictures.get(0);
+			FileDesc desc = fileDescMapper.selectByPrimaryKey(picture.getFileId());
+			FileMangeService service = new FileMangeService();
+			service.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+			desc.setModifyTime(LocalDateTime.now());
+			desc.setGroupName(arr[0]);
+			desc.setRemoteFilename(arr[1]);
+			fileDescMapper.updateByPrimaryKey(desc);
+		}
+		
         return builder.body(ResponseUtils.getResponseBody(stone.getId()));
     }
 }

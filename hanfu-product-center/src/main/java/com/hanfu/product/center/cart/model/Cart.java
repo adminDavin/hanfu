@@ -27,7 +27,8 @@ public class Cart implements Serializable {
 
     private List<Map<String,String>> goodsSpec;
 
-
+    private Integer isOfenBuy;
+    private Integer isCollect;
     public String getCheck() {
         return check;
     }
@@ -124,4 +125,20 @@ public class Cart implements Serializable {
     public void setInstanceId(Integer instanceId) {
         this.instanceId = instanceId;
     }
+
+	public Integer getIsOfenBuy() {
+		return isOfenBuy;
+	}
+
+	public void setIsOfenBuy(Integer isOfenBuy) {
+		this.isOfenBuy = isOfenBuy;
+	}
+
+	public Integer getIsCollect() {
+		return isCollect;
+	}
+
+	public void setIsCollect(Integer isCollect) {
+		this.isCollect = isCollect;
+	}
 }

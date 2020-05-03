@@ -12,6 +12,7 @@ public class HfStoneInfo implements Serializable{
 	private String address;
 	private Integer avatarId;
 	private Integer backgroundId;
+	private Integer codeId;
 	private Integer concernCount;
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
@@ -47,6 +48,12 @@ public class HfStoneInfo implements Serializable{
 	}
 	public void setBackgroundId(Integer backgroundId) {
 		this.backgroundId = backgroundId;
+	}
+	public Integer getCodeId() {
+		return codeId;
+	}
+	public void setCodeId(Integer codeId) {
+		this.codeId = codeId;
 	}
 	public Integer getConcernCount() {
 		return concernCount;
