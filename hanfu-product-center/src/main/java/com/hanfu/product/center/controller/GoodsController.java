@@ -1867,7 +1867,7 @@ public class GoodsController {
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
 		HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
-		evaluateParent.setCommentCount(evaluateParent.getCommentCount());
+		evaluateParent.setCommentCount(evaluateParent.getCommentCount()+1);
 		hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
 		if(fileId != null) {
 			for (Integer f : fileId) {
