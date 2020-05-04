@@ -130,16 +130,16 @@ public class MD5 {
         return byteFina;
     }
 
-//    public static void main(String[] args) {
-//        String a = "sdasdsadasdsadasdasdasda";
-//        System.out.println(a);
-//
-//        //加密
-//        String m = encode(a);
-//        System.out.println(m);
-//
-//        //解密
-//        String n = decode(m);
-//        System.out.println(n);
-//    }
+    public static void main(String[] args) {
+        String a = "sdasdsadasdsadasdasdasda";
+        System.out.println(a);
+
+        //加密
+        String m = encode(a);
+        System.out.println(m);
+
+        //解密
+        String n = decode(m);
+        System.out.println(n);
+    }
 }

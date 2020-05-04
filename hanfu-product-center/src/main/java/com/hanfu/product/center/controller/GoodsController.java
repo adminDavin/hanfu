@@ -1819,6 +1819,7 @@ public class GoodsController {
 			Integer levelId,Integer parentEvaluateId,Integer... fileId) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		
 		HfEvaluate hfEvaluate = new HfEvaluate();
 		if (goodId != null && stoneId != null) {
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
@@ -1865,6 +1866,9 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
+		HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
+		evaluateParent.setCommentCount(evaluateParent.getCommentCount());
+		hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
 		if(fileId != null) {
 			for (Integer f : fileId) {
 				EvaluatePicture picture = new EvaluatePicture();
