@@ -145,7 +145,10 @@ if (discountCouponId!=null){
 
 //        SUP.forEach(sups ->{
     System.out.println(discountCouponId+"-------SUP");
-    Integer moneys =selectPriceResp(goodsId).get("hfPrices");
+    Integer moneys =0;
+    if (goodsId!=null){
+        moneys =selectPriceResp(goodsId).get("hfPrices");
+    }
             for (Integer sups:discountCouponId){
            DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(sups);
            if (discountCoupon.getDiscountCouponType().equals("1")){
@@ -186,8 +189,8 @@ if (actualPrice!=null){
     amount.setMoney(actualPrice);
 }else {
     amount.setMoney(moneys);
-}
     amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice"));
+}
 }else {
     amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
     amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
