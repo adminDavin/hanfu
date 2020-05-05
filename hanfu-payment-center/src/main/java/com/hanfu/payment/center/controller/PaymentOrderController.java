@@ -111,11 +111,10 @@ public class PaymentOrderController {
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> payment(@RequestParam String outTradeNo, Integer userId,Integer payOrderId) throws Exception {
+	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+//		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
         PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
 		Map<String, String> resp = null;
