@@ -103,6 +103,8 @@ public class HfOrderController {
     private HfRequestIdMapper hfRequestIdMapper;
     @Autowired
     private PayOrderMapper payOrderMapper;
+    @Autowired
+    private DiscountCouponMapper discountCouponMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -498,8 +500,15 @@ public class HfOrderController {
         if (chock(list).size()!=0){
             return builder.body(ResponseUtils.getResponseBody(chock(list)));
         }
+        //优惠券
+        List<DiscountCoupon> discountCouponList=new ArrayList<>();
+        if (request.getDisconuntId().length!=0){
+            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+            discountCouponExample.createCriteria().andIdIn(Lists.newArrayList(request.getDisconuntId()));
+             discountCouponList = discountCouponMapper.selectByExample(discountCouponExample);
+        }
         Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
-        System.out.println(stoneIds);
+//        System.out.println(stoneIds);
         PayOrder payOrder = new PayOrder();
         payOrder.setUserId(request.getUserId());
         payOrder.setPayStatus(0);
@@ -508,6 +517,10 @@ public class HfOrderController {
         payOrder.setIsDeleted((byte) 0);
         payOrderMapper.insertSelective(payOrder);
         for (Integer stoneId: stoneIds){
+            //
+            discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
+
+            //
             List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
             Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
             HfPriceExample hfPriceExample = new HfPriceExample();
@@ -518,6 +531,16 @@ public class HfOrderController {
                 priceInfo.setSellPrice(priceInfo.getSellPrice()*goods.get(0).getQuantity());
             });
             moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
+            //youhuiquan
+            if (discountCouponList.size()!=0){
+                if (discountCouponList.size()!=0){
+                    int[] set = discountCouponList.stream().mapToInt(a->a.getId()).toArray();
+                    Integer[] integers = Arrays.stream(set).boxed().toArray(Integer[]::new);
+                    Map map = money(null, integers, request.getActivityId(), null, moneys, null);
+                    moneys = (Integer) map.get("money");
+                }
+            }
+
             LocalDateTime time = LocalDateTime.now();
             HfOrder hfOrder = new HfOrder();
             hfOrder.setCreateTime(time);
@@ -538,6 +561,7 @@ public class HfOrderController {
             hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
             hfOrder.setPayOrderId(payOrder.getId());
             hfOrderMapper.insertSelective(hfOrder);
+
             //详情
             listStone.forEach(listStone1->{
                 request.setStoneId(listStone1.getStoneId());

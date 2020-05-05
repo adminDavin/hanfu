@@ -125,14 +125,14 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		 <table schema="user_center" tableName="hf_order"
-			domainObjectName="HfOrder">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table>
-		<table schema="user_center" tableName="pay_order"
-			   domainObjectName="PayOrder">
+		 <!--<table schema="user_center" tableName="hf_order"-->
+			<!--domainObjectName="HfOrder">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+				<!--identity="true" />-->
+		<!--</table>-->
+		<table schema="user_center" tableName="discount_coupon"
+			   domainObjectName="DiscountCoupon">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />

@@ -109,19 +109,25 @@ public class HfGoodsController {
                 }
             }
             return product(goodsId,GoodsNum,discountCouponId,actualPrice);
+        } else if (actualPrice!=null){
+            return product(goodsId,GoodsNum,discountCouponId,actualPrice);
         }
         return builder.body(ResponseUtils.getResponseBody("goods null"));
     }
 
     private ResponseEntity<JSONObject> product(Integer goodsId, Integer GoodsNum,Integer[] discountCouponId,Integer actualPrice) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-
-        if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
-            return builder.body(ResponseUtils.getResponseBody("understock"));
-        }
         Amount amount = new Amount();
         amount.setGoodsId(goodsId);
-        amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
+        if (goodsId!=null){
+            amount.setGoodsNum(selectPriceResp(goodsId).get("hfResps"));
+            if (selectPriceResp(goodsId).get("hfResps")<GoodsNum){
+                return builder.body(ResponseUtils.getResponseBody("understock"));
+            }
+        } else {
+            amount.setGoodsNum(1);
+        }
+
         List<Integer> SUP = new ArrayList<>();
 //        List<Integer> SUP1 = new ArrayList<>();
 if (discountCouponId!=null){
