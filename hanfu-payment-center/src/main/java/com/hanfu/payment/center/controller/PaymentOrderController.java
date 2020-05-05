@@ -117,12 +117,16 @@ public class PaymentOrderController {
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
         PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+
 		Map<String, String> resp = null;
-		if (PaymentTypeEnum.getPaymentTypeEnum(payOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			resp = wxPay(hfUser, payOrder);
 		} else {
 			resp = balancePay(hfUser, payOrder);
 		}
+		System.out.println(resp);
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 
@@ -160,14 +164,17 @@ public class PaymentOrderController {
 	}
 
 	private Map<String, String> wxPay(HfUser hfUser, PayOrder payOrder) throws Exception {
+		System.out.println("0000");
 		MiniProgramConfig config = new MiniProgramConfig();
+		System.out.println("wx1111");
 		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),payOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
-
+		System.out.println("wx2222");
 		WXPay wxpay = new WXPay(config);
 		Map<String, String> resp = wxpay.unifiedOrder(data);
 		logger.info(JSONObject.toJSONString(resp));
 		if ("SUCCESS".equals(resp.get("return_code"))) {
+			System.out.println("wx3333");
 			Map<String, String> reData = new HashMap<>();
 			reData.put("appId", config.getAppID());
 			reData.put("nonceStr", resp.get("nonce_str"));
