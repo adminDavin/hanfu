@@ -872,6 +872,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 				productInstance.setLastModifier(String.valueOf(userId));
 				productInstance.setIsDeleted((short) 0);
 				productInstance.setStoneId(stoneId);
+				productInstance.setEvaluateCount(0);
 				productInstance.setProductId(productId);
 				productInstance.setBossId(hfStones.get(0).getBossId());
 

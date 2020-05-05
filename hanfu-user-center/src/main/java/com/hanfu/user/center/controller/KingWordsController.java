@@ -544,7 +544,7 @@ public class KingWordsController {
 //		//发送post请求读取调用微信接口获取openid用户唯一标识
 //		String str = UrlUtil.sendPost( requestUrl,requestUrlParam );
 //		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
-    	String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx2641aaa105c07dd4&secret=fb26dde971b62de61c4573b12bd5f5da&js_code=" + code + "&grant_type=authorization_code";
+    	String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=1403f2e207dfa2f1f348910626f5aa42&js_code=" + code + "&grant_type=authorization_code";
     	DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(requestUrl);
         JSONObject jsonObject = null;

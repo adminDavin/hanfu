@@ -1,5 +1,6 @@
 package com.hanfu.user.center.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,5 +87,5 @@ public class LoginController extends HfUserController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         return builder.body(ResponseUtils.getResponseBody(map));
     }
-
+    
 }

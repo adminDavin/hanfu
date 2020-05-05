@@ -1117,10 +1117,4 @@ public class HfAuthController {
 		return str;
 	}
 
-	public static void main(String[] args) {
-		JsonObject<String, Integer> js = new JsonObject<String, Integer>();
-		js.put("swd", 1);
-		js.put("ss", 2);
-		System.out.println(js);
-	}
 }

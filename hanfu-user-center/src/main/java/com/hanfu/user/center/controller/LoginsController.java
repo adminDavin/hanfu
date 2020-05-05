@@ -14,6 +14,6 @@ public class LoginsController {
 
     @RequestMapping(value = "/demo", method = RequestMethod.GET)
     public String updateOrAddProject() {
-        return "redirect:http://39.100.237.144:3001/";
+        return "redirect:http://39.100.237.144:8080/";
     }
 }
