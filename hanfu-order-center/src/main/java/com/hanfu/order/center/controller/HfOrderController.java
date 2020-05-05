@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.hanfu.order.center.cancel.dao.HfGoodsMapper;
+import com.hanfu.order.center.cancel.dao.HfPriceMapper;
 import com.hanfu.order.center.cancel.dao.ProductMapper;
 import com.hanfu.order.center.cancel.model.Product;
 import com.hanfu.order.center.dao.*;
@@ -19,6 +20,7 @@ import com.hanfu.order.center.manual.model.*;
 import com.hanfu.order.center.model.*;
 import com.hanfu.payment.center.request.HfStoneRequest;
 import io.swagger.annotations.*;
+import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,8 @@ public class HfOrderController {
     private DiscountCouponOrderMapper discountCouponOrderMapper;
     @Autowired
     private HfRequestIdMapper hfRequestIdMapper;
+    @Autowired
+    private PayOrderMapper payOrderMapper;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -494,105 +498,145 @@ public class HfOrderController {
         if (chock(list).size()!=0){
             return builder.body(ResponseUtils.getResponseBody(chock(list)));
         }
-        LocalDateTime time = LocalDateTime.now();
-        HfOrder hfOrder = new HfOrder();
-        hfOrder.setCreateTime(time);
-        hfOrder.setModifyTime(time);
-        
-        hfOrder.setAmount(moneys);
-        hfOrder.setHfRemark(request.getHfRemark());
-        hfOrder.setUserId(request.getUserId());
-        hfOrder.setOrderType(request.getOrderType());
-        hfOrder.setPaymentName(request.getPaymentName());
-        hfOrder.setStoneId(1);//用作bossId
-//        hfOrder.setDistributorId(request.getDistributorId());
-        hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
-        hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
-        Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
-        hfOrder.setPaymentType(paymentType);
-        hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
-        hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
+        Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
+        System.out.println(stoneIds);
+        PayOrder payOrder = new PayOrder();
+        payOrder.setUserId(request.getUserId());
+        payOrder.setPayStatus(0);
+        payOrder.setCreateTime(LocalDateTime.now());
+        payOrder.setModifyTime(LocalDateTime.now());
+        payOrder.setIsDeleted((byte) 0);
+        payOrderMapper.insertSelective(payOrder);
+        for (Integer stoneId: stoneIds){
+            List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
+            Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
+            HfPriceExample hfPriceExample = new HfPriceExample();
+            hfPriceExample.createCriteria().andGoogsIdIn(Lists.newArrayList(goodsId));
+            List<HfPrice> priceInfos = hfPriceMappers.selectByExample(hfPriceExample);
+            priceInfos.forEach(priceInfo->{
+                List<CreatesOrder> goods= list.stream().filter(x->x.getGoodsId().equals(priceInfo.getGoogsId())).collect(Collectors.toList());
+                priceInfo.setSellPrice(priceInfo.getSellPrice()*goods.get(0).getQuantity());
+            });
+            moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
+            LocalDateTime time = LocalDateTime.now();
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setCreateTime(time);
+            hfOrder.setModifyTime(time);
 
-        hfOrderMapper.insertSelective(hfOrder);
-        //
-        Integer actualPrice = null;
-        if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
-            actualPrice=0;
-            for (CreatesOrder goodss : list) {
-                System.out.println(goodss.getGoodsId());
-                HfPriceExample hfPriceExample = new HfPriceExample();
-                hfPriceExample.createCriteria().andGoogsIdEqualTo(goodss.getGoodsId());
-                List<HfPrice> hfPriceList = hfPriceMappers.selectByExample(hfPriceExample);
-                actualPrice = (hfPriceList.get(0).getSellPrice() * goodss.getQuantity())+actualPrice;
-            }
-            //平台优惠券记录
-            for (Integer discountId:request.getDisconuntId()){
-                DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
-                discountCouponOrder.setCreateDate(LocalDateTime.now());
-                discountCouponOrder.setModifyDate(LocalDateTime.now());
-                discountCouponOrder.setIsDeleted(0);
-                discountCouponOrder.setUseState(1);
-                discountCouponOrder.setOrderId(hfOrder.getId());
-                discountCouponOrder.setDiscountCouponId(discountId);
-                discountCouponOrderMapper.insertSelective(discountCouponOrder);
-                restTemplate.getForObject(REST_URL_CHECK+"discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}",JSONObject.class,discountId,request.getUserId());
-            }
-        }
-        System.out.println(actualPrice);
-        List<Integer> sss = new ArrayList<>();
-            for (CreatesOrder goods : list) {
-                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice, Integer.valueOf(goods.getHfDesc()));
-                moneys = (Integer) map.get("money") + moneys;
-                sss.add(moneys);
-                HfPriceExample hfPriceExample = new HfPriceExample();
-                hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
-                List<HfPrice> hfPrices = hfPriceMappers.selectByExample(hfPriceExample);
-                request.setActualPrice(hfPrices.get(0).getSellPrice() * goods.getQuantity());
-                request.setGoodsId(goods.getGoodsId());
-                request.setHfDesc(goods.getHfDesc());
-                request.setQuantity(goods.getQuantity());
-                request.setSellPrice(hfPrices.get(0).getSellPrice());
-                request.setStoneId(goods.getStoneId());
-                //库存处理
-                synchronized (this) {
-                    HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
-                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-                    hfResp.setQuantity(hfResp.getQuantity() - goods.getQuantity());
-                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
-                }
-                //详情
+            hfOrder.setAmount(moneys);
+            hfOrder.setHfRemark(request.getHfRemark());
+            hfOrder.setUserId(request.getUserId());
+            hfOrder.setOrderType(request.getOrderType());
+            hfOrder.setPaymentName(request.getPaymentName());
+            hfOrder.setStoneId(1);//用作bossId
+//        hfOrder.setDistributorId(request.getDistributorId());
+            hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
+            hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
+            Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
+            hfOrder.setPaymentType(paymentType);
+            hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
+            hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
+            hfOrder.setPayOrderId(payOrder.getId());
+            hfOrderMapper.insertSelective(hfOrder);
+            //详情
+            listStone.forEach(listStone1->{
+                request.setStoneId(listStone1.getStoneId());
+                request.setQuantity(listStone1.getQuantity());
+                request.setGoodsId(listStone1.getGoodsId());
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
                 }
-            }
-        HfOrder hfOrder1 = new HfOrder();
-        hfOrder1.setId(hfOrder.getId());
-        if (actualPrice!=null){
-            moneys=sss.get(0);
+            });
+
         }
-            hfOrder1.setAmount(moneys);
-        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
+
+        //
+//        Integer actualPrice = null;
+//        if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
+//            actualPrice=0;
+//            for (CreatesOrder goodss : list) {
+//                System.out.println(goodss.getGoodsId());
+//                HfPriceExample hfPriceExample = new HfPriceExample();
+//                hfPriceExample.createCriteria().andGoogsIdEqualTo(goodss.getGoodsId());
+//                List<HfPrice> hfPriceList = hfPriceMappers.selectByExample(hfPriceExample);
+//                actualPrice = (hfPriceList.get(0).getSellPrice() * goodss.getQuantity())+actualPrice;
+//            }
+//            //平台优惠券记录
+//            for (Integer discountId:request.getDisconuntId()){
+//                DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
+//                discountCouponOrder.setCreateDate(LocalDateTime.now());
+//                discountCouponOrder.setModifyDate(LocalDateTime.now());
+//                discountCouponOrder.setIsDeleted(0);
+//                discountCouponOrder.setUseState(1);
+//                discountCouponOrder.setOrderId(hfOrder.getId());
+//                discountCouponOrder.setDiscountCouponId(discountId);
+//                discountCouponOrderMapper.insertSelective(discountCouponOrder);
+//                restTemplate.getForObject(REST_URL_CHECK+"discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}",JSONObject.class,discountId,request.getUserId());
+//            }
+//        }
+//        System.out.println(actualPrice);
+//        List<Integer> sss = new ArrayList<>();
+//            for (CreatesOrder goods : list) {
+//                Map map = money(goods.getGoodsId(), request.getDisconuntId(), request.getActivityId(), goods.getQuantity(), actualPrice, Integer.valueOf(goods.getHfDesc()));
+//                moneys = (Integer) map.get("money") + moneys;
+//                sss.add(moneys);
+//                HfPriceExample hfPriceExample = new HfPriceExample();
+//                hfPriceExample.createCriteria().andGoogsIdEqualTo(goods.getGoodsId());
+//                List<HfPrice> hfPrices = hfPriceMappers.selectByExample(hfPriceExample);
+//                request.setActualPrice(hfPrices.get(0).getSellPrice() * goods.getQuantity());
+//                request.setGoodsId(goods.getGoodsId());
+//                request.setHfDesc(goods.getHfDesc());
+//                request.setQuantity(goods.getQuantity());
+//                request.setSellPrice(hfPrices.get(0).getSellPrice());
+//                request.setStoneId(goods.getStoneId());
+//                //库存处理
+//                synchronized (this) {
+//                    HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(goods.getGoodsId());
+//                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+//                    hfResp.setQuantity(hfResp.getQuantity() - goods.getQuantity());
+//                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
+//                }
+//                //详情
+//                if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+//                    detailNomalOrders(request, hfOrder);
+//                }
+//            }
+//        HfOrder hfOrder1 = new HfOrder();
+//        hfOrder1.setId(hfOrder.getId());
+//        if (actualPrice!=null){
+//            moneys=sss.get(0);
+//        }
+//            hfOrder1.setAmount(moneys);
+//        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
 //清购物车
-        List<ProductStone> productStoneList = new ArrayList<>();
-        for (CreatesOrder goodss : list) {
-            ProductStone productStone = new ProductStone();
-            productStone.setProductId(String.valueOf(goodss.getGoodsId()));
-            productStone.setStoneId(String.valueOf(goodss.getStoneId()));
-            productStoneList.add(productStone);
-        }
-        String productStone = JSON.toJSONString(productStoneList);
-        System.out.println(productStone);
-        System.out.println(request.getUserId());
+//        List<ProductStone> productStoneList = new ArrayList<>();
+//        for (CreatesOrder goodss : list) {
+//            ProductStone productStone = new ProductStone();
+//            productStone.setProductId(String.valueOf(goodss.getGoodsId()));
+//            productStone.setStoneId(String.valueOf(goodss.getStoneId()));
+//            productStoneList.add(productStone);
+//        }
+//        String productStone = JSON.toJSONString(productStoneList);
+//        System.out.println(productStone);
+//        System.out.println(request.getUserId());
 //        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
 //        paramMap.add("productStoneId",productStone);
 //        paramMap.add("userId", String.valueOf(request.getUserId()));
-
-        try {
-        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
-        }catch (Exception e) {
-            return builder.body(ResponseUtils.getResponseBody(hfOrder));
-        }
-        return builder.body(ResponseUtils.getResponseBody(hfOrder));
+//
+//        try {
+//        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
+//        }catch (Exception e) {
+//            return builder.body(ResponseUtils.getResponseBody(hfOrder));
+//        }
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+        List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
+        Integer actualPrice= hfOrderList.stream().mapToInt(v->v.getAmount()).sum();
+        PayOrder payOrder1= payOrderMapper.selectByPrimaryKey(payOrder.getId());
+        payOrder1.setActualPrice(actualPrice);
+        payOrder1.setAmount(actualPrice);
+        payOrderMapper.updateByPrimaryKeySelective(payOrder1);
+        return builder.body(ResponseUtils.getResponseBody(payOrder));
     }
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {

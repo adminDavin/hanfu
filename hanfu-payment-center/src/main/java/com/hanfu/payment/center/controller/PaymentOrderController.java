@@ -103,6 +103,8 @@ public class PaymentOrderController {
 	private StoneChargeOffMapper stoneChargeOffMapper;
 	@Autowired
 	private StoneBalanceMapper stoneBalanceMapper;
+	@Autowired
+    private PayOrderMapper payOrderMapper;
 
 
 
@@ -111,21 +113,21 @@ public class PaymentOrderController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> payment(@RequestParam String outTradeNo, Integer userId) throws Exception {
+	public ResponseEntity<JSONObject> payment(@RequestParam String outTradeNo, Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
-
+        PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
 		Map<String, String> resp = null;
-		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
-			resp = wxPay(hfUser, hfOrder);
+		if (PaymentTypeEnum.getPaymentTypeEnum(payOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+			resp = wxPay(hfUser, payOrder);
 		} else {
-			resp = balancePay(hfUser, hfOrder);
+			resp = balancePay(hfUser, payOrder);
 		}
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 
-	private Map<String, String> balancePay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
+	private Map<String, String> balancePay(HfUser hfUser, PayOrder payOrder) throws Exception {
 //		MiniProgramConfig config = new MiniProgramConfig();
 //		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
 //		WXPay wxpay = new WXPay(config);
@@ -135,19 +137,17 @@ public class PaymentOrderController {
 		HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
 		hfUserBalanceExample.createCriteria().andUserIdEqualTo(hfUser.getUserId()).andBalanceTypeEqualTo("rechargeAmount");
 		List<HfUserBalance> hfUserBalance= hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
-		HfOrderExample hfOrderExample = new HfOrderExample();
-		hfOrderExample.createCriteria().andOrderCodeEqualTo(hfOrder.getOrderCode());
-		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
-		if (hfUserBalance.size()!=0&&hfOrders.get(0).getAmount()<hfUserBalance.get(0).getHfBalance()){
+
+		if (hfUserBalance.size()!=0&&payOrder.getAmount()<hfUserBalance.get(0).getHfBalance()){
 				HfUserBalance hfUserBalance1 = new HfUserBalance();
 				hfUserBalance1.setId(hfUserBalance.get(0).getId());
 				hfUserBalance1.setModifyTime(LocalDateTime.now());
 //				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
-				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-hfOrders.get(0).getAmount());
+				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-payOrder.getAmount());
 				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
 				HfBalanceDetail detail = new HfBalanceDetail();
 				detail.setUserId(hfUser.getUserId());
-				detail.setAmount(String.valueOf(hfOrders.get(0).getAmount()));
+				detail.setAmount(String.valueOf(payOrder.getAmount()));
 				detail.setPaymentName("消费");
 				detail.setCreateTime(LocalDateTime.now());
 				detail.setModifyTime(LocalDateTime.now());
@@ -160,9 +160,9 @@ public class PaymentOrderController {
 		return null;
 	}
 
-	private Map<String, String> wxPay(HfUser hfUser, HfOrderDisplay hfOrder) throws Exception {
+	private Map<String, String> wxPay(HfUser hfUser, PayOrder payOrder) throws Exception {
 		MiniProgramConfig config = new MiniProgramConfig();
-		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode(),hfOrder.getAmount());
+		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),payOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
 
 		WXPay wxpay = new WXPay(config);
@@ -182,7 +182,7 @@ public class PaymentOrderController {
 			resp.put("package", reData.get("package"));
 			resp.put("signType", reData.get("signType"));
 			resp.put("timeStamp", reData.get("timeStamp"));
-			recordTransactionFlow(hfUser, hfOrder, data, reData);
+			recordTransactionFlow(hfUser, payOrder, data, reData);
 			return resp;
 		} else {
 			throw new Exception(resp.get("return_msg"));
@@ -284,26 +284,31 @@ public class PaymentOrderController {
 		return data;
 	}
 
-	private void recordTransactionFlow(HfUser hfUser, HfOrderDisplay hfOrder, Map<String, String> data,
+	private void recordTransactionFlow(HfUser hfUser, PayOrder payOrder, Map<String, String> data,
 			Map<String, String> reData) {
+	    HfOrderExample hfOrderExample = new HfOrderExample();
+	    hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+	    List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
 		HfTansactionFlowExample e = new HfTansactionFlowExample();
-		e.createCriteria().andTradeTypeEqualTo(hfOrder.getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"))
+		e.createCriteria().andTradeTypeEqualTo(hfOrders.get(0).getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"))
 				.andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
 		List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
 
 		if (hfTansactionFlows.isEmpty()) {
-			HfTansactionFlow t = completeHfTansactionFlow(new HfTansactionFlow(), hfUser, hfOrder, data, reData);
+			HfTansactionFlow t = completeHfTansactionFlow(new HfTansactionFlow(), hfUser, payOrder, data, reData);
 			hfTansactionFlowMapper.insertSelective(t);
 		} else {
-			HfTansactionFlow t = completeHfTansactionFlow(hfTansactionFlows.get(0), hfUser, hfOrder, data, reData);
+			HfTansactionFlow t = completeHfTansactionFlow(hfTansactionFlows.get(0), hfUser, payOrder, data, reData);
 			hfTansactionFlowMapper.updateByPrimaryKey(t);
 		}
 	}
 
-	private HfTansactionFlow completeHfTansactionFlow(HfTansactionFlow t, HfUser hfUser, HfOrderDisplay hfOrder,
+	private HfTansactionFlow completeHfTansactionFlow(HfTansactionFlow t, HfUser hfUser, PayOrder payOrder,
 			Map<String, String> data, Map<String, String> reData) {
 		LocalDateTime current = LocalDateTime.now();
-
+		HfOrderExample hfOrderExample = new HfOrderExample();
+		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+		List<HfOrder> HfOrders= hfOrderMapper.selectByExample(hfOrderExample);
 		t.setAppId(data.get("appid"));
 		t.setCreateDate(current);
 		t.setDeviceInfo(data.get("device_info"));
@@ -317,7 +322,7 @@ public class PaymentOrderController {
 		t.setSpbillCreateIp(data.get("spbill_create_ip"));
 		t.setTotalFee(data.get("total_fee"));
 		t.setTradeType(data.get("trade_type"));
-		t.setTransactionType(hfOrder.getOrderType());
+		t.setTransactionType(HfOrders.get(0).getOrderType());
 		t.setHfStatus(TansactionFlowStatusEnum.PROCESS.getStatus());
 		t.setUserId(hfUser.getUserId());
 		t.setWechartBody(data.get("body"));
