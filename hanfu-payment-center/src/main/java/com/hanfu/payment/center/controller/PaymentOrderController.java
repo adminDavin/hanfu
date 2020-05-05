@@ -336,47 +336,78 @@ public class PaymentOrderController {
 	@ApiOperation(value = "完成支付", notes = "")
 	@RequestMapping(value = "/complete", method = RequestMethod.GET)
 	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
+//			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "transactionType", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "会员等级", required = true, type = "Integer")})
-	public ResponseEntity<JSONObject> completePaymentAfter(@RequestParam("outTradeNo") String outTradeNo,
+	public ResponseEntity<JSONObject> completePaymentAfter(
 			@RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId,
-			@RequestParam(required = false) Integer level)
+			@RequestParam(required = false) Integer level,Integer payOrderId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-		//流水状态
-		StoneChargeOff stoneChargeOff = new StoneChargeOff();
-		stoneChargeOff.setChargeOffState(1);
-		StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
-		stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
-		stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
-		//
-		MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-		paramMap2.add("orderId",hfOrder.getId());
-		restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
-		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
-			HfTansactionFlowExample e = new HfTansactionFlowExample();
-			e.createCriteria().andOutTradeNoEqualTo(outTradeNo);
-			List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
-			if (!hfTansactionFlows.isEmpty()) {
-				HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
-				hfTansactionFlow.setModifyDate(LocalDateTime.now());
-				hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
-				hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
+		HfOrderExample hfOrderExample = new HfOrderExample();
+		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
+		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
+		for (HfOrder hfOrder1:hfOrders){
+			HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(hfOrder1.getOrderCode());
+			//流水状态
+			StoneChargeOff stoneChargeOff = new StoneChargeOff();
+			stoneChargeOff.setChargeOffState(1);
+			StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+			stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
+			//
+			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+			paramMap2.add("orderId",hfOrder.getId());
+			restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
+			if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+				HfTansactionFlowExample e = new HfTansactionFlowExample();
+				e.createCriteria().andOutTradeNoEqualTo(hfOrder1.getOrderCode());
+				List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
+				if (!hfTansactionFlows.isEmpty()) {
+					HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
+					hfTansactionFlow.setModifyDate(LocalDateTime.now());
+					hfTansactionFlow.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
+					hfTansactionFlowMapper.updateByPrimaryKeySelective(hfTansactionFlow);
 
-				if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+					if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
+						rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
+						hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
+								LocalDateTime.now());
+					} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+						hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
+								LocalDateTime.now());
+					} else {
+						hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(),
+								LocalDateTime.now());
+						HfOrderDetail hfOrderDetail = new HfOrderDetail();
+						hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
+						System.out.println(OrderStatus.PROCESS.getOrderStatus());
+						Example example = new Example(HfOrderDetail.class);
+						Example.Criteria criteria = example.createCriteria();
+						criteria.andEqualTo("orderId",hfOrder.getId());
+						hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
+					}
+//					return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
+				} else {
+					throw new Exception("交易柳树不存在, 或者已完成支付");
+				}
+			} else {
+//			Integer result = paymentBalance(userId, hfOrder.getAmount());
+//			if (result == -1) {
+//				return builder.body(ResponseUtils.getResponseBody(-1));
+//			}
+				if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
+					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
+							LocalDateTime.now());
+				} else if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 //					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
 					rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 							LocalDateTime.now());
-				} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
-							LocalDateTime.now());
-				} else {
-					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(),
-							LocalDateTime.now());
+				}else {
+					hfOrderDao.updateHfOrderStatus(hfOrder1.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
 					HfOrderDetail hfOrderDetail = new HfOrderDetail();
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
 					System.out.println(OrderStatus.PROCESS.getOrderStatus());
@@ -385,36 +416,12 @@ public class PaymentOrderController {
 					criteria.andEqualTo("orderId",hfOrder.getId());
 					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 				}
-				return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
-			} else {
-				throw new Exception("交易柳树不存在, 或者已完成支付");
-			}
-		} else {
-//			Integer result = paymentBalance(userId, hfOrder.getAmount());
-//			if (result == -1) {
-//				return builder.body(ResponseUtils.getResponseBody(-1));
-//			}
-			if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
-						LocalDateTime.now());
-			} else if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
-//					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
-				rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
-				hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
-						LocalDateTime.now());
-			}else {
-				hfOrderDao.updateHfOrderStatus(outTradeNo, OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
-				HfOrderDetail hfOrderDetail = new HfOrderDetail();
-				hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
-				System.out.println(OrderStatus.PROCESS.getOrderStatus());
-				Example example = new Example(HfOrderDetail.class);
-				Example.Criteria criteria = example.createCriteria();
-				criteria.andEqualTo("orderId",hfOrder.getId());
-				hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
-			}
 
-			return builder.body(ResponseUtils.getResponseBody(hfOrder));
+//				return builder.body(ResponseUtils.getResponseBody(hfOrder));
+			}
 		}
+
+		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 	
 	
