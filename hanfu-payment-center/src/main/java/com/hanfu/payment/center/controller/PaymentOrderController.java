@@ -352,6 +352,7 @@ public class PaymentOrderController {
 			@RequestParam(required = false) Integer level,Integer payOrderId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		PayOrder payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
 		HfOrderExample hfOrderExample = new HfOrderExample();
 		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
 		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
@@ -369,7 +370,7 @@ public class PaymentOrderController {
 			restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
 			if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 				HfTansactionFlowExample e = new HfTansactionFlowExample();
-				e.createCriteria().andOutTradeNoEqualTo(hfOrder1.getOrderCode());
+				e.createCriteria().andOutTradeNoEqualTo(String.valueOf(payOrder.getId()));
 				List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
 				if (!hfTansactionFlows.isEmpty()) {
 					HfTansactionFlow hfTansactionFlow = hfTansactionFlows.get(0);
