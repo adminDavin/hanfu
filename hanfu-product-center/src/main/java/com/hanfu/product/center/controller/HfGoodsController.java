@@ -192,8 +192,14 @@ if (actualPrice!=null){
     amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice"));
 }
 }else {
-    amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
-    amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
+    if (goodsId!=null){
+        amount.setMoney(selectPriceResp(goodsId).get("hfPrices")*GoodsNum);
+        amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
+    } else {
+        amount.setMoney(actualPrice);
+//        amount.setDiscountMoney(selectPriceResp(goodsId).get("linePrice")*GoodsNum);
+    }
+
 }
 
 
