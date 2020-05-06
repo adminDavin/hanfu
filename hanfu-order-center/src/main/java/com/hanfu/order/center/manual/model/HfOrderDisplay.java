@@ -48,6 +48,7 @@ public class HfOrderDisplay {
     private Integer nowSum;
     private Integer groupSum;
     private Integer activityState;
+    private Integer payOrderId;
 
 
 
@@ -274,6 +275,14 @@ public class HfOrderDisplay {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public Integer getPayOrderId() {
+        return payOrderId;
+    }
+
+    public void setPayOrderId(Integer payOrderId) {
+        this.payOrderId = payOrderId;
     }
 }
 
