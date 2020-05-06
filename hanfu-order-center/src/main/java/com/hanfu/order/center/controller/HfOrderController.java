@@ -300,7 +300,7 @@ public class HfOrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "Id", value = "订单id", required = true,
                     type = "Integer")})
-    public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId) throws JSONException {
+    public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId,Integer payOrderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (targetOrderStatus.equals("controversial")){
             redisTemplate.opsForValue().set(orderCode+"controversial", originOrderStatus);
@@ -381,7 +381,7 @@ public class HfOrderController {
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}", payment.class, orderCode, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
