@@ -58,6 +58,7 @@ import com.hanfu.product.center.dao.HfEvaluateMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
 import com.hanfu.product.center.dao.HfGoodsSpecMapper;
+import com.hanfu.product.center.dao.HfInStorageMapper;
 import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
@@ -194,6 +195,9 @@ public class GoodsController {
 
 	@Autowired
 	private EvaluateUserRecordMapper evaluateUserRecordMapper;
+	
+	@Autowired
+	private HfInStorageMapper hfInStorageMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -322,6 +326,19 @@ public class GoodsController {
 				hfGoodsSpecMapper.insert(item);
 			}
 		}
+		HfInStorage inStorage = new HfInStorage();
+		if(hfGoodsInfo.getStoneId() == null) {
+			inStorage.setType("0");
+		}else {
+			inStorage.setType("1");
+			inStorage.setStoneId(hfGoodsInfo.getStoneId());
+		}
+		inStorage.setGoodId(record.getId());
+		inStorage.setUserId(hfGoodsInfo.getUserId());
+		inStorage.setCreateTime(LocalDateTime.now());
+		inStorage.setModifyTime(LocalDateTime.now());
+		inStorage.setIsDeleted((byte) 0);
+		hfInStorageMapper.insert(inStorage);
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 
