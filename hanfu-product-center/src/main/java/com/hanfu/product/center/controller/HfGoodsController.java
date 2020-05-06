@@ -308,6 +308,8 @@ if (actualPrice!=null){
                     }
                         amount.setMoney(actualPrice);
                 }
+            }else {
+                amount.setMoney(moneys);
             }
 
         return builder.body(ResponseUtils.getResponseBody(amount));
