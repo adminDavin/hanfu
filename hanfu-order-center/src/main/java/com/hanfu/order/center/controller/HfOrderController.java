@@ -58,6 +58,7 @@ public class HfOrderController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
     private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
+    private static final String REST_URL_CHECK1 = "https://www.tjsichuang.cn:1443/api/product/";
 //    private static final String REST_URL_CHECK = "http://localhost:9095/";
     @Autowired
     private RestTemplate restTemplate;
@@ -518,10 +519,6 @@ public class HfOrderController {
         payOrder.setIsDeleted((byte) 0);
         payOrderMapper.insertSelective(payOrder);
         for (Integer stoneId: stoneIds){
-            //
-
-
-            //
             List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
             Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
             HfPriceExample hfPriceExample = new HfPriceExample();
@@ -533,15 +530,26 @@ public class HfOrderController {
             });
             moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
             //youhuiquan
-                if (discountCouponList.size()!=0){
-                    discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
-                    int[] set = discountCouponList.stream().mapToInt(a->a.getId()).toArray();
-                    Integer[] integers = Arrays.stream(set).boxed().toArray(Integer[]::new);
-                    Map map = money(null, integers, request.getActivityId(), null, moneys, null);
-                    moneys = (Integer) map.get("money");
+            if (discountCouponList.size()!=0){
+//                discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
+//                int[] set = discountCouponList.stream().mapToInt(a->a.getId()).toArray();
+//                Integer[] integers = Arrays.stream(set).boxed().toArray(Integer[]::new);
+//                Map map = money(null, integers, request.getActivityId(), null, moneys, null);
+//                if (map.size()!=0){
+////                    moneys = (Integer) map.get("money");
+////                }
+                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+                paramMap.add("goodsList",request.getGoodsList());
+                paramMap.add("stoneId", String.valueOf(stoneId));
+                for (Integer integer:request.getDisconuntId()){
+                    System.out.println(integer);
+                    paramMap.add("discountCouponId", String.valueOf(integer));
                 }
-
-
+                JSONObject entity=restTemplate.postForObject(REST_URL_CHECK1+"hf-goods/checkResp1/",paramMap,JSONObject.class);
+                JSONObject data=entity.getJSONObject("data");
+                moneys= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
+                System.out.println("购物车优惠");
+            }
             LocalDateTime time = LocalDateTime.now();
             HfOrder hfOrder = new HfOrder();
             hfOrder.setCreateTime(time);
@@ -741,9 +749,11 @@ public class HfOrderController {
             paramMap.add("GoodsNum",num);
             paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
-            JSONObject data=entity.getJSONObject("data");
-            map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
-            System.out.println(map.get("money")+"普通");
+            if (entity.getJSONObject("data")!=null){
+                JSONObject data=entity.getJSONObject("data");
+                map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+                System.out.println(map.get("money")+"普通");
+            }
         }
         return map;
     }

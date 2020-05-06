@@ -5,8 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.manual.model.CreatesOrder;
 import com.hanfu.product.center.model.*;
+import io.swagger.models.auth.In;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -50,6 +53,8 @@ public class HfGoodsController {
     private HfActivityProductMapper hfActivityProductMapper;
     @Autowired
     private DiscountCouponMapper discountCouponMapper;
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
     @ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
     @RequestMapping(value = "/getHfGoodsByProductId", method = RequestMethod.GET)
     @ApiImplicitParams({ @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = false,
@@ -230,5 +235,81 @@ if (actualPrice!=null){
 
         return params;
     }
+    @ApiOperation(value = "校检库存2", notes = "校检库存2")
+    @RequestMapping(value = "/checkResp2", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> checkResp(String goodsList,Integer activityId,Integer[] discountCouponId,Integer actualPrice,Integer instanceId,Integer stoneId,Integer bossId)
+            throws JSONException {
+        Amount amount = new Amount();
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        JSONArray jsonArray= JSONArray.parseArray(goodsList);
+        List<DiscountCoupon> discountCouponList=new ArrayList<>();
+        if (discountCouponId!=null&&discountCouponId.length!=0){
+            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+            discountCouponExample.createCriteria().andIdIn(Lists.newArrayList(discountCouponId));
+            discountCouponList = discountCouponMapper.selectByExample(discountCouponExample);
+        }
 
+            discountCouponList= discountCouponList.stream().filter(a-> a.getStoneId().equals(stoneId)).collect(Collectors.toList());
+        System.out.println("1");
+        //转list
+        List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
+//        Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
+        Integer moneys= 0;
+        System.out.println("2");
+            List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
+            Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
+            HfPriceExample hfPriceExample = new HfPriceExample();
+            hfPriceExample.createCriteria().andGoogsIdIn(Lists.newArrayList(goodsId));
+            List<HfPrice> priceInfos = hfPriceMapper.selectByExample(hfPriceExample);
+
+            priceInfos.forEach(priceInfo->{
+                List<CreatesOrder> goods= list.stream().filter(x->x.getGoodsId().equals(priceInfo.getGoogsId())).collect(Collectors.toList());
+                priceInfo.setSellPrice(priceInfo.getSellPrice()*goods.get(0).getQuantity());
+            });
+        System.out.println("3");
+            moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
+            if (discountCouponList.size()!=0){
+                discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
+                if (discountCouponId!=null){
+                    for (DiscountCoupon dis: discountCouponList){
+                        DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+                        discountCouponExample.createCriteria().andIdEqualTo(dis.getId()).andUseStateEqualTo(0).andIdDeletedEqualTo((byte) 0);
+                        List<DiscountCoupon> discountCoupons= discountCouponMapper.selectByExample(discountCouponExample);
+                    }
+                    System.out.println("4");
+                    for (DiscountCoupon sups:discountCouponList){
+                        DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(sups.getId());
+                        if (discountCoupon.getDiscountCouponType().equals("1")){
+                            JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+                            Iterator<String> iterator = specs.keySet().iterator();
+                            while(iterator.hasNext()){
+// 获得key
+                                String key = iterator.next();
+                                String value = specs.getString(key);
+                                System.out.println(value);
+                                if (key.equals("minus")){
+                                        actualPrice = moneys-Integer.valueOf(value);
+                                        System.out.println(moneys+"价格");
+                                }
+                            }
+                        }else {
+                            JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+                            Iterator<String> iterator = specs.keySet().iterator();
+                            while(iterator.hasNext()){
+                                String key = iterator.next();
+                                String value = specs.getString(key);
+                                if (key.equals("minus")){
+                                        System.out.println(moneys+"折扣");
+                                        actualPrice = (moneys * Integer.valueOf(value)) / 100;
+
+                                }
+                            }
+                        }
+                    }
+                        amount.setMoney(actualPrice);
+                }
+            }
+
+        return builder.body(ResponseUtils.getResponseBody(amount));
+    }
 }
