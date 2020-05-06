@@ -2,12 +2,12 @@ server:
   port: 9097
 dubbo:
   registry:
-    address: 39.100.86.77:2181
+    address: 172.26.16.96:2181
     protocol: zookeeper
     id: dubboProductServer
     client: curator
   metadata-report:
-    address: zookeeper://39.100.86.77:2181
+    address: zookeeper://172.26.16.96:2181
   application:
     name: hanfu-product-center
   protocol:
@@ -45,7 +45,7 @@ spring:
         keep-alive: 3600s
   redis:
     database: 0
-    host: 39.100.86.77
+    host: 172.26.16.96
     port: 16379
     timeout: 10000ms
     jedis:
