@@ -58,6 +58,8 @@ public class HfOrderController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
     private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
+    private static final String REST_URL_CHECK1 = "https://www.tjsichuang.cn:1443/api/product/";
+//    private static final String REST_URL_CHECK1 = "http://localhost:9095/";
 //    private static final String REST_URL_CHECK = "http://localhost:9095/";
     @Autowired
     private RestTemplate restTemplate;
@@ -510,6 +512,7 @@ public class HfOrderController {
         }
         Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
 //        System.out.println(stoneIds);
+        System.out.println("开始支付订单");
         PayOrder payOrder = new PayOrder();
         payOrder.setUserId(request.getUserId());
         payOrder.setPayStatus(0);
@@ -518,10 +521,6 @@ public class HfOrderController {
         payOrder.setIsDeleted((byte) 0);
         payOrderMapper.insertSelective(payOrder);
         for (Integer stoneId: stoneIds){
-            //
-
-
-            //
             List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
             Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
             HfPriceExample hfPriceExample = new HfPriceExample();
@@ -533,15 +532,40 @@ public class HfOrderController {
             });
             moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
             //youhuiquan
-                if (discountCouponList.size()!=0){
-                    discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
-                    int[] set = discountCouponList.stream().mapToInt(a->a.getId()).toArray();
-                    Integer[] integers = Arrays.stream(set).boxed().toArray(Integer[]::new);
-                    Map map = money(null, integers, request.getActivityId(), null, moneys, null);
-                    moneys = (Integer) map.get("money");
+            if (discountCouponList.size()!=0){
+                System.out.println("开始优惠券");
+//                discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
+//                int[] set = discountCouponList.stream().mapToInt(a->a.getId()).toArray();
+//                Integer[] integers = Arrays.stream(set).boxed().toArray(Integer[]::new);
+//                Map map = money(null, integers, request.getActivityId(), null, moneys, null);
+//                if (map.size()!=0){
+////                    moneys = (Integer) map.get("money");
+////                }
+                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+                paramMap.add("goodsList",request.getGoodsList());
+                paramMap.add("stoneId", String.valueOf(stoneId));
+                for (Integer integer:request.getDisconuntId()){
+                    System.out.println(integer);
+                    paramMap.add("discountCouponId", String.valueOf(integer));
                 }
-
-
+                JSONObject entity=restTemplate.postForObject(REST_URL_CHECK1+"hf-goods/checkResp2/",paramMap,JSONObject.class);
+                JSONObject data=entity.getJSONObject("data");
+                moneys= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
+                System.out.println("购物车优惠");
+            }
+            //huodong*--*
+            if (request.getActivityId()!=null){
+                MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+                paramMap.add("goodsId",list.get(0).getGoodsId());
+                paramMap.add("GoodsNum",request.getQuantity());
+                paramMap.add("activityId",request.getActivityId());
+                paramMap.add("instanceId", Integer.valueOf(list.get(0).getHfDesc()));
+                JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
+                JSONObject data=entity.getJSONObject("data");
+                moneys=(Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
+                System.out.println("活动");
+            }
+            System.out.println("开始创建订单");
             LocalDateTime time = LocalDateTime.now();
             HfOrder hfOrder = new HfOrder();
             hfOrder.setCreateTime(time);
@@ -562,8 +586,23 @@ public class HfOrderController {
             hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
             hfOrder.setPayOrderId(payOrder.getId());
             hfOrderMapper.insertSelective(hfOrder);
-
+            //平台优惠券记录
+            if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
+                System.out.println("开始记录优惠券");
+                for (Integer discountId : request.getDisconuntId()) {
+                    DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
+                    discountCouponOrder.setCreateDate(LocalDateTime.now());
+                    discountCouponOrder.setModifyDate(LocalDateTime.now());
+                    discountCouponOrder.setIsDeleted(0);
+                    discountCouponOrder.setUseState(1);
+                    discountCouponOrder.setOrderId(hfOrder.getId());
+                    discountCouponOrder.setDiscountCouponId(discountId);
+                    discountCouponOrderMapper.insertSelective(discountCouponOrder);
+                    restTemplate.getForObject(REST_URL_CHECK + "discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}", JSONObject.class, discountId, request.getUserId());
+                }
+            }
             //详情
+            System.out.println("开始详情");
             listStone.forEach(listStone1->{
                 request.setStoneId(listStone1.getStoneId());
                 request.setQuantity(listStone1.getQuantity());
@@ -586,18 +625,7 @@ public class HfOrderController {
 //                List<HfPrice> hfPriceList = hfPriceMappers.selectByExample(hfPriceExample);
 //                actualPrice = (hfPriceList.get(0).getSellPrice() * goodss.getQuantity())+actualPrice;
 //            }
-//            //平台优惠券记录
-//            for (Integer discountId:request.getDisconuntId()){
-//                DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
-//                discountCouponOrder.setCreateDate(LocalDateTime.now());
-//                discountCouponOrder.setModifyDate(LocalDateTime.now());
-//                discountCouponOrder.setIsDeleted(0);
-//                discountCouponOrder.setUseState(1);
-//                discountCouponOrder.setOrderId(hfOrder.getId());
-//                discountCouponOrder.setDiscountCouponId(discountId);
-//                discountCouponOrderMapper.insertSelective(discountCouponOrder);
-//                restTemplate.getForObject(REST_URL_CHECK+"discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}",JSONObject.class,discountId,request.getUserId());
-//            }
+
 //        }
 //        System.out.println(actualPrice);
 //        List<Integer> sss = new ArrayList<>();
@@ -633,26 +661,6 @@ public class HfOrderController {
 //        }
 //            hfOrder1.setAmount(moneys);
 //        hfOrderMapper.updateByPrimaryKeySelective(hfOrder1);
-//清购物车
-//        List<ProductStone> productStoneList = new ArrayList<>();
-//        for (CreatesOrder goodss : list) {
-//            ProductStone productStone = new ProductStone();
-//            productStone.setProductId(String.valueOf(goodss.getGoodsId()));
-//            productStone.setStoneId(String.valueOf(goodss.getStoneId()));
-//            productStoneList.add(productStone);
-//        }
-//        String productStone = JSON.toJSONString(productStoneList);
-//        System.out.println(productStone);
-//        System.out.println(request.getUserId());
-//        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-//        paramMap.add("productStoneId",productStone);
-//        paramMap.add("userId", String.valueOf(request.getUserId()));
-//
-//        try {
-//        restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
-//        }catch (Exception e) {
-//            return builder.body(ResponseUtils.getResponseBody(hfOrder));
-//        }
         HfOrderExample hfOrderExample = new HfOrderExample();
         hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
         List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
@@ -661,6 +669,27 @@ public class HfOrderController {
         payOrder1.setActualPrice(actualPrice);
         payOrder1.setAmount(actualPrice);
         payOrderMapper.updateByPrimaryKeySelective(payOrder1);
+        //清购物车
+        System.out.println("开始清空购物车");
+        List<ProductStone> productStoneList = new ArrayList<>();
+        for (CreatesOrder goodss : list) {
+            ProductStone productStone = new ProductStone();
+            productStone.setProductId(String.valueOf(goodss.getGoodsId()));
+            productStone.setStoneId(String.valueOf(goodss.getStoneId()));
+            productStoneList.add(productStone);
+        }
+        String productStone = JSON.toJSONString(productStoneList);
+        System.out.println(productStone);
+        System.out.println(request.getUserId());
+        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+        paramMap.add("productStoneId",productStone);
+        paramMap.add("userId", String.valueOf(request.getUserId()));
+
+        try {
+            restTemplate.getForObject(REST_URL_CHECK+"cart/delGoods/?productStoneId={productStoneId}&userId={userId}",JSONObject.class,productStone,request.getUserId());
+        }catch (Exception e) {
+            return builder.body(ResponseUtils.getResponseBody(payOrder));
+        }
         return builder.body(ResponseUtils.getResponseBody(payOrder));
     }
 
@@ -741,9 +770,11 @@ public class HfOrderController {
             paramMap.add("GoodsNum",num);
             paramMap.add("instanceId",instanceId);
             JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
-            JSONObject data=entity.getJSONObject("data");
-            map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
-            System.out.println(map.get("money")+"普通");
+            if (entity.getJSONObject("data")!=null){
+                JSONObject data=entity.getJSONObject("data");
+                map=JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){});
+                System.out.println(map.get("money")+"普通");
+            }
         }
         return map;
     }
