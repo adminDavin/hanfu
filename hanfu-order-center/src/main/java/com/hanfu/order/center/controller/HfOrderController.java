@@ -503,7 +503,7 @@ public class HfOrderController {
         }
         //优惠券
         List<DiscountCoupon> discountCouponList=new ArrayList<>();
-        if (request.getDisconuntId()!=null){
+        if (request.getDisconuntId()!=null&&request.getDisconuntId().length!=0){
             DiscountCouponExample discountCouponExample = new DiscountCouponExample();
             discountCouponExample.createCriteria().andIdIn(Lists.newArrayList(request.getDisconuntId()));
             discountCouponList = discountCouponMapper.selectByExample(discountCouponExample);
