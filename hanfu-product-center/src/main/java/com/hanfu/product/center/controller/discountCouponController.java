@@ -75,7 +75,12 @@ public class discountCouponController {
             fileDesc.setModifyTime(LocalDateTime.now());
             fileDescMapper.insertSelective(fileDesc);
         }
-
+if (discountCoupon.getStoneId()==null){
+            discountCoupon.setStoneId(0);
+        }
+        if (discountCoupon.getBossId()==null){
+            discountCoupon.setBossId(0);
+        }
         discountCoupon.setCreateDate(LocalDateTime.now());
         discountCoupon.setModifyDate(LocalDateTime.now());
         discountCoupon.setIdDeleted((byte) 0);

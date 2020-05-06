@@ -1,5 +1,7 @@
 package com.hanfu.product.center.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -48,6 +50,7 @@ public class DiscountCoupon implements Serializable {
      *
      * @mbg.generated Tue May 05 15:29:31 CST 2020
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date startTime;
 
     /**
@@ -57,6 +60,7 @@ public class DiscountCoupon implements Serializable {
      *
      * @mbg.generated Tue May 05 15:29:31 CST 2020
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date stopTime;
 
     /**
