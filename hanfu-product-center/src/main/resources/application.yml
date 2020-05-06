@@ -3,12 +3,12 @@ server:
 
 dubbo:
   registry:
-    address: 172.26.16.96:2181
+    address: 39.100.237.144:2181
     protocol: zookeeper
     id: dubboProductServer
     client: curator
   metadata-report:
-    address: zookeeper://172.26.16.96:2181
+    address: zookeeper://39.100.237.144:2181
   application:
     name: hanfu-products-center
   protocol:
