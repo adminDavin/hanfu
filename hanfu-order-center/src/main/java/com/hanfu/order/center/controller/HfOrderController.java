@@ -494,6 +494,42 @@ public class HfOrderController {
         	id.setIsDeleted((byte) 0);
         	hfRequestIdMapper.insert(id);
         }
+        System.out.println("开始支付订单");
+        PayOrder payOrder = new PayOrder();
+        payOrder.setUserId(request.getUserId());
+        payOrder.setPayStatus(0);
+        payOrder.setCreateTime(LocalDateTime.now());
+        payOrder.setModifyTime(LocalDateTime.now());
+        payOrder.setIsDeleted((byte) 0);
+        payOrderMapper.insertSelective(payOrder);
+
+        if (request.getGoodsList()==null){
+            LocalDateTime time = LocalDateTime.now();
+            HfOrder hfOrder = new HfOrder();
+            hfOrder.setCreateTime(time);
+            hfOrder.setModifyTime(time);
+
+            hfOrder.setAmount(request.getSellPrice());
+            hfOrder.setHfRemark(request.getHfRemark());
+            hfOrder.setUserId(request.getUserId());
+            hfOrder.setOrderType(request.getOrderType());
+            hfOrder.setPaymentName(request.getPaymentName());
+            hfOrder.setStoneId(1);//用作bossId
+//        hfOrder.setDistributorId(request.getDistributorId());
+            hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
+            hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
+            Integer paymentType = PaymentType.getPaymentTypeEnum(hfOrder.getPaymentName()).getPaymentType();
+            hfOrder.setPaymentType(paymentType);
+            hfOrder.setOrderStatus(OrderStatus.PAYMENT.getOrderStatus());
+            hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
+            hfOrder.setPayOrderId(payOrder.getId());
+            hfOrderMapper.insertSelective(hfOrder);
+            PayOrder payOrder2= payOrderMapper.selectByPrimaryKey(payOrder.getId());
+            payOrder2.setActualPrice(request.getSellPrice());
+            payOrder2.setAmount(request.getSellPrice());
+            payOrderMapper.updateByPrimaryKeySelective(payOrder2);
+            return builder.body(ResponseUtils.getResponseBody(payOrder));
+        }
         Integer moneys = 0;
         JSONArray jsonArray= JSONArray.parseArray(request.getGoodsList());
 //        JSONObject jsonObject1= JSON.parseObject(request.getGoodsList());
@@ -512,14 +548,7 @@ public class HfOrderController {
         }
         Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
 //        System.out.println(stoneIds);
-        System.out.println("开始支付订单");
-        PayOrder payOrder = new PayOrder();
-        payOrder.setUserId(request.getUserId());
-        payOrder.setPayStatus(0);
-        payOrder.setCreateTime(LocalDateTime.now());
-        payOrder.setModifyTime(LocalDateTime.now());
-        payOrder.setIsDeleted((byte) 0);
-        payOrderMapper.insertSelective(payOrder);
+
         for (Integer stoneId: stoneIds){
             List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
             Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
