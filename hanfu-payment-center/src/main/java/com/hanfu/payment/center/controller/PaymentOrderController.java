@@ -112,14 +112,19 @@ public class PaymentOrderController {
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
+	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId,Integer type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		PayOrder payOrder = null;
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
-        PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
-        HfOrderExample hfOrderExample = new HfOrderExample();
-        hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
-
+		HfOrderExample hfOrderExample = new HfOrderExample();
+		if(type == 1) {
+			hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
+		}else {
+			 payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
+		     hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+		}
+       
 		Map<String, String> resp = null;
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			resp = wxPay(hfUser, payOrder);
