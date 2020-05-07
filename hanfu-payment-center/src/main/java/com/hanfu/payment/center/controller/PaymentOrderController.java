@@ -71,7 +71,7 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfUserBalanceMapper hfUserBalanceMapper;
-
+	
 	@Autowired
 	private HfIntegralMapper hfIntegralMapper;
 
@@ -80,19 +80,19 @@ public class PaymentOrderController {
 
 	@Autowired
 	private HfOrderMapper hfOrderMapper;
-
+	
 	@Autowired
 	private UserMemberDao userMemberDao;
-
+	
 	@Autowired
 	private HfUserMemberMapper hfUserMemberMapper;
-
+	
 	@Autowired
 	private HfBalanceDetailMapper hfBalanceDetailMapper;
-
+	
 	@Autowired
 	private HfLevelDescribeMapper hfLevelDescribeMapper;
-
+	
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
 	@Value("${myspcloud.item3.url3}")
@@ -104,28 +104,24 @@ public class PaymentOrderController {
 	@Autowired
 	private StoneBalanceMapper stoneBalanceMapper;
 	@Autowired
-	private PayOrderMapper payOrderMapper;
+    private PayOrderMapper payOrderMapper;
+
+
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> payment(Integer userId, Integer payOrderId, Integer type) throws Exception {
+	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		PayOrder payOrder = null;
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
-		HfOrderExample hfOrderExample = new HfOrderExample();
-		if (type == null) {
-			payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
-			hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
-		} else {
-			hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
-		}
+        PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
 
 		Map<String, String> resp = null;
-		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName())
-				.equals(PaymentTypeEnum.WECHART)) {
+		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			resp = wxPay(hfUser, payOrder);
 		} else {
 			resp = balancePay(hfUser, payOrder);
@@ -140,26 +136,26 @@ public class PaymentOrderController {
 //		WXPay wxpay = new WXPay(config);
 //		Map<String, String> resp = wxpay.unifiedOrder(data);
 
-		HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
-		hfUserBalanceExample.createCriteria().andUserIdEqualTo(hfUser.getUserId())
-				.andBalanceTypeEqualTo("rechargeAmount");
-		List<HfUserBalance> hfUserBalance = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
 
-		if (hfUserBalance.size() != 0 && payOrder.getAmount() < hfUserBalance.get(0).getHfBalance()) {
-			HfUserBalance hfUserBalance1 = new HfUserBalance();
-			hfUserBalance1.setId(hfUserBalance.get(0).getId());
-			hfUserBalance1.setModifyTime(LocalDateTime.now());
+		HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
+		hfUserBalanceExample.createCriteria().andUserIdEqualTo(hfUser.getUserId()).andBalanceTypeEqualTo("rechargeAmount");
+		List<HfUserBalance> hfUserBalance= hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
+
+		if (hfUserBalance.size()!=0&&payOrder.getAmount()<hfUserBalance.get(0).getHfBalance()){
+				HfUserBalance hfUserBalance1 = new HfUserBalance();
+				hfUserBalance1.setId(hfUserBalance.get(0).getId());
+				hfUserBalance1.setModifyTime(LocalDateTime.now());
 //				hfUserBalance1.setLastModifier(hfUser.getAuthKey());
-			hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance() - payOrder.getAmount());
-			hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
-			HfBalanceDetail detail = new HfBalanceDetail();
-			detail.setUserId(hfUser.getUserId());
-			detail.setAmount(String.valueOf(payOrder.getAmount()));
-			detail.setPaymentName("消费");
-			detail.setCreateTime(LocalDateTime.now());
-			detail.setModifyTime(LocalDateTime.now());
-			detail.setIsDeleted((byte) 0);
-			hfBalanceDetailMapper.insert(detail);
+				hfUserBalance1.setHfBalance(hfUserBalance.get(0).getHfBalance()-payOrder.getAmount());
+				hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance1);
+				HfBalanceDetail detail = new HfBalanceDetail();
+				detail.setUserId(hfUser.getUserId());
+				detail.setAmount(String.valueOf(payOrder.getAmount()));
+				detail.setPaymentName("消费");
+				detail.setCreateTime(LocalDateTime.now());
+				detail.setModifyTime(LocalDateTime.now());
+				detail.setIsDeleted((byte) 0);
+				hfBalanceDetailMapper.insert(detail);
 		} else {
 			throw new Exception("return_msg");
 		}
@@ -171,8 +167,7 @@ public class PaymentOrderController {
 		System.out.println("0000");
 		MiniProgramConfig config = new MiniProgramConfig();
 		System.out.println("wx1111");
-		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),
-				payOrder.getAmount());
+		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),payOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
 		System.out.println("wx2222");
 		WXPay wxpay = new WXPay(config);
@@ -206,80 +201,80 @@ public class PaymentOrderController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> refund(Integer userId, Integer payOrderId) throws Exception {
+	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
 		HfOrderExample hfOrderExample = new HfOrderExample();
 		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
-		List<HfOrder> hfOrderList = hfOrderMapper.selectByExample(hfOrderExample);
+		List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
 		PayOrder payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
 		if (hfOrderList.get(0).getPaymentName().equals("balance") && hfOrderList.get(0).getPaymentType().equals(0)) {
 			HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
 			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
 			List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
-			HfUserBalance hfUserBalance = new HfUserBalance();
-			hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance() + payOrder.getAmount());
-			hfUserBalance.setModifyTime(LocalDateTime.now());
-			hfUserBalance.setId(hfUserBalances.get(0).getId());
-			hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
-			HfBalanceDetail detail = new HfBalanceDetail();
-			detail.setUserId(hfUser.getUserId());
-			detail.setAmount(String.valueOf(payOrder.getAmount()));
-			detail.setPaymentName("退款");
-			detail.setCreateTime(LocalDateTime.now());
-			detail.setModifyTime(LocalDateTime.now());
-			detail.setIsDeleted((byte) 0);
-			hfBalanceDetailMapper.insert(detail);
+                 HfUserBalance hfUserBalance = new HfUserBalance();
+                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+payOrder.getAmount());
+                 hfUserBalance.setModifyTime(LocalDateTime.now());
+                 hfUserBalance.setId(hfUserBalances.get(0).getId());
+                 hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
+                 HfBalanceDetail detail = new HfBalanceDetail();
+ 				detail.setUserId(hfUser.getUserId());
+ 				detail.setAmount(String.valueOf(payOrder.getAmount()));
+ 				detail.setPaymentName("退款");
+ 				detail.setCreateTime(LocalDateTime.now());
+ 				detail.setModifyTime(LocalDateTime.now());
+ 				detail.setIsDeleted((byte) 0);
+ 				hfBalanceDetailMapper.insert(detail);
 			return builder.body(ResponseUtils.getResponseBody(0));
-		} else {
+		} else{
 			MiniProgramConfig config = new MiniProgramConfig();
-			WXPay wxpay = new WXPay(config);
-			Map<String, String> data = new HashMap<>();
-			data.put("appid", config.getAppID());
-			data.put("mch_id", config.getMchID());
-			data.put("device_info", req.getRemoteHost());
-			data.put("fee_type", "CNY");
-			data.put("total_fee", String.valueOf(payOrder.getAmount()));
-			data.put("spbill_create_ip", req.getRemoteAddr());
-			data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+		WXPay wxpay = new WXPay(config);
+		Map<String, String> data = new HashMap<>();
+		data.put("appid", config.getAppID());
+		data.put("mch_id", config.getMchID());
+		data.put("device_info", req.getRemoteHost());
+		data.put("fee_type", "CNY");
+		data.put("total_fee", String.valueOf(payOrder.getAmount()));
+		data.put("spbill_create_ip", req.getRemoteAddr());
+		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
-			data.put("out_trade_no", String.valueOf(payOrder.getId()));
-			data.put("op_user_id", config.getMchID());
-			data.put("refund_fee_type", "CNY");
-			data.put("refund_fee", String.valueOf(payOrder.getAmount()));
-			data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
-			String sign = WXPayUtil.generateSignature(data, config.getKey());
-			data.put("sign", sign);
-			logger.info(JSONObject.toJSONString(data));
+		data.put("out_trade_no", String.valueOf(payOrder.getId()));
+		data.put("op_user_id", config.getMchID());
+		data.put("refund_fee_type", "CNY");
+		data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
+		String sign = WXPayUtil.generateSignature(data, config.getKey());
+		data.put("sign", sign);
+		logger.info(JSONObject.toJSONString(data));
 
-			Map<String, String> resp = wxpay.refund(data);
-			logger.info(JSONObject.toJSONString(resp));
-			if ("SUCCESS".equals(resp.get("return_code"))) {
-				LocalDateTime current = LocalDateTime.now();
+		Map<String, String> resp = wxpay.refund(data);
+		logger.info(JSONObject.toJSONString(resp));
+		if ("SUCCESS".equals(resp.get("return_code"))) {
+			LocalDateTime current = LocalDateTime.now();
 
-				HfTansactionFlow t = new HfTansactionFlow();
-				t.setAppId(config.getAppID());
-				t.setCreateDate(current);
-				t.setDeviceInfo(req.getRemoteHost());
-				t.setFeeType(data.get("refund_fee_type"));
-				t.setMchId(config.getMchID());
-				t.setModifyDate(current);
-				t.setOpenId(hfUser.getAuthKey());
-				t.setOutTradeNo(data.get("out_trade_no"));
-				t.setSpbillCreateIp(req.getRemoteAddr());
-				t.setTotalFee(data.get("refund_fee"));
-				t.setOutRefundNo(data.get("out_refund_no"));
-				t.setTransactionType("rerundOrder");
-				t.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
-				t.setUserId(hfUser.getUserId());
-			}
-
-			return builder.body(ResponseUtils.getResponseBody(resp));
+			HfTansactionFlow t = new HfTansactionFlow();
+			t.setAppId(config.getAppID());
+			t.setCreateDate(current);
+			t.setDeviceInfo(req.getRemoteHost());
+			t.setFeeType(data.get("refund_fee_type"));
+			t.setMchId(config.getMchID());
+			t.setModifyDate(current);
+			t.setOpenId(hfUser.getAuthKey());
+			t.setOutTradeNo(data.get("out_trade_no"));
+			t.setSpbillCreateIp(req.getRemoteAddr());
+			t.setTotalFee(data.get("refund_fee"));
+			t.setOutRefundNo(data.get("out_refund_no"));
+			t.setTransactionType("rerundOrder");
+			t.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
+			t.setUserId(hfUser.getUserId());
 		}
+
+		return builder.body(ResponseUtils.getResponseBody(resp));
+	}
 	}
 
-	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode, Integer Amount)
+	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode,Integer Amount)
 			throws Exception {
 		Map<String, String> data = new HashMap<>();
 		data.put("appid", config.getAppID());
@@ -301,12 +296,11 @@ public class PaymentOrderController {
 
 	private void recordTransactionFlow(HfUser hfUser, PayOrder payOrder, Map<String, String> data,
 			Map<String, String> reData) {
-		HfOrderExample hfOrderExample = new HfOrderExample();
-		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
-		List<HfOrder> hfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+	    HfOrderExample hfOrderExample = new HfOrderExample();
+	    hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
+	    List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
 		HfTansactionFlowExample e = new HfTansactionFlowExample();
-		e.createCriteria().andTradeTypeEqualTo(hfOrders.get(0).getOrderType())
-				.andOutTradeNoEqualTo(data.get("out_trade_no"))
+		e.createCriteria().andTradeTypeEqualTo(hfOrders.get(0).getOrderType()).andOutTradeNoEqualTo(data.get("out_trade_no"))
 				.andHfStatusEqualTo(TansactionFlowStatusEnum.PROCESS.getStatus());
 		List<HfTansactionFlow> hfTansactionFlows = hfTansactionFlowMapper.selectByExample(e);
 
@@ -324,7 +318,7 @@ public class PaymentOrderController {
 		LocalDateTime current = LocalDateTime.now();
 		HfOrderExample hfOrderExample = new HfOrderExample();
 		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrder.getId());
-		List<HfOrder> HfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+		List<HfOrder> HfOrders= hfOrderMapper.selectByExample(hfOrderExample);
 		t.setAppId(data.get("appid"));
 		t.setCreateDate(current);
 		t.setDeviceInfo(data.get("device_info"));
@@ -352,27 +346,28 @@ public class PaymentOrderController {
 //			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "transactionType", value = "订单id", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "level", value = "会员等级", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> completePaymentAfter(@RequestParam("transactionType") String transactionType,
-			@RequestParam("userId") Integer userId, @RequestParam(required = false) Integer level, Integer payOrderId)
+			@ApiImplicitParam(paramType = "query", name = "level", value = "会员等级", required = true, type = "Integer")})
+	public ResponseEntity<JSONObject> completePaymentAfter(
+			@RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId,
+			@RequestParam(required = false) Integer level,Integer payOrderId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PayOrder payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
 		HfOrderExample hfOrderExample = new HfOrderExample();
 		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
-		List<HfOrder> hfOrders = hfOrderMapper.selectByExample(hfOrderExample);
-		for (HfOrder hfOrder1 : hfOrders) {
+		List<HfOrder> hfOrders= hfOrderMapper.selectByExample(hfOrderExample);
+		for (HfOrder hfOrder1:hfOrders){
 			HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(hfOrder1.getOrderCode());
-			// 流水状态
+			//流水状态
 			StoneChargeOff stoneChargeOff = new StoneChargeOff();
 			stoneChargeOff.setChargeOffState(1);
 			StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
 			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
-			stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff, stoneChargeOffExample);
+			stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
 			//
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-			paramMap2.add("orderId", hfOrder.getId());
-			restTemplate.postForObject(itemUrl3, paramMap2, JSONObject.class);
+			paramMap2.add("orderId",hfOrder.getId());
+			restTemplate.postForObject(itemUrl3,paramMap2,JSONObject.class);
 			if (PaymentTypeEnum.getPaymentTypeEnum(hfOrder.getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 				HfTansactionFlowExample e = new HfTansactionFlowExample();
 				e.createCriteria().andOutTradeNoEqualTo(String.valueOf(payOrder.getId()));
@@ -385,7 +380,7 @@ public class PaymentOrderController {
 
 					if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 //					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
-						rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()), level);
+						rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
 						hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 								LocalDateTime.now());
 					} else if (OrderTypeEnum.SHOPPING_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
@@ -399,8 +394,8 @@ public class PaymentOrderController {
 						System.out.println(OrderStatus.PROCESS.getOrderStatus());
 						Example example = new Example(HfOrderDetail.class);
 						Example.Criteria criteria = example.createCriteria();
-						criteria.andEqualTo("orderId", hfOrder.getId());
-						hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail, example);
+						criteria.andEqualTo("orderId",hfOrder.getId());
+						hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 					}
 //					return builder.body(ResponseUtils.getResponseBody(hfTansactionFlow));
 				} else {
@@ -416,19 +411,18 @@ public class PaymentOrderController {
 							LocalDateTime.now());
 				} else if (OrderTypeEnum.RECHAEGE_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
 //					rechangeBalance(userId, Integer.valueOf(hfTansactionFlow.getTotalFee()),level);
-					rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()), level);
+					rechangeBalance(userId, Integer.valueOf(hfOrder.getAmount()),level);
 					hfOrderDao.updateHfOrderStatus(hfOrder.getOrderCode(), OrderStatus.COMPLETE.getOrderStatus(),
 							LocalDateTime.now());
-				} else {
-					hfOrderDao.updateHfOrderStatus(hfOrder1.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(),
-							LocalDateTime.now());
+				}else {
+					hfOrderDao.updateHfOrderStatus(hfOrder1.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
 					HfOrderDetail hfOrderDetail = new HfOrderDetail();
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
 					System.out.println(OrderStatus.PROCESS.getOrderStatus());
 					Example example = new Example(HfOrderDetail.class);
 					Example.Criteria criteria = example.createCriteria();
-					criteria.andEqualTo("orderId", hfOrder.getId());
-					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail, example);
+					criteria.andEqualTo("orderId",hfOrder.getId());
+					hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,example);
 				}
 
 //				return builder.body(ResponseUtils.getResponseBody(hfOrder));
@@ -437,17 +431,20 @@ public class PaymentOrderController {
 
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-
+	
+	
 	@ApiOperation(value = "测试", notes = "测试")
 	@RequestMapping(value = "/qqqqqqc", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee, Integer level) throws Exception {
+	public ResponseEntity<JSONObject> qqqqqqc(Integer userId, Integer totalFee, Integer level)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		rechangeBalance(userId, totalFee, level);
+		rechangeBalance(userId,totalFee,level);
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-
-	private void rechangeBalance(Integer userId, Integer totalFee, Integer level) {
-		if (level == null) {
+	
+	
+	private void rechangeBalance(Integer userId, Integer totalFee ,Integer level) {
+		if(level == null) {
 			HfBalanceDetail detail = new HfBalanceDetail();
 			detail.setUserId(userId);
 			detail.setAmount(String.valueOf(totalFee));
@@ -456,7 +453,7 @@ public class PaymentOrderController {
 			detail.setModifyTime(LocalDateTime.now());
 			detail.setIsDeleted((byte) 0);
 			hfBalanceDetailMapper.insert(detail);
-
+			
 			HfUserBalanceExample example = new HfUserBalanceExample();
 			example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((short) 0)
 					.andBalanceTypeEqualTo("rechargeAmount");
@@ -506,7 +503,7 @@ public class PaymentOrderController {
 			hfIntegral.setIsDeleted((byte) 0);
 			hfIntegralMapper.insert(hfIntegral);
 		}
-		if (level != null) {
+		if(level != null) {
 			HfUserMember member = new HfUserMember();
 			member.setLevelId(level);
 			member.setUserId(userId);
@@ -524,7 +521,7 @@ public class PaymentOrderController {
 				hfUserPrivilegeMapper.insert(privilege);
 			}
 		}
-
+		
 	}
 
 //	private Integer paymentBalance(Integer userId, Integer totalFee) {
