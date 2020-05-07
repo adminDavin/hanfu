@@ -1883,9 +1883,11 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-		HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
-		evaluateParent.setCommentCount(evaluateParent.getCommentCount()+1);
-		hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
+		if(parentEvaluateId != -1) {
+			HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
+			evaluateParent.setCommentCount(evaluateParent.getCommentCount()+1);
+			hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
+		}
 		if(fileId != null) {
 			for (Integer f : fileId) {
 				EvaluatePicture picture = new EvaluatePicture();
