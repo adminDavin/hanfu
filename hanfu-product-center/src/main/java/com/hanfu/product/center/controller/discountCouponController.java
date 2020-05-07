@@ -108,13 +108,26 @@ if (discountCoupon.getStoneId()==null){
     @RequestMapping(value = "/selectDiscountCoupon", method = RequestMethod.GET)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId,String DiscountCouponName,String DiscountCouponType)
+    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId,String DiscountCouponName,String DiscountCouponType,Integer stoneId)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        DiscountCouponExample discountCouponExample = new DiscountCouponExample();
-        discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
-        discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
-        List<DiscountCoupon> discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        List<DiscountCoupon> discountCoupons =new ArrayList<>();
+        if (bossId!=null){
+            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+            discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(bossId);
+            discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
+            discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        }else if(stoneId!=null) {
+            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+            discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdEqualTo(stoneId);
+            discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
+            discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        } else {
+            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+            discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0);
+            discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
+            discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+        }
         if (null != DiscountCouponName && !DiscountCouponName.equals("")&& DiscountCouponName.length()!=0){
             discountCoupons = discountCoupons.stream().filter(discountCoupon-> discountCoupon.getDiscountCouponName().contains(DiscountCouponName)).collect(Collectors.toList());
         }
