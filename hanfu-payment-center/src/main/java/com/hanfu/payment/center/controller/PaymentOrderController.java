@@ -105,7 +105,8 @@ public class PaymentOrderController {
 	private StoneBalanceMapper stoneBalanceMapper;
 	@Autowired
     private PayOrderMapper payOrderMapper;
-
+	@Autowired
+	private MiniProgramConfig miniProgramConfig;
 
 
 	@ApiOperation(value = "支付订单", notes = "")
@@ -164,26 +165,22 @@ public class PaymentOrderController {
 	}
 
 	private Map<String, String> wxPay(HfUser hfUser, PayOrder payOrder) throws Exception {
-		System.out.println("0000");
-		MiniProgramConfig config = new MiniProgramConfig();
-		System.out.println("wx1111");
-		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),payOrder.getAmount());
+//		MiniProgramConfig config = new MiniProgramConfig();
+		Map<String, String> data = getWxPayData(miniProgramConfig, hfUser.getAuthKey(), String.valueOf(payOrder.getId()),payOrder.getAmount());
 		logger.info(JSONObject.toJSONString(data));
-		System.out.println("wx2222");
-		WXPay wxpay = new WXPay(config);
+		WXPay wxpay = new WXPay(miniProgramConfig);
 		Map<String, String> resp = wxpay.unifiedOrder(data);
 		logger.info(JSONObject.toJSONString(resp));
 		if ("SUCCESS".equals(resp.get("return_code"))) {
-			System.out.println("wx3333");
 			Map<String, String> reData = new HashMap<>();
-			reData.put("appId", config.getAppID());
+			reData.put("appId", miniProgramConfig.getAppID());
 			reData.put("nonceStr", resp.get("nonce_str"));
 			String newPackage = "prepay_id=" + resp.get("prepay_id");
 			reData.put("package", newPackage);
 			reData.put("signType", "MD5");
 			reData.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
 
-			String newSign = WXPayUtil.generateSignature(reData, config.getKey());
+			String newSign = WXPayUtil.generateSignature(reData, miniProgramConfig.getKey());
 			resp.put("paySign", newSign);
 			resp.put("package", reData.get("package"));
 			resp.put("signType", reData.get("signType"));
@@ -228,11 +225,11 @@ public class PaymentOrderController {
  				hfBalanceDetailMapper.insert(detail);
 			return builder.body(ResponseUtils.getResponseBody(0));
 		} else{
-			MiniProgramConfig config = new MiniProgramConfig();
-		WXPay wxpay = new WXPay(config);
+//			MiniProgramConfig config = new MiniProgramConfig();
+		WXPay wxpay = new WXPay(miniProgramConfig);
 		Map<String, String> data = new HashMap<>();
-		data.put("appid", config.getAppID());
-		data.put("mch_id", config.getMchID());
+		data.put("appid", miniProgramConfig.getAppID());
+		data.put("mch_id", miniProgramConfig.getMchID());
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
 		data.put("total_fee", String.valueOf(payOrder.getAmount()));
@@ -240,11 +237,11 @@ public class PaymentOrderController {
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
 		data.put("out_trade_no", String.valueOf(payOrder.getId()));
-		data.put("op_user_id", config.getMchID());
+		data.put("op_user_id", miniProgramConfig.getMchID());
 		data.put("refund_fee_type", "CNY");
 		data.put("refund_fee", String.valueOf(payOrder.getAmount()));
 		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
-		String sign = WXPayUtil.generateSignature(data, config.getKey());
+		String sign = WXPayUtil.generateSignature(data, miniProgramConfig.getKey());
 		data.put("sign", sign);
 		logger.info(JSONObject.toJSONString(data));
 
@@ -254,11 +251,11 @@ public class PaymentOrderController {
 			LocalDateTime current = LocalDateTime.now();
 
 			HfTansactionFlow t = new HfTansactionFlow();
-			t.setAppId(config.getAppID());
+			t.setAppId(miniProgramConfig.getAppID());
 			t.setCreateDate(current);
 			t.setDeviceInfo(req.getRemoteHost());
 			t.setFeeType(data.get("refund_fee_type"));
-			t.setMchId(config.getMchID());
+			t.setMchId(miniProgramConfig.getMchID());
 			t.setModifyDate(current);
 			t.setOpenId(hfUser.getAuthKey());
 			t.setOutTradeNo(data.get("out_trade_no"));
@@ -553,7 +550,7 @@ public class PaymentOrderController {
 	@ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
 	@RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
 	public void refund(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		MiniProgramConfig config = new MiniProgramConfig();
+//		MiniProgramConfig config = new MiniProgramConfig();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
 		String line = null;
@@ -575,7 +572,7 @@ public class PaymentOrderController {
 			// OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
 			Map<String, String> validParams = PayUtil.paraFilter(map); // 回调验签时需要去除sign和空值参数
 			String validStr = PayUtil.createLinkString(validParams);// 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
-			String sign = PayUtil.sign(validStr, config.getKey(), "utf-8").toUpperCase();// 拼装生成服务器端验证的签名
+			String sign = PayUtil.sign(validStr, miniProgramConfig.getKey(), "utf-8").toUpperCase();// 拼装生成服务器端验证的签名
 			// 因为微信回调会有八次之多,所以当第一次回调成功了,那么我们就不再执行逻辑了
 
 			// 根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
