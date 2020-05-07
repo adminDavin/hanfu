@@ -254,7 +254,7 @@ if (actualPrice!=null){
         //转list
         List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
 //        Set<Integer> stoneIds = list.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
-        Integer moneys= 0;
+//        Integer moneys= 0;
         System.out.println("2");
             List<CreatesOrder> listStone =list.stream().filter(b->b.getStoneId().equals(stoneId)).collect(Collectors.toList());
             Set<Integer> goodsId = listStone.stream().map(m->m.getGoodsId()).collect(Collectors.toSet());
@@ -267,7 +267,7 @@ if (actualPrice!=null){
                 priceInfo.setSellPrice(priceInfo.getSellPrice()*goods.get(0).getQuantity());
             });
         System.out.println("3");
-            moneys= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
+        actualPrice= priceInfos.stream().mapToInt(money->money.getSellPrice()).sum();
             if (discountCouponList.size()!=0){
                 discountCouponList= discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
                 if (discountCouponId!=null){
@@ -288,8 +288,8 @@ if (actualPrice!=null){
                                 String value = specs.getString(key);
                                 System.out.println(value);
                                 if (key.equals("minus")){
-                                        actualPrice = moneys-Integer.valueOf(value);
-                                        System.out.println(moneys+"价格");
+                                        actualPrice = actualPrice-Integer.valueOf(value);
+                                        System.out.println(actualPrice+"价格");
                                 }
                             }
                         }else {
@@ -299,8 +299,8 @@ if (actualPrice!=null){
                                 String key = iterator.next();
                                 String value = specs.getString(key);
                                 if (key.equals("minus")){
-                                        System.out.println(moneys+"折扣");
-                                        actualPrice = (moneys * Integer.valueOf(value)) / 100;
+                                        System.out.println(actualPrice+"折扣");
+                                        actualPrice = (actualPrice * Integer.valueOf(value)) / 100;
 
                                 }
                             }
@@ -309,7 +309,7 @@ if (actualPrice!=null){
                         amount.setMoney(actualPrice);
                 }
             }else {
-                amount.setMoney(moneys);
+                amount.setMoney(actualPrice);
             }
 
         return builder.body(ResponseUtils.getResponseBody(amount));
