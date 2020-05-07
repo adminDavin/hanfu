@@ -584,19 +584,20 @@ public class HfOrderController {
                 moneys= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
                 System.out.println("购物车优惠");
             }
-//            if (discountCouponListBoss.size()!=0){
-//                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-//                paramMap.add("actualPrice", String.valueOf(stoneId));
-//                Set<Integer> diss= discountCouponListBoss.stream().map(a->a.getId()).collect(Collectors.toSet());
-//                for (Integer integer:request.getDisconuntId()){
-//                    System.out.println(integer);
-//                    paramMap.add("discountCouponId", String.valueOf(integer));
-//                }
-//                JSONObject entity=restTemplate.postForObject(REST_URL_CHECK1+"hf-goods/checkRespBoss/",paramMap,JSONObject.class);
-//                JSONObject data=entity.getJSONObject("data");
-//                moneys= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
-//                System.out.println("平台购物车优惠");
-//            }
+            if (discountCouponListBoss.size()!=0){
+                MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+                paramMap.add("actualPrice", String.valueOf(stoneId));
+                int[] diss= discountCouponListBoss.stream().mapToInt(a->a.getId()).toArray();
+                Integer[] integers = Arrays.stream(diss).boxed().toArray(Integer[]::new);
+                for (Integer integer:integers){
+                    System.out.println(integer);
+                    paramMap.add("discountCouponId", String.valueOf(integer));
+                }
+                JSONObject entity=restTemplate.postForObject(REST_URL_CHECK1+"hf-goods/checkRespBoss/",paramMap,JSONObject.class);
+                JSONObject data=entity.getJSONObject("data");
+                moneys= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
+                System.out.println("平台购物车优惠");
+            }
             //huodong*--*
             if (request.getActivityId()!=null){
                 MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
