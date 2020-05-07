@@ -92,8 +92,10 @@ public class StoneBalanceController {
                 stoneBalance1.setStoneBalance(money);
                 stoneBalanceMapper.insert(stoneBalance1);
             } else {
-                stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
-                stoneBalanceMapper.updateByPrimaryKey(stoneBalance.get(0));
+                StoneBalance stoneBalance1 = new StoneBalance();
+                stoneBalance1.setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
+//                stoneBalance.get(0).setStoneBalance();
+                stoneBalanceMapper.updateByPrimaryKey(stoneBalance1);
             }
         }
         return builder.body(ResponseUtils.getResponseBody(0));
