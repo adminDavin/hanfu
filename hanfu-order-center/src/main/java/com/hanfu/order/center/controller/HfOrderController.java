@@ -658,7 +658,7 @@ public class HfOrderController {
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
                 }
-            });
+            };
 
         }
 
