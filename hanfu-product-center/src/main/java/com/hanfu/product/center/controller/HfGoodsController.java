@@ -314,4 +314,48 @@ if (actualPrice!=null){
 
         return builder.body(ResponseUtils.getResponseBody(amount));
     }
+    @ApiOperation(value = "平台优惠券", notes = "平台优惠券")
+    @RequestMapping(value = "/checkRespBoss", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> checkRespBoss(Integer[] discountCouponId,Integer actualPrice)
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        List<DiscountCoupon> discountCouponList=new ArrayList<>();
+//        if (discountCouponId!=null&&discountCouponId.length!=0){
+//            DiscountCouponExample discountCouponExample = new DiscountCouponExample();
+//            discountCouponExample.createCriteria().andIdIn(Lists.newArrayList(discountCouponId));
+//            discountCouponList = discountCouponMapper.selectByExample(discountCouponExample);
+//        }
+        Amount amount = new Amount();
+        for (Integer disId: discountCouponId){
+            DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(disId);
+            if (discountCoupon.getDiscountCouponType().equals("1")){
+                JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+                Iterator<String> iterator = specs.keySet().iterator();
+                while(iterator.hasNext()){
+// 获得key
+                    String key = iterator.next();
+                    String value = specs.getString(key);
+                    System.out.println(value);
+                    if (key.equals("minus")){
+                        actualPrice = actualPrice-Integer.valueOf(value);
+                        System.out.println(actualPrice+"价格");
+                    }
+                }
+            }else {
+                JSONObject specs = JSONObject.parseObject(discountCoupon.getUseLimit());
+                Iterator<String> iterator = specs.keySet().iterator();
+                while(iterator.hasNext()){
+                    String key = iterator.next();
+                    String value = specs.getString(key);
+                    if (key.equals("minus")){
+                        System.out.println(actualPrice+"折扣");
+                        actualPrice = (actualPrice * Integer.valueOf(value)) / 100;
+
+                    }
+                }
+            }
+        }
+        amount.setMoney(actualPrice);
+        return builder.body(ResponseUtils.getResponseBody(amount));
+    }
 }
