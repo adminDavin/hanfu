@@ -648,10 +648,13 @@ public class HfOrderController {
             }
             //详情
             System.out.println("开始详情");
-            listStone.forEach(listStone1->{
+            for (CreatesOrder listStone1:listStone){
+//            listStone.forEach(listStone1->{
                 request.setStoneId(listStone1.getStoneId());
                 request.setQuantity(listStone1.getQuantity());
                 request.setGoodsId(listStone1.getGoodsId());
+                request.setSellPrice(moneys);
+                request.setActualPrice(list.get(0).getQuantity()*priceInfos.get(0).getSellPrice());
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
                 }
