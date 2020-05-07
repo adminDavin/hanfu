@@ -19,12 +19,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HWarehouseRespMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfInStorageMapper;
+import com.hanfu.product.center.dao.HfStoneRespMapper;
+import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfInStorage;
 import com.hanfu.product.center.model.HfInStorageExample;
+import com.hanfu.product.center.model.HfStoneResp;
+import com.hanfu.product.center.model.HfStoneRespExample;
+import com.hanfu.product.center.model.StoneRespRecord;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.model.WarehouseExample;
 import com.hanfu.product.center.model.WarehouseRespRecord;
@@ -55,6 +60,12 @@ public class WareHouseController {
     
     @Autowired
     private HfGoodsMapper hfGoodsMapper;
+    
+    @Autowired
+    private HfStoneRespMapper hfStoneRespMapper;
+    
+    @Autowired
+    private StoneRespRecordMapper stoneRespRecordMapper;
 
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -189,7 +200,7 @@ public class WareHouseController {
     
     @ApiOperation(value = "物品出库", notes = "物品出库")
     @RequestMapping(value = "/goodOutWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer warehouseId,Integer goodId, Integer quantity
+    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer warehouseId,Integer goodId, Integer stoneId, Integer quantity
     		,String typeWho, Integer userId, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -216,8 +227,35 @@ public class WareHouseController {
         record.setCreateTime(LocalDateTime.now());
         record.setModifyTime(LocalDateTime.now());
         record.setIsDeleted((byte) 0);
-        //TODO
-        //出库得同时将店铺某物品得库存和库存记录做好
+        record.setStoneId(stoneId);
+        HfStoneRespExample example2 = new HfStoneRespExample();
+        example2.createCriteria().andStoneIdEqualTo(stoneId).andGoodIdEqualTo(goodId);
+        List<HfStoneResp> list2 = hfStoneRespMapper.selectByExample(example2);
+        if(CollectionUtils.isEmpty(list2)) {
+        	HfStoneResp resp = new HfStoneResp();
+        	resp.setGoodId(goodId);
+        	resp.setStoneId(stoneId);
+        	resp.setQuantity(quantity);
+        	resp.setCreateTime(LocalDateTime.now());
+        	resp.setModifyTime(LocalDateTime.now());
+        	resp.setIsDeleted((byte) 0);
+        	hfStoneRespMapper.insert(resp);
+        }else {
+        	HfStoneResp resp = list2.get(0);
+        	resp.setQuantity(resp.getQuantity()+quantity);
+        	resp.setModifyTime(LocalDateTime.now());
+        	hfStoneRespMapper.updateByPrimaryKey(resp);
+        }
+        StoneRespRecord respRecord = new StoneRespRecord();
+        respRecord.setGoodId(goodId);
+        respRecord.setStoneId(stoneId);
+        respRecord.setType(1);
+        respRecord.setQuantity(quantity);
+        respRecord.setUserId(userId);
+        respRecord.setCreateTime(LocalDateTime.now());
+        respRecord.setModifyTime(LocalDateTime.now());
+        respRecord.setIsDeleted((byte) 0);
+        stoneRespRecordMapper.insert(respRecord);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
 

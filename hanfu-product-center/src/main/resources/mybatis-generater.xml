@@ -338,12 +338,6 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
-        <table schema="user_center" tableName="warehouse_resp_record"
-               domainObjectName="WarehouseRespRecord">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
         <table schema="user_center" tableName="hf_stone_resp"
                domainObjectName="HfStoneResp">
             <property name="useActualColumnNames" value="false"/>
@@ -356,12 +350,17 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_in_storage"
+        <!-- <table schema="user_center" tableName="hf_in_storage"
                domainObjectName="HfInStorage">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
+        </table> -->
+        <table schema="user_center" tableName="warehouse_resp_record"
+               domainObjectName="WarehouseRespRecord">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
         </table>
-        
     </context>
 </generatorConfiguration>

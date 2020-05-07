@@ -2097,6 +2097,7 @@ public class GoodsController {
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId);
+		evaluateExample.setOrderByClause("create_time DESC");
 		List<Evaluate> result = new ArrayList<Evaluate>();
 //		List<Integer> productId = new ArrayList<Integer>();
 		List<Integer> fileId = new ArrayList<Integer>();
