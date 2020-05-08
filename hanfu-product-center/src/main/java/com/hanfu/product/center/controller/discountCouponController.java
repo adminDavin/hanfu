@@ -415,8 +415,8 @@ if (discountCoupon.getStoneId()==null){
                     Byte aByte= 1;
                     if (list4.size()!=0){
                         for (Integer dd: list4){
-                            list.stream().filter(a-> a.getId().equals(dd)).collect(Collectors.toList())
-                                    .stream().forEach(item->item.setIdDeleted(aByte));
+//                            list.stream().filter(a-> a.getId().equals(dd)).collect(Collectors.toList())
+                            list.stream().forEach(item->item.setIdDeleted(item.getStoneId().equals(dd) ?aByte:item.getIdDeleted()));
                         }
                     }
 
@@ -449,8 +449,9 @@ if (discountCoupon.getStoneId()==null){
                     }//stoneIds xunhuan
                     if (Diss.size()!=0){
                         for(Integer diss: Diss){
-                            list.stream().filter(a->a.getId().equals(diss)).collect(Collectors.toList())
-                                    .stream().forEach(item->item.setIdDeleted(aByte));
+                            list.stream().forEach(item->item.setIdDeleted(item.getId().equals(diss) ?aByte:item.getIdDeleted()));
+//                            list.stream().filter(a->a.getId().equals(diss)).collect(Collectors.toList())
+//                                    .stream().forEach(item->item.setIdDeleted(aByte));
                         }
                     }
 //不满足条件的平台优惠券
@@ -474,8 +475,9 @@ if (discountCoupon.getStoneId()==null){
                         }
                     }
                     for (Integer boss: BOSS){
-                        list.stream().filter(a-> a.getId().equals(boss)).collect(Collectors.toList())
-                                .stream().forEach(item->item.setIdDeleted(aByte));
+                        list.stream().forEach(item->item.setIdDeleted(item.getId().equals(boss) ? aByte:item.getIdDeleted()));
+//                        list.stream().filter(a-> a.getId().equals(boss)).collect(Collectors.toList())
+//                                .stream().forEach(item->item.setIdDeleted(aByte));
                     }
                 }
                 if (goodsId != null) {
