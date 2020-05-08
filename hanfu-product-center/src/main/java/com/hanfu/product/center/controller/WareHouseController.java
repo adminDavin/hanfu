@@ -95,6 +95,17 @@ public class WareHouseController {
         warehouse.setLastModifier(request.getUsername());
         return builder.body(ResponseUtils.getResponseBody(warehouseMapper.insert(warehouse)));
     }
+    
+    @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
+    @RequestMapping(value = "/listWareHouseGood", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> listWareHouseGood(Integer id)
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HWarehouseRespExample example = new HWarehouseRespExample();
+        example.createCriteria().andWarehouseIdEqualTo(id);
+        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+        return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
+    }
 
     @ApiOperation(value = "删除仓库", notes = "删除仓库")
     @RequestMapping(value = "/deleteWareHouse", method = RequestMethod.GET)
@@ -135,8 +146,7 @@ public class WareHouseController {
     public ResponseEntity<JSONObject> findGoodsWarsehouse()
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        //TODO
-        //细化要返回得值有哪些
+        List<HfInStorage> list = hfInStorageMapper.selectByExample(null);
         return builder.body(ResponseUtils.getResponseBody(hfInStorageMapper.selectByExample(null)));
     }
     
