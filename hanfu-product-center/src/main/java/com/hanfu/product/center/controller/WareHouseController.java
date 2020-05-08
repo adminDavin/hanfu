@@ -96,16 +96,16 @@ public class WareHouseController {
         return builder.body(ResponseUtils.getResponseBody(warehouseMapper.insert(warehouse)));
     }
     
-    @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
-    @RequestMapping(value = "/listWareHouseGood", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> listWareHouseGood(Integer id)
-            throws JSONException {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HWarehouseRespExample example = new HWarehouseRespExample();
-        example.createCriteria().andWarehouseIdEqualTo(id);
-        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
-        return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
-    }
+//    @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
+//    @RequestMapping(value = "/listWareHouseGood", method = RequestMethod.GET)
+//    public ResponseEntity<JSONObject> listWareHouseGood(Integer id)
+//            throws JSONException {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        HWarehouseRespExample example = new HWarehouseRespExample();
+//        example.createCriteria().andWarehouseIdEqualTo(id);
+//        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+//        return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
+//    }
 
     @ApiOperation(value = "删除仓库", notes = "删除仓库")
     @RequestMapping(value = "/deleteWareHouse", method = RequestMethod.GET)
