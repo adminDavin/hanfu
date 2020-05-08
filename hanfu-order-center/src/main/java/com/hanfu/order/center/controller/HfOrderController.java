@@ -588,7 +588,7 @@ public class HfOrderController {
             if (request.getActivityId()!=null){
                 MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
                 paramMap.add("goodsId",list.get(0).getGoodsId());
-                paramMap.add("GoodsNum",request.getQuantity());
+                paramMap.add("GoodsNum",list.get(0).getQuantity());
                 paramMap.add("activityId",request.getActivityId());
                 paramMap.add("instanceId", Integer.valueOf(list.get(0).getHfDesc()));
                 JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
