@@ -626,6 +626,16 @@ public class HfOrderController {
             hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
             hfOrder.setPayOrderId(payOrder.getId());
             hfOrderMapper.insertSelective(hfOrder);
+            //流水
+            //流水
+            System.out.println("开始流水");
+            MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+            paramMap1.add("balanceType","order");
+            paramMap1.add("price",moneys);
+            paramMap1.add("state",2);
+            paramMap1.add("stoneId",stoneId);
+            paramMap1.add("orderId",hfOrder.getId());
+            restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
             //平台优惠券记录
             if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
                 System.out.println("开始记录优惠券");
@@ -755,14 +765,6 @@ public class HfOrderController {
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
         LocalDateTime time = LocalDateTime.now();
-//流水
-        MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
-        paramMap1.add("balanceType","order");
-        paramMap1.add("price",request.getActualPrice());
-        paramMap1.add("state",2);
-        paramMap1.add("stoneId",request.getStoneId());
-        paramMap1.add("orderId",hfOrder.getId());
-        restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
         //
         HfOrderDetail detail = new HfOrderDetail();
         detail.setActualPrice(request.getActualPrice());
