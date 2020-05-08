@@ -449,7 +449,8 @@ if (discountCoupon.getStoneId()==null){
                     }//stoneIds xunhuan
                     if (Diss.size()!=0){
                         for(Integer diss: Diss){
-                            list = list.stream().filter(a->a.getId().equals(diss)).collect(Collectors.toList());
+                            list.stream().filter(a->a.getId().equals(diss)).collect(Collectors.toList())
+                                    .stream().forEach(item->item.setIdDeleted(aByte));
                         }
                     }
 //不满足条件的平台优惠券
