@@ -332,8 +332,8 @@ public class HfOrderController {
             hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
             hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
-//---
-        if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
+//---//修改成  ||targetOrderStatus.equals("cancel")
+        if (targetOrderStatus.equals("transport")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
             List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
@@ -363,6 +363,15 @@ public class HfOrderController {
         }
         //-----cancel
         if (targetOrderStatus.equals("cancel")){
+            HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+            hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
+            List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+            if (hfActivityCountList.size()!=0){
+                if (hfActivityCountList.get(0).getState()!=3){
+                    restTemplate.getForEntity(REST_URL_CHECK + "/hf-payment/refund/?hfActivityGroupId={hfActivityGroupId}&userId={userId}", JSONObject.class, hfActivityCountList.get(0).getGroupId(), hfActivityCountList.get(0).getUserId());
+                    return builder.body(ResponseUtils.getResponseBody("In spelling"));
+                }
+            }
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -714,6 +723,9 @@ public class HfOrderController {
             JSONObject data=entity.getJSONObject("data");
             actualPrice= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
             System.out.println("开始平台购物车优惠");
+        }
+        if (actualPrice<=0){
+            actualPrice=1;
         }
         payOrder1.setAmount(actualPrice);
         payOrderMapper.updateByPrimaryKeySelective(payOrder1);
