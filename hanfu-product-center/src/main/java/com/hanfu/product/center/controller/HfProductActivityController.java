@@ -919,6 +919,17 @@ public class HfProductActivityController {
                 HfUserBalanceExample hfUsersExample1 = new HfUserBalanceExample();
                 hfUsersExample1.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
                 List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUsersExample1);
+                if (hfUserBalances.size()==0){
+                    HfUserBalance hfUserBalance = new HfUserBalance();
+                    hfUserBalance.setHfBalance(0);
+                    hfUserBalance.setBalanceType("rechargeAmount");
+                    hfUserBalance.setUserId(hfUsers1.get(0).getId());
+                    hfUserBalance.setLastModifier(String.valueOf(hfUsers1.get(0).getId()));
+                    hfUserBalance.setModifyTime(LocalDateTime.now());
+                    hfUserBalance.setCreateTime(LocalDateTime.now());
+                    hfUserBalanceMapper.insertSelective(hfUserBalance);
+                    hfUserBalances = hfUserBalanceMapper.selectByExample(hfUsersExample1);
+                }
 //增加上级余额
                 HfUserBalanceExample hfUsersExample2 = new HfUserBalanceExample();
                 hfUsersExample2.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
