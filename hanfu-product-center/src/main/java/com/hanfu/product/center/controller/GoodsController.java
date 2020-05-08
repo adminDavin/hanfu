@@ -333,6 +333,7 @@ public class GoodsController {
 			inStorage.setType("1");
 			inStorage.setStoneId(hfGoodsInfo.getStoneId());
 		}
+		inStorage.setProducId(hfGoodsInfo.getProductId());
 		inStorage.setGoodId(record.getId());
 		inStorage.setUserId(hfGoodsInfo.getUserId());
 		inStorage.setCreateTime(LocalDateTime.now());
@@ -2190,6 +2191,7 @@ public class GoodsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
 		evaluate.setTransmit(evaluate.getTransmit()+1);
+		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 

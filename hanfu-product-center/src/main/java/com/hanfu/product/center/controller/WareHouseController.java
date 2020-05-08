@@ -1,6 +1,7 @@
 package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,19 +15,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HWarehouseRespMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfInStorageMapper;
+import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneRespMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
+import com.hanfu.product.center.manual.model.WarehouseGoodDisplay;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfInStorage;
 import com.hanfu.product.center.model.HfInStorageExample;
+import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfStoneResp;
 import com.hanfu.product.center.model.HfStoneRespExample;
 import com.hanfu.product.center.model.StoneRespRecord;
@@ -48,7 +53,12 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class WareHouseController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
+    private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+    
+    @Autowired
+    private RestTemplate restTemplate;
+    
     @Autowired
     private WarehouseMapper warehouseMapper;
     
@@ -66,6 +76,9 @@ public class WareHouseController {
     
     @Autowired
     private StoneRespRecordMapper stoneRespRecordMapper;
+    
+    @Autowired
+    private HfRespMapper hfRespMapper;
 
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -104,7 +117,7 @@ public class WareHouseController {
 //        HWarehouseRespExample example = new HWarehouseRespExample();
 //        example.createCriteria().andWarehouseIdEqualTo(id);
 //        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
-//        return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
+//        return builder.body(ResponseUtils.getResponseBody());
 //    }
 
     @ApiOperation(value = "删除仓库", notes = "删除仓库")
@@ -146,13 +159,30 @@ public class WareHouseController {
     public ResponseEntity<JSONObject> findGoodsWarsehouse()
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
         List<HfInStorage> list = hfInStorageMapper.selectByExample(null);
-        return builder.body(ResponseUtils.getResponseBody(hfInStorageMapper.selectByExample(null)));
+        for (int i = 0; i < list.size(); i++) {
+			HfInStorage storage  = list.get(i);
+			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setGoodId(storage.getGoodId());
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
+			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+			display.setGoodName(goods.getHfName());
+			display.setGoodDesc(goods.getGoodsDesc());
+			display.setQuantity(hfResp.getQuantity());
+			display.setType(storage.getType());
+			display.setTime(storage.getModifyTime());
+			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+					JSONObject.class, storage.getUserId());
+			display.setName(js1.getJSONObject("data").getString("nickName"));
+			result.add(display);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
     }
     
     @ApiOperation(value = "物品入库", notes = "物品入库")
     @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodInWarsehouse(Integer warehouseId,Integer goodId, Integer quantity
+    public ResponseEntity<JSONObject> goodInWarsehouse(Integer warehouseId, Integer productId, Integer goodId, Integer quantity
     		,String typeWho, Integer userId, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -162,6 +192,7 @@ public class WareHouseController {
         List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
         if(CollectionUtils.isEmpty(list)) {
         	HWarehouseResp hWarehouseResp = new HWarehouseResp();
+        	hWarehouseResp.setProductId(productId);
         	hWarehouseResp.setGoodId(goodId);
         	hWarehouseResp.setQuantity(quantity);
         	hWarehouseResp.setWarehouseId(warehouseId);
@@ -178,6 +209,7 @@ public class WareHouseController {
         	id = hWarehouseResp.getId();
         }
         WarehouseRespRecord record = new WarehouseRespRecord();
+        record.setProductId(productId);
         record.setGoodId(goodId);
         record.setQuantity(quantity);
         record.setTypeWho(typeWho);
