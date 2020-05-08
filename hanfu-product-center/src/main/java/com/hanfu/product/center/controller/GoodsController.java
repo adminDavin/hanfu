@@ -333,6 +333,7 @@ public class GoodsController {
 			inStorage.setType("1");
 			inStorage.setStoneId(hfGoodsInfo.getStoneId());
 		}
+		inStorage.setProducId(hfGoodsInfo.getProductId());
 		inStorage.setGoodId(record.getId());
 		inStorage.setUserId(hfGoodsInfo.getUserId());
 		inStorage.setCreateTime(LocalDateTime.now());
@@ -1887,7 +1888,7 @@ public class GoodsController {
 			HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
 			evaluateParent.setCommentCount(evaluateParent.getCommentCount()+1);
 			hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
-		}
+		} 
 		if(fileId != null) {
 			for (Integer f : fileId) {
 				EvaluatePicture picture = new EvaluatePicture();
@@ -2182,6 +2183,16 @@ public class GoodsController {
 			IOUtils.write(file, outputStream);
 			outputStream.close();
 		}
+	}
+	
+	@ApiOperation(value = "转发", notes = "转发")
+	@RequestMapping(value = "/transmit", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> transmit(Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
+		evaluate.setTransmit(evaluate.getTransmit()+1);
+		hfEvaluateMapper.updateByPrimaryKey(evaluate);
+		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 
 }
