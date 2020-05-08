@@ -700,7 +700,7 @@ public class HfOrderController {
         List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
         Integer actualPrice= hfOrderList.stream().mapToInt(v->v.getAmount()).sum();
         PayOrder payOrder1= payOrderMapper.selectByPrimaryKey(payOrder.getId());
-        payOrder1.setActualPrice(actualPrice);//实际价格
+        payOrder1.setAmount(actualPrice);//实际价格
         if (discountCouponListBoss.size()!=0){
             MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
             paramMap.add("actualPrice", actualPrice);
@@ -715,7 +715,7 @@ public class HfOrderController {
             actualPrice= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
             System.out.println("开始平台购物车优惠");
         }
-        payOrder1.setAmount(actualPrice);
+        payOrder1.setActualPrice(actualPrice);//支付价格
         payOrderMapper.updateByPrimaryKeySelective(payOrder1);
         //清购物车
         System.out.println("开始清空购物车");
