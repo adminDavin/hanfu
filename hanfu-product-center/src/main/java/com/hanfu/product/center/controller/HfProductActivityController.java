@@ -514,6 +514,9 @@ public class HfProductActivityController {
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId, Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(orderId);
+        orderId= hfOrderMapper.selectByExample(hfOrderExample).get(0).getId();
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
         List<GroupList> groupLists = new ArrayList<>();
         GroupList groupList = new GroupList();
@@ -602,6 +605,9 @@ public class HfProductActivityController {
     @RequestMapping(value = "/entranceGroup", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId,Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(orderId);
+        orderId= hfOrderMapper.selectByExample(hfOrderExample).get(0).getId();
         List<GroupList> groupLists = new ArrayList<>();
         GroupList groupList = new GroupList();
         HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();

@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar"/>
+            location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -87,12 +87,12 @@
            <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_stone_picture"
-               domainObjectName="HfStonePicture">
-            <property name="useActualColumnNames" value="false"/>
-           <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table> 
+        <!--<table schema="user_center" tableName="hf_stone_picture"-->
+               <!--domainObjectName="HfStonePicture">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+           <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table> -->
         <!--<table schema="user_center" tableName="product"-->
                <!--domainObjectName="Product">-->
             <!--<property name="useActualColumnNames" value="false"/>-->
@@ -296,12 +296,12 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-      <table schema="user_center" tableName="hf_evaluate"
-               domainObjectName="HfEvaluate">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table> 
+      <!--<table schema="user_center" tableName="hf_evaluate"-->
+               <!--domainObjectName="HfEvaluate">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table> -->
         <!-- <table schema="user_center" tableName="evaluate_picture"
                domainObjectName="EvaluatePicture">
             <property name="useActualColumnNames" value="false"/>
@@ -332,32 +332,32 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_warehouse_resp"
-               domainObjectName="HWarehouseResp">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_stone_resp"
-               domainObjectName="HfStoneResp">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="stone_resp_record"
-               domainObjectName="StoneRespRecord">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_in_storage"
-               domainObjectName="HfInStorage">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="warehouse_resp_record"
-               domainObjectName="WarehouseRespRecord">
+        <!--<table schema="user_center" tableName="hf_warehouse_resp"-->
+               <!--domainObjectName="HWarehouseResp">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_stone_resp"-->
+               <!--domainObjectName="HfStoneResp">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="stone_resp_record"-->
+               <!--domainObjectName="StoneRespRecord">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="hf_in_storage"-->
+               <!--domainObjectName="HfInStorage">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <table schema="user_center" tableName="hf_order"
+               domainObjectName="HfOrder">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
