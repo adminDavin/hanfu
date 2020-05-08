@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -369,8 +371,8 @@ public class HfOrderController {
             List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
             if (hfActivityCountList.size()!=0){
                 if (hfActivityCountList.get(0).getState()!=3){
-                    restTemplate.getForEntity(REST_URL_CHECK + "/hf-payment/refund/?hfActivityGroupId={hfActivityGroupId}&userId={userId}", JSONObject.class, hfActivityCountList.get(0).getGroupId(), hfActivityCountList.get(0).getUserId());
-                    return builder.body(ResponseUtils.getResponseBody("In spelling"));
+                    restTemplate.getForEntity(REST_URL_CHECK + "/hfProductActivity/cancelGroup/?hfActivityGroupId={hfActivityGroupId}&userId={userId}", JSONObject.class, hfActivityCountList.get(0).getGroupId(), hfActivityCountList.get(0).getUserId());
+//                    return builder.body(ResponseUtils.getResponseBody("In spelling"));
                 }
             }
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
@@ -393,7 +395,7 @@ public class HfOrderController {
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -858,21 +860,26 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
         return map;
 }
-    @Scheduled(cron="0 0 24 * * ?")
+//    @Scheduled(cron="0 0 24 * * ?")
+@Scheduled(cron="*/5 * * * * ? ")
+@ApiOperation(value = "团购", notes = "团购")
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
     public void TimeGroup()
             throws Exception {
-        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
         HfOrderExample hfOrderExample = new HfOrderExample();
         hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("evaluate");
         List<HfOrder> HfOrders = hfOrderMapper.selectByExample(hfOrderExample);
         HfOrders.forEach(hfOrder -> {
+            ZoneId zoneId = ZoneId.systemDefault();
+            ZonedDateTime zdt = hfOrder.getModifyTime().atZone(zoneId);//Combines this date-time with a time-zone to create a  ZonedDateTime.
+            Date date = Date.from(zdt.toInstant());
             Date date1 = new Date();
             Date date2 = new Date();
             SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 date1 = f.parse(f.format(new Date())); //这是获取当前时间
-                date2 = f.parse(f.format(hfOrder.getModifyTime()));
+                date2 = f.parse(f.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -884,11 +891,11 @@ private Map<String,String> chock(List<CreatesOrder> list){
                 }
             }
         });
-        try{
-            Thread.sleep(2000);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            Thread.sleep(2000);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
     }
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));

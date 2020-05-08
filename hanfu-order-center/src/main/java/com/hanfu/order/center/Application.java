@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +21,7 @@ import java.util.Properties;
 @EnableAutoConfiguration
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableScheduling
 @EnableDubbo(scanBasePackages = "com.hanfu.order.center.service.impl")
 @tk.mybatis.spring.annotation.MapperScan("com.hanfu.order.center.cancel.dao")
 public class Application {

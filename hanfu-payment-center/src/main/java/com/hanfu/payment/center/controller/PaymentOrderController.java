@@ -198,9 +198,12 @@ public class PaymentOrderController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId) throws Exception {
+	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
+		HfOrderDisplay hfOrder = new HfOrderDisplay();
+		if (orderCode!=null){
+			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
+		}
 		HfOrderExample hfOrderExample = new HfOrderExample();
 		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
 		List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
@@ -211,13 +214,21 @@ public class PaymentOrderController {
 			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
 			List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
                  HfUserBalance hfUserBalance = new HfUserBalance();
-                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+payOrder.getAmount());
+                 if (hfOrder!=null){
+					 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+hfOrder.getAmount());
+				 }else {
+					 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+payOrder.getAmount());
+				 }
                  hfUserBalance.setModifyTime(LocalDateTime.now());
                  hfUserBalance.setId(hfUserBalances.get(0).getId());
                  hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
                  HfBalanceDetail detail = new HfBalanceDetail();
  				detail.setUserId(hfUser.getUserId());
- 				detail.setAmount(String.valueOf(payOrder.getAmount()));
+ 				if (hfOrder!=null){
+					detail.setAmount(String.valueOf(hfOrder.getAmount()));
+				} else {
+					detail.setAmount(String.valueOf(payOrder.getAmount()));
+				}
  				detail.setPaymentName("退款");
  				detail.setCreateTime(LocalDateTime.now());
  				detail.setModifyTime(LocalDateTime.now());
@@ -232,14 +243,22 @@ public class PaymentOrderController {
 		data.put("mch_id", miniProgramConfig.getMchID());
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
-		data.put("total_fee", String.valueOf(payOrder.getAmount()));
+		if (hfOrder!=null){
+			data.put("total_fee", String.valueOf(hfOrder.getAmount()));
+		} else {
+			data.put("total_fee", String.valueOf(payOrder.getAmount()));
+		}
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
-		data.put("out_trade_no", String.valueOf(payOrder.getId()));
+		data.put("out_trade_no", orderCode);
 		data.put("op_user_id", miniProgramConfig.getMchID());
 		data.put("refund_fee_type", "CNY");
-		data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+		if (hfOrder!=null){
+			data.put("refund_fee", String.valueOf(hfOrder.getAmount()));
+		} else {
+			data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+		}
 		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
 		String sign = WXPayUtil.generateSignature(data, miniProgramConfig.getKey());
 		data.put("sign", sign);
