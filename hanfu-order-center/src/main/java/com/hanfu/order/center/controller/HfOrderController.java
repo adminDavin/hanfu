@@ -29,6 +29,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -423,6 +424,7 @@ public class HfOrderController {
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
+                    hfOrder.setModifyTime(LocalDateTime.now());
                     HfOrderExample hfOrderExample = new HfOrderExample();
                     hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                     hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
@@ -616,7 +618,7 @@ public class HfOrderController {
             hfOrder.setUserId(request.getUserId());
             hfOrder.setOrderType(request.getOrderType());
             hfOrder.setPaymentName(request.getPaymentName());
-            hfOrder.setStoneId(1);//用作bossId
+            hfOrder.setStoneId(stoneId);//用作bossId
 //        hfOrder.setDistributorId(request.getDistributorId());
             hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
             hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
@@ -856,6 +858,38 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
         return map;
 }
+    @Scheduled(cron="0 0 24 * * ?")
+    @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
+    public void TimeGroup()
+            throws Exception {
+        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("evaluate");
+        List<HfOrder> HfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+        HfOrders.forEach(hfOrder -> {
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(hfOrder.getModifyTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>604800000){
+                try {
+                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"complete",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        try{
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
 	}
