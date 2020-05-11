@@ -514,6 +514,9 @@ public class HfProductActivityController {
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId, Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(orderId);
+        orderId= hfOrderMapper.selectByExample(hfOrderExample).get(0).getId();
         HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(goodsId);
         List<GroupList> groupLists = new ArrayList<>();
         GroupList groupList = new GroupList();
@@ -602,6 +605,9 @@ public class HfProductActivityController {
     @RequestMapping(value = "/entranceGroup", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId,Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andPayOrderIdEqualTo(orderId);
+        orderId= hfOrderMapper.selectByExample(hfOrderExample).get(0).getId();
         List<GroupList> groupLists = new ArrayList<>();
         GroupList groupList = new GroupList();
         HfActivityCountExample hfActivityCountExample2 = new HfActivityCountExample();
@@ -913,6 +919,17 @@ public class HfProductActivityController {
                 HfUserBalanceExample hfUsersExample1 = new HfUserBalanceExample();
                 hfUsersExample1.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
                 List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUsersExample1);
+                if (hfUserBalances.size()==0){
+                    HfUserBalance hfUserBalance = new HfUserBalance();
+                    hfUserBalance.setHfBalance(0);
+                    hfUserBalance.setBalanceType("rechargeAmount");
+                    hfUserBalance.setUserId(hfUsers1.get(0).getId());
+                    hfUserBalance.setLastModifier(String.valueOf(hfUsers1.get(0).getId()));
+                    hfUserBalance.setModifyTime(LocalDateTime.now());
+                    hfUserBalance.setCreateTime(LocalDateTime.now());
+                    hfUserBalanceMapper.insertSelective(hfUserBalance);
+                    hfUserBalances = hfUserBalanceMapper.selectByExample(hfUsersExample1);
+                }
 //增加上级余额
                 HfUserBalanceExample hfUsersExample2 = new HfUserBalanceExample();
                 hfUsersExample2.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());

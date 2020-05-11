@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -332,8 +335,8 @@ public class HfOrderController {
             hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
             hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
         }
-//---
-        if (targetOrderStatus.equals("transport")||targetOrderStatus.equals("cancel")){
+//---//修改成  ||targetOrderStatus.equals("cancel")
+        if (targetOrderStatus.equals("transport")){
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
             List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
@@ -363,6 +366,15 @@ public class HfOrderController {
         }
         //-----cancel
         if (targetOrderStatus.equals("cancel")){
+            HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
+            hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
+            List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
+            if (hfActivityCountList.size()!=0){
+                if (hfActivityCountList.get(0).getState()!=3){
+                    restTemplate.getForEntity(REST_URL_CHECK + "/hfProductActivity/cancelGroup/?hfActivityGroupId={hfActivityGroupId}&userId={userId}", JSONObject.class, hfActivityCountList.get(0).getGroupId(), hfActivityCountList.get(0).getUserId());
+//                    return builder.body(ResponseUtils.getResponseBody("In spelling"));
+                }
+            }
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -383,7 +395,7 @@ public class HfOrderController {
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -414,6 +426,7 @@ public class HfOrderController {
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
+                    hfOrder.setModifyTime(LocalDateTime.now());
                     HfOrderExample hfOrderExample = new HfOrderExample();
                     hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                     hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
@@ -588,7 +601,7 @@ public class HfOrderController {
             if (request.getActivityId()!=null){
                 MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
                 paramMap.add("goodsId",list.get(0).getGoodsId());
-                paramMap.add("GoodsNum",request.getQuantity());
+                paramMap.add("GoodsNum",list.get(0).getQuantity());
                 paramMap.add("activityId",request.getActivityId());
                 paramMap.add("instanceId", Integer.valueOf(list.get(0).getHfDesc()));
                 JSONObject entity=restTemplate.postForObject(REST_URL_CHECK+"hf-goods/checkResp/",paramMap,JSONObject.class);
@@ -607,7 +620,7 @@ public class HfOrderController {
             hfOrder.setUserId(request.getUserId());
             hfOrder.setOrderType(request.getOrderType());
             hfOrder.setPaymentName(request.getPaymentName());
-            hfOrder.setStoneId(1);//用作bossId
+            hfOrder.setStoneId(stoneId);//用作bossId
 //        hfOrder.setDistributorId(request.getDistributorId());
             hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
             hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));
@@ -617,6 +630,16 @@ public class HfOrderController {
             hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
             hfOrder.setPayOrderId(payOrder.getId());
             hfOrderMapper.insertSelective(hfOrder);
+            //流水
+            //流水
+            System.out.println("开始流水");
+            MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+            paramMap1.add("balanceType","order");
+            paramMap1.add("price",moneys);
+            paramMap1.add("state",2);
+            paramMap1.add("stoneId",stoneId);
+            paramMap1.add("orderId",hfOrder.getId());
+            restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
             //平台优惠券记录
             if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
                 System.out.println("开始记录优惠券");
@@ -715,6 +738,9 @@ public class HfOrderController {
             actualPrice= (Integer) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("money");
             System.out.println("开始平台购物车优惠");
         }
+        if (actualPrice<=0){
+            actualPrice=1;
+        }
         payOrder1.setAmount(actualPrice);
         payOrderMapper.updateByPrimaryKeySelective(payOrder1);
         //清购物车
@@ -743,14 +769,6 @@ public class HfOrderController {
 
     private void detailNomalOrders(CreateOrderRequest request, HfOrder hfOrder) {
         LocalDateTime time = LocalDateTime.now();
-//流水
-        MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
-        paramMap1.add("balanceType","order");
-        paramMap1.add("price",request.getActualPrice());
-        paramMap1.add("state",2);
-        paramMap1.add("stoneId",request.getStoneId());
-        paramMap1.add("orderId",hfOrder.getId());
-        restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
         //
         HfOrderDetail detail = new HfOrderDetail();
         detail.setActualPrice(request.getActualPrice());
@@ -842,6 +860,43 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
         return map;
 }
+//    @Scheduled(cron="0 0 24 * * ?")
+@Scheduled(cron="*/5 * * * * ? ")
+@ApiOperation(value = "团购", notes = "团购")
+    @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
+    public void TimeGroup()
+            throws Exception {
+//        logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date());
+        HfOrderExample hfOrderExample = new HfOrderExample();
+        hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("evaluate");
+        List<HfOrder> HfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+        HfOrders.forEach(hfOrder -> {
+            ZoneId zoneId = ZoneId.systemDefault();
+            ZonedDateTime zdt = hfOrder.getModifyTime().atZone(zoneId);//Combines this date-time with a time-zone to create a  ZonedDateTime.
+            Date date = Date.from(zdt.toInstant());
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>604800000){
+                try {
+                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"complete",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+//        try{
+//            Thread.sleep(2000);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+    }
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));
 	}

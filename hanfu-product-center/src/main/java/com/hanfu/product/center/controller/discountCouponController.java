@@ -389,30 +389,95 @@ if (discountCoupon.getStoneId()==null){
                         .andStopTimeGreaterThan(LocalDateTime.now());
                 list = discountCouponMapper.selectByExample(couponExample);
                 if (goodsList!=null){
-                    JSONArray jsonArray= JSONArray.parseArray(goodsList);
-                    List<GoodsList> lists = JSONObject.parseArray(jsonArray.toJSONString(), GoodsList.class);
-                    Integer moneys = 0;
-                    for (GoodsList goodsList1:lists){
-                        moneys= hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsList1.getGoodsId()).getPriceId()).getSellPrice()*goodsList1.getQuantity()+moneys;
+                    int[] dis = new int[0];
+                    List<DiscountCoupon> discountCoupon=list.stream().filter(a->a.getStoneId()!=0).collect(Collectors.toList());
+                    if (discountCoupon.size()!=0){
+                        dis=discountCoupon.stream().mapToInt(d->d.getStoneId()).toArray();
                     }
 
-//                    list.forEach(list1 -> {
-                        for (DiscountCoupon list1:list){
-                        JSONObject specs = JSONObject.parseObject(list1.getUseLimit());
-                        Iterator<String> iterator = specs.keySet().iterator();
-                        while (iterator.hasNext()) {
+
+                    //
+                    JSONArray jsonArray= JSONArray.parseArray(goodsList);
+                    List<GoodsList> lists = JSONObject.parseArray(jsonArray.toJSONString(), GoodsList.class);
+                    Set<Integer> stoneIds = lists.stream().map(a->a.getStoneId()).collect(Collectors.toSet());
+                    //数组转集合
+                    List<Integer> list2 = Arrays.stream(dis).boxed().collect(Collectors.toList());
+                    List<Integer> list3 = new ArrayList(stoneIds);
+                    Collection exists=new ArrayList<Integer>(list2);
+                    Collection notexists=new ArrayList<Integer>(list2);
+                    exists.removeAll(list3);
+                    System.out.println("list2中不存在于_set中的："+exists);
+                    notexists.removeAll(exists);
+                    System.out.println("list2中存在于_set中的："+notexists);
+                    //不能使用优惠券的
+                    List<Integer> list4 = new ArrayList(exists);
+                    //筛选
+                    Byte aByte= 1;
+                    if (list4.size()!=0){
+                        for (Integer dd: list4){
+//                            list.stream().filter(a-> a.getId().equals(dd)).collect(Collectors.toList())
+                            list.stream().forEach(item->item.setIdDeleted(item.getStoneId().equals(dd) ?aByte:item.getIdDeleted()));
+                        }
+                    }
+
+                    //不满足条件的店铺优惠券
+                    List<Integer> Diss= new ArrayList<>();
+                    for (Integer stone:stoneIds){
+                        List<GoodsList> disl= lists.stream().filter(a->a.getStoneId().equals(stone)).collect(Collectors.toList());
+                        Integer moneystone = 0;
+                        for (GoodsList goodsList1:disl){
+                            moneystone= hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsList1.getGoodsId()).getPriceId()).getSellPrice()*goodsList1.getQuantity()+moneystone;
+                        }
+                        List<DiscountCoupon> discountCouponList = list.stream().filter(a->a.getStoneId().equals(stone)).collect(Collectors.toList());
+                        for (DiscountCoupon list1:discountCouponList){
+                            JSONObject specs = JSONObject.parseObject(list1.getUseLimit());
+                            Iterator<String> iterator = specs.keySet().iterator();
+                            while (iterator.hasNext()) {
 // 获得key
-                            String key = iterator.next();
-                            String value = specs.getString(key);
-                            if (key.equals("full")){
+                                String key = iterator.next();
+                                String value = specs.getString(key);
+                                if (key.equals("full")){
 //                                System.out.println(value);
-                                if (Integer.valueOf(value)>moneys){
+                                    if (Integer.valueOf(value)>moneystone){
 //                                    System.out.println("-----------"+hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsId).getPriceId()).getSellPrice());
-                                    list1.setIdDeleted((byte) 1);
+//                                        list1.setIdDeleted((byte) 1);
+                                        Diss.add(list1.getId());
+                                    }
                                 }
                             }
                         }
-
+                    }//stoneIds xunhuan
+                    if (Diss.size()!=0){
+                        for(Integer diss: Diss){
+                            list.stream().forEach(item->item.setIdDeleted(item.getId().equals(diss) ?aByte:item.getIdDeleted()));
+//                            list.stream().filter(a->a.getId().equals(diss)).collect(Collectors.toList())
+//                                    .stream().forEach(item->item.setIdDeleted(aByte));
+                        }
+                    }
+//不满足条件的平台优惠券
+                    Integer moneyBoss=0;
+                    List<Integer> BOSS = new ArrayList<>();
+                    for (GoodsList goodsList1:lists){
+                       moneyBoss= hfPriceMapper.selectByPrimaryKey(hfGoodsMapper.selectByPrimaryKey(goodsList1.getGoodsId()).getPriceId()).getSellPrice()*goodsList1.getQuantity()+moneyBoss;
+                    }
+                    List<DiscountCoupon> discountCouponBoss = list.stream().filter(a->a.getBossId()!=0).collect(Collectors.toList());
+                    for (DiscountCoupon list1:discountCouponBoss){
+                        JSONObject specs = JSONObject.parseObject(list1.getUseLimit());
+                        Iterator<String> iterator = specs.keySet().iterator();
+                        while (iterator.hasNext()) {
+                            String key = iterator.next();
+                            String value = specs.getString(key);
+                            if (key.equals("full")){
+                                if (Integer.valueOf(value)>moneyBoss){
+                                    BOSS.add(list1.getId());
+                                }
+                            }
+                        }
+                    }
+                    for (Integer boss: BOSS){
+                        list.stream().forEach(item->item.setIdDeleted(item.getId().equals(boss) ? aByte:item.getIdDeleted()));
+//                        list.stream().filter(a-> a.getId().equals(boss)).collect(Collectors.toList())
+//                                .stream().forEach(item->item.setIdDeleted(aByte));
                     }
                 }
                 if (goodsId != null) {

@@ -5,10 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -198,12 +195,18 @@ public class PaymentOrderController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId) throws Exception {
+	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-		HfOrderExample hfOrderExample = new HfOrderExample();
-		hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
-		List<HfOrder> hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
+		HfOrderDisplay hfOrder = new HfOrderDisplay();
+		if (orderCode!=null){
+			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
+		}
+		List<HfOrder> hfOrderList = new ArrayList<>();
+		if (payOrderId!=null){
+			HfOrderExample hfOrderExample = new HfOrderExample();
+			hfOrderExample.createCriteria().andPayOrderIdEqualTo(payOrderId);
+			hfOrderList= hfOrderMapper.selectByExample(hfOrderExample);
+		}
 		PayOrder payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
 		if (hfOrderList.get(0).getPaymentName().equals("balance") && hfOrderList.get(0).getPaymentType().equals(0)) {
@@ -211,13 +214,21 @@ public class PaymentOrderController {
 			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
 			List<HfUserBalance> hfUserBalances = hfUserBalanceMapper.selectByExample(hfUserBalanceExample);
                  HfUserBalance hfUserBalance = new HfUserBalance();
-                 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+payOrder.getAmount());
+                 if (hfOrder!=null){
+					 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+hfOrder.getAmount());
+				 }else {
+					 hfUserBalance.setHfBalance(hfUserBalances.get(0).getHfBalance()+payOrder.getAmount());
+				 }
                  hfUserBalance.setModifyTime(LocalDateTime.now());
                  hfUserBalance.setId(hfUserBalances.get(0).getId());
                  hfUserBalanceMapper.updateByPrimaryKeySelective(hfUserBalance);
                  HfBalanceDetail detail = new HfBalanceDetail();
  				detail.setUserId(hfUser.getUserId());
- 				detail.setAmount(String.valueOf(payOrder.getAmount()));
+ 				if (hfOrder!=null){
+					detail.setAmount(String.valueOf(hfOrder.getAmount()));
+				}else {
+					detail.setAmount(String.valueOf(payOrder.getAmount()));
+				}
  				detail.setPaymentName("退款");
  				detail.setCreateTime(LocalDateTime.now());
  				detail.setModifyTime(LocalDateTime.now());
@@ -233,13 +244,21 @@ public class PaymentOrderController {
 		data.put("device_info", req.getRemoteHost());
 		data.put("fee_type", "CNY");
 		data.put("total_fee", String.valueOf(payOrder.getAmount()));
+
 		data.put("spbill_create_ip", req.getRemoteAddr());
 		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
 
 		data.put("out_trade_no", String.valueOf(payOrder.getId()));
 		data.put("op_user_id", miniProgramConfig.getMchID());
 		data.put("refund_fee_type", "CNY");
-		data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+		if (hfOrder!=null){
+			System.out.println(hfOrder.getAmount());
+			data.put("refund_fee", String.valueOf(hfOrder.getAmount()));
+		}else {
+			System.out.println(payOrder.getAmount());
+			data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+		}
+
 		data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
 		String sign = WXPayUtil.generateSignature(data, miniProgramConfig.getKey());
 		data.put("sign", sign);
