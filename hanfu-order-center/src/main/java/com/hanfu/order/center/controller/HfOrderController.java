@@ -598,7 +598,7 @@ public class HfOrderController {
                 System.out.println("购物车优惠");
             }
             //huodong*--*
-            if (request.getActivityId()!=null){
+            if (request.getActivityId()!=null&&request.getActivityId()!=0){
                 MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
                 paramMap.add("goodsId",list.get(0).getGoodsId());
                 paramMap.add("GoodsNum",list.get(0).getQuantity());
