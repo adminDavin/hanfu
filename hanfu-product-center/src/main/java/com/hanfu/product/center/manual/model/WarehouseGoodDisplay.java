@@ -13,6 +13,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private String goodName;
 	private String goodDesc;
 	private Integer quantity;
+	private Integer productId;
 	private String type;
 	private String category;
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
@@ -41,6 +42,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
 	}
 	public String getType() {
 		return type;

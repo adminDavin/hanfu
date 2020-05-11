@@ -190,6 +190,7 @@ public class WareHouseController {
 			HfInStorage storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
 			display.setGoodId(storage.getGoodId());
+			display.setProductId(storage.getProducId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
 			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
 			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
