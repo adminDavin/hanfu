@@ -1008,7 +1008,7 @@ public class HfProductActivityController {
                     payment.setOutTradeNo(hfOrder.getOrderCode());
                     payment.setUserId(hfOrder.getId());
 //            Map map = (Map) payment;
-                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,hfOrder.getOrderCode(),hfOrder.getUserId());
+                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}",payment.class,hfOrder.getPayOrderId(),hfOrder.getUserId(),hfOrder.getOrderCode());
                     logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date()+"--orderId:"+hfOrder.getId()+"money:"+hfOrder.getAmount());
                 });
 
