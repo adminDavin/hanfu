@@ -14,6 +14,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private String goodDesc;
 	private Integer quantity;
 	private String type;
+	private String category;
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
 	private LocalDateTime time;
 	private String name;
@@ -58,6 +59,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

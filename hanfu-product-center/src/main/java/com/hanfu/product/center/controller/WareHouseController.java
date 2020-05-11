@@ -19,19 +19,25 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HWarehouseRespMapper;
+import com.hanfu.product.center.dao.HfBossMapper;
+import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfInStorageMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
+import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStoneRespMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.model.WarehouseGoodDisplay;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
+import com.hanfu.product.center.model.HfBoss;
+import com.hanfu.product.center.model.HfCategory;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfInStorage;
 import com.hanfu.product.center.model.HfInStorageExample;
 import com.hanfu.product.center.model.HfResp;
+import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneResp;
 import com.hanfu.product.center.model.HfStoneRespExample;
 import com.hanfu.product.center.model.StoneRespRecord;
@@ -79,6 +85,15 @@ public class WareHouseController {
     
     @Autowired
     private HfRespMapper hfRespMapper;
+    
+    @Autowired
+    private HfCategoryMapper hfCategoryMapper;
+    
+    @Autowired
+    private HfBossMapper hfBossMapper;
+    
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
 
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -107,7 +122,9 @@ public class WareHouseController {
         JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 				JSONObject.class, request.getUserId());
         warehouse.setIsDeleted((short) 0);
-        warehouse.setLastModifier(js1.getJSONObject("data").getString("realName"));
+        System.out.println(request.getUserId());
+        System.out.println(js1.getJSONObject("data").getString("nickName"));
+        warehouse.setLastModifier(js1.getJSONObject("data").getString("nickName"));
         warehouseMapper.insert(warehouse);
         return builder.body(ResponseUtils.getResponseBody(warehouse.getId()));
     }
@@ -175,10 +192,20 @@ public class WareHouseController {
 			display.setGoodId(storage.getGoodId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
 			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(hfResp.getQuantity());
-			display.setType(storage.getType());
+			if("0".equals(storage.getType())) {
+				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
+				
+			}
+			if("1".equals(storage.getType())) {
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
+				display.setType(hfStone.getHfName());
+			}
+			
+			display.setCategory(category.getHfName());
 			display.setTime(storage.getModifyTime());
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
 					JSONObject.class, storage.getUserId());

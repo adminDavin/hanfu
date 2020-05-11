@@ -334,6 +334,7 @@ public class GoodsController {
 			inStorage.setStoneId(hfGoodsInfo.getStoneId());
 		}
 		inStorage.setDataType("1");
+		inStorage.setBossId(1);
 		inStorage.setProducId(hfGoodsInfo.getProductId());
 		inStorage.setGoodId(record.getId());
 		inStorage.setUserId(hfGoodsInfo.getUserId());
