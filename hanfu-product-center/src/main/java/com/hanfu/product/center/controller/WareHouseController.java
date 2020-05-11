@@ -104,9 +104,12 @@ public class WareHouseController {
         warehouse.setHfRegion(request.getHfRegion());
         warehouse.setCreateTime(LocalDateTime.now());
         warehouse.setModifyTime(LocalDateTime.now());
+        JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+				JSONObject.class, request.getUserId());
         warehouse.setIsDeleted((short) 0);
-        warehouse.setLastModifier(request.getUsername());
-        return builder.body(ResponseUtils.getResponseBody(warehouseMapper.insert(warehouse)));
+        warehouse.setLastModifier(js1.getJSONObject("data").getString("realName"));
+        warehouseMapper.insert(warehouse);
+        return builder.body(ResponseUtils.getResponseBody(warehouse.getId()));
     }
     
 //    @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
@@ -148,6 +151,9 @@ public class WareHouseController {
         }
         if (!StringUtils.isEmpty(request.getUsername())) {
             warehouse.setLastModifier(request.getUsername());
+        }
+        if (!StringUtils.isEmpty(request.getHfRegion())) {
+        	warehouse.setHfRegion(request.getHfRegion());
         }
         warehouse.setModifyTime(LocalDateTime.now());
         return builder.body(ResponseUtils.getResponseBody(warehouseMapper.updateByPrimaryKey(warehouse)));
