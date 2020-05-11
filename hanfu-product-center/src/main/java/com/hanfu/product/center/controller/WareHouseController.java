@@ -199,13 +199,13 @@ public class WareHouseController {
 			display.setQuantity(hfResp.getQuantity());
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
-				display.setType(boss.getName());
+				display.setTypeName(boss.getName());
 			}
 			if("1".equals(storage.getType())) {
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
-				display.setType(hfStone.getHfName());
+				display.setTypeName(hfStone.getHfName());
 			}
-			
+			display.setType(storage.getType());
 			display.setCategory(category.getHfName());
 			display.setTime(storage.getModifyTime());
 			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
