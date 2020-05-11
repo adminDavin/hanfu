@@ -198,7 +198,7 @@ public class WareHouseController {
 			display.setQuantity(hfResp.getQuantity());
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
-				
+				display.setType(boss.getName());
 			}
 			if("1".equals(storage.getType())) {
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
