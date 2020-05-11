@@ -28,6 +28,7 @@ import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStoneRespMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
+import com.hanfu.product.center.dao.WarehouseRespRecordMapper;
 import com.hanfu.product.center.manual.model.WarehouseGoodDisplay;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
@@ -94,6 +95,9 @@ public class WareHouseController {
     
     @Autowired
     private HfStoneMapper hfStoneMapper;
+    
+    @Autowired
+    private WarehouseRespRecordMapper warehouseRespRecordMapper;
 
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -216,6 +220,50 @@ public class WareHouseController {
         return builder.body(ResponseUtils.getResponseBody(result));
     }
     
+    @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
+    @RequestMapping(value = "/findGoodsByWarsehouse", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> findGoodsByWarsehouse(Integer wareHouseId)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
+        List<HWarehouseResp> list = new ArrayList<HWarehouseResp>();
+        if(wareHouseId == null) {
+        	list = hWarehouseRespMapper.selectByExample(null);
+        }else {
+        	HWarehouseRespExample example = new HWarehouseRespExample();
+        	example.createCriteria().andWarehouseIdEqualTo(wareHouseId);
+        	list = hWarehouseRespMapper.selectByExample(example);
+        }
+        for (int i = 0; i < list.size(); i++) {
+        	HWarehouseResp storage  = list.get(i);
+			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setGoodId(storage.getGoodId());
+			display.setProductId(storage.getProductId());
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
+			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
+			display.setGoodName(goods.getHfName());
+			display.setGoodDesc(goods.getGoodsDesc());
+			display.setQuantity(hfResp.getQuantity());
+//			if("0".equals(storage.getType())) {
+//				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
+//				display.setTypeName(boss.getName());
+//			}
+//			if("1".equals(storage.getType())) {
+//				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
+//				display.setTypeName(hfStone.getHfName());
+//			}
+//			display.setType(storage.getType());
+			display.setCategory(category.getHfName());
+			display.setTime(storage.getModifyTime());
+//			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+//					JSONObject.class, storage.getUserId());
+//			display.setName(js1.getJSONObject("data").getString("nickName"));
+			result.add(display);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+    }
+    
     @ApiOperation(value = "物品入库", notes = "物品入库")
     @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> goodInWarsehouse(Integer warehouseId, Integer productId, Integer goodId, Integer quantity
@@ -255,6 +303,7 @@ public class WareHouseController {
         record.setCreateTime(LocalDateTime.now());
         record.setModifyTime(LocalDateTime.now());
         record.setIsDeleted((byte) 0);
+        warehouseRespRecordMapper.insert(record);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
     
