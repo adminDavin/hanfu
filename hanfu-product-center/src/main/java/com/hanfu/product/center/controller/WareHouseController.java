@@ -154,13 +154,15 @@ public class WareHouseController {
     }
     
     
-    @ApiOperation(value = "查询待入库物品", notes = "查询待入库物品")
+    @ApiOperation(value = "查询待入库物品", notes = "查询待入库物品/出库物品")
     @RequestMapping(value = "/findGoodsWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsWarsehouse()
+    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        List<HfInStorage> list = hfInStorageMapper.selectByExample(null);
+        HfInStorageExample example = new HfInStorageExample();
+        example.createCriteria().andDataTypeEqualTo(dataType);
+        List<HfInStorage> list = hfInStorageMapper.selectByExample(example);
         for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
@@ -242,7 +244,7 @@ public class WareHouseController {
     
     @ApiOperation(value = "物品出库", notes = "物品出库")
     @RequestMapping(value = "/goodOutWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer warehouseId,Integer goodId, Integer stoneId, Integer quantity
+    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer warehouseId,Integer productId, Integer goodId, Integer stoneId, Integer quantity
     		,String typeWho, Integer userId, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -260,6 +262,7 @@ public class WareHouseController {
         	id = hWarehouseResp.getId();
         }
         WarehouseRespRecord record = new WarehouseRespRecord();
+        record.setProductId(productId);
         record.setGoodId(goodId);
         record.setQuantity(quantity);
         record.setTypeWho(typeWho);
@@ -275,6 +278,7 @@ public class WareHouseController {
         List<HfStoneResp> list2 = hfStoneRespMapper.selectByExample(example2);
         if(CollectionUtils.isEmpty(list2)) {
         	HfStoneResp resp = new HfStoneResp();
+        	resp.setProductId(productId);
         	resp.setGoodId(goodId);
         	resp.setStoneId(stoneId);
         	resp.setQuantity(quantity);
@@ -289,6 +293,7 @@ public class WareHouseController {
         	hfStoneRespMapper.updateByPrimaryKey(resp);
         }
         StoneRespRecord respRecord = new StoneRespRecord();
+        respRecord.setProductId(productId);
         respRecord.setGoodId(goodId);
         respRecord.setStoneId(stoneId);
         respRecord.setType(1);
