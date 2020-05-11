@@ -419,9 +419,9 @@ public class HfOrderController {
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
 
-                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
-                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+//                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+//                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
+//                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
 //                if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);

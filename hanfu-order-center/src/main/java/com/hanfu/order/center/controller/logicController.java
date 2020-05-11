@@ -15,10 +15,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.WebRequest;
 import tk.mybatis.mapper.entity.Example;
 
@@ -57,6 +59,10 @@ public class logicController {
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private HfOrdersCancelMapper hfOrdersCancelMapper;
+    @Value("${myspcloud.item2.url3}")
+    private String ORDER_URL;
+    @Autowired
+    private RestTemplate restTemplate;
     //转换时间格式
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
@@ -134,8 +140,11 @@ public class logicController {
         Example example3 = new Example(HfOrderDetail.class);
         Example.Criteria criteria3 = example3.createCriteria();
         criteria3.andEqualTo("orderId",orderId).andEqualTo("stoneId",stoneId);
-        hfOrdersCancelDetailMapper.updateByExampleSelective(hfOrdersDetail,example3);
+//        hfOrdersCancelDetailMapper.updateByExampleSelective(hfOrdersDetail,example3);
         List<HfOrderDetail> hfOrderDetail= hfOrdersCancelDetailMapper.selectByExample(example3);
+        restTemplate.getForEntity(ORDER_URL + "/hf-order/modifyStatus?Id={Id}"
+                        + "&orderCode={orderCode}&originOrderStatus={originOrderStatus}&targetOrderStatus={targetOrderStatus}&stoneId={stoneId}",
+                String.class, hfOrder.getId(), hfOrder.getOrderCode(), "transport", "evaluate", stoneId);
         hfOrderDetail.forEach(hfOrderDetail1 -> {
             //添加核销记录
         CancelRecord cancelRecord = new CancelRecord();
@@ -153,20 +162,20 @@ public class logicController {
             cancel.setPresentMoney( cancelList.get(0).getPresentMoney()+hfOrderDetail1.getActualPrice());
             cancelsMapper.updateByPrimaryKeySelective(cancel);
         });
-        Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
-        Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
-        criteriaOrderDetail.andEqualTo("orderId",orderId).andNotEqualTo("hfStatus","complete").andNotEqualTo("hfStatus","evaluate");
-        List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
-        if (hfOrderDetail1.size()==0){
-            HfOrder hfOrders = new HfOrder();
-            hfOrders.setId(orderId);
-            hfOrders.setOrderStatus("evaluate");
-            hfOrders.setModifyTime(LocalDateTime.now());
-            Example hfOrderExample = new Example(HfOrder.class);
-            Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
-            criteriaOrder.andEqualTo("id",orderId);
-            hfOrdersCancelMapper.updateByExampleSelective(hfOrders,hfOrderExample);
-        }
+//        Example hfOrderDetailExample1 = new Example(HfOrderDetail.class);
+//        Example.Criteria criteriaOrderDetail = hfOrderDetailExample1.createCriteria();
+//        criteriaOrderDetail.andEqualTo("orderId",orderId).andNotEqualTo("hfStatus","complete").andNotEqualTo("hfStatus","evaluate");
+//        List<HfOrderDetail> hfOrderDetail1= hfOrdersCancelDetailMapper.selectByExample(hfOrderDetailExample1);
+//        if (hfOrderDetail1.size()==0){
+//            HfOrder hfOrders = new HfOrder();
+//            hfOrders.setId(orderId);
+//            hfOrders.setOrderStatus("evaluate");
+//            hfOrders.setModifyTime(LocalDateTime.now());
+//            Example hfOrderExample = new Example(HfOrder.class);
+//            Example.Criteria criteriaOrder = hfOrderExample.createCriteria();
+//            criteriaOrder.andEqualTo("id",orderId);
+//            hfOrdersCancelMapper.updateByExampleSelective(hfOrders,hfOrderExample);
+//        }
         redisTemplate.delete(decrypt);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
