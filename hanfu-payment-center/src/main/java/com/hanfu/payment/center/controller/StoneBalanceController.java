@@ -124,6 +124,9 @@ public class StoneBalanceController {
         if (stoneBalance.size()!=0){
             map.put("all",money+stoneBalance.get(0).getStoneBalance());
             map.put("use",stoneBalance.get(0).getStoneBalance());
+        } else {
+            map.put("all",0);
+            map.put("use",0);
         }
         map.put("process",money);
         map.put("payment",money1);
