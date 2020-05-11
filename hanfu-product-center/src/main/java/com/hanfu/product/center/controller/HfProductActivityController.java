@@ -944,7 +944,7 @@ public class HfProductActivityController {
                 distributionRecord.setStoneId(hfOrderDetail1.getStoneId());
                 distributionRecord.setOrderId(hfOrderDetail1.getOrderId());
                 distributionRecord.setInvitationUserId(hfUsers1.get(0).getId());
-                distributionRecord.setQuiltUserId(userId);
+                distributionRecord.setQuiltUserId(hfOrder.getUserId());
                 distributionRecord.setDisState(0);
                 distributionRecord.setDisType("distributionRecord");
                 distributionRecord.setDistributionMoney(((hfOrder.getAmount() * lists.getRatio()) / 100));
