@@ -145,10 +145,16 @@ public class StoneController {
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId) throws JSONException {
+    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId,String stoneName,Integer stoneType) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStoneExample example = new HfStoneExample();
-        example.createCriteria().andBossIdEqualTo(bossId);
+        HfStoneExample.Criteria criteria = example.createCriteria().andBossIdEqualTo(bossId);
+        if (null != stoneType){
+            criteria.andHfStatusEqualTo(stoneType);
+        }
+        if (stoneName!=null){
+            criteria.andHfNameLike("%"+stoneName+"%");
+        }
         return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.selectByExample(example)));
     }
     
