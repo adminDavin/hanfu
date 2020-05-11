@@ -944,7 +944,7 @@ public class HfProductActivityController {
                 distributionRecord.setStoneId(hfOrderDetail1.getStoneId());
                 distributionRecord.setOrderId(hfOrderDetail1.getOrderId());
                 distributionRecord.setInvitationUserId(hfUsers1.get(0).getId());
-                distributionRecord.setQuiltUserId(userId);
+                distributionRecord.setQuiltUserId(hfOrder.getUserId());
                 distributionRecord.setDisState(0);
                 distributionRecord.setDisType("distributionRecord");
                 distributionRecord.setDistributionMoney(((hfOrder.getAmount() * lists.getRatio()) / 100));
@@ -1008,7 +1008,7 @@ public class HfProductActivityController {
                     payment.setOutTradeNo(hfOrder.getOrderCode());
                     payment.setUserId(hfOrder.getId());
 //            Map map = (Map) payment;
-                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?outTradeNo={outTradeNo}&userId={userId}",payment.class,hfOrder.getOrderCode(),hfOrder.getUserId());
+                    restTemplate.getForEntity(REST_URL_PREFIX+"/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}",payment.class,hfOrder.getPayOrderId(),hfOrder.getUserId(),hfOrder.getOrderCode());
                     logger.info(Thread.currentThread().getName() + " cron=* * * * * ? --- " + new Date()+"--orderId:"+hfOrder.getId()+"money:"+hfOrder.getAmount());
                 });
 

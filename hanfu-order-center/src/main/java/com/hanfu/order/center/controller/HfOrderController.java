@@ -419,9 +419,9 @@ public class HfOrderController {
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
 
-                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
-                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
+//                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
+//                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
+//                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
 //                if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);
@@ -598,7 +598,7 @@ public class HfOrderController {
                 System.out.println("购物车优惠");
             }
             //huodong*--*
-            if (request.getActivityId()!=null){
+            if (request.getActivityId()!=null&&request.getActivityId()!=0){
                 MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
                 paramMap.add("goodsId",list.get(0).getGoodsId());
                 paramMap.add("GoodsNum",list.get(0).getQuantity());
