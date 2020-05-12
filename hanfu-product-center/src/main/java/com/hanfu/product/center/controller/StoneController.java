@@ -211,7 +211,9 @@ public class StoneController {
 			if (hfStonePictures.size()!=0){
 			    HfStonePicture hfStonePicture = new HfStonePicture();
 			    hfStonePicture.setIsDeleted((byte) 1);
-                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample);
+                HfStonePictureExample hfStonePictureExample1 = new HfStonePictureExample();
+                hfStonePictureExample1.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
+                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample1);
             }
             HfStonePicture picture = new HfStonePicture();
 			picture.setStoneId(stoneId);
