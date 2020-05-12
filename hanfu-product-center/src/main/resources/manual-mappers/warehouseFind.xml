@@ -47,7 +47,7 @@
 	<select id="findWarehouseRespRecord" resultMap="WarehouseRespRecord">
 		select * from warehouse_resp_record w left join hf_goods h on w.good_id=h.id
 		where 1=1
-		<if test="type != null and type != ''">
+		<if test="type == 0 || type != null and type != ''">
 			and w.type = #{type}
 		</if>
 		<if test="warehousrId != null and warehousrId != ''">
