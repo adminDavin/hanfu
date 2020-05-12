@@ -313,6 +313,7 @@ public class StoneController {
         info.setConcernCount(hfStone.getConcernCount());
         info.setCreateTime(hfStone.getCreateTime());
         info.setExpireTime(hfStone.getExpireTime());
+        info.setHfStatus(hfStone.getHfStatus());
         HfStonePictureExample example = new HfStonePictureExample();
         example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("avatar");
         List<HfStonePicture> pictures = hfStonePictureMapper.selectByExample(example);
