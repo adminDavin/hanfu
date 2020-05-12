@@ -163,7 +163,7 @@ public class StoneController {
     public ResponseEntity<JSONObject> getStonePicture(Integer stoneId, String type) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStonePictureExample example = new HfStonePictureExample();
-        example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo(type);
+        example.createCriteria().andStoneIdEqualTo(stoneId).andTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
         List<HfStonePicture> list = hfStonePictureMapper.selectByExample(example);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
@@ -205,7 +205,15 @@ public class StoneController {
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
-			HfStonePicture picture = new HfStonePicture();
+			HfStonePictureExample hfStonePictureExample = new HfStonePictureExample();
+			hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
+            List<HfStonePicture> hfStonePictures= hfStonePictureMapper.selectByExample(hfStonePictureExample);
+			if (hfStonePictures.size()!=0){
+			    HfStonePicture hfStonePicture = new HfStonePicture();
+			    hfStonePicture.setIsDeleted((byte) 1);
+                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample);
+            }
+            HfStonePicture picture = new HfStonePicture();
 			picture.setStoneId(stoneId);
 			picture.setType(StonePictureTypeEnum.getStonePictureTypeEnum(type).getStonePictureType());
 			picture.setFileId(fileDesc.getId());
