@@ -2,6 +2,7 @@ package com.hanfu.product.center.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -398,7 +399,7 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询出入库记录", notes = "查询出入库记录")
     @RequestMapping(value = "/findWarsehouseRecord", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findWarsehouseRecord()
+    public ResponseEntity<JSONObject> findWarsehouseRecord(String goodName, Integer wareHouseId, Date strat, Date end, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
@@ -414,14 +415,16 @@ public class WareHouseController {
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(hfResp.getQuantity());
-			if("0".equals(storage.getType())) {
+			if("0".equals(storage.getTypeWho())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 				display.setTypeName(boss.getName());
 			}
-			if("1".equals(storage.getType())) {
+			if("1".equals(storage.getTypeWho())) {
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
 				display.setTypeName(hfStone.getHfName());
+				display.setStoneId(hfStone.getId());
 			}
+			display.setBossId(storage.getBossId());
 			display.setType(String.valueOf(storage.getType()));
 			display.setCategory(category.getHfName());
 			display.setTime(storage.getModifyTime());
