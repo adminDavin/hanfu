@@ -13,6 +13,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private Integer goodId;
 	private String goodName;
 	private String goodDesc;
+	private Integer total;
 	private Integer quantity;
 	private Integer productId;
 	private Integer bossId;
@@ -23,6 +24,8 @@ public class WarehouseGoodDisplay implements Serializable{
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
 	private LocalDateTime time;
 	private String name;
+	private Integer warehouseId;
+	private String warehouseName;
 	public Integer getId() {
 		return id;
 	}
@@ -46,6 +49,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setGoodDesc(String goodDesc) {
 		this.goodDesc = goodDesc;
+	}
+	public Integer getTotal() {
+		return total;
+	}
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	public Integer getQuantity() {
 		return quantity;
@@ -100,6 +109,18 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

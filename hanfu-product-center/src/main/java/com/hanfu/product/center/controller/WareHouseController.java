@@ -1,5 +1,7 @@
 package com.hanfu.product.center.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,33 +10,42 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.dao.HWarehouseRespMapper;
 import com.hanfu.product.center.dao.HfBossMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
+import com.hanfu.product.center.dao.HfGoodApplyMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
 import com.hanfu.product.center.dao.HfInStorageMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStoneRespMapper;
+import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.dao.WarehouseRespRecordMapper;
+import com.hanfu.product.center.manual.dao.WarehouseDao;
+import com.hanfu.product.center.manual.model.WarehouseFindConditional;
 import com.hanfu.product.center.manual.model.WarehouseGoodDisplay;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
 import com.hanfu.product.center.model.HfBoss;
 import com.hanfu.product.center.model.HfCategory;
+import com.hanfu.product.center.model.HfGoodApply;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfInStorage;
 import com.hanfu.product.center.model.HfInStorageExample;
@@ -42,6 +53,7 @@ import com.hanfu.product.center.model.HfResp;
 import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneResp;
 import com.hanfu.product.center.model.HfStoneRespExample;
+import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.model.StoneRespRecord;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.model.WarehouseExample;
@@ -99,7 +111,16 @@ public class WareHouseController {
     
     @Autowired
     private WarehouseRespRecordMapper warehouseRespRecordMapper;
-
+    
+    @Autowired
+    private HfGoodApplyMapper hfGoodApplyMapper;
+    
+    @Autowired
+    private ProductMapper productMapper;
+    
+    @Autowired
+    private WarehouseDao warehouseDao;
+    
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -184,13 +205,15 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询待入库物品", notes = "查询待入库物品/出库物品")
     @RequestMapping(value = "/findGoodsWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType)
+    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType, String goodName, String categoryName)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        HfInStorageExample example = new HfInStorageExample();
-        example.createCriteria().andDataTypeEqualTo(dataType);
-        List<HfInStorage> list = hfInStorageMapper.selectByExample(example);
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setGoodName(goodName);
+        wfc.setData_type(dataType);
+        wfc.setCategoryName(categoryName);
+        List<HfInStorage> list = warehouseDao.findHfInStorage(wfc);
         for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
@@ -204,6 +227,12 @@ public class WareHouseController {
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(hfResp.getQuantity());
 			display.setBossId(storage.getBossId());
+			if("0".equals(dataType)) {
+				HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(storage.getApplyId());
+				display.setWarehouseId(apply.getWarehouseId());
+				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(apply.getWarehouseId());
+				display.setWarehouseName(warehouse.getHfName());
+			}
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 				display.setTypeName(boss.getName());
@@ -226,18 +255,15 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
     @RequestMapping(value = "/findGoodsByWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsByWarsehouse(Integer wareHouseId)
+    public ResponseEntity<JSONObject> findGoodsByWarsehouse(Integer warehouseId, String goodName, String categoryName)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        List<HWarehouseResp> list = new ArrayList<HWarehouseResp>();
-        if(wareHouseId == null) {
-        	list = hWarehouseRespMapper.selectByExample(null);
-        }else {
-        	HWarehouseRespExample example = new HWarehouseRespExample();
-        	example.createCriteria().andWarehouseIdEqualTo(wareHouseId);
-        	list = hWarehouseRespMapper.selectByExample(example);
-        }
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setWarehousrId(warehouseId);
+        wfc.setGoodName(goodName);
+        wfc.setCategoryName(categoryName);
+        List<HWarehouseResp> list = warehouseDao.findHWarehouseResp(wfc);
         for (int i = 0; i < list.size(); i++) {
         	HWarehouseResp storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
@@ -274,6 +300,7 @@ public class WareHouseController {
     		,String typeWho, Integer userId, Integer type, Integer bossId, String stoneId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(inStorgeId);
         Integer id = null;
         HWarehouseRespExample example = new HWarehouseRespExample();
         example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
@@ -312,33 +339,75 @@ public class WareHouseController {
         record.setModifyTime(LocalDateTime.now());
         record.setIsDeleted((byte) 0);
         warehouseRespRecordMapper.insert(record);
+        hfInStorage.setIsDeleted((byte) 1);
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
     
-    @ApiOperation(value = "拒绝入库", notes = "拒绝入库")
-    @RequestMapping(value = "/rejectGoodInWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> rejectGoodInWarsehouse(Integer goodId, Integer stoneId
-    		,String typeWho, Integer userId, Integer type)
+    @ApiOperation(value = "拒绝出库申请", notes = "拒绝出库申请")
+    @RequestMapping(value = "/rejectGoodOutWarsehouse", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> rejectGoodOutWarsehouse(Integer outStorageId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfInStorageExample example = new HfInStorageExample();
-        example.createCriteria().andGoodIdEqualTo(goodId);
-        List<HfInStorage> list = hfInStorageMapper.selectByExample(example);
-        if(!CollectionUtils.isEmpty(list)) {
-        	list.get(0).setIsDeleted((byte) 1);
+        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
+        if(hfInStorage != null) {
+        	hfInStorage.setIsDeleted((byte) 1);
         }
-        hfInStorageMapper.updateByPrimaryKey(list.get(0));
-        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
-        hfGoodsMapper.updateByPrimaryKey(goods);
-        return builder.body(ResponseUtils.getResponseBody(goodId));
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
+        HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
+        apply.setModifyTime(LocalDateTime.now());
+        apply.setStatus(0);
+        hfGoodApplyMapper.updateByPrimaryKey(apply);
+        return builder.body(ResponseUtils.getResponseBody(apply.getId()));
+    }
+    
+    
+    @ApiOperation(value = "店铺申请物品从仓库", notes = "店铺申请物品从仓库")
+    @RequestMapping(value = "/stoneApplyGood", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> stoneApplyGood(Integer stoneId, Integer productId, Integer goodId, Integer quantity,
+    		Integer userId, Integer warehouseId)
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Product product = productMapper.selectByPrimaryKey(productId);
+        HfGoodApply apply = new HfGoodApply();
+        apply.setGoodId(goodId);
+        apply.setProductId(productId);
+        apply.setQuantity(quantity);
+        apply.setStoneId(stoneId);
+        apply.setStatus(-1);
+        apply.setWarehouseId(warehouseId);
+        apply.setCreateTime(LocalDateTime.now());
+        apply.setModifyTime(LocalDateTime.now());
+        apply.setIsDeleted((byte) 0);
+        hfGoodApplyMapper.insert(apply);
+        HfInStorage storage = new HfInStorage();
+        storage.setBossId(product.getBossId());
+        storage.setDataType("0");
+        storage.setApplyId(apply.getId());
+        storage.setGoodId(goodId);
+        storage.setProducId(productId);
+        storage.setStoneId(stoneId);
+        storage.setType("1");
+        storage.setQuantity(quantity);
+        storage.setUserId(userId);
+        storage.setCreateTime(LocalDateTime.now());
+        storage.setModifyTime(LocalDateTime.now());
+        storage.setIsDeleted((byte) 0);
+        hfInStorageMapper.insert(storage);
+        return builder.body(ResponseUtils.getResponseBody(apply.getId()));
     }
     
     @ApiOperation(value = "物品出库", notes = "物品出库")
     @RequestMapping(value = "/goodOutWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer warehouseId,Integer productId, Integer goodId, Integer stoneId, Integer quantity
+    public ResponseEntity<JSONObject> goodOutWarsehouse(Integer outStorageId, Integer warehouseId,Integer productId, Integer goodId, Integer stoneId, Integer quantity
     		,String typeWho, Integer userId, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
+        HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
+        apply.setModifyTime(LocalDateTime.now());
+        apply.setStatus(1);
+        hfGoodApplyMapper.updateByPrimaryKey(apply);
         Integer id = null;
         HWarehouseRespExample example = new HWarehouseRespExample();
         example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
@@ -364,6 +433,7 @@ public class WareHouseController {
         record.setModifyTime(LocalDateTime.now());
         record.setIsDeleted((byte) 0);
         record.setStoneId(stoneId);
+        warehouseRespRecordMapper.insert(record);
         HfStoneRespExample example2 = new HfStoneRespExample();
         example2.createCriteria().andStoneIdEqualTo(stoneId).andGoodIdEqualTo(goodId);
         List<HfStoneResp> list2 = hfStoneRespMapper.selectByExample(example2);
@@ -394,19 +464,29 @@ public class WareHouseController {
         respRecord.setModifyTime(LocalDateTime.now());
         respRecord.setIsDeleted((byte) 0);
         stoneRespRecordMapper.insert(respRecord);
+        hfInStorage.setIsDeleted((byte) 1);
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
     
     @ApiOperation(value = "查询出入库记录", notes = "查询出入库记录")
     @RequestMapping(value = "/findWarsehouseRecord", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findWarsehouseRecord(String goodName, Integer wareHouseId, Date strat, Date end, Integer type)
+    public ResponseEntity<JSONObject> findWarsehouseRecord(String goodName, Integer warehouseId, Date start, Date end, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        List<WarehouseRespRecord> list = warehouseRespRecordMapper.selectByExample(null);
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setEnd(end);
+        wfc.setGoodName(goodName);
+        wfc.setStart(start);
+        wfc.setType(type);
+        wfc.setWarehousrId(warehouseId);
+        List<WarehouseRespRecord> list = warehouseDao.findWarehouseRespRecord(wfc);
         for (int i = 0; i < list.size(); i++) {
         	WarehouseRespRecord storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(storage.getWarehouseId());
+			display.setWarehouseName(warehouse.getHfName());
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProductId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
@@ -434,6 +514,13 @@ public class WareHouseController {
 			result.add(display);
 		}
         return builder.body(ResponseUtils.getResponseBody(result));
+    }
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder, WebRequest request) {
+        //转换日期
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
     }
     
 }
