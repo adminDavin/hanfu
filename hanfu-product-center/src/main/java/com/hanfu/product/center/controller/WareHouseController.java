@@ -201,6 +201,7 @@ public class WareHouseController {
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(hfResp.getQuantity());
+			display.setBossId(storage.getBossId());
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 				display.setTypeName(boss.getName());
@@ -208,6 +209,7 @@ public class WareHouseController {
 			if("1".equals(storage.getType())) {
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
 				display.setTypeName(hfStone.getHfName());
+				display.setStoneId(hfStone.getId());
 			}
 			display.setType(storage.getType());
 			display.setCategory(category.getHfName());
@@ -267,7 +269,7 @@ public class WareHouseController {
     @ApiOperation(value = "物品入库", notes = "物品入库")
     @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> goodInWarsehouse(Integer warehouseId, Integer productId, Integer goodId, Integer quantity
-    		,String typeWho, Integer userId, Integer type)
+    		,String typeWho, Integer userId, Integer type, Integer bossId, Integer stoneId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         Integer id = null;
@@ -297,6 +299,10 @@ public class WareHouseController {
         record.setGoodId(goodId);
         record.setQuantity(quantity);
         record.setTypeWho(typeWho);
+        if("1".equals(typeWho)) {
+        	record.setStoneId(stoneId);
+        }
+        record.setBossId(bossId);
         record.setType(1);
         record.setUserId(String.valueOf(userId));
         record.setWarehouseId(warehouseId);
@@ -388,5 +394,42 @@ public class WareHouseController {
         stoneRespRecordMapper.insert(respRecord);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
-
+    
+    @ApiOperation(value = "查询出入库记录", notes = "查询出入库记录")
+    @RequestMapping(value = "/findWarsehouseRecord", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> findWarsehouseRecord()
+            throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<WarehouseRespRecord> result = new ArrayList<WarehouseRespRecord>();
+        List<WarehouseRespRecord> list = warehouseRespRecordMapper.selectByExample(null);
+        for (int i = 0; i < list.size(); i++) {
+        	WarehouseRespRecord storage  = list.get(i);
+			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setGoodId(storage.getGoodId());
+			display.setProductId(storage.getProductId());
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
+			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
+			display.setGoodName(goods.getHfName());
+			display.setGoodDesc(goods.getGoodsDesc());
+			display.setQuantity(hfResp.getQuantity());
+			if("0".equals(storage.getType())) {
+				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.);
+				display.setTypeName(boss.getName());
+			}
+			if("1".equals(storage.getType())) {
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
+				display.setTypeName(hfStone.getHfName());
+			}
+			display.setType(storage.getType());
+			display.setCategory(category.getHfName());
+			display.setTime(storage.getModifyTime());
+			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+					JSONObject.class, storage.getUserId());
+			display.setName(js1.getJSONObject("data").getString("nickName"));
+			result.add(display);
+		}
+        return builder.body(ResponseUtils.getResponseBody(result));
+    }
+    
 }

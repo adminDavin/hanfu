@@ -14,6 +14,8 @@ public class WarehouseGoodDisplay implements Serializable{
 	private String goodDesc;
 	private Integer quantity;
 	private Integer productId;
+	private Integer bossId;
+	private Integer stoneId;
 	private String type;
 	private String typeName;
 	private String category;
@@ -49,6 +51,18 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setProductId(Integer productId) {
 		this.productId = productId;
+	}
+	public Integer getBossId() {
+		return bossId;
+	}
+	public void setBossId(Integer bossId) {
+		this.bossId = bossId;
+	}
+	public Integer getStoneId() {
+		return stoneId;
+	}
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
 	}
 	public String getType() {
 		return type;
