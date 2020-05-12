@@ -94,6 +94,8 @@ public class PaymentOrderController {
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
 	@Value("${myspcloud.item3.url3}")
 	private String itemUrl3;
+	@Value("${myspcloud.item2.url2}")
+	private String itemUrl2;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
 	@Autowired
@@ -200,6 +202,12 @@ public class PaymentOrderController {
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		if (orderCode!=null){
 			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
+			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+			paramMap2.add("stoneId",hfOrder.getStoneId());
+			paramMap2.add("balanceType","rechargeAmount");
+			paramMap2.add("money",hfOrder.getActualPrice());
+			paramMap2.add("type", "-1");
+			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
 		}
 		List<HfOrder> hfOrderList = new ArrayList<>();
 		if (payOrderId!=null){

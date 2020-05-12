@@ -74,7 +74,7 @@ public class StoneBalanceController {
     }
     @ApiOperation(value = "店铺余额变化", notes = "店铺余额变化")
     @RequestMapping(value = "/upStoneBalance", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> upStoneBalance(Integer stoneId,String balanceType,Integer money)
+    public ResponseEntity<JSONObject> upStoneBalance(Integer stoneId,String balanceType,Integer money,Integer type)//type -1 减余额
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
@@ -89,12 +89,20 @@ public class StoneBalanceController {
                 stoneBalance1.setModifyTime(LocalDateTime.now());
                 stoneBalance1.setIsDeleted((short) 0);
                 stoneBalance1.setStoneId(stoneId);
-                stoneBalance1.setStoneBalance(money);
+                if (type!=null&&type==-1){
+                    stoneBalance1.setStoneBalance(-money);
+                }else {
+                    stoneBalance1.setStoneBalance(money);
+                }
                 stoneBalanceMapper.insert(stoneBalance1);
             } else {
 //                StoneBalance stoneBalance1 = new StoneBalance();
 //                stoneBalance1.setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
-                stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
+                if (type!=null&&type==-1){
+                    stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance() - money);
+                } else {
+                    stoneBalance.get(0).setStoneBalance(stoneBalance.get(0).getStoneBalance() + money);
+                }
                 stoneBalanceMapper.updateByPrimaryKeySelective(stoneBalance.get(0));
             }
         }
@@ -122,7 +130,7 @@ public class StoneBalanceController {
         Integer money1 = stoneChargeOffs1.stream().mapToInt(StoneChargeOff::getActualPrice).sum();
         Map<String,Integer> map = new HashMap<>();
         if (stoneBalance.size()!=0){
-            map.put("all",money+stoneBalance.get(0).getStoneBalance());
+            map.put("all",money+stoneBalance.get(0).getStoneBalance()+money1);
             map.put("use",stoneBalance.get(0).getStoneBalance());
         } else {
             map.put("all",0);
