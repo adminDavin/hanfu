@@ -14,6 +14,7 @@ public class HfStoneInfo implements Serializable{
 	private Integer backgroundId;
 	private Integer codeId;
 	private Integer concernCount;
+	private Integer hfStatus;
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -60,6 +61,12 @@ public class HfStoneInfo implements Serializable{
 	}
 	public void setConcernCount(Integer concernCount) {
 		this.concernCount = concernCount;
+	}
+	public Integer getHfStatus() {
+		return hfStatus;
+	}
+	public void setHfStatus(Integer hfStatus) {
+		this.hfStatus = hfStatus;
 	}
 	public LocalDateTime getCreateTime() {
 		return createTime;

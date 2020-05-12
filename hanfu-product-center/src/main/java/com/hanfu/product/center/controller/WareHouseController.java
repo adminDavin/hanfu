@@ -416,6 +416,9 @@ public class WareHouseController {
         	return builder.body(ResponseUtils.getResponseBody(-1));
         }else {
         	HWarehouseResp hWarehouseResp = list.get(0);
+        	if(hWarehouseResp.getQuantity() < quantity) {
+        		return builder.body(ResponseUtils.getResponseBody(0));
+        	}
         	hWarehouseResp.setQuantity(hWarehouseResp.getQuantity()-quantity);
         	hWarehouseResp.setModifyTime(LocalDateTime.now());
         	hWarehouseRespMapper.updateByPrimaryKey(hWarehouseResp);
