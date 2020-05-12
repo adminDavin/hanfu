@@ -214,6 +214,10 @@ public class WareHouseController {
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(hfResp.getQuantity());
 			display.setBossId(storage.getBossId());
+			if("0".equals(dataType)) {
+				HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(storage.getApplyId());
+				display.setWarehouseId(apply.getWarehouseId());
+			}
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 				display.setTypeName(boss.getName());
