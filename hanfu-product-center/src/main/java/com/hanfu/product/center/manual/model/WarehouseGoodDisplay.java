@@ -9,14 +9,26 @@ public class WarehouseGoodDisplay implements Serializable{
 
 	private static final long serialVersionUID = -6706313124717301782L;
 	
+	private Integer id;
 	private Integer goodId;
 	private String goodName;
 	private String goodDesc;
 	private Integer quantity;
+	private Integer productId;
+	private Integer bossId;
+	private Integer stoneId;
 	private String type;
+	private String typeName;
+	private String category;
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
 	private LocalDateTime time;
 	private String name;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getGoodId() {
 		return goodId;
 	}
@@ -41,11 +53,35 @@ public class WarehouseGoodDisplay implements Serializable{
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+	public Integer getBossId() {
+		return bossId;
+	}
+	public void setBossId(Integer bossId) {
+		this.bossId = bossId;
+	}
+	public Integer getStoneId() {
+		return stoneId;
+	}
+	public void setStoneId(Integer stoneId) {
+		this.stoneId = stoneId;
+	}
 	public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getTypeName() {
+		return typeName;
+	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
 	}
 	public LocalDateTime getTime() {
 		return time;
@@ -58,6 +94,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
