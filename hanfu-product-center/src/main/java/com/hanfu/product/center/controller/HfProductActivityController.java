@@ -915,6 +915,10 @@ public class HfProductActivityController {
                 }
                 hfUsersExample.createCriteria().andOwnInvitationCodeEqualTo(hfUsers.getInvitationCode());
                 List<HfUsers> hfUsers1 = hfUsersMapper.selectByExample(hfUsersExample);
+                hfUsersExample.clear();
+                if (hfUsers1.size()==0){
+                    return builder.body(ResponseUtils.getResponseBody(0));
+                }
                 userId = hfUsers1.get(0).getId();
                 HfUserBalanceExample hfUsersExample1 = new HfUserBalanceExample();
                 hfUsersExample1.createCriteria().andUserIdEqualTo(hfUsers1.get(0).getId());
