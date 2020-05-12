@@ -199,13 +199,15 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询待入库物品", notes = "查询待入库物品/出库物品")
     @RequestMapping(value = "/findGoodsWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType)
+    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType, String goodName, String categoryName)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        HfInStorageExample example = new HfInStorageExample();
-        example.createCriteria().andDataTypeEqualTo(dataType);
-        List<HfInStorage> list = hfInStorageMapper.selectByExample(example);
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setGoodName(goodName);
+        wfc.setData_type(dataType);
+        wfc.setCategoryName(categoryName);
+        List<HfInStorage> list = warehouseDao.findHfInStorage(wfc);
         for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
@@ -247,18 +249,15 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询仓库物品", notes = "查询仓库物品")
     @RequestMapping(value = "/findGoodsByWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsByWarsehouse(Integer wareHouseId)
+    public ResponseEntity<JSONObject> findGoodsByWarsehouse(Integer warehouseId, String goodName, String categoryName)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        List<HWarehouseResp> list = new ArrayList<HWarehouseResp>();
-        if(wareHouseId == null) {
-        	list = hWarehouseRespMapper.selectByExample(null);
-        }else {
-        	HWarehouseRespExample example = new HWarehouseRespExample();
-        	example.createCriteria().andWarehouseIdEqualTo(wareHouseId);
-        	list = hWarehouseRespMapper.selectByExample(example);
-        }
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setWarehousrId(warehouseId);
+        wfc.setGoodName(goodName);
+        wfc.setCategoryName(categoryName);
+        List<HWarehouseResp> list = warehouseDao.findHWarehouseResp(wfc);
         for (int i = 0; i < list.size(); i++) {
         	HWarehouseResp storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
@@ -295,6 +294,7 @@ public class WareHouseController {
     		,String typeWho, Integer userId, Integer type, Integer bossId, String stoneId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(inStorgeId);
         Integer id = null;
         HWarehouseRespExample example = new HWarehouseRespExample();
         example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
@@ -333,6 +333,8 @@ public class WareHouseController {
         record.setModifyTime(LocalDateTime.now());
         record.setIsDeleted((byte) 0);
         warehouseRespRecordMapper.insert(record);
+        hfInStorage.setIsDeleted((byte) 1);
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
     
@@ -456,6 +458,8 @@ public class WareHouseController {
         respRecord.setModifyTime(LocalDateTime.now());
         respRecord.setIsDeleted((byte) 0);
         stoneRespRecordMapper.insert(respRecord);
+        hfInStorage.setIsDeleted((byte) 1);
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         return builder.body(ResponseUtils.getResponseBody(id));
     }
     
@@ -475,6 +479,8 @@ public class WareHouseController {
         for (int i = 0; i < list.size(); i++) {
         	WarehouseRespRecord storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			Warehouse warehouse = warehouseMapper.selectByPrimaryKey(storage.getWarehouseId());
+			display.setWarehouseName(warehouse.getHfName());
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProductId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());

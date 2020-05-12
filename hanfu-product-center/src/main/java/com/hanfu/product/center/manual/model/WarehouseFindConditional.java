@@ -10,8 +10,10 @@ public class WarehouseFindConditional implements Serializable{
 	private String goodName;
 	private Integer warehousrId;
 	private Integer type;
+	private String data_type;
 	private Date start;
 	private Date end;
+	private String categoryName;
 	public String getGoodName() {
 		return goodName;
 	}
@@ -30,6 +32,12 @@ public class WarehouseFindConditional implements Serializable{
 	public void setType(Integer type) {
 		this.type = type;
 	}
+	public String getData_type() {
+		return data_type;
+	}
+	public void setData_type(String data_type) {
+		this.data_type = data_type;
+	}
 	public Date getStart() {
 		return start;
 	}
@@ -42,5 +50,10 @@ public class WarehouseFindConditional implements Serializable{
 	public void setEnd(Date end) {
 		this.end = end;
 	}
-	
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 }
