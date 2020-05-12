@@ -25,6 +25,7 @@
         <result column="contact" jdbcType="VARCHAR" property="contact"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="address_desc" jdbcType="VARCHAR" property="addressDesc"/>
+        <result column="stone_id" jdbcType="INTEGER" property="stoneId"/>
     </resultMap>
     
     <resultMap id="HfGoodsDisplayResultMap" type="com.hanfu.payment.center.manual.model.HfGoodsDisplay">

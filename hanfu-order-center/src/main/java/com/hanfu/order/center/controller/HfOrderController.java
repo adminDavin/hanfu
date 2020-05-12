@@ -443,14 +443,16 @@ public class HfOrderController {
                 //lius
                 MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
                 paramMap1.add("orderId",Id);
-                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);
-                hfOrderDetailList.forEach(hfOrderDetail -> {
+                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
+//                hfOrderDetailList.forEach(hfOrderDetail -> {
+                HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
                     MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-                    paramMap2.add("stoneId",hfOrderDetail.getStoneId());
+                    paramMap2.add("stoneId",stoneId);
                     paramMap2.add("balanceType","rechargeAmount");
-                    paramMap2.add("money",hfOrderDetail.getActualPrice());
+                    paramMap2.add("money",hfOrderPay.getAmount());
+                    paramMap2.add("type",1);//加余额
                     restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
-                });
+//                });
 
                 //
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();

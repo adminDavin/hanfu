@@ -205,7 +205,7 @@ public class PaymentOrderController {
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
 			paramMap2.add("stoneId",hfOrder.getStoneId());
 			paramMap2.add("balanceType","rechargeAmount");
-			paramMap2.add("money",hfOrder.getActualPrice());
+			paramMap2.add("money",hfOrder.getAmount());
 			paramMap2.add("type", "-1");
 			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
 		}
