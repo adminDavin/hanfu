@@ -13,6 +13,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private Integer goodId;
 	private String goodName;
 	private String goodDesc;
+	private Integer total;
 	private Integer quantity;
 	private Integer productId;
 	private Integer bossId;
@@ -46,6 +47,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setGoodDesc(String goodDesc) {
 		this.goodDesc = goodDesc;
+	}
+	public Integer getTotal() {
+		return total;
+	}
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	public Integer getQuantity() {
 		return quantity;
