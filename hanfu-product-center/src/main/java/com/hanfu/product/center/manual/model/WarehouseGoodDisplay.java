@@ -9,6 +9,7 @@ public class WarehouseGoodDisplay implements Serializable{
 
 	private static final long serialVersionUID = -6706313124717301782L;
 	
+	private Integer id;
 	private Integer goodId;
 	private String goodName;
 	private String goodDesc;
@@ -22,6 +23,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
 	private LocalDateTime time;
 	private String name;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public Integer getGoodId() {
 		return goodId;
 	}

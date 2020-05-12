@@ -193,6 +193,7 @@ public class WareHouseController {
         for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setId(storage.getId());
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProducId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
@@ -268,7 +269,7 @@ public class WareHouseController {
     
     @ApiOperation(value = "物品入库", notes = "物品入库")
     @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodInWarsehouse(Integer warehouseId, Integer productId, Integer goodId, Integer quantity
+    public ResponseEntity<JSONObject> goodInWarsehouse(Integer inStorgeId, Integer warehouseId, Integer productId, Integer goodId, Integer quantity
     		,String typeWho, Integer userId, Integer type, Integer bossId, Integer stoneId)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
