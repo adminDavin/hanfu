@@ -25,6 +25,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private LocalDateTime time;
 	private String name;
 	private Integer warehouseId;
+	private String warehouseName;
 	public Integer getId() {
 		return id;
 	}
@@ -114,6 +115,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
+	}
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

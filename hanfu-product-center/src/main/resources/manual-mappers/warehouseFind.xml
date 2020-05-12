@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.product.center.manual.dao.WarehouseDao">
+    <resultMap id="WarehouseRespRecord" type="com.hanfu.product.center.model.WarehouseRespRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="boss_id" jdbcType="INTEGER" property="bossId" />
+    <result column="warehouse_id" jdbcType="INTEGER" property="warehouseId" />
+    <result column="type_who" jdbcType="VARCHAR" property="typeWho" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="stone_id" jdbcType="INTEGER" property="stoneId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="good_id" jdbcType="INTEGER" property="goodId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
+
+	<select id="findWarehouseRespRecord" resultMap="WarehouseRespRecord">
+		select * from warehouse_resp_record w left join hf_goods h on w.good_id=h.id
+		where 1=1
+		<if test="type != null and type != ''">
+			and w.type = #{type}
+		</if>
+		<if test="warehousrId != null and warehousrId != ''">
+			and w.warehouse_id = #{warehousrId}
+		</if>
+		<if test="goodName != null and goodName != ''">
+			and h.hf_name like concat("%",#{goodName},"%")
+		</if>
+		<if test="start != null and start != '' and end != null and end != ''">
+			and w.create_time &gt;= #{start} and create_time &lt;= #{end}
+		</if>
+		
+	</select>
+</mapper>

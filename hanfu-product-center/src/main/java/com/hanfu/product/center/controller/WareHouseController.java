@@ -32,6 +32,8 @@ import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.dao.WarehouseRespRecordMapper;
+import com.hanfu.product.center.manual.dao.WarehouseDao;
+import com.hanfu.product.center.manual.model.WarehouseFindConditional;
 import com.hanfu.product.center.manual.model.WarehouseGoodDisplay;
 import com.hanfu.product.center.model.HWarehouseResp;
 import com.hanfu.product.center.model.HWarehouseRespExample;
@@ -109,6 +111,9 @@ public class WareHouseController {
     
     @Autowired
     private ProductMapper productMapper;
+    
+    @Autowired
+    private WarehouseDao warehouseDao;
     
     @ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
     @RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -217,6 +222,8 @@ public class WareHouseController {
 			if("0".equals(dataType)) {
 				HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(storage.getApplyId());
 				display.setWarehouseId(apply.getWarehouseId());
+				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(apply.getWarehouseId());
+				display.setWarehouseName(warehouse.getHfName());
 			}
 			if("0".equals(storage.getType())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
@@ -454,11 +461,17 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询出入库记录", notes = "查询出入库记录")
     @RequestMapping(value = "/findWarsehouseRecord", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findWarsehouseRecord(String goodName, Integer wareHouseId, Date strat, Date end, Integer type)
+    public ResponseEntity<JSONObject> findWarsehouseRecord(String goodName, Integer warehouseId, Date start, Date end, Integer type)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
-        List<WarehouseRespRecord> list = warehouseRespRecordMapper.selectByExample(null);
+        WarehouseFindConditional wfc = new WarehouseFindConditional();
+        wfc.setEnd(end);
+        wfc.setGoodName(goodName);
+        wfc.setStart(start);
+        wfc.setType(type);
+        wfc.setWarehousrId(warehouseId);
+        List<WarehouseRespRecord> list = warehouseDao.findWarehouseRespRecord(wfc);
         for (int i = 0; i < list.size(); i++) {
         	WarehouseRespRecord storage  = list.get(i);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
