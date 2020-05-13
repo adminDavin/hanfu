@@ -26,6 +26,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private String name;
 	private Integer warehouseId;
 	private String warehouseName;
+	private String warehouseRegoin;
 	public Integer getId() {
 		return id;
 	}
@@ -121,6 +122,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public void setWarehouseName(String warehouseName) {
 		this.warehouseName = warehouseName;
+	}
+	public String getWarehouseRegoin() {
+		return warehouseRegoin;
+	}
+	public void setWarehouseRegoin(String warehouseRegoin) {
+		this.warehouseRegoin = warehouseRegoin;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

@@ -142,12 +142,12 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<!--<table schema="user_center" tableName="hf_warehouse" -->
-		<!--domainObjectName="Warehouse"> -->
-		<!--<property name="useActualColumnNames" value="false"/> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true"/> -->
-		<!--</table> -->
+		<table schema="user_center" tableName="hf_warehouse"
+			domainObjectName="Warehouse">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table>
 		<!--<table schema="user_center" tableName="hf_price" -->
 		<!--domainObjectName="HfPrice"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
@@ -296,23 +296,26 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<!-- <table schema="user_center" tableName="hf_in_storage" domainObjectName="HfInStorage"> 
-			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
-			sqlStatement="mysql" identity="true"/> </table> -->
-		<!-- <table schema="user_center" tableName="warehouse_resp_record"
-			domainObjectName="WarehouseRespRecord">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table> -->
-		<table schema="user_center" tableName="hf_good_apply"
-			domainObjectName="HfGoodApply">
+		<table schema="user_center" tableName="hf_in_storage"
+			domainObjectName="HfInStorage">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
 		</table>
+		<!-- <table schema="user_center" tableName="warehouse_resp_record" domainObjectName="WarehouseRespRecord"> 
+			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
+			sqlStatement="mysql" identity="true" /> </table> -->
+		<!-- <table schema="user_center" tableName="hf_good_apply" domainObjectName="HfGoodApply"> 
+			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
+			sqlStatement="mysql" identity="true" /> </table> -->
 		<!-- <table schema="user_center" tableName="hf_order" domainObjectName="HfOrder"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
+		<table schema="user_center" tableName="warehouse_apply_good"
+			domainObjectName="WarehouseApplyGood">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table>
 	</context>
 </generatorConfiguration>
