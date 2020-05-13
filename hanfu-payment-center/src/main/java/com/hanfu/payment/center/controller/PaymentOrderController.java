@@ -201,6 +201,7 @@ public class PaymentOrderController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("getServletContext"));
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		if (orderCode!=null){
 			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
@@ -580,7 +581,7 @@ public class PaymentOrderController {
 	@RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
 	public void refund(HttpServletRequest request, HttpServletResponse response) throws Exception {
 //		MiniProgramConfig config = new MiniProgramConfig();
-
+		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("getServletContext"));
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
 		String line = null;
 		StringBuilder sb = new StringBuilder();
