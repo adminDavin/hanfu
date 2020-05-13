@@ -20,16 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 public class MiniProgramConfig implements WXPayConfig {
 
     private byte[] certData;
-    private Integer bossId;
+    private Integer bossId=1;
     private String PATH_APP;
 @Autowired
 private PayBossMapper payBossMapper;
-    @Autowired
-    private HttpServletRequest httpServletRequest;
     @Bean
     @Override
     public String getAppID() {
-        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
+//        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
         payBossExample.createCriteria().andBossIdEqualTo(bossId);
         return payBossMapper.selectByExample(payBossExample).get(0).getAppid();
@@ -39,7 +37,7 @@ private PayBossMapper payBossMapper;
     @Override
     public String getMchID() {
         // TODO Auto-generated method stub
-        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
+//        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
         payBossExample.createCriteria().andBossIdEqualTo(bossId);
         return payBossMapper.selectByExample(payBossExample).get(0).getMchid();
@@ -49,7 +47,7 @@ private PayBossMapper payBossMapper;
     @Override
     public String getKey() {
         // TODO Auto-generated method stub
-        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
+//        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
         payBossExample.createCriteria().andBossIdEqualTo(bossId);
         return payBossMapper.selectByExample(payBossExample).get(0).getPayKey();
@@ -59,7 +57,7 @@ private PayBossMapper payBossMapper;
     @Override
     public InputStream getCertStream() {
         // TODO Auto-generated method stub
-        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
+//        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
         payBossExample.createCriteria().andBossIdEqualTo(bossId);
         PATH_APP=payBossMapper.selectByExample(payBossExample).get(0).getApiclientCert();
