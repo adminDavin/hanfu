@@ -326,22 +326,22 @@ public class GoodsController {
 				hfGoodsSpecMapper.insert(item);
 			}
 		}
-		HfInStorage inStorage = new HfInStorage();
-		if(hfGoodsInfo.getStoneId() == null) {
-			inStorage.setType("0");
-		}else {
-			inStorage.setType("1");
-			inStorage.setStoneId(hfGoodsInfo.getStoneId());
-		}
-		inStorage.setDataType("1");
-		inStorage.setBossId(1);
-		inStorage.setProducId(hfGoodsInfo.getProductId());
-		inStorage.setGoodId(record.getId());
-		inStorage.setUserId(hfGoodsInfo.getUserId());
-		inStorage.setCreateTime(LocalDateTime.now());
-		inStorage.setModifyTime(LocalDateTime.now());
-		inStorage.setIsDeleted((byte) 0);
-		hfInStorageMapper.insert(inStorage);
+//		HfInStorage inStorage = new HfInStorage();
+//		if(hfGoodsInfo.getStoneId() == null) {
+//			inStorage.setType("0");
+//		}else {
+//			inStorage.setType("1");
+//			inStorage.setStoneId(hfGoodsInfo.getStoneId());
+//		}
+//		inStorage.setDataType("1");
+//		inStorage.setBossId(1);
+//		inStorage.setProducId(hfGoodsInfo.getProductId());
+//		inStorage.setGoodId(record.getId());
+//		inStorage.setUserId(hfGoodsInfo.getUserId());
+//		inStorage.setCreateTime(LocalDateTime.now());
+//		inStorage.setModifyTime(LocalDateTime.now());
+//		inStorage.setIsDeleted((byte) 0);
+//		hfInStorageMapper.insert(inStorage);
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 
