@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MiniProgramConfig implements WXPayConfig {
 
     private byte[] certData;
-    private Integer bossId=1;
+    private Integer bossId=getBossId();
     private String PATH_APP;
 @Autowired
 private PayBossMapper payBossMapper;
@@ -83,4 +83,14 @@ private PayBossMapper payBossMapper;
         return 0;
     }
 
+    public Integer getBossId() {
+        if (bossId==null){
+            bossId=2;
+        }
+        return bossId;
+    }
+
+    public void setBossId(Integer bossId) {
+        this.bossId = bossId;
+    }
 }
