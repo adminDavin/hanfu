@@ -37,6 +37,8 @@ public class MyInterceptor implements HandlerInterceptor {
 //        if (cookies==null){
 //            return false;
 //        }
+        Object userId= request.getHeader("userId");
+        System.out.println(userId);
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
 //        System.out.println(cookies+"cookies-----------------");
 //        for(Cookie cookie1 : cookies){
