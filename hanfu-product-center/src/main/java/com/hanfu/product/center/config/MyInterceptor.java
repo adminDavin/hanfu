@@ -33,12 +33,13 @@ public class MyInterceptor implements HandlerInterceptor {
 //    private HfAdminMapper hfAdminMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Cookie[] cookies = request.getCookies();
-        if (cookies==null){
-            return false;
-        }
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies==null){
+//            return false;
+//        }
+        logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
 //        System.out.println(cookies+"cookies-----------------");
-        for(Cookie cookie1 : cookies){
+//        for(Cookie cookie1 : cookies){
 //            if (cookie1.getName()==null){
 //                System.out.println(cookie1.getName()+"cookie Name");
 //                response.sendRedirect("http://39.100.237.144:3001/");
@@ -48,10 +49,10 @@ public class MyInterceptor implements HandlerInterceptor {
 //                response.sendRedirect("http://39.100.237.144:3001/");
 //            }
 //            redisTemplate.opsForValue().get("autologin");
-            if (cookie1.getName().equals("autologin")) {
-                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-            }
-        }
+//            if (cookie1.getName().equals("autologin")) {
+//                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
+//            }
+//        }
 //        permissionService.test();
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用

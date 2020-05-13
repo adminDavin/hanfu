@@ -217,6 +217,8 @@ public class HfOrderController {
 //            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
             hfOrders.forEach(hfOrder -> {
+                HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
+                hfOrder.setStoneName(hfStone1.getHfName());
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
                 List<HfOrderDetail> hfOrderDetailList = hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
@@ -450,7 +452,7 @@ public class HfOrderController {
                     paramMap2.add("stoneId",stoneId);
                     paramMap2.add("balanceType","rechargeAmount");
                     paramMap2.add("money",hfOrderPay.getAmount());
-                    paramMap2.add("type",1);//加余额
+                    paramMap2.add("type",1);
                     restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
 //                });
 
