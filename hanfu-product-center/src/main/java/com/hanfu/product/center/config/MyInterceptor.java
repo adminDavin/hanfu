@@ -1,5 +1,8 @@
 package com.hanfu.product.center.config;
 
+import com.hanfu.product.center.dao.PayBossMapper;
+import com.hanfu.product.center.model.PayBoss;
+import com.hanfu.product.center.model.PayBossExample;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
@@ -16,10 +19,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class MyInterceptor implements HandlerInterceptor {
 
     Permission permissionService = new Permission();
+    @Autowired
+    private PayBossMapper payBossMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
@@ -27,27 +33,38 @@ public class MyInterceptor implements HandlerInterceptor {
 //    private HfAdminMapper hfAdminMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies==null){
-//            return false;
-//        }
+        Cookie[] cookies = request.getCookies();
+        if (cookies==null){
+            return false;
+        }
 //        System.out.println(cookies+"cookies-----------------");
-//        for(Cookie cookie1 : cookies){
-//            if (cookie1.getName()==null){
-//                System.out.println(cookie1.getName()+"cookie Name");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
-//                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            redisTemplate.opsForValue().get("autologin");
-//            if (cookie1.getName().equals("autologin")) {
-//                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-//            }
-//        }
+        for(Cookie cookie1 : cookies){
+            if (cookie1.getName()==null){
+                System.out.println(cookie1.getName()+"cookie Name");
+                response.sendRedirect("http://39.100.237.144:3001/");
+            }
+            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
+                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
+                response.sendRedirect("http://39.100.237.144:3001/");
+            }
+            redisTemplate.opsForValue().get("autologin");
+            if (cookie1.getName().equals("autologin")) {
+                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
+            }
+        }
 //        permissionService.test();
         if (permissionService.hasPermission(request,response,handler)==true) {
+            //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
+//            request.setAttribute("getAttribute", "getAttribute");
+            PayBossExample payBossExample = new PayBossExample();
+            payBossExample.createCriteria().andUserIdEqualTo(971).andIsDeletedEqualTo((byte) 0);
+            List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+            //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象，具体请百度
+            //把变量放在这里面，在之后什么地方都可以访问
+            request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
+
+            //把自己的变量放在头部
+//            reflectSetHeader(request, "header", "header");
             return true;
         }
         response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
