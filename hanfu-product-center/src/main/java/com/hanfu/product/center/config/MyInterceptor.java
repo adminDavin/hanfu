@@ -39,15 +39,15 @@ public class MyInterceptor implements HandlerInterceptor {
         }
 //        System.out.println(cookies+"cookies-----------------");
         for(Cookie cookie1 : cookies){
-            if (cookie1.getName()==null){
-                System.out.println(cookie1.getName()+"cookie Name");
-                response.sendRedirect("http://39.100.237.144:3001/");
-            }
-            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
-                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
-                response.sendRedirect("http://39.100.237.144:3001/");
-            }
-            redisTemplate.opsForValue().get("autologin");
+//            if (cookie1.getName()==null){
+//                System.out.println(cookie1.getName()+"cookie Name");
+//                response.sendRedirect("http://39.100.237.144:3001/");
+//            }
+//            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
+//                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
+//                response.sendRedirect("http://39.100.237.144:3001/");
+//            }
+//            redisTemplate.opsForValue().get("autologin");
             if (cookie1.getName().equals("autologin")) {
                 System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
             }
