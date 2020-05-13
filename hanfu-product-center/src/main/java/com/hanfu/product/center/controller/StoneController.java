@@ -206,12 +206,14 @@ public class StoneController {
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
 			HfStonePictureExample hfStonePictureExample = new HfStonePictureExample();
-			hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
+			hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andTypeEqualTo("avatar");
             List<HfStonePicture> hfStonePictures= hfStonePictureMapper.selectByExample(hfStonePictureExample);
-			if (hfStonePictures.size()!=0){
+			if (hfStonePictures.size()!=0&&type==null){
 			    HfStonePicture hfStonePicture = new HfStonePicture();
 			    hfStonePicture.setIsDeleted((byte) 1);
-                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample);
+                HfStonePictureExample hfStonePictureExample1 = new HfStonePictureExample();
+                hfStonePictureExample1.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andTypeEqualTo("avatar");
+                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample1);
             }
             HfStonePicture picture = new HfStonePicture();
 			picture.setStoneId(stoneId);

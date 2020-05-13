@@ -1,9 +1,8 @@
-package com.hanfu.product.center.config;
+package com.hanfu.payment.center.config;
 
-import com.hanfu.product.center.dao.PayBossMapper;
-import com.hanfu.product.center.model.PayBoss;
-import com.hanfu.product.center.model.PayBossExample;
-import com.hanfu.user.center.service.PermissionService;
+import com.hanfu.payment.center.dao.PayBossMapper;
+import com.hanfu.payment.center.model.PayBoss;
+import com.hanfu.payment.center.model.PayBossExample;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -60,7 +58,7 @@ public class MyInterceptor implements HandlerInterceptor {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
             PayBossExample payBossExample = new PayBossExample();
-            payBossExample.createCriteria().andUserIdEqualTo(971).andIsDeletedEqualTo((byte) 0);
+            payBossExample.createCriteria().andUserIdEqualTo(970).andIsDeletedEqualTo((byte) 0);
             List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象，具体请百度
             //把变量放在这里面，在之后什么地方都可以访问

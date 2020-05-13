@@ -56,6 +56,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import javax.servlet.http.HttpServletRequest;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/hfProduct")
@@ -418,7 +420,7 @@ public class HfProductController {
 
 	@ApiOperation(value = "获取商品列表boss", notes = "获取商品列表boss")
 	@RequestMapping(value = "/getProductListBoss", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getProductListBoss(IsDelete isDelete, Integer pageNum, Integer pageSize)
+	public ResponseEntity<JSONObject> getProductListBoss(HttpServletRequest request,IsDelete isDelete, Integer pageNum, Integer pageSize)
 			throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
@@ -426,6 +428,8 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
+		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+		isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
