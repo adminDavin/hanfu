@@ -428,8 +428,11 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
+
 		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-		isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		if (request.getServletContext().getAttribute("getServletContext")!=null){
+			isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);

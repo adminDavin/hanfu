@@ -59,12 +59,16 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
-            PayBossExample payBossExample = new PayBossExample();
-            payBossExample.createCriteria().andUserIdEqualTo(971).andIsDeletedEqualTo((byte) 0);
-            List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
-            //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象，具体请百度
+            if (userId!=null){
+                PayBossExample payBossExample = new PayBossExample();
+                payBossExample.createCriteria().andUserIdEqualTo(971).andIsDeletedEqualTo((byte) 0);
+                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+                request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
+            }
+
+            //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象
             //把变量放在这里面，在之后什么地方都可以访问
-            request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
+
 
             //把自己的变量放在头部
 //            reflectSetHeader(request, "header", "header");
