@@ -294,6 +294,10 @@ public class WareHouseController {
         	display.setGoodDesc(good.getGoodsDesc());
         	display.setGoodId(good.getId());
         	display.setStatus(applyGood.getStatus());
+        	display.setTime(applyGood.getCreateTime());
+        	JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+    				JSONObject.class, applyGood.getUserId());
+            display.setName(js1.getJSONObject("data").getString("nickName"));
         	HfCategory hfCategory = hfCategoryMapper.selectByPrimaryKey(good.getCategoryId());
         	display.setCategory(hfCategory.getHfName());
         	display.setProductId(good.getProductId());
