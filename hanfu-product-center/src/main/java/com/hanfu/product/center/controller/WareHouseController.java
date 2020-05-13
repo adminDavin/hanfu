@@ -244,6 +244,11 @@ public class WareHouseController {
     		, Integer quantity)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
+        HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+        if(hfResp.getQuantity() < quantity) {
+        	return builder.body(ResponseUtils.getResponseBody(0));
+        }
         HfInStorage inStorage = new HfInStorage();
 		inStorage.setDataType("1");
 		inStorage.setStatus(1);
@@ -254,6 +259,7 @@ public class WareHouseController {
 		inStorage.setCreateTime(LocalDateTime.now());
 		inStorage.setModifyTime(LocalDateTime.now());
 		inStorage.setIsDeleted((byte) 0);
+		inStorage.setWarehouseId(warehouseId);
 		hfInStorageMapper.insert(inStorage);
 		WarehouseApplyGood applyGood = new WarehouseApplyGood();
 		applyGood.setApplyId(inStorage.getId());
@@ -302,7 +308,7 @@ public class WareHouseController {
     
     @ApiOperation(value = "查询待入库物品", notes = "查询待入库物品/出库物品")
     @RequestMapping(value = "/findGoodsWarsehouse", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findGoodsWarsehouse(String dataType, String goodName, String categoryName)
+    public ResponseEntity<JSONObject> findGoodsWarsehouse(Integer warehouseId, String dataType, String goodName, String categoryName)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
@@ -310,6 +316,7 @@ public class WareHouseController {
         wfc.setGoodName(goodName);
         wfc.setData_type(dataType);
         wfc.setCategoryName(categoryName);
+        wfc.setWarehousrId(warehouseId);
         List<HfInStorage> list = warehouseDao.findHfInStorage(wfc);
         for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage  = list.get(i);
@@ -486,6 +493,7 @@ public class WareHouseController {
         hfGoodApplyMapper.insert(apply);
         HfInStorage storage = new HfInStorage();
         storage.setBossId(product.getBossId());
+        storage.setStatus(1);
         storage.setDataType("0");
         storage.setApplyId(apply.getId());
         storage.setGoodId(goodId);
@@ -494,6 +502,7 @@ public class WareHouseController {
         storage.setType("1");
         storage.setQuantity(quantity);
         storage.setUserId(userId);
+        storage.setWarehouseId(warehouseId);
         storage.setCreateTime(LocalDateTime.now());
         storage.setModifyTime(LocalDateTime.now());
         storage.setIsDeleted((byte) 0);
@@ -528,6 +537,9 @@ public class WareHouseController {
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
+        hfInStorage.setStatus(2);
+        hfInStorage.setModifyTime(LocalDateTime.now());
+        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
         apply.setModifyTime(LocalDateTime.now());
         apply.setStatus(1);
