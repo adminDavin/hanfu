@@ -195,5 +195,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.hanfu.user.center</groupId>
+			<artifactId>hanfu-user-center</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 </project>
