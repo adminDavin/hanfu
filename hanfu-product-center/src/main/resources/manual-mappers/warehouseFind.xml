@@ -64,12 +64,15 @@
 	
 	<select id="findHfInStorage" resultMap="HfInStorage">
 		select * from hf_in_storage h1 left join hf_goods h2 on h1.good_id=h2.id left join hf_category h3 on h2.category_id=h3.id
-		where 1=1 and h1.data_type = #{data_type} and h1.is_deleted = 0
+		where 1=1 and h1.data_type = #{data_type}
 		 <if test="categoryName != null and categoryName != ''">
 			and h3.hf_name like concat("%",#{categoryName},"%")
 		</if>
 		<if test="goodName != null and goodName != ''">
 			and h2.hf_name like concat("%",#{goodName},"%")
+		</if>
+		<if test="warehousrId != null and warehousrId != ''">
+			and h1.warehouse_id = #{warehousrId}
 		</if>
 	</select>
 	
