@@ -290,6 +290,7 @@ public class WareHouseController {
         	WarehouseApplyGood applyGood = list.get(i);
         	WarehouseGoodDisplay display = new WarehouseGoodDisplay();
         	HfGoods good = hfGoodsMapper.selectByPrimaryKey(applyGood.getGoodId()); 
+        	display.setId(applyGood.getId());
         	display.setGoodName(good.getHfName());
         	display.setGoodDesc(good.getGoodsDesc());
         	display.setGoodId(good.getId());
