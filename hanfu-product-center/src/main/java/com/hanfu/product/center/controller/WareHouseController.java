@@ -525,15 +525,15 @@ public class WareHouseController {
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         WarehouseApplyGood apply = warehouseApplyGoodMapper.selectByPrimaryKey(applyId);
+        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
+    	HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
+    	HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+    	if(hfResp.getQuantity() < apply.getQuantity()) {
+    		return builder.body(ResponseUtils.getResponseBody(0));
+    	}
         apply.setStatus(1);
         warehouseApplyGoodMapper.updateByPrimaryKey(apply);
         if(type == 1) {
-        	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
-        	HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
-        	HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
-        	if(hfResp.getQuantity() < apply.getQuantity()) {
-        		return builder.body(ResponseUtils.getResponseBody(0));
-        	}
             hfInStorage.setStatus(2);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
             HWarehouseRespExample example = new HWarehouseRespExample();
@@ -578,7 +578,7 @@ public class WareHouseController {
             hfResp.setQuantity(hfResp.getQuantity()-apply.getQuantity());
             hfRespMapper.updateByPrimaryKey(hfResp);
         }else {
-        	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
+        	hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
             hfInStorage.setStatus(3);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
         }
