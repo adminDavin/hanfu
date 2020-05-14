@@ -633,26 +633,8 @@ public class WareHouseController {
 		record.setIsDeleted((byte) 0);
 		record.setStoneId(hfInStorage.getStoneId());
 		warehouseRespRecordMapper.insert(record);
-		HfStoneRespExample example2 = new HfStoneRespExample();
-		example2.createCriteria().andStoneIdEqualTo(hfInStorage.getStoneId()).andGoodIdEqualTo(hfInStorage.getGoodId());
-		List<HfStoneResp> list2 = hfStoneRespMapper.selectByExample(example2);
-		if (CollectionUtils.isEmpty(list2)) {
-			HfStoneResp resp = new HfStoneResp();
-			resp.setProductId(hfInStorage.getProducId());
-			resp.setGoodId(hfInStorage.getGoodId());
-			resp.setStoneId(hfInStorage.getStoneId());
-			resp.setQuantity(hfInStorage.getQuantity());
-			resp.setCreateTime(LocalDateTime.now());
-			resp.setModifyTime(LocalDateTime.now());
-			resp.setIsDeleted((byte) 0);
-			resp.setType("2");
-			hfStoneRespMapper.insert(resp);
-		} else {
-			HfStoneResp resp = list2.get(0);
-			resp.setQuantity(resp.getQuantity() + hfInStorage.getQuantity());
-			resp.setModifyTime(LocalDateTime.now());
-			hfStoneRespMapper.updateByPrimaryKey(resp);
-		}
+		
+		Integer instanceId = null;
 		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
 		productInstanceExample.createCriteria().andStoneIdEqualTo(hfInStorage.getStoneId()).andProductIdEqualTo(hfInStorage.getProducId());
 		productInstanceMapper.selectByExample(productInstanceExample);
@@ -670,6 +652,30 @@ public class WareHouseController {
 			productInstance.setCategoryId(goods.getCategoryId());
 			productInstance.setBrandId(1);
 			productInstanceMapper.insertSelective(productInstance);
+			instanceId = productInstance.getId();
+		}else {
+			instanceId = instances.get(0).getId();
+		}
+		HfStoneRespExample example2 = new HfStoneRespExample();
+		example2.createCriteria().andStoneIdEqualTo(hfInStorage.getStoneId()).andGoodIdEqualTo(hfInStorage.getGoodId());
+		List<HfStoneResp> list2 = hfStoneRespMapper.selectByExample(example2);
+		if (CollectionUtils.isEmpty(list2)) {
+			HfStoneResp resp = new HfStoneResp();
+			resp.setProductId(hfInStorage.getProducId());
+			resp.setGoodId(hfInStorage.getGoodId());
+			resp.setStoneId(hfInStorage.getStoneId());
+			resp.setQuantity(hfInStorage.getQuantity());
+			resp.setInstanceId(instanceId);
+			resp.setCreateTime(LocalDateTime.now());
+			resp.setModifyTime(LocalDateTime.now());
+			resp.setIsDeleted((byte) 0);
+			resp.setType("2");
+			hfStoneRespMapper.insert(resp);
+		} else {
+			HfStoneResp resp = list2.get(0);
+			resp.setQuantity(resp.getQuantity() + hfInStorage.getQuantity());
+			resp.setModifyTime(LocalDateTime.now());
+			hfStoneRespMapper.updateByPrimaryKey(resp);
 		}
 		StoneRespRecord respRecord = new StoneRespRecord();
 		respRecord.setProductId(hfInStorage.getProducId());
