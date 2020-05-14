@@ -25,6 +25,7 @@ public class ProductGoods {
     private String warehouseName;
     private String hfRegion;
     private Integer instanceId;
+    private String type;
 
     public Integer getGoodsId() {
         return goodsId;
@@ -168,5 +169,13 @@ public class ProductGoods {
 
 	public void setInstanceId(Integer instanceId) {
 		this.instanceId = instanceId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

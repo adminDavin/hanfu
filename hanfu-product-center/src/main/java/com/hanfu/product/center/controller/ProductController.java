@@ -100,6 +100,10 @@ public class ProductController {
 	private HfMemberDao hfMemberDao;
 	@Autowired
 	private ManualDao manualDao;
+	@Autowired
+	private HfStoneRespMapper hfStoneRespMapper;
+	@Autowired
+	private HfPriceMapper hfPriceMapper;
 
 	@ApiOperation(value = "获取类目列表", notes = "获取系统支持的商品类目")
 	@ApiImplicitParams({
@@ -757,12 +761,30 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		if(productId.getStoneId() == null) {
 			return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
 		}
-		ProductInstanceExample example = new ProductInstanceExample();
+//		ProductInstanceExample example = new ProductInstanceExample();
+//		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
+//		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
+//		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
+//		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
+//				.collect(Collectors.toList());
+		List<ProductGoods> result = new ArrayList<ProductGoods>();
+		HfStoneRespExample example = new HfStoneRespExample();
 		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
-		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
-		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
-		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
-				.collect(Collectors.toList());
+		List<HfStoneResp> list = hfStoneRespMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			HfStoneResp resp = list.get(i);
+			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(resp.getGoodId());
+			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
+			ProductGoods productGoods = new ProductGoods();
+			productGoods.setGoodsName(goods.getHfName());
+			productGoods.setGoodsDesc(goods.getGoodsDesc());
+			productGoods.setSellPrice(hfPrice.getSellPrice());
+			productGoods.setQuantity(resp.getQuantity());
+			productGoods.setCreateTime(goods.getCreateTime());
+			productGoods.setModifyTime(goods.getModifyTime());
+			productGoods.setType(resp.getType());
+			result.add(productGoods);
+		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
@@ -853,36 +875,36 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	}
 
 
-	@ApiOperation(value = "店铺添加商品", notes = "店铺添加商品")
-	@RequestMapping(value = "/addStoneProduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId,Integer userId)
-			throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfStoneExample hfStoneExample = new HfStoneExample();
-		hfStoneExample.createCriteria().andIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0);
-		List<HfStone> hfStones= hfStoneMapper.selectByExample(hfStoneExample);
-		for (Integer productId : productIds){
-			ProductInstanceExample productInstanceExample = new ProductInstanceExample();
-			productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
-			productInstanceMapper.selectByExample(productInstanceExample);
-			if (productInstanceMapper.selectByExample(productInstanceExample).size()==0){
-				ProductInstance productInstance = new ProductInstance();
-				productInstance.setCreateTime(LocalDateTime.now());
-				productInstance.setModifyTime(LocalDateTime.now());
-				productInstance.setLastModifier(String.valueOf(userId));
-				productInstance.setIsDeleted((short) 0);
-				productInstance.setStoneId(stoneId);
-				productInstance.setEvaluateCount(0);
-				productInstance.setProductId(productId);
-				productInstance.setBossId(hfStones.get(0).getBossId());
-
-				productInstance.setCategoryId(31);
-				productInstance.setBrandId(1);
-				productInstanceMapper.insertSelective(productInstance);
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(0));
-	}
+//	@ApiOperation(value = "店铺添加商品", notes = "店铺添加商品")
+//	@RequestMapping(value = "/addStoneProduct", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> addStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId,Integer userId)
+//			throws JSONException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfStoneExample hfStoneExample = new HfStoneExample();
+//		hfStoneExample.createCriteria().andIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0);
+//		List<HfStone> hfStones= hfStoneMapper.selectByExample(hfStoneExample);
+//		for (Integer productId : productIds){
+//			ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+//			productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+//			productInstanceMapper.selectByExample(productInstanceExample);
+//			if (productInstanceMapper.selectByExample(productInstanceExample).size()==0){
+//				ProductInstance productInstance = new ProductInstance();
+//				productInstance.setCreateTime(LocalDateTime.now());
+//				productInstance.setModifyTime(LocalDateTime.now());
+//				productInstance.setLastModifier(String.valueOf(userId));
+//				productInstance.setIsDeleted((short) 0);
+//				productInstance.setStoneId(stoneId);
+//				productInstance.setEvaluateCount(0);
+//				productInstance.setProductId(productId);
+//				productInstance.setBossId(hfStones.get(0).getBossId());
+//
+//				productInstance.setCategoryId(31);
+//				productInstance.setBrandId(1);
+//				productInstanceMapper.insertSelective(productInstance);
+//			}
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(0));
+//	}
 
 	@ApiOperation(value = "店铺删除商品", notes = "店铺删除商品")
 	@RequestMapping(value = "/deletedStoneProduct", method = RequestMethod.POST)

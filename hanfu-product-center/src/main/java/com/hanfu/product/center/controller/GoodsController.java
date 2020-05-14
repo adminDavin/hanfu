@@ -580,6 +580,7 @@ public class GoodsController {
 				stoneResp.setCreateTime(LocalDateTime.now());
 				stoneResp.setModifyTime(LocalDateTime.now());
 				stoneResp.setIsDeleted((byte) 0);
+				stoneResp.setType("1");
 				hfStoneRespMapper.insert(stoneResp);
 			}else {
 				HfStoneResp stoneResp = list.get(0);

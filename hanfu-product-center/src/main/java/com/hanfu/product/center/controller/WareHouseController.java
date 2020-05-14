@@ -36,6 +36,7 @@ import com.hanfu.product.center.dao.HfInStorageMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStoneRespMapper;
+import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.StoneRespRecordMapper;
 import com.hanfu.product.center.dao.WarehouseApplyGoodMapper;
@@ -58,6 +59,8 @@ import com.hanfu.product.center.model.HfStone;
 import com.hanfu.product.center.model.HfStoneResp;
 import com.hanfu.product.center.model.HfStoneRespExample;
 import com.hanfu.product.center.model.Product;
+import com.hanfu.product.center.model.ProductInstance;
+import com.hanfu.product.center.model.ProductInstanceExample;
 import com.hanfu.product.center.model.StoneRespRecord;
 import com.hanfu.product.center.model.Warehouse;
 import com.hanfu.product.center.model.WarehouseApplyGood;
@@ -129,6 +132,9 @@ public class WareHouseController {
 
 	@Autowired
 	private WarehouseApplyGoodMapper warehouseApplyGoodMapper;
+	
+	@Autowired
+	private ProductInstanceMapper productInstanceMapper;
 
 	@ApiOperation(value = "查询仓库", notes = "每个商家都有自己的仓库")
 	@RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
@@ -463,13 +469,11 @@ public class WareHouseController {
 	public ResponseEntity<JSONObject> rejectGoodOutWarsehouse(Integer outStorageId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
-		if (hfInStorage != null) {
-			hfInStorage.setIsDeleted((byte) 1);
-		}
+		hfInStorage.setStatus(2);
 		hfInStorageMapper.updateByPrimaryKey(hfInStorage);
 		HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
 		apply.setModifyTime(LocalDateTime.now());
-		apply.setStatus(0);
+		apply.setStatus(3);
 		hfGoodApplyMapper.updateByPrimaryKey(apply);
 		return builder.body(ResponseUtils.getResponseBody(apply.getId()));
 	}
@@ -479,13 +483,22 @@ public class WareHouseController {
 	public ResponseEntity<JSONObject> stoneApplyGood(Integer stoneId, Integer productId, Integer goodId,
 			Integer quantity, Integer userId, Integer warehouseId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HWarehouseRespExample respExample = new HWarehouseRespExample();
+		respExample.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
+		List<HWarehouseResp> resps = hWarehouseRespMapper.selectByExample(respExample);
+		if(!CollectionUtils.isEmpty(resps)) {
+			HWarehouseResp resp = resps.get(0);
+			if(resp.getQuantity() < quantity) {
+				return builder.body(ResponseUtils.getResponseBody(0));
+			}
+		}
 		Product product = productMapper.selectByPrimaryKey(productId);
 		HfGoodApply apply = new HfGoodApply();
 		apply.setGoodId(goodId);
 		apply.setProductId(productId);
 		apply.setQuantity(quantity);
 		apply.setStoneId(stoneId);
-		apply.setStatus(-1);
+		apply.setStatus(1);
 		apply.setWarehouseId(warehouseId);
 		apply.setCreateTime(LocalDateTime.now());
 		apply.setModifyTime(LocalDateTime.now());
@@ -581,18 +594,10 @@ public class WareHouseController {
 			Integer goodId, Integer stoneId, Integer quantity, String typeWho, Integer userId, Integer type)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
-		hfInStorage.setStatus(2);
-		hfInStorage.setModifyTime(LocalDateTime.now());
-		hfInStorageMapper.updateByPrimaryKey(hfInStorage);
-		HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
-		apply.setModifyTime(LocalDateTime.now());
-		apply.setStatus(1);
-		hfGoodApplyMapper.updateByPrimaryKey(apply);
-		Integer id = null;
 		HWarehouseRespExample example = new HWarehouseRespExample();
 		example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
 		List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+		Integer id = null;
 		if (CollectionUtils.isEmpty(list)) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		} else {
@@ -605,6 +610,15 @@ public class WareHouseController {
 			hWarehouseRespMapper.updateByPrimaryKey(hWarehouseResp);
 			id = hWarehouseResp.getId();
 		}
+		HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(outStorageId);
+		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
+		hfInStorage.setStatus(2);
+		hfInStorage.setModifyTime(LocalDateTime.now());
+		hfInStorageMapper.updateByPrimaryKey(hfInStorage);
+		HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(hfInStorage.getApplyId());
+		apply.setModifyTime(LocalDateTime.now());
+		apply.setStatus(2);
+		hfGoodApplyMapper.updateByPrimaryKey(apply);
 		WarehouseRespRecord record = new WarehouseRespRecord();
 		record.setProductId(productId);
 		record.setGoodId(goodId);
@@ -630,12 +644,31 @@ public class WareHouseController {
 			resp.setCreateTime(LocalDateTime.now());
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setIsDeleted((byte) 0);
+			resp.setType("2");
 			hfStoneRespMapper.insert(resp);
 		} else {
 			HfStoneResp resp = list2.get(0);
 			resp.setQuantity(resp.getQuantity() + quantity);
 			resp.setModifyTime(LocalDateTime.now());
 			hfStoneRespMapper.updateByPrimaryKey(resp);
+		}
+		ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+		productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+		productInstanceMapper.selectByExample(productInstanceExample);
+		List<ProductInstance> instances = productInstanceMapper.selectByExample(productInstanceExample);
+		if (CollectionUtils.isEmpty(instances)){
+			ProductInstance productInstance = new ProductInstance();
+			productInstance.setCreateTime(LocalDateTime.now());
+			productInstance.setModifyTime(LocalDateTime.now());
+			productInstance.setLastModifier(String.valueOf(userId));
+			productInstance.setIsDeleted((short) 0);
+			productInstance.setStoneId(stoneId);
+			productInstance.setEvaluateCount(0);
+			productInstance.setProductId(productId);
+			productInstance.setBossId(goods.getBossId());
+			productInstance.setCategoryId(goods.getCategoryId());
+			productInstance.setBrandId(1);
+			productInstanceMapper.insertSelective(productInstance);
 		}
 		StoneRespRecord respRecord = new StoneRespRecord();
 		respRecord.setProductId(productId);
