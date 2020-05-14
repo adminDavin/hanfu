@@ -100,6 +100,18 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     
   </resultMap>
+  
+  <resultMap id="HfUserMemberMap" type="com.hanfu.user.center.model.HfUserMember">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="start_tme" jdbcType="TIMESTAMP" property="startTme" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="use_state" jdbcType="INTEGER" property="useState" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="level_id" jdbcType="INTEGER" property="levelId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+  </resultMap>
 	
     <select id="selectAuthList" resultMap="BaseResultMap">
         SELECT
@@ -269,4 +281,30 @@
         </if>
     </select>
     
+    <select id="selectHfUserMember" resultMap="HfUserMemberMap">
+        SELECT
+        *
+        FROM
+        hf_user_member h1
+        LEFT JOIN
+        hf_user h2
+        ON
+        h1.user_id=h2.id
+        WHERE 1=1
+        <if test="id != null and id != ''">
+            AND h1.level_id = #{id}
+        </if>
+        <if test="nickName != null and nickName != ''">
+            AND h2.nick_name LIKE concat('%',#{nickName},'%')
+        </if>
+        <if test="phone != null and phone != ''">
+            AND h2.phone LIKE concat('%',#{phone},'%')
+        </if>
+        <if test="realName != null and realName != ''">
+            AND h2.real_name LIKE concat('%',#{realName},'%')
+        </if>
+        <if test="ownInvitationCode != null and ownInvitationCode != ''">
+            AND h2.own_invitation_code LIKE concat('%',#{ownInvitationCode},'%')
+        </if>
+    </select>
 </mapper>
