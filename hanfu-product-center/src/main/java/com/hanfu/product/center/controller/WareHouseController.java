@@ -291,6 +291,8 @@ public class WareHouseController {
         	WarehouseGoodDisplay display = new WarehouseGoodDisplay();
         	HfGoods good = hfGoodsMapper.selectByPrimaryKey(applyGood.getGoodId()); 
         	display.setId(applyGood.getId());
+        	HfResp resp = hfRespMapper.selectByPrimaryKey(good.getRespId());
+        	display.setTotal(resp.getQuantity());
         	display.setGoodName(good.getHfName());
         	display.setGoodDesc(good.getGoodsDesc());
         	display.setGoodId(good.getId());
@@ -405,62 +407,62 @@ public class WareHouseController {
         return builder.body(ResponseUtils.getResponseBody(result));
     }
     
-    @ApiOperation(value = "物品入库", notes = "物品入库")
-    @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> goodInWarsehouse(Integer inStorgeId, Integer warehouseId, Integer productId, Integer goodId, Integer quantity
-    		,String typeWho, Integer userId, Integer type, Integer bossId, String stoneId)
-            throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(inStorgeId);
-        Integer id = null;
-        HWarehouseRespExample example = new HWarehouseRespExample();
-        example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
-        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
-        if(CollectionUtils.isEmpty(list)) {
-        	HWarehouseResp hWarehouseResp = new HWarehouseResp();
-        	hWarehouseResp.setProductId(productId);
-        	hWarehouseResp.setGoodId(goodId);
-        	hWarehouseResp.setQuantity(quantity);
-        	hWarehouseResp.setWarehouseId(warehouseId);
-        	hWarehouseResp.setCreateTime(LocalDateTime.now());
-        	hWarehouseResp.setModifyTime(LocalDateTime.now());
-        	hWarehouseResp.setIsDeleted((byte) 0);
-        	hWarehouseRespMapper.insert(hWarehouseResp);
-        	id = hWarehouseResp.getId();
-        }else {
-        	HWarehouseResp hWarehouseResp = list.get(0);
-        	hWarehouseResp.setQuantity(hWarehouseResp.getQuantity()+quantity);
-        	hWarehouseResp.setModifyTime(LocalDateTime.now());
-        	hWarehouseRespMapper.updateByPrimaryKey(hWarehouseResp);
-        	id = hWarehouseResp.getId();
-        }
-        WarehouseRespRecord record = new WarehouseRespRecord();
-        record.setProductId(productId);
-        record.setGoodId(goodId);
-        record.setQuantity(quantity);
-        record.setTypeWho(typeWho);
-        if("1".equals(typeWho)) {
-        	record.setStoneId(Integer.valueOf(stoneId));
-        }
-        record.setBossId(bossId);
-        record.setType(1);
-        record.setUserId(String.valueOf(userId));
-        record.setWarehouseId(warehouseId);
-        record.setCreateTime(LocalDateTime.now());
-        record.setModifyTime(LocalDateTime.now());
-        record.setIsDeleted((byte) 0);
-        warehouseRespRecordMapper.insert(record);
-        hfInStorage.setIsDeleted((byte) 1);
-        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
-        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
-        HfResp resp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
-        if(resp.getQuantity() < quantity) {
-        	return builder.body(ResponseUtils.getResponseBody(0));
-        }
-        resp.setQuantity(resp.getQuantity()-quantity);
-        hfRespMapper.updateByPrimaryKey(resp);
-        return builder.body(ResponseUtils.getResponseBody(id));
-    }
+//    @ApiOperation(value = "物品入库", notes = "物品入库")
+//    @RequestMapping(value = "/goodInWarsehouse", method = RequestMethod.POST)
+//    public ResponseEntity<JSONObject> goodInWarsehouse(Integer inStorgeId, Integer warehouseId, Integer productId, Integer goodId, Integer quantity
+//    		,String typeWho, Integer userId, Integer type, Integer bossId, String stoneId)
+//            throws Exception {
+//        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//        HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(inStorgeId);
+//        Integer id = null;
+//        HWarehouseRespExample example = new HWarehouseRespExample();
+//        example.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
+//        List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+//        if(CollectionUtils.isEmpty(list)) {
+//        	HWarehouseResp hWarehouseResp = new HWarehouseResp();
+//        	hWarehouseResp.setProductId(productId);
+//        	hWarehouseResp.setGoodId(goodId);
+//        	hWarehouseResp.setQuantity(quantity);
+//        	hWarehouseResp.setWarehouseId(warehouseId);
+//        	hWarehouseResp.setCreateTime(LocalDateTime.now());
+//        	hWarehouseResp.setModifyTime(LocalDateTime.now());
+//        	hWarehouseResp.setIsDeleted((byte) 0);
+//        	hWarehouseRespMapper.insert(hWarehouseResp);
+//        	id = hWarehouseResp.getId();
+//        }else {
+//        	HWarehouseResp hWarehouseResp = list.get(0);
+//        	hWarehouseResp.setQuantity(hWarehouseResp.getQuantity()+quantity);
+//        	hWarehouseResp.setModifyTime(LocalDateTime.now());
+//        	hWarehouseRespMapper.updateByPrimaryKey(hWarehouseResp);
+//        	id = hWarehouseResp.getId();
+//        }
+//        WarehouseRespRecord record = new WarehouseRespRecord();
+//        record.setProductId(productId);
+//        record.setGoodId(goodId);
+//        record.setQuantity(quantity);
+//        record.setTypeWho(typeWho);
+//        if("1".equals(typeWho)) {
+//        	record.setStoneId(Integer.valueOf(stoneId));
+//        }
+//        record.setBossId(bossId);
+//        record.setType(1);
+//        record.setUserId(String.valueOf(userId));
+//        record.setWarehouseId(warehouseId);
+//        record.setCreateTime(LocalDateTime.now());
+//        record.setModifyTime(LocalDateTime.now());
+//        record.setIsDeleted((byte) 0);
+//        warehouseRespRecordMapper.insert(record);
+//        hfInStorage.setIsDeleted((byte) 1);
+//        hfInStorageMapper.updateByPrimaryKey(hfInStorage);
+//        HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
+//        HfResp resp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+//        if(resp.getQuantity() < quantity) {
+//        	return builder.body(ResponseUtils.getResponseBody(0));
+//        }
+//        resp.setQuantity(resp.getQuantity()-quantity);
+//        hfRespMapper.updateByPrimaryKey(resp);
+//        return builder.body(ResponseUtils.getResponseBody(id));
+//    }
     
     @ApiOperation(value = "拒绝出库申请", notes = "拒绝出库申请")
     @RequestMapping(value = "/rejectGoodOutWarsehouse", method = RequestMethod.POST)
@@ -530,10 +532,8 @@ public class WareHouseController {
             hfInStorage.setStatus(2);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
             HWarehouseRespExample example = new HWarehouseRespExample();
-            System.out.println(hfInStorage.getWarehouseId()+"+++++++++++"+hfInStorage.getGoodId());
             example.createCriteria().andWarehouseIdEqualTo(hfInStorage.getWarehouseId()).andGoodIdEqualTo(hfInStorage.getGoodId());
             List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
-            System.out.println("集合长度"+list.size());
             if(CollectionUtils.isEmpty(list)) {
             	HWarehouseResp resp = new HWarehouseResp();
             	resp.setWarehouseId(apply.getWarehouseId());
@@ -549,6 +549,31 @@ public class WareHouseController {
             	resp.setQuantity(resp.getQuantity()+hfInStorage.getQuantity());
             	resp.setModifyTime(LocalDateTime.now());
             }
+            WarehouseRespRecord record = new WarehouseRespRecord();
+            record.setProductId(apply.getProductId());
+            record.setGoodId(apply.getGoodId());
+            record.setQuantity(apply.getQuantity());
+//            record.setTypeWho(typeWho);
+//            if("1".equals(typeWho)) {
+//            	record.setStoneId(Integer.valueOf(stoneId));
+//            }
+            record.setBossId(apply.getBossId());
+            record.setType(1);
+            record.setUserId(String.valueOf(apply.getUserId()));
+            record.setWarehouseId(apply.getWarehouseId());
+            record.setCreateTime(LocalDateTime.now());
+            record.setModifyTime(LocalDateTime.now());
+            record.setIsDeleted((byte) 0);
+            warehouseRespRecordMapper.insert(record);
+            hfInStorage.setIsDeleted((byte) 1);
+            hfInStorageMapper.updateByPrimaryKey(hfInStorage);
+            HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
+            HfResp resp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+            if(resp.getQuantity() < apply.getQuantity()) {
+            	return builder.body(ResponseUtils.getResponseBody(0));
+            }
+            resp.setQuantity(resp.getQuantity()-apply.getQuantity());
+            hfRespMapper.updateByPrimaryKey(resp);
         }else {
         	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
             hfInStorage.setStatus(3);
