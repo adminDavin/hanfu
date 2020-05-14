@@ -516,7 +516,7 @@ public class WareHouseController {
         return builder.body(ResponseUtils.getResponseBody(apply.getId()));
     }
     
-    @ApiOperation(value = "商家同意仓库申请物品", notes = "商家同意仓库申请物品")
+    @ApiOperation(value = "商家同意仓库申请物品", notes = "商家同意仓库申请物品/拒絕")
     @RequestMapping(value = "/bossAgreeApply", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> bossAgreeApply(Integer applyId, Integer type)
             throws Exception {
@@ -528,6 +528,24 @@ public class WareHouseController {
         	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
             hfInStorage.setStatus(2);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
+            HWarehouseRespExample example = new HWarehouseRespExample();
+            example.createCriteria().andWarehouseIdEqualTo(hfInStorage.getWarehouseId()).andGoodIdEqualTo(hfInStorage.getGoodId());
+            List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+            if(CollectionUtils.isEmpty(list)) {
+            	HWarehouseResp resp = new HWarehouseResp();
+            	resp.setWarehouseId(hfInStorage.getWarehouseId());
+            	resp.setProductId(hfInStorage.getProducId());
+            	resp.setGoodId(hfInStorage.getGoodId());
+            	resp.setQuantity(hfInStorage.getQuantity());
+            	resp.setCreateTime(LocalDateTime.now());
+            	resp.setModifyTime(LocalDateTime.now());
+            	resp.setIsDeleted((byte) 0);
+            	hWarehouseRespMapper.insert(resp);
+            }else {
+            	HWarehouseResp resp = list.get(0);
+            	resp.setQuantity(resp.getQuantity()+hfInStorage.getQuantity());
+            	resp.setModifyTime(LocalDateTime.now());
+            }
         }else {
         	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
             hfInStorage.setStatus(3);
