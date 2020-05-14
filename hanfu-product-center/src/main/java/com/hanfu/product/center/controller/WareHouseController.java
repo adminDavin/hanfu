@@ -518,21 +518,20 @@ public class WareHouseController {
 		HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
 		HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
-		if (hfResp.getQuantity() < apply.getQuantity()) {
-			return builder.body(ResponseUtils.getResponseBody(0));
-		}
-		hfResp.setQuantity(hfResp.getQuantity() - apply.getQuantity());
-		hfRespMapper.updateByPrimaryKey(hfResp);
-		apply.setStatus(1);
-		warehouseApplyGoodMapper.updateByPrimaryKey(apply);
 		if (type == 1) {
+			if (hfResp.getQuantity() < apply.getQuantity()) {
+				return builder.body(ResponseUtils.getResponseBody(0));
+			}
+			hfResp.setQuantity(hfResp.getQuantity() - apply.getQuantity());
+			hfRespMapper.updateByPrimaryKey(hfResp);
 			hfInStorage.setStatus(2);
 			hfInStorageMapper.updateByPrimaryKey(hfInStorage);
 			HWarehouseRespExample example = new HWarehouseRespExample();
 			example.createCriteria().andWarehouseIdEqualTo(hfInStorage.getWarehouseId())
 					.andGoodIdEqualTo(hfInStorage.getGoodId());
 			List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
-			System.out.println(list.get(0));
+			apply.setStatus(1);
+			warehouseApplyGoodMapper.updateByPrimaryKey(apply);
 			if (CollectionUtils.isEmpty(list)) {
 				HWarehouseResp resp = new HWarehouseResp();
 				resp.setWarehouseId(apply.getWarehouseId());
@@ -567,6 +566,8 @@ public class WareHouseController {
 			hfInStorage.setIsDeleted((byte) 1);
 			hfInStorageMapper.updateByPrimaryKey(hfInStorage);
 		} else {
+			apply.setStatus(1);
+			warehouseApplyGoodMapper.updateByPrimaryKey(apply);
 			hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
 			hfInStorage.setStatus(3);
 			hfInStorageMapper.updateByPrimaryKey(hfInStorage);
