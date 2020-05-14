@@ -530,14 +530,16 @@ public class WareHouseController {
             hfInStorage.setStatus(2);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
             HWarehouseRespExample example = new HWarehouseRespExample();
+            System.out.println(hfInStorage.getWarehouseId()+"+++++++++++"+hfInStorage.getGoodId());
             example.createCriteria().andWarehouseIdEqualTo(hfInStorage.getWarehouseId()).andGoodIdEqualTo(hfInStorage.getGoodId());
             List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+            System.out.println("集合长度"+list.size());
             if(CollectionUtils.isEmpty(list)) {
             	HWarehouseResp resp = new HWarehouseResp();
-            	resp.setWarehouseId(hfInStorage.getWarehouseId());
-            	resp.setProductId(hfInStorage.getProducId());
-            	resp.setGoodId(hfInStorage.getGoodId());
-            	resp.setQuantity(hfInStorage.getQuantity());
+            	resp.setWarehouseId(apply.getWarehouseId());
+            	resp.setProductId(apply.getProductId());
+            	resp.setGoodId(apply.getGoodId());
+            	resp.setQuantity(apply.getQuantity());
             	resp.setCreateTime(LocalDateTime.now());
             	resp.setModifyTime(LocalDateTime.now());
             	resp.setIsDeleted((byte) 0);
