@@ -438,11 +438,7 @@ public class HfProductController {
 //		HfStoneRespExample hfStoneRespExample = new HfStoneRespExample();
 //		hfStoneRespExample.createCriteria().andStoneIdEqualTo(isDelete.getStoneId());
 //		List<HfStoneResp> products = hfStoneRespMapper.selectByExample(hfStoneRespExample);
-//		List<Integer> productId = products.stream().map(HfStoneResp :: getProductId())
-////		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
-//		products.forEach(hfProductDisplay -> {
-//			System.out.println(hfProductDisplay.getStoneId());
-//		});
+//		Set<Integer> productId = products.stream().map(HfStoneResp::getProductId).collect(Collectors.toSet());
 //		if (products.size() != 0) {
 //			Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
 //			System.out.println(stoneIds);
