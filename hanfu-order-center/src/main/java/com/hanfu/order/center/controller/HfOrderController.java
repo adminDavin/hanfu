@@ -72,6 +72,8 @@ public class HfOrderController {
     private String itemUrl1;
     @Value("${myspcloud.item2.url2}")
     private String itemUrl2;
+    @Value("${myspcloud.item2.url3}")
+    private String ORDER_URL;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -866,7 +868,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
 }
 //    @Scheduled(cron="0 0 24 * * ?")
 @Scheduled(cron="*/5 * * * * ? ")
-@ApiOperation(value = "团购", notes = "团购")
+@ApiOperation(value = "订单", notes = "订单")
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
     public void TimeGroup()
             throws Exception {
@@ -887,7 +889,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if ((date1.getTime()-date2.getTime())>604800000){
+            if ((date1.getTime()-date2.getTime())>604800000){//7t
                 try {
                     updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"complete",hfOrder.getStoneId(),hfOrder.getPayOrderId());
                 } catch (JSONException e) {
@@ -900,6 +902,73 @@ private Map<String,String> chock(List<CreatesOrder> list){
 //        }catch(Exception e){
 //            e.printStackTrace();
 //        }
+//payment
+    HfOrderExample hfOrderExample1 = new HfOrderExample();
+    hfOrderExample1.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("payment");
+    List<HfOrder> HfOrders1 = hfOrderMapper.selectByExample(hfOrderExample1);
+    HfOrders1.forEach(hfOrder -> {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zdt = hfOrder.getCreateTime().atZone(zoneId);
+        Date date = Date.from(zdt.toInstant());
+        Date date1 = new Date();
+        Date date2 = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            date1 = f.parse(f.format(new Date())); //这是获取当前时间
+            date2 = f.parse(f.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if ((date1.getTime()-date2.getTime())>86400000){//24h
+            try {
+                updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"cancel",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    });
+    //
+    HfOrderExample hfOrderExample2 = new HfOrderExample();
+    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
+    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
+    HfOrders2.forEach(hfOrder -> {
+        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
+        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+        if (hfOrderDetailList.size()!=0){
+            //
+            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("orderId",hfOrder.getId());
+            paramMap.add("stoneId",hfOrder.getStoneId());
+            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
+            JSONObject data=entity.getJSONObject("data");
+            if ((Integer)JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state")==3){
+            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
+            //hfOrder.getId()
+            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
+            ZoneId zoneId = ZoneId.systemDefault();
+            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
+            Date date = Date.from(zdt.toInstant());
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                date2 = f.parse(f.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>259200000){//3t
+                try {
+                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            }
+        }
+    });
+
     }
     public static void main(String[] args) {
 		System.out.println(UUID.randomUUID().toString().replaceAll("-", ""));

@@ -1,7 +1,9 @@
 package com.hanfu.order.center.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.hanfu.order.center.dao.HfOrderLogisticsMapper;
 import com.hanfu.order.center.manual.model.Logistics;
+import com.hanfu.order.center.manual.model.Traces;
 import com.hanfu.order.center.model.HfOrderLogistics;
 import com.hanfu.order.center.model.HfOrderLogisticsExample;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,8 @@ public class QueryLogisticsController {
                 logistics.setState(json.get("State"));
                 logistics.seteBusinessID(json.get("EBusinessID"));
                 logistics.setCompany(logisticselect(expNo).get("ShipperName"));
+//                List<Traces> list= JSON.parseArray(JSON.toJSONString(logistics.getTraces()), Traces.class);
+//                System.out.println(list.get(0).getAcceptTime());
                 return builder.body(ResponseUtils.getResponseBody(logistics));
             } catch (Exception e) {
                 e.printStackTrace();
