@@ -64,6 +64,7 @@ import com.hanfu.product.center.dao.HfOrderMapper;
 import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
+import com.hanfu.product.center.dao.HfStoneRespMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.dao.ProductSpecMapper;
@@ -198,6 +199,9 @@ public class GoodsController {
 	
 	@Autowired
 	private HfInStorageMapper hfInStorageMapper;
+	
+	@Autowired
+	private HfStoneRespMapper hfStoneRespMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -326,22 +330,6 @@ public class GoodsController {
 				hfGoodsSpecMapper.insert(item);
 			}
 		}
-//		HfInStorage inStorage = new HfInStorage();
-//		if(hfGoodsInfo.getStoneId() == null) {
-//			inStorage.setType("0");
-//		}else {
-//			inStorage.setType("1");
-//			inStorage.setStoneId(hfGoodsInfo.getStoneId());
-//		}
-//		inStorage.setDataType("1");
-//		inStorage.setBossId(1);
-//		inStorage.setProducId(hfGoodsInfo.getProductId());
-//		inStorage.setGoodId(record.getId());
-//		inStorage.setUserId(hfGoodsInfo.getUserId());
-//		inStorage.setCreateTime(LocalDateTime.now());
-//		inStorage.setModifyTime(LocalDateTime.now());
-//		inStorage.setIsDeleted((byte) 0);
-//		hfInStorageMapper.insert(inStorage);
 		return builder.body(ResponseUtils.getResponseBody(record.getId()));
 	}
 
@@ -579,6 +567,29 @@ public class GoodsController {
 		if (goods == null) {
 			throw new Exception("物品不存在");
 		}
+		if(goods.getStoneId() != null) {
+			HfStoneRespExample example = new HfStoneRespExample();
+			example.createCriteria().andStoneIdEqualTo(goods.getStoneId()).andGoodIdEqualTo(goods.getId());
+			List<HfStoneResp> list = hfStoneRespMapper.selectByExample(example);
+			if(CollectionUtils.isEmpty(list)) {
+				HfStoneResp stoneResp = new HfStoneResp();
+				stoneResp.setGoodId(goods.getId());
+				stoneResp.setProductId(goods.getProductId());
+				stoneResp.setStoneId(goods.getStoneId());
+				stoneResp.setQuantity(request.getQuantity());
+				stoneResp.setCreateTime(LocalDateTime.now());
+				stoneResp.setModifyTime(LocalDateTime.now());
+				stoneResp.setIsDeleted((byte) 0);
+				hfStoneRespMapper.insert(stoneResp);
+			}else {
+				HfStoneResp stoneResp = list.get(0);
+				stoneResp.setQuantity(request.getQuantity());
+				stoneResp.setModifyTime(LocalDateTime.now());
+				hfStoneRespMapper.updateByPrimaryKey(stoneResp);
+			}
+			
+		}
+		
 		HfRespExample example = new HfRespExample();
 		example.createCriteria().andGoogsIdEqualTo(goods.getId());
 		List<HfResp> item = hfRespMapper.selectByExample(example);
@@ -621,7 +632,7 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
 			resp.setIsDeleted((short) 0);
-			resp.setWarehouseId(request.getWareHouseId());
+//			resp.setWarehouseId(request.getWareHouseId());
 			hfRespMapper.insert(resp);
 			goods.setRespId(resp.getId());
 			goods.setModifyTime(LocalDateTime.now());

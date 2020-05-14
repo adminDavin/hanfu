@@ -10,6 +10,7 @@ import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.HfUserMember;
 
 import java.util.List;
 
@@ -38,4 +39,6 @@ public interface UserDao {
     List<HfUser> selectUserOrderByInfo(HfUser user);
     
     List<StoreUser> selectStoneMemberByInfo(StoreUser user);
+    
+    List<HfUserMember> selectHfUserMember(HfUser user);
 }

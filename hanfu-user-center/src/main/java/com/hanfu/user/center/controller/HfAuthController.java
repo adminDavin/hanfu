@@ -253,7 +253,6 @@ public class HfAuthController {
 	@ApiOperation(value = "查询后台用户", notes = "查询后台用户")
 
 	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize ,String phone,String code,String name) throws Exception {
-
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (pageNum == null) {
 			pageNum = 0;
@@ -744,12 +743,24 @@ public class HfAuthController {
 
 	@ApiOperation(value = "查询会员", notes = "查询会员")
 	@RequestMapping(value = "/findUserMember", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findUserMember() throws JSONException {
+	public ResponseEntity<JSONObject> findUserMember(Integer pageNum, Integer pageSize ,String phone,String code,String name
+			, Integer levelId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfUserMemberExample example = new HfUserMemberExample();
-		example.setOrderByClause("use_state DESC");
-		List<HfUserMember> list = hfUserMemberMapper.selectByExample(example);
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+		if (pageSize == null) {
+			pageSize = 0;
+		}
+		HfUser user = new HfUser();
+		user.setPhone(phone);
+		user.setOwnInvitationCode(code);
+		user.setNickName(name);
+		user.setRealName(name);
+		user.setId(levelId);
+		PageHelper.startPage(pageNum, pageSize);
+		List<HfUserMember> list = userDao.selectHfUserMember(user);
 		List<HfUserMemberInfo> result = new ArrayList<HfUserMemberInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			HfUserMember member = list.get(i);

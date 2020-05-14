@@ -10,6 +10,8 @@ import com.hanfu.user.center.manual.model.UserQuery;
 import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.HfUserMember;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -85,6 +87,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<StoreUser> selectStoneMemberByInfo(StoreUser user) {
     	List<StoreUser> result = sqlSessionTemplate.selectList("selectStoneMemberByInfo", user);
+    	return result;
+    }
+    
+    @Override
+    public List<HfUserMember> selectHfUserMember(HfUser user) {
+    	List<HfUserMember> result = sqlSessionTemplate.selectList("selectHfUserMember", user);
     	return result;
     }
 }
