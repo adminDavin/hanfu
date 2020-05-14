@@ -256,6 +256,7 @@ public class WareHouseController {
 		inStorage.setProducId(productId);
 		inStorage.setGoodId(goodId);
 		inStorage.setUserId(userId);
+		inStorage.setQuantity(quantity);
 		inStorage.setCreateTime(LocalDateTime.now());
 		inStorage.setModifyTime(LocalDateTime.now());
 		inStorage.setIsDeleted((byte) 0);
@@ -539,6 +540,7 @@ public class WareHouseController {
             HWarehouseRespExample example = new HWarehouseRespExample();
             example.createCriteria().andWarehouseIdEqualTo(hfInStorage.getWarehouseId()).andGoodIdEqualTo(hfInStorage.getGoodId());
             List<HWarehouseResp> list = hWarehouseRespMapper.selectByExample(example);
+            System.out.println(list.get(0));
             if(CollectionUtils.isEmpty(list)) {
             	HWarehouseResp resp = new HWarehouseResp();
             	resp.setWarehouseId(apply.getWarehouseId());
