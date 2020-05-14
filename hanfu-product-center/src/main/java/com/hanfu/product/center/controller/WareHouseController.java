@@ -674,11 +674,11 @@ public class WareHouseController {
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProductId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
-			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
 			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
-			display.setQuantity(hfResp.getQuantity());
+			display.setQuantity(storage.getQuantity());
 			if ("0".equals(storage.getTypeWho())) {
 				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 				display.setTypeName(boss.getName());
