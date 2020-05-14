@@ -646,16 +646,17 @@ public class HfOrderController {
             paramMap1.add("stoneId",stoneId);
             paramMap1.add("orderId",hfOrder.getId());
             restTemplate.postForObject(itemUrl,paramMap1,JSONObject.class);
-            //平台优惠券记录
+            //优惠券记录
             if (request.getDisconuntId()!=null && request.getDisconuntId().length!=0) {
                 System.out.println("开始记录优惠券");
+//                List<DiscountCoupon> discountCouponList1 = discountCouponList.stream().filter(a->a.getStoneId().equals(stoneId)).collect(Collectors.toList());
                 for (Integer discountId : request.getDisconuntId()) {
                     DiscountCouponOrder discountCouponOrder = new DiscountCouponOrder();
                     discountCouponOrder.setCreateDate(LocalDateTime.now());
                     discountCouponOrder.setModifyDate(LocalDateTime.now());
                     discountCouponOrder.setIsDeleted(0);
                     discountCouponOrder.setUseState(1);
-                    discountCouponOrder.setOrderId(hfOrder.getId());
+                    discountCouponOrder.setOrderId(payOrder.getId());
                     discountCouponOrder.setDiscountCouponId(discountId);
                     discountCouponOrderMapper.insertSelective(discountCouponOrder);
                     restTemplate.getForObject(REST_URL_CHECK + "discountCoupon/useDis/?discountCouponId={discountCouponId}&userId={userId}", JSONObject.class, discountId, request.getUserId());
@@ -668,8 +669,11 @@ public class HfOrderController {
                 request.setStoneId(listStone1.getStoneId());
                 request.setQuantity(listStone1.getQuantity());
                 request.setGoodsId(listStone1.getGoodsId());
-                request.setSellPrice(moneys);
-                request.setActualPrice(list.get(0).getQuantity()*priceInfos.get(0).getSellPrice());
+                HfPriceExample hfPriceExample1 = new HfPriceExample();
+                hfPriceExample1.createCriteria().andGoogsIdEqualTo(listStone1.getGoodsId());
+                Integer Mo= hfPriceMappers.selectByExample(hfPriceExample1).get(0).getSellPrice();
+                request.setSellPrice(Mo);
+                request.setActualPrice(listStone1.getQuantity()*Mo);
                 if (OrderTypeEnum.NOMAL_ORDER.getOrderType().equals(hfOrder.getOrderType())) {
                     detailNomalOrders(request, hfOrder);
                 }
