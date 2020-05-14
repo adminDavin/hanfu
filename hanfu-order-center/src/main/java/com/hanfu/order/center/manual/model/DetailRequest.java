@@ -12,6 +12,7 @@ public class DetailRequest {
     private String detailStatus;
     private String takingType;
     private String wuliu;
+    private Integer money;
     public Integer getStoneId() {
         return stoneId;
     }
@@ -58,5 +59,13 @@ public class DetailRequest {
 
     public void setWuliu(String wuliu) {
         this.wuliu = wuliu;
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
     }
 }
