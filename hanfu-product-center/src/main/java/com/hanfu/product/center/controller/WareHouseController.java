@@ -328,11 +328,11 @@ public class WareHouseController {
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProducId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
-			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
 			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
-			display.setQuantity(hfResp.getQuantity());
+			display.setQuantity(storage.getQuantity());
 			display.setBossId(storage.getBossId());
 			if ("0".equals(dataType)) {
 				HfGoodApply apply = hfGoodApplyMapper.selectByPrimaryKey(storage.getApplyId());
