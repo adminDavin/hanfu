@@ -10,6 +10,7 @@ public class WarehouseGoodDisplay implements Serializable{
 	private static final long serialVersionUID = -6706313124717301782L;
 	
 	private Integer id;
+	private Integer status;
 	private Integer goodId;
 	private String goodName;
 	private String goodDesc;
@@ -35,6 +36,12 @@ public class WarehouseGoodDisplay implements Serializable{
 	}
 	public Integer getGoodId() {
 		return goodId;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	public void setGoodId(Integer goodId) {
 		this.goodId = goodId;
