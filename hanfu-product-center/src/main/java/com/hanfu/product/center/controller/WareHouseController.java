@@ -383,11 +383,11 @@ public class WareHouseController {
 			display.setGoodId(storage.getGoodId());
 			display.setProductId(storage.getProductId());
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(storage.getGoodId());
-			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
 			HfCategory category = hfCategoryMapper.selectByPrimaryKey(goods.getCategoryId());
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
-			display.setQuantity(hfResp.getQuantity());
+			display.setQuantity(storage.getQuantity());
 //			if("0".equals(storage.getType())) {
 //				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
 //				display.setTypeName(boss.getName());
@@ -529,6 +529,11 @@ public class WareHouseController {
         warehouseApplyGoodMapper.updateByPrimaryKey(apply);
         if(type == 1) {
         	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
+        	HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
+        	HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
+        	if(hfResp.getQuantity() < apply.getQuantity()) {
+        		return builder.body(ResponseUtils.getResponseBody(0));
+        	}
             hfInStorage.setStatus(2);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
             HWarehouseRespExample example = new HWarehouseRespExample();
@@ -567,13 +572,11 @@ public class WareHouseController {
             warehouseRespRecordMapper.insert(record);
             hfInStorage.setIsDeleted((byte) 1);
             hfInStorageMapper.updateByPrimaryKey(hfInStorage);
-            HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfInStorage.getGoodId());
-            HfResp resp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
-            if(resp.getQuantity() < apply.getQuantity()) {
+            if(hfResp.getQuantity() < apply.getQuantity()) {
             	return builder.body(ResponseUtils.getResponseBody(0));
             }
-            resp.setQuantity(resp.getQuantity()-apply.getQuantity());
-            hfRespMapper.updateByPrimaryKey(resp);
+            hfResp.setQuantity(hfResp.getQuantity()-apply.getQuantity());
+            hfRespMapper.updateByPrimaryKey(hfResp);
         }else {
         	HfInStorage hfInStorage = hfInStorageMapper.selectByPrimaryKey(apply.getApplyId());
             hfInStorage.setStatus(3);
