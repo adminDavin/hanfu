@@ -7,14 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -23,8 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.user.center.dao.*;
+import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.utils.Decrypt;
 import com.hanfu.user.center.utils.Encrypt;
+import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +43,6 @@ import com.cedarsoftware.util.io.JsonObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.inner.model.product.center.HfOrders;
-import com.hanfu.user.center.dao.CancelMapper;
-import com.hanfu.user.center.dao.FileDescMapper;
-import com.hanfu.user.center.dao.HUserBalanceMapper;
-import com.hanfu.user.center.dao.HfAuthMapper;
-import com.hanfu.user.center.dao.HfBossMapper;
-import com.hanfu.user.center.dao.HfLevelDescribeMapper;
-import com.hanfu.user.center.dao.HfMemberLevelMapper;
-import com.hanfu.user.center.dao.HfStoneMapper;
-import com.hanfu.user.center.dao.HfUserBalanceMapper;
-import com.hanfu.user.center.dao.HfUserMapper;
-import com.hanfu.user.center.dao.HfUserMemberMapper;
-import com.hanfu.user.center.dao.HfUserPrivilegeMapper;
-import com.hanfu.user.center.dao.hfStoreMenberMapper;
 import com.hanfu.user.center.manual.dao.HfBossInfoDao;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.manual.model.HfBossInfo;
@@ -71,28 +54,6 @@ import com.hanfu.user.center.manual.model.PurseInfo;
 import com.hanfu.user.center.manual.model.StoreUser;
 import com.hanfu.user.center.manual.model.UserInfo;
 import com.hanfu.user.center.manual.model.UserOrderInfo;
-import com.hanfu.user.center.model.CancelExample;
-import com.hanfu.user.center.model.HUserBalanceExample;
-import com.hanfu.user.center.model.HfAuth;
-import com.hanfu.user.center.model.HfAuthExample;
-import com.hanfu.user.center.model.HfBoss;
-import com.hanfu.user.center.model.HfBossExample;
-import com.hanfu.user.center.model.HfLevelDescribe;
-import com.hanfu.user.center.model.HfLevelDescribeExample;
-import com.hanfu.user.center.model.HfMemberLevel;
-import com.hanfu.user.center.model.HfMemberLevelExample;
-import com.hanfu.user.center.model.HfStone;
-import com.hanfu.user.center.model.HfStoneExample;
-import com.hanfu.user.center.model.HfUser;
-import com.hanfu.user.center.model.HfUserBalance;
-import com.hanfu.user.center.model.HfUserBalanceExample;
-import com.hanfu.user.center.model.HfUserExample;
-import com.hanfu.user.center.model.HfUserMember;
-import com.hanfu.user.center.model.HfUserMemberExample;
-import com.hanfu.user.center.model.HfUserPrivilege;
-import com.hanfu.user.center.model.HfUserPrivilegeExample;
-import com.hanfu.user.center.model.hfStoreMenber;
-import com.hanfu.user.center.model.hfStoreMenberExample;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -159,6 +120,15 @@ public class HfAuthController {
 	
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+	private AccountMapper accountMapper;
+
+	@Autowired
+	private HfModuleMapper hfModuleMapper;
+
+	@Autowired
+	private AccountModelMapper accountModelMapper;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
@@ -217,6 +187,29 @@ public class HfAuthController {
 		String token = encrypt.getToken(true, user.getId(), "boss");
 		System.out.println(token);
 		response.addHeader("token",token);
+		if (type!=null){
+			Map map = new HashMap();
+			map.put("id",user.getId());
+			map.put("phone",user.getPhone());
+			map.put("nickName",user.getNickName());
+			map.put("realName",user.getRealName());
+			map.put("fileId",user.getFileId());
+			AccountExample accountExample = new AccountExample();
+			accountExample.createCriteria().andAccountTypeEqualTo(type).andUserIdEqualTo(user.getId()).andIsDeletedEqualTo(0);
+			List<Account> accounts= accountMapper.selectByExample(accountExample);
+			AccountModelExample accountModelExample = new AccountModelExample();
+			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId()).andIdDeletedEqualTo((byte) 0);
+			List<AccountModel> accountModels= accountModelMapper.selectByExample(accountModelExample);
+			Set<Integer> set =accountModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
+			HfModuleExample hfModuleExample = new HfModuleExample();
+			hfModuleExample.createCriteria().andIdIn(Lists.newArrayList(set)).andIsDeletedEqualTo((byte) 0);
+			List<HfModule> hfModules= hfModuleMapper.selectByExample(hfModuleExample);
+			Set<String> model = hfModules.stream().map(a->a.getHfModel()).collect(Collectors.toSet());
+			map.put("model",model);
+			Set<String> modelCode = hfModules.stream().map(a->a.getModelCode()).collect(Collectors.toSet());
+			map.put("modelCode",modelCode);
+			return builder.body(ResponseUtils.getResponseBody(map));
+		}
 
 		return builder.body(ResponseUtils.getResponseBody(user));
 	}
