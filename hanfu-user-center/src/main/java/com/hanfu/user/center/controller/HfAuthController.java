@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
@@ -197,6 +198,9 @@ public class HfAuthController {
 			AccountExample accountExample = new AccountExample();
 			accountExample.createCriteria().andAccountTypeEqualTo(type).andUserIdEqualTo(user.getId()).andIsDeletedEqualTo(0);
 			List<Account> accounts= accountMapper.selectByExample(accountExample);
+			if (accounts.size()==0){
+				response.sendError(HttpStatus.FORBIDDEN.value(), "无此权限");
+			}
 			AccountModelExample accountModelExample = new AccountModelExample();
 			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId()).andIdDeletedEqualTo((byte) 0);
 			List<AccountModel> accountModels= accountModelMapper.selectByExample(accountModelExample);
