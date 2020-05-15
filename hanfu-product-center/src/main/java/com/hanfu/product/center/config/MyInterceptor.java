@@ -1,8 +1,14 @@
 package com.hanfu.product.center.config;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.product.center.dao.AccountMapper;
+import com.hanfu.product.center.dao.HfModuleMapper;
 import com.hanfu.product.center.dao.PayBossMapper;
-import com.hanfu.product.center.model.PayBoss;
-import com.hanfu.product.center.model.PayBossExample;
+import com.hanfu.product.center.model.*;
+import com.hanfu.product.center.tool.Decrypt;
+import com.hanfu.user.center.dao.HfAuthMapper;
+import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
@@ -28,6 +34,14 @@ public class MyInterceptor implements HandlerInterceptor {
     private PayBossMapper payBossMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private AccountMapper accountMapper;
+    @Autowired
+    private HfModuleMapper hfModuleMapper;
+//    @Autowired
+//    private HfAuthMapper hfAuthMapper;
+//    @Autowired
+//    private HfUserMapper hfUserMapper;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 //    @Autowired
 //    private HfAdminMapper hfAdminMapper;
@@ -40,7 +54,15 @@ public class MyInterceptor implements HandlerInterceptor {
         Object userId= request.getHeader("userId");
         System.out.println(userId+"我是请求头");
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
-//        System.out.println(cookies+"cookies-----------------");
+//        Object token= request.getHeader("token");
+//        Decrypt decrypt = new Decrypt();
+//		DecodedJWT jwt = decrypt.deToken((String) token);
+//		System.out.println("issuer: " + jwt.getIssuer());
+//		System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
+//		System.out.println("userId: " + jwt.getClaim("userId").asString());
+//		System.out.println("type:     " + jwt.getClaim("Type").asString());
+//		System.out.println("过期时间：      " + jwt.getExpiresAt());
+        //        System.out.println(cookies+"cookies-----------------");
 //        for(Cookie cookie1 : cookies){
 //            if (cookie1.getName()==null){
 //                System.out.println(cookie1.getName()+"cookie Name");
@@ -59,11 +81,21 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
+            String type = "boss";
             if (userId!=null){
-                PayBossExample payBossExample = new PayBossExample();
-                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
-                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
-                request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
+//                accountMapper
+//                PayBossExample payBossExample = new PayBossExample();
+//                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
+//                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+//                Integer user = (Integer) userId;
+                AccountExample accountExample = new AccountExample();
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                List<Account> accounts= accountMapper.selectByExample(accountExample);
+                if (accounts.size()==0){
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+                }
+                request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+                request.getServletContext().setAttribute("getServletContextType", type);
             }
 
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象

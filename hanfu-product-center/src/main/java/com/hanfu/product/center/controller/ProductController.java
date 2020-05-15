@@ -3,7 +3,6 @@ package com.hanfu.product.center.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
@@ -12,7 +11,6 @@ import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
 
-import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
@@ -280,7 +277,7 @@ public class ProductController {
 		productInstance.setIsDeleted((short) 0);
 		productInstanceMapper.insert(productInstance);
 		Map<String, Object> map = new HashMap<>();
-		map.put("bossName",hfBossMapper.selectByPrimaryKey(product.getBossId()).getName());
+		map.put("bossName", hfBossMapper.selectByPrimaryKey(product.getBossId()).getName());
 		map.put("productId",product.getId());
 		map.put("createTime",product.getCreateTime());
 		map.put("productName",request.getHfName());

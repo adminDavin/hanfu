@@ -1,6 +1,6 @@
 package com.hanfu.product.center.controller;
 
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -11,7 +11,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,6 +56,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin
 @RestController
@@ -125,6 +125,9 @@ public class HfProductController {
 	
 	@Autowired
 	private HfPriceMapper hfPriceMapper;
+
+    @Autowired
+    private HttpServletResponse response;
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -432,8 +435,8 @@ public class HfProductController {
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
-	
-	
+
+
 //	@ApiOperation(value = "获取商品列表店铺", notes = "根据店铺id商品列表")
 //	@RequestMapping(value = "/getProductByStone", method = RequestMethod.GET)
 //	public ResponseEntity<JSONObject> getProductByStone(IsDelete isDelete, Integer pageNum, Integer pageSize, Integer sort
@@ -500,7 +503,7 @@ public class HfProductController {
 	@ApiOperation(value = "获取商品列表boss", notes = "获取商品列表boss")
 	@RequestMapping(value = "/getProductListBoss", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getProductListBoss(HttpServletRequest request,IsDelete isDelete, Integer pageNum, Integer pageSize)
-			throws JSONException {
+			throws JSONException, IOException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
@@ -511,6 +514,8 @@ public class HfProductController {
 		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 		if (request.getServletContext().getAttribute("getServletContext")!=null){
 			isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		}else {
+			response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);

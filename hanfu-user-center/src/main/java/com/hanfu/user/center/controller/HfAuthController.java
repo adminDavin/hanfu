@@ -22,6 +22,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.user.center.utils.Decrypt;
+import com.hanfu.user.center.utils.Encrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,7 +168,7 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
 	public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
-			@RequestParam(name = "passwd", required = false) Integer passwd) throws Exception {
+			@RequestParam(name = "passwd", required = false) Integer passwd,String type) throws Exception {
 		Integer userId = null;
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -210,6 +213,11 @@ public class HfAuthController {
 		Cookie cookie = new Cookie("autologin", authKey);
 		response.addCookie(cookie);
 		redisTemplate.opsForValue().set("autologin", authKey);
+		Encrypt encrypt = new Encrypt();
+		String token = encrypt.getToken(true, user.getId(), "boss");
+		System.out.println(token);
+		response.addHeader("token",token);
+
 		return builder.body(ResponseUtils.getResponseBody(user));
 	}
 

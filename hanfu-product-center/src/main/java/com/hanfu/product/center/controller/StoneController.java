@@ -17,7 +17,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import com.hanfu.product.center.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,39 +40,21 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.DecoderResult;
-import com.google.zxing.datamatrix.decoder.Decoder;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
-import com.hanfu.product.center.dao.HfGoodsMapper;
-import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
-import com.hanfu.product.center.dao.HfGoodsSpecMapper;
-import com.hanfu.product.center.dao.HfOrderDetailMapper;
-import com.hanfu.product.center.dao.HfOrderMapper;
-import com.hanfu.product.center.dao.HfPriceMapper;
-import com.hanfu.product.center.dao.HfRespMapper;
-import com.hanfu.product.center.dao.HfStoneConcernMapper;
-import com.hanfu.product.center.dao.HfStoneMapper;
-import com.hanfu.product.center.dao.HfStonePictureMapper;
-import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
-import com.hanfu.product.center.dao.ProductInstanceMapper;
-import com.hanfu.product.center.dao.ProductMapper;
 import com.hanfu.product.center.manual.dao.HomePageDao;
 import com.hanfu.product.center.manual.model.HfStoneInfo;
 import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.ProductStone.StonePictureTypeEnum;
-import com.hanfu.product.center.model.EvluateInstancePicture;
 import com.hanfu.product.center.model.FileDesc;
 import com.hanfu.product.center.model.HfGoods;
 import com.hanfu.product.center.model.HfGoodsExample;
 import com.hanfu.product.center.model.HfGoodsPictrue;
 import com.hanfu.product.center.model.HfGoodsPictrueExample;
 import com.hanfu.product.center.model.HfGoodsSpecExample;
-import com.hanfu.product.center.model.HfOrder;
 import com.hanfu.product.center.model.HfOrderDetail;
 import com.hanfu.product.center.model.HfOrderDetailExample;
-import com.hanfu.product.center.model.HfOrderExample;
 import com.hanfu.product.center.model.HfPriceExample;
 import com.hanfu.product.center.model.HfRespExample;
 import com.hanfu.product.center.model.HfStone;
@@ -140,13 +125,24 @@ public class StoneController {
     
     @Autowired
     private HfStoneConcernMapper hfStoneConcernMapper;
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpServletResponse response;
     
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId,String stoneName,Integer stoneType) throws JSONException {
+    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId,String stoneName,Integer stoneType) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+        }else {
+            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+        }
+
         HfStoneExample example = new HfStoneExample();
         HfStoneExample.Criteria criteria = example.createCriteria().andBossIdEqualTo(bossId);
         if (null != stoneType){
