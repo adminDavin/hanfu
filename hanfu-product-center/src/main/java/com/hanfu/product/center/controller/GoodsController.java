@@ -575,11 +575,16 @@ public class GoodsController {
 				HfStoneResp stoneResp = new HfStoneResp();
 				stoneResp.setGoodId(goods.getId());
 				stoneResp.setProductId(goods.getProductId());
+				ProductInstanceExample instanceExample = new ProductInstanceExample();
+				instanceExample.createCriteria().andStoneIdEqualTo(goods.getStoneId()).andProductIdEqualTo(goods.getProductId());
+				List<ProductInstance> instances = productInstanceMapper.selectByExample(instanceExample);
+				stoneResp.setInstanceId(instances.get(0).getId());
 				stoneResp.setStoneId(goods.getStoneId());
 				stoneResp.setQuantity(request.getQuantity());
 				stoneResp.setCreateTime(LocalDateTime.now());
 				stoneResp.setModifyTime(LocalDateTime.now());
 				stoneResp.setIsDeleted((byte) 0);
+				stoneResp.setType("1");
 				hfStoneRespMapper.insert(stoneResp);
 			}else {
 				HfStoneResp stoneResp = list.get(0);
