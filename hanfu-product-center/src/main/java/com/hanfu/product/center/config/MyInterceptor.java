@@ -36,10 +36,10 @@ public class MyInterceptor implements HandlerInterceptor {
     private AccountMapper accountMapper;
     @Autowired
     private HfModuleMapper hfModuleMapper;
-    @Autowired
-    private HfAuthMapper hfAuthMapper;
-    @Autowired
-    private HfUserMapper hfUserMapper;
+//    @Autowired
+//    private HfAuthMapper hfAuthMapper;
+//    @Autowired
+//    private HfUserMapper hfUserMapper;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 //    @Autowired
 //    private HfAdminMapper hfAdminMapper;
