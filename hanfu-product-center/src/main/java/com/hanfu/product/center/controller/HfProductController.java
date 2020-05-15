@@ -121,6 +121,9 @@ public class HfProductController {
 
 	@Autowired
 	private HfEvaluateMapper hfEvaluateMapper;
+    @Autowired
+    private HttpServletResponse response;
+
 
 	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
