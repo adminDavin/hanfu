@@ -77,8 +77,9 @@ public class MyInterceptor implements HandlerInterceptor {
 //                PayBossExample payBossExample = new PayBossExample();
 //                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
 //                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+//                Integer user = (Integer) userId;
                 AccountExample accountExample = new AccountExample();
-                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf((Integer) userId)).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
                 List<Account> accounts= accountMapper.selectByExample(accountExample);
                 request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
                 request.getServletContext().setAttribute("getServletContextType", type);
