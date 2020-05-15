@@ -86,7 +86,7 @@ public class MyInterceptor implements HandlerInterceptor {
 //            request.setAttribute("getAttribute", "getAttribute");
             String type = jwt.getClaim("Type").asString();
                 AccountExample accountExample = new AccountExample();
-                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asString())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
                 List<Account> accounts= accountMapper.selectByExample(accountExample);
                 if (accounts.size()==0){
                     response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
