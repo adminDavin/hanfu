@@ -429,6 +429,7 @@ public class HfProductController {
 			display.setStoneId(hfStone.getId());
 			display.setFileId(product.getFileId());
 			display.setFileIds(picture);
+			display.setId(product.getId());
 			products.add(display);
 		}
 		sort(sort, products, priceDown, priceUp, categoryId);
