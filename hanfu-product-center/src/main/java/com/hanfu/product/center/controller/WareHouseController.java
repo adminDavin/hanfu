@@ -546,6 +546,7 @@ public class WareHouseController {
 				HWarehouseResp resp = list.get(0);
 				resp.setQuantity(resp.getQuantity() + hfInStorage.getQuantity());
 				resp.setModifyTime(LocalDateTime.now());
+				hWarehouseRespMapper.updateByPrimaryKey(resp);
 			}
 			WarehouseRespRecord record = new WarehouseRespRecord();
 			record.setProductId(apply.getProductId());
