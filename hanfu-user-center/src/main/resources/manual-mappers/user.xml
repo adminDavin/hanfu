@@ -294,9 +294,6 @@
         <if test="id != null and id != ''">
             AND h1.level_id = #{id}
         </if>
-        <if test="nickName != null and nickName != ''">
-            AND h2.nick_name LIKE concat('%',#{nickName},'%')
-        </if>
         <if test="phone != null and phone != ''">
             AND h2.phone LIKE concat('%',#{phone},'%')
         </if>
