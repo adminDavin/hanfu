@@ -128,7 +128,7 @@ public class WareHouseController {
 	public ResponseEntity<JSONObject> listWareHouse(@RequestParam Integer bossId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		WarehouseExample example = new WarehouseExample();
-		example.createCriteria().andBossidEqualTo(bossId);
+		example.createCriteria().andBossidEqualTo(bossId).andIsDeletedEqualTo((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
 	}
 
@@ -170,8 +170,9 @@ public class WareHouseController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		WarehouseExample example = new WarehouseExample();
 		example.createCriteria().andIdEqualTo(wareHouseId);
-
-		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.deleteByPrimaryKey(wareHouseId)));
+		Warehouse warehouse = warehouseMapper.selectByPrimaryKey(wareHouseId);
+		warehouseMapper.updateByPrimaryKey(warehouse);
+		return builder.body(ResponseUtils.getResponseBody(warehouse.getId()));
 	}
 
 	@ApiOperation(value = "修改仓库", notes = "商家修改仓库")
