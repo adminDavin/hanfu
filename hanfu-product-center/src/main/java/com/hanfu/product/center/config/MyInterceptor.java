@@ -1,8 +1,12 @@
 package com.hanfu.product.center.config;
 
+import com.hanfu.product.center.dao.AccountMapper;
+import com.hanfu.product.center.dao.HfModuleMapper;
 import com.hanfu.product.center.dao.PayBossMapper;
-import com.hanfu.product.center.model.PayBoss;
-import com.hanfu.product.center.model.PayBossExample;
+import com.hanfu.product.center.model.*;
+import com.hanfu.user.center.dao.HfAuthMapper;
+import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
@@ -28,6 +32,14 @@ public class MyInterceptor implements HandlerInterceptor {
     private PayBossMapper payBossMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private AccountMapper accountMapper;
+    @Autowired
+    private HfModuleMapper hfModuleMapper;
+    @Autowired
+    private HfAuthMapper hfAuthMapper;
+    @Autowired
+    private HfUserMapper hfUserMapper;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 //    @Autowired
 //    private HfAdminMapper hfAdminMapper;
@@ -59,11 +71,17 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
+            String type = "boss";
             if (userId!=null){
-                PayBossExample payBossExample = new PayBossExample();
-                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
-                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
-                request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
+//                accountMapper
+//                PayBossExample payBossExample = new PayBossExample();
+//                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
+//                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+                AccountExample accountExample = new AccountExample();
+                accountExample.createCriteria().andUserIdEqualTo((Integer) userId).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                List<Account> accounts= accountMapper.selectByExample(accountExample);
+                request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+                request.getServletContext().setAttribute("getServletContextType", type);
             }
 
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象

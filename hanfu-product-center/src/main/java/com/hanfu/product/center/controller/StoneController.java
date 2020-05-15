@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,13 +142,24 @@ public class StoneController {
     
     @Autowired
     private HfStoneConcernMapper hfStoneConcernMapper;
+    @Autowired
+    private HttpServletRequest request;
+    @Autowired
+    private HttpServletResponse response;
     
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家ID", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId,String stoneName,Integer stoneType) throws JSONException {
+    public ResponseEntity<JSONObject> listStone(@RequestParam(name = "bossId") Integer bossId,String stoneName,Integer stoneType) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+        }else {
+            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+        }
+
         HfStoneExample example = new HfStoneExample();
         HfStoneExample.Criteria criteria = example.createCriteria().andBossIdEqualTo(bossId);
         if (null != stoneType){
