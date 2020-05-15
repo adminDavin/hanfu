@@ -55,6 +55,9 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
+        if (token==null){
+            return false;
+        }
         Decrypt decrypt = new Decrypt();
 		DecodedJWT jwt = decrypt.deToken((String) token);
 		System.out.println("issuer: " + jwt.getIssuer());
@@ -82,12 +85,6 @@ public class MyInterceptor implements HandlerInterceptor {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
             String type = jwt.getClaim("Type").asString();
-            if (token!=null){
-//                accountMapper
-//                PayBossExample payBossExample = new PayBossExample();
-//                payBossExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo((byte) 0);
-//                List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
-//                Integer user = (Integer) userId;
                 AccountExample accountExample = new AccountExample();
                 accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asString())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
                 List<Account> accounts= accountMapper.selectByExample(accountExample);
@@ -96,14 +93,8 @@ public class MyInterceptor implements HandlerInterceptor {
                 }
                 request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
                 request.getServletContext().setAttribute("getServletContextType", type);
-            } else {
-                return false;
-            }
-
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象
             //把变量放在这里面，在之后什么地方都可以访问
-
-
             //把自己的变量放在头部
 //            reflectSetHeader(request, "header", "header");
             return true;
