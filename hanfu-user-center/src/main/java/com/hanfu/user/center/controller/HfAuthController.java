@@ -206,7 +206,7 @@ public class HfAuthController {
 			List<HfModule> hfModules= hfModuleMapper.selectByExample(hfModuleExample);
 			Set<String> model = hfModules.stream().map(a->a.getHfModel()).collect(Collectors.toSet());
 			map.put("model",model);
-			Set<String> modelCode = hfModules.stream().map(a->a.getModelCode()).collect(Collectors.toSet());
+			Map<String,String> modelCode = hfModules.stream().collect(Collectors.toMap(HfModule::getModelCode,HfModule::getModelCode));
 			map.put("modelCode",modelCode);
 			map.put("token",token);
 			return builder.body(ResponseUtils.getResponseBody(map));
