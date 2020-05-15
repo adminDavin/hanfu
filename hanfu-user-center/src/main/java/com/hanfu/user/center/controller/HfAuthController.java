@@ -187,8 +187,8 @@ public class HfAuthController {
 		String token = encrypt.getToken(true, user.getId(), "boss");
 		System.out.println(token);
 		response.addHeader("token",token);
+		Map map = new HashMap();
 		if (type!=null){
-			Map map = new HashMap();
 			map.put("id",user.getId());
 			map.put("phone",user.getPhone());
 			map.put("nickName",user.getNickName());
@@ -208,6 +208,7 @@ public class HfAuthController {
 			map.put("model",model);
 			Set<String> modelCode = hfModules.stream().map(a->a.getModelCode()).collect(Collectors.toSet());
 			map.put("modelCode",modelCode);
+			map.put("token",token);
 			return builder.body(ResponseUtils.getResponseBody(map));
 		}
 
