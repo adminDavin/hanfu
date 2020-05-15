@@ -62,7 +62,7 @@ public class MyInterceptor implements HandlerInterceptor {
 		DecodedJWT jwt = decrypt.deToken((String) token);
 		System.out.println("issuer: " + jwt.getIssuer());
 		System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
-		System.out.println("userId: " + jwt.getClaim("userId").asString());
+		System.out.println("userId: " + jwt.getClaim("userId").asInt());
 		System.out.println("type:     " + jwt.getClaim("Type").asString());
 		System.out.println("过期时间：      " + jwt.getExpiresAt());
         //        System.out.println(cookies+"cookies-----------------");
