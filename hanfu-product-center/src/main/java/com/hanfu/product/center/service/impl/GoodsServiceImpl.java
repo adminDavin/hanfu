@@ -3,14 +3,12 @@ package com.hanfu.product.center.service.impl;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.dubbo.common.json.JSON;
+import com.hanfu.product.center.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,11 +19,6 @@ import com.github.pagehelper.PageHelper;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.inner.model.product.center.HfGoodsDisplay;
 import com.hanfu.product.center.dao.FileDescMapper;
-import com.hanfu.product.center.dao.HfGoodsMapper;
-import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
-import com.hanfu.product.center.dao.HfPriceMapper;
-import com.hanfu.product.center.dao.HfRespMapper;
-import com.hanfu.product.center.dao.WarehouseMapper;
 import com.hanfu.product.center.manual.dao.HfGoodsDao;
 //import com.hanfu.product.center.manual.model.AwardInfo;
 import com.hanfu.product.center.model.FileDesc;

@@ -1,58 +1,39 @@
 package com.hanfu.product.center.controller;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.hanfu.product.center.manual.dao.*;
 import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.hanfu.common.service.FileMangeService;
-import com.hanfu.product.center.dao.FileDescMapper;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
 import com.hanfu.product.center.dao.HfBalanceDetailMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
-import com.hanfu.product.center.dao.HfGoodsPictrueMapper;
-import com.hanfu.product.center.dao.HfGoodsSpecMapper;
 import com.hanfu.product.center.dao.HfIntegralMapper;
 import com.hanfu.product.center.dao.HfOrderDetailMapper;
 import com.hanfu.product.center.dao.HfOrderMapper;
-import com.hanfu.product.center.dao.HfPriceMapper;
 import com.hanfu.product.center.dao.HfProductCollectMapper;
-import com.hanfu.product.center.dao.HfRespMapper;
 import com.hanfu.product.center.dao.HfStoneConcernMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
@@ -60,31 +41,15 @@ import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
 import com.hanfu.product.center.dao.HfUsersMapper;
 import com.hanfu.product.center.dao.ProductInstanceMapper;
 import com.hanfu.product.center.dao.ProductMapper;
-import com.hanfu.product.center.dao.ProductSpecMapper;
 import com.hanfu.product.center.dao.UserPersonalBrowseMapper;
-import com.hanfu.product.center.dao.WarehouseMapper;
-import com.hanfu.product.center.manual.model.CheckResp;
-import com.hanfu.product.center.manual.model.HfGoodsDisplay;
 import com.hanfu.product.center.manual.model.HfGoodsDisplayInfo;
-import com.hanfu.product.center.manual.model.HfGoodsSpecDisplay;
 import com.hanfu.product.center.manual.model.HfProductDisplay;
 import com.hanfu.product.center.manual.model.HomePageInfo;
-import com.hanfu.product.center.manual.model.PriceRanking;
-import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.StoneConcernInfo;
 import com.hanfu.product.center.manual.model.UserBrowseInfo;
 import com.hanfu.product.center.manual.model.HomePageInfo.MouthEnum;
 import com.hanfu.product.center.manual.model.HomePageOrderType;
 import com.hanfu.product.center.manual.model.OrderRecord;
-import com.hanfu.product.center.request.GoodsPictrueRequest;
-import com.hanfu.product.center.request.GoodsPriceInfo;
-import com.hanfu.product.center.request.GoodsSpecRequest;
-import com.hanfu.product.center.request.HfGoodsInfo;
-import com.hanfu.product.center.request.RespInfo;
-import com.hanfu.product.center.service.GoodsRespService;
-import com.hanfu.product.center.service.GoodsService;
-import com.hanfu.product.center.service.SpecsService;
-import com.hanfu.user.center.model.HfUser;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
@@ -94,7 +59,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import tk.mybatis.mapper.entity.Example;
 
 @CrossOrigin
 @RestController

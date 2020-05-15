@@ -1,9 +1,11 @@
 package com.hanfu.product.center.config;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.product.center.dao.AccountMapper;
 import com.hanfu.product.center.dao.HfModuleMapper;
 import com.hanfu.product.center.dao.PayBossMapper;
 import com.hanfu.product.center.model.*;
+import com.hanfu.product.center.tool.Decrypt;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.model.HfAuth;
@@ -52,7 +54,15 @@ public class MyInterceptor implements HandlerInterceptor {
         Object userId= request.getHeader("userId");
         System.out.println(userId+"我是请求头");
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
-//        System.out.println(cookies+"cookies-----------------");
+//        Object token= request.getHeader("token");
+//        Decrypt decrypt = new Decrypt();
+//		DecodedJWT jwt = decrypt.deToken((String) token);
+//		System.out.println("issuer: " + jwt.getIssuer());
+//		System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
+//		System.out.println("userId: " + jwt.getClaim("userId").asString());
+//		System.out.println("type:     " + jwt.getClaim("Type").asString());
+//		System.out.println("过期时间：      " + jwt.getExpiresAt());
+        //        System.out.println(cookies+"cookies-----------------");
 //        for(Cookie cookie1 : cookies){
 //            if (cookie1.getName()==null){
 //                System.out.println(cookie1.getName()+"cookie Name");
@@ -81,6 +91,9 @@ public class MyInterceptor implements HandlerInterceptor {
                 AccountExample accountExample = new AccountExample();
                 accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf((String) userId)).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
                 List<Account> accounts= accountMapper.selectByExample(accountExample);
+                if (accounts.size()==0){
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+                }
                 request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
                 request.getServletContext().setAttribute("getServletContextType", type);
             }
