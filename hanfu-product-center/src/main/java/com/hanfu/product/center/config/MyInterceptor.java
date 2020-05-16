@@ -55,16 +55,28 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
-        if (token==null){
-            return false;
+//        if (token==null){
+//            return false;
+//        }
+        if (token!=null){
+            Decrypt decrypt = new Decrypt();
+            DecodedJWT jwt = decrypt.deToken((String) token);
+            System.out.println("issuer: " + jwt.getIssuer());
+            System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
+            System.out.println("userId: " + jwt.getClaim("userId").asInt());
+            System.out.println("type:     " + jwt.getClaim("Type").asString());
+            System.out.println("过期时间：      " + jwt.getExpiresAt());
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            if (accounts.size()==0){
+                response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+            }
+            request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+            request.getServletContext().setAttribute("getServletContextType", type);
         }
-        Decrypt decrypt = new Decrypt();
-		DecodedJWT jwt = decrypt.deToken((String) token);
-		System.out.println("issuer: " + jwt.getIssuer());
-		System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
-		System.out.println("userId: " + jwt.getClaim("userId").asInt());
-		System.out.println("type:     " + jwt.getClaim("Type").asString());
-		System.out.println("过期时间：      " + jwt.getExpiresAt());
+
         //        System.out.println(cookies+"cookies-----------------");
 //        for(Cookie cookie1 : cookies){
 //            if (cookie1.getName()==null){
@@ -84,15 +96,7 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
-            String type = jwt.getClaim("Type").asString();
-                AccountExample accountExample = new AccountExample();
-                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
-                List<Account> accounts= accountMapper.selectByExample(accountExample);
-                if (accounts.size()==0){
-                    response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
-                }
-                request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
-                request.getServletContext().setAttribute("getServletContextType", type);
+
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象
             //把变量放在这里面，在之后什么地方都可以访问
             //把自己的变量放在头部
