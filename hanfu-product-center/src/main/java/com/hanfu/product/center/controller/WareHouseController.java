@@ -314,7 +314,11 @@ public class WareHouseController {
 		List<HfInStorage> list = warehouseDao.findHfInStorage(wfc);
 		for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage = list.get(i);
+			HWarehouseRespExample hWarehouseRespExample = new HWarehouseRespExample();
+			hWarehouseRespExample.createCriteria().andWarehouseIdEqualTo(storage.getWarehouseId()).andGoodIdEqualTo(storage.getGoodId());
+			List<HWarehouseResp> resps = hWarehouseRespMapper.selectByExample(hWarehouseRespExample);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setTotal(resps.get(0).getQuantity());
 			display.setId(storage.getId());
 			display.setStatus(storage.getStatus());
 			display.setGoodId(storage.getGoodId());
