@@ -376,13 +376,17 @@ public class HfProductController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false, type = "Integer") })
 	public ResponseEntity<JSONObject> getstone(IsDelete isDelete, Integer pageNum, Integer pageSize, Integer sort
-			,Integer priceDown, Integer priceUp,@RequestParam(value = "content", required = false) List<Integer> categoryId)
-			throws JSONException {
+			,Integer priceDown, Integer priceUp,@RequestParam(value = "content", required = false) List<Integer> categoryId,HttpServletRequest request)
+			throws JSONException, IOException {
 		if (pageNum == null) {
 			pageNum = 0;
 		}
 		if (pageSize == null) {
 			pageSize = 0;
+		}
+		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+		if (request.getServletContext().getAttribute("getServletContext")!=null){
+			isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
@@ -515,8 +519,6 @@ public class HfProductController {
 		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 		if (request.getServletContext().getAttribute("getServletContext")!=null){
 			isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-		}else {
-			response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);

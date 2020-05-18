@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,6 +54,8 @@ public class discountCouponController {
     private HfGoodsMapper hfGoodsMapper;
     @Autowired
     private HfPriceMapper hfPriceMapper;
+    @Autowired
+    private HttpServletResponse response;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
@@ -108,9 +112,19 @@ if (discountCoupon.getStoneId()==null){
     @RequestMapping(value = "/selectDiscountCoupon", method = RequestMethod.GET)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId,String DiscountCouponName,String DiscountCouponType,Integer stoneId)
+    public ResponseEntity<JSONObject> getGoodsSpecs(Integer bossId, String DiscountCouponName, String DiscountCouponType, Integer stoneId, HttpServletRequest request)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContextType")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+                bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+            } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                stoneId =((Integer) request.getServletContext().getAttribute("getServletContext"));
+            }
+        }else {
+            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+        }
         List<DiscountCoupon> discountCoupons =new ArrayList<>();
         if (bossId!=null){
             DiscountCouponExample discountCouponExample = new DiscountCouponExample();

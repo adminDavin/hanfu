@@ -3,6 +3,7 @@ package com.hanfu.product.center.config;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.product.center.dao.AccountMapper;
 import com.hanfu.product.center.dao.HfModuleMapper;
+import com.hanfu.product.center.dao.HfUsersMapper;
 import com.hanfu.product.center.dao.PayBossMapper;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.tool.Decrypt;
@@ -38,6 +39,8 @@ public class MyInterceptor implements HandlerInterceptor {
     private AccountMapper accountMapper;
     @Autowired
     private HfModuleMapper hfModuleMapper;
+    @Autowired
+    private HfUsersMapper hfUsersMapper;
 //    @Autowired
 //    private HfAuthMapper hfAuthMapper;
 //    @Autowired
@@ -58,23 +61,14 @@ public class MyInterceptor implements HandlerInterceptor {
 //        if (token==null){
 //            return false;
 //        }
+        Decrypt decrypt = new Decrypt();
+        DecodedJWT jwt = decrypt.deToken((String) token);
         if (token!=null){
-            Decrypt decrypt = new Decrypt();
-            DecodedJWT jwt = decrypt.deToken((String) token);
             System.out.println("issuer: " + jwt.getIssuer());
             System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
             System.out.println("userId: " + jwt.getClaim("userId").asInt());
             System.out.println("type:     " + jwt.getClaim("Type").asString());
             System.out.println("过期时间：      " + jwt.getExpiresAt());
-            String type = jwt.getClaim("Type").asString();
-            AccountExample accountExample = new AccountExample();
-            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
-            List<Account> accounts= accountMapper.selectByExample(accountExample);
-            if (accounts.size()==0){
-                response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
-            }
-            request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
-            request.getServletContext().setAttribute("getServletContextType", type);
         }
 
         //        System.out.println(cookies+"cookies-----------------");
@@ -96,7 +90,21 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
-
+if (token!=null){
+    String type = jwt.getClaim("Type").asString();
+//    if (type.equals("boss")){
+//        HfUsersExample hfUsersExample = new HfUsersExample();
+//        hfUsersExample.createCriteria().andBossIdEqualTo()
+        AccountExample accountExample = new AccountExample();
+        accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+        List<Account> accounts= accountMapper.selectByExample(accountExample);
+        if (accounts.size()==0){
+            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+        }
+        request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+        request.getServletContext().setAttribute("getServletContextType", type);
+//    }
+}
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象
             //把变量放在这里面，在之后什么地方都可以访问
             //把自己的变量放在头部
