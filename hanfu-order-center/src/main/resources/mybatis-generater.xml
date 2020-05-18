@@ -131,8 +131,20 @@
 			<!--<generatedKey column="id" sqlStatement="mysql"-->
 				<!--identity="true" />-->
 		<!--</table>-->
-		<table schema="user_center" tableName="discount_coupon"
-			   domainObjectName="DiscountCoupon">
+		<table schema="user_center" tableName="account"
+			   domainObjectName="Account">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table>
+		<table schema="user_center" tableName="hf_module"
+			   domainObjectName="HfModule">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table>
+		<table schema="user_center" tableName="pay_boss"
+			   domainObjectName="PayBoss">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />

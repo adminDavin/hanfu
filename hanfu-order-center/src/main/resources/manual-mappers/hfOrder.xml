@@ -103,6 +103,9 @@
         <if test="stateTime != null and endTime != null">
             and o.create_time &gt;= #{stateTime} and o.create_time &lt;= #{endTime}
         </if>
+        <if test="stoneId!=null and stoneId != ''">
+            and o.stone_id =#{stoneId}
+        </if>
         order by o.modify_time desc;
     </select>
 

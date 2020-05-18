@@ -51,6 +51,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin
 @RestController
@@ -193,7 +194,7 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
                                                  String paymentName,String today,String yesterday,String sevenDays,String month,
-                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime) throws JSONException {
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
@@ -201,6 +202,25 @@ public class HfOrderController {
             params.put("stateTime",stateTime);
             params.put("endTime",endTime);
         }
+        Integer stoneId = null;
+        Integer bossId = null;
+//        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
+                if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+                    stoneId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
+                } else if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+                    bossId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
+                }
+            }
+            if (bossId!=null){
+                HfStoneExample hfStoneExample = new HfStoneExample();
+                hfStoneExample.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
+                List<HfStone> hfStoneList = hfStoneMapper.selectByExample(hfStoneExample);
+                List<Integer> stonesId = hfStoneList.stream().map(a->a.getId()).collect(Collectors.toList());
+                params.put("stonesId",stonesId);
+            }
+//        }
         params.put("userId", userId);
         params.put("orderStatus", orderStatusEnum.getOrderStatus());
         params.put("orderType", orderType);
@@ -211,6 +231,9 @@ public class HfOrderController {
         params.put("yesterday",yesterday);
         params.put("sevenDays",sevenDays);
         params.put("months",month);
+        if (stoneId!=null){
+            params.put("stoneId",stoneId);
+        }
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
 //            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
