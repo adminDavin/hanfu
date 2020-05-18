@@ -61,9 +61,9 @@ public class MyInterceptor implements HandlerInterceptor {
 //        if (token==null){
 //            return false;
 //        }
-        Decrypt decrypt = new Decrypt();
-        DecodedJWT jwt = decrypt.deToken((String) token);
         if (token!=null){
+            Decrypt decrypt = new Decrypt();
+            DecodedJWT jwt = decrypt.deToken((String) token);
             System.out.println("issuer: " + jwt.getIssuer());
             System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
             System.out.println("userId: " + jwt.getClaim("userId").asInt());
@@ -91,6 +91,8 @@ public class MyInterceptor implements HandlerInterceptor {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
 if (token!=null){
+    Decrypt decrypt = new Decrypt();
+    DecodedJWT jwt = decrypt.deToken((String) token);
     String type = jwt.getClaim("Type").asString();
 //    if (type.equals("boss")){
 //        HfUsersExample hfUsersExample = new HfUsersExample();
