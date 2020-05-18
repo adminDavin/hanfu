@@ -312,9 +312,15 @@ public class WareHouseController {
 		wfc.setCategoryName(categoryName);
 		wfc.setWarehousrId(warehouseId);
 		List<HfInStorage> list = warehouseDao.findHfInStorage(wfc);
+		System.out.println(list);
 		for (int i = 0; i < list.size(); i++) {
 			HfInStorage storage = list.get(i);
+			HWarehouseRespExample hWarehouseRespExample = new HWarehouseRespExample();
+			System.out.println(storage.getWarehouseId());
+			hWarehouseRespExample.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(storage.getGoodId());
+			List<HWarehouseResp> resps = hWarehouseRespMapper.selectByExample(hWarehouseRespExample);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
+			display.setTotal(resps.get(0).getQuantity());
 			display.setId(storage.getId());
 			display.setStatus(storage.getStatus());
 			display.setGoodId(storage.getGoodId());
