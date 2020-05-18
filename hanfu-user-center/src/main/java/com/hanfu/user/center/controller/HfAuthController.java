@@ -185,7 +185,7 @@ public class HfAuthController {
 		response.addCookie(cookie);
 		redisTemplate.opsForValue().set("autologin", authKey);
 		Encrypt encrypt = new Encrypt();
-		String token = encrypt.getToken(true, user.getId(), "boss");
+		String token = encrypt.getToken(true, user.getId(), type);
 		System.out.println(token);
 		response.addHeader("token",token);
 		Map map = new HashMap();
