@@ -119,8 +119,10 @@ if (discountCoupon.getStoneId()==null){
         if (request.getServletContext().getAttribute("getServletContextType")!=null){
             if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
                 bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+                stoneId=null;
             } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
                 stoneId =((Integer) request.getServletContext().getAttribute("getServletContext"));
+                bossId=null;
             }
         }else {
             response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
