@@ -384,9 +384,11 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-		if (request.getServletContext().getAttribute("getServletContext")!=null){
-			isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
