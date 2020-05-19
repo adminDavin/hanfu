@@ -75,8 +75,9 @@ public class MyInterceptor implements HandlerInterceptor {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
             }
             if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")!=token){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
                 System.out.println("此账号在别处登陆了");
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+//                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
             }
         }
 
