@@ -55,6 +55,7 @@ public class MyInterceptor implements HandlerInterceptor {
 //            return false;
 //        }
 //        Object userId= request.getHeader("userId");
+
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
@@ -69,7 +70,16 @@ public class MyInterceptor implements HandlerInterceptor {
             System.out.println("userId: " + jwt.getClaim("userId").asInt());
             System.out.println("type:     " + jwt.getClaim("Type").asString());
             System.out.println("过期时间：      " + jwt.getExpiresAt());
+
+            if (redisTemplate.opsForValue().get(jwt.getClaim("userId").asInt()+jwt.getClaim("Type").asString()+"token")==null){
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+            }
+            if (redisTemplate.opsForValue().get(jwt.getClaim("userId").asInt()+jwt.getClaim("Type").asString()+"token")!=token){
+                System.out.println("此账号在别处登陆了");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+            }
         }
+
 
         //        System.out.println(cookies+"cookies-----------------");
 //        for(Cookie cookie1 : cookies){

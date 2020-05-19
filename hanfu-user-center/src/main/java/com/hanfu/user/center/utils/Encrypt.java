@@ -2,9 +2,14 @@ package com.hanfu.user.center.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import javax.annotation.Resource;
 
 /**
  * 加密
@@ -12,7 +17,8 @@ import com.auth0.jwt.exceptions.JWTCreationException;
  *
  */
 public final class Encrypt {
-
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     /**
      * 生成加密后的token
      * @param isVip 是不是VIP,true表示是VIP，false表示不是VIP。
@@ -34,6 +40,8 @@ public final class Encrypt {
                     // 使用了HMAC256加密算法。
                     // mysecret是用来加密数字签名的密钥。
                     .sign(Algorithm.HMAC256("mysecret"));
+            redisTemplate.opsForValue().set(userId+Type+"token",token);
+            redisTemplate.expire(userId+Type+"token",300 , TimeUnit.SECONDS);
         } catch (JWTCreationException exception){
             //Invalid Signing configuration / Couldn't convert Claims.
         } catch (IllegalArgumentException e) {
