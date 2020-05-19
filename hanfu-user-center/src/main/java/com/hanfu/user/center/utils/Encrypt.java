@@ -17,8 +17,7 @@ import javax.annotation.Resource;
  *
  */
 public final class Encrypt {
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+
     /**
      * 生成加密后的token
      * @param isVip 是不是VIP,true表示是VIP，false表示不是VIP。
@@ -45,12 +44,6 @@ public final class Encrypt {
         } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        System.out.println(userId);
-        System.out.println(Type);
-        if (token!=null&&userId!=null&&Type!=null){
-            redisTemplate.opsForValue().set(String.valueOf(userId)+Type+"token",token);
-            redisTemplate.expire(userId+Type+"token",300 , TimeUnit.SECONDS);
         }
         return token;
     }

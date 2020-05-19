@@ -214,6 +214,10 @@ public class HfAuthController {
 			Map<String,String> modelCode = hfModules.stream().collect(Collectors.toMap(HfModule::getModelCode,HfModule::getModelCode));
 			map.put("modelCode",modelCode);
 			map.put("token",token);
+			if (token!=null&&userId!=null&&type!=null){
+				redisTemplate.opsForValue().set(String.valueOf(userId)+type+"token",token);
+				redisTemplate.expire(userId+type+"token",300 , TimeUnit.SECONDS);
+			}
 			return builder.body(ResponseUtils.getResponseBody(map));
 		}
 
