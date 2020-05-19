@@ -65,6 +65,7 @@ public class HfProductDisplay implements Serializable {
     private String distributionRatio;
     private Short isDeleted;
     private String lastModifier;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     private Integer bossId;
     private String bossName;
