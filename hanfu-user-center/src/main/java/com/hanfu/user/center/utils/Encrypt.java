@@ -40,13 +40,15 @@ public final class Encrypt {
                     // 使用了HMAC256加密算法。
                     // mysecret是用来加密数字签名的密钥。
                     .sign(Algorithm.HMAC256("mysecret"));
-            redisTemplate.opsForValue().set(userId+Type+"token",token);
-            redisTemplate.expire(userId+Type+"token",300 , TimeUnit.SECONDS);
         } catch (JWTCreationException exception){
             //Invalid Signing configuration / Couldn't convert Claims.
         } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        if (token!=null){
+            redisTemplate.opsForValue().set(userId+Type+"token",token);
+            redisTemplate.expire(userId+Type+"token",300 , TimeUnit.SECONDS);
         }
         return token;
     }
