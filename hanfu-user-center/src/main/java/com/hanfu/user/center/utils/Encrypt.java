@@ -46,8 +46,10 @@ public final class Encrypt {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if (token!=null){
-            redisTemplate.opsForValue().set(userId+Type+"token",token);
+        System.out.println(userId);
+        System.out.println(Type);
+        if (token!=null&&userId!=null&&Type!=null){
+            redisTemplate.opsForValue().set(String.valueOf(userId)+Type+"token",token);
             redisTemplate.expire(userId+Type+"token",300 , TimeUnit.SECONDS);
         }
         return token;
