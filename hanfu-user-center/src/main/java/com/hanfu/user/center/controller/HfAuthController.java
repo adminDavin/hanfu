@@ -216,7 +216,7 @@ public class HfAuthController {
 			map.put("token",token);
 			if (token!=null&&userId!=null&&type!=null){
 				redisTemplate.opsForValue().set(String.valueOf(userId)+type+"token",token);
-				redisTemplate.expire(String.valueOf(userId)+type+"token",300 , TimeUnit.SECONDS);
+				redisTemplate.expire(String.valueOf(userId)+type+"token",6000 , TimeUnit.SECONDS);
 			}
 			return builder.body(ResponseUtils.getResponseBody(map));
 		}
