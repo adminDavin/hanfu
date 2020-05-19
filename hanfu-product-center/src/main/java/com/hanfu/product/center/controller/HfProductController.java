@@ -520,7 +520,11 @@ public class HfProductController {
 
 		System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 		if (request.getServletContext().getAttribute("getServletContext")!=null){
-			isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext").equals("boss")){
+				isDelete.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+				isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
