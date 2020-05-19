@@ -619,6 +619,7 @@ public class WareHouseController {
 		record.setQuantity(hfInStorage.getQuantity());
 //		record.setTypeWho(typeWho);
 		record.setType(0);
+		record.setBossId(hfInStorage.getBossId());
 		record.setUserId(String.valueOf(userId));
 		record.setWarehouseId(hfInStorage.getWarehouseId());
 		record.setCreateTime(LocalDateTime.now());
@@ -712,12 +713,13 @@ public class WareHouseController {
 			display.setGoodName(goods.getHfName());
 			display.setGoodDesc(goods.getGoodsDesc());
 			display.setQuantity(storage.getQuantity());
-			if ("0".equals(storage.getTypeWho())) {
-				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
-				display.setTypeName(boss.getName());
-			}
-			if ("1".equals(storage.getTypeWho())) {
+//			if ("0".equals(storage.getTypeWho())) {
+//				HfBoss boss = hfBossMapper.selectByPrimaryKey(storage.getBossId());
+//				display.setTypeName(boss.getName());
+//			}
+			if ("0".equals(String.valueOf(storage.getType()))) {
 				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(storage.getStoneId());
+				System.out.println("是否进入");
 				display.setTypeName(hfStone.getHfName());
 				display.setStoneId(hfStone.getId());
 			}
