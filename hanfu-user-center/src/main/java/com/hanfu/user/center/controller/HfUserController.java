@@ -219,6 +219,7 @@ public class HfUserController {
             hfUser.setModifyDate(LocalDateTime.now());
             hfUser.setIdDeleted((byte) 0);
             hfUser.setCancelId(0);
+            hfUser.setOwnInvitationCode(create());
             hfUser.setRegion(userInfo.getString("province"));
             hfUser.setUserStatus((byte) 0);
             hfUser.setNickName(userInfo.getString("nickName"));
@@ -236,5 +237,16 @@ public class HfUserController {
         hfAuthMapper.insert(record);
         return hfUser;
     }
+    
+    public static String create() {
+		String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
+		String str = "";
+		for (int i = 1; i <= 6; i++) {
+			String num = String.valueOf(code.charAt((int) Math.floor(Math.random() * code.length())));
+			str += num;
+			code = code.replaceAll(num, "");
+		}
+		return str;
+	}
 
 }
