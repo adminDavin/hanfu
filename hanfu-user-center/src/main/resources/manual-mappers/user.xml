@@ -241,7 +241,7 @@
         *
         FROM
         hf_user h
-        WHERE 1=1 and h.boss_id = #{bossId}
+        WHERE 1=1
         <if test="nickName != null and nickName != ''">
             AND h.nick_name LIKE concat('%',#{nickName},'%')
         </if>
