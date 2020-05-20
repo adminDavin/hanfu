@@ -116,10 +116,10 @@ public class HfAuthController {
 
 	@Autowired
 	private HfUserPrivilegeMapper hfUserPrivilegeMapper;
-	
+
 	@Autowired
 	private HfUserBalanceMapper hfUserBalanceMapper;
-	
+
 	@Autowired
 	private UserDao userDao;
 
@@ -131,7 +131,7 @@ public class HfAuthController {
 
 	@Autowired
 	private AccountModelMapper accountModelMapper;
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -140,7 +140,7 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
 	public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
-			@RequestParam(name = "passwd", required = false) Integer passwd,String type) throws Exception {
+			@RequestParam(name = "passwd", required = false) Integer passwd, String type) throws Exception {
 		Integer userId = null;
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -188,35 +188,38 @@ public class HfAuthController {
 		Encrypt encrypt = new Encrypt();
 		String token = encrypt.getToken(true, user.getId(), type);
 		System.out.println(token);
-		response.addHeader("token",token);
+		response.addHeader("token", token);
 		Map map = new HashMap();
-		if (type!=null){
-			map.put("id",user.getId());
-			map.put("phone",user.getPhone());
-			map.put("nickName",user.getNickName());
-			map.put("realName",user.getRealName());
-			map.put("fileId",user.getFileId());
+		if (type != null) {
+			map.put("id", user.getId());
+			map.put("phone", user.getPhone());
+			map.put("nickName", user.getNickName());
+			map.put("realName", user.getRealName());
+			map.put("fileId", user.getFileId());
 			AccountExample accountExample = new AccountExample();
-			accountExample.createCriteria().andAccountTypeEqualTo(type).andUserIdEqualTo(user.getId()).andIsDeletedEqualTo(0);
-			List<Account> accounts= accountMapper.selectByExample(accountExample);
-			if (accounts.size()==0){
+			accountExample.createCriteria().andAccountTypeEqualTo(type).andUserIdEqualTo(user.getId())
+					.andIsDeletedEqualTo(0);
+			List<Account> accounts = accountMapper.selectByExample(accountExample);
+			if (accounts.size() == 0) {
 				response.sendError(HttpStatus.FORBIDDEN.value(), "无此权限");
 			}
 			AccountModelExample accountModelExample = new AccountModelExample();
-			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId()).andIdDeletedEqualTo((byte) 0);
-			List<AccountModel> accountModels= accountModelMapper.selectByExample(accountModelExample);
-			Set<Integer> set =accountModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
+			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId())
+					.andIdDeletedEqualTo((byte) 0);
+			List<AccountModel> accountModels = accountModelMapper.selectByExample(accountModelExample);
+			Set<Integer> set = accountModels.stream().map(a -> a.getModelId()).collect(Collectors.toSet());
 			HfModuleExample hfModuleExample = new HfModuleExample();
 			hfModuleExample.createCriteria().andIdIn(Lists.newArrayList(set)).andIsDeletedEqualTo((byte) 0);
-			List<HfModule> hfModules= hfModuleMapper.selectByExample(hfModuleExample);
-			Set<String> model = hfModules.stream().map(a->a.getHfModel()).collect(Collectors.toSet());
-			map.put("model",model);
-			Map<String,String> modelCode = hfModules.stream().collect(Collectors.toMap(HfModule::getModelCode,HfModule::getModelCode));
-			map.put("modelCode",modelCode);
-			map.put("token",token);
-			if (token!=null&&userId!=null&&type!=null){
-				redisTemplate.opsForValue().set(String.valueOf(userId)+type+"token",token);
-				redisTemplate.expire(String.valueOf(userId)+type+"token",6000 , TimeUnit.SECONDS);
+			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
+			Set<String> model = hfModules.stream().map(a -> a.getHfModel()).collect(Collectors.toSet());
+			map.put("model", model);
+			Map<String, String> modelCode = hfModules.stream()
+					.collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
+			map.put("modelCode", modelCode);
+			map.put("token", token);
+			if (token != null && userId != null && type != null) {
+				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
+				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
 			}
 			return builder.body(ResponseUtils.getResponseBody(map));
 		}
@@ -263,7 +266,8 @@ public class HfAuthController {
 	@RequestMapping(value = "/findAdminUser", method = RequestMethod.GET)
 	@ApiOperation(value = "查询后台用户", notes = "查询后台用户")
 
-	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize ,String phone,String code,String name) throws Exception {
+	public ResponseEntity<JSONObject> addAdminUser(Integer pageNum, Integer pageSize, String phone, String code,
+			String name, HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (pageNum == null) {
 			pageNum = 0;
@@ -280,11 +284,15 @@ public class HfAuthController {
 //		}else {
 //			list = hfUserMapper.selectByExample(null);
 //		}
+
 		HfUser user = new HfUser();
 		user.setPhone(phone);
 		user.setOwnInvitationCode(code);
 		user.setNickName(name);
 		user.setRealName(name);
+		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		}
 //		HfUserExample example = new HfUserExample();
 //		example.createCriteria().andPhoneLike(phone).andOwnInvitationCodeLike(code).andNickNameLike(name);
 		list = userDao.selectUserOrderByInfo(user);
@@ -525,22 +533,25 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String")})
-	public ResponseEntity<JSONObject> addUserMemberLevel(String name, Integer level, String levelDescribe ,String amount)
-			throws JSONException {
+			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String") })
+	public ResponseEntity<JSONObject> addUserMemberLevel(String name, Integer level, String levelDescribe,
+			String amount, HttpServletRequest request) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		
+
 		HfMemberLevelExample example = new HfMemberLevelExample();
 		example.createCriteria().andLevelEqualTo(level);
-		
+
 		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		}
-		
+
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
+		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		}
 		hfMemberLevel.setLevel(level);
 		hfMemberLevel.setAmount(amount);
 		hfMemberLevel.setLevelDescribe(levelDescribe);
@@ -558,11 +569,10 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "描述", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String")})
+			@ApiImplicitParam(paramType = "query", name = "amount", value = "金额", required = false, type = "String") })
 	public ResponseEntity<JSONObject> updateUserMemberLevel(@RequestParam(required = false) String name, Integer id,
 			@RequestParam(required = false) Integer level, @RequestParam(required = false) String levelDescribe,
-			@RequestParam(required = false) String amount)
-			throws JSONException {
+			@RequestParam(required = false) String amount) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevel hfMemberLevel = hfMemberLevelMapper.selectByPrimaryKey(id);
@@ -570,28 +580,28 @@ public class HfAuthController {
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
-		
+
 		if (!StringUtils.isEmpty(level)) {
-			
+
 			HfMemberLevelExample example = new HfMemberLevelExample();
 			example.createCriteria().andLevelEqualTo(level);
-			
+
 			List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
-			if(!list.isEmpty()) {
+			if (!list.isEmpty()) {
 				return builder.body(ResponseUtils.getResponseBody(-1));
 			}
-			
+
 			hfMemberLevel.setLevel(level);
 		}
-		
+
 		if (!StringUtils.isEmpty(name)) {
 			hfMemberLevel.setLevelName(name);
 		}
-		
+
 		if (!StringUtils.isEmpty(levelDescribe)) {
 			hfMemberLevel.setLevelDescribe(levelDescribe);
 		}
-		
+
 		if (!StringUtils.isEmpty(amount)) {
 			hfMemberLevel.setAmount(amount);
 		}
@@ -635,10 +645,15 @@ public class HfAuthController {
 
 	@ApiOperation(value = "查询用户会员等级", notes = "查询用户会员等级")
 	@RequestMapping(value = "/findUserMemberLevel", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findUserMemberLevel() throws JSONException {
+	public ResponseEntity<JSONObject> findUserMemberLevel(HttpServletRequest request) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(null);
+		HfMemberLevelExample example = new HfMemberLevelExample();
+		
+		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
+		}
+		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
 		List<HfMemberLevelInfo> result = new ArrayList<HfMemberLevelInfo>();
 		for (int i = 0; i < list.size(); i++) {
 			HfMemberLevel hfMemberLevel = list.get(i);
@@ -656,7 +671,7 @@ public class HfAuthController {
 		result.sort(new Comparator<HfMemberLevelInfo>() {
 			@Override
 			public int compare(HfMemberLevelInfo o1, HfMemberLevelInfo o2) {
-				return o1.getLevel()-o2.getLevel();
+				return o1.getLevel() - o2.getLevel();
 			}
 		});
 		return builder.body(ResponseUtils.getResponseBody(result));
@@ -754,8 +769,8 @@ public class HfAuthController {
 
 	@ApiOperation(value = "查询会员", notes = "查询会员")
 	@RequestMapping(value = "/findUserMember", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findUserMember(Integer pageNum, Integer pageSize ,String phone,String code,String name
-			, Integer levelId) throws JSONException {
+	public ResponseEntity<JSONObject> findUserMember(Integer pageNum, Integer pageSize, String phone, String code,
+			String name, Integer levelId, HttpServletRequest request) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (pageNum == null) {
@@ -769,6 +784,9 @@ public class HfAuthController {
 		user.setOwnInvitationCode(code);
 		user.setNickName(name);
 		user.setRealName(name);
+		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+		}
 		user.setId(levelId);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfUserMember> list = userDao.selectHfUserMember(user);
@@ -1007,50 +1025,50 @@ public class HfAuthController {
 		example2.clear();
 		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("discountCoupon");
 		List<HfUserBalance> balance3 = hfUserBalanceMapper.selectByExample(example2);
-		
+
 		Integer browseCount = userDao.selectBrowseCount(userId);
 		Integer collectCount = userDao.selectCollectCount(userId);
-		Integer concernCount = userDao.selectConcernCount(userId);		
-		
+		Integer concernCount = userDao.selectConcernCount(userId);
+
 		List<UserOrderInfo> orders = new ArrayList<UserOrderInfo>();
 		Order order = new Order();
 		order.setType("payment");
 		order.setUserId(userId);
 		Integer count = userDao.selectUserOrderInfo(order);
-		orders.add(new UserOrderInfo(count,"payment"));
+		orders.add(new UserOrderInfo(count, "payment"));
 		order.setType("process");
 		count = userDao.selectUserOrderInfo(order);
-		orders.add(new UserOrderInfo(count,"process"));
+		orders.add(new UserOrderInfo(count, "process"));
 		order.setType("complete");
 		count = userDao.selectUserOrderInfo(order);
-		orders.add(new UserOrderInfo(count,"complete"));
+		orders.add(new UserOrderInfo(count, "complete"));
 		order.setType("evaluate");
 		count = userDao.selectUserOrderInfo(order);
-		orders.add(new UserOrderInfo(count,"evaluate"));
-		
+		orders.add(new UserOrderInfo(count, "evaluate"));
+
 		PurseInfo info = new PurseInfo();
 		info.setBrowseCount(browseCount);
 		info.setCollectCount(collectCount);
 		info.setConcernCount(concernCount);
 		info.setOrder(orders);
-		if(balance3.isEmpty()) {
+		if (balance3.isEmpty()) {
 			info.setCouponCount(0);
-		}else {
+		} else {
 			info.setCouponCount(balance3.get(0).getHfBalance());
 		}
-		if(balance2.isEmpty()) {
+		if (balance2.isEmpty()) {
 			info.setIntegral(0);
-		}else {
+		} else {
 			info.setIntegral(balance2.get(0).getHfBalance());
 		}
-		if(balance.isEmpty()) {
+		if (balance.isEmpty()) {
 			info.setSurplus(0);
-		}else {
+		} else {
 			info.setSurplus(balance.get(0).getHfBalance());
 		}
-		if(member.isEmpty()) {
+		if (member.isEmpty()) {
 			info.setPrerogative("普通用户");
-		}else {
+		} else {
 			HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.get(0).getLevelId());
 			info.setPrerogative(level.getLevelName());
 			info.setMember(1);
@@ -1110,8 +1128,7 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
-	
+
 //	@Scheduled(cron="0/5 * * * * ? ")
 //    public void TimeDiscountCoupon()
 //            throws Exception {
