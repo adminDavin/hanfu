@@ -650,9 +650,9 @@ public class HfAuthController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevelExample example = new HfMemberLevelExample();
 		
-		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
-			example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
-		}
+//		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+//			example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
+//		}
 		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
 		List<HfMemberLevelInfo> result = new ArrayList<HfMemberLevelInfo>();
 		for (int i = 0; i < list.size(); i++) {
@@ -784,9 +784,9 @@ public class HfAuthController {
 		user.setOwnInvitationCode(code);
 		user.setNickName(name);
 		user.setRealName(name);
-		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
-			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-		}
+//		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+//			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+//		}
 		user.setId(levelId);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfUserMember> list = userDao.selectHfUserMember(user);
