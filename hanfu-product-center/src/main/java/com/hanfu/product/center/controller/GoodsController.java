@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.*;
+import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 
 import org.apache.commons.io.IOUtils;
@@ -37,13 +38,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.product.center.dao.FileDescMapper;
-import com.hanfu.product.center.manual.model.Evaluate;
-import com.hanfu.product.center.manual.model.EvaluateEntity;
-import com.hanfu.product.center.manual.model.HfGoodsDisplay;
-import com.hanfu.product.center.manual.model.HfGoodsDisplayInfo;
-import com.hanfu.product.center.manual.model.HfGoodsSpecDisplay;
-import com.hanfu.product.center.manual.model.PriceRanking;
-import com.hanfu.product.center.manual.model.ProductForValue;
 import com.hanfu.product.center.manual.model.Evaluate.EvaluateContentTypeEnum;
 import com.hanfu.product.center.manual.model.Evaluate.EvaluateTypeEnum;
 import com.hanfu.product.center.request.GoodsPictrueRequest;
@@ -307,6 +301,7 @@ public class GoodsController {
 		ProductSpecExample pExample = new ProductSpecExample();
 		pExample.createCriteria().andProductIdEqualTo(goods.getProductId());
 		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(pExample);
+		List<goodsSpecs> goodsSpecsList = new ArrayList<>();
 		productSpecs.stream().forEach(spec -> {
 			HfGoodsSpecExample example = new HfGoodsSpecExample();
 			example.createCriteria().andGoodsIdEqualTo(goodsId).andHfSpecIdEqualTo(String.valueOf(spec.getId()));
@@ -314,8 +309,19 @@ public class GoodsController {
 			if (!items.isEmpty()) {
 				spec.setSpecValue(items.get(0).getHfValue());
 			}
+			goodsSpecs goodsSpecs = new goodsSpecs();
+			goodsSpecs.setId(spec.getId());
+			goodsSpecs.setCategorySpecId(spec.getCategorySpecId());
+			goodsSpecs.setHfName(spec.getHfName());
+			goodsSpecs.setIsDeleted(spec.getIsDeleted());
+			goodsSpecs.setProductId(spec.getProductId());
+			goodsSpecs.setShow(true);
+			goodsSpecs.setSpecType(spec.getSpecType());
+			goodsSpecs.setSpecUnit(spec.getSpecUnit());
+			goodsSpecs.setSpecValue(spec.getSpecValue());
+			goodsSpecsList.add(goodsSpecs);
 		});
-		return builder.body(ResponseUtils.getResponseBody(productSpecs));
+		return builder.body(ResponseUtils.getResponseBody(goodsSpecsList));
 	}
 
 	@ApiOperation(value = "获取物品规格", notes = "获取物品规格")
