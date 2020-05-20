@@ -74,12 +74,14 @@ public class MyInterceptor implements HandlerInterceptor {
 
             if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+                return false;
             }
             if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
                 System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
                 System.out.println("此账号在别处登陆了");
                 System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
+                return false;
             }
         }
 
