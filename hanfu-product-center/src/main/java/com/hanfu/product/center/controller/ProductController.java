@@ -734,7 +734,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "修改商品规格", notes = "修改商品规格")
 	@RequestMapping(value = "/updatespec", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updatespec(Integer productSpecId,String specName,Integer categorySpecId,Integer productId,String specUnit)
+	public ResponseEntity<JSONObject> updatespec(Integer productSpecId,String specName,Integer categorySpecId,Integer productId,String specUnit,String specValue)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec productSpec = new ProductSpec();
@@ -746,6 +746,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		productSpec.setCreateTime(LocalDateTime.now());
 		productSpec.setModifyTime(LocalDateTime.now());
 		productSpec.setIsDeleted((short) 0);
+		productSpec.setSpecValue(specValue);
 		productSpecMapper.updateByPrimaryKeySelective(productSpec);
 		return builder.body(ResponseUtils.getResponseBody(productSpec));
 	}
