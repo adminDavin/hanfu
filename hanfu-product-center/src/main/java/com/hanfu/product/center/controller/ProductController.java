@@ -655,7 +655,23 @@ public class ProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpecExample example = new ProductSpecExample();
 		example.createCriteria().andProductIdEqualTo(productId);
-		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.selectByExample(example)));
+		List<ProductSpec> productSpecs = productSpecMapper.selectByExample(example);
+		List<ProductSpecs> productSpecsList = new ArrayList<>();
+		productSpecs.forEach(productSpec -> {
+			ProductSpecs productSpecs1 = new ProductSpecs();
+			productSpecs1.setHfName(productSpec.getHfName());
+			productSpecs1.setCategorySpecId(productSpec.getCategorySpecId());
+			productSpecs1.setId(productSpec.getId());
+			productSpecs1.setIsDeleted(productSpec.getIsDeleted());
+			productSpecs1.setProductId(productSpec.getProductId());
+			productSpecs1.setShow(true);
+			productSpecs1.setSpecType(productSpec.getSpecType());
+			productSpecs1.setSpecValue(productSpec.getSpecValue());
+			productSpecs1.setSpecUnit(productSpec.getSpecUnit());
+			productSpecsList.add(productSpecs1);
+		});
+
+		return builder.body(ResponseUtils.getResponseBody(productSpecsList));
 	}
 
 	@ApiOperation(value = "添加商品规格", notes = "为某一个商品添加规格")

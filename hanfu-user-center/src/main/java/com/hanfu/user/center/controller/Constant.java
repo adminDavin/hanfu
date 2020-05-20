@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Constant {
     public static void main(String[] args) throws IOException {
-        String path = "C:\\Users\\MACHENIKE\\Desktop\\10.jpg";//导入的图片
+        String path = "C:\\Users\\MACHENIKE\\Desktop\\IMG_0099.PNG";//导入的图片
         String base = "love";//将会用这个字符串里的字符填充图片
         BufferedImage image = ImageIO.read(new File(path));//读入图片，并用图片缓冲区对象来接收
 
