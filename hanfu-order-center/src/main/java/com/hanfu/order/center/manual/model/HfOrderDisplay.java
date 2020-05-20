@@ -1,5 +1,6 @@
 package com.hanfu.order.center.manual.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanfu.order.center.model.HfOrderDetail;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,6 +13,7 @@ public class HfOrderDisplay {
     private String orderCode;
     private Integer amount;
     private String hfRemark;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime modifyTime;
     private String orderStatus;
     private String orderType;
