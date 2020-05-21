@@ -100,6 +100,8 @@ if (token!=null){
         }
         request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
         request.getServletContext().setAttribute("getServletContextType", type);
+        request.getSession().setAttribute("getServletContextType", type);
+        request.setAttribute("getServletContextType", type);
 //    }
 }
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象

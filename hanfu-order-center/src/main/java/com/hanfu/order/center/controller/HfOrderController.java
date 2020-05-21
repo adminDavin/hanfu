@@ -204,6 +204,8 @@ public class HfOrderController {
         }
         Integer stoneId = null;
         Integer bossId = null;
+        System.out.println("我是session:"+request.getSession().getAttribute("getServletContextType"));
+        System.out.println("我是request:"+request.getAttribute("getServletContextType"));
 //        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
