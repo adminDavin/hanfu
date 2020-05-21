@@ -564,5 +564,4 @@ public class KingWordsController {
 
         return jsonObject;
     }
-    
 }
