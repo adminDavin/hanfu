@@ -1166,7 +1166,23 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
-
+	@ApiOperation(value = "状态", notes = "状态")
+	@RequestMapping(value = "/state", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> state(Integer id,String type) throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andIsDeletedEqualTo(0);
+		List<Account> accounts= accountMapper.selectByExample(accountExample);
+		accounts.forEach(account -> {
+			if (redisTemplate.opsForValue().get(String.valueOf(account.getUserId()) + account.getAccountType() + "token")!=null){
+				System.out.println(account.getAccountCode()+"在线，id:"+account.getId());
+			}
+		});
+		if (null != id&& null != type){
+			redisTemplate.delete(String.valueOf(id) + type + "token");
+		}
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
 
 //	@Scheduled(cron="0/5 * * * * ? ")
 //    public void TimeDiscountCoupon()
