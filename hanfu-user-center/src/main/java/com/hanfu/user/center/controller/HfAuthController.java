@@ -180,7 +180,6 @@ public class HfAuthController {
 		} else {
 			userId = list.get(0).getUserId();
 		}
-
 		HfUser user = hfUserMapper.selectByPrimaryKey(userId);
 		Cookie cookie = new Cookie("autologin", authKey);
 		response.addCookie(cookie);
