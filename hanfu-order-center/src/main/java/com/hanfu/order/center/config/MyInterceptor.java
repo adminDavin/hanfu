@@ -128,6 +128,8 @@ if (token!=null){
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        request.removeAttribute("getServletContext");
+        request.removeAttribute("getServletContextType");
         logger.info("整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了");
     }
 }
