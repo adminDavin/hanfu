@@ -132,6 +132,9 @@ public class HfAuthController {
 	@Autowired
 	private AccountModelMapper accountModelMapper;
 
+	@Autowired
+    private AccountTypeModelMapper accountTypeModelMapper;
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -1127,6 +1130,43 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+
+	@ApiOperation(value = "账号添加权限", notes = "账号添加权限")
+	@RequestMapping(value = "/addJurisdiction", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer")
+
+	})
+	public ResponseEntity<JSONObject> addJurisdiction(Integer userId,String type,String phone,Integer LastUser,Integer BSid) throws JSONException {
+		Account account = new Account();
+		account.setAccountCode(phone);
+//			account.setAccountRole();
+		account.setAccountType(type);
+		account.setMerchantId(BSid);
+		account.setCreateDate(LocalDateTime.now());
+		account.setLastModifier(String.valueOf(LastUser));
+		account.setModifyDate(LocalDateTime.now());
+		account.setUserId(userId);
+		account.setIsDeleted(0);
+		AccountTypeModelExample accountTypeModelExample = new AccountTypeModelExample();
+        accountTypeModelExample.createCriteria().andAccountTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
+        List<AccountTypeModel> accountTypeModels= accountTypeModelMapper.selectByExample(accountTypeModelExample);
+        accountTypeModels.forEach(accountTypeModel -> {
+            AccountModel accountModel = new AccountModel();
+            accountModel.setIdDeleted((byte) 0);
+            accountModel.setCreateDate(LocalDateTime.now());
+            accountModel.setModifyDate(LocalDateTime.now());
+            accountModel.setAccountId(account.getId());
+            accountModel.setModelId(accountTypeModel.getModelId());
+            accountModelMapper.insertSelective(accountModel);
+        });
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
+
 
 //	@Scheduled(cron="0/5 * * * * ? ")
 //    public void TimeDiscountCoupon()
