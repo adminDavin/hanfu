@@ -23,7 +23,7 @@ public class WxTemplateServiceImpl implements WxTemplateService {
     @Override
     public void sendTemplateToUsers(String message01, String message02) throws JSONException {
         // 获取accessToken
-        WxAccessTokenVO wxAccessTokenVO = WxTemplateUtil.getAccessToken("wxfa188a42d843a0b0", "0433593dd1887ea5381e6d01308f81ba");
+        WxAccessTokenVO wxAccessTokenVO = WxTemplateUtil.getAccessToken("wx2641aaa105c07dd4", "fb26dde971b62de61c4573b12bd5f5da");
 
         // 消息模板对象
         WxTemplateDTO wxTemplateDTO = new WxTemplateDTO();
@@ -31,11 +31,11 @@ public class WxTemplateServiceImpl implements WxTemplateService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         // 用户openId
-        wxTemplateDTO.setTouser("openId");
+        wxTemplateDTO.setTouser("oBe9O5UEucUN2mk1o2ZA7_kjSbdc");
         // 表单ID （需要小程序前端传递）
-        wxTemplateDTO.setForm_id("formId");
+        wxTemplateDTO.setForm_id("1");
         // 模板ID
-        wxTemplateDTO.setTemplate_id("NkcLCSJf_wIsp9xON1X2Rb-7o3YsXROz8KklPZ3eEXw");
+        wxTemplateDTO.setTemplate_id("97LFcdV55lhe1VyIh-PPFXHE3hejOkN6X5CpC6zuCio");
         // 跳转页面设置（仅限上线后的小程序，测试时可以忽略此属性）
         wxTemplateDTO.setPage("templates/****/****");
 
