@@ -1167,20 +1167,47 @@ public class HfAuthController {
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 	@ApiOperation(value = "状态", notes = "状态")
-	@RequestMapping(value = "/state", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> state(Integer id,String type) throws JSONException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		AccountExample accountExample = new AccountExample();
-		accountExample.createCriteria().andIsDeletedEqualTo(0);
-		List<Account> accounts= accountMapper.selectByExample(accountExample);
-		accounts.forEach(account -> {
-			if (redisTemplate.opsForValue().get(String.valueOf(account.getUserId()) + account.getAccountType() + "token")!=null){
-				System.out.println(account.getAccountCode()+"在线，id:"+account.getId());
+	@RequestMapping(value = "/state", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> state(HttpServletRequest request) throws JSONException {
+		System.out.println(request.getServletContext().getAttribute("getServletContextType"));
+		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContext")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				HfStoneExample hfStoneExample = new HfStoneExample();
+				hfStoneExample.createCriteria().andBossIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andIsDeletedEqualTo((short) 0);
+				List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+				Set<Integer> stoneIds = hfStones.stream().map(a->a.getId()).collect(Collectors.toSet());
+				AccountExample accountExample = new AccountExample();
+				accountExample.createCriteria().andIsDeletedEqualTo(0).andAccountTypeEqualTo("stone").andMerchantIdIn(Lists.newArrayList(stoneIds));
+				List<Account> accounts= accountMapper.selectByExample(accountExample);
+				accounts.forEach(account -> {
+					if (redisTemplate.opsForValue().get(String.valueOf(account.getUserId()) + account.getAccountType() + "token")!=null){
+						System.out.println(account.getAccountCode()+"在线，id:"+account.getId());
+					}
+				});
 			}
-		});
-		if (null != id&& null != type){
-			redisTemplate.delete(String.valueOf(id) + type + "token");
+//			if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+//				HfStoneExample hfStoneExample = new HfStoneExample();
+//				hfStoneExample.createCriteria().andBossIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andIsDeletedEqualTo((short) 0);
+//				List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+//				Set<Integer> stoneIds = hfStones.stream().map(a->a.getId()).collect(Collectors.toSet());
+//				AccountExample accountExample = new AccountExample();
+//				accountExample.createCriteria().andIsDeletedEqualTo(0).andAccountTypeEqualTo("stone").andMerchantIdIn(Lists.newArrayList(stoneIds));
+//				List<Account> accounts= accountMapper.selectByExample(accountExample);
+//				accounts.forEach(account -> {
+//					if (redisTemplate.opsForValue().get(String.valueOf(account.getUserId()) + account.getAccountType() + "token")!=null){
+//						System.out.println(account.getAccountCode()+"在线，id:"+account.getId());
+//					}
+//				});
+//			}
 		}
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		AccountExample accountExample = new AccountExample();
+//		accountExample.createCriteria().andIsDeletedEqualTo(0);
+//		List<Account> accounts= accountMapper.selectByExample(accountExample);
+
+//		if (null != id&& null != type){
+//			redisTemplate.delete(String.valueOf(id) + type + "token");
+//		}
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 

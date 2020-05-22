@@ -1,6 +1,12 @@
 package com.hanfu.user.center.config;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.user.center.dao.AccountMapper;
+import com.hanfu.user.center.model.Account;
+import com.hanfu.user.center.model.AccountExample;
+import com.hanfu.user.center.model.AccountModel;
 import com.hanfu.user.center.service.PermissionService;
+import com.hanfu.user.center.utils.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +21,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
 
 public class MyInterceptor implements HandlerInterceptor {
     @Autowired
     PermissionService permissionService;
+    @Autowired
+    private AccountMapper accountMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
@@ -26,35 +36,38 @@ public class MyInterceptor implements HandlerInterceptor {
 //    private HfAdminMapper hfAdminMapper;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        System.out.println(request.getSession());
-//        System.out.println(request.getParameter("name"));
-//        System.out.println(request.getSession().getAttribute("userId"));
-//        Example example = new Example(HfAuth.class);
-//        Example.Criteria criteria = example.createCriteria();
-//        criteria.andEqualTo("authKey",request.getParameter("userId"));
-//        List<HfAuth> hfAuthList=hfAdminMapper.selectByExample(example);
-//        hfAuthList.get(0).getUserId();
-//        Cookie[] cookies = request.getCookies();
-//        if (cookies==null){
-//            return false;
-//        }
-//        System.out.println(cookies+"cookies-----------------");
-//        for(Cookie cookie1 : cookies){
-//            if (cookie1.getName()==null){
-//                System.out.println(cookie1.getName()+"cookie Name");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
-//                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            redisTemplate.opsForValue().get("autologin");
-//            if (cookie1.getName().equals("autologin")) {
-//                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-//            }
-//        }
-//        permissionService.test();
+        logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
+        Object token= request.getHeader("token");
+        System.out.println(token);
+        if (token!=null){
+            Decrypt decrypt = new Decrypt();
+            DecodedJWT jwt = decrypt.deToken((String) token);
+            if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+                return false;
+            }
+            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
+                return false;
+            }
+        }
         if (permissionService.hasPermission(request,response,handler)==true) {
+            if (token!=null){
+                Decrypt decrypt = new Decrypt();
+                DecodedJWT jwt = decrypt.deToken((String) token);
+                String type = jwt.getClaim("Type").asString();
+                AccountExample accountExample = new AccountExample();
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                List<Account> accounts= accountMapper.selectByExample(accountExample);
+                if (accounts.size()==0){
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+                }
+                request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+                request.getServletContext().setAttribute("getServletContextType", type);
+//    }
+            }
             return true;
         }
         response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
@@ -77,6 +90,8 @@ public class MyInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        request.getServletContext().removeAttribute("getServletContext");
+        request.getServletContext().removeAttribute("getServletContextType");
         logger.info("整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了");
     }
 }
