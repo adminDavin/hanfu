@@ -141,11 +141,41 @@
 		<!-- <table schema="user_center" tableName="hf_user_coupons" domainObjectName="HfUserCoupons"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<table schema="user_center" tableName="account_type_model"
-			domainObjectName="AccountTypeModel">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table>
+		<!--quanxian******************************************************* -->
+		<!--<table schema="user_center" tableName="department"-->
+			<!--domainObjectName="Department">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+				<!--identity="true" />-->
+		<!--</table>-->
+
+		<!--<table schema="user_center" tableName="department_personnel"-->
+			   <!--domainObjectName="DepartmentPersonnel">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+
+		<!--<table schema="user_center" tableName="roles"-->
+			   <!--domainObjectName="Roles">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+
+		<!--<table schema="user_center" tableName="role_jurisdiction"-->
+			   <!--domainObjectName="RoleJurisdiction">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+
+		<!--<table schema="user_center" tableName="jurisdiction"-->
+			   <!--domainObjectName="Jurisdiction">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+		<!--*******************************************************************-->
 	</context>
 </generatorConfiguration>
