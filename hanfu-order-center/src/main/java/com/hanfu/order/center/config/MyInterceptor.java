@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 public class MyInterceptor implements HandlerInterceptor {
 
@@ -50,6 +51,7 @@ public class MyInterceptor implements HandlerInterceptor {
 //            return false;
 //        }
 //        Object userId= request.getHeader("userId");
+        Integer userId = 1;
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
@@ -59,30 +61,26 @@ public class MyInterceptor implements HandlerInterceptor {
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
-            System.out.println("issuer: " + jwt.getIssuer());
-            System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
-            System.out.println("userId: " + jwt.getClaim("userId").asInt());
-            System.out.println("type:     " + jwt.getClaim("Type").asString());
-            System.out.println("过期时间：      " + jwt.getExpiresAt());
+            if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+                return false;
+            }
+            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                System.out.println("此账号在别处登陆了");
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
+                return false;
+            }
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            userId=accounts.get(0).getId();
         }
 
-        //        System.out.println(cookies+"cookies-----------------");
-//        for(Cookie cookie1 : cookies){
-//            if (cookie1.getName()==null){
-//                System.out.println(cookie1.getName()+"cookie Name");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
-//                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            redisTemplate.opsForValue().get("autologin");
-//            if (cookie1.getName().equals("autologin")) {
-//                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-//            }
-//        }
-//        permissionService.test();
-        if (permissionService.hasPermission(request,response,handler)==true) {
+
+        if (permissionService.hasPermission(request,response,handler,userId)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
 if (token!=null){

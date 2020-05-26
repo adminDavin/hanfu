@@ -258,21 +258,21 @@ public class OrderController {
 		return builder.body(ResponseUtils.getResponseBody("打印成功"));
 	}
 
-	@ApiOperation(value = "根据条件查询订单", notes = "根据条件查询订单")
-	@RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
-	@ApiImplicitParams({
-		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
-		@ApiImplicitParam(paramType = "query", name = "orderDetailId", value = "订单详情Id", required = false, type = "Integer"),
-		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
-	})
-	public ResponseEntity<JSONObject> queryOrder(OrderFindValue orderFindValue)
-			throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
-	}
+//	@ApiOperation(value = "根据条件查询订单", notes = "根据条件查询订单")
+//	@RequestMapping(value = "/queryOrder", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = false, type = "Integer"),
+//		@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "String"),
+//		@ApiImplicitParam(paramType = "query", name = "payMethodType", value = "支付方式", required = false, type = "String"),
+//		@ApiImplicitParam(paramType = "query", name = "orderDetailStatus", value = "订单状态", required = false, type = "String"),
+//		@ApiImplicitParam(paramType = "query", name = "orderDetailId", value = "订单详情Id", required = false, type = "Integer"),
+//		@ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+//	})
+//	public ResponseEntity<JSONObject> queryOrder(OrderFindValue orderFindValue)
+//			throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		return builder.body(ResponseUtils.getResponseBody(orderDao.selectOrder(orderFindValue)));
+//	}
 	@ApiOperation(value = "申请退款", notes = "申请退款")
 	@RequestMapping(value = "/forDrawback", method = RequestMethod.GET)
 	@ApiImplicitParams({
