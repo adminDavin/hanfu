@@ -14,13 +14,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
-
-@MapperScans({@MapperScan("com.hanfu.product.center.dao")})
+@SpringBootApplication(scanBasePackages = {"com.hanfu.product.center.*","com.hanfu.user.center.service"} )
+@MapperScans({@MapperScan("com.hanfu.user.center.Jurisdiction.dao")})
+@MapperScan(value = {"com.hanfu.product.center.dao","com.hanfu.user.center.Jurisdiction.dao"})
 @tk.mybatis.spring.annotation.MapperScan({"com.hanfu.product.center.dao"})
 @EnableTransactionManagement
-@SpringBootApplication
 @EnableScheduling
-@EnableDubbo(scanBasePackages = "com.hanfu.product.center.service.impl")
+@EnableDubbo(scanBasePackages = {"com.hanfu.user.product.*","com.hanfu.user.center.Jurisdiction.service"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

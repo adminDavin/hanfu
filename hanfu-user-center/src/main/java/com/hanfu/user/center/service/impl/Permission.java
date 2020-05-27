@@ -1,18 +1,24 @@
 package com.hanfu.user.center.service.impl;
 
 
+import com.hanfu.user.center.Jurisdiction.dao.*;
+import com.hanfu.user.center.Jurisdiction.model.*;
 import com.hanfu.user.center.service.PermissionService;
 //import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.RequiredPermission;
 import io.micrometer.core.instrument.util.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.apache.curator.shaded.com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 //@org.apache.dubbo.config.annotation.Service(registry = "dubboProductServer")
 public class Permission implements PermissionService {
@@ -23,9 +29,31 @@ public class Permission implements PermissionService {
      * @param handler
      * @return
      */
+//    @Autowired
+//    private DepartmentPersonnelMapper departmentPersonnelMapper;
+//    @Autowired
+//    private DepartmentMapper departmentMapper;
+//    @Autowired
+//    private RolesMapper rolesMapper;
+//    @Autowired
+//    private RoleJurisdictionMapper roleJurisdictionMapper;
+//    @Autowired
+//    private JurisdictionMapper jurisdictionMapper;
+//    @Autowired
+//    private AccountRolesMapper accountRolesMapper;
  @Override
     public boolean hasPermission(HttpServletRequest request, HttpServletResponse response, Object handler,Integer userId) {
-
+//     Set<Integer> jur= new HashSet<Integer>();
+//     AccountRolesExample accountRolesExample = new AccountRolesExample();
+//     accountRolesExample.createCriteria().andAccountIdEqualTo(userId).andIsDeletedEqualTo((short) 0);
+//     List<AccountRoles> accountRolesList= accountRolesMapper.selectByExample(accountRolesExample);
+//     if (accountRolesList.size()!=0){
+//             Set<Integer> role= accountRolesList.stream().map(a->a.getRolesId()).collect(Collectors.toSet());
+//             RoleJurisdictionExample roleJurisdictionExample = new RoleJurisdictionExample();
+//             roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(role)).andIsDeletedEqualTo((short) 0);
+//             List<RoleJurisdiction> roleJurisdictions= roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
+//             jur= roleJurisdictions.stream().map(a->a.getJurisdictionId()).collect(Collectors.toSet());
+//     }
      System.out.println("进入user");
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -40,6 +68,17 @@ public class Permission implements PermissionService {
             if (requiredPermission != null && StringUtils.isNotBlank(requiredPermission.value())) {
                 // redis或数据库 中获取该用户的权限信息 并判断是否有权限
                 String permissionSet = "admin_product_list";
+//                if (jur!=null){
+//                    JurisdictionExample jurisdictionExample = new JurisdictionExample();
+//                    jurisdictionExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(jur));
+//                    List<Jurisdiction> jurisdictions= jurisdictionMapper.selectByExample(jurisdictionExample);
+//                    Set<String> codes= jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
+//                    for (String code:codes){
+//                        if (requiredPermission.value().equals(code)){
+//                            permissionSet = code;
+//                        }
+//                    }
+//                }
                 System.out.println(requiredPermission.value());
                 System.out.println(permissionSet);
                 if (!requiredPermission.value().equals(permissionSet)){
@@ -55,8 +94,15 @@ public class Permission implements PermissionService {
     }
 
     @Override
-    public int test() {
-        System.out.println("123456");
+    public Integer test() {
+//        RoleJurisdictionExample roleJurisdictionExample = new RoleJurisdictionExample();
+//        roleJurisdictionExample.createCriteria().andIsDeletedEqualTo((short) 0);
+//        List<RoleJurisdiction> roleJurisdictions= roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
+//        System.out.println(roleJurisdictions);
+//        AccountRolesExample accountRolesExample = new AccountRolesExample();
+//        accountRolesExample.createCriteria().andAccountIdEqualTo(1).andIsDeletedEqualTo((short) 0);
+//        List<AccountRoles> accountRolesList= accountRolesMapper.selectByExample(accountRolesExample);
+//        System.out.println(accountRolesList);
         return 0;
     }
 

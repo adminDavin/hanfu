@@ -2,14 +2,8 @@ package com.hanfu.product.center.config;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.product.center.dao.AccountMapper;
-import com.hanfu.product.center.dao.HfModuleMapper;
-import com.hanfu.product.center.dao.HfUsersMapper;
-import com.hanfu.product.center.dao.PayBossMapper;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.tool.Decrypt;
-import com.hanfu.user.center.dao.HfAuthMapper;
-import com.hanfu.user.center.dao.HfUserMapper;
-import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
@@ -17,31 +11,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
-
+@Component
 public class MyInterceptor implements HandlerInterceptor {
-
-    Permission permissionService = new Permission();
-    @Autowired
-    private PayBossMapper payBossMapper;
+//@Autowired
+//PermissionService permissionService;
+    private Permission permissionService = new Permission();
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private AccountMapper accountMapper;
-    @Autowired
-    private HfModuleMapper hfModuleMapper;
-    @Autowired
-    private HfUsersMapper hfUsersMapper;
+
 //    @Autowired
 //    private HfAuthMapper hfAuthMapper;
 //    @Autowired
@@ -56,6 +46,8 @@ public class MyInterceptor implements HandlerInterceptor {
 //            return false;
 //        }
 //        Object userId= request.getHeader("userId");
+
+        System.out.println("我是test"+permissionService.test());
             Integer userId = 1;
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");

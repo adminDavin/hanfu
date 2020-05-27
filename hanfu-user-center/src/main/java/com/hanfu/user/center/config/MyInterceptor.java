@@ -4,7 +4,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.user.center.dao.AccountMapper;
 import com.hanfu.user.center.model.Account;
 import com.hanfu.user.center.model.AccountExample;
-import com.hanfu.user.center.model.AccountModel;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.utils.Decrypt;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
