@@ -61,6 +61,7 @@ public class LoginController extends HfUserController {
                                               @RequestParam(value = "encryptedData", required = false) String encryptedData,
                                               @RequestParam(value = "iv", required = false) String iv, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Object bossId= request.getHeader("bossId");
+        System.out.println(bossId+"我是boss");
         Map<String, Object> map = new HashMap<String, Object>();
         JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
         String openid = (String) SessionKeyOpenId.get("openid");
