@@ -39,6 +39,7 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
+        System.out.println("到我了");
         Integer userId = 1;
         if (token!=null){
             Decrypt decrypt = new Decrypt();
