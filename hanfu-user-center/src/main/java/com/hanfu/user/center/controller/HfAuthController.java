@@ -1184,7 +1184,7 @@ public class HfAuthController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
 				accounts= accountMapper.selectByExample(accountExample);
 				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
 					account.setAccountRole("Super Admin");
@@ -1194,7 +1194,7 @@ public class HfAuthController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
 				accounts= accountMapper.selectByExample(accountExample);
 				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("boss")){
 					account.setAccountRole("Super Admin");
