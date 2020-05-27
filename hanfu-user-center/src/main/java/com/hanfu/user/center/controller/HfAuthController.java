@@ -1184,8 +1184,12 @@ public class HfAuthController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
+//				System.out.println(LastUser);
+//				System.out.println(request.getServletContext().getAttribute("getServletContext"));
+//				System.out.println(request.getServletContext().getAttribute("getServletContextType"));
 				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
 				accounts= accountMapper.selectByExample(accountExample);
+				System.out.println(accounts);
 				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
 					account.setAccountRole("Super Admin");
 				}
@@ -1244,6 +1248,9 @@ public class HfAuthController {
 			account.setModifyDate(LocalDateTime.now());
 			account.setUserId(userId);
 			account.setIsDeleted(0);
+			if (account.getAccountRole()==null){
+				account.setAccountRole(String.valueOf(0));
+			}
 			accountMapper.insertSelective(account);
 			AccountTypeModelExample accountTypeModelExample = new AccountTypeModelExample();
 			accountTypeModelExample.createCriteria().andAccountTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
