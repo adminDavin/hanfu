@@ -71,7 +71,7 @@ public class LoginController extends HfUserController {
         authAxample.createCriteria().andAuthKeyEqualTo(openid)
                 .andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
         List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, (Integer) bossId): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
 
         String skey = UUID.randomUUID().toString();
         String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
