@@ -163,8 +163,9 @@ public class JurisdictionController {
     @RequestMapping(value = "/deleteAccount",method = RequestMethod.GET)
     public ResponseEntity<JSONObject> delete(Integer id,String type) throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Account account= accountMapper.selectByPrimaryKey(id);
         		if (null != id&& null != type){
-			redisTemplate.delete(String.valueOf(id) + type + "token");
+			redisTemplate.delete(account.getAccountCode() + type + "token");
 		}
         return builder.body(ResponseUtils.getResponseBody(0));
     }
