@@ -188,7 +188,7 @@ public class HfAuthController {
 		response.addCookie(cookie);
 		redisTemplate.opsForValue().set("autologin", authKey);
 		Encrypt encrypt = new Encrypt();
-		String token = encrypt.getToken(true, user.getId(), type);
+		String token = encrypt.getToken(true, user.getId(), type,1);
 		System.out.println(token);
 		response.addHeader("token", token);
 		Map map = new HashMap();
@@ -251,7 +251,42 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody(user));
 	}
+	@RequestMapping(value = "/token", method = RequestMethod.POST)
+	@ApiOperation(value = "token获取", notes = "token获取")
+	public ResponseEntity<JSONObject> token(HttpServletRequest request, HttpServletResponse response,
+												   @RequestParam(name = "userId", required = false) Integer userId,
+												   @RequestParam(name = "type", required = false) String type,Integer merId) throws Exception {
 
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Encrypt encrypt = new Encrypt();
+		String token = encrypt.getToken(true, userId, type,merId);
+		Map map = new HashMap();
+		map.put("identity",type);
+		map.put("BSid",merId);
+		map.put("token",token);
+		if (token != null && userId != null && type != null) {
+			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
+			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
+		}
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+
+	@RequestMapping(value = "/tokentest", method = RequestMethod.POST)
+	@ApiOperation(value = "token获取", notes = "token获取")
+	public ResponseEntity<JSONObject> tokentest(HttpServletRequest request, HttpServletResponse response,
+											String token) throws Exception {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Decrypt decrypt = new Decrypt();
+		DecodedJWT jwt = decrypt.deToken((String) token);
+		System.out.println(jwt.getClaim("Type").asString());
+		System.out.println(jwt.getClaim("userId").asInt());
+		System.out.println(jwt.getClaim("merId").asInt());
+		System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt()) + jwt.getClaim("Type").asString()+String.valueOf(jwt.getClaim("merId").asInt()) + "token"));
+//		System.out.println(jwt.getClaim("Type").asString());
+
+		return builder.body(ResponseUtils.getResponseBody("注册成功"));
+	}
 	@RequestMapping(value = "/addAdminUser", method = RequestMethod.POST)
 	@ApiOperation(value = "添加管理后台用户", notes = "添加管理后台用户")
 	@ApiImplicitParams({

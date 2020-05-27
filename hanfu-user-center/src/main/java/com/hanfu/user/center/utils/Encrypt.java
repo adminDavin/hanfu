@@ -26,13 +26,14 @@ public final class Encrypt {
      * @return 加密后的token
      */
     public String getToken(final boolean isVip, final Integer userId,
-                           final String Type) {
+                           final String Type,Integer merId) {
         String token = null;
         try {
             Date expiresAt = new Date(System.currentTimeMillis() + 24L * 60L * 3600L * 1000L);
             token = JWT.create()
                     .withIssuer("auth0")
                     .withClaim("isVip", isVip)
+                    .withClaim("merId",merId)
                     .withClaim("userId", userId)
                     .withClaim("Type", Type)
                     .withExpiresAt(expiresAt)
