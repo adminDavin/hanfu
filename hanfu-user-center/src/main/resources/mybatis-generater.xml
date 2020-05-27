@@ -147,7 +147,7 @@
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="hf_message_info"
+		<!-- <table schema="user_center" tableName="hf_message_info"
 			domainObjectName="HfMessageInfo">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
@@ -155,6 +155,18 @@
 		</table>
 		<table schema="user_center" tableName="hf_message_template"
 			domainObjectName="HfMessageTemplate">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table>
+		<table schema="user_center" tableName="hf_message_apply"
+			domainObjectName="HfMessageApply">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table> -->
+		<table schema="user_center" tableName="hf_template_param"
+			domainObjectName="HfTemplateParam">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />

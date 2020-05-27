@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class MessageType implements Serializable{
 	
 	public static enum MessageTypeEnum{
-		LOGIN("login");
+		LOGIN("login"),
+		ORDER_CREATE("orderCreate");
 		private String messageType;
 		private MessageTypeEnum(String messageType) {
 			this.messageType = messageType;
