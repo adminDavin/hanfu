@@ -220,7 +220,7 @@ public class HfAuthController {
 			map.put("modelCode", modelCode);
 			map.put("token", token);
 			map.put("identity",type);
-			map.put("id",accounts.get(0).getMerchantId());
+			map.put("BSid",accounts.get(0).getMerchantId());
 			if (token != null && userId != null && type != null) {
 				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
 				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
