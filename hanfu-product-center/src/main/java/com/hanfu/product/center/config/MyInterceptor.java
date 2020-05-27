@@ -66,11 +66,9 @@ public class MyInterceptor implements HandlerInterceptor {
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
-            System.out.println("issuer: " + jwt.getIssuer());
-            System.out.println("isVip:  " + jwt.getClaim("isVip").asBoolean());
-            System.out.println("userId: " + jwt.getClaim("userId").asInt());
-            System.out.println("type:     " + jwt.getClaim("Type").asString());
-            System.out.println("过期时间：      " + jwt.getExpiresAt());
+            if (jwt.getClaim("Type").asString().equals("user")){
+                return true;
+            }
 
             if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
