@@ -37,9 +37,7 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
 
         registry.addInterceptor(myInterceptor()).addPathPatterns("/**")
 
-                .addPathPatterns("/admin/**")
-
-                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/config/**","/user/**","/LoginCC/**", "/hf-auth/**");
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/config/**");
 
         super.addInterceptors(registry);
 
