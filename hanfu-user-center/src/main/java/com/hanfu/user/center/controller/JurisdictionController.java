@@ -165,7 +165,7 @@ public class JurisdictionController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Account account= accountMapper.selectByPrimaryKey(id);
         		if (null != id&& null != type){
-			redisTemplate.delete(account.getAccountCode() + type + "token");
+			redisTemplate.delete(String.valueOf(account.getUserId()) + type + "token");
 		}
         return builder.body(ResponseUtils.getResponseBody(0));
     }
