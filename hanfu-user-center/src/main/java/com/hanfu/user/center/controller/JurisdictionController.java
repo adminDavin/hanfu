@@ -159,7 +159,15 @@ public class JurisdictionController {
         jurisdictionExample.createCriteria().andIsDeletedEqualTo((short) 0);
         return builder.body(ResponseUtils.getResponseBody(jurisdictionMapper.selectByExample(jurisdictionExample)));
     }
-
+    @ApiOperation(value = "下线",notes = "下线")
+    @RequestMapping(value = "/deleteAccount",method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> delete(Integer id,String type) throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        		if (null != id&& null != type){
+			redisTemplate.delete(String.valueOf(id) + type + "token");
+		}
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
     @ApiOperation(value = "角色添加权限",notes = "角色添加权限")
     @RequestMapping(value = "/roleAddJurisdiction",method = RequestMethod.GET)
     public ResponseEntity<JSONObject> roleAddJurisdiction(Integer roleId,Integer[] JurisdictionIds) throws JSONException {
