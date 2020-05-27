@@ -24,7 +24,7 @@ public class Permission implements PermissionService {
      * @return
      */
  @Override
-    public boolean hasPermission(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean hasPermission(HttpServletRequest request, HttpServletResponse response, Object handler,Integer userId) {
 
      System.out.println("进入user");
         if (handler instanceof HandlerMethod) {

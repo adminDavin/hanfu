@@ -182,27 +182,27 @@ public class HfUserController {
         return update(request);
     }
 
-    @RequestMapping(value = "/create/wechart", method = RequestMethod.GET)
-    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
-    public ResponseEntity<JSONObject> createWechart(@RequestParam(value = "code", required = false) String code,
-            @RequestParam(value = "appName", required = false) String appName,
-            @RequestParam(value = "encryptedData", required = false) String encryptedData,
-            @RequestParam(value = "iv", required = false) String iv) throws Exception {
-         
-        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
-        String openid = SessionKeyOpenId.getString("openid");
-        String sessionKey = SessionKeyOpenId.getString("session_key");
-        HfAuthExample authAxample = new HfAuthExample();
-        authAxample.createCriteria().andAuthKeyEqualTo(openid).andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
-        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
-
-        UserInfoRequest request = new UserInfoRequest();
-        request.setUserId(hfUser.getId());
-        return update(request);
-    }
+//    @RequestMapping(value = "/create/wechart", method = RequestMethod.GET)
+//    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+//    public ResponseEntity<JSONObject> createWechart(@RequestParam(value = "code", required = false) String code,
+//            @RequestParam(value = "appName", required = false) String appName,
+//            @RequestParam(value = "encryptedData", required = false) String encryptedData,
+//            @RequestParam(value = "iv", required = false) String iv) throws Exception {
+//
+//        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
+//        String openid = SessionKeyOpenId.getString("openid");
+//        String sessionKey = SessionKeyOpenId.getString("session_key");
+//        HfAuthExample authAxample = new HfAuthExample();
+//        authAxample.createCriteria().andAuthKeyEqualTo(openid).andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
+//        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
+//        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+//
+//        UserInfoRequest request = new UserInfoRequest();
+//        request.setUserId(hfUser.getId());
+//        return update(request);
+//    }
     
-    public HfUser register(String openid, String sessionKey, String encryptedData, String iv)
+    public HfUser register(String openid, String sessionKey, String encryptedData, String iv,Integer bossId)
             throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException,
             InvalidParameterSpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException {
@@ -223,6 +223,7 @@ public class HfUserController {
             hfUser.setRegion(userInfo.getString("province"));
             hfUser.setUserStatus((byte) 0);
             hfUser.setNickName(userInfo.getString("nickName"));
+            hfUser.setBossId(bossId);
             hfUserMapper.insert(hfUser);
         } else {
             hfUser = list.get(0);

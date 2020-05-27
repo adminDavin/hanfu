@@ -39,6 +39,7 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token);
+        Integer userId = 1;
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
@@ -52,8 +53,13 @@ public class MyInterceptor implements HandlerInterceptor {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
                 return false;
             }
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            userId=accounts.get(0).getId();
         }
-        if (permissionService.hasPermission(request,response,handler)==true) {
+        if (permissionService.hasPermission(request,response,handler,userId)==true) {
             if (token!=null){
                 Decrypt decrypt = new Decrypt();
                 DecodedJWT jwt = decrypt.deToken((String) token);

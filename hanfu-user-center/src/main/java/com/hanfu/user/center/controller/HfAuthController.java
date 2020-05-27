@@ -1168,6 +1168,95 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
+
+	@ApiOperation(value = "添加超级账号", notes = "添加超级账号")
+	@RequestMapping(value = "/addSup", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
+//			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
+	})
+	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey) throws JSONException {
+		Account account = new Account();
+		List<Account> accounts= new ArrayList<>();
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				AccountExample accountExample = new AccountExample();
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+				accounts= accountMapper.selectByExample(accountExample);
+				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
+					account.setAccountRole("Super Admin");
+				}
+			}
+		} else 	if (request.getServletContext().getAttribute("getServletContextType").equals("sass")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				AccountExample accountExample = new AccountExample();
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+				accounts= accountMapper.selectByExample(accountExample);
+				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("boss")){
+					account.setAccountRole("Super Admin");
+				}
+			}
+		}
+
+
+		HfAuthExample example = new HfAuthExample();
+		example.createCriteria().andAuthKeyEqualTo(authKey);
+		List<HfAuth> list = hfAuthMapper.selectByExample(example);
+		Integer userId;
+		if (list.isEmpty()) {
+			HfUser user = new HfUser();
+			user.setSourceType(authType);
+			user.setPhone(authKey);
+			user.setUserStatus("0".getBytes()[0]);
+			user.setLastAuthTime(LocalDateTime.now());
+			user.setCreateDate(LocalDateTime.now());
+			user.setModifyDate(LocalDateTime.now());
+			user.setIdDeleted((byte) 0);
+			user.setOwnInvitationCode(create());
+			hfUserMapper.insert(user);
+			HfAuth auth = new HfAuth();
+			auth.setAuthKey(authKey);
+			auth.setAuthType(authType);
+			auth.setUserId(user.getId());
+			auth.setAuthStatus((byte) 0);
+			auth.setIdDeleted((byte) 0);
+			auth.setEncodeType("0");
+			auth.setCreateDate(LocalDateTime.now());
+			auth.setModifyDate(LocalDateTime.now());
+			auth.setIdDeleted((byte) 0);
+			hfAuthMapper.insert(auth);
+			userId = user.getId();
+		} else {
+			userId = list.get(0).getUserId();
+		}
+		account.setAccountCode(authKey);
+		account.setAccountType(type);
+		account.setMerchantId(BSid);
+		account.setCreateDate(LocalDateTime.now());
+		account.setLastModifier(String.valueOf(LastUser));
+		account.setModifyDate(LocalDateTime.now());
+		account.setUserId(userId);
+		account.setIsDeleted(0);
+		AccountTypeModelExample accountTypeModelExample = new AccountTypeModelExample();
+		accountTypeModelExample.createCriteria().andAccountTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
+		List<AccountTypeModel> accountTypeModels= accountTypeModelMapper.selectByExample(accountTypeModelExample);
+		accountTypeModels.forEach(accountTypeModel -> {
+			AccountModel accountModel = new AccountModel();
+			accountModel.setIdDeleted((byte) 0);
+			accountModel.setCreateDate(LocalDateTime.now());
+			accountModel.setModifyDate(LocalDateTime.now());
+			accountModel.setAccountId(account.getId());
+			accountModel.setModelId(accountTypeModel.getModelId());
+			accountModelMapper.insertSelective(accountModel);
+		});
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
 	@ApiOperation(value = "状态", notes = "状态")
 	@RequestMapping(value = "/state", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> state(HttpServletRequest request) throws JSONException {

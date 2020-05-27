@@ -56,7 +56,7 @@ public class MyInterceptor implements HandlerInterceptor {
 //            return false;
 //        }
 //        Object userId= request.getHeader("userId");
-
+            Integer userId = 1;
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         System.out.println(token+"我是请求头");
@@ -83,6 +83,11 @@ public class MyInterceptor implements HandlerInterceptor {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
                 return false;
             }
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            userId=accounts.get(0).getId();
         }
 
 
@@ -102,7 +107,7 @@ public class MyInterceptor implements HandlerInterceptor {
 //            }
 //        }
 //        permissionService.test();
-        if (permissionService.hasPermission(request,response,handler)==true) {
+        if (permissionService.hasPermission(request,response,handler,userId)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
 if (token!=null){

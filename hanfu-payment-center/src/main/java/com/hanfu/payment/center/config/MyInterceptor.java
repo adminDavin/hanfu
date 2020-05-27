@@ -1,9 +1,11 @@
 package com.hanfu.payment.center.config;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.payment.center.dao.PayBossMapper;
 import com.hanfu.payment.center.model.PayBoss;
 import com.hanfu.payment.center.model.PayBossExample;
 import com.hanfu.user.center.service.impl.Permission;
+import com.hanfu.user.center.utils.Decrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 public class MyInterceptor implements HandlerInterceptor {
 
@@ -35,26 +38,28 @@ public class MyInterceptor implements HandlerInterceptor {
 //        if (cookies==null){
 //            return false;
 //        }
-        Object userId= request.getHeader("userId");
-        System.out.println(userId+"我是请求头");
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
-//        System.out.println(cookies+"cookies-----------------");
-//        for(Cookie cookie1 : cookies){
-//            if (cookie1.getName()==null){
-//                System.out.println(cookie1.getName()+"cookie Name");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            if (cookie1.getName()!=redisTemplate.opsForValue().get("autologin")){
-//                System.out.println(redisTemplate.opsForValue().get("autologin")+"redis au");
-//                response.sendRedirect("http://39.100.237.144:3001/");
-//            }
-//            redisTemplate.opsForValue().get("autologin");
-//            if (cookie1.getName().equals("autologin")) {
-//                System.out.println("name:" + cookie1.getName() + ",value:" + cookie1.getValue());
-//            }
-//        }
-//        permissionService.test();
-        if (permissionService.hasPermission(request,response,handler)==true) {
+        Object token= request.getHeader("token");
+        Integer userId=1;
+        if (token!=null){
+            Decrypt decrypt = new Decrypt();
+            DecodedJWT jwt = decrypt.deToken((String) token);
+            if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+                return false;
+            }
+            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                System.out.println("此账号在别处登陆了");
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
+                return false;
+            }
+            userId=jwt.getClaim("userId").asInt();
+        }
+        logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
+
+        if (permissionService.hasPermission(request,response,handler,userId)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
             PayBossExample payBossExample = new PayBossExample();

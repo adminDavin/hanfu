@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Properties;
 
-@MapperScans({@MapperScan("com.hanfu.user.center.dao")})
+@MapperScans({@MapperScan("com.hanfu.user.center.dao"),@MapperScan("com.hanfu.user.center.Jurisdiction.dao")})
 @tk.mybatis.spring.annotation.MapperScan(value = "com.hanfu.user.center.dao")
 @SpringBootApplication
 @EnableScheduling
