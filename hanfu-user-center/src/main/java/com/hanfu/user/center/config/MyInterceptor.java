@@ -43,6 +43,9 @@ public class MyInterceptor implements HandlerInterceptor {
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
+            if (jwt.getClaim("Type").asString().equals("user")){
+                return true;
+            }
             if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
                 return false;
