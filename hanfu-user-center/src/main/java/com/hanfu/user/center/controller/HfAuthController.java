@@ -1172,7 +1172,7 @@ public class HfAuthController {
 	@RequestMapping(value = "/addSup", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
+//			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 //			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
