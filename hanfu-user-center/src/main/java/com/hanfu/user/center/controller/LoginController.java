@@ -61,6 +61,7 @@ public class LoginController extends HfUserController {
                                               @RequestParam(value = "encryptedData", required = false) String encryptedData,
                                               @RequestParam(value = "iv", required = false) String iv, HttpServletResponse response, HttpServletRequest request) throws Exception {
         Object bossId= request.getHeader("bossId");
+        System.out.println(bossId+"我是boss");
         Map<String, Object> map = new HashMap<String, Object>();
         JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
         String openid = (String) SessionKeyOpenId.get("openid");
@@ -70,7 +71,7 @@ public class LoginController extends HfUserController {
         authAxample.createCriteria().andAuthKeyEqualTo(openid)
                 .andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
         List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, (Integer) bossId): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
 
         String skey = UUID.randomUUID().toString();
         String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
