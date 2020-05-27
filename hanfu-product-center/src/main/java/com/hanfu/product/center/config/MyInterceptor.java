@@ -10,7 +10,7 @@ import com.hanfu.product.center.tool.Decrypt;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.model.HfAuth;
-import com.hanfu.user.center.service.PermissionService;
+import com.hanfu.product.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,9 @@ import java.util.Objects;
 
 public class MyInterceptor implements HandlerInterceptor {
 
-    Permission permissionService = new Permission();
+//    Permission permissionService = new Permission();
+    @Autowired
+    private PermissionService permissionService;
     @Autowired
     private PayBossMapper payBossMapper;
     @Resource
