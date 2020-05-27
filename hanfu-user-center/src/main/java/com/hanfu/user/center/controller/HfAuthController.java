@@ -205,6 +205,27 @@ public class HfAuthController {
 			if (accounts.size() == 0) {
 				response.sendError(HttpStatus.FORBIDDEN.value(), "无此权限");
 			}
+			List<HfBoss> hfBosses = new ArrayList<>();
+			List<HfStone> hfStones = new ArrayList<>();
+			Set<Integer> id= accounts.stream().map(a->a.getMerchantId()).collect(Collectors.toSet());
+			if (type.equals("boss")){
+				HfBossExample hfBossExample = new HfBossExample();
+				hfBossExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfBosses = hfBossMapper.selectByExample(hfBossExample);
+			} else if (type.equals("stone")){
+				HfStoneExample hfStoneExample = new HfStoneExample();
+				hfStoneExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+			} else if (type.equals("warehouse")){
+				HfBossExample hfBossExample = new HfBossExample();
+				hfBossExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfBosses = hfBossMapper.selectByExample(hfBossExample);
+			}
+			if (hfBosses.size()!=0){
+				map.put("List",hfBosses);
+			} else {
+				map.put("List",hfStones);
+			}
 			AccountModelExample accountModelExample = new AccountModelExample();
 			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId())
 					.andIdDeletedEqualTo((byte) 0);
