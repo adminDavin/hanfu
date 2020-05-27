@@ -16,9 +16,11 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,12 +43,14 @@ public class JurisdictionController {
     private JurisdictionMapper jurisdictionMapper;
     @Autowired
     private RoleJurisdictionMapper roleJurisdictionMapper;
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
     @ApiOperation(value = "",notes = "")
     @RequestMapping(value = "/addDepartment",method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "店铺名称", required = false, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "accountId", value = "账号名称", required = false, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "店铺名称", required = false, type = "Integer")
+            @ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "accountId", value = "账号", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer")
     })
     @Transactional
     public ResponseEntity<JSONObject> addDepartment(String DepartmentName, Integer accountId, HttpServletRequest request,Integer userId) throws JSONException {
@@ -90,7 +94,12 @@ public class JurisdictionController {
             accountExample.createCriteria().andIsDeletedEqualTo(0);
             account = accountMapper.selectByExample(accountExample);
         }
-
+        account.forEach(account1 -> {
+            if (redisTemplate.opsForValue().get(String.valueOf(account1.getUserId()) + account1.getAccountType() + "token")!=null){
+                System.out.println(account1.getAccountCode()+"在线，id:"+account1.getId());
+                account1.setIsDeleted(2);
+            }
+        });
         return builder.body(ResponseUtils.getResponseBody(account));
     }
 
