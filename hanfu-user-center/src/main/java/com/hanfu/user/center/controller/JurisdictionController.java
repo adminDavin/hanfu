@@ -95,7 +95,7 @@ public class JurisdictionController {
             account = accountMapper.selectByExample(accountExample);
         }
         account.forEach(account1 -> {
-            if (redisTemplate.opsForValue().get(String.valueOf(account1.getUserId()) + account1.getAccountType() + "token")!=null){
+            if (redisTemplate.opsForValue().get(String.valueOf(account1.getId()) + "token")!=null){
                 System.out.println(account1.getAccountCode()+"在线，id:"+account1.getId());
                 account1.setIsDeleted(2);
             }
