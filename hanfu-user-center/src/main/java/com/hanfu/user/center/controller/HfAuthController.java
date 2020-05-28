@@ -188,7 +188,7 @@ public class HfAuthController {
 		response.addCookie(cookie);
 		redisTemplate.opsForValue().set("autologin", authKey);
 		Encrypt encrypt = new Encrypt();
-		String token = encrypt.getToken(true, user.getId(), type);
+		String token = encrypt.getToken(true, user.getId(), type,1);
 		System.out.println(token);
 		response.addHeader("token", token);
 		Map map = new HashMap();
@@ -205,6 +205,27 @@ public class HfAuthController {
 			if (accounts.size() == 0) {
 				response.sendError(HttpStatus.FORBIDDEN.value(), "无此权限");
 			}
+			List<HfBoss> hfBosses = new ArrayList<>();
+			List<HfStone> hfStones = new ArrayList<>();
+			Set<Integer> id= accounts.stream().map(a->a.getMerchantId()).collect(Collectors.toSet());
+			if (type.equals("boss")){
+				HfBossExample hfBossExample = new HfBossExample();
+				hfBossExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfBosses = hfBossMapper.selectByExample(hfBossExample);
+			} else if (type.equals("stone")){
+				HfStoneExample hfStoneExample = new HfStoneExample();
+				hfStoneExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+			} else if (type.equals("warehouse")){
+				HfBossExample hfBossExample = new HfBossExample();
+				hfBossExample.createCriteria().andIsDeletedEqualTo((short) 0).andIdIn(Lists.newArrayList(id));
+				hfBosses = hfBossMapper.selectByExample(hfBossExample);
+			}
+			if (hfBosses.size()!=0){
+				map.put("List",hfBosses);
+			} else {
+				map.put("List",hfStones);
+			}
 			AccountModelExample accountModelExample = new AccountModelExample();
 			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId())
 					.andIdDeletedEqualTo((byte) 0);
@@ -220,7 +241,7 @@ public class HfAuthController {
 			map.put("modelCode", modelCode);
 			map.put("token", token);
 			map.put("identity",type);
-			map.put("id",accounts.get(0).getMerchantId());
+			map.put("BSid",accounts.get(0).getMerchantId());
 			if (token != null && userId != null && type != null) {
 				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
 				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
@@ -230,7 +251,42 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody(user));
 	}
+	@RequestMapping(value = "/token", method = RequestMethod.POST)
+	@ApiOperation(value = "token获取", notes = "token获取")
+	public ResponseEntity<JSONObject> token(HttpServletRequest request, HttpServletResponse response,
+												   @RequestParam(name = "userId", required = false) Integer userId,
+												   @RequestParam(name = "type", required = false) String type,Integer merId) throws Exception {
 
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Encrypt encrypt = new Encrypt();
+		String token = encrypt.getToken(true, userId, type,merId);
+		Map map = new HashMap();
+		map.put("identity",type);
+		map.put("BSid",merId);
+		map.put("token",token);
+		if (token != null && userId != null && type != null) {
+			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
+			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
+		}
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+
+	@RequestMapping(value = "/tokentest", method = RequestMethod.POST)
+	@ApiOperation(value = "token获取", notes = "token获取")
+	public ResponseEntity<JSONObject> tokentest(HttpServletRequest request, HttpServletResponse response,
+											String token) throws Exception {
+
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Decrypt decrypt = new Decrypt();
+		DecodedJWT jwt = decrypt.deToken((String) token);
+		System.out.println(jwt.getClaim("Type").asString());
+		System.out.println(jwt.getClaim("userId").asInt());
+		System.out.println(jwt.getClaim("merId").asInt());
+		System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt()) + jwt.getClaim("Type").asString()+String.valueOf(jwt.getClaim("merId").asInt()) + "token"));
+//		System.out.println(jwt.getClaim("Type").asString());
+
+		return builder.body(ResponseUtils.getResponseBody("注册成功"));
+	}
 	@RequestMapping(value = "/addAdminUser", method = RequestMethod.POST)
 	@ApiOperation(value = "添加管理后台用户", notes = "添加管理后台用户")
 	@ApiImplicitParams({
@@ -1173,7 +1229,7 @@ public class HfAuthController {
 	@RequestMapping(value = "/addSup", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
-			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
+//			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 //			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
@@ -1185,8 +1241,12 @@ public class HfAuthController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+//				System.out.println(LastUser);
+//				System.out.println(request.getServletContext().getAttribute("getServletContext"));
+//				System.out.println(request.getServletContext().getAttribute("getServletContextType"));
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
 				accounts= accountMapper.selectByExample(accountExample);
+				System.out.println(accounts);
 				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
 					account.setAccountRole("Super Admin");
 				}
@@ -1195,14 +1255,14 @@ public class HfAuthController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo(type);
+				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
 				accounts= accountMapper.selectByExample(accountExample);
 				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("boss")){
 					account.setAccountRole("Super Admin");
 				}
 			}
 		}
-
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
@@ -1234,27 +1294,37 @@ public class HfAuthController {
 		} else {
 			userId = list.get(0).getUserId();
 		}
-		account.setAccountCode(authKey);
-		account.setAccountType(type);
-		account.setMerchantId(BSid);
-		account.setCreateDate(LocalDateTime.now());
-		account.setLastModifier(String.valueOf(LastUser));
-		account.setModifyDate(LocalDateTime.now());
-		account.setUserId(userId);
-		account.setIsDeleted(0);
-		AccountTypeModelExample accountTypeModelExample = new AccountTypeModelExample();
-		accountTypeModelExample.createCriteria().andAccountTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
-		List<AccountTypeModel> accountTypeModels= accountTypeModelMapper.selectByExample(accountTypeModelExample);
-		accountTypeModels.forEach(accountTypeModel -> {
-			AccountModel accountModel = new AccountModel();
-			accountModel.setIdDeleted((byte) 0);
-			accountModel.setCreateDate(LocalDateTime.now());
-			accountModel.setModifyDate(LocalDateTime.now());
-			accountModel.setAccountId(account.getId());
-			accountModel.setModelId(accountTypeModel.getModelId());
-			accountModelMapper.insertSelective(accountModel);
-		});
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(BSid);
+		if (0 == accountMapper.selectByExample(accountExample).size()){
+			account.setAccountCode(authKey);
+			account.setAccountType(type);
+			account.setMerchantId(BSid);
+			account.setCreateDate(LocalDateTime.now());
+			account.setLastModifier(String.valueOf(LastUser));
+			account.setModifyDate(LocalDateTime.now());
+			account.setUserId(userId);
+			account.setIsDeleted(0);
+			if (account.getAccountRole()==null){
+				account.setAccountRole(String.valueOf(0));
+			}
+			accountMapper.insertSelective(account);
+			AccountTypeModelExample accountTypeModelExample = new AccountTypeModelExample();
+			accountTypeModelExample.createCriteria().andAccountTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
+			List<AccountTypeModel> accountTypeModels= accountTypeModelMapper.selectByExample(accountTypeModelExample);
+			accountTypeModels.forEach(accountTypeModel -> {
+				AccountModel accountModel = new AccountModel();
+				accountModel.setIdDeleted((byte) 0);
+				accountModel.setCreateDate(LocalDateTime.now());
+				accountModel.setModifyDate(LocalDateTime.now());
+				accountModel.setAccountId(account.getId());
+				accountModel.setModelId(accountTypeModel.getModelId());
+				accountModelMapper.insertSelective(accountModel);
+			});
+		} else {
+			return builder.body(ResponseUtils.getResponseBody("失败"));
+		}
+
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 	@ApiOperation(value = "状态", notes = "状态")

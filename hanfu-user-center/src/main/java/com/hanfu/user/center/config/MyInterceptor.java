@@ -38,7 +38,8 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
-        System.out.println(token);
+        System.out.println(token+"我是请求头");
+        System.out.println("到我了");
         Integer userId = 1;
         if (token!=null){
             Decrypt decrypt = new Decrypt();
@@ -75,6 +76,7 @@ public class MyInterceptor implements HandlerInterceptor {
                 }
                 request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
                 request.getServletContext().setAttribute("getServletContextType", type);
+                request.getServletContext().setAttribute("getServletContextUser", jwt.getClaim("userId").asInt());
 //    }
             }
             return true;
@@ -101,6 +103,7 @@ public class MyInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         request.getServletContext().removeAttribute("getServletContext");
         request.getServletContext().removeAttribute("getServletContextType");
+        request.getServletContext().removeAttribute("getServletContextUser");
         logger.info("整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了");
     }
 }
