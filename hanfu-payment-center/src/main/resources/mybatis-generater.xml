@@ -114,11 +114,11 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <!--<table schema="user_center" tableName="pay_order"-->
-               <!--domainObjectName="PayOrder">-->
-            <!--<property name="useActualColumnNames" value="false" />-->
-            <!--<generatedKey column="id" sqlStatement="mysql"-->
-                          <!--identity="true" />-->
-        <!--</table>-->
+        <table schema="user_center" tableName="account"
+               domainObjectName="Account">
+            <property name="useActualColumnNames" value="false" />
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true" />
+        </table>
     </context>
 </generatorConfiguration>

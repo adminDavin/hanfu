@@ -1,7 +1,10 @@
 package com.hanfu.payment.center.config;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.payment.center.dao.AccountMapper;
 import com.hanfu.payment.center.dao.PayBossMapper;
+import com.hanfu.payment.center.model.Account;
+import com.hanfu.payment.center.model.AccountExample;
 import com.hanfu.payment.center.model.PayBoss;
 import com.hanfu.payment.center.model.PayBossExample;
 import com.hanfu.user.center.service.impl.Permission;
@@ -27,6 +30,8 @@ public class MyInterceptor implements HandlerInterceptor {
     Permission permissionService = new Permission();
     @Autowired
     private PayBossMapper payBossMapper;
+    @Autowired
+    private AccountMapper accountMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
@@ -41,21 +46,31 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
         Integer userId=1;
+        Integer AccId = 1;
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
-            if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
+            if (jwt.getClaim("Type").asString().equals("user")){
+                return true;
+            }
+            //
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type).andMerchantIdEqualTo(jwt.getClaim("merId").asInt());
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            userId=accounts.get(0).getId();
+            AccId = accounts.get(0).getId();
+            if (redisTemplate.opsForValue().get(String.valueOf(AccId)+"token")==null){
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
                 return false;
             }
-            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
-                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"), token)){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"));
                 System.out.println("此账号在别处登陆了");
-                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"));
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
                 return false;
             }
-            userId=jwt.getClaim("userId").asInt();
         }
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
 

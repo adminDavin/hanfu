@@ -7,6 +7,7 @@ import com.hanfu.user.center.model.AccountExample;
 import com.hanfu.user.center.model.AccountModel;
 import com.hanfu.user.center.service.PermissionService;
 import com.hanfu.user.center.utils.Decrypt;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,27 +42,30 @@ public class MyInterceptor implements HandlerInterceptor {
         System.out.println(token+"我是请求头");
         System.out.println("到我了");
         Integer userId = 1;
+        Integer AccId = 1;//账号
         if (token!=null){
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
             if (jwt.getClaim("Type").asString().equals("user")){
                 return true;
             }
-            if (redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token")==null){
+            String type = jwt.getClaim("Type").asString();
+            AccountExample accountExample = new AccountExample();
+            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type).andMerchantIdEqualTo(jwt.getClaim("merId").asInt());
+            List<Account> accounts= accountMapper.selectByExample(accountExample);
+            userId=accounts.get(0).getId();
+            AccId = accounts.get(0).getId();
+
+            if (redisTemplate.opsForValue().get(String.valueOf(AccId) +"token")==null){
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
                 return false;
             }
-            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"), token)){
-                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
-                System.out.println(redisTemplate.opsForValue().get(String.valueOf(jwt.getClaim("userId").asInt())+jwt.getClaim("Type").asString()+"token"));
+            if (!Objects.equals(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"), token)){
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"));
+                System.out.println(redisTemplate.opsForValue().get(String.valueOf(AccId)+"token"));
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "在别处登陆了");
                 return false;
             }
-            String type = jwt.getClaim("Type").asString();
-            AccountExample accountExample = new AccountExample();
-            accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
-            List<Account> accounts= accountMapper.selectByExample(accountExample);
-            userId=accounts.get(0).getId();
         }
         if (permissionService.hasPermission(request,response,handler,userId)==true) {
             if (token!=null){
@@ -69,7 +73,7 @@ public class MyInterceptor implements HandlerInterceptor {
                 DecodedJWT jwt = decrypt.deToken((String) token);
                 String type = jwt.getClaim("Type").asString();
                 AccountExample accountExample = new AccountExample();
-                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type);
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type).andMerchantIdEqualTo(jwt.getClaim("merId").asInt());
                 List<Account> accounts= accountMapper.selectByExample(accountExample);
                 if (accounts.size()==0){
                     response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");

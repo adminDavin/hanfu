@@ -264,9 +264,14 @@ public class HfAuthController {
 		map.put("identity",type);
 		map.put("BSid",merId);
 		map.put("token",token);
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
+		List<Account> accounts= accountMapper.selectByExample(accountExample);
 		if (token != null && userId != null && type != null) {
-			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
-			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
+			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
+			redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);
+//			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
+//			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
