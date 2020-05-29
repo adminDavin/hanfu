@@ -51,6 +51,9 @@ public class MyInterceptor implements HandlerInterceptor {
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
             if (jwt.getClaim("Type").asString().equals("user")){
+                Object bossId= request.getHeader("bossId");
+                System.out.println(bossId+"我是boss");
+                request.getServletContext().setAttribute("getServletContext", bossId);
                 return true;
             }
             //

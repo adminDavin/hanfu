@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanfu.order.center.cancel.dao.HfGoodsMapper;
 import com.hanfu.order.center.cancel.dao.HfPriceMapper;
 import com.hanfu.order.center.cancel.dao.ProductMapper;
@@ -194,8 +196,14 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
                                                  String paymentName,String today,String yesterday,String sevenDays,String month,
-                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request) throws JSONException {
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request, Integer pageNum, Integer pageSize) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (pageNum == null) {
+            pageNum = 0;
+        }
+        if (pageSize == null) {
+            pageSize = 0;
+        }
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
         if (stateTime!=null && endTime!=null){
@@ -236,6 +244,7 @@ public class HfOrderController {
         if (stoneId!=null){
             params.put("stoneId",stoneId);
         }
+        PageHelper.startPage(pageNum, pageSize);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
 //            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
@@ -310,9 +319,9 @@ public class HfOrderController {
                 }
             });
         }
-        
-        
-        return builder.body(ResponseUtils.getResponseBody(hfOrders));
+
+        PageInfo<HfOrderDisplay> page = new PageInfo<HfOrderDisplay>(hfOrders);
+        return builder.body(ResponseUtils.getResponseBody(page));
     }
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {

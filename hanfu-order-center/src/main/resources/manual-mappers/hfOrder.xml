@@ -106,7 +106,7 @@
         <if test="stoneId!=null and stoneId != ''">
             and o.stone_id =#{stoneId}
         </if>
-        order by o.modify_time desc;
+        order by o.modify_time desc
     </select>
 
     <select id="selectHfOrderStatistics" resultMap="HfOrderStatisticsResultMap">
