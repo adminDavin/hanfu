@@ -130,7 +130,7 @@
 			and activity_name like concat("%",#{activityName},"%")
 		</if>
 		<if test="bossId != null and bossId != ''">
-			and bossId #{bossId}
+			and boss_id=#{bossId}
 		</if>
 		<!-- <if
 			test="activityType == 'groupActivity' or activityType == 'seckillActivity'">
