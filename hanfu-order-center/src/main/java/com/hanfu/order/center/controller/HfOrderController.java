@@ -228,6 +228,7 @@ public class HfOrderController {
                 hfStoneExample.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
                 List<HfStone> hfStoneList = hfStoneMapper.selectByExample(hfStoneExample);
                 List<Integer> stonesId = hfStoneList.stream().map(a->a.getId()).collect(Collectors.toList());
+                System.out.println(stoneId+"stones");
                 params.put("stonesId",stonesId);
             }
 //        }
