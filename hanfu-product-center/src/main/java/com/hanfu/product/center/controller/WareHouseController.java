@@ -62,6 +62,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/wareHouse")
 @Api
@@ -125,8 +127,13 @@ public class WareHouseController {
 	@RequestMapping(value = "/listWareHouse", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> listWareHouse(@RequestParam Integer bossId) throws JSONException {
+	public ResponseEntity<JSONObject> listWareHouse(@RequestParam Integer bossId,HttpServletRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")||request.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
+				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		WarehouseExample example = new WarehouseExample();
 		example.createCriteria().andBossidEqualTo(bossId).andIsDeletedEqualTo((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(warehouseMapper.selectByExample(example)));
@@ -134,8 +141,13 @@ public class WareHouseController {
 
 	@ApiOperation(value = "添加仓库", notes = "为商家创建仓库")
 	@RequestMapping(value = "/createWareHouse", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addWareHouse(WareHouseRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> addWareHouse(HttpServletRequest requests, WareHouseRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")||requests.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
+				request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+			}
+		}
 		Warehouse warehouse = new Warehouse();
 		warehouse.setBossid(request.getBossId());
 		warehouse.setHfDesc(request.getHfDesc());
