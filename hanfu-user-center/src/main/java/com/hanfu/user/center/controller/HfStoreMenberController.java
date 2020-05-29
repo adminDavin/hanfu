@@ -14,6 +14,7 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,8 +42,15 @@ public class HfStoreMenberController {
     @ApiOperation(value = "店铺添加成员", notes = "店铺添加成员")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> add(hfStoreMenber hfStoreMenbers,@RequestParam(value = "ids")List<Integer> ids) throws Exception {
+    public ResponseEntity<JSONObject> add(HttpServletRequest request,hfStoreMenber hfStoreMenbers,@RequestParam(value = "ids")List<Integer> ids) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                hfStoreMenbers.setStoreId((Integer) request.getServletContext().getAttribute("getServletContext"));
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         if (hfStoreMenbers.getIsCancel()==null){
             hfStoreMenbers.setIsCancel(0);
         }
@@ -153,7 +161,14 @@ public class HfStoreMenberController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> deleted(Integer StoreId,Integer userId) throws Exception {
+    public ResponseEntity<JSONObject> deleted(HttpServletRequest request, Integer StoreId, Integer userId) throws Exception {
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                StoreId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         hfStoreMenber hfStoreMenbers = new hfStoreMenber();
         hfStoreMenbers.setIsDeleted((short) 1);
@@ -167,8 +182,15 @@ public class HfStoreMenberController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> update(hfStoreMenber hfStoreMenber) throws Exception {
+    public ResponseEntity<JSONObject> update(HttpServletRequest request,hfStoreMenber hfStoreMenber) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                hfStoreMenber.setStoreId((Integer) request.getServletContext().getAttribute("getServletContext"));
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         hfStoreMenber hfStoreMenbers = new hfStoreMenber();
         hfStoreMenbers.setIsDeleted((short) 1);
         hfStoreMenberExample hfStoreMenberExamples = new hfStoreMenberExample();
@@ -182,8 +204,15 @@ public class HfStoreMenberController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "isCancel", value = "是否", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> isCancel(Integer userId,Integer isCancel,Integer stoneId) throws Exception {
+    public ResponseEntity<JSONObject> isCancel(HttpServletRequest request,Integer userId,Integer isCancel,Integer stoneId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                stoneId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
 
         hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
         hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0).andUserIdEqualTo(userId);
@@ -238,8 +267,16 @@ public class HfStoreMenberController {
     @ApiOperation(value = "店铺角色", notes = "店铺角色")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> selectRole(Integer StoreId) throws Exception {
+    public ResponseEntity<JSONObject> selectRole(HttpServletRequest request,Integer StoreId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                StoreId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         HfStoreReleExample hfStoreReleExample = new HfStoreReleExample();
         hfStoreReleExample.createCriteria().andStoneIdEqualTo(StoreId).andIsDeletedEqualTo((short) 0);
         return builder.body(ResponseUtils.getResponseBody(hfStoreReleMapper.selectByExample(hfStoreReleExample)));
@@ -248,8 +285,15 @@ public class HfStoreMenberController {
     @ApiOperation(value = "添加店铺角色", notes = "添加店铺角色")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> addRole(HfStoreRele hfStoreRele) throws Exception {
+    public ResponseEntity<JSONObject> addRole(HttpServletRequest request,HfStoreRele hfStoreRele) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                hfStoreRele.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         hfStoreRele.setIsDeleted((short) 0);
         hfStoreRele.setCreateTime(LocalDateTime.now());
         hfStoreRele.setModifyTime(LocalDateTime.now());
@@ -261,8 +305,15 @@ public class HfStoreMenberController {
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
     })
-    public ResponseEntity<JSONObject> deletedRole(Integer StoreId,Integer StoreRoleId) throws Exception {
+    public ResponseEntity<JSONObject> deletedRole(HttpServletRequest request,Integer StoreId,Integer StoreRoleId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                StoreId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         HfStoreReleExample hfStoreReleExample = new HfStoreReleExample();
         hfStoreReleExample.createCriteria().andStoneIdEqualTo(StoreId).andIsDeletedEqualTo((short) 0).andIdEqualTo(StoreRoleId);
         return builder.body(ResponseUtils.getResponseBody(hfStoreReleMapper.deleteByExample(hfStoreReleExample)));
@@ -274,7 +325,14 @@ public class HfStoreMenberController {
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
     })
-    public ResponseEntity<JSONObject> updateRole(Integer StoreId,Integer StoreRoleId,Integer userId) throws Exception {
+    public ResponseEntity<JSONObject> updateRole(HttpServletRequest request,Integer StoreId,Integer StoreRoleId,Integer userId) throws Exception {
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                StoreId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         hfStoreMenber hfStoreMenber = new hfStoreMenber();
         hfStoreMenber.setStoreRole(StoreRoleId);
