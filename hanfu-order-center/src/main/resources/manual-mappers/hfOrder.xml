@@ -108,8 +108,8 @@
         </if>
         <if test="stonesId != null and stonesId.size() >0">
         and o.stone_id in
-            <foreach collection="stonesId" item="stonesId" index="index" open="" close="" separator=",">
-                #{stonesId}
+            <foreach collection="stonesId" item="stoneId" index="index" open="" close="" separator=",">
+                #{stoneId}
             </foreach>
         </if>
         order by o.modify_time desc
