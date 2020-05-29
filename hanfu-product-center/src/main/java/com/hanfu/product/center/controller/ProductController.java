@@ -262,9 +262,9 @@ public class ProductController {
 	public ResponseEntity<JSONObject> addProduct(HttpServletRequest requests,ProductRequest request, Integer cancelId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
-			if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
-			} else if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			} else if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")){
 				request.setStoneId((Integer) requests.getServletContext().getAttribute("getServletContext"));
 			}
 		}
