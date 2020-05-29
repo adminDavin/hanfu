@@ -115,7 +115,7 @@ public class PaymentOrderController {
 	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("getServletContext"));
+		miniProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("getServletContext")));
 		System.out.println("machid"+miniProgramConfig.getMchID());
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
         PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
