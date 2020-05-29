@@ -196,14 +196,14 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
                                                  String paymentName,String today,String yesterday,String sevenDays,String month,
-                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request, Integer pageNum, Integer pageSize) throws JSONException {
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        if (pageNum == null) {
-            pageNum = 0;
-        }
-        if (pageSize == null) {
-            pageSize = 0;
-        }
+//        if (pageNum == null) {
+//            pageNum = 0;
+//        }
+//        if (pageSize == null) {
+//            pageSize = 0;
+//        }
         OrderStatus orderStatusEnum = OrderStatus.getOrderStatusEnum(orderStatus);
         Map<String, Object> params = new HashMap<String, Object>();
         if (stateTime!=null && endTime!=null){
@@ -244,7 +244,7 @@ public class HfOrderController {
         if (stoneId!=null){
             params.put("stoneId",stoneId);
         }
-        PageHelper.startPage(pageNum, pageSize);
+//        PageHelper.startPage(pageNum, pageSize);
         List<HfOrderDisplay> hfOrders = hfOrderDao.selectHfOrder(params);
         if (!hfOrders.isEmpty()) {
 //            Set<Integer> goodsIds = hfOrders.stream().map(HfOrderDisplay::getGoodsId).collect(Collectors.toSet());
@@ -320,8 +320,8 @@ public class HfOrderController {
             });
         }
 
-        PageInfo<HfOrderDisplay> page = new PageInfo<HfOrderDisplay>(hfOrders);
-        return builder.body(ResponseUtils.getResponseBody(page));
+//        PageInfo<HfOrderDisplay> page = new PageInfo<HfOrderDisplay>(hfOrders);
+        return builder.body(ResponseUtils.getResponseBody(hfOrders));
     }
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
