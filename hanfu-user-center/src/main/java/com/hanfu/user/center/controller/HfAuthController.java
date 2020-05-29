@@ -1241,7 +1241,7 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey) throws JSONException {
 		Account account = new Account();
 		List<Account> accounts= new ArrayList<>();
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
@@ -1255,7 +1255,7 @@ public class HfAuthController {
 					account.setAccountRole("Super Admin");
 				}
 			}
-		} else 	if (request.getServletContext().getAttribute("getServletContextType").equals("sass")){
+		} else 	if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();

@@ -48,6 +48,7 @@ public class MyInterceptor implements HandlerInterceptor {
         Integer userId=1;
         Integer AccId = 1;
         if (token!=null){
+            System.out.println(token);
             Decrypt decrypt = new Decrypt();
             DecodedJWT jwt = decrypt.deToken((String) token);
             if (jwt.getClaim("Type").asString().equals("user")){
