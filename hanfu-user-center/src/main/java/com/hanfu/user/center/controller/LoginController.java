@@ -87,7 +87,7 @@ public class LoginController extends HfUserController {
         redisTemplate.opsForValue().set(openid.toString(), skey);
 
         Encrypt encrypt = new Encrypt();
-        String token = encrypt.getToken(true, hfUser.getId(), "user",(Integer)bossId);
+        String token = encrypt.getToken(true, hfUser.getId(), "user",Integer.valueOf((String)bossId));
         System.out.println(token);
         response.addHeader("token", token);
 
