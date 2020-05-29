@@ -566,6 +566,9 @@ public class HfAuthController {
 		HashSet h = new HashSet(result);
 		result.clear();
 		result.addAll(h);
+		if (result.size()==0){
+			result.add(0);
+		}
 //		for (int i = 0; i < result.size(); i++) {
 //			StoreUser storeUser = new StoreUser();
 //			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
