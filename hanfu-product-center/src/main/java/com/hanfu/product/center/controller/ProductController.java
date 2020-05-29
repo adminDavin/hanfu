@@ -259,8 +259,15 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProduct(ProductRequest request, Integer cancelId) throws JSONException {
+	public ResponseEntity<JSONObject> addProduct(HttpServletRequest requests,ProductRequest request, Integer cancelId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+				request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+			} else if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				request.setStoneId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+			}
+		}
 		Product product = new Product();
 		product.setBossId(request.getBossId());
 		product.setBrandId(1);
