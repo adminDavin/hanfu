@@ -213,7 +213,12 @@ public class WareHouseController {
 
 	@ApiOperation(value = "查询商家物品", notes = "查询商家物品")
 	@RequestMapping(value = "/findBossGoods", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findBossGoods(Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> findBossGoods(HttpServletRequest requests,Integer bossId) throws Exception {
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")||requests.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
+				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
 		HfGoodsExample example = new HfGoodsExample();
@@ -240,8 +245,13 @@ public class WareHouseController {
 	@ApiOperation(value = "仓库申请货物", notes = "仓库申请货物")
 	@RequestMapping(value = "/applyGoodsWarsehouse", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> applyGoodsWarsehouse(Integer productId, Integer goodId, Integer userId,
-			Integer warehouseId, Integer bossId, Integer quantity) throws Exception {
+			Integer warehouseId, Integer bossId, Integer quantity,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")||requests.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
+				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
 		HfResp hfResp = hfRespMapper.selectByPrimaryKey(goods.getRespId());
 		if (hfResp.getQuantity() < quantity) {
@@ -278,8 +288,13 @@ public class WareHouseController {
 
 	@ApiOperation(value = "查看由仓库提交得申请列表", notes = "查看由仓库提交得申请列表")
 	@RequestMapping(value = "/findApplyforWarehouse", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findApplyforWarehouse(Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> findApplyforWarehouse(Integer bossId,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")||requests.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
+				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
 		WarehouseApplyGoodExample example = new WarehouseApplyGoodExample();
 		example.createCriteria().andBossIdEqualTo(bossId);
@@ -485,7 +500,12 @@ public class WareHouseController {
 	@ApiOperation(value = "店铺申请物品从仓库", notes = "店铺申请物品从仓库")
 	@RequestMapping(value = "/stoneApplyGood", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> stoneApplyGood(Integer stoneId, Integer productId, Integer goodId,
-			Integer quantity, Integer userId, Integer warehouseId) throws Exception {
+			Integer quantity, Integer userId, Integer warehouseId,HttpServletRequest requests) throws Exception {
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+				stoneId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HWarehouseRespExample respExample = new HWarehouseRespExample();
 		respExample.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(goodId);
