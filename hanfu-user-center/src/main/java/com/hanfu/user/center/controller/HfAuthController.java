@@ -534,8 +534,13 @@ public class HfAuthController {
 	@ApiOperation(value = "店铺管理员列表", notes = "店铺管理员列表根据商家id")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> select(Integer bossId, String phone, String code, String name) throws Exception {
+	public ResponseEntity<JSONObject> select(HttpServletRequest requests,Integer bossId, String phone, String code, String name) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		List<StoreUser> storeUsers = new ArrayList<>();
 		List<Integer> result = new ArrayList<Integer>();
 		HfStoneExample example = new HfStoneExample();
