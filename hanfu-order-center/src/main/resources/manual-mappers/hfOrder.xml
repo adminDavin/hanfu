@@ -106,7 +106,7 @@
         <if test="stoneId!=null and stoneId != ''">
             and o.stone_id =#{stoneId}
         </if>
-        <if test="stonesId != null and stonesId.size() >0">
+        <if test="stonesId != null">
         and o.stone_id in
             <foreach collection="list" item="stonesId" index="index" open="" close="" separator=",">
                 #{stonesId}
