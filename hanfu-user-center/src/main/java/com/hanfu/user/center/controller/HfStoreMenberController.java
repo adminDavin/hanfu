@@ -14,6 +14,7 @@ import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,15 +81,23 @@ public class HfStoreMenberController {
     @ApiOperation(value = "店铺成员查询", notes = "店铺成员查询")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "storeId", value = "店铺id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> select(Integer storeId,Integer bossId) throws Exception {
+    public ResponseEntity<JSONObject> select(HttpServletRequest request, Integer storeId, Integer bossId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                storeId=(Integer) request.getServletContext().getAttribute("getServletContext");
+                bossId=hfStoneMapper.selectByPrimaryKey(storeId).getBossId();
+            }
+        }
         List<StoreUser> storeUsers = new ArrayList<>();
 
         hfStoreMenberExample hfStoreMenbersExample = new hfStoreMenberExample();
         hfStoreMenbersExample.createCriteria().andStoreIdEqualTo(storeId).andIsDeletedEqualTo((short) 0);
         List<hfStoreMenber> hfStoreMenber = hfStoreMenberMappers.selectByExample(hfStoreMenbersExample);
 //        storeUsers.forEach(storeUser -> {
-            hfStoreMenber.forEach(hfStoreMenber1 -> {
+//            hfStoreMenber.forEach(hfStoreMenber1 -> {
+                for (hfStoreMenber hfStoreMenber1:hfStoreMenber){
                 StoreUser storeUser = new StoreUser();
                 storeUser.setCreatetime(hfStoreMenber1.getCreateTime());
                 storeUser.setIsCancel(hfStoreMenber1.getIsCancel());
@@ -108,10 +117,11 @@ public class HfStoreMenberController {
                 HfBossExample hfBossExample = new HfBossExample();
                 hfBossExample.createCriteria().andIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
                 List<HfBoss> hfBosses= hfBossMapper.selectByExample(hfBossExample);
-                hfBosses.forEach(hfBoss -> {
+                for (HfBoss hfBoss:hfBosses){
+//                hfBosses.forEach(hfBoss -> {
                     storeUser.setBossName(hfBoss.getName());
                     storeUser.setBossId(bossId);
-                });
+                };
 
                 HfUserExample hfUserExample = new HfUserExample();
                 hfUserExample.createCriteria().andIdEqualTo(hfStoreMenber1.getUserId()).andIdDeletedEqualTo((byte) 0);
@@ -133,7 +143,7 @@ public class HfStoreMenberController {
                 }
                 storeUser.setStoreRoleName(hfStoreReleMapper.selectByPrimaryKey(hfStoreMenber1.getStoreRole()).getRoleName());
                 storeUsers.add(storeUser);
-            });
+            };
 //        });
         return builder.body(ResponseUtils.getResponseBody(storeUsers));
     }
