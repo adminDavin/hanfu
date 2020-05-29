@@ -106,7 +106,6 @@ public class HfProductActivityController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity hfActivity = new HfActivity();
         if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+requests.getServletContext().getAttribute("getServletContext"));
             if (requests.getServletContext().getAttribute("getServletContext")!=null){
                 hfActivity.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
             }
@@ -142,9 +141,15 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "查询活动", notes = "查询活动")
     @RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> addProdcutActivity(String activityType, String name) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests,String activityType, String name) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductActivityInfo productInfo = new ProductActivityInfo();
+        if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            if (requests.getServletContext().getAttribute("getServletContext")!=null){
+                productInfo.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+            }
+        }
+
         productInfo.setActivityType(activityType);
         productInfo.setActivityName(name);
         List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);
