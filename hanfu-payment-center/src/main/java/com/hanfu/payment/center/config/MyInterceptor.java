@@ -77,15 +77,27 @@ public class MyInterceptor implements HandlerInterceptor {
         if (permissionService.hasPermission(request,response,handler,userId)==true) {
             //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
 //            request.setAttribute("getAttribute", "getAttribute");
-            PayBossExample payBossExample = new PayBossExample();
-            payBossExample.createCriteria().andUserIdEqualTo(970).andIsDeletedEqualTo((byte) 0);
-            List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
+//            PayBossExample payBossExample = new PayBossExample();
+//            payBossExample.createCriteria().andUserIdEqualTo(970).andIsDeletedEqualTo((byte) 0);
+//            List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
             //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象，具体请百度
             //把变量放在这里面，在之后什么地方都可以访问
-            request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
-
+//            request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
             //把自己的变量放在头部
 //            reflectSetHeader(request, "header", "header");
+            if (token!=null){
+                Decrypt decrypt = new Decrypt();
+                DecodedJWT jwt = decrypt.deToken((String) token);
+                String type = jwt.getClaim("Type").asString();
+                AccountExample accountExample = new AccountExample();
+                accountExample.createCriteria().andUserIdEqualTo(Integer.valueOf(jwt.getClaim("userId").asInt())).andIsDeletedEqualTo(0).andAccountTypeEqualTo(type).andMerchantIdEqualTo(jwt.getClaim("merId").asInt());
+                List<Account> accounts= accountMapper.selectByExample(accountExample);
+                if (accounts.size()==0){
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+                }
+                request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
+                request.getServletContext().setAttribute("getServletContextType", type);
+            }
             return true;
         }
         response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
@@ -108,6 +120,8 @@ public class MyInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        request.getServletContext().removeAttribute("getServletContext");
+        request.getServletContext().removeAttribute("getServletContextType");
         logger.info("整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了");
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -111,9 +112,15 @@ public class StoneBalanceController {
 
     @ApiOperation(value = "余额查询", notes = "余额查询")
     @RequestMapping(value = "/selectStoneBalance", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectStoneBalance(Integer stoneId,String balanceType)
+    public ResponseEntity<JSONObject> selectStoneBalance(Integer stoneId, String balanceType, HttpServletRequest request)
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                stoneId=(Integer) request.getServletContext().getAttribute("getServletContext");
+            }
+        }
         //
         StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
         stoneBalanceExample.createCriteria().andStoneIdEqualTo(stoneId).andBalanceTypeEqualTo(balanceType);
@@ -147,9 +154,15 @@ public class StoneBalanceController {
     }
     @ApiOperation(value = "余额明细", notes = "余额明细")
     @RequestMapping(value = "/selectBalanceDetail", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectBalanceDetail(Integer stoneId, Integer today, Integer yesterday, Integer sevenDays, Integer month , @RequestParam(value = "stateTime",required = false) Date stateTime, @RequestParam(value = "endTime",required = false) Date endTime)
+    public ResponseEntity<JSONObject> selectBalanceDetail(HttpServletRequest request,Integer stoneId, Integer today, Integer yesterday, Integer sevenDays, Integer month , @RequestParam(value = "stateTime",required = false) Date stateTime, @RequestParam(value = "endTime",required = false) Date endTime)
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                stoneId=(Integer) request.getServletContext().getAttribute("getServletContext");
+            }
+        }
         StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
         stoneChargeOffExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0);
         List<StoneChargeOff> stoneChargeOff= stoneChargeOffMapper.selectByExample(stoneChargeOffExample);

@@ -311,6 +311,12 @@ public class StoneController {
     })
     public  ResponseEntity<JSONObject> selectById(Integer id, Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                id=(Integer) request.getServletContext().getAttribute("getServletContext");
+            }
+        }
         HfStone hfStone = hfStoneMapper.selectByPrimaryKey(id);
         HfStoneInfo info = new HfStoneInfo();
         info.setStoneName(hfStone.getHfName());
@@ -388,6 +394,12 @@ public class StoneController {
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findAmountDataByStone(Integer stoneId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                stoneId=(Integer) request.getServletContext().getAttribute("getServletContext");
+            }
+        }
 		List<String> status = new ArrayList<String>();
 		status.add("complete");
 		status.add("evaluate");
@@ -525,6 +537,12 @@ public class StoneController {
 			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> findSalesVolumeDataByStone(Integer stoneId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+        if (request.getServletContext().getAttribute("getServletContext")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                stoneId=(Integer) request.getServletContext().getAttribute("getServletContext");
+            }
+        }
 		Integer salesCountAll = 0;
 		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
 		HfOrderDetailExample example3 = new HfOrderDetailExample();
