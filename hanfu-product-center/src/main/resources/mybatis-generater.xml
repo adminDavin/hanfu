@@ -63,12 +63,12 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<!--<table schema="user_center" tableName="hf_category" -->
-		<!--domainObjectName="HfCategory"> -->
-		<!--<property name="useActualColumnNames" value="false"/> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true"/> -->
-		<!--</table> -->
+		<table schema="user_center" tableName="hf_category"
+		domainObjectName="HfCategory">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/>
+		</table>
 		<!--<table schema="user_center" tableName="hf_goods" -->
 		<!--domainObjectName="HfGoods"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
@@ -219,9 +219,10 @@
 		<!-- <table schema="user_center" tableName="hf_activity_product" domainObjectName="HfActivityProduct"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<!-- <table schema="user_center" tableName="hf_activity" domainObjectName="HfActivity"> 
-			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
-			sqlStatement="mysql" identity="true"/> </table> -->
+		<!--<table schema="user_center" tableName="hf_activity"-->
+			   <!--domainObjectName="HfActivity">-->
+			<!--<property name="useActualColumnNames" value="false"/> <generatedKey column="id"-->
+			<!--sqlStatement="mysql" identity="true"/> </table>-->
 
 		<!--<table schema="user_center" tableName="hf_activity_group" -->
 		<!--domainObjectName="HfActivityGroup"> -->

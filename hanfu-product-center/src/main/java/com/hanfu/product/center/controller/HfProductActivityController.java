@@ -35,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,9 +102,16 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addProdcutActivity(ProductActivityRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests, ProductActivityRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity hfActivity = new HfActivity();
+        if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+requests.getServletContext().getAttribute("getServletContext"));
+            if (requests.getServletContext().getAttribute("getServletContext")!=null){
+                hfActivity.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+            }
+        }
+
         hfActivity.setActivityName(request.getActivityName());
         hfActivity.setActivityType(request.getActivityType());
         if (request.getStartTime() != null) {

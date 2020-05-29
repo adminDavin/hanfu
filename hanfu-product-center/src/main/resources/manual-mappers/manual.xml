@@ -146,5 +146,8 @@
 		<if test="hfName != null and hfName != ''">
 			and hf_name like concat('%',#{hfName},'%') 
 		</if>
+		<if test="bossId != null and bossId != ''">
+			and boss_id = #{bossId}
+		</if>
 	</select>
 </mapper>
