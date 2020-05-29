@@ -166,8 +166,13 @@ public class StoneController {
 
     @ApiOperation(value = "添加商铺", notes = "添加一个新的商铺")
     @RequestMapping(value = "/addStone", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addProductInfo(HfStoneRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addProductInfo(HttpServletRequest requests,HfStoneRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (requests.getServletContext().getAttribute("getServletContextType")!=null){
+            if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+                request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+            }
+        }
         HfStone item = new HfStone();
         item.setHfName(request.getHfName());
         item.setBossId(request.getBossId());
