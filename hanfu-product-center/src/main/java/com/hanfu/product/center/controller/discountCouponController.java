@@ -62,8 +62,15 @@ public class discountCouponController {
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
+    public ResponseEntity<JSONObject> getGoodsSpecs(HttpServletRequest request,Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
             throws Exception {
+        if (request.getServletContext().getAttribute("getServletContextType")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+                discountCoupon.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+            } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                discountCoupon.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+            }
+        }
         DiscountCouponScope.ScopeTypeEnum scopeTypeEnum = DiscountCouponScope.ScopeTypeEnum.getOrderTypeEnum(discountCoupon.getScope());
         System.out.println(scopeTypeEnum);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
