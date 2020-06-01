@@ -20,6 +20,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.model.HfUser;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
@@ -35,13 +37,15 @@ import org.codehaus.xfire.util.Base64;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class WxLoginConfig {
 	public static String APPID ="wx2641aaa105c07dd4";
 	public static String SECRET ="fb26dde971b62de61c4573b12bd5f5da";
 	public static String GRANTTYPE = "authorization_code";
     public static CloseableHttpClient client = HttpClients.createDefault();
-
+@Autowired
+private static HfUserMapper hfUserMapper;
 	public static enum AuthType{
 	    WECHART("1"),
 	    phone("2");
@@ -65,6 +69,8 @@ public class WxLoginConfig {
 	    SINGLE_MERCHART("singleMerchart") {
             @Override
             public WechartProPerties getWechartConfig() {
+                HfUser hfUser= hfUserMapper.selectByPrimaryKey(1);
+                System.out.println(hfUser);
                 return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
             }
         };
