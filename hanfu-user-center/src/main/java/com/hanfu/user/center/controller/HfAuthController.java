@@ -135,6 +135,7 @@ public class HfAuthController {
 	@Autowired
     private AccountTypeModelMapper accountTypeModelMapper;
 
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -1288,6 +1289,12 @@ public class HfAuthController {
 		Integer userId;
 		if (list.isEmpty()) {
 			HfUser user = new HfUser();
+			if (type.equals("boss")){
+				user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}else if (type.equals("stone")){
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey((Integer) request.getServletContext().getAttribute("getServletContext"));
+				user.setBossId(hfStone.getBossId());
+			}
 			user.setSourceType(authType);
 			user.setPhone(authKey);
 			user.setUserStatus("0".getBytes()[0]);
