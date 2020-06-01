@@ -501,7 +501,13 @@ public class HfAuthController {
 	@ApiOperation(value = "商家基本信息", notes = "商家基本信息")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> findBossInfo(Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> findBossInfo(HttpServletRequest request,Integer bossId) throws Exception {
+		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		double amount = 0;
 		HfBoss boss = hfBossMapper.selectByPrimaryKey(bossId);
