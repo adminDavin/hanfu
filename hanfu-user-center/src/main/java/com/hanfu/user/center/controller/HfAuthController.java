@@ -1324,7 +1324,7 @@ public class HfAuthController {
 		if (0 == accountMapper.selectByExample(accountExample).size()){
 			account.setAccountCode(authKey);
 			account.setAccountType(type);
-			account.setMerchantId(BSid);
+			account.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
 			account.setCreateDate(LocalDateTime.now());
 			account.setLastModifier(String.valueOf(LastUser));
 			account.setModifyDate(LocalDateTime.now());
