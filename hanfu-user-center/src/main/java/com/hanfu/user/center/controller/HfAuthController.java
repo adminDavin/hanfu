@@ -1320,7 +1320,7 @@ public class HfAuthController {
 			userId = list.get(0).getUserId();
 		}
 		AccountExample accountExample = new AccountExample();
-		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(BSid);
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
 		if (0 == accountMapper.selectByExample(accountExample).size()){
 			account.setAccountCode(authKey);
 			account.setAccountType(type);
