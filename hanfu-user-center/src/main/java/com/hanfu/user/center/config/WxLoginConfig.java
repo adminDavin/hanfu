@@ -63,6 +63,8 @@ private static HfUserMapper hfUserMapper;
 	    ACTIVITY("activity") {
 	        @Override
 	        public WechartProPerties getWechartConfig() {
+                HfUser hfUser= hfUserMapper.selectByPrimaryKey(1);
+                System.out.println(hfUser+"登陆");
 	            return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
 	        }
 	    },
@@ -70,7 +72,7 @@ private static HfUserMapper hfUserMapper;
             @Override
             public WechartProPerties getWechartConfig() {
                 HfUser hfUser= hfUserMapper.selectByPrimaryKey(1);
-                System.out.println(hfUser);
+                System.out.println(hfUser+"登陆");
                 return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
             }
         };
