@@ -154,33 +154,33 @@ public class HfUserController {
         return builder.body(ResponseUtils.getResponseBody(user));
     }
 
-    @RequestMapping(value = "/update/wechart", method = RequestMethod.GET)
-    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
-    public ResponseEntity<JSONObject> updateWechartPhone(@RequestParam(value = "code", required = false) String code,
-            @RequestParam(value = "appName", required = false) String appName,
-            @RequestParam(value = "encryptedData", required = false) String encryptedData,
-            @RequestParam(value = "iv", required = false) String iv) throws Exception {
-         
-        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
-        String openid = SessionKeyOpenId.getString("openid");
-        String sessionKey = SessionKeyOpenId.getString("session_key");
-        
-        HfAuthExample authAxample = new HfAuthExample();
-        authAxample.createCriteria().andAuthKeyEqualTo(openid).andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
-        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-        
-        if (CollectionUtils.isEmpty(auths)) {
-            throw new Exception("please login first.");
-        }
-        
-        JSONObject parseResult = WxLoginConfig.parseWechart(encryptedData, sessionKey, iv);
-        System.out.println(parseResult);
-        HfUser hfUser = hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
-        UserInfoRequest request = new UserInfoRequest();
-        request.setUserId(hfUser.getId());
-        request.setPhone(parseResult.getString("phoneNumber"));
-        return update(request);
-    }
+//    @RequestMapping(value = "/update/wechart", method = RequestMethod.GET)
+//    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+//    public ResponseEntity<JSONObject> updateWechartPhone(@RequestParam(value = "code", required = false) String code,
+//            @RequestParam(value = "appName", required = false) String appName,
+//            @RequestParam(value = "encryptedData", required = false) String encryptedData,
+//            @RequestParam(value = "iv", required = false) String iv) throws Exception {
+//
+//        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
+//        String openid = SessionKeyOpenId.getString("openid");
+//        String sessionKey = SessionKeyOpenId.getString("session_key");
+//
+//        HfAuthExample authAxample = new HfAuthExample();
+//        authAxample.createCriteria().andAuthKeyEqualTo(openid).andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
+//        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
+//
+//        if (CollectionUtils.isEmpty(auths)) {
+//            throw new Exception("please login first.");
+//        }
+//
+//        JSONObject parseResult = WxLoginConfig.parseWechart(encryptedData, sessionKey, iv);
+//        System.out.println(parseResult);
+//        HfUser hfUser = hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+//        UserInfoRequest request = new UserInfoRequest();
+//        request.setUserId(hfUser.getId());
+//        request.setPhone(parseResult.getString("phoneNumber"));
+//        return update(request);
+//    }
 
 //    @RequestMapping(value = "/create/wechart", method = RequestMethod.GET)
 //    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")

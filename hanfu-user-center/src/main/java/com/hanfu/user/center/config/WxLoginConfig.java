@@ -46,7 +46,17 @@ public class WxLoginConfig {
 	public static String SECRET ="fb26dde971b62de61c4573b12bd5f5da";
 	public static String GRANTTYPE = "authorization_code";
     public static CloseableHttpClient client = HttpClients.createDefault();
-@Autowired
+    public static Integer bossId;
+
+    public static Integer getBossId() {
+        return bossId;
+    }
+
+    public static void setBossId(Integer bossId) {
+        WxLoginConfig.bossId = bossId;
+    }
+
+    @Autowired
 private static HfUserMapper hfUserMapper;
 	public static enum AuthType{
 	    WECHART("1"),
@@ -65,7 +75,7 @@ private static HfUserMapper hfUserMapper;
 	    ACTIVITY("activity") {
 	        @Override
 	        public WechartProPerties getWechartConfig() {
-                HfUser hfUser= hfUserMapper.selectByPrimaryKey(1);
+                HfUser hfUser= hfUserMapper.selectByPrimaryKey(getBossId());
                 System.out.println(hfUser+"登陆");
 	            return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
 	        }
@@ -154,8 +164,9 @@ private static HfUserMapper hfUserMapper;
         return JSON.parseObject(result);
     }
     
-    public static JSONObject getSessionKeyOrOpenId(String code, String appName) throws ParseException, IOException {
+    public static JSONObject getSessionKeyOrOpenId(String code, String appName,Integer bossId) throws ParseException, IOException {
         WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
+        setBossId(bossId);
         List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
         list.add(new BasicNameValuePair("appid", wechartConfig.getAppId()));
         list.add(new BasicNameValuePair("secret", wechartConfig.getSecret()));
