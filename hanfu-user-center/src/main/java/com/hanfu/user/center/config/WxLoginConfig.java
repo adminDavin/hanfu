@@ -42,6 +42,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WxLoginConfig {
+    @Autowired
+    public static HfUserMapper hfUserMapper;
 	public static String APPID ="wx2641aaa105c07dd4";
 	public static String SECRET ="fb26dde971b62de61c4573b12bd5f5da";
 	public static String GRANTTYPE = "authorization_code";
@@ -56,8 +58,7 @@ public class WxLoginConfig {
         WxLoginConfig.bossId = bossId;
     }
 
-    @Autowired
-private static HfUserMapper hfUserMapper;
+
 	public static enum AuthType{
 	    WECHART("1"),
 	    phone("2");
