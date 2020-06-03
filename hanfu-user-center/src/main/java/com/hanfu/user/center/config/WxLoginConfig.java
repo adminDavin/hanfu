@@ -178,7 +178,7 @@ public class WxLoginConfig {
         System.out.println(payBossListayBoss+"登陆");
 //	    WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
         List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
-        list.add(new BasicNameValuePair("appid", payBossListayBoss.get(0).getAppId()));
+        list.add(new BasicNameValuePair("appid", payBossListayBoss.get(0).getAppid()));
         list.add(new BasicNameValuePair("secret", payBossListayBoss.get(0).getSecret()));
         list.add(new BasicNameValuePair("grant_type", payBossListayBoss.get(0).getGrantType()));
         list.add(new BasicNameValuePair("js_code", code));
