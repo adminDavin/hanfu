@@ -38,7 +38,9 @@ import org.codehaus.xfire.util.Base64;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WxLoginConfig {
 	public static String APPID ="wx2641aaa105c07dd4";
 	public static String SECRET ="fb26dde971b62de61c4573b12bd5f5da";
