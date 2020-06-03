@@ -21,7 +21,10 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.hanfu.user.center.dao.HfUserMapper;
+import com.hanfu.user.center.dao.PayBossMapper;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.PayBoss;
+import com.hanfu.user.center.model.PayBossExample;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
@@ -42,11 +45,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WxLoginConfig {
-    public static HfUserMapper hfUserMapper;
+    public static PayBossMapper payBossMapper;
 
     @Autowired
-    public void setUserMapper(HfUserMapper hfUserMapper) {
-        WxLoginConfig.hfUserMapper = hfUserMapper;
+    public void setBossMapper(PayBossMapper payBossMapper) {
+        WxLoginConfig.payBossMapper = payBossMapper;
     }
 
     public static String APPID ="wx2641aaa105c07dd4";
@@ -169,13 +172,15 @@ public class WxLoginConfig {
     public static JSONObject getSessionKeyOrOpenId(String code, String appName,Integer bossId) throws ParseException, IOException {
         setBossId(bossId);
         System.out.println(getBossId()+"boss----");
-        HfUser hfUser= hfUserMapper.selectByPrimaryKey(getBossId());
-        System.out.println(hfUser+"登陆");
-	    WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
+        PayBossExample payBossExample = new PayBossExample();
+        payBossExample.createCriteria().andBossIdEqualTo(getBossId()).andIsDeletedEqualTo((byte) 0);
+        List<PayBoss> payBossListayBoss= payBossMapper.selectByExample(payBossExample);
+        System.out.println(payBossListayBoss+"登陆");
+//	    WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
         List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
-        list.add(new BasicNameValuePair("appid", wechartConfig.getAppId()));
-        list.add(new BasicNameValuePair("secret", wechartConfig.getSecret()));
-        list.add(new BasicNameValuePair("grant_type", wechartConfig.getGrantType()));
+        list.add(new BasicNameValuePair("appid", payBossListayBoss.get(0).getAppId()));
+        list.add(new BasicNameValuePair("secret", payBossListayBoss.get(0).getSecret()));
+        list.add(new BasicNameValuePair("grant_type", payBossListayBoss.get(0).getGrantType()));
         list.add(new BasicNameValuePair("js_code", code));
 
         String params = EntityUtils.toString(new UrlEncodedFormEntity(list, Consts.UTF_8));
