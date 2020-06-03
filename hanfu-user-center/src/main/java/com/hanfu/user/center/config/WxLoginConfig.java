@@ -70,21 +70,17 @@ private static HfUserMapper hfUserMapper;
 	        return this.authType;
 	    }
 	}
-	
+
 	public static enum LoginType {
 	    ACTIVITY("activity") {
 	        @Override
 	        public WechartProPerties getWechartConfig() {
-                HfUser hfUser= hfUserMapper.selectByPrimaryKey(getBossId());
-                System.out.println(hfUser+"登陆");
 	            return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
 	        }
 	    },
 	    SINGLE_MERCHART("singleMerchart") {
             @Override
             public WechartProPerties getWechartConfig() {
-                HfUser hfUser= hfUserMapper.selectByPrimaryKey(1);
-                System.out.println(hfUser+"登陆");
                 return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
             }
         };
@@ -163,10 +159,12 @@ private static HfUserMapper hfUserMapper;
         String result = new String(resultByte, "UTF-8");
         return JSON.parseObject(result);
     }
-    
+
     public static JSONObject getSessionKeyOrOpenId(String code, String appName,Integer bossId) throws ParseException, IOException {
         setBossId(bossId);
         System.out.println(getBossId()+"boss----");
+        HfUser hfUser= hfUserMapper.selectByPrimaryKey(getBossId());
+        System.out.println(hfUser+"登陆");
 	    WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
         List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
         list.add(new BasicNameValuePair("appid", wechartConfig.getAppId()));
