@@ -63,7 +63,7 @@ public class LoginController extends HfUserController {
         Object bossId= request.getHeader("bossId");
         System.out.println(bossId+"我是boss");
         Map<String, Object> map = new HashMap<String, Object>();
-        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, (Integer) bossId);
+        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, Integer.valueOf((String) bossId));
         String openid = (String) SessionKeyOpenId.get("openid");
         String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key"));
 
