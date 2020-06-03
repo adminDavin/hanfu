@@ -165,8 +165,8 @@ private static HfUserMapper hfUserMapper;
     }
     
     public static JSONObject getSessionKeyOrOpenId(String code, String appName,Integer bossId) throws ParseException, IOException {
-        WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
         setBossId(bossId);
+	    WechartProPerties wechartConfig = LoginType.getLoginType(appName).getWechartConfig();
         List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
         list.add(new BasicNameValuePair("appid", wechartConfig.getAppId()));
         list.add(new BasicNameValuePair("secret", wechartConfig.getSecret()));
