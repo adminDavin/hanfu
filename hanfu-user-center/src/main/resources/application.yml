@@ -1,7 +1,23 @@
 server:
   port: 8082
-
 spring:
+  mail:
+    host: smtp.qq.com
+    username: 2451203734@qq.com
+    password: maniyxnxhcvadhji
+    default-encoding: utf-8
+    port: 25
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 50000
+          timeout: 50000
+          writetimeout: 50000
+          ssl:
+            enable: true
+          starttls:
+            enable: true
   datasource:
     name: dataSource
     type: com.zaxxer.hikari.HikariDataSource

@@ -2,7 +2,6 @@ package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.util.StringUtil;
 //import com.github.pagehelper.PageHelper;
 //import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
@@ -12,6 +11,7 @@ import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfMessageApplyMapper;
 import com.hanfu.user.center.dao.HfMessageInfoMapper;
+import com.hanfu.user.center.dao.HfMessageInstanceMapper;
 import com.hanfu.user.center.dao.HfMessageTemplateMapper;
 import com.hanfu.user.center.dao.HfTemplateParamMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
@@ -24,8 +24,6 @@ import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
-import com.hanfu.user.center.response.handler.UserNotExistException;
-//import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.user.center.utils.GetMessageCode;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -34,25 +32,34 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 //import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -75,6 +82,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 //import com.hanfu.user.center.service.UserCenterService;
 
@@ -104,6 +112,14 @@ public class KingWordsController {
 	private HfMessageApplyMapper hfMessageApplyMapper;
 	@Autowired
 	private HfTemplateParamMapper hfTemplateParamMapper;
+	@Autowired
+	JedisPool jedisPool;
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private HfMessageInstanceMapper hfMessageInstanceMapper;
+	@Autowired
+	private JavaMailSender javaMailSender;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
@@ -135,17 +151,16 @@ public class KingWordsController {
 
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
-	
+
 	@RequestMapping(path = "/addTemplateParam", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板参数", notes = "添加信息模板参数")
-	public ResponseEntity<JSONObject> addTemplateParam(String type,
-			String param) throws Exception {
+	public ResponseEntity<JSONObject> addTemplateParam(String type, String param) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfTemplateParamExample example = new HfTemplateParamExample();
 		example.createCriteria().andTypeEqualTo(type).andParamNameEqualTo(param);
 		List<HfTemplateParam> list = hfTemplateParamMapper.selectByExample(example);
 		Integer id = null;
-		if(CollectionUtils.isEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			StringBuilder stringBuilder = new StringBuilder();
 			HfTemplateParam templateParam = new HfTemplateParam();
 			templateParam.setType(type);
@@ -158,39 +173,69 @@ public class KingWordsController {
 			templateParam.setIsDeleted((byte) 0);
 			hfTemplateParamMapper.insert(templateParam);
 			id = templateParam.getId();
-		}else {
+		} else {
 			id = list.get(0).getId();
 		}
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
+	
+	@RequestMapping(path = "/cs", method = RequestMethod.POST)
+	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
+	public ResponseEntity<JSONObject> cs() throws Exception {
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		map.add("username", "赵云辉");
+		map.add("orderId", "e28c4a93fb7b4084");
+		map.add("total", "500");
+		map.add("userId", "974");
+		map.add("type", "orderCreate");
+		restTemplate.postForObject("http://localhost:8082/user/code", map, JSONObject.class);
+		return null;
+	}
 
-	@RequestMapping(path = "/code", method = RequestMethod.GET)
+	@RequestMapping(path = "/code", method = RequestMethod.POST)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
-	public ResponseEntity<JSONObject> code(String phone, String type) throws Exception {
+	public ResponseEntity<JSONObject> code(@RequestParam Map<String, String> map) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfMessageInfoExample example = new HfMessageInfoExample();
+		example.createCriteria().andBossIdEqualTo(1).andIsDeletedEqualTo((byte) 1);
+		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+		if (CollectionUtils.isEmpty(list)) {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		List<Integer> infoId = list.stream().map(HfMessageInfo::getId).collect(Collectors.toList());
+
+		HfMessageTemplateExample example2 = new HfMessageTemplateExample();
+		example2.createCriteria().andMessageIdIn(infoId).andTypeEqualTo(map.get("type"))
+				.andIsDeletedEqualTo((byte) 1);
+		List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(example2);
+		if (CollectionUtils.isEmpty(list2)) {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		List<Integer> templateId = list2.stream().map(HfMessageTemplate::getId).collect(Collectors.toList());
+		HfMessageInstanceExample example3 = new HfMessageInstanceExample();
+		example3.createCriteria().andTemplateTypeIdIn(templateId).andIsDeletedEqualTo((byte) 1);
+		List<HfMessageInstance> list3 = hfMessageInstanceMapper.selectByExample(example3);
+		if (CollectionUtils.isEmpty(list3)) {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}
+		String phone = "";
+		String userId = map.get("userId");
+		if(StringUtils.isEmpty(userId)) {
+			phone = map.get("phone");
+		}else {
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(Integer.valueOf(userId));
+			phone = hfUser.getPhone();
+			map.put("username", hfUser.getRealName());
+			map.put("phone", phone);
+			map.put("email", hfUser.getEmail());
+		}
 		if (!StringUtils.isEmpty(phone)) {
 			String s2 = "^[1](([3|5|8][\\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\\d]{8}$";
 			Pattern p = Pattern.compile(s2);
 			Matcher m = p.matcher(phone);
 			boolean b = m.matches();
 			if (b) {
-				HfMessageInfoExample example = new HfMessageInfoExample();
-				example.createCriteria().andBossIdEqualTo(1);
-				List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-				if (CollectionUtils.isEmpty(list)) {
-					return builder.body(ResponseUtils.getResponseBody(-1));
-				}
-				HfMessageInfo info = list.get(0);
-
-				HfMessageTemplateExample example2 = new HfMessageTemplateExample();
-				example2.createCriteria().andMessageIdEqualTo(info.getId()).andTypeEqualTo(type);
-				List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(example2);
-				if (CollectionUtils.isEmpty(list2)) {
-					return builder.body(ResponseUtils.getResponseBody(-1));
-				}
-				HfMessageTemplate template = list2.get(0);
-				Integer code = GetMessageCode.sendSms(phone, info, template);
-				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				Integer code = GetMessageCode.sendSms(list, map);
 				return builder.body(ResponseUtils.getResponseBody(code));
 			}
 			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
@@ -198,59 +243,75 @@ public class KingWordsController {
 			return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
 		}
 	}
-	
+
 	@RequestMapping(path = "/addTemplateMessage", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
 	public ResponseEntity<JSONObject> addTemplateMessage(Integer bossId, Integer type, String content,
-			String contentType) throws Exception {
+			String contentType, String messageType) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageInfoExample example = new HfMessageInfoExample();
 		if (type == 1) {
-			example.createCriteria().andBossIdEqualTo(bossId);
+			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
 			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
 			if (CollectionUtils.isEmpty(list)) {
 				HfMessageInfo info = new HfMessageInfo();
 				info.setBossId(bossId);
+				info.setType(messageType);
 				info.setSignName(content);
 				info.setStatus(1);
 				info.setCreateTime(LocalDateTime.now());
 				info.setModifyTime(LocalDateTime.now());
 				info.setIsDeleted((byte) 0);
 				hfMessageInfoMapper.insert(info);
-				addTemplateMessageMethod(bossId, type, content, contentType);
+				addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
 			} else {
 				return builder.body(ResponseUtils.getResponseBody("-1"));
 			}
 		} else {
-			example.createCriteria().andBossIdEqualTo(bossId);
+			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
 			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
 			if (CollectionUtils.isEmpty(list)) {
 				return builder.body(ResponseUtils.getResponseBody("-2"));
 			} else {
 				HfMessageInfo info = list.get(0);
+				HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+				templateExample.createCriteria().andMessageIdEqualTo(info.getId()).andTypeEqualTo(contentType);
+				List<HfMessageTemplate> templates = hfMessageTemplateMapper.selectByExample(templateExample);
+				if(!CollectionUtils.isEmpty(templates)) {
+					return builder.body(ResponseUtils.getResponseBody("-1"));
+				}
 				HfMessageTemplate template = new HfMessageTemplate();
 				template.setMessageId(info.getId());
 				template.setType(contentType);
-				template.setStatus(1);
-				String result = parseLine(contentType);
-				template.setTemplateParam(result);
+				String result = parseLine(content);
 				template.setCreateTime(LocalDateTime.now());
 				template.setModifyTime(LocalDateTime.now());
 				template.setIsDeleted((byte) 0);
 				hfMessageTemplateMapper.insert(template);
-				addTemplateMessageMethod(bossId, type, content, contentType);
+				HfMessageInstance instance = new HfMessageInstance();
+				instance.setTemplateTypeId(template.getId());
+				instance.setStatus(1);
+				instance.setTemplateParam(result);
+				instance.setContent(content);
+				instance.setIsDeleted((byte) 0);
+				hfMessageInstanceMapper.insert(instance);
+				template.setMessageInstanceId(instance.getId());
+				hfMessageTemplateMapper.updateByPrimaryKey(template);
+				addTemplateMessageMethod(instance.getId(),bossId, type, content, contentType, messageType);
 			}
 		}
 
 		return null;
 	}
 
-	public Integer addTemplateMessageMethod(Integer bossId, Integer type, String content, String contentType)
-			throws Exception {
+	public Integer addTemplateMessageMethod(Integer instanceId, Integer bossId, Integer type, String content, String contentType,
+			String messageType) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageApply apply = new HfMessageApply();
+		apply.setMessageInstanceId(instanceId);
 		apply.setBossId(bossId);
 		apply.setContent(content);
+		apply.setMessageType(messageType);
 		apply.setContentType(contentType);
 		apply.setType(type);
 		apply.setCreateTime(LocalDateTime.now());
@@ -259,7 +320,7 @@ public class KingWordsController {
 		Integer id = hfMessageApplyMapper.insert(apply);
 		return id;
 	}
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
 	@ApiImplicitParams({
@@ -484,7 +545,7 @@ public class KingWordsController {
 	@ApiOperation(value = "用户列表", notes = "用户列表")
 	public ResponseEntity<JSONObject> selectList(UserInfo userInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		if (!StringUtil.isEmpty(userInfo.getTime())) {
+		if (!StringUtils.isEmpty(userInfo.getTime())) {
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			LocalDateTime ldt = LocalDateTime.parse(userInfo.getTime(), df);
 			System.out.println(ldt);
@@ -680,12 +741,12 @@ public class KingWordsController {
 
 	public String parseLine(String str) {
 		// 正则表达式
-		String pattern = "(\\$)(.*?)(\\$)"; // Java正则表达式以括号分组，第一个括号表示以"（乙方）:"开头，第三个括号表示以" "(空格)结尾，中间括号为目标值，
+		String pattern = "(\\$\\{)(.*?)(\\})"; // Java正则表达式以括号分组，第一个括号表示以"（乙方）:"开头，第三个括号表示以" "(空格)结尾，中间括号为目标值，
 		// 创建 Pattern 对象
 		Pattern r = Pattern.compile(pattern);
 		// 创建 matcher 对象
 		Matcher m = r.matcher(str);
-		
+
 		StringBuilder builder = new StringBuilder();
 		while (m.find()) {
 			/*
@@ -697,5 +758,21 @@ public class KingWordsController {
 			builder.append(",");
 		}
 		return builder.toString();
+	}
+
+	@RequestMapping(path = "/csemail", method = RequestMethod.POST)
+	@ApiOperation(value = "邮箱", notes = "邮箱")
+	public ResponseEntity<JSONObject> csemail() throws Exception {
+
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setSubject("Test subject");
+		msg.setText("123123");
+		// 发送邮件的邮箱
+		msg.setFrom("2451203734@qq.com");
+		msg.setSentDate(new Date());
+		// 接受邮件的邮箱
+		msg.setTo("2451203734@qq.com");
+		javaMailSender.send(msg);
+		return null;
 	}
 }

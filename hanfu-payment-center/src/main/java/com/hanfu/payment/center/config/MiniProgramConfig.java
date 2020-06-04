@@ -24,7 +24,7 @@ public class MiniProgramConfig implements WXPayConfig {
     private String PATH_APP;
 @Autowired
 private PayBossMapper payBossMapper;
-    @Bean
+//    @Bean
     @Override
     public String getAppID() {
 //        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");

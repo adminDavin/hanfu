@@ -2181,5 +2181,6 @@ public class GoodsController {
 		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
+	
 
 }
