@@ -24,6 +24,7 @@ public class ProductActivityInfo {
 	private Date createTime;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date modifyTime;
+	private Integer bossId;
 	public Integer getId() {
 		return id;
 	}
@@ -107,5 +108,13 @@ public class ProductActivityInfo {
 	}
 	public void setActivityState(int activityState) {
 		this.activityState = activityState;
+	}
+
+	public Integer getBossId() {
+		return bossId;
+	}
+
+	public void setBossId(Integer bossId) {
+		this.bossId = bossId;
 	}
 }

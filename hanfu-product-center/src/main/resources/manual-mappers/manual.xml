@@ -125,9 +125,11 @@
 		resultMap="ProductActivityInfo">
 		select * from hf_activity where activity_type = #{activityType}
 		and 1=1
-		<if
-			test="activityName != null and activityName != ''">
+		<if test="activityName != null and activityName != ''">
 			and activity_name like concat("%",#{activityName},"%")
+		</if>
+		<if test="bossId != null and bossId != ''">
+			and boss_id=#{bossId}
 		</if>
 		<!-- <if
 			test="activityType == 'groupActivity' or activityType == 'seckillActivity'">
@@ -145,6 +147,9 @@
 		</if>
 		<if test="hfName != null and hfName != ''">
 			and hf_name like concat('%',#{hfName},'%') 
+		</if>
+		<if test="bossId != null and bossId != ''">
+			and boss_id = #{bossId}
 		</if>
 	</select>
 </mapper>

@@ -6,7 +6,7 @@
 <generatorConfiguration>
 
 	<classPathEntry
-		location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar" />
+		location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
 	<context id="MySQLTables" targetRuntime="MyBatis3">
 		<property name="xmlFormatter"
 			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
@@ -45,18 +45,18 @@
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		<!--<table schema="user_center" tableName="account_model" -->
-		<!--domainObjectName="AccountModel"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
-		<!--<table schema="user_center" tableName="hf_user" -->
-		<!--domainObjectName="HfUser"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
+		<!--<table schema="user_center" tableName="account_model"-->
+			   <!--domainObjectName="AccountModel">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+		<!--<table schema="user_center" tableName="hf_user"-->
+			   <!--domainObjectName="HfUser">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
 		<!--<table schema="user_center" tableName="hf_user" domainObjectName="HfUser"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
 		<!--<generatedKey column="id" sqlStatement="mysql" identity="true"/> -->
@@ -141,62 +141,41 @@
 		<!-- <table schema="user_center" tableName="hf_user_coupons" domainObjectName="HfUserCoupons"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<table schema="user_center" tableName="hf_message_template"
-			domainObjectName="HfMessageTemplate">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table>
-		<table schema="user_center" tableName="hf_message_instance"
-			domainObjectName="HfMessageInstance">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table>
-		<!-- <table schema="user_center" tableName="hf_message_info"
-			domainObjectName="HfMessageInfo">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table> -->
-		<!-- <table schema="user_center" tableName="hf_message_apply"
-			domainObjectName="HfMessageApply">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table> -->
 		<!--quanxian******************************************************* -->
-		<!-- <table schema="user_center" tableName="department" domainObjectName="Department"> 
-			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
-			sqlStatement="mysql" identity="true" /> </table> -->
+		<!--<table schema="user_center" tableName="department"-->
+			<!--domainObjectName="Department">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+				<!--identity="true" />-->
+		<!--</table>-->
 
-		<!--<table schema="user_center" tableName="department_personnel" -->
-		<!--domainObjectName="DepartmentPersonnel"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
+		<!--<table schema="user_center" tableName="department_personnel"-->
+			   <!--domainObjectName="DepartmentPersonnel">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
 
-		<!--<table schema="user_center" tableName="roles" -->
-		<!--domainObjectName="Roles"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
+		<!--<table schema="user_center" tableName="roles"-->
+			   <!--domainObjectName="Roles">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
 
-		<!--<table schema="user_center" tableName="role_jurisdiction" -->
-		<!--domainObjectName="RoleJurisdiction"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
+		<!--<table schema="user_center" tableName="role_jurisdiction"-->
+			   <!--domainObjectName="RoleJurisdiction">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
 
-		<!--<table schema="user_center" tableName="jurisdiction" -->
-		<!--domainObjectName="Jurisdiction"> -->
-		<!--<property name="useActualColumnNames" value="false" /> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true" /> -->
-		<!--</table> -->
-		<!--******************************************************************* -->
+		<table schema="user_center" tableName="pay_boss"
+			   domainObjectName="PayBoss">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table>
+		<!--*******************************************************************-->
 	</context>
 </generatorConfiguration>

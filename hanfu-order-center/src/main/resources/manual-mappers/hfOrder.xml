@@ -106,7 +106,13 @@
         <if test="stoneId!=null and stoneId != ''">
             and o.stone_id =#{stoneId}
         </if>
-        order by o.modify_time desc;
+        <if test="stonesId != null and stonesId.size() >0">
+        and o.stone_id in
+            <foreach collection="stonesId" item="Id" index="index" open="(" close=")" separator=",">
+                #{Id}
+            </foreach>
+        </if>
+        order by o.modify_time desc
     </select>
 
     <select id="selectHfOrderStatistics" resultMap="HfOrderStatisticsResultMap">

@@ -48,7 +48,7 @@ private PayBossMapper payBossMapper;
         payBossMapper.insertSelective(payBoss);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
         //构建文件上传所要保存的"文件夹路径"--这里是相对路径，保存到项目根路径的文件夹下
-        String realPath = new String("hanfu-payment-center/src/main/resources/" + UPLOAD_PATH_PREFIX);
+        String realPath = new String("src/main/resources/" + UPLOAD_PATH_PREFIX);
         logger.info("-----------上传文件保存的路径【"+ realPath +"】-----------");
         String format = sdf.format(new Date());
         //存放上传文件的文件夹

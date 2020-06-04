@@ -254,6 +254,9 @@
         <if test="ownInvitationCode != null and ownInvitationCode != ''">
             AND h.own_invitation_code LIKE concat('%',#{ownInvitationCode},'%')
         </if>
+        <if test="bossId != null and bossId != ''">
+            and h.boss_id = #{bossId}
+        </if>
     </select>
     
     <select id="selectStoneMemberByInfo" resultMap="stoneUser">

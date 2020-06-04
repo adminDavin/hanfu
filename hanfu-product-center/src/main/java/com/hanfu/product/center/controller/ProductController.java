@@ -11,6 +11,7 @@ import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
 
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin
 @RestController
@@ -114,14 +117,22 @@ public class ProductController {
 			@RequestParam(name = "parentCategoryId", required = false, defaultValue = "-1") Integer parentCategoryId,
 			@RequestParam(name = "categoryId", required = false) Integer categoryId,
 			@RequestParam(name = "levelId", required = false, defaultValue = "0") Integer levelId,
-			@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type)
+			@RequestParam(name = "type", required = false ,defaultValue = "0") Integer type,
+			HttpServletRequest request)
 					throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId=1;
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		HfCategoryExample example = new HfCategoryExample();
 		if(type == 1) {
 			if(parentCategoryId != null) {
 				List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
-				example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+				example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId).andBossIdEqualTo(bossId);
 				List<HfCategory> list = hfCategoryMapper.selectByExample(example);
 				for (int i = 0; i < list.size(); i++) {
 					List<Categories> categoriesList = new ArrayList<Categories>();
@@ -130,7 +141,7 @@ public class ProductController {
 					info.setTwoLevelName(twoCategory.getHfName());
 					info.setTwoLevelId(twoCategory.getId());
 					example.clear();
-					example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId());
+					example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId()).andBossIdEqualTo(bossId);
 					List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
 					for (int j = 0; j < list2.size(); j++) {
 						Categories categories = new Categories();
@@ -150,7 +161,7 @@ public class ProductController {
         	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(null)));
         }
         if(parentCategoryId != null) {
-        	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId);
+        	example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId).andBossIdEqualTo(bossId);
         	return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.selectByExample(example)));
         }
         if(levelId == 1) {
@@ -161,11 +172,19 @@ public class ProductController {
 	
 	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
 	@RequestMapping(value = "/getCategoryByInfo", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getCategoryByInfo(Integer level, String name) throws Exception {
+	public ResponseEntity<JSONObject> getCategoryByInfo(HttpServletRequest request,Integer level, String name) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId =1;
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		HfCategory h = new HfCategory();
 		h.setLevelId(level);
 		h.setHfName(name);
+		h.setBossId(bossId);
 		List<Categories> result  = new ArrayList<Categories>();
 		List<HfCategory> list = manualDao.findCategoryByInfo(h);
 		for (int i = 0; i < list.size(); i++) {
@@ -180,13 +199,20 @@ public class ProductController {
 
 	@ApiOperation(value = "获取所有类目", notes = "获取所有类目全部数据")
 	@RequestMapping(value = "/categoryAll", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> listCategory() throws Exception {
+	public ResponseEntity<JSONObject> listCategory(HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId =1;
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		List<CategoryInfo> result = new ArrayList<CategoryInfo>();
 		List<Categories> categoriesList = null;
 		List<Categories> categorieList = null;
 		HfCategoryExample example = new HfCategoryExample();
-		example.createCriteria().andLevelIdEqualTo(0);
+		example.createCriteria().andLevelIdEqualTo(0).andBossIdEqualTo(bossId);
 		List<HfCategory> list = hfCategoryMapper.selectByExample(example);
 		for (int i = 0; i < list.size(); i++) {
 			HfCategory hfCategory = list.get(i);
@@ -197,7 +223,7 @@ public class ProductController {
 			info.setDate(hfCategory.getCreateTime().plusHours(8));
 			info.setLevel(1);
 			example.clear();
-			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId());
+			example.createCriteria().andParentCategoryIdEqualTo(hfCategory.getId()).andBossIdEqualTo(bossId);
 			List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
 			categoriesList = new ArrayList<Categories>();
 			for (int j = 0; j < list2.size(); j++) {
@@ -209,7 +235,7 @@ public class ProductController {
 				categories.setHfName(hfCategory2.getHfName());
 				categories.setDate(hfCategory2.getCreateTime().plusHours(8));
 				example.clear();
-				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId());
+				example.createCriteria().andParentCategoryIdEqualTo(hfCategory2.getId()).andBossIdEqualTo(bossId);
 				categorieList = new ArrayList<Categories>();
 				List<HfCategory> list3 = hfCategoryMapper.selectByExample(example);
 				for (int k = 0; k < list3.size(); k++) {
@@ -233,8 +259,15 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addProduct(ProductRequest request, Integer cancelId) throws JSONException {
+	public ResponseEntity<JSONObject> addProduct(HttpServletRequest requests,ProductRequest request, Integer cancelId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+			} else if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")){
+				request.setStoneId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+			}
+		}
 		Product product = new Product();
 		product.setBossId(request.getBossId());
 		product.setBrandId(1);

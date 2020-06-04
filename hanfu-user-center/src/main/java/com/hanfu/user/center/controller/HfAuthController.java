@@ -135,6 +135,7 @@ public class HfAuthController {
 	@Autowired
     private AccountTypeModelMapper accountTypeModelMapper;
 
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -264,9 +265,14 @@ public class HfAuthController {
 		map.put("identity",type);
 		map.put("BSid",merId);
 		map.put("token",token);
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
+		List<Account> accounts= accountMapper.selectByExample(accountExample);
 		if (token != null && userId != null && type != null) {
-			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
-			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
+			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
+			redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);
+//			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
+//			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
@@ -497,7 +503,13 @@ public class HfAuthController {
 	@ApiOperation(value = "商家基本信息", notes = "商家基本信息")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> findBossInfo(Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> findBossInfo(HttpServletRequest request,Integer bossId) throws Exception {
+		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext")!=null){
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		double amount = 0;
 		HfBoss boss = hfBossMapper.selectByPrimaryKey(bossId);
@@ -530,8 +542,13 @@ public class HfAuthController {
 	@ApiOperation(value = "店铺管理员列表", notes = "店铺管理员列表根据商家id")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> select(Integer bossId, String phone, String code, String name) throws Exception {
+	public ResponseEntity<JSONObject> select(HttpServletRequest requests,Integer bossId, String phone, String code, String name) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		List<StoreUser> storeUsers = new ArrayList<>();
 		List<Integer> result = new ArrayList<Integer>();
 		HfStoneExample example = new HfStoneExample();
@@ -557,6 +574,9 @@ public class HfAuthController {
 		HashSet h = new HashSet(result);
 		result.clear();
 		result.addAll(h);
+		if (result.size()==0){
+			result.add(0);
+		}
 //		for (int i = 0; i < result.size(); i++) {
 //			StoreUser storeUser = new StoreUser();
 //			HfUser hfUser = hfUserMapper.selectByPrimaryKey(result.get(i));
@@ -1237,7 +1257,7 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey) throws JSONException {
 		Account account = new Account();
 		List<Account> accounts= new ArrayList<>();
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
@@ -1251,7 +1271,7 @@ public class HfAuthController {
 					account.setAccountRole("Super Admin");
 				}
 			}
-		} else 	if (request.getServletContext().getAttribute("getServletContextType").equals("sass")){
+		} else 	if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();
@@ -1270,6 +1290,12 @@ public class HfAuthController {
 		Integer userId;
 		if (list.isEmpty()) {
 			HfUser user = new HfUser();
+			if (type.equals("boss")){
+				user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}else if (type.equals("stone")){
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey((Integer) request.getServletContext().getAttribute("getServletContext"));
+				user.setBossId(hfStone.getBossId());
+			}
 			user.setSourceType(authType);
 			user.setPhone(authKey);
 			user.setUserStatus("0".getBytes()[0]);
@@ -1295,11 +1321,11 @@ public class HfAuthController {
 			userId = list.get(0).getUserId();
 		}
 		AccountExample accountExample = new AccountExample();
-		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(BSid);
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
 		if (0 == accountMapper.selectByExample(accountExample).size()){
 			account.setAccountCode(authKey);
 			account.setAccountType(type);
-			account.setMerchantId(BSid);
+			account.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
 			account.setCreateDate(LocalDateTime.now());
 			account.setLastModifier(String.valueOf(LastUser));
 			account.setModifyDate(LocalDateTime.now());

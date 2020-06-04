@@ -95,7 +95,7 @@ public class JurisdictionController {
             account = accountMapper.selectByExample(accountExample);
         }
         account.forEach(account1 -> {
-            if (redisTemplate.opsForValue().get(String.valueOf(account1.getUserId()) + account1.getAccountType() + "token")!=null){
+            if (redisTemplate.opsForValue().get(String.valueOf(account1.getId()) + "token")!=null){
                 System.out.println(account1.getAccountCode()+"在线，id:"+account1.getId());
                 account1.setIsDeleted(2);
             }
@@ -163,9 +163,11 @@ public class JurisdictionController {
     @RequestMapping(value = "/deleteAccount",method = RequestMethod.GET)
     public ResponseEntity<JSONObject> delete(Integer id,String type) throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        Account account= accountMapper.selectByPrimaryKey(id);
+//        Account account= accountMapper.selectByPrimaryKey(id);
         		if (null != id&& null != type){
-			redisTemplate.delete(String.valueOf(account.getUserId()) + type + "token");
+			redisTemplate.delete(String.valueOf(id) + "token");
+			System.out.println(redisTemplate.opsForValue().get(String.valueOf(id) + "token"));
+//			redisTemplate.delete(String.valueOf(account.getUserId()) + type + String.valueOf(BSid)+ "token");
 		}
         return builder.body(ResponseUtils.getResponseBody(0));
     }

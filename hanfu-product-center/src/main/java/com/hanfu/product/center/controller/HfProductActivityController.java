@@ -35,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,9 +102,15 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addProdcutActivity(ProductActivityRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests, ProductActivityRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity hfActivity = new HfActivity();
+        if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            if (requests.getServletContext().getAttribute("getServletContext")!=null){
+                hfActivity.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+            }
+        }
+
         hfActivity.setActivityName(request.getActivityName());
         hfActivity.setActivityType(request.getActivityType());
         
@@ -135,9 +142,15 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "查询活动", notes = "查询活动")
     @RequestMapping(value = "/findProdcutActivity", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> addProdcutActivity(String activityType, String name) throws JSONException {
+    public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests,String activityType, String name) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductActivityInfo productInfo = new ProductActivityInfo();
+        if (requests.getServletContext().getAttribute("getServletContextType")!=null&&requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            if (requests.getServletContext().getAttribute("getServletContext")!=null){
+                productInfo.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+            }
+        }
+
         productInfo.setActivityType(activityType);
         productInfo.setActivityName(name);
         List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);

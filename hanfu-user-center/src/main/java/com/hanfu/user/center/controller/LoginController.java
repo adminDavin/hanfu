@@ -63,7 +63,7 @@ public class LoginController extends HfUserController {
         Object bossId= request.getHeader("bossId");
         System.out.println(bossId+"我是boss");
         Map<String, Object> map = new HashMap<String, Object>();
-        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
+        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, Integer.valueOf((String) bossId));
         String openid = (String) SessionKeyOpenId.get("openid");
         String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key"));
 
@@ -87,7 +87,7 @@ public class LoginController extends HfUserController {
         redisTemplate.opsForValue().set(openid.toString(), skey);
 
         Encrypt encrypt = new Encrypt();
-        String token = encrypt.getToken(true, hfUser.getId(), "user",(Integer)bossId);
+        String token = encrypt.getToken(true, hfUser.getId(), "user",Integer.valueOf((String)bossId));
         System.out.println(token);
         response.addHeader("token", token);
 

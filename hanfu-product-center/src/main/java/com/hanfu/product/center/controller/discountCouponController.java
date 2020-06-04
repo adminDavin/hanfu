@@ -62,8 +62,15 @@ public class discountCouponController {
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
-    public ResponseEntity<JSONObject> getGoodsSpecs(Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
+    public ResponseEntity<JSONObject> getGoodsSpecs(HttpServletRequest request,Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
             throws Exception {
+        if (request.getServletContext().getAttribute("getServletContextType")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+                discountCoupon.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+            } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+                discountCoupon.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
+            }
+        }
         DiscountCouponScope.ScopeTypeEnum scopeTypeEnum = DiscountCouponScope.ScopeTypeEnum.getOrderTypeEnum(discountCoupon.getScope());
         System.out.println(scopeTypeEnum);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -338,15 +345,21 @@ if (discountCoupon.getStoneId()==null){
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "scope", value = "优惠券范围", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
-    public ResponseEntity<JSONObject> couponHall(Integer scope, Integer userId)
+    public ResponseEntity<JSONObject> couponHall(HttpServletRequest request,Integer scope, Integer userId)
             throws Exception {
+        Integer bossId = 1;
+        if (request.getServletContext().getAttribute("getServletContextType")!=null){
+            if (request.getServletContext().getAttribute("getServletContextType").equals("user")){
+                bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+            }
+        }
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfUserCouponsExample example = new HfUserCouponsExample();
         List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
         DiscountCouponExample coupons = new DiscountCouponExample();
         if (scope == 0) {
             coupons.createCriteria().andScopeEqualTo("allUser").andIdDeletedEqualTo((byte) 0)
-                    .andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
+                    .andStopTimeGreaterThanOrEqualTo(LocalDateTime.now()).andBossIdEqualTo(bossId);
             list = discountCouponMapper.selectByExample(coupons);
             for (int i = 0; i < list.size(); i++) {
                 List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
