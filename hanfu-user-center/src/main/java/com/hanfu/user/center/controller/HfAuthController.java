@@ -66,6 +66,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 @RestController
 @Api
@@ -138,6 +140,9 @@ public class HfAuthController {
 	private RoleModelMapper roleModelMapper;
 	@Autowired
 	private AccountRolesMapper accountRolesMapper;
+
+	@Autowired
+	JedisPool jedisPool;
 
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)

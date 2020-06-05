@@ -98,7 +98,7 @@ public class GetMessageCode {
         		}
         	}
 		}
-        return 1;
+        return code;
     }
     
     public static Integer shortBreath(String telephone,HfMessageInfo info, HfMessageTemplate template, Map<String, String> map,
