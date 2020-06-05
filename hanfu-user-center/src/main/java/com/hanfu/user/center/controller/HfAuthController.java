@@ -289,7 +289,10 @@ public class HfAuthController {
 			HfModuleExample hfModuleExample = new HfModuleExample();
 			hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andIdIn(Lists.newArrayList(modelsId));
 			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
-			map.put("model",hfModules);
+
+            Map<String, String> modelCode = hfModules.stream()
+                    .collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
+			map.put("model",modelCode);
 		}
 		if (token != null && userId != null && type != null) {
 			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
