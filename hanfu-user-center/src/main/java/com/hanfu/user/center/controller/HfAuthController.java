@@ -272,7 +272,7 @@ public class HfAuthController {
 			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
 			redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);
 //			redisTemplate.opsForValue().set(String.valueOf(userId) + type +String.valueOf(merId)+ "token", token);
-//			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);
+//			redisTemplate.expire(String.valueOf(userId) + type +String.valueOf(merId)+ "token", 6000, TimeUnit.SECONDS);1
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
