@@ -80,6 +80,8 @@ myspcloud:
     url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
   item3:
     url3: https://www.tjsichuang.cn:1443/api/product/hfProductActivity/distributionActivityCalculate
+  item4:
+    url4: http://localhost:8082/user/code
 logging:
   file: ./logs/payment-center.log
 

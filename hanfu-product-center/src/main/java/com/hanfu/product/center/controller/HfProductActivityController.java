@@ -113,6 +113,7 @@ public class HfProductActivityController {
 
         hfActivity.setActivityName(request.getActivityName());
         hfActivity.setActivityType(request.getActivityType());
+        
         if (request.getStartTime() != null) {
 //            Instant instant = request.getStartTime().toInstant();
 //            ZoneId zoneId = ZoneId.systemDefault();

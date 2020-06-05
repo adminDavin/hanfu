@@ -96,6 +96,8 @@ public class PaymentOrderController {
 	private String itemUrl3;
 	@Value("${myspcloud.item2.url2}")
 	private String itemUrl2;
+	@Value("${myspcloud.item4.url4}")
+	private String itemUrl4;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
 	@Autowired
@@ -443,6 +445,13 @@ public class PaymentOrderController {
 							LocalDateTime.now());
 				}else {
 					hfOrderDao.updateHfOrderStatus(hfOrder1.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
+					MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+					map.add("username", "孙旺达");
+					map.add("orderId", hfOrder1.getOrderCode().substring(0, 7));
+					map.add("total", String.valueOf(hfOrder1.getAmount()));
+					map.add("userId", String.valueOf(hfOrder1.getUserId()));
+					map.add("type", "orderCreate");
+					restTemplate.postForObject(itemUrl4,map,JSONObject.class);
 					HfOrderDetail hfOrderDetail = new HfOrderDetail();
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
 					System.out.println(OrderStatus.PROCESS.getOrderStatus());

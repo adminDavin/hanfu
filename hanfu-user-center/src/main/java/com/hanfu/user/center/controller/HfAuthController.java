@@ -356,8 +356,9 @@ public class HfAuthController {
 		user.setOwnInvitationCode(code);
 		user.setNickName(name);
 		user.setRealName(name);
-			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			System.out.println((Integer) request.getServletContext().getAttribute("getServletContext")+"bossId-------------");
+//		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+//			user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+//		}
 //		HfUserExample example = new HfUserExample();
 //		example.createCriteria().andPhoneLike(phone).andOwnInvitationCodeLike(code).andNickNameLike(name);
 		list = userDao.selectUserOrderByInfo(user);

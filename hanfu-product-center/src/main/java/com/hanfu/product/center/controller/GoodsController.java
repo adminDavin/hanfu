@@ -2181,5 +2181,28 @@ public class GoodsController {
 		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
-
+	
+	public static void main(String[] args) {
+		Integer index = 0;
+		String s = "298213123133.21123";
+		String[] ss = s.split("\\.");
+		String s1 = ss[0];
+		String s2 = "";
+		if(ss.length == 2) {
+			s2 = ss[1];
+		}
+		StringBuilder srr = new StringBuilder();
+		for (int i = 0; i < s1.length(); i++) {
+			srr.append(s1.charAt(i));
+			index++;
+			if(index%3 == 0) {
+				srr.append(",");
+			}
+		}
+//		srr.deleteCharAt(srr.length()-1);
+		srr.replace(srr.length()-1, srr.length(), ".");
+		srr.append(s2);
+		System.out.println(index);
+		System.out.println(srr);
+	}
 }
