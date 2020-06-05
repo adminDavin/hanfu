@@ -6,7 +6,7 @@
 <generatorConfiguration>
 
 	<classPathEntry
-		location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
+		location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar" />
 	<context id="MySQLTables" targetRuntime="MyBatis3">
 		<property name="xmlFormatter"
 			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
@@ -83,12 +83,12 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<!--<table schema="user_center" tableName="jurisdiction" -->
-		<!--domainObjectName="Jurisdiction"> -->
-		<!--<property name="useActualColumnNames" value="false"/> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true"/> -->
-		<!--</table> -->
+		<!-- <table schema="user_center" tableName="jurisdiction"
+		domainObjectName="Jurisdiction">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
+		</table>-->
 		<!--<table schema="user_center" tableName="role" -->
 		<!--domainObjectName="Role"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
@@ -101,12 +101,12 @@
 		<!--<generatedKey column="id" sqlStatement="mysql" -->
 		<!--identity="true"/> -->
 		<!--</table> -->
-		<!--<table schema="user_center" tableName="user_role" -->
-		<!--domainObjectName="UserRole"> -->
-		<!--<property name="useActualColumnNames" value="false"/> -->
-		<!--<generatedKey column="id" sqlStatement="mysql" -->
-		<!--identity="true"/> -->
-		<!--</table> -->
+		<!-- <table schema="user_center" tableName="user_role"
+		domainObjectName="UserRole">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/>
+		</table> -->
 		<!--<table schema="user_center" tableName="authorization" -->
 		<!--domainObjectName="Authorization"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
@@ -163,19 +163,26 @@
 						  <!--identity="true" />-->
 		<!--</table>-->
 
-		<!--<table schema="user_center" tableName="role_jurisdiction"-->
-			   <!--domainObjectName="RoleJurisdiction">-->
-			<!--<property name="useActualColumnNames" value="false" />-->
-			<!--<generatedKey column="id" sqlStatement="mysql"-->
-						  <!--identity="true" />-->
-		<!--</table>-->
-
-		<table schema="user_center" tableName="pay_boss"
-			   domainObjectName="PayBoss">
+		<!-- <table schema="user_center" tableName="role_jurisdiction"
+			   domainObjectName="RoleJurisdiction">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table> -->
+		
+		<table schema="user_center" tableName="role_model"
+			   domainObjectName="RoleModel">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />
 		</table>
+
+		<!-- <table schema="user_center" tableName="pay_boss"
+			   domainObjectName="PayBoss">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table> -->
 		<!--*******************************************************************-->
 	</context>
 </generatorConfiguration>
