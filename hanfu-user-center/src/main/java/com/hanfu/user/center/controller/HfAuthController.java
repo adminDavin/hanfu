@@ -155,8 +155,8 @@ public class HfAuthController {
 			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
 			@RequestParam(name = "passwd", required = false) Integer passwd, String type) throws Exception {
 		Integer userId = null;
-		
-		
+
+
 		Jedis jedis = jedisPool.getResource();
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (passwd == null) {
@@ -201,10 +201,10 @@ public class HfAuthController {
 		Cookie cookie = new Cookie("autologin", authKey);
 		response.addCookie(cookie);
 		redisTemplate.opsForValue().set("autologin", authKey);
-		Encrypt encrypt = new Encrypt();
-		String token = encrypt.getToken(true, user.getId(), type,1);
-		System.out.println(token);
-		response.addHeader("token", token);
+//		Encrypt encrypt = new Encrypt();
+//		String token = encrypt.getToken(true, user.getId(), type,1);
+//		System.out.println(token);
+//		response.addHeader("token", token);
 		Map map = new HashMap();
 		if (type != null) {
 			map.put("id", user.getId());
@@ -253,13 +253,13 @@ public class HfAuthController {
 			Map<String, String> modelCode = hfModules.stream()
 					.collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
 			map.put("modelCode", modelCode);
-			map.put("token", token);
+//			map.put("token", token);
 			map.put("identity",type);
 			map.put("BSid",accounts.get(0).getMerchantId());
-			if (token != null && userId != null && type != null) {
-				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
-				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
-			}
+//			if (token != null && userId != null && type != null) {
+//				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
+//				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
+//			}
 			return builder.body(ResponseUtils.getResponseBody(map));
 		}
 
@@ -759,7 +759,7 @@ public class HfAuthController {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevelExample example = new HfMemberLevelExample();
-		
+
 //		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
 //			example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
 //		}
