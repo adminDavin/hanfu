@@ -165,7 +165,9 @@ public class HfAuthController {
 		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
-
+		if(jedis != null) {
+			jedis.close();
+		}
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		List<HfAuth> list = hfAuthMapper.selectByExample(example);
