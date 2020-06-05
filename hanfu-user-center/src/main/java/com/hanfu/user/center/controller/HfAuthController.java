@@ -134,6 +134,10 @@ public class HfAuthController {
 
 	@Autowired
     private AccountTypeModelMapper accountTypeModelMapper;
+	@Autowired
+	private RoleModelMapper roleModelMapper;
+	@Autowired
+	private AccountRolesMapper accountRolesMapper;
 
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -268,6 +272,20 @@ public class HfAuthController {
 		AccountExample accountExample = new AccountExample();
 		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
 		List<Account> accounts= accountMapper.selectByExample(accountExample);
+		AccountRolesExample accountRolesExample = new AccountRolesExample();
+		accountRolesExample.createCriteria().andIsDeletedEqualTo((short) 0).andAccountIdEqualTo(accounts.get(0).getId());
+		List<AccountRoles> accountRoles= accountRolesMapper.selectByExample(accountRolesExample);
+		if (accountRoles.size()!=0){
+			Set<Integer> roleId = accountRoles.stream().map(a->a.getRolesId()).collect(Collectors.toSet());
+			RoleModelExample roleModelExample = new RoleModelExample();
+			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleId));
+			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
+			Set<Integer> modelsId = roleModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
+			HfModuleExample hfModuleExample = new HfModuleExample();
+			hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andIdIn(Lists.newArrayList(modelsId));
+			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
+			map.put("model",hfModules);
+		}
 		if (token != null && userId != null && type != null) {
 			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
 			redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);

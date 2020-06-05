@@ -6,7 +6,7 @@
 <generatorConfiguration>
 
 	<classPathEntry
-		location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar" />
+		location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
 	<context id="MySQLTables" targetRuntime="MyBatis3">
 		<property name="xmlFormatter"
 			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
@@ -170,19 +170,19 @@
 						  identity="true" />
 		</table> -->
 		
-		<table schema="user_center" tableName="role_model"
-			   domainObjectName="RoleModel">
+		<table schema="user_center" tableName="account_roles"
+			   domainObjectName="AccountRoles">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />
 		</table>
 
-		<!-- <table schema="user_center" tableName="pay_boss"
-			   domainObjectName="PayBoss">
+		 <table schema="user_center" tableName="account_type_model"
+			   domainObjectName="AccountTypeModel">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />
-		</table> -->
+		</table>
 		<!--*******************************************************************-->
 	</context>
 </generatorConfiguration>
