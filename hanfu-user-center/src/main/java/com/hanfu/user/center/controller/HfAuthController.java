@@ -66,6 +66,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 @RestController
 @Api
@@ -134,6 +136,9 @@ public class HfAuthController {
 
 	@Autowired
     private AccountTypeModelMapper accountTypeModelMapper;
+	
+	@Autowired
+	JedisPool jedisPool;
 
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -146,12 +151,14 @@ public class HfAuthController {
 			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
 			@RequestParam(name = "passwd", required = false) Integer passwd, String type) throws Exception {
 		Integer userId = null;
-
+		
+		Jedis jedis = jedisPool.getResource();
+		
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (passwd == null) {
 			return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
 		}
-		if (!String.valueOf(passwd).equals(redisTemplate.opsForValue().get(authKey))) {
+		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
 
