@@ -202,6 +202,16 @@ public class JurisdictionController {
 
 		return builder.body(ResponseUtils.getResponseBody(roles));
 	}
+	
+	@ApiOperation(value = "查询当前商户角色", notes = "查询当前商户角色")
+	@RequestMapping(value = "/selectMachRole", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectMachRole(Integer mathId) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		RolesExample example = new RolesExample();
+		example.createCriteria().andMachIdEqualTo(mathId);
+		List<Roles> list = rolesMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
 
 	@ApiOperation(value = "权限查询", notes = "权限查询")
 	@RequestMapping(value = "/selectJurisdiction", method = RequestMethod.GET)
