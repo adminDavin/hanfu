@@ -68,7 +68,7 @@ public class Permission implements PermissionService {
                     jurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(Jid)).andIsDeletedEqualTo((short) 0);
                     List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
                     Set<String> jurisdiction = jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
-                    contains1 = jurisdiction.contains(requiredPermission);
+                    contains1 = jurisdiction.contains(requiredPermission.value());
                 }
 
 //                String permissionSet = "admin_product_list";

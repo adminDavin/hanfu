@@ -70,7 +70,7 @@ public class Permission implements PermissionService {
                     List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
                     Set<String> jurisdiction = jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
                     System.out.println(jurisdiction);
-                    contains1 = jurisdiction.contains(requiredPermission);
+                    contains1 = jurisdiction.contains(requiredPermission.value());
                     System.out.println("wanc"+contains1);
                 }
                 System.out.println(contains1);
