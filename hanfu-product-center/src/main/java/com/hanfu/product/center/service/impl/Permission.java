@@ -58,7 +58,7 @@ public class Permission implements PermissionService {
                 List<AccountRoles> accountRoles = accountRolesMapper.selectByExample(accountRolesExample);
                 Set<Integer> rolesId = accountRoles.stream().map(a -> a.getRolesId()).collect(Collectors.toSet());
                 RoleJurisdictionExample roleJurisdictionExample = new RoleJurisdictionExample();
-                roleJurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(rolesId)).andIsDeletedEqualTo((short) 0);
+                roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(rolesId));
                 List<RoleJurisdiction> roles =  roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
                 Set<Integer> Jid = roles.stream().map(j->j.getJurisdictionId()).collect(Collectors.toSet());
                 JurisdictionExample jurisdictionExample = new JurisdictionExample();
