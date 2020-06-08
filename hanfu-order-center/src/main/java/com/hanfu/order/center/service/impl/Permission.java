@@ -1,11 +1,11 @@
-package com.hanfu.product.center.service.impl;
+package com.hanfu.order.center.service.impl;
 
 
-import com.hanfu.product.center.dao.AccountRolesMapper;
-import com.hanfu.product.center.dao.JurisdictionMapper;
-import com.hanfu.product.center.dao.RoleJurisdictionMapper;
-import com.hanfu.product.center.model.*;
-import com.hanfu.product.center.service.PermissionService;
+import com.hanfu.order.center.dao.AccountRolesMapper;
+import com.hanfu.order.center.dao.JurisdictionMapper;
+import com.hanfu.order.center.dao.RoleJurisdictionMapper;
+import com.hanfu.order.center.model.*;
+import com.hanfu.order.center.service.PermissionService;
 import com.hanfu.user.center.service.RequiredPermission;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
@@ -70,7 +70,7 @@ public class Permission implements PermissionService {
                     Set<String> jurisdiction = jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
                     contains1 = jurisdiction.contains(requiredPermission);
                 }
-                System.out.println(contains1);
+
 //                String permissionSet = "admin_product_list";
                 System.out.println(requiredPermission.value());
                 if (contains1 != true){

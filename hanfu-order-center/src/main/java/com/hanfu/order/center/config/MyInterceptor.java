@@ -7,6 +7,7 @@ import com.hanfu.order.center.dao.PayBossMapper;
 
 import com.hanfu.order.center.model.Account;
 import com.hanfu.order.center.model.AccountExample;
+import com.hanfu.order.center.service.PermissionService;
 import com.hanfu.order.center.tool.Decrypt;
 import com.hanfu.user.center.service.impl.Permission;
 import org.slf4j.Logger;
@@ -26,7 +27,9 @@ import java.util.Objects;
 
 public class MyInterceptor implements HandlerInterceptor {
 
-    Permission permissionService = new Permission();
+//    Permission permissionService = new Permission();
+@Autowired
+private PermissionService permissionService;
     @Autowired
     private PayBossMapper payBossMapper;
     @Resource
@@ -117,10 +120,11 @@ if (token!=null){
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String methodName = method.getName();
-        logger.info("====拦截到了方法：{}，在该方法执行之前执行====", methodName);
+//        logger.info("====拦截到了方法：{}，在该方法执行之前执行====", methodName);
         System.out.println(handler);
         System.out.println(request);
         // 返回 true 才会继续执行，返回 false 则取消当前请求
+        response.setStatus(403);
         return false;
     }
 
