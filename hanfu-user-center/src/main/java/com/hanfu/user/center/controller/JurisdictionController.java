@@ -241,7 +241,7 @@ public class JurisdictionController {
 	}
 
 	@ApiOperation(value = "角色添加权限", notes = "角色添加权限")
-	@RequestMapping(value = "/roleAddJurisdiction", method = RequestMethod.GET)
+	@RequestMapping(value = "/roleAddJurisdiction", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> roleAddJurisdiction(Integer roleId, Integer[] JurisdictionIds)
 			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -257,11 +257,33 @@ public class JurisdictionController {
 				roleJurisdiction.setRoleId(roleId);
 				roleJurisdiction.setJurisdictionId(jurId);
 				roleJurisdictionMapper.insertSelective(roleJurisdiction);
+			}else {
+				RoleJurisdiction roleJurisdiction = list.get(0);
+				roleJurisdiction.setIsDeleted((short) 0);
+				roleJurisdictionMapper.updateByPrimaryKey(roleJurisdiction);
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-
+	
+	@ApiOperation(value = "角色删除权限", notes = "角色删除权限")
+	@RequestMapping(value = "/roleDeleteJurisdiction", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> roleDeleteJurisdiction(Integer roleId, Integer[] JurisdictionIds)
+			throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		for (Integer jurId : JurisdictionIds) {
+			RoleJurisdictionExample example = new RoleJurisdictionExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andJurisdictionIdEqualTo(jurId);
+			List<RoleJurisdiction> list = roleJurisdictionMapper.selectByExample(example);
+			if (!CollectionUtils.isEmpty(list)) {
+				RoleJurisdiction jurisdiction = list.get(0);
+				jurisdiction.setIsDeleted((short) 1);
+				roleJurisdictionMapper.updateByPrimaryKey(jurisdiction);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+	
 	@ApiOperation(value = "角色添加模块", notes = "角色添加模块")
 	@RequestMapping(value = "/roleAddModel", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> roleAddModel(Integer roleId, Integer[] modelId) throws JSONException {
@@ -278,6 +300,27 @@ public class JurisdictionController {
 				model.setModifyTime(LocalDateTime.now());
 				model.setIsDeleted((byte) 0);
 				roleModelMapper.insert(model);
+			}else {
+				RoleModel model = list.get(0);
+				model.setIsDeleted((byte) 0);
+				roleModelMapper.updateByPrimaryKey(model);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+	
+	@ApiOperation(value = "角色删除模块", notes = "角色删除模块")
+	@RequestMapping(value = "/roleDeleteModel", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> roleDeleteModel(Integer roleId, Integer[] modelId) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		for (Integer item : modelId) {
+			RoleModelExample example = new RoleModelExample();
+			example.createCriteria().andRoleIdEqualTo(roleId).andModelIdEqualTo(item);
+			List<RoleModel> list = roleModelMapper.selectByExample(example);
+			if (CollectionUtils.isEmpty(list)) {
+				RoleModel model = list.get(0);
+				model.setIsDeleted((byte) 1);
+				roleModelMapper.updateByPrimaryKey(model);
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
