@@ -285,12 +285,11 @@ public class JurisdictionController {
 	
 	@ApiOperation(value = "查询当前账号拥有的模块", notes = "查询当前用户拥有的模块")
 	@RequestMapping(value = "/findAdminHasModel", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findAdminHasModel(Integer id) throws JSONException {
+	public ResponseEntity<JSONObject> findAdminHasModel(Integer id,Integer rId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
 		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
-		System.out.println("11111awdwadawdawdawdawdaw");
 		List<Integer> roleId = roles.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 		RoleModelExample example2 = new RoleModelExample();
 		example2.createCriteria().andRoleIdIn(roleId).andIsDeletedEqualTo((byte) 0);
@@ -298,13 +297,26 @@ public class JurisdictionController {
 		List<Integer> modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 		HfModuleExample example3 = new HfModuleExample();
 		example3.createCriteria().andIdIn(modelId);
-		List<HfModule> result = hfModuleMapper.selectByExample(example3);
-		return builder.body(ResponseUtils.getResponseBody(result));
+		if(rId == null) {
+			List<HfModule> result = hfModuleMapper.selectByExample(example3);
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}else {
+			example2.clear();
+			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((byte) 0);
+			models = roleModelMapper.selectByExample(example2);
+			modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
+			example3.clear();
+			example3.createCriteria().andIdIn(modelId);
+			List<HfModule> result = hfModuleMapper.selectByExample(example3);
+			return builder.body(ResponseUtils.getResponseBody(result));
+			
+		}
+		
 	}
 	
 	@ApiOperation(value = "查询当前账号在某模块拥有的权限", notes = "查询当前账号在某模块拥有的权限")
 	@RequestMapping(value = "/findAdminHasJusInModel", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findAdminHasJusInModel(Integer id,Integer modelId) throws JSONException {
+	public ResponseEntity<JSONObject> findAdminHasJusInModel(Integer id,Integer modelId,Integer rId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
@@ -316,8 +328,20 @@ public class JurisdictionController {
 		List<Integer> jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
 		JurisdictionExample example3 = new JurisdictionExample();
 		example3.createCriteria().andIdIn(jurisdictionId).andModelIdEqualTo(modelId);
-		List<Jurisdiction> result = jurisdictionMapper.selectByExample(example3);
-		return builder.body(ResponseUtils.getResponseBody(result));
+		if(rId == null) {
+			List<Jurisdiction> result = jurisdictionMapper.selectByExample(example3);
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}else {
+			example2.clear();
+			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((short) 0);
+			jurisdictions = roleJurisdictionMapper.selectByExample(example2);
+			jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+			example3.clear();
+			example3.createCriteria().andIdIn(jurisdictionId).andModelIdEqualTo(modelId);
+			List<Jurisdiction> result = jurisdictionMapper.selectByExample(example3);
+			return builder.body(ResponseUtils.getResponseBody(result));
+		}
+		
 	}
 
 	@ApiOperation(value = "给用户绑定角色", notes = "给用户绑定角色")
