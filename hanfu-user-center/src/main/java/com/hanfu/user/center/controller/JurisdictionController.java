@@ -310,7 +310,7 @@ public class JurisdictionController {
 	}
 	
 	@ApiOperation(value = "角色删除模块", notes = "角色删除模块")
-	@RequestMapping(value = "/roleDeleteModel", method = RequestMethod.GET)
+	@RequestMapping(value = "/roleDeleteModel", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> roleDeleteModel(Integer roleId, Integer[] modelId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		for (Integer item : modelId) {
