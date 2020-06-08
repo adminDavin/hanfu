@@ -85,7 +85,7 @@ public class MyInterceptor implements HandlerInterceptor {
             }
             return true;
         }
-        response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+//        response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String methodName = method.getName();
@@ -93,6 +93,7 @@ public class MyInterceptor implements HandlerInterceptor {
         System.out.println(handler);
         System.out.println(request);
         // 返回 true 才会继续执行，返回 false 则取消当前请求
+        response.setStatus(403);
         return false;
     }
 
