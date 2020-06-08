@@ -45,12 +45,12 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-<table schema="user_center" tableName="pay_boss"
-               domainObjectName="PayBoss">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
+<!--<table schema="user_center" tableName="pay_boss"-->
+               <!--domainObjectName="PayBoss">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
         <!--
 <table schema="user_center" tableName="hf_transaction_flow"
        domainObjectName="HfTansactionFlow">
@@ -114,11 +114,31 @@
             <!--<generatedKey column="id" sqlStatement="mysql"-->
                           <!--identity="true"/>-->
         <!--</table>-->
-        <table schema="user_center" tableName="account"
-               domainObjectName="Account">
-            <property name="useActualColumnNames" value="false" />
+        <!--<table schema="user_center" tableName="account"-->
+               <!--domainObjectName="Account">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true" />-->
+        <!--</table>-->
+        <table schema="user_center" tableName="jurisdiction"
+               domainObjectName="Jurisdiction">
+            <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
-                          identity="true" />
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="account_roles"
+               domainObjectName="AccountRoles">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+
+        <table schema="user_center" tableName="role_jurisdiction"
+               domainObjectName="RoleJurisdiction">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
         </table>
     </context>
 </generatorConfiguration>
