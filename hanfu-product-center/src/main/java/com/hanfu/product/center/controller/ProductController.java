@@ -11,6 +11,8 @@ import com.hanfu.product.center.manual.model.*;
 import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.model.HfCategory;
 
+import com.hanfu.user.center.config.PermissionConstants;
+import com.hanfu.user.center.service.RequiredPermission;
 import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,8 +257,8 @@ public class ProductController {
 			result.add(info);
 		}
         return builder.body(ResponseUtils.getResponseBody(result));
-    }	
-
+    }
+	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_INSERT)
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addProduct(HttpServletRequest requests,ProductRequest request, Integer cancelId) throws JSONException {

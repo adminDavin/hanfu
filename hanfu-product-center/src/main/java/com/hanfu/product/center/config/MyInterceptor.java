@@ -145,8 +145,8 @@ if (token!=null){
         Method method = handlerMethod.getMethod();
         String methodName = method.getName();
         logger.info("====拦截到了方法：{}，在该方法执行之前执行====", methodName);
-        System.out.println(handler);
-        System.out.println(request);
+//        System.out.println(handler);
+//        System.out.println(request);
         // 返回 true 才会继续执行，返回 false 则取消当前请求
         return false;
     }
