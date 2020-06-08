@@ -295,6 +295,8 @@ public class HfAuthController {
             Map<String, String> modelCode = hfModules.stream()
                     .collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
 			map.put("model",modelCode);
+		} else {
+			map.put("model",null);
 		}
 		if (token != null && userId != null && type != null) {
 			redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
