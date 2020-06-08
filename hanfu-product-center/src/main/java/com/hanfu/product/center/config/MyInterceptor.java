@@ -12,6 +12,8 @@ import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.product.center.service.PermissionService;
 import com.hanfu.user.center.service.impl.Permission;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,7 +142,8 @@ if (token!=null){
 //            reflectSetHeader(request, "header", "header");
             return true;
         }
-        response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+//        response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+//        response.sendError(403, "无权限");
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
         String methodName = method.getName();
@@ -148,6 +151,8 @@ if (token!=null){
 //        System.out.println(handler);
 //        System.out.println(request);
         // 返回 true 才会继续执行，返回 false 则取消当前请求
+//        response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+        response.setStatus(403);
         return false;
     }
 

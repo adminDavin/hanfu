@@ -1,11 +1,11 @@
-package com.hanfu.product.center.service.impl;
+package com.hanfu.payment.center.service.impl;
 
 
-import com.hanfu.product.center.dao.AccountRolesMapper;
-import com.hanfu.product.center.dao.JurisdictionMapper;
-import com.hanfu.product.center.dao.RoleJurisdictionMapper;
-import com.hanfu.product.center.model.*;
-import com.hanfu.product.center.service.PermissionService;
+import com.hanfu.payment.center.dao.AccountRolesMapper;
+import com.hanfu.payment.center.dao.JurisdictionMapper;
+import com.hanfu.payment.center.dao.RoleJurisdictionMapper;
+import com.hanfu.payment.center.model.*;
+import com.hanfu.payment.center.service.PermissionService;
 import com.hanfu.user.center.service.RequiredPermission;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
@@ -64,16 +64,13 @@ public class Permission implements PermissionService {
                     roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(rolesId));
                     List<RoleJurisdiction> roles =  roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
                     Set<Integer> Jid = roles.stream().map(j->j.getJurisdictionId()).collect(Collectors.toSet());
-                    System.out.println(Jid);
                     JurisdictionExample jurisdictionExample = new JurisdictionExample();
                     jurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(Jid)).andIsDeletedEqualTo((short) 0);
                     List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
                     Set<String> jurisdiction = jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
-                    System.out.println(jurisdiction);
                     contains1 = jurisdiction.contains(requiredPermission.value());
-                    System.out.println("wanc"+contains1);
                 }
-                System.out.println(contains1);
+
 //                String permissionSet = "admin_product_list";
                 System.out.println(requiredPermission.value());
                 if (contains1 != true){
