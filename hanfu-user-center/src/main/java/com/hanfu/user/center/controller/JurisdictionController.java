@@ -7,6 +7,7 @@ import com.hanfu.user.center.dao.AccountMapper;
 import com.hanfu.user.center.dao.AccountModelMapper;
 import com.hanfu.user.center.dao.AccountRolesMapper;
 import com.hanfu.user.center.dao.AccountTypeModelMapper;
+import com.hanfu.user.center.dao.HfModuleMapper;
 import com.hanfu.user.center.dao.RoleModelMapper;
 import com.hanfu.user.center.dao.UserRoleMapper;
 import com.hanfu.user.center.model.Account;
@@ -17,6 +18,8 @@ import com.hanfu.user.center.model.AccountRoles;
 import com.hanfu.user.center.model.AccountRolesExample;
 import com.hanfu.user.center.model.AccountTypeModel;
 import com.hanfu.user.center.model.HfCoupon;
+import com.hanfu.user.center.model.HfModule;
+import com.hanfu.user.center.model.HfModuleExample;
 import com.hanfu.user.center.model.Role;
 import com.hanfu.user.center.model.RoleModel;
 import com.hanfu.user.center.model.RoleModelExample;
@@ -73,6 +76,8 @@ public class JurisdictionController {
 	private AccountModelMapper accountModelMapper;
 	@Autowired
 	private AccountTypeModelMapper accountTypeModelMapper;
+	@Autowired
+	private HfModuleMapper hfModuleMapper;
 
 	@ApiOperation(value = "", notes = "")
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)
@@ -285,11 +290,16 @@ public class JurisdictionController {
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
 		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
+		System.out.println("11111awdwadawdawdawdawdaw");
 		List<Integer> roleId = roles.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 		RoleModelExample example2 = new RoleModelExample();
 		example2.createCriteria().andRoleIdIn(roleId).andIsDeletedEqualTo((byte) 0);
 		List<RoleModel> models = roleModelMapper.selectByExample(example2);
-		return builder.body(ResponseUtils.getResponseBody(models));
+		List<Integer> modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
+		HfModuleExample example3 = new HfModuleExample();
+		example3.createCriteria().andIdIn(modelId);
+		List<HfModule> result = hfModuleMapper.selectByExample(example3);
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@ApiOperation(value = "查询当前账号在某模块拥有的权限", notes = "查询当前账号在某模块拥有的权限")
