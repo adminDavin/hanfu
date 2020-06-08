@@ -165,7 +165,9 @@ public class HfAuthController {
 		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
-
+		if(jedis != null) {
+			jedis.close();
+		}
 		HfAuthExample example = new HfAuthExample();
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		List<HfAuth> list = hfAuthMapper.selectByExample(example);
@@ -254,6 +256,7 @@ public class HfAuthController {
 //			map.put("token", token);
 			map.put("identity",type);
 			map.put("BSid",accounts.get(0).getMerchantId());
+			map.put("accountId",accounts.get(0).getId());
 //			if (token != null && userId != null && type != null) {
 //				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
 //				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
