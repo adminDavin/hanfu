@@ -317,7 +317,7 @@ public class JurisdictionController {
 			RoleModelExample example = new RoleModelExample();
 			example.createCriteria().andRoleIdEqualTo(roleId).andModelIdEqualTo(item);
 			List<RoleModel> list = roleModelMapper.selectByExample(example);
-			if (CollectionUtils.isEmpty(list)) {
+			if (!CollectionUtils.isEmpty(list)) {
 				RoleModel model = list.get(0);
 				model.setIsDeleted((byte) 1);
 				roleModelMapper.updateByPrimaryKey(model);
