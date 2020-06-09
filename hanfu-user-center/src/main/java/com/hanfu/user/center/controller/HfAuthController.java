@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
+import com.hanfu.user.center.Jurisdiction.model.Roles;
+import com.hanfu.user.center.Jurisdiction.model.RolesExample;
 import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.utils.Decrypt;
@@ -143,6 +146,9 @@ public class HfAuthController {
 
 	@Autowired
 	JedisPool jedisPool;
+
+	@Autowired
+	private RolesMapper rolesMapper;
 
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -287,8 +293,14 @@ public class HfAuthController {
 		List<AccountRoles> accountRoles= accountRolesMapper.selectByExample(accountRolesExample);
 		if (accountRoles.size()!=0){
 			Set<Integer> roleId = accountRoles.stream().map(a->a.getRolesId()).collect(Collectors.toSet());
+			RolesExample rolesExample = new RolesExample();
+			rolesExample.createCriteria().andIdIn(Lists.newArrayList(roleId));
+			List<Roles> roles = rolesMapper.selectByExample(rolesExample);
+			roles = roles.stream().filter(a->a.getRoleType().equals(type)).collect(Collectors.toList());
+			roles = roles.stream().filter(a->a.getMachId().equals(merId)).collect(Collectors.toList());
+			Set<Integer> roleL = roles.stream().map(a->a.getId()).collect(Collectors.toSet());
 			RoleModelExample roleModelExample = new RoleModelExample();
-			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleId));
+			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleL));
 			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
 			Set<Integer> modelsId = roleModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
 			HfModuleExample hfModuleExample = new HfModuleExample();
