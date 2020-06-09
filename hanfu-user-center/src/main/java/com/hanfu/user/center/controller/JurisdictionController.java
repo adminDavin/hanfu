@@ -8,6 +8,7 @@ import com.hanfu.user.center.dao.AccountModelMapper;
 import com.hanfu.user.center.dao.AccountRolesMapper;
 import com.hanfu.user.center.dao.AccountTypeModelMapper;
 import com.hanfu.user.center.dao.HfModuleMapper;
+import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.RoleModelMapper;
 import com.hanfu.user.center.dao.UserRoleMapper;
 import com.hanfu.user.center.manual.model.RoleCode.RoleCodeEnum;
@@ -21,6 +22,7 @@ import com.hanfu.user.center.model.AccountTypeModel;
 import com.hanfu.user.center.model.HfCoupon;
 import com.hanfu.user.center.model.HfModule;
 import com.hanfu.user.center.model.HfModuleExample;
+import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.Role;
 import com.hanfu.user.center.model.RoleModel;
 import com.hanfu.user.center.model.RoleModelExample;
@@ -79,6 +81,8 @@ public class JurisdictionController {
 	private AccountTypeModelMapper accountTypeModelMapper;
 	@Autowired
 	private HfModuleMapper hfModuleMapper;
+	@Autowired
+	private HfUserMapper hfUserMapper;
 
 	@ApiOperation(value = "", notes = "")
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)
@@ -140,6 +144,8 @@ public class JurisdictionController {
 			account = accountMapper.selectByExample(accountExample);
 		}
 		account.forEach(account1 -> {
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(account1.getUserId());
+			account1.setLastModifier(hfUser.getNickName());
 			if (redisTemplate.opsForValue().get(String.valueOf(account1.getId()) + "token") != null) {
 				System.out.println(account1.getAccountCode() + "在线，id:" + account1.getId());
 				account1.setIsDeleted(2);
@@ -151,7 +157,7 @@ public class JurisdictionController {
 	@ApiOperation(value = "添加角色", notes = "添加角色")
 	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addRole(HttpServletRequest request, String roleName, Integer userId,
-			String roleCode)
+			String roleCode, Integer accountId)
 			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Roles roles = new Roles();
@@ -179,6 +185,13 @@ public class JurisdictionController {
 		roles.setIsDeleted(0);
 		roles.setLastModifier(String.valueOf(userId));
 		rolesMapper.insert(roles);
+		AccountRoles accountRoles = new AccountRoles();
+		accountRoles.setAccountId(accountId);
+		accountRoles.setRolesId(roles.getId());
+		accountRoles.setCreateTime(LocalDateTime.now());
+		accountRoles.setModifyTime(LocalDateTime.now());
+		accountRoles.setIsDeleted((short) 0);
+		accountRolesMapper.insert(accountRoles);
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
 
@@ -235,10 +248,14 @@ public class JurisdictionController {
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
 		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
+		List<Roles> result = null;
 		if(!CollectionUtils.isEmpty(list)) {
 			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
+			RolesExample rolesExample = new RolesExample();
+			rolesExample.createCriteria().andIdIn(roleId);
+			result = rolesMapper.selectByExample(rolesExample);
 		}
-		return builder.body(ResponseUtils.getResponseBody(list));
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "权限查询", notes = "权限查询")
