@@ -61,7 +61,7 @@ public class Permission implements PermissionService {
                 boolean contains1 = false;
                 if (rolesId.size()!=0){
                     RoleJurisdictionExample roleJurisdictionExample = new RoleJurisdictionExample();
-                    roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(rolesId));
+                    roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(rolesId)).andIsDeletedEqualTo((short) 0);
                     List<RoleJurisdiction> roles =  roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
                     Set<Integer> Jid = roles.stream().map(j->j.getJurisdictionId()).collect(Collectors.toSet());
                     System.out.println(Jid);

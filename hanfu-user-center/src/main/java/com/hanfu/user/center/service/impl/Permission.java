@@ -64,15 +64,18 @@ public class Permission implements PermissionService {
                 accountRolesExample.createCriteria().andAccountIdEqualTo(userId).andIsDeletedEqualTo((short) 0);
                 List<AccountRoles> accountRoles = accountRolesMapper.selectByExample(accountRolesExample);
                 Set<Integer> rolesId = accountRoles.stream().map(a -> a.getRolesId()).collect(Collectors.toSet());
+                boolean contains1 = false;
+                if (rolesId.size()!=0) {
                 RoleJurisdictionExample roleJurisdictionExample = new RoleJurisdictionExample();
                 roleJurisdictionExample.createCriteria().andRoleIdIn(Lists.newArrayList(rolesId)).andIsDeletedEqualTo((short) 0);
                 List<RoleJurisdiction> roles =  roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
-                Set<Integer> Jid = roles.stream().map(j->j.getJurisdictionId()).collect(Collectors.toSet());
-                JurisdictionExample jurisdictionExample = new JurisdictionExample();
-                jurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(Jid)).andIsDeletedEqualTo((short) 0);
-                List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
-                Set<String> jurisdiction = jurisdictions.stream().map(a->a.getAccessCode()).collect(Collectors.toSet());
-                boolean contains1 = jurisdiction.contains(requiredPermission.value());
+                    Set<Integer> Jid = roles.stream().map(j -> j.getJurisdictionId()).collect(Collectors.toSet());
+                    JurisdictionExample jurisdictionExample = new JurisdictionExample();
+                    jurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(Jid)).andIsDeletedEqualTo((short) 0);
+                    List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
+                    Set<String> jurisdiction = jurisdictions.stream().map(a -> a.getAccessCode()).collect(Collectors.toSet());
+                    contains1 = jurisdiction.contains(requiredPermission.value());
+                }
 //                String permissionSet = "admin_product_list";
                 System.out.println(requiredPermission.value());
                 if (contains1 != true){
