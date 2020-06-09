@@ -297,8 +297,14 @@ public class HfAuthController {
 			rolesExample.createCriteria().andIdIn(Lists.newArrayList(roleId));
 			List<Roles> roles = rolesMapper.selectByExample(rolesExample);
 			roles = roles.stream().filter(a->a.getRoleType().equals(type)).collect(Collectors.toList());
+			List<Roles> roles1 = roles.stream().filter(a->a.getMachId().equals(0)).collect(Collectors.toList());
 			roles = roles.stream().filter(a->a.getMachId().equals(merId)).collect(Collectors.toList());
 			Set<Integer> roleL = roles.stream().map(a->a.getId()).collect(Collectors.toSet());
+			if (roles1.size()!=0){
+				roles1.forEach(roles2 -> {
+					roleL.add(roles2.getId());
+				});
+			}
 			RoleModelExample roleModelExample = new RoleModelExample();
 			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleL));
 			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
