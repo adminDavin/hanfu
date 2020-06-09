@@ -390,7 +390,7 @@ public class JurisdictionController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}else {
 			example2.clear();
-			example2.createCriteria().andRoleIdEqualTo(rId);
+			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((byte) 0);
 			models = roleModelMapper.selectByExample(example2);
 			modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 			example3.clear();
@@ -421,7 +421,7 @@ public class JurisdictionController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}else {
 			example2.clear();
-			example2.createCriteria().andRoleIdEqualTo(rId);
+			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((short) 0);
 			jurisdictions = roleJurisdictionMapper.selectByExample(example2);
 			jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
 			example3.clear();
