@@ -234,7 +234,8 @@ public class JurisdictionController {
         }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	List<String> str = RoleCodeEnum.getRoleCode("stone");
+            	List<String> str = new ArrayList<String>();
+            	str.add("stone");
                 return builder.body(ResponseUtils.getResponseBody(str));
             }
         } 
