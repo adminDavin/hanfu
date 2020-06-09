@@ -331,6 +331,7 @@ public class ProductController {
 		cancelProduct.setIsDeleted((short) 0);
 		cancelProductMappers.insert(cancelProduct);
 	}
+	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_DELETE)
 	@ApiOperation(value = "删除商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/deleteProductId", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -360,6 +361,7 @@ public class ProductController {
 		example.createCriteria().andCategoryIdEqualTo(categoryId);
 		return builder.body(ResponseUtils.getResponseBody(productMapper.selectByExample(example)));
 	}
+	@RequiredPermission(PermissionConstants.ADMIN_CATRGORY_INSERT)
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo) throws Exception {
@@ -378,7 +380,7 @@ public class ProductController {
 		category.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
-
+	@RequiredPermission(PermissionConstants.ADMIN_CATRGORY_DELETE)
 	@ApiOperation(value = "删除类目", notes = "删除类目")
 	@RequestMapping(value = "/deleteCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteCategory(Integer categoryId) throws Exception {
@@ -604,7 +606,7 @@ public class ProductController {
 
 		return builder.body(ResponseUtils.getResponseBody(productDao.selectProductDisplay(bossId)));
 	}
-
+	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_DELETE)
 	@ApiOperation(value = "选中删除商品列表", notes = "根据商品id删除商品列表")
 	@RequestMapping(value = "/deleteSelectProductId", method = RequestMethod.GET)
 //	@ApiImplicitParams({

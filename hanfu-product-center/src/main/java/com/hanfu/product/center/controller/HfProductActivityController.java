@@ -13,7 +13,9 @@ import com.hanfu.product.center.model.*;
 import com.hanfu.product.center.request.ProductActivityInfoRequest;
 import com.hanfu.product.center.request.ProductActivityRequest;
 import com.hanfu.product.center.request.ProductActivityRequest.ActivityTypeEnum;
+import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -99,7 +101,7 @@ public class HfProductActivityController {
     private HfGoodsDisplayDao hfGoodsDisplayDao;
     @Autowired
     private DistributionRecordMapper distributionRecordMapper;
-
+    @RequiredPermission(PermissionConstants.ADMIN_ACTIVITY_INSERT)
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests, ProductActivityRequest request) throws JSONException {
@@ -191,7 +193,7 @@ public class HfProductActivityController {
         }
         return builder.body(ResponseUtils.getResponseBody(result));
     }
-
+    @RequiredPermission(PermissionConstants.ADMIN_ACTIVITY_DELETE)
     @ApiOperation(value = "删除活动", notes = "删除活动")
     @RequestMapping(value = "/deleteProdcutActivity", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> deleteProdcutActivity(Integer id) throws JSONException {
