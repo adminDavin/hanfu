@@ -139,9 +139,10 @@ public class StoneController {
         System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
         if (request.getServletContext().getAttribute("getServletContext")!=null){
             bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
-        }else {
-            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
         }
+//        else {
+//            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+//        }
 
         HfStoneExample example = new HfStoneExample();
         HfStoneExample.Criteria criteria = example.createCriteria().andBossIdEqualTo(bossId);

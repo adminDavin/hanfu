@@ -133,9 +133,10 @@ if (discountCoupon.getStoneId()==null){
                 stoneId =((Integer) request.getServletContext().getAttribute("getServletContext"));
                 bossId=null;
             }
-        }else {
-            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
         }
+//        else {
+//            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
+//        }
         List<DiscountCoupon> discountCoupons =new ArrayList<>();
         if (bossId!=null){
             DiscountCouponExample discountCouponExample = new DiscountCouponExample();
