@@ -315,14 +315,19 @@ public class HfAuthController {
 			RoleModelExample roleModelExample = new RoleModelExample();
 			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleL));
 			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
-			Set<Integer> modelsId = roleModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
-			HfModuleExample hfModuleExample = new HfModuleExample();
-			hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andIdIn(Lists.newArrayList(modelsId));
-			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
+			if (roleModels.size()!=0){
+				Set<Integer> modelsId = roleModels.stream().map(a->a.getModelId()).collect(Collectors.toSet());
+				HfModuleExample hfModuleExample = new HfModuleExample();
+				hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andIdIn(Lists.newArrayList(modelsId));
+				List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
 
-            Map<String, String> modelCode = hfModules.stream()
-                    .collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
-			map.put("model",modelCode);
+				Map<String, String> modelCode = hfModules.stream()
+						.collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
+				map.put("model",modelCode);
+			}else {
+				map.put("model",null);
+			}
+
 		} else {
 			map.put("model",null);
 		}
