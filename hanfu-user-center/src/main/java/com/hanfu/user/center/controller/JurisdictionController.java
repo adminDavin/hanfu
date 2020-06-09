@@ -208,15 +208,18 @@ public class JurisdictionController {
 		return builder.body(ResponseUtils.getResponseBody(roles));
 	}
 	
-//	@ApiOperation(value = "查询当前商户角色", notes = "查询当前商户角色")
-//	@RequestMapping(value = "/selectMachRole", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> selectMachRole(Integer mathId) throws JSONException {
-//		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//		RolesExample example = new RolesExample();
-//		example.createCriteria().andMachIdEqualTo(mathId);
-//		List<Roles> list = rolesMapper.selectByExample(example);
-//		return builder.body(ResponseUtils.getResponseBody(list));
-//	}
+	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
+	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectAccountRole(Integer id) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		AccountRolesExample example = new AccountRolesExample();
+		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
+		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
+		if(!CollectionUtils.isEmpty(list)) {
+			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
+		}
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
 
 	@ApiOperation(value = "权限查询", notes = "权限查询")
 	@RequestMapping(value = "/selectJurisdiction", method = RequestMethod.GET)
@@ -259,8 +262,10 @@ public class JurisdictionController {
 				roleJurisdictionMapper.insertSelective(roleJurisdiction);
 			}else {
 				RoleJurisdiction roleJurisdiction = list.get(0);
-				roleJurisdiction.setIsDeleted((short) 0);
-				roleJurisdictionMapper.updateByPrimaryKey(roleJurisdiction);
+				if(roleJurisdiction.getIsDeleted() == (short) 1) {
+					roleJurisdiction.setIsDeleted((short) 0);
+					roleJurisdictionMapper.updateByPrimaryKey(roleJurisdiction);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
@@ -302,8 +307,10 @@ public class JurisdictionController {
 				roleModelMapper.insert(model);
 			}else {
 				RoleModel model = list.get(0);
-				model.setIsDeleted((byte) 0);
-				roleModelMapper.updateByPrimaryKey(model);
+				if(model.getIsDeleted() == (byte) 1) {
+					model.setIsDeleted((byte) 0);
+					roleModelMapper.updateByPrimaryKey(model);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
@@ -331,11 +338,11 @@ public class JurisdictionController {
 	public ResponseEntity<JSONObject> findAdminHasModel(Integer id,Integer rId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
-		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
+		example.createCriteria().andAccountIdEqualTo(id);
 		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
 		List<Integer> roleId = roles.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 		RoleModelExample example2 = new RoleModelExample();
-		example2.createCriteria().andRoleIdIn(roleId).andIsDeletedEqualTo((byte) 0);
+		example2.createCriteria().andRoleIdIn(roleId);
 		List<RoleModel> models = roleModelMapper.selectByExample(example2);
 		List<Integer> modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 		HfModuleExample example3 = new HfModuleExample();
@@ -345,7 +352,7 @@ public class JurisdictionController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}else {
 			example2.clear();
-			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((byte) 0);
+			example2.createCriteria().andRoleIdEqualTo(rId);
 			models = roleModelMapper.selectByExample(example2);
 			modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 			example3.clear();
@@ -362,11 +369,11 @@ public class JurisdictionController {
 	public ResponseEntity<JSONObject> findAdminHasJusInModel(Integer id,Integer modelId,Integer rId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
-		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
+		example.createCriteria().andAccountIdEqualTo(id);
 		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
 		List<Integer> roleId = roles.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 		RoleJurisdictionExample example2 = new RoleJurisdictionExample();
-		example2.createCriteria().andRoleIdIn(roleId).andIsDeletedEqualTo((short) 0);
+		example2.createCriteria().andRoleIdIn(roleId);
 		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example2);
 		List<Integer> jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
 		JurisdictionExample example3 = new JurisdictionExample();
@@ -376,7 +383,7 @@ public class JurisdictionController {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}else {
 			example2.clear();
-			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((short) 0);
+			example2.createCriteria().andRoleIdEqualTo(rId);
 			jurisdictions = roleJurisdictionMapper.selectByExample(example2);
 			jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
 			example3.clear();
@@ -403,6 +410,12 @@ public class JurisdictionController {
 				role.setModifyTime(LocalDateTime.now());
 				role.setIsDeleted((short) 0);
 				accountRolesMapper.insert(role);
+			}else {
+				AccountRoles role = list.get(0);
+				if(role.getIsDeleted() == (short) 1) {
+					role.setIsDeleted((short) 0);
+					accountRolesMapper.updateByPrimaryKey(role);
+				}
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
@@ -410,17 +423,17 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "删除用户角色", notes = "删除用户角色")
 	@RequestMapping(value = "/deleteUserRole", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> deleteUserRole(Integer roleId[], Integer userId) throws JSONException {
+	public ResponseEntity<JSONObject> deleteUserRole(Integer roleId[], Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		for (Integer item : roleId) {
-			UserRoleExample example = new UserRoleExample();
-			example.createCriteria().andUserIdEqualTo(userId).andRoleIdEqualTo(item);
-			List<UserRole> list = userRoleMapper.selectByExample(example);
-			if (CollectionUtils.isEmpty(list)) {
-
-			} else {
-				userRoleMapper.deleteByExample(example);
-			}
+			AccountRolesExample example = new AccountRolesExample();
+			example.createCriteria().andRolesIdEqualTo(item).andAccountIdEqualTo(id);
+			List<AccountRoles> list = accountRolesMapper.selectByExample(example);
+			if (!CollectionUtils.isEmpty(list)) {
+				AccountRoles role = list.get(0);
+				role.setIsDeleted((short) 1);
+				accountRolesMapper.updateByPrimaryKey(role);
+			} 
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
