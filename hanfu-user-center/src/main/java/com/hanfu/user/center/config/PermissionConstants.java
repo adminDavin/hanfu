@@ -137,4 +137,9 @@ public static final String ADMIN_WAREHOUSE_LIST = "admin_warehouse_list";
 public static final String ADMIN_WAREHOUSE_INSERT = "admin_warehouse_insert";
 public static final String ADMIN_WAREHOUSE_UPDATE = "admin_warehouse_update";
 public static final String ADMIN_WAREHOUSE_DELETE = "admin_warehouse_delete";
+//*** 优惠券
+public static final String ADMIN_DISCOUNT_LIST = "admin_discount_list";
+public static final String ADMIN_DISCOUNT_INSERT = "admin_discount_insert";
+public static final String ADMIN_DISCOUNT_UPDATE = "admin_discount_update";
+public static final String ADMIN_DISCOUNT_DELETE = "admin_discount_delete";
 }

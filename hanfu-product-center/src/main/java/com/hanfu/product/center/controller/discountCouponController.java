@@ -9,6 +9,8 @@ import com.hanfu.product.center.manual.model.BalanceType.BalanceTypeEnum;
 import com.hanfu.product.center.manual.model.DiscountCouponScope;
 import com.hanfu.product.center.manual.model.GoodsList;
 import com.hanfu.product.center.model.*;
+import com.hanfu.user.center.config.PermissionConstants;
+import com.hanfu.user.center.service.RequiredPermission;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -57,7 +59,7 @@ public class discountCouponController {
     @Autowired
     private HttpServletResponse response;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    @RequiredPermission(PermissionConstants.ADMIN_DISCOUNT_INSERT)
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
     @RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
 //    @ApiImplicitParams({
@@ -218,7 +220,7 @@ if (discountCoupon.getStoneId()==null){
         params.put("discountCouponId", discountCoupon.getId());
         return builder.body(ResponseUtils.getResponseBody(params));
     }
-
+    @RequiredPermission(PermissionConstants.ADMIN_DISCOUNT_DELETE)
     @ApiOperation(value = "删除优惠券", notes = "删除优惠券")
     @RequestMapping(value = "/deletedDiscountCoupon", method = RequestMethod.GET)
 //    @ApiImplicitParams({
