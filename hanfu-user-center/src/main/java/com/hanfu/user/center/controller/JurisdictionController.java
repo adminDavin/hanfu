@@ -10,6 +10,7 @@ import com.hanfu.user.center.dao.AccountTypeModelMapper;
 import com.hanfu.user.center.dao.HfModuleMapper;
 import com.hanfu.user.center.dao.RoleModelMapper;
 import com.hanfu.user.center.dao.UserRoleMapper;
+import com.hanfu.user.center.manual.model.RoleCode.RoleCodeEnum;
 import com.hanfu.user.center.model.Account;
 import com.hanfu.user.center.model.AccountExample;
 import com.hanfu.user.center.model.AccountModel;
@@ -148,7 +149,7 @@ public class JurisdictionController {
 	}
 
 	@ApiOperation(value = "添加角色", notes = "添加角色")
-	@RequestMapping(value = "/addRole", method = RequestMethod.GET)
+	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addRole(HttpServletRequest request, String roleName, Integer userId,
 			String roleCode)
 			throws JSONException {
@@ -206,6 +207,25 @@ public class JurisdictionController {
 		List<Roles> roles = rolesMapper.selectByExample(rolesExample);
 
 		return builder.body(ResponseUtils.getResponseBody(roles));
+	}
+	
+	@RequestMapping(value = "/selectRoleCode", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> selectRoleCode(HttpServletRequest request) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+                List<String> str = RoleCodeEnum.getRoleCode("boss");
+                return builder.body(ResponseUtils.getResponseBody(str));
+            }
+        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+            	List<String> str = RoleCodeEnum.getRoleCode("stone");
+                return builder.body(ResponseUtils.getResponseBody(str));
+            }
+        } 
+        return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
