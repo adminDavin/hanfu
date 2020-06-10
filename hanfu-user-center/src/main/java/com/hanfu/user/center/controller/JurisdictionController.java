@@ -289,7 +289,7 @@ public class JurisdictionController {
 	
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
 	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectAccountRole(HttpServletRequest request, Integer id, String type) throws JSONException {
+	public ResponseEntity<JSONObject> selectAccountRole(Integer id, String type) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		
 		AccountRolesExample example = new AccountRolesExample();
