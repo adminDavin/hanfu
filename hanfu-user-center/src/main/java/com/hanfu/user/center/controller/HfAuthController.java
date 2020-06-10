@@ -801,7 +801,6 @@ public class HfAuthController {
 		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
 			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
-				System.out.println("会员等级查询+++++++++++++++"+(Integer)request.getServletContext().getAttribute("getServletContext"));
 			}
 		}
 		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
@@ -936,7 +935,7 @@ public class HfAuthController {
 		user.setNickName(name);
 		user.setRealName(name);
 		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
-			if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				user.setBossId((Integer)request.getServletContext().getAttribute("getServletContext"));;
 			}
 		}
