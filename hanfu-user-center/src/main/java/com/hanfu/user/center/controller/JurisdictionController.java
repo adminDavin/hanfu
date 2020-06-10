@@ -11,6 +11,7 @@ import com.hanfu.user.center.dao.HfModuleMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.RoleModelMapper;
 import com.hanfu.user.center.dao.UserRoleMapper;
+import com.hanfu.user.center.manual.model.AccountRolesType;
 import com.hanfu.user.center.manual.model.RoleCode.RoleCodeEnum;
 import com.hanfu.user.center.model.Account;
 import com.hanfu.user.center.model.AccountExample;
@@ -47,6 +48,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -244,19 +246,31 @@ public class JurisdictionController {
 	
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
 	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectAccountRole(Integer id) throws JSONException {
+	public ResponseEntity<JSONObject> selectAccountRole(HttpServletRequest request, Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
 		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
 		List<Roles> result = null;
+		List<AccountRolesType> results = new ArrayList<AccountRolesType>();
 		if(!CollectionUtils.isEmpty(list)) {
 			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 			RolesExample rolesExample = new RolesExample();
 			rolesExample.createCriteria().andIdIn(roleId);
 			result = rolesMapper.selectByExample(rolesExample);
+			if(!CollectionUtils.isEmpty(result)) {
+				Map<String, List<Roles>> map = result.stream().collect(Collectors.groupingBy(Roles::getRoleCode));
+				Set<Entry<String, List<Roles>>> entry = map.entrySet();
+				for (Entry<String, List<Roles>> item : entry) {
+					AccountRolesType rolesType = new AccountRolesType();
+					rolesType.setRoleCode(item.getKey());
+					rolesType.setRoles(item.getValue());
+					results.add(rolesType);
+				}
+			}
 		}
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(results));
 	}
 
 	@ApiOperation(value = "权限查询", notes = "权限查询")
