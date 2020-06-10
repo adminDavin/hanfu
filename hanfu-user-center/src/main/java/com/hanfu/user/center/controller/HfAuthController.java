@@ -246,20 +246,24 @@ public class HfAuthController {
 			} else {
 				map.put("List",hfStones);
 			}
-			AccountModelExample accountModelExample = new AccountModelExample();
-			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId())
-					.andIdDeletedEqualTo((byte) 0);
-			List<AccountModel> accountModels = accountModelMapper.selectByExample(accountModelExample);
-			Set<Integer> set = accountModels.stream().map(a -> a.getModelId()).collect(Collectors.toSet());
-			HfModuleExample hfModuleExample = new HfModuleExample();
-			hfModuleExample.createCriteria().andIdIn(Lists.newArrayList(set)).andIsDeletedEqualTo((byte) 0);
-			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
-			Set<String> model = hfModules.stream().map(a -> a.getHfModel()).collect(Collectors.toSet());
-			map.put("model", model);
-			Map<String, String> modelCode = hfModules.stream()
-					.collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
-			map.put("modelCode", modelCode);
+			
+			
+//			AccountModelExample accountModelExample = new AccountModelExample();
+//			accountModelExample.createCriteria().andAccountIdEqualTo(accounts.get(0).getId())
+//					.andIdDeletedEqualTo((byte) 0);
+//			List<AccountModel> accountModels = accountModelMapper.selectByExample(accountModelExample);
+//			Set<Integer> set = accountModels.stream().map(a -> a.getModelId()).collect(Collectors.toSet());
+//			HfModuleExample hfModuleExample = new HfModuleExample();
+//			hfModuleExample.createCriteria().andIdIn(Lists.newArrayList(set)).andIsDeletedEqualTo((byte) 0);
+//			List<HfModule> hfModules = hfModuleMapper.selectByExample(hfModuleExample);
+//			Set<String> model = hfModules.stream().map(a -> a.getHfModel()).collect(Collectors.toSet());
+//			map.put("model", model);
+//			Map<String, String> modelCode = hfModules.stream()
+//					.collect(Collectors.toMap(HfModule::getModelCode, HfModule::getModelCode));
+//			map.put("modelCode", modelCode);
 //			map.put("token", token);
+			
+			
 			map.put("identity",type);
 			map.put("BSid",accounts.get(0).getMerchantId());
 			map.put("accountId",accounts.get(0).getId());
