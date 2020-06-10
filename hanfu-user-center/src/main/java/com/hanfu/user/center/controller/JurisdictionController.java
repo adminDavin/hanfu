@@ -264,7 +264,7 @@ public class JurisdictionController {
 				Set<Entry<String, List<Roles>>> entry = map.entrySet();
 				for (Entry<String, List<Roles>> item : entry) {
 					AccountRolesType rolesType = new AccountRolesType();
-					rolesType.setRoleCode(item.getKey());
+					rolesType.setRoleName(item.getKey());
 					rolesType.setRoles(item.getValue());
 					results.add(rolesType);
 				}

@@ -7,13 +7,13 @@ import com.hanfu.user.center.Jurisdiction.model.Roles;
 
 public class AccountRolesType implements Serializable{
 	
-	private String roleCode;
+	private String roleName;
 	private List<Roles> roles;
-	public String getRoleCode() {
-		return roleCode;
+	public String getRoleName() {
+		return roleName;
 	}
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 	public List<Roles> getRoles() {
 		return roles;
