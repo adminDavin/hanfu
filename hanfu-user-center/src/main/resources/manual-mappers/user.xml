@@ -306,5 +306,8 @@
         <if test="ownInvitationCode != null and ownInvitationCode != ''">
             AND h2.own_invitation_code LIKE concat('%',#{ownInvitationCode},'%')
         </if>
+        <if test="bossId != null and bossId != ''">
+            and h1.boss_id = #{bossId}
+        </if>
     </select>
 </mapper>
