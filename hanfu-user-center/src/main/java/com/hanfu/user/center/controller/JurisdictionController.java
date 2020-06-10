@@ -289,7 +289,7 @@ public class JurisdictionController {
 	
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
 	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectAccountRole(HttpServletRequest request, Integer id) throws JSONException {
+	public ResponseEntity<JSONObject> selectAccountRole(HttpServletRequest request, Integer id, String type) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		
 		AccountRolesExample example = new AccountRolesExample();
@@ -312,6 +312,9 @@ public class JurisdictionController {
 					results.add(rolesType);
 				}
 			}
+		}
+		if(type != null) {
+			return builder.body(ResponseUtils.getResponseBody(result));
 		}
 		return builder.body(ResponseUtils.getResponseBody(results));
 	}
