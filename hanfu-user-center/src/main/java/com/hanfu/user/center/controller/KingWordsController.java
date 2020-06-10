@@ -16,6 +16,7 @@ import com.hanfu.user.center.dao.HfMessageTemplateMapper;
 import com.hanfu.user.center.dao.HfTemplateParamMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.MessageType.MessageTypeEnum;
 //import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserInfo;
 //import com.hanfu.user.center.manual.model.UserQuery;
@@ -177,6 +178,27 @@ public class KingWordsController {
 			id = list.get(0).getId();
 		}
 		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
+	@RequestMapping(path = "/getTemplateParam", method = RequestMethod.POST)
+	@ApiOperation(value = "查询类型参数", notes = "查询类型参数")
+	public ResponseEntity<JSONObject> getTemplateParam(String type) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfTemplateParamExample example = new HfTemplateParamExample();
+		example.createCriteria().andTypeEqualTo(type);
+		List<HfTemplateParam> list = hfTemplateParamMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+	@RequestMapping(path = "/getMessageType", method = RequestMethod.POST)
+	@ApiOperation(value = "查询消息类型", notes = "查询消息类型")
+	public ResponseEntity<JSONObject> getMessageType() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<String> str = new ArrayList<String>();
+		for (MessageTypeEnum item : MessageTypeEnum.values()) {
+			str.add(item.getMessageType());
+		}
+		return builder.body(ResponseUtils.getResponseBody(str));
 	}
 	
 	@RequestMapping(path = "/cs", method = RequestMethod.POST)

@@ -90,11 +90,9 @@ public class JurisdictionController {
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "accountId", value = "账号", required = false, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
 	@Transactional
-	public ResponseEntity<JSONObject> addDepartment(String DepartmentName, Integer accountId,
-			HttpServletRequest request, Integer userId) throws JSONException {
+	public ResponseEntity<JSONObject> addDepartment(String DepartmentName,HttpServletRequest request, Integer userId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Department department = new Department();
 		department.setCreateDate(LocalDateTime.now());
@@ -108,12 +106,57 @@ public class JurisdictionController {
 				department.setDepartmentType("boss");
 			}
 		}
-		department.setAccountId(accountId);
+		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				department.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
+				department.setDepartmentType("stone");
+			}
+		}
 		department.setLastModifier(String.valueOf(userId));
 		department.setDepartmentName(DepartmentName);
 		departmentMapper.insertSelective(department);
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
+	
+	@ApiOperation(value = "", notes = "")
+	@RequestMapping(value = "/getDepartment", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
+	@Transactional
+	public ResponseEntity<JSONObject> getDepartment(HttpServletRequest request) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		DepartmentExample example = new DepartmentExample();
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				example.createCriteria().andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+				example.createCriteria().andDepartmentTypeEqualTo("boss");
+			}
+		}
+		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				example.createCriteria().andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+				example.createCriteria().andDepartmentTypeEqualTo("stone");
+			}
+		}
+		List<Department> list = departmentMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+//	@ApiOperation(value = "", notes = "")
+//	@RequestMapping(value = "/addUserDepartment", method = RequestMethod.POST)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
+//			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
+//	@Transactional
+//	public ResponseEntity<JSONObject> addUserDepartment(Integer id, Integer userId) throws JSONException {
+//		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		DepartmentPersonnelExample example = new DepartmentPersonnelExample();
+//		example.createCriteria().andDepartmentIdEqualTo(id).and
+//		return builder.body(ResponseUtils.getResponseBody(0));
+//	}
 
 	@ApiOperation(value = "账号查询", notes = "账号查询")
 	@RequestMapping(value = "/selectAccount", method = RequestMethod.GET)
