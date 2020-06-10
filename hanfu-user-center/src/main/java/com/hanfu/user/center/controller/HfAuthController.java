@@ -799,7 +799,7 @@ public class HfAuthController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMemberLevelExample example = new HfMemberLevelExample();
 		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
-			if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
 				System.out.println("会员等级查询+++++++++++++++"+(Integer)request.getServletContext().getAttribute("getServletContext"));
 			}
