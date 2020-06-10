@@ -408,7 +408,9 @@ public class JurisdictionController {
 			models = roleModelMapper.selectByExample(example2);
 			modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 			example3.clear();
-			example3.createCriteria().andIdIn(modelId);
+			if(!CollectionUtils.isEmpty(modelId)) {
+				example3.createCriteria().andIdIn(modelId);
+			}
 			List<HfModule> result = hfModuleMapper.selectByExample(example3);
 			return builder.body(ResponseUtils.getResponseBody(result));
 			
@@ -524,8 +526,8 @@ public class JurisdictionController {
     	}else {
     		Roles roles = new Roles();
     		roles.setRoleName(roleName);
-    		roles.setRoleCode("boss");
-    		roles.setRoleType("sass");
+    		roles.setRoleCode("sass");
+    		roles.setRoleType("boss");
     		roles.setMachId(merchantId);
     		roles.setCreateDate(LocalDateTime.now());
     		roles.setModifyDate(LocalDateTime.now());
