@@ -1,5 +1,7 @@
 package com.hanfu.user.center.controller;
 
+import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -14,9 +16,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
@@ -24,6 +29,7 @@ import com.hanfu.user.center.Jurisdiction.model.Roles;
 import com.hanfu.user.center.Jurisdiction.model.RolesExample;
 import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.model.*;
+import com.hanfu.user.center.utils.CodeUtil;
 import com.hanfu.user.center.utils.Decrypt;
 import com.hanfu.user.center.utils.Encrypt;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -38,12 +44,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import com.alibaba.fastjson.JSONObject;
@@ -1629,4 +1630,131 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
+	@ApiOperation(value = "Sass账号信息", notes = "Sass账号信息")
+	@RequestMapping(value = "/SassMessage", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> SassMessage(Integer accountId) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Account account = accountMapper.selectByPrimaryKey(accountId);
+		HfAuthExample hfAuthExample = new HfAuthExample();
+		hfAuthExample.createCriteria().andIdDeletedEqualTo((byte) 0).andUserIdEqualTo(account.getUserId());
+		List<HfAuth> hfAuth = hfAuthMapper.selectByExample(hfAuthExample);
+		HfUser user = hfUserMapper.selectByPrimaryKey(account.getUserId());
+		Map map = new HashMap();
+		map.put("userId", user.getId());
+		map.put("phone", hfAuth.get(0).getAuthKey());
+		map.put("nickName", user.getNickName());
+		map.put("realName", user.getRealName());
+		map.put("fileId", user.getFileId());
+		map.put("sumMiniProgram", account.getSumMiniProgram());
+		map.put("sumWeb", account.getSumWeb());
+		map.put("sumUniApp", account.getSumUniApp());
+		if (account.getValid()==null){
+			map.put("valid", "永久");
+		}else {
+			map.put("valid", account.getSumUniApp());
+		}
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+	@ApiOperation(value = "修改手机号", notes = "修改手机号")
+	@RequestMapping(value = "/updatePhone", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updatePhone(String authKey,String passwd,Integer accountId) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Jedis jedis = jedisPool.getResource();
+		if (passwd == null) {
+			return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
+		}
+		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
+			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+		}
+		if(jedis != null) {
+			jedis.close();
+		}
+		Account account = new Account();
+		account.setAccountCode(authKey);
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andIsDeletedEqualTo(0).andIdEqualTo(accountId);
+		List<Account> accounts = accountMapper.selectByExample(accountExample);
+		accountMapper.updateByExampleSelective(account,accountExample);
+
+			HfAuth hfAuth = new HfAuth();
+			hfAuth.setAuthKey(authKey);
+			HfAuthExample example1 = new HfAuthExample();
+			example1.createCriteria().andUserIdEqualTo(accounts.get(0).getUserId()).andAuthTypeEqualTo(String.valueOf(2));
+			hfAuthMapper.updateByExampleSelective(hfAuth,example1);
+
+			HfUser hfUser  = hfUserMapper.selectByPrimaryKey(accounts.get(0).getUserId());
+			hfUser.setPhone(authKey);
+		    hfUserMapper.updateByPrimaryKeySelective(hfUser);
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
+
+	@ApiOperation(value = "Sass账号列表", notes = "Sass账号列表")
+	@RequestMapping(value = "/SassList", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> SassList(String NamePhone,String accountAttribute) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		AccountExample accountExample = new AccountExample();
+		AccountExample.Criteria criteria = accountExample.createCriteria().andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+		AccountExample.Criteria criteria2 = accountExample.createCriteria().andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+		if (accountAttribute!=null){
+			criteria.andAccountAttributeEqualTo(accountAttribute);
+		}
+		if (NamePhone!=null){
+			criteria.andUsernameLike("%"+NamePhone+"%");
+			criteria2.andAccountCodeEqualTo(NamePhone);
+			accountExample.or(criteria2);
+		}
+		List<Account> accounts = accountMapper.selectByExample(accountExample);
+//		accounts.stream().forEach(a->{
+//			if (a.getValid()==null){
+//
+//			}
+//		});
+		return builder.body(ResponseUtils.getResponseBody(accounts));
+	}
+	@RequestMapping(value = "/code", method = RequestMethod.GET)
+	@ResponseBody
+	public void doGet(HttpServletRequest req, HttpServletResponse resp){
+		// 调用工具类生成的验证码和验证码图片
+		Map<String, Object> codeMap = CodeUtil.generateCodeAndPic();
+
+		// 将四位数字的验证码保存到Session中。
+		HttpSession session = req.getSession();
+		session.setAttribute("code", codeMap.get("code").toString());
+
+		// 禁止图像缓存。
+		resp.setHeader("Pragma", "no-cache");
+		resp.setHeader("Cache-Control", "no-cache");
+		resp.setDateHeader("Expires", -1);
+
+		resp.setContentType("image/jpeg");
+
+		// 将图像输出到Servlet输出流中。
+		ServletOutputStream sos;
+		try {
+			sos = resp.getOutputStream();
+			ImageIO.write((RenderedImage) codeMap.get("codePic"), "jpeg", sos);
+			sos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+//	@ApiOperation(value = "找回密码", notes = "找回密码")
+//	@RequestMapping(value = "/retrievePassword", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> retrievePassword(String authKey,String passwd,Integer account) throws JSONException, NoSuchAlgorithmException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		Jedis jedis = jedisPool.getResource();
+//		if (passwd == null) {
+//			return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
+//		}
+//		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
+//			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+//		}
+//		if(jedis != null) {
+//			jedis.close();
+//		}
+//
+//		return builder.body(ResponseUtils.getResponseBody("成功"));
+//	}
 }
