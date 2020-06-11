@@ -231,7 +231,7 @@ public class JurisdictionController {
         }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null){
-                roles.setRoleType("stone");
+            	roles.setRoleCode("stone");
                 roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
             }
         }
@@ -239,7 +239,7 @@ public class JurisdictionController {
 //		roles.setRoleType("boss");
 //		roles.setMachId(1);
 		
-		roles.setRoleCode(roleCode);
+        roles.setRoleType(roleCode);
 		roles.setRoleName(roleName);
 		roles.setCreateDate(LocalDateTime.now());
 		roles.setModifyDate(LocalDateTime.now());
@@ -265,15 +265,12 @@ public class JurisdictionController {
         if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null){
-                rolesExample.createCriteria().andRoleTypeEqualTo("boss").andIsDeletedEqualTo(0).andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+                rolesExample.createCriteria().andRoleCodeEqualTo("boss").andIsDeletedEqualTo(0).andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
             }
         }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	List<String> s = new ArrayList<String>();
-            	s.add("stone");
-            	s.add("boss");
-                rolesExample.createCriteria().andRoleTypeIn(s).andIsDeletedEqualTo(0).andRoleCodeEqualTo("stone").andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+                rolesExample.createCriteria().andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0).andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
             }
         } else {
             rolesExample.createCriteria().andIsDeletedEqualTo(0);
