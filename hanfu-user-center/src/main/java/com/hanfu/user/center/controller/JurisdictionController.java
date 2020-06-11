@@ -348,7 +348,7 @@ public class JurisdictionController {
 			rolesExample.createCriteria().andIdIn(roleId);
 			result = rolesMapper.selectByExample(rolesExample);
 			if(!CollectionUtils.isEmpty(result)) {
-				Map<String, List<Roles>> map = result.stream().collect(Collectors.groupingBy(Roles::getRoleCode));
+				Map<String, List<Roles>> map = result.stream().collect(Collectors.groupingBy(Roles::getRoleType));
 				Set<Entry<String, List<Roles>>> entry = map.entrySet();
 				for (Entry<String, List<Roles>> item : entry) {
 					AccountRolesType rolesType = new AccountRolesType();
