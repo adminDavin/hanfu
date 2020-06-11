@@ -1,5 +1,7 @@
 package com.hanfu.user.center.controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.utils.Decrypt;
 import com.hanfu.user.center.utils.Encrypt;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1503,5 +1506,123 @@ public class HfAuthController {
 		}
 		return str;
 	}
+	@ApiOperation(value = "新增sass账号", notes = "新增sass账号")
+	@RequestMapping(value = "/AddSass", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> AddSass(Account account,HttpServletResponse response) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfAuthExample hfAuthExample = new HfAuthExample();
+		hfAuthExample.createCriteria().andAuthKeyEqualTo(account.getAccountCode()).andIdDeletedEqualTo((byte) 0);
+		List<HfAuth> hfAuths = hfAuthMapper.selectByExample(hfAuthExample);
+		if (hfAuths.size()!=0){
+			AccountExample accountExample = new AccountExample();
+			accountExample.createCriteria().andUserIdEqualTo(hfAuths.get(0).getUserId()).andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+			List<Account> accountList =  accountMapper.selectByExample(accountExample);
+			if (accountList.size()!=0){
+				return builder.body(ResponseUtils.getResponseBody("手机号已注册"));
+			}
+		} else {
+			HfUser user = new HfUser();
+//			user.setSourceType(authType);
+			user.setPhone(account.getAccountCode());
+			user.setUserStatus("0".getBytes()[0]);
+			user.setLastAuthTime(LocalDateTime.now());
+			user.setCreateDate(LocalDateTime.now());
+			user.setModifyDate(LocalDateTime.now());
+			user.setIdDeleted((byte) 0);
+			user.setOwnInvitationCode(create());
+			user.setBossId(0);
+			hfUserMapper.insert(user);
+			String encodeStr = DigestUtils.md5Hex(account.getPassword());
+			account.setMerchantId(0);
+			account.setPassword(encodeStr);
+			account.setUserId(user.getId());
+			account.setCreateDate(LocalDateTime.now());
+			account.setModifyDate(LocalDateTime.now());
+			account.setIsDeleted(0);
+			accountMapper.insertSelective(account);
+			HfAuth auth = new HfAuth();
+			auth.setAuthKey(account.getAccountCode());
+//			auth.setAuthType(authType);
+			auth.setUserId(user.getId());
+			auth.setAuthStatus((byte) 0);
+			auth.setIdDeleted((byte) 0);
+			auth.setEncodeType("0");
+			auth.setAuthType(account.getAccountAttribute());
+			auth.setCreateDate(LocalDateTime.now());
+			auth.setModifyDate(LocalDateTime.now());
+			auth.setIdDeleted((byte) 0);
+			hfAuthMapper.insertSelective(auth);
+		}
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
 
+	@ApiOperation(value = "sass登陆", notes = "sass登陆")
+	@RequestMapping(value = "/LoginSass", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> LoginSass(Integer loginType,String username,String password, @RequestParam(name = "authKey", required = false) String authKey,
+												@RequestParam(name = "passwd", required = false) Integer passwd) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Map map = new HashMap();
+		if (loginType==1){
+			String encodeStr = DigestUtils.md5Hex(password);
+			AccountExample accountExample = new AccountExample();
+			accountExample.createCriteria().andIsDeletedEqualTo(0).andUsernameEqualTo(username).andPasswordEqualTo(encodeStr);
+			List<Account> accounts = accountMapper.selectByExample(accountExample);
+			if (accounts.size()==0){
+				return builder.body(ResponseUtils.getResponseBody("账号或密码错误"));
+			}
+			Encrypt encrypt = new Encrypt();
+			String token = encrypt.getToken(true, accounts.get(0).getUserId(), accounts.get(0).getAccountType(),accounts.get(0).getMerchantId());
+			HfUser user = hfUserMapper.selectByPrimaryKey(accounts.get(0).getUserId());
+			map.put("id", user.getId());
+			map.put("phone", user.getPhone());
+			map.put("nickName", user.getNickName());
+			map.put("realName", user.getRealName());
+			map.put("fileId", user.getFileId());
+			map.put("identity",accounts.get(0).getAccountType());
+			map.put("BSid",accounts.get(0).getMerchantId());
+			map.put("token",token);
+			map.put("account",accounts.get(0).getId());
+			if (token != null) {
+				redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
+				redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);
+			}
+		} else if (loginType==2){
+			Jedis jedis = jedisPool.getResource();
+			if (passwd == null) {
+				return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
+			}
+			if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
+				return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+			}
+			if(jedis != null) {
+				jedis.close();
+			}
+			HfAuthExample example = new HfAuthExample();
+			example.createCriteria().andAuthKeyEqualTo(authKey);
+			List<HfAuth> list = hfAuthMapper.selectByExample(example);
+			Integer userId = 0;
+			if (list.isEmpty()) {
+				return builder.body(ResponseUtils.getResponseBody("您没有账号请先注册"));
+			} else {
+				userId = list.get(0).getUserId();
+			}
+			HfUser user = hfUserMapper.selectByPrimaryKey(userId);
+			redisTemplate.opsForValue().set("autologin", authKey);
+				map.put("id", user.getId());
+				map.put("phone", user.getPhone());
+				map.put("nickName", user.getNickName());
+				map.put("realName", user.getRealName());
+				map.put("fileId", user.getFileId());
+				AccountExample accountExample = new AccountExample();
+				accountExample.createCriteria().andUserIdEqualTo(user.getId()).andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+				List<Account> accounts = accountMapper.selectByExample(accountExample);
+			map.put("identity",accounts.get(0).getAccountType());
+			map.put("BSid",accounts.get(0).getMerchantId());
+			Encrypt encrypt = new Encrypt();
+			String token = encrypt.getToken(true, accounts.get(0).getUserId(), accounts.get(0).getAccountType(),accounts.get(0).getMerchantId());
+			map.put("token",token);
+			map.put("account",accounts.get(0).getId());
+		}
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
 }
