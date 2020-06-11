@@ -9,6 +9,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.hanfu.product.center.manual.dao.*;
 import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.hanfu.product.center.dao.HfActivityMapper;
 import com.hanfu.product.center.dao.HfActivityProductMapper;
+import com.hanfu.product.center.dao.HfAnnouncementMapper;
 import com.hanfu.product.center.dao.HfBalanceDetailMapper;
 import com.hanfu.product.center.dao.HfCategoryMapper;
 import com.hanfu.product.center.dao.HfGoodsMapper;
@@ -126,6 +129,9 @@ public class HomePageController {
 	
 	@Autowired
 	private HfActivityMapper hfActivityMapper;
+	
+	@Autowired
+	private HfAnnouncementMapper hfAnnouncementMapper;
 
 	@ApiOperation(value = "获取首页收入金额数据", notes = "获取首页收入金额数据")
 	@RequestMapping(value = "/findAmountData", method = RequestMethod.GET)
@@ -759,4 +765,40 @@ public class HomePageController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
+	
+	@ApiOperation(value = "添加公告", notes = "添加公告")
+	@RequestMapping(value = "/addAnnouncement", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> addAnnouncement(HttpServletRequest request,String content) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfAnnouncement announcement = new HfAnnouncement();
+		announcement.setContent(content);
+		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				announcement.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		}
+		announcement.setCreateTime(LocalDateTime.now());
+		announcement.setModifyTime(LocalDateTime.now());
+		announcement.setIsDeleted((byte) 0);
+		return builder.body(ResponseUtils.getResponseBody(announcement.getId()));
+	}
+	
+	@ApiOperation(value = "查询公告", notes = "查询公告")
+	@RequestMapping(value = "/getAnnouncement", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
+	public ResponseEntity<JSONObject> getAnnouncement(HttpServletRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfAnnouncementExample example = new HfAnnouncementExample();
+		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				example.createCriteria().andBossIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		}
+		List<HfAnnouncement> list = hfAnnouncementMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
 }

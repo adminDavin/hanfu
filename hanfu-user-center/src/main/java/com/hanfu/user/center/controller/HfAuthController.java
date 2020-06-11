@@ -804,7 +804,6 @@ public class HfAuthController {
 		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
 			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
-				System.out.println("会员等级查询+++++++++++++++"+(Integer)request.getServletContext().getAttribute("getServletContext"));
 			}
 		}
 		List<HfMemberLevel> list = hfMemberLevelMapper.selectByExample(example);
@@ -939,7 +938,7 @@ public class HfAuthController {
 		user.setNickName(name);
 		user.setRealName(name);
 		if (request.getServletContext().getAttribute("getServletContext")!=null&&request.getServletContext().getAttribute("getServletContextType")!=null){
-			if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				user.setBossId((Integer)request.getServletContext().getAttribute("getServletContext"));;
 			}
 		}
@@ -1325,7 +1324,8 @@ public class HfAuthController {
 
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
-
+	
+	
 	@ApiOperation(value = "添加超级账号", notes = "添加超级账号")
 	@RequestMapping(value = "/addSup", method = RequestMethod.POST)
 	@ApiImplicitParams({
@@ -1335,7 +1335,7 @@ public class HfAuthController {
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
 //			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"),
 	})
-	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey) throws JSONException {
+	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey,Integer merchantId) throws JSONException {
 		Account account = new Account();
 		List<Account> accounts= new ArrayList<>();
 		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
@@ -1406,7 +1406,11 @@ public class HfAuthController {
 		if (0 == accountMapper.selectByExample(accountExample).size()){
 			account.setAccountCode(authKey);
 			account.setAccountType(type);
-			account.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			if("boss".equals(type)) {
+				account.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}else {
+				account.setMerchantId(merchantId);
+			}
 			account.setCreateDate(LocalDateTime.now());
 			account.setLastModifier(String.valueOf(LastUser));
 			account.setModifyDate(LocalDateTime.now());
