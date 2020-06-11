@@ -182,6 +182,13 @@ public class JurisdictionController {
 						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
 						.andIsDeletedEqualTo(0);
 				account = accountMapper.selectByExample(accountExample);
+				accountExample.clear();
+				List<String> str = new ArrayList<String>();
+				str.add("stone");
+				str.add("warehouse");
+				accountExample.createCriteria().andAccountTypeIn(str).andAccountRoleEqualTo("Super Admin").andIsDeletedEqualTo(0);
+				List<Account> a = accountMapper.selectByExample(accountExample);
+				account.addAll(a);
 			}
 		} else if (request.getServletContext().getAttribute("getServletContextType") != null
 				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
