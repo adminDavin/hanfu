@@ -8,6 +8,7 @@ import com.hanfu.user.center.dao.AccountModelMapper;
 import com.hanfu.user.center.dao.AccountRolesMapper;
 import com.hanfu.user.center.dao.AccountTypeModelMapper;
 import com.hanfu.user.center.dao.HfModuleMapper;
+import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.dao.RoleModelMapper;
 import com.hanfu.user.center.dao.UserRoleMapper;
@@ -23,6 +24,8 @@ import com.hanfu.user.center.model.AccountTypeModel;
 import com.hanfu.user.center.model.HfCoupon;
 import com.hanfu.user.center.model.HfModule;
 import com.hanfu.user.center.model.HfModuleExample;
+import com.hanfu.user.center.model.HfStone;
+import com.hanfu.user.center.model.HfStoneExample;
 import com.hanfu.user.center.model.HfUser;
 import com.hanfu.user.center.model.Role;
 import com.hanfu.user.center.model.RoleModel;
@@ -41,6 +44,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +89,11 @@ public class JurisdictionController {
 	private HfModuleMapper hfModuleMapper;
 	@Autowired
 	private HfUserMapper hfUserMapper;
+	@Autowired
+	private HfStoneMapper hfStoneMapper;
+	@Autowired
+	private RestTemplate restTemplate;
+	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/product/";
 
 	@ApiOperation(value = "", notes = "")
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)
@@ -286,6 +295,38 @@ public class JurisdictionController {
         } 
         return builder.body(ResponseUtils.getResponseBody(null));
 	}
+	
+	@ApiOperation(value = "获取列表（店铺或仓库）", notes = "获取列表（店铺或仓库）")
+	@RequestMapping(value = "/getListWaOrStore", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getListWaOrStore(HttpServletRequest request,String type) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+            	if(RoleCodeEnum.STONE.getRoleCodeType().equals(type)) {
+            		HfStoneExample example = new HfStoneExample();
+                	example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
+                    List<HfStone> str = hfStoneMapper.selectByExample(example);
+                    return builder.body(ResponseUtils.getResponseBody(str));
+            	}
+            	if(RoleCodeEnum.WAREHOUSE.getRoleCodeType().equals(type)) {
+            		JSONObject jsonObject = restTemplate.getForObject(REST_URL_PREFIX+"/wareHouse/listWareHouse", JSONObject.class, (Integer)request.getServletContext().getAttribute("getServletContext"));
+            		System.out.println(jsonObject.toString());
+            	}
+            }
+        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+            if (request.getServletContext().getAttribute("getServletContext")!=null){
+            	List<String> str = new ArrayList<String>();
+            	str.add("stone");
+                return builder.body(ResponseUtils.getResponseBody(str));
+            }
+        } 
+        return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	
+	
 	
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
 	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
