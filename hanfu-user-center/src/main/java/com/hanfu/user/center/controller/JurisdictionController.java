@@ -504,9 +504,11 @@ public class JurisdictionController {
 			example3.clear();
 			if(!CollectionUtils.isEmpty(modelId)) {
 				example3.createCriteria().andIdIn(modelId);
+				List<HfModule> result = hfModuleMapper.selectByExample(example3);
+				return builder.body(ResponseUtils.getResponseBody(result));
+			}else {
+				return builder.body(ResponseUtils.getResponseBody(null));
 			}
-			List<HfModule> result = hfModuleMapper.selectByExample(example3);
-			return builder.body(ResponseUtils.getResponseBody(result));
 			
 		}
 		
