@@ -188,6 +188,9 @@
 		<if test="category != null and category != ''">
 			and h.hf_name like concat('%', #{category},'%')
 		</if>
+		<if test="bossId != null and bossId != ''">
+			and p.boss_id = #{bossId}
+		</if>
 
 	</select>
 	
