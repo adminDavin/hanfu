@@ -46,6 +46,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -1759,6 +1760,7 @@ public class HfAuthController {
 //
 //		return builder.body(ResponseUtils.getResponseBody("成功"));
 //	}
+@Transactional
 @ApiOperation(value = "添加小程序", notes = "添加小程序")
 @RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
 public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime, int isPerpetual, HttpServletResponse response, String phone, Integer accountId, String domain) throws JSONException, NoSuchAlgorithmException {
@@ -1818,6 +1820,17 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		hfUser.setCreateDate(LocalDateTime.now());
 		hfUser.setIdDeleted((byte) 0);
 		hfUserMapper.insertSelective(hfUser);
+		HfAuth auth = new HfAuth();
+		auth.setAuthKey(phone);
+		auth.setAuthType(String.valueOf(2));
+		auth.setUserId(hfUser.getId());
+		auth.setAuthStatus((byte) 0);
+		auth.setIdDeleted((byte) 0);
+		auth.setEncodeType("0");
+		auth.setCreateDate(LocalDateTime.now());
+		auth.setModifyDate(LocalDateTime.now());
+		auth.setIdDeleted((byte) 0);
+		hfAuthMapper.insert(auth);
 		HfBoss hfBoss1 = new HfBoss();
 		hfBoss1.setUserId(hfUser.getId());
 		HfBossExample hfBossExample = new HfBossExample();
@@ -1845,7 +1858,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		accountRolesMapper.insertSelective(accountRoles);
 	}else {
 		Account account = new Account();
-		account.setUserId(hfAuths.get(0).getId());
+		account.setUserId(hfAuths.get(0).getUserId());
 		account.setAccountCode(phone);
 		account.setAccountType("boss");
 		account.setAccountRole("Super Admin");
@@ -1864,6 +1877,11 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		accountRoles.setModifyTime(LocalDateTime.now());
 		accountRoles.setIsDeleted((short) 0);
 		accountRolesMapper.insertSelective(accountRoles);
+		HfBoss hfBoss1 = new HfBoss();
+		hfBoss1.setUserId(hfAuths.get(0).getUserId());
+		HfBossExample hfBossExample = new HfBossExample();
+		hfBossExample.createCriteria().andIdEqualTo(hfBoss.getId());
+		hfBossMapper.updateByExampleSelective(hfBoss1,hfBossExample);
 	}
 	return builder.body(ResponseUtils.getResponseBody("成功"));
 }
