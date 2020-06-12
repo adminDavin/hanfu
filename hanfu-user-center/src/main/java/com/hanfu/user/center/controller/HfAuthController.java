@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
 import com.hanfu.user.center.Jurisdiction.model.Roles;
 import com.hanfu.user.center.Jurisdiction.model.RolesExample;
@@ -66,6 +67,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -1758,7 +1760,7 @@ public class HfAuthController {
 //	}
 @ApiOperation(value = "添加小程序", notes = "添加小程序")
 @RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
-public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTime expireTime,int isPerpetual,HttpServletResponse response,String phone,Integer accountId) throws JSONException, NoSuchAlgorithmException {
+public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTime expireTime,int isPerpetual,HttpServletResponse response,String phone,Integer accountId,String domain) throws JSONException, NoSuchAlgorithmException {
 	BodyBuilder builder = ResponseUtils.getBodyBuilder();
 	Account account2 = accountMapper.selectByPrimaryKey(accountId);
 	if (type.equals(TypeDisPlay.Type.APPLET)){
@@ -1798,6 +1800,8 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 	hfBossDetails.setCreateTime(LocalDateTime.now());
 	hfBossDetails.setModifyTime(LocalDateTime.now());
 	hfBossDetails.setIsDeleted((short) 0);
+	hfBossDetails.setDomainName(domain);
+	hfBossDetails.setBossName(name);
 	hfBossDetailsMapper.insertSelective(hfBossDetails);
 	HfAuthExample hfAuthExample = new HfAuthExample();
 	hfAuthExample.createCriteria().andAuthKeyEqualTo(phone).andIdDeletedEqualTo((byte) 0);
@@ -1864,10 +1868,10 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 }
 	@ApiOperation(value = "小程序网站app列表", notes = "小程序网站app列表")
 	@RequestMapping(value = "/AppletList", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> AppletList(String Name,String type) throws JSONException, NoSuchAlgorithmException {
+	public ResponseEntity<JSONObject> AppletList(String Name,String type,int isDeleted) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
-		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) 0).andDetailsTypeEqualTo(type);
+		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) isDeleted).andDetailsTypeEqualTo(type);
 		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
 		List<BossDetail> bossDetails = new ArrayList<>();
 		hfBossDetails.forEach(hfBossDetails1 -> {
@@ -1905,5 +1909,62 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 			bossDetails.add(bossDetail);
 		});
 		return builder.body(ResponseUtils.getResponseBody(bossDetails));
+	}
+
+	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> update(Integer bossId,String name,LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfBossDetails hfBossDetails = new HfBossDetails();
+		hfBossDetails.setExpireTime(expireTime);
+		hfBossDetails.setBossName(name);
+		hfBossDetails.setIsPerpetual((short) isPerpetual);
+		hfBossDetails.setDomainName(domain);
+		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
+		hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type).andIsDeletedEqualTo((short) 0);
+		hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
+
+	@ApiOperation(value = "修改版权", notes = "修改版权")
+	@RequestMapping(value = "/updateCopyright", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateCopyright(Integer bossId, String type, MultipartFile multipartFile ,String Copyright) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		try {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			MultipartFile fileInfo = multipartFile;
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(bossId));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(fileInfo.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(bossId);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			HfBossDetails hfBossDetails = new HfBossDetails();
+			hfBossDetails.setCopyrightFileId(fileDesc.getId());
+			hfBossDetails.setCopyrightCharacter(Copyright);
+			HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
+			hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type).andIsDeletedEqualTo((short) 0);
+			hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
+		} catch (IOException e) {
+			logger.error("add picture failed", e);
+		}
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
+
+	@ApiOperation(value = "操作", notes = "回收1,恢复0,删除2")
+	@RequestMapping(value = "/deleted", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleted(Integer bossId, String type,int isDeleted) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfBossDetails hfBossDetails = new HfBossDetails();
+		hfBossDetails.setIsDeleted((short) isDeleted);
+		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
+		hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type).andIsDeletedEqualTo((short) 0);
+		hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
+		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 }

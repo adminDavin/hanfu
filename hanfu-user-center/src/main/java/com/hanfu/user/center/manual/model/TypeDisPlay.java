@@ -51,4 +51,32 @@ public class TypeDisPlay {
             return STAFF;
         }
     }
+
+    public static enum IsPerpetual {
+        EVER(0, "ever"),//员工
+        NOTEVER(1, "notEver");//代理
+        private Integer Type;
+        private String Name;
+
+        IsPerpetual(Integer Type, String Name) {
+            this.Type = Type;
+            this.Name = Name;
+        }
+
+        public Integer getType() {
+            return this.Type;
+        }
+        public String getName() {
+            return this.Name;
+        }
+
+        public static IsPerpetual getPaymentTypeEnum(String name) {
+            for(IsPerpetual isPerpetual: IsPerpetual.values()) {
+                if (isPerpetual.getName().equals(name)) {
+                    return isPerpetual;
+                }
+            }
+            return EVER;
+        }
+    }
 }
