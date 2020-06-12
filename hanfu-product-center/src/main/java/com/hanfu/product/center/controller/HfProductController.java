@@ -384,12 +384,8 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			}
-		}
+		Object bossId= request.getHeader("bossId");
+		isDelete.setStoneId(Integer.valueOf((String)bossId));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
 		List<HfProductDisplay> products =  new ArrayList<HfProductDisplay>();
@@ -563,7 +559,7 @@ public class HfProductController {
 	@RequestMapping(value = "/getHfName", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "hfName", value = "商品名称", required = false, type = "Integer") })
-	public ResponseEntity<JSONObject> getHfName(ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
+	public ResponseEntity<JSONObject> getHfName(HttpServletRequest request, ProductNameSelect productNameSelect, Integer pageNum, Integer pageSize,
 			Integer sort, Integer stoneId, Integer priceDown, Integer priceUp, @RequestParam(value = "content", required = false) List<Integer> categoryId) throws JSONException {
 		if (pageNum == null) {
 			pageNum = 0;
@@ -572,6 +568,8 @@ public class HfProductController {
 			pageSize = 0;
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Object bossId= request.getHeader("bossId");
+		productNameSelect.setBossId(Integer.valueOf((String)bossId));
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductName(productNameSelect);
 		System.out.println(products);
@@ -618,11 +616,13 @@ public class HfProductController {
 	@RequestMapping(value = "/getActivityProductList", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "activityType", value = "活动类型", required = false, type = "String") })
-	public ResponseEntity<JSONObject> getActivityProductList(String activityType, Integer pageNum, Integer pageSize)
+	public ResponseEntity<JSONObject> getActivityProductList(HttpServletRequest request, String activityType, Integer pageNum, Integer pageSize)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductActivityInfo productInfo = new ProductActivityInfo();
 		productInfo.setActivityType(activityType);
+		Object bossId= request.getHeader("bossId");
+		productInfo.setBossId(Integer.valueOf((String)bossId));
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Integer index = 0;
 		List<ProductActivityInfo> result = new ArrayList<ProductActivityInfo>();

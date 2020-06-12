@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hanfu.product.center.dao.*;
@@ -1819,7 +1820,7 @@ public class GoodsController {
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 
-	public ResponseEntity<JSONObject> addEvaluateProduct(String type, String typeContent,
+	public ResponseEntity<JSONObject> addEvaluateProduct(HttpServletRequest request, String type, String typeContent,
 			Integer orderDetailId, Integer userId, Integer goodId, Integer stoneId, Integer star, String evaluate,
 			Integer levelId,Integer parentEvaluateId,Integer... fileId) throws Exception {
 
@@ -1860,6 +1861,8 @@ public class GoodsController {
 		hfEvaluate.setType(EvaluateTypeEnum.getEvaluateTypeEnum(type).getEvaluateType());
 		hfEvaluate.setTypeContent(
 				EvaluateContentTypeEnum.getEvaluateContentTypeEnum(typeContent).getEvaluateContentType());
+		Object bossId= request.getHeader("bossId");
+		hfEvaluate.setBossId(Integer.valueOf((String)bossId));
 		hfEvaluate.setEvaluate(evaluate);
 		hfEvaluate.setLevelId(levelId);
 		hfEvaluate.setParentEvaluateId(parentEvaluateId);
@@ -2082,11 +2085,12 @@ public class GoodsController {
 
 	@RequestMapping(value = "/selectDiscover", method = RequestMethod.GET)
 	@ApiOperation(value = "根据类型查询评价", notes = "根据类型查询评价")
-	public ResponseEntity<JSONObject> selectDiscover(Integer userId, String type, Integer levelId ,Integer parentEvaluateId) throws JSONException {
+	public ResponseEntity<JSONObject> selectDiscover(HttpServletRequest request, Integer userId, String type, Integer levelId ,Integer parentEvaluateId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
-		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId);
+		Object bossId= request.getHeader("bossId");
+		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId));
 		evaluateExample.setOrderByClause("create_time DESC");
 		List<Evaluate> result = new ArrayList<Evaluate>();
 //		List<Integer> productId = new ArrayList<Integer>();
