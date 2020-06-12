@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
@@ -1760,7 +1761,7 @@ public class HfAuthController {
 //	}
 @ApiOperation(value = "添加小程序", notes = "添加小程序")
 @RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
-public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTime expireTime,int isPerpetual,HttpServletResponse response,String phone,Integer accountId,String domain) throws JSONException, NoSuchAlgorithmException {
+public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime, int isPerpetual, HttpServletResponse response, String phone, Integer accountId, String domain) throws JSONException, NoSuchAlgorithmException {
 	BodyBuilder builder = ResponseUtils.getBodyBuilder();
 	Account account2 = accountMapper.selectByPrimaryKey(accountId);
 	if (type.equals(TypeDisPlay.Type.APPLET)){
@@ -1874,13 +1875,15 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) isDeleted).andDetailsTypeEqualTo(type);
 		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
 		List<BossDetail> bossDetails = new ArrayList<>();
+//		System.out.println(hfBossDetails);
 		hfBossDetails.forEach(hfBossDetails1 -> {
 			HfBossExample hfBossExample = new HfBossExample();
 			hfBossExample.createCriteria().andIdEqualTo(hfBossDetails1.getBossId()).andIsDeletedEqualTo((short) 0);
 			List<HfBoss> hfBosses = hfBossMapper.selectByExample(hfBossExample);
 			AppletName appletName = new AppletName();
 			appletName.setName(hfBosses.get(0).getName());
-			HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfBosses.get(0).getId());
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfBosses.get(0).getUserId());
+//			System.out.println(hfUser.getPhone());
 			appletName.setPhone(hfUser.getPhone());
 			//开户人
 			OpenAccount openAccount = new OpenAccount();
@@ -1897,10 +1900,13 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 			hfStoneExample.createCriteria().andBossIdEqualTo(hfBossDetails1.getBossId()).andIsDeletedEqualTo((short) 0);
 			List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
 			Set<Integer> stonesId = hfStones.stream().map(a->a.getId()).collect(Collectors.toSet());
-			HfOrderExample hfOrderExample = new HfOrderExample();
-			hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdIn(Lists.newArrayList(stonesId));
-			List<HfOrder> hfOrders = hfOrderMapper.selectByExample(hfOrderExample);
-			statistics.setOrderNum(hfOrders.size());
+//			System.out.println(stonesId);
+			if (stonesId.size()!=0){
+				HfOrderExample hfOrderExample = new HfOrderExample();
+				hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdIn(Lists.newArrayList(stonesId));
+				List<HfOrder> hfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+				statistics.setOrderNum(hfOrders.size());
+			}
 			BossDetail bossDetail = new BossDetail();
 			bossDetail.setAppletName(appletName);
 			bossDetail.setBossId(hfBossDetails1.getBossId());
@@ -1913,7 +1919,7 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
 	@RequestMapping(value = "/updateApp", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
+	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();
 		hfBossDetails.setExpireTime(expireTime);
