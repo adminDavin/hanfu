@@ -1912,8 +1912,8 @@ public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTim
 	}
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> update(Integer bossId,String name,LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
+	@RequestMapping(value = "/updateApp", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();
 		hfBossDetails.setExpireTime(expireTime);
