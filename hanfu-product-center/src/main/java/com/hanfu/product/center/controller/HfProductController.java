@@ -622,7 +622,8 @@ public class HfProductController {
 		ProductActivityInfo productInfo = new ProductActivityInfo();
 		productInfo.setActivityType(activityType);
 		Object bossId= request.getHeader("bossId");
-		productInfo.setBossId((Integer) bossId);
+		System.out.println("获取商品小程序活动"+Integer.valueOf((String)bossId));
+		productInfo.setBossId(Integer.valueOf((String)bossId));
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Integer index = 0;
 		List<ProductActivityInfo> result = new ArrayList<ProductActivityInfo>();
