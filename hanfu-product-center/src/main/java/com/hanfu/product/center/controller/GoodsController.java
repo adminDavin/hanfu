@@ -1862,7 +1862,7 @@ public class GoodsController {
 		hfEvaluate.setTypeContent(
 				EvaluateContentTypeEnum.getEvaluateContentTypeEnum(typeContent).getEvaluateContentType());
 		Object bossId= request.getHeader("bossId");
-		hfEvaluate.setBossId((Integer) bossId);
+		hfEvaluate.setBossId(Integer.valueOf((String)bossId));
 		hfEvaluate.setEvaluate(evaluate);
 		hfEvaluate.setLevelId(levelId);
 		hfEvaluate.setParentEvaluateId(parentEvaluateId);
@@ -2090,7 +2090,7 @@ public class GoodsController {
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Object bossId= request.getHeader("bossId");
-		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo((Integer)bossId);
+		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId));
 		evaluateExample.setOrderByClause("create_time DESC");
 		List<Evaluate> result = new ArrayList<Evaluate>();
 //		List<Integer> productId = new ArrayList<Integer>();

@@ -148,7 +148,7 @@ public class HfProductActivityController {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductActivityInfo productInfo = new ProductActivityInfo();
         Object bossId= requests.getHeader("bossId");
-        productInfo.setBossId((Integer) bossId);
+        productInfo.setBossId(Integer.valueOf((String)bossId) );
         productInfo.setActivityType(activityType);
         productInfo.setActivityName(name);
         List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);

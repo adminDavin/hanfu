@@ -385,7 +385,7 @@ public class HfProductController {
 			pageSize = 0;
 		}
 		Object bossId= request.getHeader("bossId");
-		isDelete.setStoneId((Integer) bossId);
+		isDelete.setStoneId(Integer.valueOf((String)bossId));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
 		List<HfProductDisplay> products =  new ArrayList<HfProductDisplay>();
@@ -569,7 +569,7 @@ public class HfProductController {
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Object bossId= request.getHeader("bossId");
-		productNameSelect.setBossId((Integer) bossId);
+		productNameSelect.setBossId(Integer.valueOf((String)bossId));
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductName(productNameSelect);
 		System.out.println(products);
@@ -622,7 +622,6 @@ public class HfProductController {
 		ProductActivityInfo productInfo = new ProductActivityInfo();
 		productInfo.setActivityType(activityType);
 		Object bossId= request.getHeader("bossId");
-		System.out.println("获取商品小程序活动"+Integer.valueOf((String)bossId));
 		productInfo.setBossId(Integer.valueOf((String)bossId));
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Integer index = 0;
