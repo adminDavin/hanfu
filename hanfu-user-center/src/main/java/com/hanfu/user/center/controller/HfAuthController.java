@@ -28,7 +28,9 @@ import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
 import com.hanfu.user.center.Jurisdiction.model.Roles;
 import com.hanfu.user.center.Jurisdiction.model.RolesExample;
 import com.hanfu.user.center.dao.*;
+import com.hanfu.user.center.manual.model.*;
 import com.hanfu.user.center.model.*;
+import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.utils.CodeUtil;
 import com.hanfu.user.center.utils.Decrypt;
 import com.hanfu.user.center.utils.Encrypt;
@@ -54,15 +56,6 @@ import com.github.pagehelper.PageInfo;
 import com.hanfu.inner.model.product.center.HfOrders;
 import com.hanfu.user.center.manual.dao.HfBossInfoDao;
 import com.hanfu.user.center.manual.dao.UserDao;
-import com.hanfu.user.center.manual.model.HfBossInfo;
-import com.hanfu.user.center.manual.model.HfLevelDescribeInfo;
-import com.hanfu.user.center.manual.model.HfMemberLevelInfo;
-import com.hanfu.user.center.manual.model.HfUserMemberInfo;
-import com.hanfu.user.center.manual.model.Order;
-import com.hanfu.user.center.manual.model.PurseInfo;
-import com.hanfu.user.center.manual.model.StoreUser;
-import com.hanfu.user.center.manual.model.UserInfo;
-import com.hanfu.user.center.manual.model.UserOrderInfo;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.UserNotExistException;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -153,6 +146,12 @@ public class HfAuthController {
 
 	@Autowired
 	private RolesMapper rolesMapper;
+
+	@Autowired
+	private HfBossDetailsMapper hfBossDetailsMapper;
+
+	@Autowired
+	private HfOrderMapper hfOrderMapper;
 
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -1648,7 +1647,7 @@ public class HfAuthController {
 		map.put("sumMiniProgram", account.getSumMiniProgram());
 		map.put("sumWeb", account.getSumWeb());
 		map.put("sumUniApp", account.getSumUniApp());
-		if (account.getValid()==null){
+		if (account.getIsPerpetual()==0){
 			map.put("valid", "永久");
 		}else {
 			map.put("valid", account.getSumUniApp());
@@ -1757,4 +1756,154 @@ public class HfAuthController {
 //
 //		return builder.body(ResponseUtils.getResponseBody("成功"));
 //	}
+@ApiOperation(value = "添加小程序", notes = "添加小程序")
+@RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
+public ResponseEntity<JSONObject> AddApplet(String type,String name,LocalDateTime expireTime,int isPerpetual,HttpServletResponse response,String phone,Integer accountId) throws JSONException, NoSuchAlgorithmException {
+	BodyBuilder builder = ResponseUtils.getBodyBuilder();
+	Account account2 = accountMapper.selectByPrimaryKey(accountId);
+	if (type.equals(TypeDisPlay.Type.APPLET)){
+		if (account2.getSumMiniProgram()==0){
+			return builder.body(ResponseUtils.getResponseBody("小程序达到上限"));
+		} else if (account2.getSumMiniProgram()>0){
+			account2.setSumMiniProgram(account2.getSumMiniProgram()-1);
+			account2.setAlreadyMiniProgram(account2.getAlreadyMiniProgram()+1);
+		}
+	}else if (type.equals(TypeDisPlay.Type.WEB)){
+		if (account2.getSumWeb()==0){
+			return builder.body(ResponseUtils.getResponseBody("网站达到上限"));
+		} else if (account2.getSumWeb()>0){
+			account2.setSumWeb(account2.getSumWeb()-1);
+			account2.setAlreadyWeb(account2.getAlreadyWeb()+1);
+		}
+	}else if (type.equals(TypeDisPlay.Type.UNIAPP)){
+		if (account2.getSumUniApp()==0){
+			return builder.body(ResponseUtils.getResponseBody("uni-app达到上限"));
+		} else if (account2.getSumUniApp()>0){
+			account2.setSumUniApp(account2.getSumUniApp()-1);
+			account2.setAlreadyUniApp(account2.getAlreadyUniApp()+1);
+		}
+	}
+	HfBoss hfBoss = new HfBoss();
+	hfBoss.setName(name);
+	hfBoss.setCreateTime(LocalDateTime.now());
+	hfBoss.setModifyTime(LocalDateTime.now());
+	hfBoss.setIsDeleted((short) 0);
+	hfBossMapper.insertSelective(hfBoss);
+	HfBossDetails hfBossDetails = new HfBossDetails();
+	hfBossDetails.setBossId(hfBoss.getId());
+	hfBossDetails.setDetailsType(type);
+	hfBossDetails.setOpenAccountId(accountId);
+	hfBossDetails.setIsPerpetual((short) isPerpetual);
+	hfBossDetails.setExpireTime(expireTime);
+	hfBossDetails.setCreateTime(LocalDateTime.now());
+	hfBossDetails.setModifyTime(LocalDateTime.now());
+	hfBossDetails.setIsDeleted((short) 0);
+	hfBossDetailsMapper.insertSelective(hfBossDetails);
+	HfAuthExample hfAuthExample = new HfAuthExample();
+	hfAuthExample.createCriteria().andAuthKeyEqualTo(phone).andIdDeletedEqualTo((byte) 0);
+	List<HfAuth> hfAuths = hfAuthMapper.selectByExample(hfAuthExample);
+	if (hfAuths.size()==0){
+		HfUser hfUser = new HfUser();
+		hfUser.setBossId(0);
+		hfUser.setPhone(phone);
+		hfUser.setUserStatus((byte) 48);
+		hfUser.setRealName("超级管理员");
+		hfUser.setNickName("超级管理员");
+		hfUser.setModifyDate(LocalDateTime.now());
+		hfUser.setCreateDate(LocalDateTime.now());
+		hfUser.setIdDeleted((byte) 0);
+		hfUserMapper.insertSelective(hfUser);
+		HfBoss hfBoss1 = new HfBoss();
+		hfBoss1.setUserId(hfUser.getId());
+		HfBossExample hfBossExample = new HfBossExample();
+		hfBossExample.createCriteria().andIdEqualTo(hfBoss.getId());
+		hfBossMapper.updateByExampleSelective(hfBoss1,hfBossExample);
+		Account account = new Account();
+		account.setUserId(hfUser.getId());
+		account.setAccountCode(phone);
+		account.setAccountType("boss");
+		account.setAccountRole("Super Admin");
+		account.setMerchantId(hfBoss.getId());
+		account.setValid(expireTime);
+		account.setIsPerpetual(isPerpetual);
+		account.setCreateDate(LocalDateTime.now());
+		account.setModifyDate(LocalDateTime.now());
+		account.setIsDeleted(0);
+		account.setLastModifier(String.valueOf(accountId));
+		accountMapper.insertSelective(account);
+		AccountRoles accountRoles = new AccountRoles();
+		accountRoles.setAccountId(account.getId());
+		accountRoles.setRolesId(1);
+		accountRoles.setCreateTime(LocalDateTime.now());
+		accountRoles.setModifyTime(LocalDateTime.now());
+		accountRoles.setIsDeleted((short) 0);
+		accountRolesMapper.insertSelective(accountRoles);
+	}else {
+		Account account = new Account();
+		account.setUserId(hfAuths.get(0).getId());
+		account.setAccountCode(phone);
+		account.setAccountType("boss");
+		account.setAccountRole("Super Admin");
+		account.setMerchantId(hfBoss.getId());
+		account.setValid(expireTime);
+		account.setIsPerpetual(isPerpetual);
+		account.setCreateDate(LocalDateTime.now());
+		account.setModifyDate(LocalDateTime.now());
+		account.setIsDeleted(0);
+		account.setLastModifier(String.valueOf(accountId));
+		accountMapper.insertSelective(account);
+		AccountRoles accountRoles = new AccountRoles();
+		accountRoles.setAccountId(account.getId());
+		accountRoles.setRolesId(1);
+		accountRoles.setCreateTime(LocalDateTime.now());
+		accountRoles.setModifyTime(LocalDateTime.now());
+		accountRoles.setIsDeleted((short) 0);
+		accountRolesMapper.insertSelective(accountRoles);
+	}
+	return builder.body(ResponseUtils.getResponseBody("成功"));
+}
+	@ApiOperation(value = "小程序网站app列表", notes = "小程序网站app列表")
+	@RequestMapping(value = "/AppletList", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> AppletList(String Name,String type) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
+		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) 0).andDetailsTypeEqualTo(type);
+		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
+		List<BossDetail> bossDetails = new ArrayList<>();
+		hfBossDetails.forEach(hfBossDetails1 -> {
+			HfBossExample hfBossExample = new HfBossExample();
+			hfBossExample.createCriteria().andIdEqualTo(hfBossDetails1.getBossId()).andIsDeletedEqualTo((short) 0);
+			List<HfBoss> hfBosses = hfBossMapper.selectByExample(hfBossExample);
+			AppletName appletName = new AppletName();
+			appletName.setName(hfBosses.get(0).getName());
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfBosses.get(0).getId());
+			appletName.setPhone(hfUser.getPhone());
+			//开户人
+			OpenAccount openAccount = new OpenAccount();
+			Account account = accountMapper.selectByPrimaryKey(hfBossDetails1.getOpenAccountId());
+			openAccount.setType(account.getAccountAttribute());
+			openAccount.setPhoneType(account.getAccountCode());
+			//数据
+			Statistics statistics = new Statistics();
+			HfUserExample hfUserExample = new HfUserExample();
+			hfUserExample.createCriteria().andIdDeletedEqualTo((byte) 0).andBossIdEqualTo(hfBossDetails1.getBossId());
+			List<HfUser> hfUsers= hfUserMapper.selectByExample(hfUserExample);
+			statistics.setUserNum(hfUsers.size());
+			HfStoneExample hfStoneExample = new HfStoneExample();
+			hfStoneExample.createCriteria().andBossIdEqualTo(hfBossDetails1.getBossId()).andIsDeletedEqualTo((short) 0);
+			List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+			Set<Integer> stonesId = hfStones.stream().map(a->a.getId()).collect(Collectors.toSet());
+			HfOrderExample hfOrderExample = new HfOrderExample();
+			hfOrderExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdIn(Lists.newArrayList(stonesId));
+			List<HfOrder> hfOrders = hfOrderMapper.selectByExample(hfOrderExample);
+			statistics.setOrderNum(hfOrders.size());
+			BossDetail bossDetail = new BossDetail();
+			bossDetail.setAppletName(appletName);
+			bossDetail.setBossId(hfBossDetails1.getBossId());
+			bossDetail.setOpenAccount(openAccount);
+			bossDetail.setStatistics(statistics);
+			bossDetails.add(bossDetail);
+		});
+		return builder.body(ResponseUtils.getResponseBody(bossDetails));
+	}
 }
