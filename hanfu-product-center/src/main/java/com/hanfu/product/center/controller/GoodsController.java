@@ -1861,12 +1861,8 @@ public class GoodsController {
 		hfEvaluate.setType(EvaluateTypeEnum.getEvaluateTypeEnum(type).getEvaluateType());
 		hfEvaluate.setTypeContent(
 				EvaluateContentTypeEnum.getEvaluateContentTypeEnum(typeContent).getEvaluateContentType());
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				hfEvaluate.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			}
-		}
+		Object bossId= request.getHeader("bossId");
+		hfEvaluate.setBossId((Integer) bossId);
 		hfEvaluate.setEvaluate(evaluate);
 		hfEvaluate.setLevelId(levelId);
 		hfEvaluate.setParentEvaluateId(parentEvaluateId);
@@ -2093,14 +2089,8 @@ public class GoodsController {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
-		Integer bossId = 1;
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
-			}
-		}
-		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(bossId);
+		Object bossId= request.getHeader("bossId");
+		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo((Integer)bossId);
 		evaluateExample.setOrderByClause("create_time DESC");
 		List<Evaluate> result = new ArrayList<Evaluate>();
 //		List<Integer> productId = new ArrayList<Integer>();

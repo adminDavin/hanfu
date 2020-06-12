@@ -384,12 +384,8 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				isDelete.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			}
-		}
+		Object bossId= request.getHeader("bossId");
+		isDelete.setStoneId((Integer) bossId);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
 		List<HfProductDisplay> products =  new ArrayList<HfProductDisplay>();
@@ -572,12 +568,8 @@ public class HfProductController {
 			pageSize = 0;
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				productNameSelect.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			}
-		}
+		Object bossId= request.getHeader("bossId");
+		productNameSelect.setBossId((Integer) bossId);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductName(productNameSelect);
 		System.out.println(products);
@@ -629,12 +621,8 @@ public class HfProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductActivityInfo productInfo = new ProductActivityInfo();
 		productInfo.setActivityType(activityType);
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				productInfo.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-			}
-		}
+		Object bossId= request.getHeader("bossId");
+		productInfo.setBossId((Integer) bossId);
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Integer index = 0;
 		List<ProductActivityInfo> result = new ArrayList<ProductActivityInfo>();
