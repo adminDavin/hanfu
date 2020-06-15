@@ -1,5 +1,7 @@
 package com.hanfu.user.center.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -83,6 +85,7 @@ public class Account implements Serializable {
      *
      * @mbg.generated Fri Jun 12 10:29:38 CST 2020
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime valid;
 
     /**
