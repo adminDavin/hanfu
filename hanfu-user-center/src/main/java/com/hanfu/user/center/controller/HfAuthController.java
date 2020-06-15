@@ -1529,6 +1529,12 @@ public class HfAuthController {
 				return builder.body(ResponseUtils.getResponseBody("手机号已注册"));
 			}
 		} else {
+			AccountExample accountExample = new AccountExample();
+			accountExample.createCriteria().andUsernameEqualTo(account.getUsername()).andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+			List<Account> accountList =  accountMapper.selectByExample(accountExample);
+			if (accountList.size()!=0){
+				return builder.body(ResponseUtils.getResponseBody("用户名存在"));
+			}
 			HfUser user = new HfUser();
 //			user.setSourceType(authType);
 			user.setPhone(account.getAccountCode());
@@ -1547,6 +1553,9 @@ public class HfAuthController {
 			account.setCreateDate(LocalDateTime.now());
 			account.setModifyDate(LocalDateTime.now());
 			account.setIsDeleted(0);
+			account.setAlreadyUniApp(0);
+			account.setAlreadyWeb(0);
+			account.setAlreadyMiniProgram(0);
 			accountMapper.insertSelective(account);
 			HfAuth auth = new HfAuth();
 			auth.setAuthKey(account.getAccountCode());
@@ -1563,7 +1572,24 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
-
+	@ApiOperation(value = "修改密码", notes = "修改密码")
+	@RequestMapping(value = "/updatePasswd", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updatePasswd(Integer AccountId,String oldPaddWord,String newPassWord) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		String encodeStr = DigestUtils.md5Hex(oldPaddWord);
+		AccountExample accountExample = new AccountExample();
+		accountExample.createCriteria().andIsDeletedEqualTo(0).andIdEqualTo(AccountId).andPasswordEqualTo(encodeStr);
+		List<Account> accounts = accountMapper.selectByExample(accountExample);
+		if (accounts.size()==0){
+			return builder.body(ResponseUtils.getResponseBody("用户名或者密码错误"));
+		} else {
+			String encodeStr1 = DigestUtils.md5Hex(newPassWord);
+			Account account = new Account();
+			account.setPassword(encodeStr1);
+			accountMapper.updateByExampleSelective(account,accountExample);
+		}
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
 	@ApiOperation(value = "sass登陆", notes = "sass登陆")
 	@RequestMapping(value = "/LoginSass", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> LoginSass(Integer loginType,String username,String password, @RequestParam(name = "authKey", required = false) String authKey,
