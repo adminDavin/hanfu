@@ -159,9 +159,9 @@ public class HfUserController {
     public ResponseEntity<JSONObject> updateWechartPhone(@RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "appName", required = false) String appName,
             @RequestParam(value = "encryptedData", required = false) String encryptedData,
-            @RequestParam(value = "iv", required = false) String iv) throws Exception {
-
-        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName);
+            @RequestParam(value = "iv", required = false) String iv,HttpServletRequest requests) throws Exception {
+    	Object bossId= requests.getHeader("bossId");
+        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, Integer.valueOf((String) bossId));
         String openid = SessionKeyOpenId.getString("openid");
         String sessionKey = SessionKeyOpenId.getString("session_key");
 
