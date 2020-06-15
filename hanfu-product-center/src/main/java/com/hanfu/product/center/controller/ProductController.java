@@ -123,12 +123,15 @@ public class ProductController {
 			HttpServletRequest request)
 					throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Integer bossId=1;
+		Integer bossId=null;
 		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
 			}
+		}
+		if(bossId == null) {
+			bossId = Integer.valueOf((String) request.getHeader("bossId"));
 		}
 		HfCategoryExample example = new HfCategoryExample();
 		if(type == 1) {

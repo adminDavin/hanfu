@@ -278,12 +278,19 @@ public class HfProductActivityController {
             @ApiImplicitParam(paramType = "query", name = "instanceId", value = "实体id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> intoActivityProduct(@RequestParam(required = true) Integer id,
                                                           @RequestParam(required = true) Integer productId,
-                                                          @RequestParam(required = true) Integer instanceId) throws JSONException {
+                                                          @RequestParam(required = true) Integer instanceId,
+                                                          HttpServletRequest requests) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
         if(activity == null) {
         	return builder.body(ResponseUtils.getResponseBody("数据异常"));
         }
+        Integer bossId = null;
+        if (requests.getServletContext().getAttribute("getServletContext")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
         HfActivityProduct hfActivityProduct = new HfActivityProduct();
         HfActivityProductExample example = new HfActivityProductExample();
     	example.createCriteria().andInstanceIdEqualTo(instanceId).andActivityIdEqualTo(id);
@@ -291,10 +298,10 @@ public class HfProductActivityController {
     		return builder.body(ResponseUtils.getResponseBody(-1));
     	}
     	example.clear();
-    	example.createCriteria().andInstanceIdEqualTo(instanceId).andProductActivityTypeEqualTo(activity.getActivityType());
-    	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
-    		return builder.body(ResponseUtils.getResponseBody(-1));
-    	}
+//    	example.createCriteria().andInstanceIdEqualTo(instanceId).andProductActivityTypeEqualTo(activity.getActivityType());
+//    	if(!hfActivityProductMapper.selectByExample(example).isEmpty()) {
+//    		return builder.body(ResponseUtils.getResponseBody(-1));
+//    	}
     	if("seckillActivity".equals(activity.getActivityType())) {
     		example.clear();
     		example.createCriteria().andProductActivityTypeEqualTo("groupActivity").andInstanceIdEqualTo(instanceId);
