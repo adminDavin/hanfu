@@ -16,6 +16,7 @@ import com.hanfu.user.center.dao.HfMessageTemplateMapper;
 import com.hanfu.user.center.dao.HfTemplateParamMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.MessageType.MessageContentTypeEnum;
 import com.hanfu.user.center.manual.model.MessageType.MessageTypeEnum;
 //import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserInfo;
@@ -155,7 +156,7 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/addTemplateParam", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板参数", notes = "添加信息模板参数")
-	public ResponseEntity<JSONObject> addTemplateParam(String type, String param) throws Exception {
+	public ResponseEntity<JSONObject> addTemplateParam(String type, String param, String name) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfTemplateParamExample example = new HfTemplateParamExample();
 		example.createCriteria().andTypeEqualTo(type).andParamNameEqualTo(param);
@@ -168,6 +169,7 @@ public class KingWordsController {
 			stringBuilder.append("$");
 			stringBuilder.append(param);
 			stringBuilder.append("$");
+			templateParam.setName(name);
 			templateParam.setParamName(stringBuilder.toString());
 			templateParam.setCreateTime(LocalDateTime.now());
 			templateParam.setModifyTime(LocalDateTime.now());
@@ -195,8 +197,8 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> getMessageType() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<String> str = new ArrayList<String>();
-		for (MessageTypeEnum item : MessageTypeEnum.values()) {
-			str.add(item.getMessageType());
+		for (MessageContentTypeEnum item : MessageContentTypeEnum.values()) {
+			str.add(item.getMessageContentType());
 		}
 		return builder.body(ResponseUtils.getResponseBody(str));
 	}
@@ -269,7 +271,7 @@ public class KingWordsController {
 	@RequestMapping(path = "/addTemplateMessage", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
 	public ResponseEntity<JSONObject> addTemplateMessage(Integer bossId, Integer type, String content,
-			String contentType, String messageType) throws Exception {
+			String contentType, String messageType, String subject) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageInfoExample example = new HfMessageInfoExample();
 		if (type == 1) {
@@ -285,7 +287,9 @@ public class KingWordsController {
 				info.setModifyTime(LocalDateTime.now());
 				info.setIsDeleted((byte) 0);
 				hfMessageInfoMapper.insert(info);
-				addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
+				if(MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
+					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
+				}
 			} else {
 				return builder.body(ResponseUtils.getResponseBody("-1"));
 			}
@@ -315,11 +319,14 @@ public class KingWordsController {
 				instance.setStatus(1);
 				instance.setTemplateParam(result);
 				instance.setContent(content);
+				instance.setSubject(subject);
 				instance.setIsDeleted((byte) 0);
 				hfMessageInstanceMapper.insert(instance);
 				template.setMessageInstanceId(instance.getId());
 				hfMessageTemplateMapper.updateByPrimaryKey(template);
-				addTemplateMessageMethod(instance.getId(),bossId, type, content, contentType, messageType);
+				if(MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
+					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
+				}
 			}
 		}
 

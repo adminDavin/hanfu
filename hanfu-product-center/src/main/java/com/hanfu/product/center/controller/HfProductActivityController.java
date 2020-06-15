@@ -147,8 +147,16 @@ public class HfProductActivityController {
     public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests,String activityType, String name) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ProductActivityInfo productInfo = new ProductActivityInfo();
-        Object bossId= requests.getHeader("bossId");
-        productInfo.setBossId(Integer.valueOf((String)bossId) );
+        Integer bossId = null;
+        if (requests.getServletContext().getAttribute("getServletContext")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
+        if(bossId == null) {
+        	bossId= Integer.valueOf((String) requests.getHeader("bossId"));
+        }
+        productInfo.setBossId(bossId);
         productInfo.setActivityType(activityType);
         productInfo.setActivityName(name);
         List<ProductActivityInfo> result = manualDao.selectProductActivityList(productInfo);
