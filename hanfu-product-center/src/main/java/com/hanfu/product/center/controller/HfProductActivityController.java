@@ -377,11 +377,20 @@ public class HfProductActivityController {
     
     @ApiOperation(value = "查询轮播图", notes = "查询轮播图")
     @RequestMapping(value = "/getActivityRatation", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> getActivityRatation() throws JSONException {
+    public ResponseEntity<JSONObject> getActivityRatation(HttpServletRequest requests) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<RatationInfo> result = new ArrayList<RatationInfo>(); 
         HfActivityExample example = new HfActivityExample();
-        example.createCriteria().andActivityTypeEqualTo("ratationActivity");
+        Integer bossId = null;
+        if (requests.getServletContext().getAttribute("getServletContext")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
+        if(bossId == null) {
+        	bossId= Integer.valueOf((String) requests.getHeader("bossId"));
+        }
+        example.createCriteria().andActivityTypeEqualTo("ratationActivity").andBossIdEqualTo(bossId);
         List<HfActivity> list = hfActivityMapper.selectByExample(example);
         HfActivityProductExample productExample = new HfActivityProductExample();
         list.stream().forEach(a -> {
