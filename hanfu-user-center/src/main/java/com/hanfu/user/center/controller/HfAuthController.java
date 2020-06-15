@@ -1564,7 +1564,7 @@ public class HfAuthController {
 			auth.setAuthStatus((byte) 0);
 			auth.setIdDeleted((byte) 0);
 			auth.setEncodeType("0");
-			auth.setAuthType(account.getAccountAttribute());
+			auth.setAuthType(String.valueOf(2));
 			auth.setCreateDate(LocalDateTime.now());
 			auth.setModifyDate(LocalDateTime.now());
 			auth.setIdDeleted((byte) 0);
