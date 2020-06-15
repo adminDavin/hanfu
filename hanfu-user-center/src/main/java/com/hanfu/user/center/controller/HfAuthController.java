@@ -1616,6 +1616,7 @@ public class HfAuthController {
 			map.put("BSid",accounts.get(0).getMerchantId());
 			map.put("token",token);
 			map.put("account",accounts.get(0).getId());
+			map.put("username",accounts.get(0).getUsername());
 			if (token != null) {
 				redisTemplate.opsForValue().set(String.valueOf(accounts.get(0).getId()) + "token", token);
 				redisTemplate.expire(String.valueOf(accounts.get(0).getId()) + "token", 6000, TimeUnit.SECONDS);
@@ -1656,6 +1657,7 @@ public class HfAuthController {
 			String token = encrypt.getToken(true, accounts.get(0).getUserId(), accounts.get(0).getAccountType(),accounts.get(0).getMerchantId());
 			map.put("token",token);
 			map.put("account",accounts.get(0).getId());
+			map.put("username",accounts.get(0).getUsername());
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
