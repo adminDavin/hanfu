@@ -1680,10 +1680,10 @@ public class HfAuthController {
 		map.put("sumWeb", account.getSumWeb());
 		map.put("sumUniApp", account.getSumUniApp());
 		map.put("username", account.getUsername());
-		if (account.getIsPerpetual()==0){
+		if (account.getIsPerpetual()==-1){
 			map.put("valid", "永久");
 		}else {
-			map.put("valid", account.getSumUniApp());
+			map.put("valid", account.getValid());
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
