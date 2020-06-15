@@ -1565,7 +1565,7 @@ public class HfAuthController {
 	}
 
 	@ApiOperation(value = "sass登陆", notes = "sass登陆")
-	@RequestMapping(value = "/LoginSass", method = RequestMethod.GET)
+	@RequestMapping(value = "/LoginSass", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> LoginSass(Integer loginType,String username,String password, @RequestParam(name = "authKey", required = false) String authKey,
 												@RequestParam(name = "passwd", required = false) Integer passwd) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
