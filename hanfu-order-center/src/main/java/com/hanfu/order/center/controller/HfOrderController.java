@@ -996,7 +996,9 @@ private Map<String,String> chock(List<CreatesOrder> list){
             SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                System.out.println("当前时间"+date1);
                 date2 = f.parse(f.format(date));
+                System.out.println(date2);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

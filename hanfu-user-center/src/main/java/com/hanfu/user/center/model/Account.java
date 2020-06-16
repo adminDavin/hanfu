@@ -86,7 +86,7 @@ public class Account implements Serializable {
      *
      * @mbg.generated Mon Jun 15 14:06:25 CST 2020
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//, timezone = "GMT+8"
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime valid;
 

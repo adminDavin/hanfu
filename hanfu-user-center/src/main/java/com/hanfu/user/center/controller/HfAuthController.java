@@ -1684,7 +1684,7 @@ public class HfAuthController {
 		if (account.getIsPerpetual()==-1){
 			map.put("valid", "永久");
 		}else {
-			map.put("valid", account.getValid());
+			map.put("valid", account.getValid().getYear()+"-"+account.getValid().getMonthValue()+"-"+account.getValid().getDayOfMonth()+" "+account.getValid().getHour()+":"+account.getValid().getMinute()+":"+account.getValid().getSecond());
 		}
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
