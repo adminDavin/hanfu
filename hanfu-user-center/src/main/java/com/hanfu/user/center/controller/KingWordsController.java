@@ -243,7 +243,7 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(messageTemplate.getId()));
 	}
 	
-	@RequestMapping(path = "/getMessageContentType", method = RequestMethod.POST)
+	@RequestMapping(path = "/getMessageContentType", method = RequestMethod.GET)
 	@ApiOperation(value = "查询消息内容类型", notes = "查询消息内容类型")
 	public ResponseEntity<JSONObject> getMessageContentType() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
