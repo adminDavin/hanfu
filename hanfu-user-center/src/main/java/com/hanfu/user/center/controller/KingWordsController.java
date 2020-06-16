@@ -206,53 +206,43 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/getMessageContent", method = RequestMethod.GET)
 	@ApiOperation(value = "查询消息内容", notes = "查询消息内容")
-	public ResponseEntity<JSONObject> getMessageContent(HttpServletRequest request) throws Exception {
+	public ResponseEntity<JSONObject> getMessageContent(String messageType, String contentType, HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Integer bossId=1;
+		Integer bossId=null;
+		Integer infoId=null;
+		HfMessageTemplate messageTemplate = null;
 		if (request.getServletContext().getAttribute("getServletContext")!=null){
 			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
 				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
 			}
 		}
-		Map<Integer, String> map = new HashMap<Integer, String>();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		List<MessageType> result = new ArrayList<MessageType>();
-		List<String> str = new ArrayList<String>();
 		HfMessageInfoExample example = new HfMessageInfoExample();
-		HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
-		for (MessageTypeEnum item : MessageTypeEnum.values()) {
-			example.clear();
-			example.createCriteria().andTypeEqualTo(item.getMessageType()).andBossIdEqualTo(bossId);
-			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-			if(!CollectionUtils.isEmpty(list)) {
-				map.put(list.get(0).getId(), item.getMessageType());
-				str.add(item.getMessageType());
+		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+		if(!CollectionUtils.isEmpty(list)) {
+			infoId = list.get(0).getId();
+		}
+		if(infoId != null) {
+			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
+			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
+			if(!CollectionUtils.isEmpty(list2)) {
+				messageTemplate = list2.get(0);
 			}
 		}
-		
-		for (MessageContentTypeEnum item : MessageContentTypeEnum.values()) {
-			List<HfMessageTemplate> templates = new ArrayList<HfMessageTemplate>();
-			for (Map.Entry<Integer, String> entry : map.entrySet()) {
-				MessageType messageType = new MessageType();
-				templateExample.clear();
-				templateExample.createCriteria().andTypeEqualTo(item.getMessageContentType()).andMessageIdEqualTo(entry.getKey());	
-				List<HfMessageTemplate> list = hfMessageTemplateMapper.selectByExample(templateExample);
-				if(!CollectionUtils.isEmpty(list)) {
-					messageType.setContentType(item.getMessageContentType());
-					messageType.setTemplate(list.get(0));
-					messageType.setMessageType(entry.getValue());
-					result.add(messageType);
-				}
-			}
-//			messageType.setContentType(item.getMessageContentType());
-//			messageType.setList(templates);
-//			result.add(messageType);
-		}
-//		resultMap.put("messageType", str);
-//		resultMap.put("contentObject", result);
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
 	}
-
+	
+	@RequestMapping(path = "/updateIsUse", method = RequestMethod.GET)
+	@ApiOperation(value = "修改是否发送", notes = "修改是否发送")
+	public ResponseEntity<JSONObject> updateIsUse(Integer id,Byte isUse) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfMessageTemplate messageTemplate = hfMessageTemplateMapper.selectByPrimaryKey(id);
+		messageTemplate.setIsDeleted(isUse);
+		hfMessageTemplateMapper.updateByPrimaryKey(messageTemplate);
+		return builder.body(ResponseUtils.getResponseBody(messageTemplate.getId()));
+	}
+	
 	@RequestMapping(path = "/getMessageContentType", method = RequestMethod.POST)
 	@ApiOperation(value = "查询消息内容类型", notes = "查询消息内容类型")
 	public ResponseEntity<JSONObject> getMessageContentType() throws Exception {
