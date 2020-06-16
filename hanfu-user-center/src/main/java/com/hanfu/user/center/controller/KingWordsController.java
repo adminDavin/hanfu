@@ -183,7 +183,7 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
 
-	@RequestMapping(path = "/getTemplateParam", method = RequestMethod.POST)
+	@RequestMapping(path = "/getTemplateParam", method = RequestMethod.GET)
 	@ApiOperation(value = "查询类型参数", notes = "查询类型参数")
 	public ResponseEntity<JSONObject> getTemplateParam(String type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
