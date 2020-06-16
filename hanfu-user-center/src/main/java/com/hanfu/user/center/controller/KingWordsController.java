@@ -208,12 +208,12 @@ public class KingWordsController {
 	@ApiOperation(value = "查询消息内容", notes = "查询消息内容")
 	public ResponseEntity<JSONObject> getMessageContent(HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Integer bossId=null;
-		if (request.getServletContext().getAttribute("getServletContext")!=null){
-			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
-			}
-		}
+		Integer bossId=1;
+//		if (request.getServletContext().getAttribute("getServletContext")!=null){
+//			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+//				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+//			}
+//		}
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<MessageType> result = new ArrayList<MessageType>();
@@ -241,12 +241,13 @@ public class KingWordsController {
 					templates.add(list.get(0));
 				}
 			}
-			messageType.setContentType(item.getMessageContentType());
-			messageType.setList(templates);
-			result.add(messageType);
+//			messageType.setContentType(item.getMessageContentType());
+//			messageType.setList(templates);
+//			result.add(messageType);
+			resultMap.put(item.getMessageContentType(), templates);
 		}
 		resultMap.put("messageType", str);
-		resultMap.put("contentObject", result);
+//		resultMap.put("contentObject", result);
 		return builder.body(ResponseUtils.getResponseBody(resultMap));
 	}
 
