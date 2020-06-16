@@ -124,10 +124,9 @@ public class ProductController {
 					throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId=null;
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+		if (request.getServletContext().getAttribute("getServletContext")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
 			}
 		}
 		if(bossId == null) {
