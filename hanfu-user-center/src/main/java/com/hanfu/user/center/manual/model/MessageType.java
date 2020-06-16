@@ -1,6 +1,9 @@
 package com.hanfu.user.center.manual.model;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.hanfu.user.center.model.HfMessageTemplate;
 
 public class MessageType implements Serializable{
 	
@@ -49,5 +52,20 @@ public class MessageType implements Serializable{
 			}
 			return null;
 		}
+	}
+	
+	private String contentType;
+	private List<HfMessageTemplate> list;
+	public String getContentType() {
+		return contentType;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+	public List<HfMessageTemplate> getList() {
+		return list;
+	}
+	public void setList(List<HfMessageTemplate> list) {
+		this.list = list;
 	}
 }
