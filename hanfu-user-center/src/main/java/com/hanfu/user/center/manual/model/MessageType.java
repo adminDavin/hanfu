@@ -55,17 +55,24 @@ public class MessageType implements Serializable{
 	}
 	
 	private String contentType;
-	private List<HfMessageTemplate> list;
+	private HfMessageTemplate template;
+	private String messageType;
 	public String getContentType() {
 		return contentType;
 	}
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	public List<HfMessageTemplate> getList() {
-		return list;
+	public HfMessageTemplate getTemplate() {
+		return template;
 	}
-	public void setList(List<HfMessageTemplate> list) {
-		this.list = list;
+	public void setTemplate(HfMessageTemplate template) {
+		this.template = template;
+	}
+	public String getMessageType() {
+		return messageType;
+	}
+	public void setMessageType(String messageType) {
+		this.messageType = messageType;
 	}
 }

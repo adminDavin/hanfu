@@ -209,11 +209,11 @@ public class KingWordsController {
 	public ResponseEntity<JSONObject> getMessageContent(HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Integer bossId=1;
-//		if (request.getServletContext().getAttribute("getServletContext")!=null){
-//			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-//				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
-//			}
-//		}
+		if (request.getServletContext().getAttribute("getServletContext")!=null){
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		List<MessageType> result = new ArrayList<MessageType>();
@@ -231,24 +231,26 @@ public class KingWordsController {
 		}
 		
 		for (MessageContentTypeEnum item : MessageContentTypeEnum.values()) {
-			MessageType messageType = new MessageType();
 			List<HfMessageTemplate> templates = new ArrayList<HfMessageTemplate>();
 			for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				MessageType messageType = new MessageType();
 				templateExample.clear();
 				templateExample.createCriteria().andTypeEqualTo(item.getMessageContentType()).andMessageIdEqualTo(entry.getKey());	
 				List<HfMessageTemplate> list = hfMessageTemplateMapper.selectByExample(templateExample);
 				if(!CollectionUtils.isEmpty(list)) {
-					templates.add(list.get(0));
+					messageType.setContentType(item.getMessageContentType());
+					messageType.setTemplate(list.get(0));
+					messageType.setMessageType(entry.getValue());
+					result.add(messageType);
 				}
 			}
 //			messageType.setContentType(item.getMessageContentType());
 //			messageType.setList(templates);
 //			result.add(messageType);
-			resultMap.put(item.getMessageContentType(), templates);
 		}
-		resultMap.put("messageType", str);
+//		resultMap.put("messageType", str);
 //		resultMap.put("contentObject", result);
-		return builder.body(ResponseUtils.getResponseBody(resultMap));
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@RequestMapping(path = "/getMessageContentType", method = RequestMethod.POST)
