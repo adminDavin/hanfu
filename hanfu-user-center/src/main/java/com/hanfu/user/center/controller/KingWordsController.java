@@ -246,7 +246,7 @@ public class KingWordsController {
 //			result.add(messageType);
 			resultMap.put(item.getMessageContentType(), templates);
 		}
-		resultMap.put("messageType", str);
+//		resultMap.put("messageType", str);
 //		resultMap.put("contentObject", result);
 		return builder.body(ResponseUtils.getResponseBody(resultMap));
 	}
