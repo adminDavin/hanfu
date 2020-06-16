@@ -1590,6 +1590,23 @@ public class HfAuthController {
 		}
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
+	@ApiOperation(value = "操作账号", notes = "操作账号")
+	@RequestMapping(value = "/deletedSass", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deletedSass(Integer AccountId,Integer isDeleted) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Account account = new Account();
+		account.setId(AccountId);
+		account.setIsDeleted(isDeleted);
+		accountMapper.updateByPrimaryKeySelective(account);
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
+//	@ApiOperation(value = "修改账号", notes = "修改账号")
+//	@RequestMapping(value = "/updateSass", method = RequestMethod.POST)
+//	public ResponseEntity<JSONObject> updateSass(Account account) throws JSONException, NoSuchAlgorithmException {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//
+//		return builder.body(ResponseUtils.getResponseBody("成功"));
+//	}
 	@ApiOperation(value = "sass登陆", notes = "sass登陆")
 	@RequestMapping(value = "/LoginSass", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> LoginSass(Integer loginType,String username,String password, @RequestParam(name = "authKey", required = false) String authKey,
