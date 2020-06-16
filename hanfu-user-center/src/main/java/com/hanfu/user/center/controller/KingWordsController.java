@@ -350,20 +350,23 @@ public class KingWordsController {
 				return builder.body(ResponseUtils.getResponseBody("-2"));
 			} else {
 				HfMessageInfo info = list.get(0);
+				HfMessageTemplate template = null;
 				HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
 				templateExample.createCriteria().andMessageIdEqualTo(info.getId()).andTypeEqualTo(contentType);
 				List<HfMessageTemplate> templates = hfMessageTemplateMapper.selectByExample(templateExample);
-				if (!CollectionUtils.isEmpty(templates)) {
-					return builder.body(ResponseUtils.getResponseBody("-1"));
+				if (CollectionUtils.isEmpty(templates)) {
+					template = new HfMessageTemplate();
+					template.setMessageId(info.getId());
+					template.setType(contentType);
+					
+					template.setCreateTime(LocalDateTime.now());
+					template.setModifyTime(LocalDateTime.now());
+					template.setIsDeleted((byte) 0);
+					hfMessageTemplateMapper.insert(template);
+				}else {
+					template = templates.get(0);
 				}
-				HfMessageTemplate template = new HfMessageTemplate();
-				template.setMessageId(info.getId());
-				template.setType(contentType);
 				String result = parseLine(content);
-				template.setCreateTime(LocalDateTime.now());
-				template.setModifyTime(LocalDateTime.now());
-				template.setIsDeleted((byte) 0);
-				hfMessageTemplateMapper.insert(template);
 				HfMessageInstance instance = new HfMessageInstance();
 				instance.setTemplateTypeId(template.getId());
 				instance.setStatus(1);
@@ -372,8 +375,8 @@ public class KingWordsController {
 				instance.setSubject(subject);
 				instance.setIsDeleted((byte) 0);
 				hfMessageInstanceMapper.insert(instance);
-				template.setMessageInstanceId(instance.getId());
-				hfMessageTemplateMapper.updateByPrimaryKey(template);
+//				template.setMessageInstanceId(instance.getId());
+//				hfMessageTemplateMapper.updateByPrimaryKey(template);
 				if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
 					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
 				}
