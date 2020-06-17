@@ -9,7 +9,7 @@ public class BossDetail {
     private OpenAccount openAccount;
     private String expireTime;
     private Statistics statistics;
-    private Integer isPerpetual;
+    private Short isPerpetual;
 
     public Integer getBossId() {
         return bossId;
@@ -51,11 +51,11 @@ public class BossDetail {
         this.statistics = statistics;
     }
 
-    public Integer getIsPerpetual() {
+    public Short getIsPerpetual() {
         return isPerpetual;
     }
 
-    public void setIsPerpetual(Integer isPerpetual) {
+    public void setIsPerpetual(Short isPerpetual) {
         this.isPerpetual = isPerpetual;
     }
 }
