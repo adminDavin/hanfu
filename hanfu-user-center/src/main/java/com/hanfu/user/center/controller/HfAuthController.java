@@ -1995,8 +1995,8 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			bossDetail.setStatistics(statistics);
 			bossDetails.add(bossDetail);
 		});
-		PageInfo<BossDetail> page = new PageInfo<BossDetail>(bossDetails);
-		return builder.body(ResponseUtils.getResponseBody(bossDetails));
+		PageInfo<BossDetail> page = new PageInfo<BossDetail>();
+		return builder.body(ResponseUtils.getResponseBody(page));
 	}
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
