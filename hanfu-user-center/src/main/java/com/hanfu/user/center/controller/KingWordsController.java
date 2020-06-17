@@ -332,7 +332,7 @@ public class KingWordsController {
 				HfMessageInfo info = new HfMessageInfo();
 				info.setBossId(bossId);
 				info.setType(messageType);
-				info.setSignName(URLDecoder.decode(content, "utf-8"));
+				info.setSignName(content);
 				info.setStatus(1);
 				info.setCreateTime(LocalDateTime.now());
 				info.setModifyTime(LocalDateTime.now());
@@ -372,7 +372,7 @@ public class KingWordsController {
 				instance.setTemplateTypeId(template.getId());
 				instance.setStatus(1);
 				instance.setTemplateParam(result);
-				instance.setContent(content);
+				instance.setContent(URLDecoder.decode(content, "utf-8"));
 				instance.setSubject(subject);
 				instance.setIsDeleted((byte) 0);
 				hfMessageInstanceMapper.insert(instance);
