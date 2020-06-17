@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -71,7 +73,7 @@ public class GetMessageCode {
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
     
     private static Integer code;
-    public static Integer sendSms(List<HfMessageInfo> infos,Map<String, String> map) throws ClientException{
+    public static Integer sendSms(List<HfMessageInfo> infos,Map<String, String> map) throws Exception{
     	Map<String, Object> maps = new HashMap<String, Object>();
     	String contentType = map.get("type");
     	String telephone = map.get("phone");
@@ -155,25 +157,28 @@ public class GetMessageCode {
     }
     
     public static Integer email(String telephone,HfMessageInfo info, HfMessageTemplate template, Map<String, String> map,
-    		HfMessageInstance instance) throws ClientException {
+    		HfMessageInstance instance) throws Exception {
     	String[] str = instance.getTemplateParam().split(",");
         StringBuilder builder = new StringBuilder("{");
         String ss = instance.getContent();
         for (int i = 0; i < str.length; i++) {
         	String s = findData(telephone,template.getType(),str[i],map);
         	System.out.println(s);
-        	ss = ss.replaceAll("\\$\\{"+str[i]+"\\}", s);
+        	ss = ss.replaceAll("\\$"+str[i]+"\\$}", s);
         	System.out.println(ss);
         }
-    	SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setSubject("Test subject");
-		msg.setText(ss);
-		// 发送邮件的邮箱
-		msg.setFrom("2451203734@qq.com");
-		msg.setSentDate(new Date());
-		// 接受邮件的邮箱
-		msg.setTo(map.get("email"));
-		getMessageCode.javaMailSender.send(msg);
+		MimeMessage message = getMessageCode.javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        //发件人
+        helper.setFrom("2451203734@qq.com");
+        //收件人
+        helper.setTo(map.get("email"));
+        //邮件标题
+        helper.setSubject(instance.getSubject());
+        //true指的是html邮件
+        helper.setText(ss, true);
+        //发送邮件
+        getMessageCode.javaMailSender.send(message);
     	return 1;
     }
     

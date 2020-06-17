@@ -78,6 +78,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.*;
 import java.security.spec.InvalidParameterSpecException;
 import java.time.LocalDateTime;
@@ -331,7 +332,7 @@ public class KingWordsController {
 				HfMessageInfo info = new HfMessageInfo();
 				info.setBossId(bossId);
 				info.setType(messageType);
-				info.setSignName(content);
+				info.setSignName(URLDecoder.decode(content, "utf-8"));
 				info.setStatus(1);
 				info.setCreateTime(LocalDateTime.now());
 				info.setModifyTime(LocalDateTime.now());
@@ -823,7 +824,7 @@ public class KingWordsController {
 
 	public String parseLine(String str) {
 		// 正则表达式
-		String pattern = "(\\$\\{)(.*?)(\\})"; // Java正则表达式以括号分组，第一个括号表示以"（乙方）:"开头，第三个括号表示以" "(空格)结尾，中间括号为目标值，
+		String pattern = "(\\$)(.*?)(\\$)"; // Java正则表达式以括号分组，第一个括号表示以"（乙方）:"开头，第三个括号表示以" "(空格)结尾，中间括号为目标值，
 		// 创建 Pattern 对象
 		Pattern r = Pattern.compile(pattern);
 		// 创建 matcher 对象
@@ -842,19 +843,4 @@ public class KingWordsController {
 		return builder.toString();
 	}
 
-	@RequestMapping(path = "/csemail", method = RequestMethod.POST)
-	@ApiOperation(value = "邮箱", notes = "邮箱")
-	public ResponseEntity<JSONObject> csemail() throws Exception {
-
-		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setSubject("Test subject");
-		msg.setText("123123");
-		// 发送邮件的邮箱
-		msg.setFrom("2451203734@qq.com");
-		msg.setSentDate(new Date());
-		// 接受邮件的邮箱
-		msg.setTo("2451203734@qq.com");
-		javaMailSender.send(msg);
-		return null;
-	}
 }
