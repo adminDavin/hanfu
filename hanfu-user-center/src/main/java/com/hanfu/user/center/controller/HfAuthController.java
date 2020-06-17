@@ -2000,7 +2000,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			bossDetail.setBossId(hfBossDetails1.getBossId());
 			bossDetail.setOpenAccount(openAccount);
 			bossDetail.setStatistics(statistics);
-			if (hfBossDetails1.getIsPerpetual()==-1){
+			if (hfBossDetails1.getIsPerpetual()!=-1){
 				bossDetail.setExpireTime(hfBossDetails1.getExpireTime().getYear()+"-"+hfBossDetails1.getExpireTime().getMonthValue()+"-"+hfBossDetails1.getExpireTime().getDayOfMonth()+" "+hfBossDetails1.getExpireTime().getHour()+":"+hfBossDetails1.getExpireTime().getMinute()+":"+hfBossDetails1.getExpireTime().getSecond());
 			}
 			bossDetail.setIsPerpetual(hfBossDetails1.getIsPerpetual());
