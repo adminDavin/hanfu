@@ -1959,7 +1959,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) isDeleted).andDetailsTypeEqualTo(type);
 		Page page =PageHelper.startPage(pageNum, pageSize);
 		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
-//		long total = page.getTotal();
+		long total = page.getTotal();
 //		System.out.println(total+"1111");
 		PageInfo<HfBossDetails> pageInfo = new PageInfo<>(hfBossDetails);
 		List<BossDetail> bossDetails = new ArrayList<>();
@@ -2004,7 +2004,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		});
 //		PageInfo<BossDetail> pageInfo1 = BeanCopyUtils.copyBean(pageInfo, PageInfo.class);
 		PageInfo<BossDetail> page1 = new PageInfo<BossDetail>(bossDetails);
-//		page1.setTotal(total);
+		page1.setTotal(total);
 		return builder.body(ResponseUtils.getResponseBody(page1));
 	}
 
