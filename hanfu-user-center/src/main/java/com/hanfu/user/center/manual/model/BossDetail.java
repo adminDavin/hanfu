@@ -7,8 +7,9 @@ public class BossDetail {
     private Integer bossId;
     private AppletName appletName;
     private OpenAccount openAccount;
-    private LocalDateTime expireTime;
+    private String expireTime;
     private Statistics statistics;
+    private Integer isPerpetual;
 
     public Integer getBossId() {
         return bossId;
@@ -34,11 +35,11 @@ public class BossDetail {
         this.openAccount = openAccount;
     }
 
-    public LocalDateTime getExpireTime() {
+    public String getExpireTime() {
         return expireTime;
     }
 
-    public void setExpireTime(LocalDateTime expireTime) {
+    public void setExpireTime(String expireTime) {
         this.expireTime = expireTime;
     }
 
@@ -48,5 +49,13 @@ public class BossDetail {
 
     public void setStatistics(Statistics statistics) {
         this.statistics = statistics;
+    }
+
+    public Integer getIsPerpetual() {
+        return isPerpetual;
+    }
+
+    public void setIsPerpetual(Integer isPerpetual) {
+        this.isPerpetual = isPerpetual;
     }
 }
