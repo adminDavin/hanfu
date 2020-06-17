@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.github.pagehelper.Page;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
 import com.hanfu.user.center.Jurisdiction.model.Roles;
@@ -1953,12 +1954,14 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		PageHelper.startPage(pageNum, pageSize);
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
 		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) isDeleted).andDetailsTypeEqualTo(type);
-
+		Page page =PageHelper.startPage(pageNum, pageSize);
 		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
+//		long total = page.getTotal();
+//		System.out.println(total+"1111");
+		PageInfo<HfBossDetails> pageInfo = new PageInfo<>(hfBossDetails);
 		List<BossDetail> bossDetails = new ArrayList<>();
 //		System.out.println(hfBossDetails);
 		hfBossDetails.forEach(hfBossDetails1 -> {
@@ -1999,8 +2002,10 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			bossDetail.setStatistics(statistics);
 			bossDetails.add(bossDetail);
 		});
-		PageInfo<BossDetail> page = new PageInfo<BossDetail>(bossDetails);
-		return builder.body(ResponseUtils.getResponseBody(page));
+//		PageInfo<BossDetail> pageInfo1 = BeanCopyUtils.copyBean(pageInfo, PageInfo.class);
+		PageInfo<BossDetail> page1 = new PageInfo<BossDetail>(bossDetails);
+//		page1.setTotal(total);
+		return builder.body(ResponseUtils.getResponseBody(page1));
 	}
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
