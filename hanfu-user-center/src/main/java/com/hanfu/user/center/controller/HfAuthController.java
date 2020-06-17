@@ -2000,6 +2000,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			bossDetail.setBossId(hfBossDetails1.getBossId());
 			bossDetail.setOpenAccount(openAccount);
 			bossDetail.setStatistics(statistics);
+			bossDetail.setExpireTime(hfBossDetails1.getExpireTime());
 			bossDetails.add(bossDetail);
 		});
 //		PageInfo<BossDetail> pageInfo1 = BeanCopyUtils.copyBean(pageInfo, PageInfo.class);
