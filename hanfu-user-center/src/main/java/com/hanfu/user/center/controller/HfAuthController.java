@@ -35,6 +35,7 @@ import com.hanfu.user.center.model.HfUserMember;
 import com.hanfu.user.center.utils.CodeUtil;
 import com.hanfu.user.center.utils.Decrypt;
 import com.hanfu.user.center.utils.Encrypt;
+import io.swagger.models.auth.In;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -1740,8 +1741,14 @@ public class HfAuthController {
 
 	@ApiOperation(value = "Sass账号列表", notes = "Sass账号列表")
 	@RequestMapping(value = "/SassList", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> SassList(String NamePhone,String accountAttribute) throws JSONException, NoSuchAlgorithmException {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+	public ResponseEntity<JSONObject> SassList(Integer pageNum,Integer pageSize,String NamePhone,String accountAttribute) throws JSONException, NoSuchAlgorithmException {
+		        if (pageNum == null) {
+            pageNum = 0;
+        }
+        if (pageSize == null) {
+            pageSize = 0;
+        }
+ BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountExample accountExample = new AccountExample();
 		AccountExample.Criteria criteria = accountExample.createCriteria().andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
 		AccountExample.Criteria criteria2 = accountExample.createCriteria().andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
@@ -1753,13 +1760,15 @@ public class HfAuthController {
 			criteria2.andAccountCodeEqualTo(NamePhone);
 			accountExample.or(criteria2);
 		}
+		PageHelper.startPage(pageNum, pageSize);
 		List<Account> accounts = accountMapper.selectByExample(accountExample);
 //		accounts.stream().forEach(a->{
 //			if (a.getValid()==null){
 //
 //			}
 //		});
-		return builder.body(ResponseUtils.getResponseBody(accounts));
+		PageInfo<Account> page = new PageInfo<Account>(accounts);
+		return builder.body(ResponseUtils.getResponseBody(page));
 	}
 	@RequestMapping(value = "/code", method = RequestMethod.GET)
 	@ResponseBody
@@ -1934,10 +1943,17 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 }
 	@ApiOperation(value = "小程序网站app列表", notes = "小程序网站app列表")
 	@RequestMapping(value = "/AppletList", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> AppletList(String Name,String type,int isDeleted) throws JSONException, NoSuchAlgorithmException {
+	public ResponseEntity<JSONObject> AppletList(Integer pageNum,Integer pageSize, String Name, String type, int isDeleted) throws JSONException, NoSuchAlgorithmException {
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+		if (pageSize == null) {
+			pageSize = 0;
+		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
 		hfBossDetailsExample.createCriteria().andIsDeletedEqualTo((short) isDeleted).andDetailsTypeEqualTo(type);
+		PageHelper.startPage(pageNum, pageSize);
 		List<HfBossDetails> hfBossDetails = hfBossDetailsMapper.selectByExample(hfBossDetailsExample);
 		List<BossDetail> bossDetails = new ArrayList<>();
 //		System.out.println(hfBossDetails);
@@ -1979,6 +1995,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			bossDetail.setStatistics(statistics);
 			bossDetails.add(bossDetail);
 		});
+		PageInfo<BossDetail> page = new PageInfo<BossDetail>(bossDetails);
 		return builder.body(ResponseUtils.getResponseBody(bossDetails));
 	}
 
