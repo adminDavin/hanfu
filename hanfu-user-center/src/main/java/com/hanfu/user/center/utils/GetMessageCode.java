@@ -92,10 +92,12 @@ public class GetMessageCode {
         	}
         	if(MessageTypeEnum.EMAIL.getMessageType().equals(info.getType())) {
         		maps = getInstance(info.getId(),contentType);
+        		System.out.println("是否邮箱类型+++++++++++++++++++++");
         		if(maps == null) {
         			continue;
     			}
         		if(!StringUtils.isEmpty(map.get("email"))) {
+        			System.out.println("邮箱if+++++++++++++++++++++");
         			Integer result = email(telephone,info,(HfMessageTemplate)maps.get("template"),map,(HfMessageInstance)maps.get("instance"));
         		}
         	}
@@ -161,12 +163,16 @@ public class GetMessageCode {
     	String[] str = instance.getTemplateParam().split(",");
         StringBuilder builder = new StringBuilder("{");
         String ss = instance.getContent();
+        System.out.println("instance++++++++++"+instance.toString());
+        System.out.println("ss+++++ss"+ss);
         for (int i = 0; i < str.length; i++) {
         	String s = findData(telephone,template.getType(),str[i],map);
         	System.out.println(s);
-        	ss = ss.replaceAll("\\$"+str[i]+"\\$}", s);
+        	ss = ss.replaceAll("\\$"+str[i]+"\\$", s);
         	System.out.println(ss);
         }
+        System.out.println("发邮箱+++++++++++++++++++++++++++++");
+        System.out.println("邮箱"+map.get("email"));
 		MimeMessage message = getMessageCode.javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         //发件人
