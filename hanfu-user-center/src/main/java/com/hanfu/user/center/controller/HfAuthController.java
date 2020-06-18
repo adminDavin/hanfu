@@ -2069,7 +2069,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		HfBossDetails hfBossDetails = new HfBossDetails();
 		hfBossDetails.setIsDeleted((short) isDeleted);
 		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
-		hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type).andIsDeletedEqualTo((short) 0);
+		hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type);
 		hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
