@@ -34,6 +34,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -343,6 +344,7 @@ public class HfOrderController {
     }
 
     @ApiOperation(value = "修改订单状态", notes = "修改订单状态")
+    @Transactional(rollbackFor=Exception.class)
     @RequestMapping(value = "/modifyStatus", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "Id", value = "订单id", required = true,
@@ -534,7 +536,7 @@ public class HfOrderController {
 
         return builder.body(ResponseUtils.getResponseBody("0"));
     }
-
+    @Transactional(rollbackFor=Exception.class)
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request) throws JSONException {
@@ -911,6 +913,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
 //    @Scheduled(cron="0 0 24 * * ?")
 @Scheduled(cron="*/5 * * * * ? ")
 @ApiOperation(value = "订单", notes = "订单")
+@Transactional(rollbackFor=Exception.class)
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
     public void TimeGroup()
             throws Exception {

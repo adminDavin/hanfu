@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.security.auth.message.callback.PrivateKeyCallback;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -1820,7 +1821,7 @@ public class HfAuthController {
 //
 //		return builder.body(ResponseUtils.getResponseBody("成功"));
 //	}
-@Transactional
+@Transactional(rollbackFor=Exception.class)
 @ApiOperation(value = "添加小程序", notes = "添加小程序")
 @RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
 public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime, int isPerpetual, HttpServletResponse response, String phone, Integer accountId, String domain) throws JSONException, NoSuchAlgorithmException {
