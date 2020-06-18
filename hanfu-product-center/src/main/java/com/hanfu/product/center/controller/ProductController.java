@@ -366,7 +366,7 @@ public class ProductController {
 	@RequiredPermission(PermissionConstants.ADMIN_CATRGORY_INSERT)
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo) throws Exception {
+	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfCategory category = new HfCategory();
 		String uuid = UUID.randomUUID().toString();
@@ -374,6 +374,13 @@ public class ProductController {
 //		if(fileInfo != null) {
 //			category.setFileId(updateCategoryPicture(fileInfo,uuid,"无"));
 //		}
+		Integer bossId=null;
+		if (requests.getServletContext().getAttribute("getServletContext")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
+		category.setBossId(bossId);
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());

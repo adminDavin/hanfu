@@ -805,7 +805,6 @@ public class KingWordsController {
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(requestUrl);
 		JSONObject jsonObject = null;
-
 		try {
 			HttpResponse response = httpClient.execute(httpGet);
 			HttpEntity entity = response.getEntity();
