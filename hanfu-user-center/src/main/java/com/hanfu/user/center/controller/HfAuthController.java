@@ -1970,7 +1970,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			hfBossExample.createCriteria().andIdEqualTo(hfBossDetails1.getBossId()).andIsDeletedEqualTo((short) 0);
 			List<HfBoss> hfBosses = hfBossMapper.selectByExample(hfBossExample);
 			AppletName appletName = new AppletName();
-			appletName.setName(hfBosses.get(0).getName());
+			appletName.setName(hfBossDetails1.getBossName());
 			HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfBosses.get(0).getUserId());
 //			System.out.println(hfUser.getPhone());
 			appletName.setPhone(hfUser.getPhone());
