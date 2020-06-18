@@ -1849,6 +1849,10 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 			account2.setAlreadyUniApp(account2.getAlreadyUniApp()+1);
 		}
 	}
+	Account account3 = new Account();
+	account3.setId(accountId);
+	account3.setAlreadyMiniProgram(account2.getAlreadyMiniProgram()+1);
+	accountMapper.updateByPrimaryKeySelective(account3);
 	HfBoss hfBoss = new HfBoss();
 	hfBoss.setName(name);
 	hfBoss.setCreateTime(LocalDateTime.now());
