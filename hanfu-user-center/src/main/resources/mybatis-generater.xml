@@ -128,18 +128,18 @@
 		<!-- <table schema="user_center" tableName="hf_level_describe" domainObjectName="HfLevelDescrible"> 
 			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true" /> </table> -->
-		<!-- <table schema="user_center" tableName="hf_message_instance"
+		<table schema="user_center" tableName="hf_message_instance"
 			domainObjectName="HfMessageInstance">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
-		</table> -->
-		<table schema="user_center" tableName="hf_template_param"
+		</table>
+		<!-- <table schema="user_center" tableName="hf_template_param"
 			domainObjectName="HfTemplateParam">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
-		</table>
+		</table> -->
 		<!-- <table schema="user_center" tableName="hf_level_describe" domainObjectName="HfLevelDescribe"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> <table schema="user_center" 
