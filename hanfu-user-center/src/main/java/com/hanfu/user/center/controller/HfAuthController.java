@@ -2015,7 +2015,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
 	@RequestMapping(value = "/updateApp", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
+	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();
 		hfBossDetails.setExpireTime(expireTime);
