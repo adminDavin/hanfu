@@ -2073,4 +2073,16 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
 		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
+
+	@ApiOperation(value = "小程序迁移", notes = "小程序迁移")
+	@RequestMapping(value = "/migration", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> migration(Integer bossId,String type,Integer accountId) throws JSONException, NoSuchAlgorithmException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfBossDetails hfBossDetails = new HfBossDetails();
+		hfBossDetails.setOpenAccountId(accountId);
+		HfBossDetailsExample hfBossDetailsExample = new HfBossDetailsExample();
+		hfBossDetailsExample.createCriteria().andBossIdEqualTo(bossId).andDetailsTypeEqualTo(type);
+		hfBossDetailsMapper.updateByExampleSelective(hfBossDetails,hfBossDetailsExample);
+		return builder.body(ResponseUtils.getResponseBody("成功"));
+	}
 }
