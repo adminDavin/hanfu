@@ -539,7 +539,7 @@ public class HfOrderController {
     @Transactional(rollbackFor=Exception.class)
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request, HttpServletRequest requests) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfRequestIdExample idExample = new HfRequestIdExample();
         idExample.createCriteria().andRequestIdEqualTo(request.getRequestId());
@@ -554,7 +554,14 @@ public class HfOrderController {
         	hfRequestIdMapper.insert(id);
         }
         System.out.println("开始支付订单");
+        Integer bossId = null;
+        if (requests.getServletContext().getAttribute("getServletContext")!=null){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			}
+		}
         PayOrder payOrder = new PayOrder();
+        payOrder.setBossId(bossId);
         payOrder.setUserId(request.getUserId());
         payOrder.setPayStatus(0);
         payOrder.setCreateTime(LocalDateTime.now());
@@ -573,7 +580,7 @@ public class HfOrderController {
             hfOrder.setUserId(request.getUserId());
             hfOrder.setOrderType(request.getOrderType());
             hfOrder.setPaymentName(request.getPaymentName());
-            hfOrder.setStoneId(1);//用作bossId
+//            hfOrder.setStoneId(1);//用作bossId
 //        hfOrder.setDistributorId(request.getDistributorId());
             hfOrder.setOrderCode(UUID.randomUUID().toString().replaceAll("-", ""));
             hfOrder.setLastModifier(String.valueOf(hfOrder.getUserId()));

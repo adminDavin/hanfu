@@ -272,8 +272,13 @@ public class KingWordsController {
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
 	public ResponseEntity<JSONObject> code(@RequestParam Map<String, String> map) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Integer bossId = Integer.valueOf(map.get("bossId"));
+		String type;
+		if("login".equals(type = map.get("type"))) {
+			bossId = 1;
+		}
 		HfMessageInfoExample example = new HfMessageInfoExample();
-		example.createCriteria().andBossIdEqualTo(1).andIsDeletedEqualTo((byte) 1);
+		example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 1);
 		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
 		if (CollectionUtils.isEmpty(list)) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
@@ -281,7 +286,7 @@ public class KingWordsController {
 		List<Integer> infoId = list.stream().map(HfMessageInfo::getId).collect(Collectors.toList());
 
 		HfMessageTemplateExample example2 = new HfMessageTemplateExample();
-		example2.createCriteria().andMessageIdIn(infoId).andTypeEqualTo(map.get("type")).andIsDeletedEqualTo((byte) 1);
+		example2.createCriteria().andMessageIdIn(infoId).andTypeEqualTo(type).andIsDeletedEqualTo((byte) 1);
 		List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(example2);
 		if (CollectionUtils.isEmpty(list2)) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
@@ -841,5 +846,5 @@ public class KingWordsController {
 		}
 		return builder.toString();
 	}
-
+	
 }
