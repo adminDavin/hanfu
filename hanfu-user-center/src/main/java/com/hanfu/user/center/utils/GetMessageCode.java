@@ -77,7 +77,7 @@ public class GetMessageCode {
     	Map<String, Object> maps = new HashMap<String, Object>();
     	String contentType = map.get("type");
     	String telephone = map.get("phone");
-    	if(MessageContentTypeEnum.LOGIN.getMessageContentType().equals(contentType)) {
+    	if("login".equals(contentType)) {
     		code = setNewcode();
     	}
     	for (int i = 0; i < infos.size(); i++) {
@@ -217,7 +217,7 @@ public class GetMessageCode {
     
     public static String findData(String telephone, String type, String contentType, Map<String, String> map) {
     	String result = "";
-    	if(MessageContentTypeEnum.LOGIN.getMessageContentType().equals(type)) {
+    	if("login".equals(type)) {
     		switch (contentType) {
 			case "code":
 				result = String.valueOf(code);

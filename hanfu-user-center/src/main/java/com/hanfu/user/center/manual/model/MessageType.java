@@ -32,7 +32,7 @@ public class MessageType implements Serializable{
 	}
 	
 	public static enum MessageContentTypeEnum{
-		LOGIN("login"),
+//		LOGIN("login"),
 		ORDER_CREATE("orderCreate");
 		private String messageContentType;
 		private MessageContentTypeEnum(String messageContentType) {

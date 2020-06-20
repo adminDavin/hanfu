@@ -206,44 +206,75 @@ public class KingWordsController {
 	}
 
 	@RequestMapping(path = "/getMessageContent", method = RequestMethod.GET)
-	@ApiOperation(value = "查询消息内容", notes = "查询消息内容")
-	public ResponseEntity<JSONObject> getMessageContent(String messageType, String contentType, HttpServletRequest request) throws Exception {
+	@ApiOperation(value = "查询是否发送", notes = "查询消息内容")
+	public ResponseEntity<JSONObject> getMessageContent(String messageType, String contentType,
+			HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Integer bossId=null;
-		Integer infoId=null;
+		Integer bossId = null;
+		Integer infoId = null;
 		HfMessageTemplate messageTemplate = null;
-		if (request.getServletContext().getAttribute("getServletContext")!=null){
-			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+		if (request.getServletContext().getAttribute("getServletContext") != null) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
 			}
 		}
 		HfMessageInfoExample example = new HfMessageInfoExample();
 		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
 		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-		if(!CollectionUtils.isEmpty(list)) {
+		if (!CollectionUtils.isEmpty(list)) {
 			infoId = list.get(0).getId();
 		}
-		if(infoId != null) {
+		if (infoId != null) {
 			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
 			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
 			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
-			if(!CollectionUtils.isEmpty(list2)) {
+			if (!CollectionUtils.isEmpty(list2)) {
 				messageTemplate = list2.get(0);
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
 	}
 	
+	
+	@RequestMapping(path = "/getMessageInstance", method = RequestMethod.GET)
+	@ApiOperation(value = "查询消息实体列表", notes = "查询消息实体")
+	public ResponseEntity<JSONObject> getMessageInstance(HttpServletRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Integer bossId = null;
+		Integer infoId = null;
+		HfMessageTemplate messageTemplate = null;
+		if (request.getServletContext().getAttribute("getServletContext") != null) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
+		HfMessageInfoExample example = new HfMessageInfoExample();
+		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+		if (!CollectionUtils.isEmpty(list)) {
+			infoId = list.get(0).getId();
+		}
+		if (infoId != null) {
+			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
+			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
+			if (!CollectionUtils.isEmpty(list2)) {
+				messageTemplate = list2.get(0);
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
+	}
+
 	@RequestMapping(path = "/updateIsUse", method = RequestMethod.GET)
 	@ApiOperation(value = "修改是否发送", notes = "修改是否发送")
-	public ResponseEntity<JSONObject> updateIsUse(Integer id,Byte isUse) throws Exception {
+	public ResponseEntity<JSONObject> updateIsUse(Integer id, Byte isUse) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageTemplate messageTemplate = hfMessageTemplateMapper.selectByPrimaryKey(id);
 		messageTemplate.setIsDeleted(isUse);
 		hfMessageTemplateMapper.updateByPrimaryKey(messageTemplate);
 		return builder.body(ResponseUtils.getResponseBody(messageTemplate.getId()));
 	}
-	
+
 	@RequestMapping(path = "/getMessageContentType", method = RequestMethod.GET)
 	@ApiOperation(value = "查询消息内容类型", notes = "查询消息内容类型")
 	public ResponseEntity<JSONObject> getMessageContentType() throws Exception {
@@ -274,7 +305,7 @@ public class KingWordsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Integer bossId = Integer.valueOf(map.get("bossId"));
 		String type;
-		if("login".equals(type = map.get("type"))) {
+		if ("login".equals(type = map.get("type"))) {
 			bossId = 1;
 		}
 		HfMessageInfoExample example = new HfMessageInfoExample();
@@ -293,7 +324,7 @@ public class KingWordsController {
 		}
 		List<Integer> templateId = list2.stream().map(HfMessageTemplate::getId).collect(Collectors.toList());
 		HfMessageInstanceExample example3 = new HfMessageInstanceExample();
-		example3.createCriteria().andTemplateTypeIdIn(templateId).andIsDeletedEqualTo((byte) 1);
+		example3.createCriteria().andTemplateTypeIdIn(templateId).andIsDeletedEqualTo((byte) 1).andStatusEqualTo(2);
 		List<HfMessageInstance> list3 = hfMessageInstanceMapper.selectByExample(example3);
 		if (CollectionUtils.isEmpty(list3)) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
@@ -331,64 +362,69 @@ public class KingWordsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageInfoExample example = new HfMessageInfoExample();
 		if (type == 1) {
+//			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+//			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+//			if (CollectionUtils.isEmpty(list)) {
+//				HfMessageInfo info = new HfMessageInfo();
+//				info.setBossId(bossId);
+//				info.setType(messageType);
+//				info.setSignName(content);
+//				info.setStatus(1);
+//				info.setCreateTime(LocalDateTime.now());
+//				info.setModifyTime(LocalDateTime.now());
+//				info.setIsDeleted((byte) 0);
+//				hfMessageInfoMapper.insert(info);
+//				if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
+//					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
+//				}
+		} else {
 			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
 			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+			HfMessageInfo info;
 			if (CollectionUtils.isEmpty(list)) {
-				HfMessageInfo info = new HfMessageInfo();
+				info = new HfMessageInfo();
 				info.setBossId(bossId);
 				info.setType(messageType);
-				info.setSignName(content);
-				info.setStatus(1);
+//				info.setSignName(content);
+//				info.setStatus(1);
 				info.setCreateTime(LocalDateTime.now());
 				info.setModifyTime(LocalDateTime.now());
 				info.setIsDeleted((byte) 0);
 				hfMessageInfoMapper.insert(info);
-				if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
-					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
-				}
 			} else {
-				return builder.body(ResponseUtils.getResponseBody("-1"));
+				info = list.get(0);
 			}
-		} else {
-			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
-			List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-			if (CollectionUtils.isEmpty(list)) {
-				return builder.body(ResponseUtils.getResponseBody("-2"));
+			HfMessageTemplate template = null;
+			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+			templateExample.createCriteria().andMessageIdEqualTo(info.getId()).andTypeEqualTo(contentType);
+			List<HfMessageTemplate> templates = hfMessageTemplateMapper.selectByExample(templateExample);
+			if (CollectionUtils.isEmpty(templates)) {
+				template = new HfMessageTemplate();
+				template.setMessageId(info.getId());
+				template.setType(contentType);
+
+				template.setCreateTime(LocalDateTime.now());
+				template.setModifyTime(LocalDateTime.now());
+				template.setIsDeleted((byte) 0);
+				hfMessageTemplateMapper.insert(template);
 			} else {
-				HfMessageInfo info = list.get(0);
-				HfMessageTemplate template = null;
-				HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
-				templateExample.createCriteria().andMessageIdEqualTo(info.getId()).andTypeEqualTo(contentType);
-				List<HfMessageTemplate> templates = hfMessageTemplateMapper.selectByExample(templateExample);
-				if (CollectionUtils.isEmpty(templates)) {
-					template = new HfMessageTemplate();
-					template.setMessageId(info.getId());
-					template.setType(contentType);
-					
-					template.setCreateTime(LocalDateTime.now());
-					template.setModifyTime(LocalDateTime.now());
-					template.setIsDeleted((byte) 0);
-					hfMessageTemplateMapper.insert(template);
-				}else {
-					template = templates.get(0);
-				}
-				String result = parseLine(content);
-				HfMessageInstance instance = new HfMessageInstance();
-				instance.setTemplateTypeId(template.getId());
-				instance.setStatus(1);
-				instance.setTemplateParam(result);
-				instance.setContent(URLDecoder.decode(content, "utf-8"));
-				instance.setSubject(subject);
-				instance.setIsDeleted((byte) 0);
-				hfMessageInstanceMapper.insert(instance);
+				template = templates.get(0);
+			}
+			String result = parseLine(content);
+			HfMessageInstance instance = new HfMessageInstance();
+			instance.setTemplateTypeId(template.getId());
+			instance.setStatus(1);
+			instance.setTemplateParam(result);
+			instance.setContent(URLDecoder.decode(content, "utf-8"));
+			instance.setSubject(subject);
+			instance.setIsDeleted((byte) 0);
+			hfMessageInstanceMapper.insert(instance);
 //				template.setMessageInstanceId(instance.getId());
 //				hfMessageTemplateMapper.updateByPrimaryKey(template);
-				if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
-					addTemplateMessageMethod(info.getId(), bossId, type, content, contentType, messageType);
-				}
+			if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
+				addTemplateMessageMethod(instance.getId(), bossId, type, content, contentType, messageType);
 			}
 		}
-
 		return null;
 	}
 
@@ -397,6 +433,7 @@ public class KingWordsController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageApply apply = new HfMessageApply();
 		apply.setMessageInstanceId(instanceId);
+		apply.setStatus(1);
 		apply.setBossId(bossId);
 		apply.setContent(content);
 		apply.setMessageType(messageType);
@@ -846,5 +883,5 @@ public class KingWordsController {
 		}
 		return builder.toString();
 	}
-	
+
 }

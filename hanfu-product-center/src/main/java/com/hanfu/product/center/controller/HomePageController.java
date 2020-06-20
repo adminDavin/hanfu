@@ -782,6 +782,7 @@ public class HomePageController {
 		announcement.setCreateTime(LocalDateTime.now());
 		announcement.setModifyTime(LocalDateTime.now());
 		announcement.setIsDeleted((byte) 0);
+		hfAnnouncementMapper.insert(announcement);
 		return builder.body(ResponseUtils.getResponseBody(announcement.getId()));
 	}
 	
