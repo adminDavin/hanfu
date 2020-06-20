@@ -236,34 +236,34 @@ public class KingWordsController {
 	}
 	
 	
-	@RequestMapping(path = "/getMessageInstance", method = RequestMethod.GET)
-	@ApiOperation(value = "查询消息实体列表", notes = "查询消息实体")
-	public ResponseEntity<JSONObject> getMessageInstance(HttpServletRequest request) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Integer bossId = null;
-		Integer infoId = null;
-		HfMessageTemplate messageTemplate = null;
-		if (request.getServletContext().getAttribute("getServletContext") != null) {
-			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
-			}
-		}
-		HfMessageInfoExample example = new HfMessageInfoExample();
-		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
-		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-		if (!CollectionUtils.isEmpty(list)) {
-			infoId = list.get(0).getId();
-		}
-		if (infoId != null) {
-			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
-			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
-			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
-			if (!CollectionUtils.isEmpty(list2)) {
-				messageTemplate = list2.get(0);
-			}
-		}
-		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
-	}
+//	@RequestMapping(path = "/getMessageInstance", method = RequestMethod.GET)
+//	@ApiOperation(value = "查询消息实体列表", notes = "查询消息实体")
+//	public ResponseEntity<JSONObject> getMessageInstance(HttpServletRequest request) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+//		Integer bossId = null;
+//		Integer infoId = null;
+//		HfMessageTemplate messageTemplate = null;
+//		if (request.getServletContext().getAttribute("getServletContext") != null) {
+//			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+//				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+//			}
+//		}
+//		HfMessageInfoExample example = new HfMessageInfoExample();
+//		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+//		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+//		if (!CollectionUtils.isEmpty(list)) {
+//			infoId = list.get(0).getId();
+//		}
+//		if (infoId != null) {
+//			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+//			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
+//			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
+//			if (!CollectionUtils.isEmpty(list2)) {
+//				messageTemplate = list2.get(0);
+//			}
+//		}
+//		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
+//	}
 
 	@RequestMapping(path = "/updateIsUse", method = RequestMethod.GET)
 	@ApiOperation(value = "修改是否发送", notes = "修改是否发送")
