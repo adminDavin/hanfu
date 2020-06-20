@@ -9,6 +9,7 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.user.center.config.WxLoginConfig;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
+import com.hanfu.user.center.dao.HfBossMapper;
 import com.hanfu.user.center.dao.HfMessageApplyMapper;
 import com.hanfu.user.center.dao.HfMessageInfoMapper;
 import com.hanfu.user.center.dao.HfMessageInstanceMapper;
@@ -16,6 +17,7 @@ import com.hanfu.user.center.dao.HfMessageTemplateMapper;
 import com.hanfu.user.center.dao.HfTemplateParamMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.MessageApply;
 import com.hanfu.user.center.manual.model.MessageType;
 import com.hanfu.user.center.manual.model.MessageType.MessageContentTypeEnum;
 import com.hanfu.user.center.manual.model.MessageType.MessageTypeEnum;
@@ -124,6 +126,8 @@ public class KingWordsController {
 	private HfMessageInstanceMapper hfMessageInstanceMapper;
 	@Autowired
 	private JavaMailSender javaMailSender;
+	@Autowired
+	private HfBossMapper hfBossMapper;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
@@ -235,36 +239,82 @@ public class KingWordsController {
 		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
 	}
 	
+	@RequestMapping(path = "/getMessageInstanceList", method = RequestMethod.GET)
+	@ApiOperation(value = "查询消息实体列表", notes = "查询消息实体列表")
+	public ResponseEntity<JSONObject> getMessageInstanceList(String messageType, String contentType,
+			HttpServletRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Integer bossId = null;
+		Integer infoId = null;
+		HfMessageTemplate messageTemplate = null;
+		if (request.getServletContext().getAttribute("getServletContext") != null) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
+		HfMessageInfoExample example = new HfMessageInfoExample();
+		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+		if (!CollectionUtils.isEmpty(list)) {
+			infoId = list.get(0).getId();
+		}
+		if (infoId != null) {
+			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
+			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
+			if (!CollectionUtils.isEmpty(list2)) {
+				messageTemplate = list2.get(0);
+			}
+		}
+		HfMessageInstanceExample instanceExample = new HfMessageInstanceExample();
+		instanceExample.createCriteria().andTemplateTypeIdEqualTo(messageTemplate.getId());
+		List<HfMessageInstance> result = hfMessageInstanceMapper.selectByExample(instanceExample);
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
 	
-//	@RequestMapping(path = "/getMessageInstance", method = RequestMethod.GET)
-//	@ApiOperation(value = "查询消息实体列表", notes = "查询消息实体")
-//	public ResponseEntity<JSONObject> getMessageInstance(HttpServletRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//		Integer bossId = null;
-//		Integer infoId = null;
-//		HfMessageTemplate messageTemplate = null;
-//		if (request.getServletContext().getAttribute("getServletContext") != null) {
-//			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-//				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
-//			}
-//		}
-//		HfMessageInfoExample example = new HfMessageInfoExample();
-//		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
-//		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
-//		if (!CollectionUtils.isEmpty(list)) {
-//			infoId = list.get(0).getId();
-//		}
-//		if (infoId != null) {
-//			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
-//			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
-//			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
-//			if (!CollectionUtils.isEmpty(list2)) {
-//				messageTemplate = list2.get(0);
-//			}
-//		}
-//		return builder.body(ResponseUtils.getResponseBody(messageTemplate));
-//	}
-
+	@RequestMapping(path = "/updateMessageInstance", method = RequestMethod.GET)
+	@ApiOperation(value = "消息实体具体选择哪个", notes = "消息实体具体选择哪个")
+	public ResponseEntity<JSONObject> updateMessageInstance(String messageType, String contentType,
+			HttpServletRequest request, Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Integer bossId = null;
+		Integer infoId = null;
+		HfMessageTemplate messageTemplate = null;
+		if (request.getServletContext().getAttribute("getServletContext") != null) {
+			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+				bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			}
+		}
+		HfMessageInfoExample example = new HfMessageInfoExample();
+		example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(messageType);
+		List<HfMessageInfo> list = hfMessageInfoMapper.selectByExample(example);
+		if (!CollectionUtils.isEmpty(list)) {
+			infoId = list.get(0).getId();
+		}
+		if (infoId != null) {
+			HfMessageTemplateExample templateExample = new HfMessageTemplateExample();
+			templateExample.createCriteria().andTypeEqualTo(contentType).andMessageIdEqualTo(infoId);
+			List<HfMessageTemplate> list2 = hfMessageTemplateMapper.selectByExample(templateExample);
+			if (!CollectionUtils.isEmpty(list2)) {
+				messageTemplate = list2.get(0);
+			}
+		}
+		HfMessageInstanceExample instanceExample = new HfMessageInstanceExample();
+		instanceExample.createCriteria().andTemplateTypeIdEqualTo(messageTemplate.getId());
+		List<HfMessageInstance> result = hfMessageInstanceMapper.selectByExample(instanceExample);
+		List<Integer> instanceId = result.stream().map(HfMessageInstance::getId).collect(Collectors.toList());
+		instanceExample.clear();
+		instanceExample.createCriteria().andIdIn(instanceId);
+		HfMessageInstance record = new HfMessageInstance();
+		record.setIsDeleted((byte) 0);
+		hfMessageInstanceMapper.updateByExampleSelective(record, instanceExample);
+		HfMessageInstance instance = hfMessageInstanceMapper.selectByPrimaryKey(id);
+		instance.setIsDeleted((byte) 1);
+		hfMessageInstanceMapper.updateByPrimaryKey(instance);
+		return builder.body(ResponseUtils.getResponseBody(instance.getId()));
+	}
+	
+	
 	@RequestMapping(path = "/updateIsUse", method = RequestMethod.GET)
 	@ApiOperation(value = "修改是否发送", notes = "修改是否发送")
 	public ResponseEntity<JSONObject> updateIsUse(Integer id, Byte isUse) throws Exception {
@@ -284,6 +334,54 @@ public class KingWordsController {
 			str.add(item.getMessageContentType());
 		}
 		return builder.body(ResponseUtils.getResponseBody(str));
+	}
+	
+	@RequestMapping(path = "/getMessageApplyList", method = RequestMethod.GET)
+	@ApiOperation(value = "查询消息申请列表", notes = "查询消息申请列表")
+	public ResponseEntity<JSONObject> getMessageApplyList() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<HfMessageApply> list = hfMessageApplyMapper.selectByExample(null);
+		List<MessageApply> result = new ArrayList<MessageApply>();
+		for (int i = 0; i < list.size(); i++) {
+			HfMessageApply apply = list.get(i);
+			HfBoss boss = hfBossMapper.selectByPrimaryKey(apply.getBossId());
+			MessageApply messageApply = new MessageApply();
+			messageApply.setBossName(boss.getName());
+			messageApply.setContent(apply.getContent());
+			messageApply.setContentType(apply.getContentType());
+			messageApply.setCreateTime(apply.getCreateTime());
+			messageApply.setInstaceId(apply.getMessageInstanceId());
+			messageApply.setStatus(apply.getStatus());
+			result.add(messageApply);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	@RequestMapping(path = "/agreeMessageApply", method = RequestMethod.POST)
+	@ApiOperation(value = "同意申请的消息", notes = "同意申请的消息")
+	public ResponseEntity<JSONObject> agreeMessageApply(Integer applyId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfMessageApply apply = hfMessageApplyMapper.selectByPrimaryKey(applyId);
+		apply.setStatus(2);
+		hfMessageApplyMapper.updateByPrimaryKey(apply);
+		HfMessageInstance instance = hfMessageInstanceMapper.selectByPrimaryKey(apply.getMessageInstanceId());
+		instance.setStatus(2);
+		hfMessageInstanceMapper.updateByPrimaryKey(instance);
+		return builder.body(ResponseUtils.getResponseBody(instance.getId()));
+	}
+	
+	@RequestMapping(path = "/refuseMessageApply", method = RequestMethod.POST)
+	@ApiOperation(value = "拒绝申请的消息", notes = "拒绝申请的消息")
+	public ResponseEntity<JSONObject> refuseMessageApply(Integer applyId, String refuseReason) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfMessageApply apply = hfMessageApplyMapper.selectByPrimaryKey(applyId);
+		apply.setStatus(2);
+		hfMessageApplyMapper.updateByPrimaryKey(apply);
+		HfMessageInstance instance = hfMessageInstanceMapper.selectByPrimaryKey(apply.getMessageInstanceId());
+		instance.setStatus(3);
+		instance.setRefuseReason(refuseReason);
+		hfMessageInstanceMapper.updateByPrimaryKey(instance);
+		return builder.body(ResponseUtils.getResponseBody(instance.getId()));
 	}
 
 	@RequestMapping(path = "/cs", method = RequestMethod.POST)
@@ -411,11 +509,15 @@ public class KingWordsController {
 				template = templates.get(0);
 			}
 			String result = parseLine(content);
+			content = URLDecoder.decode(content, "utf-8");
 			HfMessageInstance instance = new HfMessageInstance();
 			instance.setTemplateTypeId(template.getId());
-			instance.setStatus(1);
+			instance.setStatus(2);
+			if (MessageTypeEnum.SHORT_BREATH.getMessageType().equals(messageType)) {
+				instance.setStatus(1);
+			}
 			instance.setTemplateParam(result);
-			instance.setContent(URLDecoder.decode(content, "utf-8"));
+			instance.setContent(content);
 			instance.setSubject(subject);
 			instance.setIsDeleted((byte) 0);
 			hfMessageInstanceMapper.insert(instance);
