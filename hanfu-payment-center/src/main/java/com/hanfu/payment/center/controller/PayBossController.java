@@ -3,6 +3,7 @@ package com.hanfu.payment.center.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.payment.center.dao.PayBossMapper;
 import com.hanfu.payment.center.model.PayBoss;
+import com.hanfu.payment.center.model.PayBossExample;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -21,10 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -45,7 +43,18 @@ private PayBossMapper payBossMapper;
             //返回选择文件提示
             return "请选择上传文件";
         }
-        payBossMapper.insertSelective(payBoss);
+        PayBossExample payBossExample = new PayBossExample();
+        payBossExample.createCriteria().andBossIdEqualTo(payBoss.getBossId()).andIsDeletedEqualTo((byte) 0);
+        List<PayBoss> payBossList = payBossMapper.selectByExample(payBossExample);
+        payBoss.setAppId(payBoss.getAppid());
+        if (payBossList.size()==0){
+            payBossMapper.insertSelective(payBoss);
+        } else {
+            payBoss.setId(payBossList.get(0).getId());
+            payBossMapper.updateByPrimaryKeySelective(payBoss);
+        }
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
         //构建文件上传所要保存的"文件夹路径"--这里是相对路径，保存到项目根路径的文件夹下
         String realPath = new String("src/main/resources/" + UPLOAD_PATH_PREFIX);
