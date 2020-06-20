@@ -787,8 +787,6 @@ public class HomePageController {
 	
 	@ApiOperation(value = "查询公告", notes = "查询公告")
 	@RequestMapping(value = "/getAnnouncement", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getAnnouncement(HttpServletRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfAnnouncementExample example = new HfAnnouncementExample();
