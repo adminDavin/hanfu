@@ -1789,6 +1789,7 @@ public class HfAuthController {
 		resp.setHeader("Pragma", "no-cache");
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setDateHeader("Expires", -1);
+		resp.setHeader("code",codeMap.get("code").toString());
 
 		resp.setContentType("image/jpeg");
 
