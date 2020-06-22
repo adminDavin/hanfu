@@ -401,8 +401,8 @@ public class KingWordsController {
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
 	public ResponseEntity<JSONObject> code(@RequestParam Map<String, String> map) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		String b = map.get("bossId");
-		Integer bossId = b == null ? null:Integer.valueOf(b);
+		String s = map.get("bossId");
+		Integer bossId = s == null ? null:Integer.valueOf(s);
 		String type;
 		if ("login".equals(type = map.get("type"))) {
 			bossId = 1;
