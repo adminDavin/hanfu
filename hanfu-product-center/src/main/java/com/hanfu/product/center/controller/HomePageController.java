@@ -538,48 +538,48 @@ public class HomePageController {
 //		return builder.body(ResponseUtils.getResponseBody(infos));
 //	}
 
-	@ApiOperation(value = "获取首页订单类型数据", notes = "获取首页订单类型数据")
-	@RequestMapping(value = "/findOrderTypeData", method = RequestMethod.GET)
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HomePageOrderType info = new HomePageOrderType();
-		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
-//		HfStoneExample example = new HfStoneExample();
-//		example.createCriteria().andBossIdEqualTo(bossId);
-//		List<HfStone> list = hfStoneMapper.selectByExample(example);
-//		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
-		HfOrderExample example2 = new HfOrderExample();
-		example2.createCriteria().andStoneIdEqualTo(bossId);
-		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
-		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
-		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
-		String[] str = new String[homePageInfos.size()];
-		Integer[] str2 = new Integer[homePageInfos.size()];
-		for (int i = 0; i < homePageInfos.size(); i++) {
-			HomePageOrderType homePageOrderType = new HomePageOrderType();
-			if ("nomalOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageOrderType.setName("普通订单");
-				str[i] = "普通订单";
-			}
-			if ("rechargeOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageOrderType.setName("充值订单");
-				str[i] = "充值订单";
-			}
-			if ("shoppingOrder".equals(homePageInfos.get(i).getOrderType())) {
-				homePageOrderType.setName("到店支付订单");
-				str[i] = "到店支付订单";
-			}
-			homePageOrderType.setValue(homePageInfos.get(i).getOrderTypeCounts());
-//			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
-			result.add(homePageOrderType);
-		}
-		info.setJs(JSONArray.parseArray(JSON.toJSONString(result)));
-		info.setData(str);
-//		info.setOrderTypeCountsStr(str2);
-		return builder.body(ResponseUtils.getResponseBody(info));
-	}
+//	@ApiOperation(value = "获取首页订单类型数据", notes = "获取首页订单类型数据")
+//	@RequestMapping(value = "/findOrderTypeData", method = RequestMethod.GET)
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(paramType = "query", name = "bossId", value = "bossId", required = true, type = "Integer") })
+//	public ResponseEntity<JSONObject> findOrderTypeData(Integer bossId) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HomePageOrderType info = new HomePageOrderType();
+//		List<HomePageOrderType> result = new ArrayList<HomePageOrderType>();
+////		HfStoneExample example = new HfStoneExample();
+////		example.createCriteria().andBossIdEqualTo(bossId);
+////		List<HfStone> list = hfStoneMapper.selectByExample(example);
+////		List<Integer> stoneId = list.stream().map(HfStone::getId).collect(Collectors.toList());
+//		HfOrderExample example2 = new HfOrderExample();
+//		example2.createCriteria().andStoneIdEqualTo(bossId);
+//		List<HfOrder> orders = hfOrderMapper.selectByExample(example2);
+//		List<Integer> orderId = orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+//		List<HomePageInfo> homePageInfos = homePageDao.findOrderTypeCount(orderId);
+//		String[] str = new String[homePageInfos.size()];
+//		Integer[] str2 = new Integer[homePageInfos.size()];
+//		for (int i = 0; i < homePageInfos.size(); i++) {
+//			HomePageOrderType homePageOrderType = new HomePageOrderType();
+//			if ("nomalOrder".equals(homePageInfos.get(i).getOrderType())) {
+//				homePageOrderType.setName("普通订单");
+//				str[i] = "普通订单";
+//			}
+//			if ("rechargeOrder".equals(homePageInfos.get(i).getOrderType())) {
+//				homePageOrderType.setName("充值订单");
+//				str[i] = "充值订单";
+//			}
+//			if ("shoppingOrder".equals(homePageInfos.get(i).getOrderType())) {
+//				homePageOrderType.setName("到店支付订单");
+//				str[i] = "到店支付订单";
+//			}
+//			homePageOrderType.setValue(homePageInfos.get(i).getOrderTypeCounts());
+////			str2[i] = homePageInfos.get(i).getOrderTypeCounts();
+//			result.add(homePageOrderType);
+//		}
+//		info.setJs(JSONArray.parseArray(JSON.toJSONString(result)));
+//		info.setData(str);
+////		info.setOrderTypeCountsStr(str2);
+//		return builder.body(ResponseUtils.getResponseBody(info));
+//	}
 
 	@ApiOperation(value = "获取首页年访问量数据", notes = "获取首页年访问量数据")
 	@RequestMapping(value = "/findBrowseCountData", method = RequestMethod.GET)
