@@ -352,7 +352,11 @@ public class WareHouseController {
 			hWarehouseRespExample.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(storage.getGoodId());
 			List<HWarehouseResp> resps = hWarehouseRespMapper.selectByExample(hWarehouseRespExample);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
-			display.setTotal(resps.get(0).getQuantity());
+			if(CollectionUtils.isEmpty(resps)) {
+				display.setTotal(0);
+			}else {
+				display.setTotal(resps.get(0).getQuantity());
+			}
 			display.setId(storage.getId());
 			display.setStatus(storage.getStatus());
 			display.setGoodId(storage.getGoodId());

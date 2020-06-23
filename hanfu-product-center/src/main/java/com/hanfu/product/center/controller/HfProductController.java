@@ -384,8 +384,8 @@ public class HfProductController {
 		if (pageSize == null) {
 			pageSize = 0;
 		}
-		Object bossId= request.getHeader("bossId");
-		isDelete.setStoneId(Integer.valueOf((String)bossId));
+//		Object bossId= request.getHeader("bossId");
+//		isDelete.setStoneId(Integer.valueOf((String)bossId));
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfGoodsDisplayInfo> infos = new ArrayList<HfGoodsDisplayInfo>();
 		List<HfProductDisplay> products =  new ArrayList<HfProductDisplay>();
