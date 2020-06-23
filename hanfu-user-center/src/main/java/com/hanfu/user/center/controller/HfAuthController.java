@@ -1777,7 +1777,7 @@ public class HfAuthController {
 	}
 	@RequestMapping(value = "/code", method = RequestMethod.GET)
 	@ResponseBody
-	public void doGet(HttpServletRequest req, HttpServletResponse resp){
+	public void doGet(HttpServletRequest req, HttpServletResponse resp,String uuid){
 		// 调用工具类生成的验证码和验证码图片
 		Map<String, Object> codeMap = CodeUtil.generateCodeAndPic();
 
@@ -1790,7 +1790,7 @@ public class HfAuthController {
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setDateHeader("Expires", -1);
 		resp.setHeader("code",codeMap.get("code").toString());
-
+		redisTemplate.opsForValue().set(uuid,codeMap.get("code").toString());
 		resp.setContentType("image/jpeg");
 
 		// 将图像输出到Servlet输出流中。
@@ -1803,7 +1803,11 @@ public class HfAuthController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	}
+	@RequestMapping(value = "/codeGit", method = RequestMethod.GET)
+	@ResponseBody
+	public Object codeGit(String uuid){
+		return redisTemplate.opsForValue().get(uuid);
 	}
 //	@ApiOperation(value = "找回密码", notes = "找回密码")
 //	@RequestMapping(value = "/retrievePassword", method = RequestMethod.POST)
