@@ -346,6 +346,7 @@ public class KingWordsController {
 			HfMessageApply apply = list.get(i);
 			HfBoss boss = hfBossMapper.selectByPrimaryKey(apply.getBossId());
 			MessageApply messageApply = new MessageApply();
+			messageApply.setId(apply.getId());
 			messageApply.setBossName(boss.getName());
 			messageApply.setContent(apply.getContent());
 			messageApply.setContentType(apply.getContentType());
