@@ -66,10 +66,10 @@ public class discountCouponController {
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
     public ResponseEntity<JSONObject> getGoodsSpecs(HttpServletRequest request,Date startTime, Date stopTime, DiscountCoupon discountCoupon, MultipartFile fileInfo)
             throws Exception {
-        if (request.getServletContext().getAttribute("getServletContextType")!=null){
+        if (request.getServletContext().getAttribute("getServletContextType")!=null&&discountCoupon.getBossId()!=null){
             if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
                 discountCoupon.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-            } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
+            } else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")&&discountCoupon.getStoneId()!=null){
                 discountCoupon.setStoneId((Integer) request.getServletContext().getAttribute("getServletContext"));
             }
         }
