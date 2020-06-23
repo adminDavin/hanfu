@@ -272,11 +272,23 @@
 		<!-- <table schema="user_center" tableName="hf_integral" domainObjectName="HfIntegral"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<table schema="user_center" tableName="hf_evaluate"
+		<!-- <table schema="user_center" tableName="hf_evaluate"
 		domainObjectName="HfEvaluate">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/>
+		identity="true"/> 
+		</table>-->
+		<!-- <table schema="user_center" tableName="hf_visits_record"
+		domainObjectName="HfVisitsRecord">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
+		</table> -->
+		<table schema="user_center" tableName="pay_order"
+		domainObjectName="PayOrder">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
 		</table>
 		<!-- <table schema="user_center" tableName="evaluate_picture" domainObjectName="EvaluatePicture"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 

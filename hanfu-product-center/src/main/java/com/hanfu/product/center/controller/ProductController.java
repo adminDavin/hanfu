@@ -415,6 +415,7 @@ public class ProductController {
 //		LastModifier.setLastModifier(userId, productId, productMapper, hfMemberDao);
 		String arr[];
 		arr = FileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
+		System.out.println(arr);
 		FileDesc fileDesc = new FileDesc();
 		fileDesc.setFileName(fileInfo.getName());
 		fileDesc.setGroupName(arr[0]);

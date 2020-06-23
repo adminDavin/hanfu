@@ -383,6 +383,14 @@ public class KingWordsController {
 		hfMessageInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(instance.getId()));
 	}
+	
+	@RequestMapping(path = "/getRefuse", method = RequestMethod.GET)
+	@ApiOperation(value = "查询拒绝原因", notes = "查询拒绝原因")
+	public ResponseEntity<JSONObject> getRefuse(Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfMessageInstance instance = hfMessageInstanceMapper.selectByPrimaryKey(id);
+		return builder.body(ResponseUtils.getResponseBody(instance));
+	}
 
 	@RequestMapping(path = "/cs", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
