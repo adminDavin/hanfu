@@ -15,9 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.hanfu.product.center.manual.dao.*;
 import com.hanfu.product.center.model.*;
-import com.hanfu.user.center.dao.HfUserMemberMapper;
-import com.hanfu.user.center.model.HfUserMember;
-import com.hanfu.user.center.model.HfUserMemberExample;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,8 +139,8 @@ public class HomePageController {
 	@Autowired
 	private HfAnnouncementMapper hfAnnouncementMapper;
 	
-	@Autowired
-	private HfUserMemberMapper hfUserMemberMapper;
+//	@Autowired
+//	private HfUserMemberMapper hfUserMemberMapper;
 	
 	@Autowired
 	private HfVisitsRecordMapper hfVisitsRecordMapper;
@@ -209,37 +206,37 @@ public class HomePageController {
 //		return builder.body(ResponseUtils.getResponseBody(info));
 //	}
 	
-	@ApiOperation(value = "获取首页会员数", notes = "获取首页会员数")
-	@RequestMapping(value = "/findMemberData", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findMemberData(HttpServletRequest request) throws Exception {
-		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfUserMemberExample example = new HfUserMemberExample();
-		Time time = new Time();
-		Integer memberDay = 0, memberMouth = 0, memberAll = 0, bossId = 1, stoneId = 1;
-		ServletContext sc;
-		if("boss".equals((sc = request.getServletContext()).getAttribute("getServletContextType"))) {
-			bossId = (Integer) sc.getAttribute("getServletContext");
-			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
-			.andCreateTimeBetween(time.getDayStart(), time.getDayEnd());
-			memberDay = hfUserMemberMapper.selectByExample(example).size();
-			example.clear();
-			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
-			.andCreateTimeBetween(time.getMouthStart(), time.getMouthEnd());
-			memberMouth = hfUserMemberMapper.selectByExample(example).size();
-			example.clear();
-			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0);
-			memberAll = hfUserMemberMapper.selectByExample(example).size();
-		}
-		if("stone".equals(sc.getAttribute("getServletContextType"))) {
-			stoneId = (Integer) sc.getAttribute("getServletContext");
-		}
-		
-		HomePageInfo info = new HomePageInfo();
-		info.setMembersDay(memberDay);
-		info.setMembersMouth(memberMouth);
-		info.setMembersAll(memberAll);
-		return builder.body(ResponseUtils.getResponseBody(info));
-	}
+//	@ApiOperation(value = "获取首页会员数", notes = "获取首页会员数")
+//	@RequestMapping(value = "/findMemberData", method = RequestMethod.GET)
+//	public ResponseEntity<JSONObject> findMemberData(HttpServletRequest request) throws Exception {
+//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//		HfUserMemberExample example = new HfUserMemberExample();
+//		Time time = new Time();
+//		Integer memberDay = 0, memberMouth = 0, memberAll = 0, bossId = 1, stoneId = 1;
+//		ServletContext sc;
+//		if("boss".equals((sc = request.getServletContext()).getAttribute("getServletContextType"))) {
+//			bossId = (Integer) sc.getAttribute("getServletContext");
+//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
+//			.andCreateTimeBetween(time.getDayStart(), time.getDayEnd());
+//			memberDay = hfUserMemberMapper.selectByExample(example).size();
+//			example.clear();
+//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
+//			.andCreateTimeBetween(time.getMouthStart(), time.getMouthEnd());
+//			memberMouth = hfUserMemberMapper.selectByExample(example).size();
+//			example.clear();
+//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0);
+//			memberAll = hfUserMemberMapper.selectByExample(example).size();
+//		}
+//		if("stone".equals(sc.getAttribute("getServletContextType"))) {
+//			stoneId = (Integer) sc.getAttribute("getServletContext");
+//		}
+//		
+//		HomePageInfo info = new HomePageInfo();
+//		info.setMembersDay(memberDay);
+//		info.setMembersMouth(memberMouth);
+//		info.setMembersAll(memberAll);
+//		return builder.body(ResponseUtils.getResponseBody(info));
+//	}
 	
 	@ApiOperation(value = "获取首页访问量", notes = "获取首页访问量")
 	@RequestMapping(value = "/findVistisData", method = RequestMethod.GET)
