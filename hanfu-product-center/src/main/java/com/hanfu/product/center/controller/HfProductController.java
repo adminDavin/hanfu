@@ -177,11 +177,21 @@ public class HfProductController {
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "quantity", value = "获取商品的数量限制", required = false, type = "Integer") })
-	public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "quantity") Integer quantity)
+	public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "quantity") Integer quantity,HttpServletRequest request)
 			throws JSONException {
+    	Integer bossId = null;
+    	if("boss".equals(request.getServletContext().getAttribute("getServletContextType"))) {
+			bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+    	}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfStoneExample example = new HfStoneExample();
+		example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
+		List<HfStone> stones = hfStoneMapper.selectByExample(example);
+		List<Integer> stoneId = stones.stream().map(HfStone::getId).collect(Collectors.toList());
 		List<HfProductDisplay> products = new ArrayList<HfProductDisplay>();
-		List<HfStoneResp> list = hfStoneRespMapper.selectByExample(null);
+		HfStoneRespExample example2 = new HfStoneRespExample();
+		example2.createCriteria().andStoneIdIn(stoneId).andIsDeletedEqualTo((byte) 0);
+		List<HfStoneResp> list = hfStoneRespMapper.selectByExample(example2);
 		for (int i = 0; i < list.size(); i++) {
 			HfStoneResp resp = list.get(i);
 			HfProductDisplay display = new HfProductDisplay();
