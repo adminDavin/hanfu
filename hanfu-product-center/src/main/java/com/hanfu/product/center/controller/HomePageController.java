@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,6 +46,7 @@ import com.hanfu.product.center.dao.HfStoneConcernMapper;
 import com.hanfu.product.center.dao.HfStoneMapper;
 import com.hanfu.product.center.dao.HfStonePictureMapper;
 import com.hanfu.product.center.dao.HfUserBrowseRecordMapper;
+import com.hanfu.product.center.dao.HfUserMemberMapper;
 import com.hanfu.product.center.dao.HfUsersMapper;
 import com.hanfu.product.center.dao.HfVisitsRecordMapper;
 import com.hanfu.product.center.dao.PayOrderMapper;
@@ -139,8 +142,8 @@ public class HomePageController {
 	@Autowired
 	private HfAnnouncementMapper hfAnnouncementMapper;
 	
-//	@Autowired
-//	private HfUserMemberMapper hfUserMemberMapper;
+	@Autowired
+	private HfUserMemberMapper hfUserMemberMapper;
 	
 	@Autowired
 	private HfVisitsRecordMapper hfVisitsRecordMapper;
@@ -206,37 +209,37 @@ public class HomePageController {
 //		return builder.body(ResponseUtils.getResponseBody(info));
 //	}
 	
-//	@ApiOperation(value = "获取首页会员数", notes = "获取首页会员数")
-//	@RequestMapping(value = "/findMemberData", method = RequestMethod.GET)
-//	public ResponseEntity<JSONObject> findMemberData(HttpServletRequest request) throws Exception {
-//		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//		HfUserMemberExample example = new HfUserMemberExample();
-//		Time time = new Time();
-//		Integer memberDay = 0, memberMouth = 0, memberAll = 0, bossId = 1, stoneId = 1;
-//		ServletContext sc;
-//		if("boss".equals((sc = request.getServletContext()).getAttribute("getServletContextType"))) {
-//			bossId = (Integer) sc.getAttribute("getServletContext");
-//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
-//			.andCreateTimeBetween(time.getDayStart(), time.getDayEnd());
-//			memberDay = hfUserMemberMapper.selectByExample(example).size();
-//			example.clear();
-//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
-//			.andCreateTimeBetween(time.getMouthStart(), time.getMouthEnd());
-//			memberMouth = hfUserMemberMapper.selectByExample(example).size();
-//			example.clear();
-//			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0);
-//			memberAll = hfUserMemberMapper.selectByExample(example).size();
-//		}
-//		if("stone".equals(sc.getAttribute("getServletContextType"))) {
-//			stoneId = (Integer) sc.getAttribute("getServletContext");
-//		}
-//		
-//		HomePageInfo info = new HomePageInfo();
-//		info.setMembersDay(memberDay);
-//		info.setMembersMouth(memberMouth);
-//		info.setMembersAll(memberAll);
-//		return builder.body(ResponseUtils.getResponseBody(info));
-//	}
+	@ApiOperation(value = "获取首页会员数", notes = "获取首页会员数")
+	@RequestMapping(value = "/findMemberData", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findMemberData(HttpServletRequest request) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfUserMemberExample example = new HfUserMemberExample();
+		Time time = new Time();
+		Integer memberDay = 0, memberMouth = 0, memberAll = 0, bossId = 1, stoneId = 1;
+		ServletContext sc;
+		if("boss".equals((sc = request.getServletContext()).getAttribute("getServletContextType"))) {
+			bossId = (Integer) sc.getAttribute("getServletContext");
+			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
+			.andCreateTimeBetween(time.getDayStart(), time.getDayEnd());
+			memberDay = hfUserMemberMapper.selectByExample(example).size();
+			example.clear();
+			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0)
+			.andCreateTimeBetween(time.getMouthStart(), time.getMouthEnd());
+			memberMouth = hfUserMemberMapper.selectByExample(example).size();
+			example.clear();
+			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0);
+			memberAll = hfUserMemberMapper.selectByExample(example).size();
+		}
+		if("stone".equals(sc.getAttribute("getServletContextType"))) {
+			stoneId = (Integer) sc.getAttribute("getServletContext");
+		}
+		
+		HomePageInfo info = new HomePageInfo();
+		info.setMembersDay(memberDay);
+		info.setMembersMouth(memberMouth);
+		info.setMembersAll(memberAll);
+		return builder.body(ResponseUtils.getResponseBody(info));
+	}
 	
 	@ApiOperation(value = "获取首页访问量", notes = "获取首页访问量")
 	@RequestMapping(value = "/findVistisData", method = RequestMethod.GET)
@@ -473,21 +476,28 @@ public class HomePageController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1, stoneId = 1;
 		ServletContext sc;
+		List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
+		List<Integer> payId = null;
+		HfOrderExample orderExample = new HfOrderExample();
+		Integer[] a = {0};
 		if("boss".equals((sc = request.getServletContext()).getAttribute("getServletContextType"))) {
 			bossId = (Integer) sc.getAttribute("getServletContext");
-			Integer[] a = {0};
-			List<HomePageInfo> infos = new ArrayList<HomePageInfo>();
 			PayOrderExample example = new PayOrderExample();
 			example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((byte) 0);
 			List<PayOrder> list = payOrderMapper.selectByExample(example);
-			List<Integer> payId = list.size() == 0 ? Lists.newArrayList(a):list.stream().map(PayOrder::getId).collect(Collectors.toList());
-			HfOrderExample orderExample = new HfOrderExample();
+			payId = list.size() == 0 ? Lists.newArrayList(a):list.stream().map(PayOrder::getId).collect(Collectors.toList());
 			orderExample.createCriteria().andPayOrderIdIn(payId).andIdDeletedEqualTo((byte) 0 );
-			List<HfOrder> orders = hfOrderMapper.selectByExample(orderExample);
-			List<Integer> orderId = orders.size() == 0 ? Lists.newArrayList(a):orders.stream().map(HfOrder::getId).collect(Collectors.toList());
-			HfOrderDetailExample detailExample = new HfOrderDetailExample();
-			detailExample.createCriteria().andOrderIdIn(orderId).andIdDeletedEqualTo((byte) 0);
-			List<HfOrderDetail> details = hfOrderDetailMapper.selectByExample(detailExample);
+		}
+		if("stone".equals(sc.getAttribute("getServletContextType"))) {
+			stoneId = (Integer) sc.getAttribute("getServletContext");
+			orderExample.createCriteria().andStoneIdEqualTo(stoneId).andIdDeletedEqualTo((byte) 0 );
+		}
+		List<HfOrder> orders = hfOrderMapper.selectByExample(orderExample);
+		List<Integer> orderId = orders.size() == 0 ? Lists.newArrayList(a):orders.stream().map(HfOrder::getId).collect(Collectors.toList());
+		HfOrderDetailExample detailExample = new HfOrderDetailExample();
+		detailExample.createCriteria().andOrderIdIn(orderId).andIdDeletedEqualTo((byte) 0);
+		List<HfOrderDetail> details = hfOrderDetailMapper.selectByExample(detailExample);
+		if(!CollectionUtils.isEmpty(details)) {
 			Map<Integer, List<HfOrderDetail>> mapOrderDetail = details.stream().collect(Collectors.groupingBy(HfOrderDetail::getGoodsId));
 			Iterator<Entry<Integer, List<HfOrderDetail>>> iterator = mapOrderDetail.entrySet().iterator();
 			while(iterator.hasNext()) {
@@ -507,11 +517,24 @@ public class HomePageController {
 				info.setSalesCount(count);
 				infos.add(info);
 			}
-			//TODO
-//			Map<Integ, V>
-		}
-		if("stone".equals(sc.getAttribute("getServletContextType"))) {
-			stoneId = (Integer) sc.getAttribute("getServletContext");
+			Map<Integer, List<HomePageInfo>> mapHomePageInfo = infos.stream().collect(Collectors.groupingBy(HomePageInfo::getProductId));
+			Iterator<Entry<Integer, List<HomePageInfo>>> iterator2 = mapHomePageInfo.entrySet().iterator();
+			infos.clear();
+			while (iterator2.hasNext()) {
+				Entry<Integer, List<HomePageInfo>> entry = iterator2.next();
+				HomePageInfo info = new HomePageInfo();
+				Integer all = 0;
+				info.setProductId(entry.getKey());
+				List<HomePageInfo> homePageInfos = entry.getValue();
+				for (int i = 0; i < homePageInfos.size(); i++) {
+					HomePageInfo pageInfo = homePageInfos.get(i);
+					info.setProductName(pageInfo.getProductName());
+					all += pageInfo.getSalesCount();
+				}
+				info.setSalesCountAll(all);
+				infos.add(info);
+			}
+			infos.stream().sorted(Comparator.comparing(HomePageInfo::getSalesCountAll).reversed());
 		}
 //		infos.sort(new Comparator<HomePageInfo>() {// Comparator 比较器. 需要实现比较方法
 //			@Override
@@ -519,7 +542,7 @@ public class HomePageController {
 //				return o2.getSalesCountAll() - o1.getSalesCountAll();// 从小到大 , 如果是o2.age-o1.age 则表示从大到小
 //			}
 //		});
-		return builder.body(ResponseUtils.getResponseBody(null));
+		return builder.body(ResponseUtils.getResponseBody(infos));
 	}
 
 //	@ApiOperation(value = "获取首页销量排行数据", notes = "获取首页销量排行数据")
@@ -1011,6 +1034,5 @@ public class HomePageController {
 		List<HfAnnouncement> list = hfAnnouncementMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
-	
 	
 }
