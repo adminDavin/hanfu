@@ -101,6 +101,8 @@ public class HfProductActivityController {
     private HfGoodsDisplayDao hfGoodsDisplayDao;
     @Autowired
     private DistributionRecordMapper distributionRecordMapper;
+    @Autowired
+    private HfVisitsRecordMapper hfVisitsRecordMapper;
     @RequiredPermission(PermissionConstants.ADMIN_ACTIVITY_INSERT)
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
@@ -156,6 +158,14 @@ public class HfProductActivityController {
         if(bossId == null) {
         	bossId= Integer.valueOf((String) requests.getHeader("bossId"));
         }
+        HfVisitsRecord record = new HfVisitsRecord();
+        record.setBossId(bossId);
+        record.setCount(1);
+        record.setVisitsTime(LocalDateTime.now());
+        record.setCreateTime(LocalDateTime.now());
+        record.setModifyTime(LocalDateTime.now());
+        record.setIsDeleted((byte) 0);
+        hfVisitsRecordMapper.insert(record);
         productInfo.setBossId(bossId);
         productInfo.setActivityType(activityType);
         productInfo.setActivityName(name);

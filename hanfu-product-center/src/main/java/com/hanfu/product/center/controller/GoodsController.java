@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -241,12 +242,21 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo) throws Exception {
+	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods record = new HfGoods();
 		record.setProductId(hfGoodsInfo.getProductId());
 		Product product = productMapper.selectByPrimaryKey(hfGoodsInfo.getProductId());
-		record.setBossId(1);
+		Integer bossId = 1,stoneId = 1;
+		ServletContext sc;
+		if("boss".equals((sc = requests.getServletContext()).getAttribute("getServletContextType"))) {
+			bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+		}
+		if("stone".equals(sc.getAttribute("getServletContextType"))) {
+			stoneId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			bossId=hfStoneMapper.selectByPrimaryKey(stoneId).getBossId();
+		}
+		record.setBossId(bossId);
 		record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
 		record.setProductId(hfGoodsInfo.getProductId());
 		record.setHfName(hfGoodsInfo.getGoodName());

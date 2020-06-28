@@ -41,7 +41,7 @@ public class FdfsClient {
             TrackerGroup trackerGroup = ClientGlobal.g_tracker_group;
             TrackerClient trackerClient = new TrackerClient(trackerGroup);
             TrackerServer trackerServer = trackerClient.getConnection();
-            StorageServer storage = new StorageServer("172.26.81.247", 23000, 0);
+            StorageServer storage = new StorageServer("39.98.126.20", 23000, 0);
             client = new StorageClient(trackerServer, storage);
             
         } catch (IOException e) {

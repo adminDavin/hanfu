@@ -62,6 +62,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -214,10 +215,14 @@ public class WareHouseController {
 	@ApiOperation(value = "查询商家物品", notes = "查询商家物品")
 	@RequestMapping(value = "/findBossGoods", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findBossGoods(HttpServletRequest requests,Integer bossId) throws Exception {
-		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
-			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")||requests.getServletContext().getAttribute("getServletContextType").equals("warehouse")) {
-				bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
-			}
+		Integer warehouseId = 1,stoneId = 1;
+		ServletContext sc;
+		if("boss".equals((sc = requests.getServletContext()).getAttribute("getServletContextType"))) {
+			bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+		}
+		if("warehouse".equals(sc.getAttribute("getServletContextType"))) {
+			warehouseId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+			bossId=warehouseMapper.selectByPrimaryKey(warehouseId).getBossid();
 		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<WarehouseGoodDisplay> result = new ArrayList<WarehouseGoodDisplay>();
@@ -347,7 +352,11 @@ public class WareHouseController {
 			hWarehouseRespExample.createCriteria().andWarehouseIdEqualTo(warehouseId).andGoodIdEqualTo(storage.getGoodId());
 			List<HWarehouseResp> resps = hWarehouseRespMapper.selectByExample(hWarehouseRespExample);
 			WarehouseGoodDisplay display = new WarehouseGoodDisplay();
-			display.setTotal(resps.get(0).getQuantity());
+			if(CollectionUtils.isEmpty(resps)) {
+				display.setTotal(0);
+			}else {
+				display.setTotal(resps.get(0).getQuantity());
+			}
 			display.setId(storage.getId());
 			display.setStatus(storage.getStatus());
 			display.setGoodId(storage.getGoodId());
