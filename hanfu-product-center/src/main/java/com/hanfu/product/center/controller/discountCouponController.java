@@ -58,6 +58,10 @@ public class discountCouponController {
     private HfPriceMapper hfPriceMapper;
     @Autowired
     private HttpServletResponse response;
+    @Autowired
+    private HfBossMapper hfBossMapper;
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequiredPermission(PermissionConstants.ADMIN_DISCOUNT_INSERT)
     @ApiOperation(value = "添加优惠券", notes = "添加优惠券")
@@ -161,6 +165,15 @@ if (discountCoupon.getStoneId()==null){
             discountCoupons = discountCoupons.stream().filter(discountCoupon -> discountCoupon.getDiscountCouponType().equals(DiscountCouponType)).collect(Collectors.toList());
         }
         discountCoupons.forEach(discountCoupon -> {
+            if (discountCoupon.getBossId()!=0){
+               HfBoss hfBoss = hfBossMapper.selectByPrimaryKey(discountCoupon.getBossId());
+                discountCoupon.setType("boss");
+                discountCoupon.setPlatform(hfBoss.getName());
+            } else if (discountCoupon.getStoneId()!=0){
+                HfStone hfStone = hfStoneMapper.selectByPrimaryKey(discountCoupon.getStoneId());
+                discountCoupon.setType("stone");
+                discountCoupon.setPlatform(hfStone.getHfName());
+            }
             Date date1 = new Date();
             Date date2 = new Date();
             Date date3 = new Date();
