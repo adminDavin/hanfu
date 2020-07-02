@@ -420,6 +420,7 @@ public class HfProductActivityController {
         	info.setProductId(products.get(0).getProductId());
         	ProductInstance instance = productInstanceMapper.selectByPrimaryKey(products.get(0).getInstanceId());
         	info.setStoneId(instance.getStoneId());
+        	info.setInstanceId(instance.getId());
         	info.setStoneName(hfStoneMapper.selectByPrimaryKey(instance.getStoneId()).getHfName());
         	List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(products.get(0).getProductId());
         	if (Optional.ofNullable(hfGoodsDisplay).isPresent()) {

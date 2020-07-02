@@ -14,6 +14,7 @@ public class RatationInfo implements Serializable{
 	private Integer stoneId;
 	private String stoneName;
 	private String priceArea;
+	private Integer instanceId;
 	public Integer getActivityId() {
 		return activityId;
 	}
@@ -49,6 +50,12 @@ public class RatationInfo implements Serializable{
 	}
 	public void setPriceArea(String priceArea) {
 		this.priceArea = priceArea;
+	}
+	public Integer getInstanceId() {
+		return instanceId;
+	}
+	public void setInstanceId(Integer instanceId) {
+		this.instanceId = instanceId;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
