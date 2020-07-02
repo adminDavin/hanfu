@@ -1828,7 +1828,7 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
-	@Transactional
+	
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 
