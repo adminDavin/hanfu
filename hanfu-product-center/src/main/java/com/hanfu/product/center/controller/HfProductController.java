@@ -573,7 +573,7 @@ public class HfProductController {
 			}
 
 		});
-		products = products.stream().filter(p -> p.getInstanceId() != null || !StringUtils.isEmpty(p.getPriceArea()))
+		products = products.stream().filter(p -> p.getInstanceId() != null && !StringUtils.isEmpty(p.getPriceArea()))
 				.collect(Collectors.toList());
 		if (stoneId != null) {
 			products = products.stream().filter(p -> p.getStoneId() == stoneId).collect(Collectors.toList());

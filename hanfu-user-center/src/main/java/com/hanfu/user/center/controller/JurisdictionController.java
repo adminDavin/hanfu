@@ -228,7 +228,7 @@ public class JurisdictionController {
         if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
             if (request.getServletContext().getAttribute("getServletContext")!=null){
-                roles.setRoleType("boss");
+                roles.setRoleCode("boss");
                 roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
             }
         }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
