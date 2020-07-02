@@ -38,6 +38,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+
+import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -50,6 +52,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -474,6 +477,40 @@ public class JurisdictionController {
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
+	}
+	
+	@ApiOperation(value = "查询当前账号拥有的模块和权限", notes = "查询当前用户拥有的模块")
+	@RequestMapping(value = "/findAdminHasModelAndJus", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		Integer[] a = {0};
+		AccountRolesExample example = new AccountRolesExample();
+		example.createCriteria().andAccountIdEqualTo(id);
+		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
+		List<Integer> roleId = roles.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
+		RoleModelExample example2 = new RoleModelExample();
+		example2.createCriteria().andRoleIdIn(roleId);
+		List<RoleModel> models = roleModelMapper.selectByExample(example2);
+		List<Integer> modelId = models.size()==0 ?Lists.newArrayList(a):models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
+		HfModuleExample example3 = new HfModuleExample();
+		example3.createCriteria().andIdIn(modelId);
+		List<HfModule> list = hfModuleMapper.selectByExample(example3);
+		RoleJurisdictionExample example4 = new RoleJurisdictionExample();
+		example4.createCriteria().andRoleIdIn(roleId);
+		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example4);
+		List<Integer> jurisdictionId = jurisdictions.size()==0 ? Lists.newArrayList(a):jurisdictions.stream()
+				.map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+		JurisdictionExample example5 = new JurisdictionExample();
+		List<Jurisdiction> list2 = new ArrayList<Jurisdiction>();
+		for (int i = 0; i < list.size(); i++) {
+			HfModule hfModule = list.get(i);
+			example5.clear();
+			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
+			list2 = jurisdictionMapper.selectByExample(example5);
+			map.put(hfModule, list2);
+		}
+		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 	
 	@ApiOperation(value = "查询当前账号拥有的模块", notes = "查询当前用户拥有的模块")

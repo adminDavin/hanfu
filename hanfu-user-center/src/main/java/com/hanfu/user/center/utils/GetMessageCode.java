@@ -82,7 +82,6 @@ public class GetMessageCode {
     	}
     	for (int i = 0; i < infos.size(); i++) {
     		HfMessageInfo info = infos.get(i);
-    		System.out.println("进入发信息，，，类型"+info.getType());
     		if(MessageTypeEnum.SHORT_BREATH.getMessageType().equals(info.getType())) {
     			maps = getInstance(info.getId(),contentType);
     			if(maps == null) {

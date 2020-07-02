@@ -314,7 +314,7 @@ public class HfAuthController {
 			roles = roles.stream().filter(a->a.getRoleType().equals(type)).collect(Collectors.toList());
 			List<Roles> roles1 = new ArrayList<>();
 			if (type.equals("boss")){
-				roles1 = roles.stream().filter(a->a.getRoleCode().equals("sass")).collect(Collectors.toList());
+				roles1 = roles.stream().filter(a->a.getRoleCode().equals("sass")||a.getRoleCode().equals("boss")).collect(Collectors.toList());
 			}
 			if (type.equals("stone")){
 				roles1 = roles.stream().filter(a->a.getRoleCode().equals("boss")).collect(Collectors.toList());
