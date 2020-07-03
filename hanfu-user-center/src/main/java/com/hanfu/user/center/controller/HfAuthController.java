@@ -298,11 +298,12 @@ public class HfAuthController {
 		Map map = new HashMap();
 		map.put("identity",type);
 		map.put("BSid",merId);
+		map.put("token",token);
 		AccountExample accountExample = new AccountExample();
 		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
 		List<Account> accounts= accountMapper.selectByExample(accountExample);
-		AccountRolesExample accountRolesExample = new AccountRolesExample();
 		map.put("accountId",accounts.get(0).getId());
+		AccountRolesExample accountRolesExample = new AccountRolesExample();
 		accountRolesExample.createCriteria().andIsDeletedEqualTo((short) 0).andAccountIdEqualTo(accounts.get(0).getId());
 		List<AccountRoles> accountRoles= accountRolesMapper.selectByExample(accountRolesExample);
 		if (accountRoles.size()!=0){
