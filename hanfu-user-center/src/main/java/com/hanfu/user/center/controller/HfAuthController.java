@@ -277,7 +277,6 @@ public class HfAuthController {
 			
 			map.put("identity",type);
 			map.put("BSid",accounts.get(0).getMerchantId());
-			map.put("accountId",accounts.get(0).getId());
 //			if (token != null && userId != null && type != null) {
 //				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
 //				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
@@ -299,11 +298,11 @@ public class HfAuthController {
 		Map map = new HashMap();
 		map.put("identity",type);
 		map.put("BSid",merId);
-		map.put("token",token);
 		AccountExample accountExample = new AccountExample();
 		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
 		List<Account> accounts= accountMapper.selectByExample(accountExample);
 		AccountRolesExample accountRolesExample = new AccountRolesExample();
+		map.put("accountId",accounts.get(0).getId());
 		accountRolesExample.createCriteria().andIsDeletedEqualTo((short) 0).andAccountIdEqualTo(accounts.get(0).getId());
 		List<AccountRoles> accountRoles= accountRolesMapper.selectByExample(accountRolesExample);
 		if (accountRoles.size()!=0){
