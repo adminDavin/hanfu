@@ -366,7 +366,7 @@ if (discountCoupon.getStoneId()==null){
         Integer bossId = 1;
         if (request.getServletContext().getAttribute("getServletContextType")!=null){
             if (request.getServletContext().getAttribute("getServletContextType").equals("user")){
-                bossId=((Integer) request.getServletContext().getAttribute("getServletContext"));
+                bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
             }
         }
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
