@@ -23,6 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.dichan.center.dao.DcCategoryMapper;
+import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.request.CategoryRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -42,11 +44,14 @@ public class DcCategoryController {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private DcCategoryMapper dcCategoryMapper;
+	
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		HfCategory category = new HfCategory();
+		DcCategory category = new DcCategory();
 		String uuid = UUID.randomUUID().toString();
 //		uuid = uuid.replace("-", "");
 //		if(fileInfo != null) {
@@ -65,7 +70,7 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
+		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
 	}
 
 	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
