@@ -7,12 +7,12 @@
         <artifactId>hanfu-system</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.hanfu.product.center</groupId>
-    <artifactId>hanfu-product-center</artifactId>
+    <groupId>com.hanfu.dichan.center</groupId>
+    <artifactId>hanfu-dichan-center</artifactId>
     <version>0.0.1</version>
 
     <build>
-        <finalName>hanfu-product-center</finalName>
+        <finalName>hanfu-dichan-center</finalName>
         <defaultGoal>compile</defaultGoal>
         <plugins>
 
@@ -20,7 +20,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hanfu.product.center.Application</mainClass>
+                    <mainClass>com.hanfu.dichan.center.Application</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -176,12 +176,6 @@
             <artifactId>mapper</artifactId>
             <!-- 建议使用最新版本,最新版本请从项目首页查找 -->
             <version>4.1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.hanfu.user.center</groupId>
-            <artifactId>hanfu-user-center</artifactId>
-            <version>0.0.1</version>
         </dependency>
 
         <dependency>
