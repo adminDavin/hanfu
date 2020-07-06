@@ -63,8 +63,14 @@
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="dc_auth"
+		<!-- <table schema="user_center" tableName="dc_auth"
 			   domainObjectName="DcAuth">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table> -->
+		<table schema="user_center" tableName="dc_file_desc"
+			   domainObjectName="DcFileDesc">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 						  identity="true" />
