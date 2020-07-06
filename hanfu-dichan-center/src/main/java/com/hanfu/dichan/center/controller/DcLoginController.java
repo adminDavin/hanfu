@@ -2,12 +2,15 @@
 //
 //import com.alibaba.fastjson.JSONObject;
 //import com.hanfu.dichan.center.config.WxLoginConfig;
+//import com.hanfu.dichan.center.dao.DcUserMapper;
+//import com.hanfu.dichan.center.model.DcUser;
 //import com.hanfu.utils.response.handler.ResponseEntity;
 //import com.hanfu.utils.response.handler.ResponseUtils;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiOperation;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.redis.core.RedisTemplate;
 //import org.springframework.util.CollectionUtils;
 //import org.springframework.util.StringUtils;
@@ -31,7 +34,8 @@
 //
 //    @Resource
 //    private RedisTemplate<String, Object> redisTemplate;
-//
+//@Autowired
+//private DcUserMapper dcUserMapper;
 //
 //    @RequestMapping(path = "/wechart", method = RequestMethod.GET)
 //    @ApiOperation(value = "微信登录", notes = "微信登录")
@@ -50,7 +54,7 @@
 ////        authAxample.createCriteria().andAuthKeyEqualTo(openid)
 ////                .andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
 ////        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-//        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+//        DcUser dcUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): dcUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
 //
 //        String skey = UUID.randomUUID().toString();
 //        String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
@@ -71,8 +75,8 @@
 //        response.addHeader("token", token);
 //
 //        map.put("skey", skey);
-//        map.put("userId", hfUser.getId());
-//        map.put("user", hfUser);
+//        map.put("userId", dcUser.getId());
+//        map.put("user", dcUser);
 //        map.put("token", token);
 //        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 //        return builder.body(ResponseUtils.getResponseBody(map));

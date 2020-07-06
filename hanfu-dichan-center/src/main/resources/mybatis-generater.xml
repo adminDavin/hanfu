@@ -28,7 +28,7 @@
 		</javaTypeResolver>
 
 		<javaModelGenerator
-			targetPackage="com.hanfu.product.center.model"
+			targetPackage="com.hanfu.dichan.center.model"
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -40,7 +40,7 @@
 		</sqlMapGenerator>
 
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.hanfu.product.center.dao"
+			targetPackage="com.hanfu.dichan.center.dao"
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
