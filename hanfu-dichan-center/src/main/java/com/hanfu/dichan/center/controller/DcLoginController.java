@@ -1,80 +1,160 @@
-//package com.hanfu.dichan.center.controller;
-//
-//import com.alibaba.fastjson.JSONObject;
-//import com.hanfu.dichan.center.config.WxLoginConfig;
-//import com.hanfu.utils.response.handler.ResponseEntity;
-//import com.hanfu.utils.response.handler.ResponseUtils;
-//import io.swagger.annotations.Api;
-//import io.swagger.annotations.ApiOperation;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.data.redis.core.RedisTemplate;
-//import org.springframework.util.CollectionUtils;
-//import org.springframework.util.StringUtils;
-//import org.springframework.web.bind.annotation.*;
-//
-//import javax.annotation.Resource;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.UUID;
-//
-//@RestController
-//@Api
-//@RequestMapping("/login")
-//@CrossOrigin
-//public class DcLoginController {
-//
-//    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-//
-//    @Resource
-//    private RedisTemplate<String, Object> redisTemplate;
-//
-//
-//    @RequestMapping(path = "/wechart", method = RequestMethod.GET)
-//    @ApiOperation(value = "微信登录", notes = "微信登录")
-//    public ResponseEntity<JSONObject> wxLogin(@RequestParam(value = "code", required = false) String code,
-//                                              @RequestParam(value = "appName", required = false) String appName,
-//                                              @RequestParam(value = "encryptedData", required = false) String encryptedData,
-//                                              @RequestParam(value = "iv", required = false) String iv, HttpServletResponse response, HttpServletRequest request) throws Exception {
-//        Object bossId= request.getHeader("bossId");
-//        System.out.println(bossId+"我是boss");
-//        Map<String, Object> map = new HashMap<String, Object>();
-//        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, Integer.valueOf((String) bossId));
-//        String openid = (String) SessionKeyOpenId.get("openid");
-//        String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key"));
-//
-////        HfAuthExample authAxample = new HfAuthExample();
-////        authAxample.createCriteria().andAuthKeyEqualTo(openid)
-////                .andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
-////        List<HfAuth> auths = hfAuthMapper.selectByExample(authAxample);
-//        HfUser hfUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): hfUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
-//
-//        String skey = UUID.randomUUID().toString();
-//        String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
-//        if (!StringUtils.isEmpty(skey_redis)) {
-//            redisTemplate.delete(skey_redis);
-//            skey = UUID.randomUUID().toString();
-//        }
-//
-//        JSONObject sessionObj = new JSONObject();
-//        sessionObj.put("openId", openid);
-//        sessionObj.put("sessionKey", sessionKey);
-//        redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
-//        redisTemplate.opsForValue().set(openid.toString(), skey);
-//
-//        Encrypt encrypt = new Encrypt();
-//        String token = encrypt.getToken(true, hfUser.getId(), "user",Integer.valueOf((String)bossId));
-//        System.out.println(token);
-//        response.addHeader("token", token);
-//
-//        map.put("skey", skey);
-//        map.put("userId", hfUser.getId());
-//        map.put("user", hfUser);
-//        map.put("token", token);
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//        return builder.body(ResponseUtils.getResponseBody(map));
-//    }
-//}
+package com.hanfu.dichan.center.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.hanfu.dichan.center.config.WxLoginConfig;
+import com.hanfu.dichan.center.dao.DcAuthMapper;
+import com.hanfu.dichan.center.dao.DcCompanyMapper;
+import com.hanfu.dichan.center.dao.DcUserMapper;
+import com.hanfu.dichan.center.model.*;
+import com.hanfu.dichan.center.utils.Encrypt;
+import com.hanfu.utils.response.handler.ResponseEntity;
+import com.hanfu.utils.response.handler.ResponseUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidParameterSpecException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@Api
+@RequestMapping("/login")
+@CrossOrigin
+public class DcLoginController {
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+@Autowired
+private DcUserMapper dcUserMapper;
+@Autowired
+private DcAuthMapper dcAuthMapper;
+@Autowired
+private DcCompanyMapper dcCompanyMapper;
+
+    @RequestMapping(path = "/wechart", method = RequestMethod.GET)
+    @ApiOperation(value = "微信登录", notes = "微信登录")
+    public ResponseEntity<JSONObject> wxLogin(@RequestParam(value = "code", required = false) String code,
+                                              @RequestParam(value = "appName", required = false) String appName,
+                                              @RequestParam(value = "encryptedData", required = false) String encryptedData,
+                                              @RequestParam(value = "iv", required = false) String iv, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        Object bossId= request.getHeader("bossId");
+        System.out.println(bossId+"我是boss");
+        Map<String, Object> map = new HashMap<String, Object>();
+        JSONObject SessionKeyOpenId = WxLoginConfig.getSessionKeyOrOpenId(code, appName, Integer.valueOf((String) bossId));
+        String openid = (String) SessionKeyOpenId.get("openid");
+        String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key"));
+
+        DcAuthExample authAxample = new DcAuthExample();
+        authAxample.createCriteria().andAuthKeyEqualTo(openid)
+                .andAuthTypeEqualTo(WxLoginConfig.AuthType.WECHART.getAuthType());
+        List<DcAuth> auths = dcAuthMapper.selectByExample(authAxample);
+        DcUser dcUser = CollectionUtils.isEmpty(auths) ? register(openid, sessionKey, encryptedData, iv, Integer.valueOf((String) bossId)): dcUserMapper.selectByPrimaryKey(auths.get(0).getUserId());
+
+        String skey = UUID.randomUUID().toString();
+        String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
+        if (!StringUtils.isEmpty(skey_redis)) {
+            redisTemplate.delete(skey_redis);
+            skey = UUID.randomUUID().toString();
+        }
+
+        JSONObject sessionObj = new JSONObject();
+        sessionObj.put("openId", openid);
+        sessionObj.put("sessionKey", sessionKey);
+        redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
+        redisTemplate.opsForValue().set(openid.toString(), skey);
+
+        Encrypt encrypt = new Encrypt();
+        String token = encrypt.getToken(true, dcUser.getId(), "user",Integer.valueOf((String)bossId));
+        System.out.println(token);
+        response.addHeader("token", token);
+
+        map.put("skey", skey);
+        map.put("userId", dcUser.getId());
+        map.put("user", dcUser);
+        map.put("token", token);
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        return builder.body(ResponseUtils.getResponseBody(map));
+    }
+    public DcUser register(String openid, String sessionKey, String encryptedData, String iv,Integer bossId)
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException,
+            InvalidParameterSpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
+            BadPaddingException, UnsupportedEncodingException {
+        JSONObject userInfo = WxLoginConfig.parseWechart(encryptedData, sessionKey, iv);
+        DcUser hfUser = new DcUser();
+
+        DcUserExample example = new DcUserExample();
+        example.createCriteria().andUsernameEqualTo(openid);
+        List<DcUser> list = dcUserMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(list)) {
+            hfUser.setAddress(userInfo.getString("country") + " " + userInfo.getString("province") + " " + userInfo.getString("city"));
+            hfUser.setUsername(openid);
+            hfUser.setCreateDate(LocalDateTime.now());
+            hfUser.setModifyDate(LocalDateTime.now());
+            hfUser.setIdDeleted((byte) 0);
+            hfUser.setCancelId(0);
+            hfUser.setOwnInvitationCode(create());
+            hfUser.setRegion(userInfo.getString("province"));
+            hfUser.setUserStatus((byte) 0);
+            hfUser.setNickName(userInfo.getString("nickName"));
+            hfUser.setBossId(bossId);
+            dcUserMapper.insert(hfUser);
+        } else {
+            hfUser = list.get(0);
+        }
+        DcAuth record = new DcAuth();
+        record.setAuthKey(openid);
+        record.setAuthStatus(Byte.valueOf("0"));
+        record.setAuthType(WxLoginConfig.AuthType.WECHART.getAuthType());
+        record.setCreateDate(LocalDateTime.now());
+        record.setModifyDate(LocalDateTime.now());
+        record.setUserId(hfUser.getId());
+        dcAuthMapper.insert(record);
+        return hfUser;
+    }
+
+    public static String create() {
+        String code = "0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIZXCVBNM";
+        String str = "";
+        for (int i = 1; i <= 6; i++) {
+            String num = String.valueOf(code.charAt((int) Math.floor(Math.random() * code.length())));
+            str += num;
+            code = code.replaceAll(num, "");
+        }
+        return str;
+    }
+    @ApiOperation(value = "公司编号", notes = "公司编号")
+    @RequestMapping(value = "/getCode", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> getCode(String code,HttpServletResponse httpServletResponse) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(1);
+        if (!code.equals(dcCompany.getCompanyCode())){
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+            return builder.body(ResponseUtils.getResponseBody("编号错误"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("成功"));
+    }
+}

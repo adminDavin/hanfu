@@ -207,6 +207,7 @@ public class HfUserController {
             InvalidParameterSpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
             BadPaddingException, UnsupportedEncodingException {
         JSONObject userInfo = WxLoginConfig.parseWechart(encryptedData, sessionKey, iv);
+        System.out.println(userInfo+"信息啊");
         HfUser hfUser = new HfUser();
         
         HfUserExample example = new HfUserExample();
