@@ -39,7 +39,7 @@ public class WareHouseController {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
 	@RequestMapping(value = "/getCategoryByInfo", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getCategoryByInfo() throws Exception {
