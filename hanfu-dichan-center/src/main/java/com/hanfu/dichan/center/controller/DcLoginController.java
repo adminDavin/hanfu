@@ -3,11 +3,9 @@ package com.hanfu.dichan.center.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.dichan.center.config.WxLoginConfig;
 import com.hanfu.dichan.center.dao.DcAuthMapper;
+import com.hanfu.dichan.center.dao.DcCompanyMapper;
 import com.hanfu.dichan.center.dao.DcUserMapper;
-import com.hanfu.dichan.center.model.DcAuth;
-import com.hanfu.dichan.center.model.DcAuthExample;
-import com.hanfu.dichan.center.model.DcUser;
-import com.hanfu.dichan.center.model.DcUserExample;
+import com.hanfu.dichan.center.model.*;
 import com.hanfu.dichan.center.utils.Encrypt;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +52,8 @@ public class DcLoginController {
 private DcUserMapper dcUserMapper;
 @Autowired
 private DcAuthMapper dcAuthMapper;
+@Autowired
+private DcCompanyMapper dcCompanyMapper;
 
     @RequestMapping(path = "/wechart", method = RequestMethod.GET)
     @ApiOperation(value = "微信登录", notes = "微信登录")
@@ -144,5 +145,16 @@ private DcAuthMapper dcAuthMapper;
             code = code.replaceAll(num, "");
         }
         return str;
+    }
+    @ApiOperation(value = "公司编号", notes = "公司编号")
+    @RequestMapping(value = "/getCode", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> getCode(String code,HttpServletResponse httpServletResponse) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(1);
+        if (!code.equals(dcCompany.getCompanyCode())){
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+            return builder.body(ResponseUtils.getResponseBody("编号错误"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("成功"));
     }
 }
