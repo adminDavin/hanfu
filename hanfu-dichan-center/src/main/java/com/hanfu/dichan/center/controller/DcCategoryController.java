@@ -43,10 +43,10 @@ public class DcCategoryController {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	@Autowired
 	private DcCategoryMapper dcCategoryMapper;
-	
+
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo,HttpServletRequest requests) throws Exception {
@@ -70,7 +70,7 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
+		return builder.body(ResponseUtils.getResponseBody(hfCategoryMapper.insert(category)));
 	}
 
 	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")

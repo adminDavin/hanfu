@@ -66,13 +66,13 @@ public class WxLoginConfig {
 	    ACTIVITY("activity") {
 	        @Override
 	        public WechartProPerties getWechartConfig() {
-	            return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
+	            return new WechartProPerties().addAppId("wx7cec359f7b8b796c").addSecret("a32bd70131273de2fb7fed4c88ac0de0").addGrantType("authorization_code");
 	        }
 	    },
 	    SINGLE_MERCHART("singleMerchart") {
             @Override
             public WechartProPerties getWechartConfig() {
-                return new WechartProPerties().addAppId("wx2641aaa105c07dd4").addSecret("fb26dde971b62de61c4573b12bd5f5da").addGrantType("authorization_code");
+                return new WechartProPerties().addAppId("wx7cec359f7b8b796c").addSecret("a32bd70131273de2fb7fed4c88ac0de0").addGrantType("authorization_code");
             }
         };
 	    

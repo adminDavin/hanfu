@@ -1,15 +1,10 @@
-package com.hanfu.user.center.utils;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+package com.hanfu.dichan.center.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 加密

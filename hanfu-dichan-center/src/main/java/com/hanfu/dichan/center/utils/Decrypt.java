@@ -1,6 +1,4 @@
-package com.hanfu.user.center.utils;
-
-import java.io.UnsupportedEncodingException;
+package com.hanfu.dichan.center.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
