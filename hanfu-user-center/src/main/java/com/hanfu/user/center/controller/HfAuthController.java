@@ -277,7 +277,6 @@ public class HfAuthController {
 			
 			map.put("identity",type);
 			map.put("BSid",accounts.get(0).getMerchantId());
-			map.put("accountId",accounts.get(0).getId());
 //			if (token != null && userId != null && type != null) {
 //				redisTemplate.opsForValue().set(String.valueOf(userId) + type + "token", token);
 //				redisTemplate.expire(String.valueOf(userId) + type + "token", 6000, TimeUnit.SECONDS);
@@ -303,6 +302,7 @@ public class HfAuthController {
 		AccountExample accountExample = new AccountExample();
 		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merId);
 		List<Account> accounts= accountMapper.selectByExample(accountExample);
+		map.put("accountId",accounts.get(0).getId());
 		AccountRolesExample accountRolesExample = new AccountRolesExample();
 		accountRolesExample.createCriteria().andIsDeletedEqualTo((short) 0).andAccountIdEqualTo(accounts.get(0).getId());
 		List<AccountRoles> accountRoles= accountRolesMapper.selectByExample(accountRolesExample);
@@ -314,7 +314,7 @@ public class HfAuthController {
 			roles = roles.stream().filter(a->a.getRoleType().equals(type)).collect(Collectors.toList());
 			List<Roles> roles1 = new ArrayList<>();
 			if (type.equals("boss")){
-				roles1 = roles.stream().filter(a->a.getRoleCode().equals("sass")).collect(Collectors.toList());
+				roles1 = roles.stream().filter(a->a.getRoleCode().equals("sass")||a.getRoleCode().equals("boss")).collect(Collectors.toList());
 			}
 			if (type.equals("stone")){
 				roles1 = roles.stream().filter(a->a.getRoleCode().equals("boss")).collect(Collectors.toList());
