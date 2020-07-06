@@ -28,4 +28,10 @@ public class GoodsList {
     public void setStoneId(Integer stoneId) {
         this.stoneId = stoneId;
     }
+
+	@Override
+	public String toString() {
+		return "GoodsList [goodsId=" + goodsId + ", quantity=" + quantity + ", stoneId=" + stoneId + "]";
+	}
+    
 }
