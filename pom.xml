@@ -20,6 +20,7 @@
 		<module>hanfu-activity-center</module>
 		<module>hanfu-cart-center</module>
 		<module>hanfu-message-center</module>
+		<module>hanfu-dichan-center</module>
     <module>hanfu-dchan-center</module>
   </modules>
 	<profiles>
