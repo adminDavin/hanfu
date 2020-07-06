@@ -191,6 +191,7 @@ public class DcCategoryController {
 		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(category.getFileId());
 		FileMangeService fileManageService = new FileMangeService();
 		fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		//
 		return fileDesc.getId();
     }	
 
