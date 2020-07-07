@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
 	<classPathEntry
-		location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar" />
+		location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
 	<context id="MySQLTables" targetRuntime="MyBatis3">
 		<property name="xmlFormatter"
 			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
@@ -44,27 +44,6 @@
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		
-		<table schema="user_center" tableName="dc_ratation"
-		domainObjectName="DcRatation">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table>
-		
-		<!-- <table schema="user_center" tableName="dc_project"
-		domainObjectName="DcProject">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		
-		<!-- <table schema="user_center" tableName="dc_category"
-		domainObjectName="DcCategory">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
 		
 	</context>
 </generatorConfiguration>

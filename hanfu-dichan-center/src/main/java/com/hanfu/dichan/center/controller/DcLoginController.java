@@ -148,13 +148,36 @@ private DcCompanyMapper dcCompanyMapper;
     }
     @ApiOperation(value = "公司编号", notes = "公司编号")
     @RequestMapping(value = "/getCode", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> getCode(String code,HttpServletResponse httpServletResponse) throws Exception {
+    public ResponseEntity<JSONObject> getCode(String code,HttpServletResponse httpServletResponse,Integer companyId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(1);
+        DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(companyId);
         if (!code.equals(dcCompany.getCompanyCode())){
             httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
             return builder.body(ResponseUtils.getResponseBody("编号错误"));
         }
         return builder.body(ResponseUtils.getResponseBody("成功"));
+    }
+    @ApiOperation(value = "修改公司编号", notes = "修改公司编号")
+    @RequestMapping(value = "/updateCode", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> updateCode(String code,HttpServletResponse httpServletResponse,Integer companyId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcCompany dcCompany = new DcCompany();
+        dcCompany.setId(companyId);
+        dcCompany.setCompanyCode(code);
+        dcCompanyMapper.updateByPrimaryKeySelective(dcCompany);
+        return builder.body(ResponseUtils.getResponseBody("成功"));
+    }
+    @ApiOperation(value = "添加公司", notes = "添加公司")
+    @RequestMapping(value = "/addCompanyId", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addCompanyId(DcCompany dcCompany,HttpServletResponse httpServletResponse) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        return builder.body(ResponseUtils.getResponseBody(dcCompanyMapper.insertSelective(dcCompany)));
+    }
+    @ApiOperation(value = "我的", notes = "我的")
+    @RequestMapping(value = "/getMy", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> getMy(Integer companyId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(companyId);
+        return builder.body(ResponseUtils.getResponseBody(dcCompany));
     }
 }
