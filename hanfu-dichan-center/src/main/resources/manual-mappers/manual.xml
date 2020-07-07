@@ -3,25 +3,21 @@
 <mapper
 	namespace="com.hanfu.dichan.center.manual.dao.ManualDao">
 
-	<resultMap id="HfCategoryMap"
-		type="com.hanfu.dichan.center.model.DcCategory">
-		<id column="id" property="id" jdbcType="INTEGER" />
-		<result column="hf_name" property="hfName" jdbcType="VARCHAR" />
-		<result column="parent_category_id" property="parentCategoryId"
-			jdbcType="INTEGER" />
-		<result column="level_id" property="levelId" jdbcType="INTEGER" />
-		<result column="create_time" property="createTime"
-			jdbcType="TIMESTAMP" />
-		<result column="modify_time" property="modifyTime"
-			jdbcType="TIMESTAMP" />
-		<result column="is_deleted" property="isDeleted"
-			jdbcType="SMALLINT" />
-		<result column="file_id" property="fileId"
-			jdbcType="INTEGER" />
-	</resultMap>
+	<resultMap id="BaseResultMap" type="com.hanfu.dichan.center.model.DcCategory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="boss_id" jdbcType="INTEGER" property="bossId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="hf_name" jdbcType="VARCHAR" property="hfName" />
+    <result column="parent_category_id" jdbcType="INTEGER" property="parentCategoryId" />
+    <result column="level_id" jdbcType="INTEGER" property="levelId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="is_deleted" jdbcType="SMALLINT" property="isDeleted" />
+    <result column="file_id" jdbcType="INTEGER" property="fileId" />
+  </resultMap>
 
-	<select id="findCategoryByInfo" resultMap="HfCategoryMap">
-		select * from dc_category where 1=1
+	<select id="findCategoryByInfo" resultMap="BaseResultMap">
+		select * from dc_category where parent_category_id != -1
 		<if test=" levelId == 0 or (levelId != null and levelId != '')">
 			and level_id = #{levelId}
 		</if>
@@ -30,6 +26,9 @@
 		</if>
 		<if test="bossId != null and bossId != ''">
 			and boss_id = #{bossId}
+		</if>
+		<if test="projectId != null and projectId != ''">
+			and project_id = #{projectId}
 		</if>
 	</select>
 </mapper>
