@@ -78,4 +78,25 @@ private DcRichTextMapper dcRichTextMapper;
 //        System.out.println(newJson);
         return builder.body(ResponseUtils.getResponseBody(a));
     }
+    @ApiOperation(value = "删除富文本", notes = "删除富文本")
+    @RequestMapping(value = "/deletedText", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> deletedText(Integer productId,String type) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcRichTextExample dcRichTextExample = new DcRichTextExample();
+        dcRichTextExample.createCriteria().andProjectIdEqualTo(productId).andTextTypeEqualTo(type);
+        DcRichText dcRichText = new DcRichText();
+        dcRichText.setIsDeleted((byte) 0);
+        dcRichTextMapper.updateByExampleSelective(dcRichText,dcRichTextExample);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+    @ApiOperation(value = "修改富文本", notes = "修改富文本")
+    @RequestMapping(value = "/updateText", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> updateText(DcRichText dcRichText) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println(dcRichText.getRichText().replace('\"','\''));
+        dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
+
+        dcRichTextMapper.updateByPrimaryKeySelective(dcRichText);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
