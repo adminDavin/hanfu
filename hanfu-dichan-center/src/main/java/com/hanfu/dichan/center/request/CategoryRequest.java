@@ -14,6 +14,8 @@ public class CategoryRequest extends CommonRequest {
     private Integer parentCategoryId;
     @ApiModelProperty(required = false, value = "类目级别, 是指当前类目至顶层类目的间隔,  顶层类目的类目级别是0, 紧跟顶层类目的类目级别是1, 以此类推", example = "0")
     private Integer levelId;
+    @ApiModelProperty(required = false, value = "项目id")
+    private Integer projectId;
 	public String getCategory() {
 		return category;
 	}
@@ -32,6 +34,11 @@ public class CategoryRequest extends CommonRequest {
 	public void setLevelId(Integer levelId) {
 		this.levelId = levelId;
 	}
-
+	public Integer getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Integer projectId) {
+		this.projectId = projectId;
+	}
 
 }

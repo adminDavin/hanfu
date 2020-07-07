@@ -35,11 +35,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
+import com.hanfu.dichan.center.dao.DcRatationMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
+import com.hanfu.dichan.center.manual.model.RatationType.RatationTypeEnum;
 import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
+import com.hanfu.dichan.center.model.DcRatation;
+import com.hanfu.dichan.center.model.DcRatationExample;
 import com.hanfu.dichan.center.request.CategoryRequest;
+import com.hanfu.dichan.center.request.RatationRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -53,13 +58,87 @@ import io.swagger.annotations.ApiOperation;
 public class DcRatationController {
 	
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	@Autowired
+	private DcRatationMapper dcRatationMapper;
+	
+	@Autowired
+	private DcFileDescMapper dcFileDescMapper;
+	
 	@ApiOperation(value = "添加轮播图", notes = "添加轮播图")
 	@RequestMapping(value = "/addRatation", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addRatation() throws Exception {
+	public ResponseEntity<JSONObject> addRatation(RatationRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		
-		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
+		Integer bossId = 1;
+		DcRatation ratation = new DcRatation();
+		ratation.setBossId(bossId);
+		ratation.setProjectId(request.getProjectId());
+		ratation.setType(request.getType());
+		ratation.setCreateTime(LocalDateTime.now());
+		ratation.setModifyTime(LocalDateTime.now());
+		ratation.setIsDeleted((byte) 0);
+		dcRatationMapper.insert(ratation);
+		return builder.body(ResponseUtils.getResponseBody(ratation.getId()));
+	}
+	
+	@ApiOperation(value = "删除轮播图", notes = "删除轮播图")
+	@RequestMapping(value = "/deleteRatation", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> deleteRatation(Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcRatation ratation = dcRatationMapper.selectByPrimaryKey(id);
+		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(ratation.getFileId());
+		dcRatationMapper.deleteByPrimaryKey(id);
+		FileMangeService fileMangeService = new FileMangeService();
+		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
+	@ApiOperation(value = "编辑轮播图", notes = "修改轮播图")
+	@RequestMapping(value = "/updateRatation", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateRatation(Integer id,MultipartFile file) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcRatation ratation = dcRatationMapper.selectByPrimaryKey(id);
+		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(ratation.getFileId());
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(id));
+		if(fileDesc != null) {
+			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setModifyTime(LocalDateTime.now());
+			dcFileDescMapper.updateByPrimaryKey(fileDesc);
+		}else {
+			fileDesc = new DcFileDesc();
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setFileName(file.getOriginalFilename());
+			fileDesc.setIsDeleted((short) 0);
+			dcFileDescMapper.insert(fileDesc);
+		}
+		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
+	}
+	
+	@ApiOperation(value = "查询轮播图", notes = "查询轮播图")
+	@RequestMapping(value = "/getRatation", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getRatation(Integer projectId,String type) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId = 1;
+		if(RatationTypeEnum.OUR.getRatationType().equals(type)) {
+			DcRatationExample example = new DcRatationExample();
+			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(type);
+			List<DcRatation> list = dcRatationMapper.selectByExample(example);
+			return builder.body(ResponseUtils.getResponseBody(list));
+		}
+		if(RatationTypeEnum.HOME_PAGE.getRatationType().equals(type)) {
+			DcRatationExample example = new DcRatationExample();
+			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(type).andProjectIdEqualTo(projectId);
+			List<DcRatation> list = dcRatationMapper.selectByExample(example);
+			return builder.body(ResponseUtils.getResponseBody(list));
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 	
 }

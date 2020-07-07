@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiOperation;
 @Api
 public class DcCategoryController {
 	private static final String LOCK = "LOCK";
-	
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
@@ -62,26 +62,28 @@ public class DcCategoryController {
 
 	@Autowired
 	private DcCategoryMapper dcCategoryMapper;
-	
+
 	@Autowired
 	private DcFileDescMapper dcFileDescMapper;
-	
+
 	@Autowired
 	private ManualDao manualDao;
-	
+
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,HttpServletRequest requests) throws Exception {
+	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request, HttpServletRequest requests)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcCategory category = new DcCategory();
 		String uuid = UUID.randomUUID().toString();
-		Integer bossId= 1;
+		Integer bossId = 1;
 //		if (requests.getServletContext().getAttribute("getServletContext")!=null){
 //			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
 //				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
 //			}
 //		}
 		category.setBossId(bossId);
+		category.setProjectId(request.getProjectId());
 		category.setLevelId(request.getLevelId());
 		category.setHfName(request.getCategory());
 		category.setParentCategoryId(request.getParentCategoryId());
@@ -90,33 +92,33 @@ public class DcCategoryController {
 		category.setIsDeleted((short) 0);
 		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
 	}
-	
-	
+
 	@ApiOperation(value = "删除类目", notes = "删除类目")
 	@RequestMapping(value = "/deleteCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteCategory(Integer categoryId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		FileMangeService fileMangeService = new FileMangeService();
 		DcCategory hfCategory = dcCategoryMapper.selectByPrimaryKey(categoryId);
-		if(hfCategory.getFileId() != null) {
+		if (hfCategory.getFileId() != null) {
 			DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
 			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 			dcFileDescMapper.deleteByPrimaryKey(hfCategory.getFileId());
 		}
 		return builder.body(ResponseUtils.getResponseBody(dcFileDescMapper.deleteByPrimaryKey(categoryId)));
 	}
-	
+
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
+	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,
+			MultipartFile fileInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
 		DcCategory hfCategory = dcCategoryMapper.selectByPrimaryKey(catrgoryId);
-		if(fileInfo != null) {
+		if (fileInfo != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
-			if(hfCategory.getFileId() == null) {
+			if (hfCategory.getFileId() == null) {
 				DcFileDesc fileDesc = new DcFileDesc();
 				fileDesc.setFileName(fileInfo.getName());
 				fileDesc.setGroupName(arr[0]);
@@ -126,7 +128,7 @@ public class DcCategoryController {
 				fileDesc.setIsDeleted((short) 0);
 				dcFileDescMapper.insert(fileDesc);
 				hfCategory.setFileId(fileDesc.getId());
-			}else {
+			} else {
 				DcFileDesc desc = dcFileDescMapper.selectByPrimaryKey(hfCategory.getFileId());
 				fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
 				desc.setGroupName(arr[0]);
@@ -134,15 +136,15 @@ public class DcCategoryController {
 				desc.setModifyTime(LocalDateTime.now());
 				dcFileDescMapper.updateByPrimaryKey(desc);
 			}
-			
+
 		}
-		if(!StringUtils.isEmpty(request.getLevelId())) {
+		if (!StringUtils.isEmpty(request.getLevelId())) {
 			hfCategory.setLevelId(request.getLevelId());
 		}
-		if(!StringUtils.isEmpty(request.getCategory())) {
+		if (!StringUtils.isEmpty(request.getCategory())) {
 			hfCategory.setHfName(request.getCategory());
 		}
-		if(!StringUtils.isEmpty(request.getParentCategoryId())) {
+		if (!StringUtils.isEmpty(request.getParentCategoryId())) {
 			hfCategory.setParentCategoryId(request.getParentCategoryId());
 		}
 		hfCategory.setModifyTime(LocalDateTime.now());
@@ -151,37 +153,41 @@ public class DcCategoryController {
 
 	@ApiOperation(value = "获取类目根据条件", notes = "获取类目根据条件")
 	@RequestMapping(value = "/getCategoryByInfo", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getCategoryByInfo(Integer parentCategoryId) throws Exception {
+	public ResponseEntity<JSONObject> getCategoryByInfo(Integer parentCategoryId, Integer projectId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Integer bossId =1;
-			DcCategoryExample categoryExample = new DcCategoryExample();
-			categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId).andIsDeletedEqualTo((short) 0);
-			List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
-			return builder.body(ResponseUtils.getResponseBody(list));
-    }	
-	
+		Integer bossId = 1;
+		DcCategoryExample categoryExample = new DcCategoryExample();
+		categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
+				.andIsDeletedEqualTo((short) 0);
+		if(parentCategoryId == -1) {
+			categoryExample.createCriteria().andProjectIdEqualTo(projectId);
+		}
+		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
+		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+
 	@ApiOperation(value = "获取图片", notes = "获取图片")
 	@RequestMapping(value = "/getPicture", method = RequestMethod.GET)
 	public void getPicture(Integer id, HttpServletResponse response) throws Exception {
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		Integer bossId =1;
+		Integer bossId = 1;
 		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(id);
-        if (fileDesc == null) {
-            throw new Exception("file not exists");
-        }
-        FileMangeService fileManageService = new FileMangeService();
-        synchronized (LOCK) {
-            byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-            ByteArrayInputStream stream = new ByteArrayInputStream(file);
-            BufferedImage readImg = ImageIO.read(stream);
-            stream.reset();
-            OutputStream outputStream = response.getOutputStream();
-            ImageIO.write(readImg, "png", outputStream);
-            outputStream.close();
-        }
-    }	
-	
+		if (fileDesc == null) {
+			throw new Exception("file not exists");
+		}
+		FileMangeService fileManageService = new FileMangeService();
+		synchronized (LOCK) {
+			byte[] file = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+			ByteArrayInputStream stream = new ByteArrayInputStream(file);
+			BufferedImage readImg = ImageIO.read(stream);
+			stream.reset();
+			OutputStream outputStream = response.getOutputStream();
+			ImageIO.write(readImg, "png", outputStream);
+			outputStream.close();
+		}
+	}
+
 	@ApiOperation(value = "删除图片", notes = "删除图片")
 	@RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
 	public Integer deletePicture(Integer id) throws Exception {
@@ -192,7 +198,7 @@ public class DcCategoryController {
 		fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 		//
 		return fileDesc.getId();
-    }	
+	}
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder, WebRequest request) {

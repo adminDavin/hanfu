@@ -52,19 +52,19 @@
 		identity="true"/> 
 		</table>
 		
-		<table schema="user_center" tableName="dc_project"
+		<!-- <table schema="user_center" tableName="dc_project"
 		domainObjectName="DcProject">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
+		</table> -->
 		
-		<table schema="user_center" tableName="dc_category"
+		<!-- <table schema="user_center" tableName="dc_category"
 		domainObjectName="DcCategory">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
+		</table> -->
 		
 	</context>
 </generatorConfiguration>
