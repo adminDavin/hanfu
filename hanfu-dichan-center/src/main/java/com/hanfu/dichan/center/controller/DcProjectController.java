@@ -43,6 +43,7 @@ import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
 import com.hanfu.dichan.center.model.DcProject;
+import com.hanfu.dichan.center.model.DcProjectExample;
 import com.hanfu.dichan.center.model.DcRatation;
 import com.hanfu.dichan.center.model.DcRatationExample;
 import com.hanfu.dichan.center.request.CategoryRequest;
@@ -71,6 +72,7 @@ public class DcProjectController {
 		Integer bossId = 1;
 		DcProject project = new DcProject();
 		project.setProjectName(projectName);
+		project.setBossId(bossId);
 		project.setCreateTime(LocalDateTime.now());
 		project.setModifyTime(LocalDateTime.now());
 		project.setIsDeleted((byte) 0);
@@ -105,7 +107,9 @@ public class DcProjectController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
 		if(id == null) {
-			List<DcProject> list = dcProjectMapper.selectByExample(null);
+			DcProjectExample example = new DcProjectExample();
+			example.createCriteria().andBossIdEqualTo(bossId);
+			List<DcProject> list = dcProjectMapper.selectByExample(example);
 			return builder.body(ResponseUtils.getResponseBody(list));
 		}else {
 			DcProject project = dcProjectMapper.selectByPrimaryKey(id);

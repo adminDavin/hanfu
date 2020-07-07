@@ -165,6 +165,26 @@ public class DcCategoryController {
 		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
+	
+	@ApiOperation(value = "根据名字等级获取类目", notes = "根据名字等级获取类目")
+	@RequestMapping(value = "/getCategoryByNameOrLevel", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getCategoryByNameOrLevel(HttpServletRequest request,Integer level, String name, Integer projectId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId =1;
+//		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+//			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+//			if (request.getServletContext().getAttribute("getServletContext")!=null){
+//				bossId=(Integer) request.getServletContext().getAttribute("getServletContext");
+//			}
+//		}
+		DcCategory h = new DcCategory();
+		h.setLevelId(level);
+		h.setHfName(name);
+		h.setBossId(bossId);
+		h.setProjectId(projectId);
+		List<DcCategory> list = manualDao.findCategoryByInfo(h);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
 
 	@ApiOperation(value = "获取图片", notes = "获取图片")
 	@RequestMapping(value = "/getPicture", method = RequestMethod.GET)
