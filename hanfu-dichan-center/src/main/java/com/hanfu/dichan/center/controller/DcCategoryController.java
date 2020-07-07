@@ -36,7 +36,6 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
-import com.hanfu.dichan.center.manual.model.Categories;
 import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
