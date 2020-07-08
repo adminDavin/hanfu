@@ -1,6 +1,11 @@
 package com.hanfu.dichan.center.config;
 
 
+
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.hanfu.dichan.center.intercepter.AuthorityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
@@ -15,12 +20,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.hanfu.dichan.center.intercepter.AuthorityInterceptor;
 
 @Configuration
 public class WebConfigurer extends WebMvcConfigurationSupport {
@@ -120,4 +119,25 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         return factory;
     }
 
+    @Bean(name ="multipartResolver")
+
+    public MultipartResolver multipartResolver() {
+
+        CommonsMultipartResolver resolver =new CommonsMultipartResolver();
+
+        resolver.setDefaultEncoding("UTF-8");
+
+        //resolveLazily属性启用是为了推迟文件解析，以在在UploadAction中捕获文件大小异常
+
+        resolver.setResolveLazily(true);
+
+        resolver.setMaxInMemorySize(40960);
+
+        //上传文件大小 5M 5*1024*1024
+
+        resolver.setMaxUploadSize(5 *1024 *1024);
+
+        return resolver;
+
+    }
 }

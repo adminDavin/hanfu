@@ -122,6 +122,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcGeneralFile.setFileId(fileDesc.getId());
         dcGeneralFile.setGeneralId(projectId);
         dcGeneralFile.setFileType(General.GeneralTypeEnum.GENERAL_TYPE_ENUM.getGeneralType());
+        dcGeneralFileMapper.insertSelective(dcGeneralFile);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
     @ApiOperation(value = "查询项目概况图", notes = "查询项目概况图")
