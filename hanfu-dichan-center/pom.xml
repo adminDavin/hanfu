@@ -105,6 +105,16 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>com.hanfu.inner.sdk</groupId>
 			<artifactId>hanfu-inner-sdk</artifactId>
 			<version>0.0.1</version>
