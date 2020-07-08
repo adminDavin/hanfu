@@ -118,6 +118,8 @@ public class DcRatationController {
 			fileDesc.setIsDeleted((short) 0);
 			dcFileDescMapper.insert(fileDesc);
 		}
+		ratation.setFileId(fileDesc.getId());
+		dcRatationMapper.updateByPrimaryKey(ratation);
 		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
 	}
 	
