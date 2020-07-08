@@ -66,7 +66,7 @@ public class DcProjectController {
 	private DcProjectMapper dcProjectMapper;
 	
 	@ApiOperation(value = "添加项目", notes = "添加项目")
-	@RequestMapping(value = "/addRatation", method = RequestMethod.POST)
+	@RequestMapping(value = "/addProject", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addRatation(String projectName) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
@@ -102,7 +102,7 @@ public class DcProjectController {
 	}
 	
 	@ApiOperation(value = "查询项目", notes = "查询项目")
-	@RequestMapping(value = "/getRatation", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProject", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> getRatation(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
