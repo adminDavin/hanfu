@@ -4,19 +4,18 @@ import java.io.Serializable;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class CatrgoryOrDetail implements Serializable{
+public class Catrgory implements Serializable{
 	
-	@ApiModelProperty(required = true, value = "类型（2是类目3是详情")
-	private Integer type;
-	
+	@ApiModelProperty(required = true, value = "类型（true是类目false是详情")
+	private boolean hasChildren;
 	private String categoryName;
 	private Integer categoryId;
 	private Integer fileId;
-	public Integer getType() {
-		return type;
+	public boolean isHasChildren() {
+		return hasChildren;
 	}
-	public void setType(Integer type) {
-		this.type = type;
+	public void setHasChildren(boolean hasChildren) {
+		this.hasChildren = hasChildren;
 	}
 	public String getCategoryName() {
 		return categoryName;

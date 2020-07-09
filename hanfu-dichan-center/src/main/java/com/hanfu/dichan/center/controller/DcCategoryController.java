@@ -40,7 +40,7 @@ import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
-import com.hanfu.dichan.center.manual.model.CatrgoryOrDetail;
+import com.hanfu.dichan.center.manual.model.Catrgory;
 import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
@@ -187,6 +187,37 @@ public class DcCategoryController {
 		map.put("type", "category");
 		map.put("list", list);
 		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+	
+	@ApiOperation(value = "查询下级类目", notes = "查询下级类目")
+	@RequestMapping(value = "/findDownCategory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findDownCategory(Integer parentCategoryId, Integer projectId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId = 1;
+		List<Catrgory> result = new ArrayList<Catrgory>();
+		DcCategoryExample categoryExample = new DcCategoryExample();
+		categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
+				.andIsDeletedEqualTo((short) 0);
+		if (parentCategoryId == -1) {
+			categoryExample.createCriteria().andProjectIdEqualTo(projectId);
+		}
+		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
+		for (int i = 0; i < list.size(); i++) {
+			DcCategory dcCategory = list.get(i);
+			Catrgory catrgory = new Catrgory();
+			catrgory.setCategoryId(dcCategory.getId());
+			catrgory.setCategoryName(dcCategory.getHfName());
+			catrgory.setFileId(dcCategory.getFileId());
+			catrgory.setHasChildren(true);
+			categoryExample.clear();
+			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId()).andIsDeletedEqualTo((short) 0);
+			list = dcCategoryMapper.selectByExample(categoryExample);
+			if(CollectionUtils.isEmpty(list)) {
+				catrgory.setHasChildren(false);
+			}
+			result.add(catrgory);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "根据名字等级获取类目", notes = "根据名字等级获取类目")
