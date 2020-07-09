@@ -5,7 +5,9 @@ import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.dao.DcRichTextMapper;
+import com.hanfu.dichan.center.dao.DcUserMapper;
 import com.hanfu.dichan.center.model.*;
+import com.hanfu.dichan.center.service.ExcelService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -13,15 +15,15 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api
@@ -34,6 +36,10 @@ public class DcCompanyController {
 private DcRichTextMapper dcRichTextMapper;
 @Autowired
 private DcGeneralFileMapper dcGeneralFileMapper;
+    @Autowired
+    private ExcelService excelService;
+    @Autowired
+    private DcUserMapper dcUserMapper;
 
     @ApiOperation(value = "上传图片", notes = "上传图片")
     @RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
@@ -149,5 +155,48 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         DcGeneralFileExample dcGeneralFileExample = new DcGeneralFileExample();
         dcGeneralFileExample.createCriteria().andFileIdEqualTo(fileId);
         return builder.body(ResponseUtils.getResponseBody(dcGeneralFileMapper.deleteByExample(dcGeneralFileExample)));
+    }
+    @PostMapping()
+    public Object excelOperation(@RequestParam("file") MultipartFile file) {
+        Map<Integer, Map<Integer, Object>> excelMap = excelService.addExcelInfo(file);
+        System.out.println(excelMap);
+        Iterator<Map.Entry<Integer, Map<Integer, Object>>> it = excelMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Map<Integer, Object>> entry = it.next();
+//            System.out.println("key:" + entry.getKey() + "  key:" + entry.getValue());
+            Iterator<Map.Entry<Integer, Object>> its = entry.getValue().entrySet().iterator();
+            Map.Entry<Integer, Object> entry1=null;
+            List list = new ArrayList();
+            while (its.hasNext()){
+                entry1 = its.next();
+                list.add(entry1.getValue());
+            }
+//            DecimalFormat df = new DecimalFormat("#");
+            BigDecimal bd = new BigDecimal((String) list.get(0));
+            DcUser dcUser = new DcUser();
+//            System.out.println(list.get(0));
+            dcUser.setPhone(bd.toPlainString());
+            dcUser.setRealName(String.valueOf(list.get(1)));
+            DcUserExample dcUserExample = new DcUserExample();
+            dcUserExample.createCriteria().andPhoneEqualTo(bd.toPlainString());
+            List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
+            byte ac= 0;
+            if ((list.get(2)).equals("0.0")){
+                ac = 0;
+            } else if ((list.get(2)).equals("1.0")) {
+                ac = 1;
+            }
+            if (dcUsers.size()==0){
+                dcUserMapper.insertSelective(dcUser);
+            } else {
+                System.out.println(dcUsers.get(0).getId()+"---"+ac);
+                dcUser.setIdDeleted(ac);
+                dcUser.setId(dcUsers.get(0).getId());
+                dcUser.setRealName(String.valueOf(list.get(1)));
+                int a= dcUserMapper.updateByPrimaryKeySelective(dcUser);
+            }
+        }
+        //	自行添加处理，单纯测试则无须添加
+        return excelMap;
     }
 }
