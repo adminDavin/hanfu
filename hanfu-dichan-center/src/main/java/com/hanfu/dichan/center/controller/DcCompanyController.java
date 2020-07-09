@@ -258,4 +258,23 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcUserMapper.updateByExampleSelective(dcUser,dcUserExample);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    @ApiOperation(value = "添加用户", notes = "添加用户")
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> addUser(String phone,String name) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcUserExample dcUserExample = new DcUserExample();
+        dcUserExample.createCriteria().andPhoneEqualTo(phone);
+        List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
+        if (dcUsers.size()==0){
+            DcUser dcUser = new DcUser();
+            dcUser.setPhone(phone);
+            dcUser.setRealName(name);
+            dcUserMapper.insertSelective(dcUser);
+        } else {
+            DcUser dcUser = new DcUser();
+            dcUser.setIdDeleted((byte) 0);
+            dcUserMapper.updateByExampleSelective(dcUser,dcUserExample);
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
