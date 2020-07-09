@@ -202,6 +202,7 @@ public class DcCategoryController {
 			categoryExample.createCriteria().andProjectIdEqualTo(projectId);
 		}
 		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
+		System.out.println(list.toString());
 		for (int i = 0; i < list.size(); i++) {
 			DcCategory dcCategory = list.get(i);
 			Catrgory catrgory = new Catrgory();
@@ -211,8 +212,8 @@ public class DcCategoryController {
 			catrgory.setHasChildren(true);
 			categoryExample.clear();
 			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId()).andIsDeletedEqualTo((short) 0);
-			list = dcCategoryMapper.selectByExample(categoryExample);
-			if(CollectionUtils.isEmpty(list)) {
+			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
+			if(CollectionUtils.isEmpty(dcCategories)) {
 				catrgory.setHasChildren(false);
 			}
 			result.add(catrgory);
