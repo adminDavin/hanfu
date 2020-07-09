@@ -233,6 +233,6 @@ private DcCompanyMapper dcCompanyMapper;
             httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
             return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
         }
-        return builder.body(ResponseUtils.getResponseBody("走你"));
+        return builder.body(ResponseUtils.getResponseBody(list));
     }
 }
