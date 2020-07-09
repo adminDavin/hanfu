@@ -32,6 +32,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
@@ -59,12 +61,12 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/project")
 @Api
 public class DcProjectController {
-	
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private DcProjectMapper dcProjectMapper;
-	
+
 	@ApiOperation(value = "添加项目", notes = "添加项目")
 	@RequestMapping(value = "/addProject", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addRatation(String projectName) throws Exception {
@@ -79,7 +81,7 @@ public class DcProjectController {
 		dcProjectMapper.insert(project);
 		return builder.body(ResponseUtils.getResponseBody(project.getId()));
 	}
-	
+
 	@ApiOperation(value = "删除项目", notes = "删除项目")
 	@RequestMapping(value = "/deleteProject", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteProject(Integer id) throws Exception {
@@ -87,34 +89,43 @@ public class DcProjectController {
 		dcProjectMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
-	
+
 	@ApiOperation(value = "编辑项目", notes = "编辑项目")
 	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateProject(Integer id, String name) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcProject project = dcProjectMapper.selectByPrimaryKey(id);
-		if(!StringUtils.isEmpty(name)) {
+		if (!StringUtils.isEmpty(name)) {
 			project.setProjectName(name);
 		}
 		project.setModifyTime(LocalDateTime.now());
 		dcProjectMapper.updateByPrimaryKey(project);
 		return builder.body(ResponseUtils.getResponseBody(project.getId()));
 	}
-	
+
 	@ApiOperation(value = "查询项目", notes = "查询项目")
 	@RequestMapping(value = "/getProject", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getRatation(Integer id) throws Exception {
+	public ResponseEntity<JSONObject> getRatation(Integer id, Integer pageNum, Integer pageSize) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		if (pageNum == null) {
+			pageNum = 0;
+		}
+		if (pageSize == null) {
+			pageSize = 0;
+		}
 		Integer bossId = 1;
-		if(id == null) {
+		if (id == null) {
 			DcProjectExample example = new DcProjectExample();
 			example.createCriteria().andBossIdEqualTo(bossId);
+			PageHelper.startPage(pageNum, pageSize);
 			List<DcProject> list = dcProjectMapper.selectByExample(example);
+			PageInfo<DcProject> page = new PageInfo<DcProject>(list);
 			return builder.body(ResponseUtils.getResponseBody(list));
-		}else {
+		} else {
+			PageHelper.startPage(pageNum, pageSize);
 			DcProject project = dcProjectMapper.selectByPrimaryKey(id);
 			return builder.body(ResponseUtils.getResponseBody(project));
 		}
 	}
-	
+
 }
