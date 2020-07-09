@@ -7,8 +7,11 @@ import com.hanfu.dichan.center.dao.DcCompanyMapper;
 import com.hanfu.dichan.center.dao.DcUserMapper;
 import com.hanfu.dichan.center.model.*;
 import com.hanfu.dichan.center.utils.Encrypt;
+import com.hanfu.dichan.center.utils.Message;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -37,6 +40,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @RestController
 @Api
@@ -180,4 +186,26 @@ private DcCompanyMapper dcCompanyMapper;
         DcCompany dcCompany = dcCompanyMapper.selectByPrimaryKey(companyId);
         return builder.body(ResponseUtils.getResponseBody(dcCompany));
     }
+    
+    
+    @RequestMapping(path = "/code", method = RequestMethod.POST)
+	@ApiOperation(value = "发送验证码", notes = "发送验证码")
+	public ResponseEntity<JSONObject> code(@RequestParam String phone) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if (!StringUtils.isEmpty(phone)) {
+			String s2 = "^[1](([3|5|8][\\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\\d]{8}$";
+			Pattern p = Pattern.compile(s2);
+			Matcher m = p.matcher(phone);
+			boolean b = m.matches();
+			if (b) {
+				Integer code = Message.sendSms(phone);
+				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				return builder.body(ResponseUtils.getResponseBody(code));
+			}
+			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
+		} else {
+			return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
+		}
+	}
+    
 }
