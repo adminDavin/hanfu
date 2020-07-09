@@ -156,7 +156,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcGeneralFileExample.createCriteria().andFileIdEqualTo(fileId);
         return builder.body(ResponseUtils.getResponseBody(dcGeneralFileMapper.deleteByExample(dcGeneralFileExample)));
     }
-    @PostMapping()
+    @PostMapping(value = "/download")
     public Object excelOperation(@RequestParam("file") MultipartFile file) {
         Map<Integer, Map<Integer, Object>> excelMap = excelService.addExcelInfo(file);
         System.out.println(excelMap);
@@ -219,7 +219,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             userExcel.setName(dcUser.getRealName());
             userExcel.setPhone(dcUser.getPhone());
             userExcel.setState(Integer.valueOf(dcUser.getIdDeleted()));
-            if (dcUser.getIdDeleted().equals(0)){
+            if (dcUser.getIdDeleted()==0){
                 userExcel.setRemark("在职");
             } else {
                 userExcel.setRemark("离职");
