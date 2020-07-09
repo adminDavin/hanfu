@@ -30,6 +30,7 @@ import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.AuthKeyIsExistException;
 import com.hanfu.user.center.response.handler.ParamInvalidException;
 import com.hanfu.user.center.utils.GetMessageCode;
+import com.hanfu.user.center.utils.Message;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -405,10 +406,31 @@ public class KingWordsController {
 		restTemplate.postForObject("http://localhost:8082/user/code", map, JSONObject.class);
 		return null;
 	}
-
+	
+	
 	@RequestMapping(path = "/code", method = RequestMethod.POST)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
-	public ResponseEntity<JSONObject> code(@RequestParam Map<String, String> map) throws Exception {
+	public ResponseEntity<JSONObject> code(@RequestParam String phone) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if (!StringUtils.isEmpty(phone)) {
+			String s2 = "^[1](([3|5|8][\\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\\d]{8}$";
+			Pattern p = Pattern.compile(s2);
+			Matcher m = p.matcher(phone);
+			boolean b = m.matches();
+			if (b) {
+				Integer code = Message.sendSms(phone);
+				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				return builder.body(ResponseUtils.getResponseBody(code));
+			}
+			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
+		} else {
+			return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
+		}
+	}
+
+	@RequestMapping(path = "/Message", method = RequestMethod.POST)
+	@ApiOperation(value = "发送验证码", notes = "发送验证码")
+	public ResponseEntity<JSONObject> Message(@RequestParam Map<String, String> map) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		String s = map.get("bossId");
 		Integer bossId = s == null ? null:Integer.valueOf(s);
