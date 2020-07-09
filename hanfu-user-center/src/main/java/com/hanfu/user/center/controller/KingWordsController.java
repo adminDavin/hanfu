@@ -419,7 +419,13 @@ public class KingWordsController {
 			boolean b = m.matches();
 			if (b) {
 				Integer code = Message.sendSms(phone);
-				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				Jedis jedis = new Jedis();
+				jedis = jedisPool.getResource();
+				jedis.set(phone, String.valueOf(code));
+				jedis.expire(phone, 300);
+				if (jedis != null) {
+					jedis.close();
+				}
 				return builder.body(ResponseUtils.getResponseBody(code));
 			}
 			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
