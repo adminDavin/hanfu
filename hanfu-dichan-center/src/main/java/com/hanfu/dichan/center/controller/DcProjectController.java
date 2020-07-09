@@ -120,7 +120,7 @@ public class DcProjectController {
 			PageHelper.startPage(pageNum, pageSize);
 			List<DcProject> list = dcProjectMapper.selectByExample(example);
 			PageInfo<DcProject> page = new PageInfo<DcProject>(list);
-			return builder.body(ResponseUtils.getResponseBody(list));
+			return builder.body(ResponseUtils.getResponseBody(page));
 		} else {
 			PageHelper.startPage(pageNum, pageSize);
 			DcProject project = dcProjectMapper.selectByPrimaryKey(id);
