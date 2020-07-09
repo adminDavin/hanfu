@@ -183,12 +183,17 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             DcUserExample dcUserExample = new DcUserExample();
             dcUserExample.createCriteria().andPhoneEqualTo(bd.toPlainString());
             List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
-            int ab= Integer.parseInt(list.get(2).toString());
-            byte ac= (byte) ab;
-            if ((list.get(2)).equals("0.0")){
-                ac = 0;
-            } else if ((list.get(2)).equals("1.0")) {
-                ac = 1;
+            int ab=0;
+            byte ac= 0;
+            try {
+                ab= Integer.parseInt(list.get(2).toString());
+                ac= (byte) ab;
+            } catch (Exception e) {
+                if ((list.get(2)).equals("0.0")){
+                    ac = 0;
+                } else if ((list.get(2)).equals("1.0")) {
+                    ac = 1;
+                }
             }
             if (dcUsers.size()==0){
                 dcUserMapper.insertSelective(dcUser);
