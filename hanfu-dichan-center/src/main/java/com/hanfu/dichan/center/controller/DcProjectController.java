@@ -105,24 +105,15 @@ public class DcProjectController {
 
 	@ApiOperation(value = "查询项目", notes = "查询项目")
 	@RequestMapping(value = "/getProject", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getRatation(Integer id, Integer pageNum, Integer pageSize) throws Exception {
+	public ResponseEntity<JSONObject> getRatation(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		if (pageNum == null) {
-			pageNum = 0;
-		}
-		if (pageSize == null) {
-			pageSize = 0;
-		}
 		Integer bossId = 1;
 		if (id == null) {
 			DcProjectExample example = new DcProjectExample();
 			example.createCriteria().andBossIdEqualTo(bossId);
-			PageHelper.startPage(pageNum, pageSize);
 			List<DcProject> list = dcProjectMapper.selectByExample(example);
-			PageInfo<DcProject> page = new PageInfo<DcProject>(list);
-			return builder.body(ResponseUtils.getResponseBody(page));
+			return builder.body(ResponseUtils.getResponseBody(list));
 		} else {
-			PageHelper.startPage(pageNum, pageSize);
 			DcProject project = dcProjectMapper.selectByPrimaryKey(id);
 			return builder.body(ResponseUtils.getResponseBody(project));
 		}
