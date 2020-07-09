@@ -156,7 +156,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcGeneralFileExample.createCriteria().andFileIdEqualTo(fileId);
         return builder.body(ResponseUtils.getResponseBody(dcGeneralFileMapper.deleteByExample(dcGeneralFileExample)));
     }
-    @PostMapping(value = "/download")
+    @PostMapping()
+//    value = "/download"
     public Object excelOperation(@RequestParam("file") MultipartFile file) {
         Map<Integer, Map<Integer, Object>> excelMap = excelService.addExcelInfo(file);
         System.out.println(excelMap);
