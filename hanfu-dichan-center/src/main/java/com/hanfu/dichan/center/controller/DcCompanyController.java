@@ -23,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Api
@@ -231,6 +228,34 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         });
         //调用Excel导出工具类
         ExcelExport2.export(response,userExcels,arr);
-
+    }
+    @ApiOperation(value = "获取用户", notes = "获取用户")
+    @RequestMapping(value = "/selectUser", method = RequestMethod.GET)
+    public ResponseEntity<JSONObject> selectUser() throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcUserExample dcUserExample = new DcUserExample();
+        dcUserExample.createCriteria().andIdDeletedEqualTo((byte) 0);
+        List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
+        List<Map<String,String>> mapList = new ArrayList<>();
+        dcUsers.forEach(dcUser -> {
+            Map<String,String> map = new HashMap<>();
+            map.put("id", String.valueOf(dcUser.getId()));
+            map.put("phone",dcUser.getPhone());
+            map.put("name",dcUser.getRealName());
+            mapList.add(map);
+        });
+        return builder.body(ResponseUtils.getResponseBody(mapList));
+    }
+    @ApiOperation(value = "删除用户", notes = "删除用户")
+    @RequestMapping(value = "/deletedUser", method = RequestMethod.POST)
+    public ResponseEntity<JSONObject> deletedUser(Integer userId) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        DcUser dcUser = new DcUser();
+        dcUser.setId(userId);
+        dcUser.setIdDeleted((byte) 1);
+        DcUserExample dcUserExample =new DcUserExample();
+        dcUserExample.createCriteria().andIdEqualTo(userId);
+        dcUserMapper.updateByExampleSelective(dcUser,dcUserExample);
+        return builder.body(ResponseUtils.getResponseBody(0));
     }
 }

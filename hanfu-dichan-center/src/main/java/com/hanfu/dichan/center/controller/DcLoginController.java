@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import javax.annotation.Resource;
 import javax.crypto.BadPaddingException;
@@ -60,6 +62,8 @@ private DcUserMapper dcUserMapper;
 private DcAuthMapper dcAuthMapper;
 @Autowired
 private DcCompanyMapper dcCompanyMapper;
+    @Autowired
+    JedisPool jedisPool;
 
     @RequestMapping(path = "/wechart", method = RequestMethod.GET)
     @ApiOperation(value = "微信登录", notes = "微信登录")
@@ -207,5 +211,27 @@ private DcCompanyMapper dcCompanyMapper;
 			return builder.body(ResponseUtils.getResponseBody("请输入手机号"));
 		}
 	}
-    
+    @RequestMapping(path = "/loginCode", method = RequestMethod.POST)
+    @ApiOperation(value = "发送验证码", notes = "发送验证码")
+    public ResponseEntity<JSONObject> loginCode(@RequestParam String phone,String passwd,HttpServletResponse httpServletResponse) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        Jedis jedis = jedisPool.getResource();
+        if (passwd == null) {
+            return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
+        }
+        if (!String.valueOf(passwd).equals(jedis.get(phone))) {
+            return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+        }
+        if(jedis != null) {
+            jedis.close();
+        }
+        DcUserExample example = new DcUserExample();
+        example.createCriteria().andPhoneEqualTo(phone).andIdDeletedEqualTo((byte) 0);
+        List<DcUser> list = dcUserMapper.selectByExample(example);
+        if (list.size()==0){
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+            return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
+        }
+        return builder.body(ResponseUtils.getResponseBody("走你"));
+    }
 }
