@@ -6,8 +6,10 @@ import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.dao.DcRichTextMapper;
 import com.hanfu.dichan.center.dao.DcUserMapper;
+import com.hanfu.dichan.center.manual.model.UserExcel;
 import com.hanfu.dichan.center.model.*;
 import com.hanfu.dichan.center.service.ExcelService;
+import com.hanfu.dichan.center.utils.ExcelExport2;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -180,7 +183,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             DcUserExample dcUserExample = new DcUserExample();
             dcUserExample.createCriteria().andPhoneEqualTo(bd.toPlainString());
             List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
-            byte ac= 0;
+            int ab= Integer.parseInt(list.get(2).toString());
+            byte ac= (byte) ab;
             if ((list.get(2)).equals("0.0")){
                 ac = 0;
             } else if ((list.get(2)).equals("1.0")) {
@@ -193,10 +197,35 @@ private DcGeneralFileMapper dcGeneralFileMapper;
                 dcUser.setIdDeleted(ac);
                 dcUser.setId(dcUsers.get(0).getId());
                 dcUser.setRealName(String.valueOf(list.get(1)));
-                int a= dcUserMapper.updateByPrimaryKeySelective(dcUser);
+                dcUserMapper.updateByPrimaryKeySelective(dcUser);
             }
         }
         //	自行添加处理，单纯测试则无须添加
         return excelMap;
+    }
+    @ApiOperation(value = "导出", notes = "导出")
+    @RequestMapping(value = "/selectTests", method = RequestMethod.GET)
+    public void selectTests(HttpServletResponse response) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+//创建一个数组用于设置表头
+        String[] arr = new String[]{"phone","name","state","remark"};
+        DcUserExample dcUserExample = new DcUserExample();
+        List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
+        List<UserExcel> userExcels = new ArrayList<>();
+        dcUsers.forEach(dcUser -> {
+            UserExcel userExcel = new UserExcel();
+            userExcel.setName(dcUser.getRealName());
+            userExcel.setPhone(dcUser.getPhone());
+            userExcel.setState(Integer.valueOf(dcUser.getIdDeleted()));
+            if (dcUser.getIdDeleted().equals(0)){
+                userExcel.setRemark("在职");
+            } else {
+                userExcel.setRemark("离职");
+            }
+            userExcels.add(userExcel);
+        });
+        //调用Excel导出工具类
+        ExcelExport2.export(response,userExcels,arr);
+
     }
 }
