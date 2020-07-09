@@ -203,7 +203,7 @@ private DcCompanyMapper dcCompanyMapper;
 			boolean b = m.matches();
 			if (b) {
 				Integer code = Message.sendSms(phone);
-				redisTemplate.opsForValue().set(phone, String.valueOf(code));
+				redisTemplate.opsForValue().set(phone+"dichan", String.valueOf(code));
 				return builder.body(ResponseUtils.getResponseBody(code));
 			}
 			return builder.body(ResponseUtils.getResponseBody("手机号有误"));
@@ -212,14 +212,15 @@ private DcCompanyMapper dcCompanyMapper;
 		}
 	}
     @RequestMapping(path = "/loginCode", method = RequestMethod.POST)
-    @ApiOperation(value = "发送验证码", notes = "发送验证码")
+    @ApiOperation(value = "登陆", notes = "登陆")
     public ResponseEntity<JSONObject> loginCode(@RequestParam String phone,String passwd,HttpServletResponse httpServletResponse) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         Jedis jedis = jedisPool.getResource();
         if (passwd == null) {
             return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
         }
-        if (!String.valueOf(passwd).equals(jedis.get(phone))) {
+        System.out.println(redisTemplate.opsForValue().get(phone+"dichan"));
+        if (!String.valueOf(passwd).equals(redisTemplate.opsForValue().get(phone+"dichan"))) {
             return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
         }
         if(jedis != null) {
