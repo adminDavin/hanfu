@@ -82,17 +82,12 @@ public class DcCategoryController {
 
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request, HttpServletRequest requests)
-			throws Exception {
+	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request, HttpServletRequest requests,
+			MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcCategory category = new DcCategory();
 		String uuid = UUID.randomUUID().toString();
 		Integer bossId = 1;
-//		if (requests.getServletContext().getAttribute("getServletContext")!=null){
-//			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
-//				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
-//			}
-//		}
 		category.setBossId(bossId);
 		category.setProjectId(request.getProjectId());
 		category.setLevelId(request.getLevelId());
@@ -101,6 +96,18 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
+		DcFileDesc fileDesc = new DcFileDesc();
+		fileDesc.setFileName(file.getName());
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setIsDeleted((short) 0);
+		dcFileDescMapper.insert(fileDesc);
+		category.setFileId(fileDesc.getId());
 		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
 	}
 
@@ -188,7 +195,7 @@ public class DcCategoryController {
 		map.put("list", list);
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
-	
+
 	@ApiOperation(value = "查询下级类目", notes = "查询下级类目")
 	@RequestMapping(value = "/findDownCategory", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findDownCategory(Integer parentCategoryId, Integer projectId) throws Exception {
@@ -211,9 +218,10 @@ public class DcCategoryController {
 			catrgory.setFileId(dcCategory.getFileId());
 			catrgory.setHasChildren(true);
 			categoryExample.clear();
-			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId()).andIsDeletedEqualTo((short) 0);
+			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId())
+					.andIsDeletedEqualTo((short) 0);
 			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
-			if(CollectionUtils.isEmpty(dcCategories)) {
+			if (CollectionUtils.isEmpty(dcCategories)) {
 				catrgory.setHasChildren(false);
 			}
 			result.add(catrgory);
@@ -300,7 +308,7 @@ public class DcCategoryController {
 		dcGeneralFileMapper.insert(dcGeneralFile);
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
-	
+
 	@ApiOperation(value = "删除类目详情", notes = "删除类目详情")
 	@RequestMapping(value = "/deleteCategoryDetail", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteCategoryDetail(Integer id) throws Exception {
@@ -313,7 +321,7 @@ public class DcCategoryController {
 		dcGeneralFileMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
 	}
-	
+
 	@ApiOperation(value = "修改类目详情", notes = "修改类目详情")
 	@RequestMapping(value = "/updateCategoryDetail", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> updateCategoryDetail(Integer id, MultipartFile file) throws Exception {
@@ -330,7 +338,7 @@ public class DcCategoryController {
 		dcFileDescMapper.updateByPrimaryKey(fileDesc);
 		return builder.body(ResponseUtils.getResponseBody(dcGeneralFile.getId()));
 	}
-	
+
 	@ApiOperation(value = "查询类目详情", notes = "查询类目详情")
 	@RequestMapping(value = "/selectCategoryDetail", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectCategoryDetail(Integer categoryId) throws Exception {
