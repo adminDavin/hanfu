@@ -96,18 +96,20 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
-		FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
-		DcFileDesc fileDesc = new DcFileDesc();
-		fileDesc.setFileName(file.getName());
-		fileDesc.setGroupName(arr[0]);
-		fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setCreateTime(LocalDateTime.now());
-		fileDesc.setModifyTime(LocalDateTime.now());
-		fileDesc.setIsDeleted((short) 0);
-		dcFileDescMapper.insert(fileDesc);
-		category.setFileId(fileDesc.getId());
+		if(!file.isEmpty()) {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
+			DcFileDesc fileDesc = new DcFileDesc();
+			fileDesc.setFileName(file.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			dcFileDescMapper.insert(fileDesc);
+			category.setFileId(fileDesc.getId());
+		}
 		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
 	}
 
