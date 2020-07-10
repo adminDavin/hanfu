@@ -297,6 +297,7 @@ public class DcCategoryController {
 	@RequestMapping(value = "/addCategoryDetail", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addCategoryDetail(Integer id, MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcCategory dcCategory = dcCategoryMapper.selectByPrimaryKey(id);
 		Integer categoryDetailId = null;
 		DcCategoryDetailExample example = new DcCategoryDetailExample();
 		example.createCriteria().andCategoryIdEqualTo(id);
@@ -315,6 +316,8 @@ public class DcCategoryController {
 			DcCategoryDetail detail = list.get(0);
 			categoryDetailId = detail.getId();
 		}
+		dcCategory.setCategoryDetailId(categoryDetailId);
+		dcCategoryMapper.updateByPrimaryKey(dcCategory);
 		FileMangeService fileManageService = new FileMangeService();
 		String arr[];
 		arr = fileManageService.uploadFile(file.getBytes(), "1");
