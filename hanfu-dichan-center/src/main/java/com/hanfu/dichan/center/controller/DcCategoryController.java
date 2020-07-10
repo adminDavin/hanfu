@@ -130,7 +130,7 @@ public class DcCategoryController {
 
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,
+	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request,Integer catrgoryId,
 			MultipartFile fileInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
