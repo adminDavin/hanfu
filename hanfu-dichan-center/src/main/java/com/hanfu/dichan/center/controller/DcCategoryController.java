@@ -36,12 +36,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.dichan.center.dao.DcCategoryDetailMapper;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
 import com.hanfu.dichan.center.manual.model.Catrgory;
 import com.hanfu.dichan.center.model.DcCategory;
+import com.hanfu.dichan.center.model.DcCategoryDetail;
+import com.hanfu.dichan.center.model.DcCategoryDetailExample;
 import com.hanfu.dichan.center.model.DcCategoryExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
 import com.hanfu.dichan.center.model.DcFileDescExample;
@@ -79,6 +82,9 @@ public class DcCategoryController {
 
 	@Autowired
 	private DcGeneralFileMapper dcGeneralFileMapper;
+	
+	@Autowired
+	private DcCategoryDetailMapper dcCategoryDetailMapper;
 
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -290,6 +296,24 @@ public class DcCategoryController {
 	@RequestMapping(value = "/addCategoryDetail", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addCategoryDetail(Integer id, MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer categoryDetailId = null;
+		DcCategoryDetailExample example = new DcCategoryDetailExample();
+		example.createCriteria().andCategoryIdEqualTo(id);
+		List<DcCategoryDetail> list = dcCategoryDetailMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(list)) {
+			DcCategoryDetail detail = new DcCategoryDetail();
+			detail.setCategoryId(id);
+			detail.setComment(0);
+			detail.setPraise(0);
+			detail.setCreateTime(LocalDateTime.now());
+			detail.setModifyTime(LocalDateTime.now());
+			detail.setIsDeleted((byte) 0);
+			dcCategoryDetailMapper.insert(detail);
+			categoryDetailId = detail.getId();
+		}else {
+			DcCategoryDetail detail = list.get(0);
+			categoryDetailId = detail.getId();
+		}
 		FileMangeService fileManageService = new FileMangeService();
 		String arr[];
 		arr = fileManageService.uploadFile(file.getBytes(), "1");
@@ -307,6 +331,7 @@ public class DcCategoryController {
 		dcGeneralFile.setCreateTime(LocalDateTime.now());
 		dcGeneralFile.setModifyTime(LocalDateTime.now());
 		dcGeneralFile.setIsDeleted((byte) 0);
+		dcGeneralFile.setCategoryDetailId(categoryDetailId);
 		dcGeneralFileMapper.insert(dcGeneralFile);
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
