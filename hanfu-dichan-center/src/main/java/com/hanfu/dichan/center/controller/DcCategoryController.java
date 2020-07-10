@@ -225,6 +225,7 @@ public class DcCategoryController {
 			catrgory.setCategoryName(dcCategory.getHfName());
 			catrgory.setFileId(dcCategory.getFileId());
 			catrgory.setHasChildren(true);
+			catrgory.setCategoryDetailId(dcCategory.getCategoryDetailId());
 			categoryExample.clear();
 			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId())
 					.andIsDeletedEqualTo((short) 0);

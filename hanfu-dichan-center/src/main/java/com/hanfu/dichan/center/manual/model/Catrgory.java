@@ -11,6 +11,7 @@ public class Catrgory implements Serializable{
 	private String categoryName;
 	private Integer categoryId;
 	private Integer fileId;
+	private Integer categoryDetailId;
 	public boolean isHasChildren() {
 		return hasChildren;
 	}
@@ -34,6 +35,12 @@ public class Catrgory implements Serializable{
 	}
 	public void setFileId(Integer fileId) {
 		this.fileId = fileId;
+	}
+	public Integer getCategoryDetailId() {
+		return categoryDetailId;
+	}
+	public void setCategoryDetailId(Integer categoryDetailId) {
+		this.categoryDetailId = categoryDetailId;
 	}
 	
 }

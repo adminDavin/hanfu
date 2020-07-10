@@ -45,7 +45,7 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		
-		<table schema="user_center" tableName="dc_category_detail"
+		<!-- <table schema="user_center" tableName="dc_category_detail"
 		domainObjectName="DcCategoryDetail">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
@@ -65,6 +65,12 @@
 		</table>
 		<table schema="user_center" tableName="dc_general_file"
 		domainObjectName="DcGeneralFile">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
+		</table> -->
+		<table schema="user_center" tableName="dc_category"
+		domainObjectName="DcCategory">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
