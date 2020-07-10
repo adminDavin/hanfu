@@ -96,7 +96,7 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
-		if(!file.isEmpty()) {
+		if(file != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
