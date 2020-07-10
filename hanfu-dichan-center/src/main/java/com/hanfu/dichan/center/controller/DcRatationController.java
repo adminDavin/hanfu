@@ -56,21 +56,36 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/ratation")
 @Api
 public class DcRatationController {
-	
+
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private DcRatationMapper dcRatationMapper;
-	
+
 	@Autowired
 	private DcFileDescMapper dcFileDescMapper;
-	
+
 	@ApiOperation(value = "添加轮播图", notes = "添加轮播图")
 	@RequestMapping(value = "/addRatation", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addRatation(RatationRequest request) throws Exception {
+	public ResponseEntity<JSONObject> addRatation(RatationRequest request, MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
 		DcRatation ratation = new DcRatation();
+		if (file != null) {
+			DcFileDesc fileDesc = new DcFileDesc();
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
+			fileDesc = new DcFileDesc();
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setFileName(file.getOriginalFilename());
+			fileDesc.setIsDeleted((short) 0);
+			dcFileDescMapper.insert(fileDesc);
+			ratation.setFileId(fileDesc.getId());
+		}
 		ratation.setBossId(bossId);
 		ratation.setProjectId(request.getProjectId());
 		ratation.setType(request.getType());
@@ -79,8 +94,9 @@ public class DcRatationController {
 		ratation.setIsDeleted((byte) 0);
 		dcRatationMapper.insert(ratation);
 		return builder.body(ResponseUtils.getResponseBody(ratation.getId()));
+
 	}
-	
+
 	@ApiOperation(value = "删除轮播图", notes = "删除轮播图")
 	@RequestMapping(value = "/deleteRatation", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> deleteRatation(Integer id) throws Exception {
@@ -92,23 +108,23 @@ public class DcRatationController {
 		fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
-	
+
 	@ApiOperation(value = "编辑轮播图", notes = "修改轮播图")
 	@RequestMapping(value = "/updateRatation", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateRatation(Integer id,MultipartFile file) throws Exception {
+	public ResponseEntity<JSONObject> updateRatation(Integer id, MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcRatation ratation = dcRatationMapper.selectByPrimaryKey(id);
 		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(ratation.getFileId());
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
 		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(id));
-		if(fileDesc != null) {
+		if (fileDesc != null) {
 			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
 			fileDesc.setModifyTime(LocalDateTime.now());
 			dcFileDescMapper.updateByPrimaryKey(fileDesc);
-		}else {
+		} else {
 			fileDesc = new DcFileDesc();
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
@@ -122,19 +138,19 @@ public class DcRatationController {
 		dcRatationMapper.updateByPrimaryKey(ratation);
 		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
 	}
-	
+
 	@ApiOperation(value = "查询轮播图", notes = "查询轮播图")
 	@RequestMapping(value = "/getRatation", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getRatation(Integer projectId,String type) throws Exception {
+	public ResponseEntity<JSONObject> getRatation(Integer projectId, String type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
-		if(RatationTypeEnum.OUR.getRatationType().equals(type)) {
+		if (RatationTypeEnum.OUR.getRatationType().equals(type)) {
 			DcRatationExample example = new DcRatationExample();
 			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(type);
 			List<DcRatation> list = dcRatationMapper.selectByExample(example);
 			return builder.body(ResponseUtils.getResponseBody(list));
 		}
-		if(RatationTypeEnum.HOME_PAGE.getRatationType().equals(type)) {
+		if (RatationTypeEnum.HOME_PAGE.getRatationType().equals(type)) {
 			DcRatationExample example = new DcRatationExample();
 			example.createCriteria().andBossIdEqualTo(bossId).andTypeEqualTo(type).andProjectIdEqualTo(projectId);
 			List<DcRatation> list = dcRatationMapper.selectByExample(example);
@@ -142,5 +158,5 @@ public class DcRatationController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-	
+
 }
