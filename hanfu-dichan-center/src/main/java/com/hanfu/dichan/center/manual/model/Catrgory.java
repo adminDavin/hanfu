@@ -12,6 +12,7 @@ public class Catrgory implements Serializable{
 	private Integer categoryId;
 	private Integer fileId;
 	private Integer categoryDetailId;
+	private Integer type;
 	public boolean isHasChildren() {
 		return hasChildren;
 	}
@@ -41,6 +42,12 @@ public class Catrgory implements Serializable{
 	}
 	public void setCategoryDetailId(Integer categoryDetailId) {
 		this.categoryDetailId = categoryDetailId;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
 	}
 	
 }

@@ -225,6 +225,7 @@ public class DcCategoryController {
 			catrgory.setCategoryName(dcCategory.getHfName());
 			catrgory.setFileId(dcCategory.getFileId());
 			catrgory.setHasChildren(true);
+			catrgory.setType(2);
 			catrgory.setCategoryDetailId(dcCategory.getCategoryDetailId());
 			categoryExample.clear();
 			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId())
@@ -232,6 +233,11 @@ public class DcCategoryController {
 			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
 			if (CollectionUtils.isEmpty(dcCategories)) {
 				catrgory.setHasChildren(false);
+				if(dcCategory.getCategoryDetailId() == null) {
+					catrgory.setType(3);
+				}else {
+					catrgory.setType(4);
+				}
 			}
 			result.add(catrgory);
 		}
