@@ -50,31 +50,37 @@
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
+		</table> -->
+		<table schema="user_center" tableName="dc_praise_record"
+		domainObjectName="DcPraiseRecord">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
 		</table>
-		<table schema="user_center" tableName="dc_evaluate"
+		<!-- <table schema="user_center" tableName="dc_evaluate"
 		domainObjectName="DcEvaluate">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
-		<table schema="user_center" tableName="dc_evaluate_picture"
+		</table> -->
+		<!-- <table schema="user_center" tableName="dc_evaluate_picture"
 		domainObjectName="DcEvaluatePicture">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
-		<table schema="user_center" tableName="dc_general_file"
+		</table> -->
+		<!-- <table schema="user_center" tableName="dc_general_file"
 		domainObjectName="DcGeneralFile">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table> -->
-		<table schema="user_center" tableName="dc_category"
+		<!-- <table schema="user_center" tableName="dc_category"
 		domainObjectName="DcCategory">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
+		</table> -->
 		
 	</context>
 </generatorConfiguration>

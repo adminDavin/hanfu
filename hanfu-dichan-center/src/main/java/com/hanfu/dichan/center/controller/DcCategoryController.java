@@ -38,18 +38,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcCategoryDetailMapper;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
+import com.hanfu.dichan.center.dao.DcEvaluateMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
+import com.hanfu.dichan.center.dao.DcPraiseRecordMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
 import com.hanfu.dichan.center.manual.model.Catrgory;
 import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryDetail;
 import com.hanfu.dichan.center.model.DcCategoryDetailExample;
 import com.hanfu.dichan.center.model.DcCategoryExample;
+import com.hanfu.dichan.center.model.DcEvaluate;
+import com.hanfu.dichan.center.model.DcEvaluateExample;
 import com.hanfu.dichan.center.model.DcFileDesc;
 import com.hanfu.dichan.center.model.DcFileDescExample;
 import com.hanfu.dichan.center.model.DcGeneralFile;
 import com.hanfu.dichan.center.model.DcGeneralFileExample;
+import com.hanfu.dichan.center.model.DcPraiseRecord;
+import com.hanfu.dichan.center.model.DcPraiseRecordExample;
 import com.hanfu.dichan.center.request.CategoryRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -85,6 +91,12 @@ public class DcCategoryController {
 	
 	@Autowired
 	private DcCategoryDetailMapper dcCategoryDetailMapper;
+	
+	@Autowired
+	private DcPraiseRecordMapper dcPraiseRecordMapper;
+	
+	@Autowired
+	private DcEvaluateMapper dcEvaluateMapper;
 
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -384,6 +396,105 @@ public class DcCategoryController {
 		example.createCriteria().andGeneralIdEqualTo(categoryId);
 		List<DcGeneralFile> files = dcGeneralFileMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(files));
+	}
+	
+	@ApiOperation(value = "给类目详情点赞", notes = "给类目详情点赞")
+	@RequestMapping(value = "/categoryDetailPraise", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> categoryDetailPraise(Integer categoryDetailId, Integer userId, String type) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcPraiseRecordExample recordExample = new DcPraiseRecordExample();
+		recordExample.createCriteria().andEvaluateEqualTo(categoryDetailId).andTypeEqualTo(type);
+		List<DcPraiseRecord> list = dcPraiseRecordMapper.selectByExample(recordExample);
+		if(CollectionUtils.isEmpty(list)) {
+			DcPraiseRecord record = new DcPraiseRecord();
+			record.setType(type);
+			record.setUserId(userId);
+			record.setEvaluate(categoryDetailId);
+			record.setCreateTime(LocalDateTime.now());
+			record.setModifyTime(LocalDateTime.now());
+			record.setIsDeleted((byte) 1);
+			dcPraiseRecordMapper.insert(record);
+			if("categoryDetail".equals(type)) {
+				updateCatrgotyDetailPraise(1,categoryDetailId);
+			}
+		}else {
+			DcPraiseRecord record = list.get(0);
+			if(record.getIsDeleted() == 0) {
+				record.setIsDeleted((byte) 1);
+				dcPraiseRecordMapper.updateByPrimaryKey(record);
+				if("categoryDetail".equals(type)) {
+					updateCatrgotyDetailPraise(1,categoryDetailId);
+				}
+			}
+			if(record.getIsDeleted() == 1) {
+				record.setIsDeleted((byte) 0);
+				dcPraiseRecordMapper.updateByPrimaryKey(record);
+				if("categoryDetail".equals(type)) {
+					updateCatrgotyDetailPraise(0,categoryDetailId);
+				}
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(1));
+	}
+	
+	public void updateCatrgotyDetailPraise(Integer result, Integer categoryDetailId) {
+		if(result == 0) {
+			DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
+			categoryDetail.setPraise(categoryDetail.getPraise()-1);
+			dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
+		}
+		if(result == 1) {
+			DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
+			categoryDetail.setPraise(categoryDetail.getPraise()+1);
+			dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
+		}
+	}
+	
+	@ApiOperation(value = "查看点赞数量和是否点赞", notes = "查看点赞数量和是否点赞")
+	@RequestMapping(value = "/findPraise", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findPraise(Integer categoryDetailId, Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Map<String, Object> map = new HashMap<String, Object>();
+		DcCategoryDetail detail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
+		DcPraiseRecordExample example = new DcPraiseRecordExample();
+		example.createCriteria().andTypeEqualTo("categoryDetail").andEvaluateEqualTo(categoryDetailId)
+		.andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 0);
+		map.put("count", detail.getPraise());
+		if(CollectionUtils.isEmpty(dcPraiseRecordMapper.selectByExample(example))) {
+			map.put("isPraise", 2);
+		}else {
+			map.put("isPraise", 3);
+		}
+		
+		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+	
+	
+	@ApiOperation(value = "给类目详情评论", notes = "给类目详情评论")
+	@RequestMapping(value = "/categoryDetailComment", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> categoryDetailComment(Integer categoryDetailId, Integer userId, String type
+			,String typeContent, Integer parentCommtentId, String comment) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcEvaluate evaluate = new DcEvaluate();
+		evaluate.setType("categoryDetail");
+		evaluate.setTypeContent("heart");
+		evaluate.setParentEvaluateId(parentCommtentId);
+		evaluate.setInstanceId(categoryDetailId);
+		evaluate.setUserId(userId);
+		evaluate.setEvaluate(comment);
+		dcEvaluateMapper.insert(evaluate);
+		
+		return builder.body(ResponseUtils.getResponseBody(1));
+	}
+	
+	@ApiOperation(value = "查询详情评论", notes = "查询详情评论")
+	@RequestMapping(value = "/findcategoryDetailComment", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findcategoryDetailComment(Integer categoryDetailId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcEvaluateExample evaluateExample = new DcEvaluateExample();
+		evaluateExample.createCriteria().andInstanceIdEqualTo(categoryDetailId).andTypeEqualTo("categoryDetail");
+		List<DcEvaluate> list = dcEvaluateMapper.selectByExample(evaluateExample);
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
 	@InitBinder
