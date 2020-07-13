@@ -493,7 +493,9 @@ public class DcCategoryController {
 		evaluate.setUserId(userId);
 		evaluate.setEvaluate(comment);
 		dcEvaluateMapper.insert(evaluate);
-		
+		DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
+		categoryDetail.setComment(categoryDetail.getComment());
+		dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
 	
