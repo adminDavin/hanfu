@@ -517,7 +517,7 @@ public class DcCategoryController {
 		DcCategoryDetail detail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
 		map.put("list", result);
 		map.put("count", detail.getComment());
-		return builder.body(ResponseUtils.getResponseBody(result));
+		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 
 	@InitBinder
