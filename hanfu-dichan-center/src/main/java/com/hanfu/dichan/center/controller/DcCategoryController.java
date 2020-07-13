@@ -458,7 +458,7 @@ public class DcCategoryController {
 		DcCategoryDetail detail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
 		DcPraiseRecordExample example = new DcPraiseRecordExample();
 		example.createCriteria().andTypeEqualTo("categoryDetail").andEvaluateEqualTo(categoryDetailId)
-		.andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 0);
+		.andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
 		map.put("count", detail.getPraise());
 		if(CollectionUtils.isEmpty(dcPraiseRecordMapper.selectByExample(example))) {
 			map.put("isPraise", 2);
