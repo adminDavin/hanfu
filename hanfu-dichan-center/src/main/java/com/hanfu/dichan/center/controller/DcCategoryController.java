@@ -42,8 +42,10 @@ import com.hanfu.dichan.center.dao.DcEvaluateMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.dao.DcPraiseRecordMapper;
+import com.hanfu.dichan.center.dao.DcUserMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
 import com.hanfu.dichan.center.manual.model.Catrgory;
+import com.hanfu.dichan.center.manual.model.Comment;
 import com.hanfu.dichan.center.model.DcCategory;
 import com.hanfu.dichan.center.model.DcCategoryDetail;
 import com.hanfu.dichan.center.model.DcCategoryDetailExample;
@@ -56,6 +58,7 @@ import com.hanfu.dichan.center.model.DcGeneralFile;
 import com.hanfu.dichan.center.model.DcGeneralFileExample;
 import com.hanfu.dichan.center.model.DcPraiseRecord;
 import com.hanfu.dichan.center.model.DcPraiseRecordExample;
+import com.hanfu.dichan.center.model.DcUser;
 import com.hanfu.dichan.center.request.CategoryRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -97,6 +100,9 @@ public class DcCategoryController {
 	
 	@Autowired
 	private DcEvaluateMapper dcEvaluateMapper;
+	
+	@Autowired
+	private DcUserMapper dcUserMapper;
 
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -418,21 +424,25 @@ public class DcCategoryController {
 				updateCatrgotyDetailPraise(1,categoryDetailId);
 			}
 		}else {
+			System.out.println("else");
 			DcPraiseRecord record = list.get(0);
 			if(record.getIsDeleted() == 0) {
+				System.out.println("deleted=====0");
 				record.setIsDeleted((byte) 1);
 				dcPraiseRecordMapper.updateByPrimaryKey(record);
 				if("categoryDetail".equals(type)) {
 					updateCatrgotyDetailPraise(1,categoryDetailId);
 				}
-			}
-			if(record.getIsDeleted() == 1) {
+			}else {
 				record.setIsDeleted((byte) 0);
 				dcPraiseRecordMapper.updateByPrimaryKey(record);
 				if("categoryDetail".equals(type)) {
 					updateCatrgotyDetailPraise(0,categoryDetailId);
 				}
 			}
+//			if(record.getIsDeleted() == 1) {
+//				
+//			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
@@ -491,10 +501,19 @@ public class DcCategoryController {
 	@RequestMapping(value = "/findcategoryDetailComment", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findcategoryDetailComment(Integer categoryDetailId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<Comment> result = new ArrayList<Comment>();
 		DcEvaluateExample evaluateExample = new DcEvaluateExample();
 		evaluateExample.createCriteria().andInstanceIdEqualTo(categoryDetailId).andTypeEqualTo("categoryDetail");
 		List<DcEvaluate> list = dcEvaluateMapper.selectByExample(evaluateExample);
-		return builder.body(ResponseUtils.getResponseBody(list));
+		for (int i = 0; i < list.size(); i++) {
+			DcEvaluate evaluate = list.get(i);
+			Comment comment = new Comment();
+			DcUser dcUser = dcUserMapper.selectByPrimaryKey(evaluate.getUserId());
+			comment.setName(dcUser.getRealName());
+			comment.setContent(evaluate.getEvaluate());
+			result.add(comment);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@InitBinder
