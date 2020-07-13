@@ -501,6 +501,7 @@ public class DcCategoryController {
 	@RequestMapping(value = "/findcategoryDetailComment", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findcategoryDetailComment(Integer categoryDetailId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Comment> result = new ArrayList<Comment>();
 		DcEvaluateExample evaluateExample = new DcEvaluateExample();
 		evaluateExample.createCriteria().andInstanceIdEqualTo(categoryDetailId).andTypeEqualTo("categoryDetail");
@@ -513,6 +514,9 @@ public class DcCategoryController {
 			comment.setContent(evaluate.getEvaluate());
 			result.add(comment);
 		}
+		DcCategoryDetail detail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
+		map.put("list", result);
+		map.put("count", detail.getComment());
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
