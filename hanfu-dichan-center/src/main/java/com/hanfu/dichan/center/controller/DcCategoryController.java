@@ -267,6 +267,8 @@ public class DcCategoryController {
 	public ResponseEntity<JSONObject> getCategoryByNameOrLevel(HttpServletRequest request, Integer level, String name,
 			Integer projectId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<Catrgory> result = new ArrayList<Catrgory>();
+		DcCategoryExample categoryExample = new DcCategoryExample();
 		Integer bossId = 1;
 //		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")){
 //			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
@@ -280,7 +282,30 @@ public class DcCategoryController {
 		h.setBossId(bossId);
 		h.setProjectId(projectId);
 		List<DcCategory> list = manualDao.findCategoryByInfo(h);
-		return builder.body(ResponseUtils.getResponseBody(list));
+		for (int i = 0; i < list.size(); i++) {
+			DcCategory dcCategory = list.get(i);
+			Catrgory catrgory = new Catrgory();
+			catrgory.setCategoryId(dcCategory.getId());
+			catrgory.setCategoryName(dcCategory.getHfName());
+			catrgory.setFileId(dcCategory.getFileId());
+			catrgory.setHasChildren(true);
+			catrgory.setType(2);
+			catrgory.setCategoryDetailId(dcCategory.getCategoryDetailId());
+			categoryExample.clear();
+			categoryExample.createCriteria().andParentCategoryIdEqualTo(dcCategory.getId())
+					.andIsDeletedEqualTo((short) 0);
+			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
+			if (CollectionUtils.isEmpty(dcCategories)) {
+				catrgory.setHasChildren(false);
+				if(dcCategory.getCategoryDetailId() == null) {
+					catrgory.setType(3);
+				}else {
+					catrgory.setType(4);
+				}
+			}
+			result.add(catrgory);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "获取图片", notes = "获取图片")
