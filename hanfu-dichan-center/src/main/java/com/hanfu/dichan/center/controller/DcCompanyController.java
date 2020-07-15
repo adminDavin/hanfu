@@ -79,7 +79,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(projectId).andTextTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
         String a = null;
-        if (dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText()!=null){
+        if (dcRichTextMapper.selectByExample(dcRichTextExample).size()!=0&&dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText()!=null){
             a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
         }
         System.out.println(a);
