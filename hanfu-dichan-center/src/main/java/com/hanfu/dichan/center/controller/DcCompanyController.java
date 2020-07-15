@@ -94,7 +94,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(productId).andTextTypeEqualTo(type);
         DcRichText dcRichText = new DcRichText();
-        dcRichText.setIsDeleted((byte) 0);
+        dcRichText.setIsDeleted((byte) 1);
         dcRichTextMapper.updateByExampleSelective(dcRichText,dcRichTextExample);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
