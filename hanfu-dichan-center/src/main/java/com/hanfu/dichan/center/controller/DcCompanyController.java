@@ -78,7 +78,10 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(projectId).andTextTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
-        String a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
+        String a = null;
+        if (dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText()!=null){
+            a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
+        }
         System.out.println(a);
 //        String jieguo = a.substring(a.indexOf("")+1,a.indexOf("\"));
 //        JSONObject jsonObject1 =JSONObject.parseObject(dcRichTextMapper.selectByExample(dcRichTextExample).toString());
