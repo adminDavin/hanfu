@@ -70,16 +70,26 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         System.out.println(dcRichText.getRichText().replace('\"','\''));
         dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
         
+        DcRichTextExample dcRichTextExample = new DcRichTextExample();
+        dcRichTextExample.createCriteria().andProjectIdEqualTo(dcRichText.getProjectId()).andTextTypeEqualTo(dcRichText.getTextType()).andIsDeletedEqualTo((byte) 0);
+        List<DcRichText> dcRichText1 =  dcRichTextMapper.selectByExample(dcRichTextExample);
+        if (dcRichText1.size()!=0){
+            DcRichText dcRichText2 = dcRichText1.get(0);
+            dcRichText2.setIsDeleted((byte) 1);
+            dcRichTextMapper.updateByPrimaryKeySelective(dcRichText1.get(0));
+        }
+//        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
+//        System.out.println(dcRichText.getRichText());
+        General.GeneralTypeEnum generalTypeEnum = General.GeneralTypeEnum.getGeneralTypeEnum(dcRichText.getTextType());
+        dcRichText.setTextType(generalTypeEnum.getGeneralType());
+        dcRichTextMapper.insertSelective(dcRichText);
+        
         if(dcRichText.getCategoryId() != null) {
         	DcCategory category = dcCategoryMapper.selectByPrimaryKey(dcRichText.getCategoryId());
         	category.setCategoryDetailId(dcRichText.getId());
         	dcCategoryMapper.updateByPrimaryKey(category);
         }
         
-        
-//        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
-//        System.out.println(dcRichText.getRichText());
-        dcRichTextMapper.insertSelective(dcRichText);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
     @ApiOperation(value = "查询富文本", notes = "查询富文本")
@@ -91,7 +101,10 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         if("category".equals(type)) {
         	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
         }
-        String a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
+        String a = null;
+        if (dcRichTextMapper.selectByExample(dcRichTextExample).size()!=0&&dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText()!=null){
+            a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
+        }
         System.out.println(a);
 //        String jieguo = a.substring(a.indexOf("")+1,a.indexOf("\"));
 //        JSONObject jsonObject1 =JSONObject.parseObject(dcRichTextMapper.selectByExample(dcRichTextExample).toString());
@@ -110,7 +123,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
         }
         DcRichText dcRichText = new DcRichText();
-        dcRichText.setIsDeleted((byte) 0);
+        dcRichText.setIsDeleted((byte) 1);
         dcRichTextMapper.updateByExampleSelective(dcRichText,dcRichTextExample);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
