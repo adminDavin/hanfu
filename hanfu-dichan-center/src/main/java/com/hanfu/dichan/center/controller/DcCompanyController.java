@@ -69,6 +69,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
 
 //        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
 //        System.out.println(dcRichText.getRichText());
+        General.GeneralTypeEnum generalTypeEnum = General.GeneralTypeEnum.getGeneralTypeEnum(dcRichText.getTextType());
+        dcRichText.setTextType(generalTypeEnum.getGeneralType());
         dcRichTextMapper.insertSelective(dcRichText);
         return builder.body(ResponseUtils.getResponseBody(0));
     }

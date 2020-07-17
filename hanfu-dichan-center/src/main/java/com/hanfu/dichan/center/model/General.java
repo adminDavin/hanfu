@@ -3,7 +3,8 @@ package com.hanfu.dichan.center.model;
 public class General {
     public static enum GeneralTypeEnum {
 
-        GENERAL_TYPE_ENUM("general");
+        GENERAL_TYPE_ENUM("general"),
+        CATEGORT_TYPE_ENUM("category");
 
         private String generalType;
 
@@ -12,7 +13,7 @@ public class General {
         }
 
         public String getGeneralType() {
-            return generalType;
+            return this.generalType;
         }
 
 
