@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.csource.common.NameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,4 +160,39 @@ public class DcRatationController {
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
 
+	@ApiOperation(value = "测试上传图片", notes = "测试上传图片")
+	@RequestMapping(value = "/addPictureCs", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addPictureCs(RatationRequest request, MultipartFile file) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		Integer bossId = 1;
+		DcFileDesc fileDesc = new DcFileDesc();
+		FileMangeService fileMangeService = new FileMangeService();
+		String arr[];
+		String uploadFileName = file.getOriginalFilename();
+		System.out.println(uploadFileName);
+		System.out.println(file.getSize());
+		String fileExtName = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
+		System.out.println(uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1));
+		NameValuePair[] metaList = new NameValuePair[3];
+		metaList[0] = new NameValuePair("fileName", uploadFileName);
+		metaList[1] = new NameValuePair("fileExtName", fileExtName);
+		metaList[2] = new NameValuePair("fileLength", String.valueOf(file.getSize()));
+		arr = fileMangeService.uploadFile(file.getBytes(), fileExtName, metaList);
+		fileDesc = new DcFileDesc();
+		fileDesc.setGroupName(arr[0]);
+		fileDesc.setRemoteFilename(arr[1]);
+		fileDesc.setModifyTime(LocalDateTime.now());
+		fileDesc.setCreateTime(LocalDateTime.now());
+		fileDesc.setFileName(file.getOriginalFilename());
+		fileDesc.setIsDeleted((short) 0);
+		dcFileDescMapper.insert(fileDesc);
+		return builder.body(ResponseUtils.getResponseBody(fileDesc.getId()));
+
+	}
+	
+//	public static void main(String[] args) {
+//		String s = "123.png";
+//		System.out.println(s.substring(s.lastIndexOf(".") + 1));
+//	}
+//	
 }

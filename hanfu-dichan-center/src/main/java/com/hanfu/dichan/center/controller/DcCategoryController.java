@@ -110,7 +110,6 @@ public class DcCategoryController {
 			MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcCategory category = new DcCategory();
-		String uuid = UUID.randomUUID().toString();
 		Integer bossId = 1;
 		category.setBossId(bossId);
 		category.setProjectId(request.getProjectId());
@@ -334,8 +333,8 @@ public class DcCategoryController {
 	@RequestMapping(value = "/deletePicture", method = RequestMethod.GET)
 	public Integer deletePicture(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		DcCategory category = dcCategoryMapper.selectByPrimaryKey(id);
-		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(category.getFileId());
+//		DcCategory category = dcCategoryMapper.selectByPrimaryKey(id);
+		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(id);
 		FileMangeService fileManageService = new FileMangeService();
 		fileManageService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 		//

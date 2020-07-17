@@ -136,7 +136,6 @@ public class WebConfigurer extends WebMvcConfigurationSupport {
         //上传文件大小 5M 5*1024*1024
 
         resolver.setMaxUploadSize(5 *1024 *1024);
-
         return resolver;
 
     }

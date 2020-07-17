@@ -1,6 +1,7 @@
 package com.hanfu.common.utils;
 
 import org.csource.common.MyException;
+import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
 
 import java.io.FileInputStream;
@@ -54,7 +55,11 @@ public class FdfsClient {
     public static String[] uploadFile(FileInputStream fis, String userId) throws IOException, MyException {
         return client.upload_file(FdfsClient.streamToByte(fis), userId, null);
     }
-
+    
+    public static String[] uploadFile(byte[] fis ,String fileExtName,NameValuePair[] metaList) throws IOException, MyException {
+    	return client.upload_file(fis, fileExtName, metaList);
+    }
+    
     public static String[] uploadFile(byte[] fis, String userId) throws IOException, MyException {
         return client.upload_file(fis, userId, null);
     }
