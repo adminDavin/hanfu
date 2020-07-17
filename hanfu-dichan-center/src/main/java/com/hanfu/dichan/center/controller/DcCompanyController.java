@@ -66,7 +66,14 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         System.out.println(dcRichText.getRichText().replace('\"','\''));
         dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
-
+        DcRichTextExample dcRichTextExample = new DcRichTextExample();
+        dcRichTextExample.createCriteria().andProjectIdEqualTo(dcRichText.getProjectId()).andTextTypeEqualTo(dcRichText.getTextType()).andIsDeletedEqualTo((byte) 0);
+        List<DcRichText> dcRichText1 =  dcRichTextMapper.selectByExample(dcRichTextExample);
+        if (dcRichText1.size()!=0){
+            DcRichText dcRichText2 = dcRichText1.get(0);
+            dcRichText2.setIsDeleted((byte) 1);
+            dcRichTextMapper.updateByPrimaryKeySelective(dcRichText1.get(0));
+        }
 //        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
 //        System.out.println(dcRichText.getRichText());
         General.GeneralTypeEnum generalTypeEnum = General.GeneralTypeEnum.getGeneralTypeEnum(dcRichText.getTextType());
