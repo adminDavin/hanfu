@@ -64,7 +64,6 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     @RequestMapping(value = "/addText", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> addText(DcRichText dcRichText) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        System.out.println(dcRichText.getRichText().replace('\"','\''));
         dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(dcRichText.getProjectId()).andTextTypeEqualTo(dcRichText.getTextType()).andIsDeletedEqualTo((byte) 0);
