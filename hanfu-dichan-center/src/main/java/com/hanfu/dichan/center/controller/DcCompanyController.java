@@ -84,8 +84,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcRichText.setTextType(generalTypeEnum.getGeneralType());
         dcRichTextMapper.insertSelective(dcRichText);
         
-        if(dcRichText.getCategoryId() != null) {
-        	DcCategory category = dcCategoryMapper.selectByPrimaryKey(dcRichText.getCategoryId());
+        if("category".equals(dcRichText.getTextType())) {
+        	DcCategory category = dcCategoryMapper.selectByPrimaryKey(dcRichText.getProjectId());
         	category.setCategoryDetailId(dcRichText.getId());
         	dcCategoryMapper.updateByPrimaryKey(category);
         }
@@ -94,13 +94,10 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     }
     @ApiOperation(value = "查询富文本", notes = "查询富文本")
     @RequestMapping(value = "/selectText", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectText(Integer projectId, String type, Integer categoryId) throws Exception {
+    public ResponseEntity<JSONObject> selectText(Integer projectId, String type) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(projectId).andTextTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
-        if("category".equals(type)) {
-        	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
-        }
         String a = null;
         if (dcRichTextMapper.selectByExample(dcRichTextExample).size()!=0&&dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText()!=null){
             a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
@@ -115,13 +112,10 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     }
     @ApiOperation(value = "删除富文本", notes = "删除富文本")
     @RequestMapping(value = "/deletedText", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> deletedText(Integer productId,String type,Integer categoryId) throws Exception {
+    public ResponseEntity<JSONObject> deletedText(Integer productId,String type) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(productId).andTextTypeEqualTo(type);
-        if("category".equals(type)) {
-        	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
-        }
         DcRichText dcRichText = new DcRichText();
         dcRichText.setIsDeleted((byte) 1);
         dcRichTextMapper.updateByExampleSelective(dcRichText,dcRichTextExample);
