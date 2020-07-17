@@ -66,18 +66,36 @@ public class DcProjectController {
 
 	@Autowired
 	private DcProjectMapper dcProjectMapper;
+	
+	@Autowired
+	private DcFileDescMapper dcFileDescMapper;
 
 	@ApiOperation(value = "添加项目", notes = "添加项目")
 	@RequestMapping(value = "/addProject", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addRatation(String projectName) throws Exception {
+	public ResponseEntity<JSONObject> addRatation(String projectName, String projectDesc ,MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Integer bossId = 1;
 		DcProject project = new DcProject();
 		project.setProjectName(projectName);
+		project.setProjectDesc(projectDesc);
 		project.setBossId(bossId);
 		project.setCreateTime(LocalDateTime.now());
 		project.setModifyTime(LocalDateTime.now());
 		project.setIsDeleted((byte) 0);
+		if(file != null) {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("1"));
+			DcFileDesc fileDesc = new DcFileDesc();
+			fileDesc.setFileName(file.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			dcFileDescMapper.insert(fileDesc);
+			project.setFileId(fileDesc.getId());
+		}
 		dcProjectMapper.insert(project);
 		return builder.body(ResponseUtils.getResponseBody(project.getId()));
 	}
@@ -92,9 +110,33 @@ public class DcProjectController {
 
 	@ApiOperation(value = "编辑项目", notes = "编辑项目")
 	@RequestMapping(value = "/updateProject", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateProject(Integer id, String name) throws Exception {
+	public ResponseEntity<JSONObject> updateProject(Integer id, String name, MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcProject project = dcProjectMapper.selectByPrimaryKey(id);
+		if (file != null) {
+			FileMangeService fileMangeService = new FileMangeService();
+			String arr[];
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("1"));
+			if (project.getFileId() == null) {
+				DcFileDesc fileDesc = new DcFileDesc();
+				fileDesc.setFileName(file.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				dcFileDescMapper.insert(fileDesc);
+				project.setFileId(fileDesc.getId());
+			} else {
+				DcFileDesc desc = dcFileDescMapper.selectByPrimaryKey(project.getFileId());
+				fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+				desc.setGroupName(arr[0]);
+				desc.setRemoteFilename(arr[1]);
+				desc.setModifyTime(LocalDateTime.now());
+				dcFileDescMapper.updateByPrimaryKey(desc);
+			}
+
+		}
 		if (!StringUtils.isEmpty(name)) {
 			project.setProjectName(name);
 		}

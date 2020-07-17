@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.csource.common.MyException;
+import org.csource.common.NameValuePair;
 import org.springframework.stereotype.Service;
 
 import com.hanfu.common.utils.FdfsClient;
@@ -26,6 +27,18 @@ public class FileMangeService {
         String[] fileid = null;
         try {
             fileid = FdfsClient.uploadFile(fis, userId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
+        return fileid;
+    }
+    
+    public static String[] uploadFile(byte[] fis ,String fileExtName,NameValuePair[] metaList) {
+        String[] fileid = null;
+        try {
+            fileid = FdfsClient.uploadFile(fis, fileExtName ,metaList);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MyException e) {

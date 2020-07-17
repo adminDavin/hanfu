@@ -2,6 +2,7 @@ package com.hanfu.dichan.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.dao.DcRichTextMapper;
@@ -40,6 +41,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     private ExcelService excelService;
     @Autowired
     private DcUserMapper dcUserMapper;
+    @Autowired
+    private DcCategoryMapper dcCategoryMapper;
 
     @ApiOperation(value = "上传图片", notes = "上传图片")
     @RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
@@ -66,7 +69,14 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         System.out.println(dcRichText.getRichText().replace('\"','\''));
         dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
-
+        
+        if(dcRichText.getCategoryId() != null) {
+        	DcCategory category = dcCategoryMapper.selectByPrimaryKey(dcRichText.getCategoryId());
+        	category.setCategoryDetailId(dcRichText.getId());
+        	dcCategoryMapper.updateByPrimaryKey(category);
+        }
+        
+        
 //        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
 //        System.out.println(dcRichText.getRichText());
         dcRichTextMapper.insertSelective(dcRichText);
@@ -74,10 +84,13 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     }
     @ApiOperation(value = "查询富文本", notes = "查询富文本")
     @RequestMapping(value = "/selectText", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectText(Integer projectId, String type) throws Exception {
+    public ResponseEntity<JSONObject> selectText(Integer projectId, String type, Integer categoryId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(projectId).andTextTypeEqualTo(type).andIsDeletedEqualTo((byte) 0);
+        if("category".equals(type)) {
+        	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
+        }
         String a = dcRichTextMapper.selectByExample(dcRichTextExample).get(0).getRichText();
         System.out.println(a);
 //        String jieguo = a.substring(a.indexOf("")+1,a.indexOf("\"));
@@ -89,10 +102,13 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     }
     @ApiOperation(value = "删除富文本", notes = "删除富文本")
     @RequestMapping(value = "/deletedText", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> deletedText(Integer productId,String type) throws Exception {
+    public ResponseEntity<JSONObject> deletedText(Integer productId,String type,Integer categoryId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         DcRichTextExample dcRichTextExample = new DcRichTextExample();
         dcRichTextExample.createCriteria().andProjectIdEqualTo(productId).andTextTypeEqualTo(type);
+        if("category".equals(type)) {
+        	dcRichTextExample.createCriteria().andCategoryIdEqualTo(categoryId);
+        }
         DcRichText dcRichText = new DcRichText();
         dcRichText.setIsDeleted((byte) 0);
         dcRichTextMapper.updateByExampleSelective(dcRichText,dcRichTextExample);
@@ -104,7 +120,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         System.out.println(dcRichText.getRichText().replace('\"','\''));
         dcRichText.setRichText(dcRichText.getRichText().replace('\"','\''));
-
+        
         dcRichTextMapper.updateByPrimaryKeySelective(dcRichText);
         return builder.body(ResponseUtils.getResponseBody(0));
     }

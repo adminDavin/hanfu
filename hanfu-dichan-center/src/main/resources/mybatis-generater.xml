@@ -51,12 +51,24 @@
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table> -->
-		<table schema="user_center" tableName="dc_praise_record"
-		domainObjectName="DcPraiseRecord">
+		<!-- <table schema="user_center" tableName="dc_project"
+		domainObjectName="DcProject">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
+		</table> -->
+		<table schema="user_center" tableName="dc_rich_text"
+		domainObjectName="DcRichText">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table>
+		<!--<table schema="user_center" tableName="dc_admin"
+		domainObjectName="DcAdmin">
+		<property name="useActualColumnNames" value="false"/>
+		<generatedKey column="id" sqlStatement="mysql"
+		identity="true"/> 
+		</table> -->
 		<!-- <table schema="user_center" tableName="dc_evaluate"
 		domainObjectName="DcEvaluate">
 		<property name="useActualColumnNames" value="false"/>
