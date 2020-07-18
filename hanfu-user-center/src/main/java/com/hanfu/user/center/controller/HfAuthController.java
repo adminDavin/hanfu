@@ -1532,6 +1532,23 @@ public class HfAuthController {
 			if (accountList.size()!=0){
 				return builder.body(ResponseUtils.getResponseBody("手机号已注册"));
 			}
+			AccountExample accountExample1 = new AccountExample();
+			accountExample1.createCriteria().andUsernameEqualTo(account.getUsername()).andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
+			List<Account> accountList1 =  accountMapper.selectByExample(accountExample1);
+			if (accountList1.size()!=0){
+				return builder.body(ResponseUtils.getResponseBody("用户名存在"));
+			}
+			String encodeStr = DigestUtils.md5Hex(account.getPassword());
+			account.setMerchantId(0);
+			account.setPassword(encodeStr);
+			account.setUserId(hfAuths.get(0).getUserId());
+			account.setCreateDate(LocalDateTime.now());
+			account.setModifyDate(LocalDateTime.now());
+			account.setIsDeleted(0);
+			account.setAlreadyUniApp(0);
+			account.setAlreadyWeb(0);
+			account.setAlreadyMiniProgram(0);
+			accountMapper.insertSelective(account);
 		} else {
 			AccountExample accountExample = new AccountExample();
 			accountExample.createCriteria().andUsernameEqualTo(account.getUsername()).andAccountTypeEqualTo("sass").andIsDeletedEqualTo(0);
