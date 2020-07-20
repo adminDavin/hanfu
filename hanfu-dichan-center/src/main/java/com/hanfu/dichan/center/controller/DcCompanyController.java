@@ -2,6 +2,7 @@ package com.hanfu.dichan.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.dichan.center.dao.DcCategoryDetailMapper;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +45,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     private DcUserMapper dcUserMapper;
     @Autowired
     private DcCategoryMapper dcCategoryMapper;
+    @Autowired
+    private DcCategoryDetailMapper dcCategoryDetailMapper;
 
     @ApiOperation(value = "上传图片", notes = "上传图片")
     @RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
@@ -78,15 +82,33 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             dcRichTextMapper.updateByPrimaryKeySelective(dcRichText1.get(0));
         }
 //        dcRichText.setRichText(StringEscapeUtils.escapeHtml(dcRichText.getRichText()));
-//        System.out.println(dcRichText.getRichText());
+//        System.out.println(dcRichText.getRichText());	
         General.GeneralTypeEnum generalTypeEnum = General.GeneralTypeEnum.getGeneralTypeEnum(dcRichText.getTextType());
         dcRichText.setTextType(generalTypeEnum.getGeneralType());
         dcRichTextMapper.insertSelective(dcRichText);
         
         if("category".equals(dcRichText.getTextType())) {
-        	DcCategory category = dcCategoryMapper.selectByPrimaryKey(dcRichText.getProjectId());
-        	category.setCategoryDetailId(dcRichText.getId());
-        	dcCategoryMapper.updateByPrimaryKey(category);
+        	DcCategoryDetailExample detailExample = new DcCategoryDetailExample();
+        	detailExample.createCriteria().andCategoryIdEqualTo(dcRichText.getProjectId());
+        	List<DcCategoryDetail> details = dcCategoryDetailMapper.selectByExample(detailExample);
+        	if(CollectionUtils.isEmpty(details)) {
+        		DcCategoryDetail detail = new DcCategoryDetail();
+        		detail.setCategoryId(dcRichText.getProjectId());
+        		detail.setComment(0);
+        		detail.setPraise(0);
+        		detail.setCreateTime(LocalDateTime.now());
+        		detail.setModifyTime(LocalDateTime.now());
+        		detail.setIsDeleted((byte) 0);
+        		dcCategoryDetailMapper.insert(detail);
+        		DcCategory categor = dcCategoryMapper.selectByPrimaryKey(dcRichText.getProjectId());
+        		categor.setCategoryDetailId(detail.getId());
+        		dcCategoryMapper.updateByPrimaryKey(categor);
+        	}else {
+        		DcCategoryDetail detail = details.get(0);
+        		DcCategory categor = dcCategoryMapper.selectByPrimaryKey(dcRichText.getProjectId());
+        		categor.setCategoryDetailId(detail.getId());
+        		dcCategoryMapper.updateByPrimaryKey(categor);
+        	}
         }
         
         return builder.body(ResponseUtils.getResponseBody(0));
