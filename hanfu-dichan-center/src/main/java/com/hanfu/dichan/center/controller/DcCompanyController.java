@@ -57,10 +57,14 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String arr[];
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-	    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
         FileMangeService fileMangeService = new FileMangeService();
-        arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        if(file.getSize()/1024 >= 200) {
+        	Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+        	arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
+        }else {
+        	arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+        }
         DcFileDesc fileDesc = new DcFileDesc();
         fileDesc.setFileName(file.getName());
         fileDesc.setGroupName(arr[0]);
@@ -328,4 +332,6 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         }
         return builder.body(ResponseUtils.getResponseBody(0));
     }
+    
+    
 }
