@@ -2,6 +2,8 @@ package com.hanfu.dichan.center.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,9 +51,11 @@ import com.hanfu.dichan.center.request.RatationRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 import com.hanfu.utils.response.handler.ResponseUtils;
+import com.sun.mail.handlers.image_gif;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
 
 @RestController
 @RequestMapping("/ratation")
@@ -75,8 +79,10 @@ public class DcRatationController {
 		if (file != null) {
 			DcFileDesc fileDesc = new DcFileDesc();
 			FileMangeService fileMangeService = new FileMangeService();
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+		    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
 			String arr[];
-			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
+			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			fileDesc = new DcFileDesc();
 			fileDesc.setGroupName(arr[0]);
 			fileDesc.setRemoteFilename(arr[1]);
@@ -118,7 +124,9 @@ public class DcRatationController {
 		DcFileDesc fileDesc = dcFileDescMapper.selectByPrimaryKey(ratation.getFileId());
 		FileMangeService fileMangeService = new FileMangeService();
 		String arr[];
-		arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(id));
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+	    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+		arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(id));
 		if (fileDesc != null) {
 			fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 			fileDesc.setGroupName(arr[0]);
@@ -159,5 +167,5 @@ public class DcRatationController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-
+	
 }

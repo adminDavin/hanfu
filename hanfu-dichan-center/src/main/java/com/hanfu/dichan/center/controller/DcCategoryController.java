@@ -2,6 +2,7 @@ package com.hanfu.dichan.center.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -66,6 +67,7 @@ import com.hanfu.utils.response.handler.ResponseUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
 
 @RestController
 @RequestMapping("/category")
@@ -122,7 +124,9 @@ public class DcCategoryController {
 		if(file != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
-			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(request.getUserId()));
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+		    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			DcFileDesc fileDesc = new DcFileDesc();
 			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
@@ -161,7 +165,9 @@ public class DcCategoryController {
 		if (fileInfo != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
-			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+		    Thumbnails.of(fileInfo.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			if (hfCategory.getFileId() == null) {
 				DcFileDesc fileDesc = new DcFileDesc();
 				fileDesc.setFileName(fileInfo.getName());
@@ -324,7 +330,7 @@ public class DcCategoryController {
 			BufferedImage readImg = ImageIO.read(stream);
 			stream.reset();
 			OutputStream outputStream = response.getOutputStream();
-			ImageIO.write(readImg, "png", outputStream);
+			ImageIO.write(readImg, "jpg", outputStream);
 			outputStream.close();
 		}
 	}

@@ -16,6 +16,8 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -53,8 +57,10 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String arr[];
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+	    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
         FileMangeService fileMangeService = new FileMangeService();
-        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+        arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
         DcFileDesc fileDesc = new DcFileDesc();
         fileDesc.setFileName(file.getName());
         fileDesc.setGroupName(arr[0]);
