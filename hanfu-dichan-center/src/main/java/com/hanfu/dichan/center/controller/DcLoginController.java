@@ -39,6 +39,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidParameterSpecException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -282,7 +283,18 @@ public class DcLoginController {
 	@ApiOperation(value = "查询后台登陆的人（地产", notes = "查询")
 	public ResponseEntity<JSONObject> selectAdmin() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		return builder.body(ResponseUtils.getResponseBody(dcAdminMapper.selectByExample(null)));
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
+		List<DcAdmin> list = dcAdminMapper.selectByExample(null);
+		for (int i = 0; i < list.size(); i++) {
+			DcAdmin admin = list.get(i);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", admin.getId());
+			DcUser user = dcUserMapper.selectByPrimaryKey(admin.getUserId());
+			map.put("name", user.getRealName());
+			map.put("phone", user.getPhone());
+			result.add(map);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@RequestMapping(path = "/adminLogin", method = RequestMethod.POST)
