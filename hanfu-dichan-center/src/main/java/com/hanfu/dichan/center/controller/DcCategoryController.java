@@ -439,7 +439,7 @@ public class DcCategoryController {
 	public ResponseEntity<JSONObject> categoryDetailPraise(Integer categoryDetailId, Integer userId, String type) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcPraiseRecordExample recordExample = new DcPraiseRecordExample();
-		recordExample.createCriteria().andEvaluateEqualTo(categoryDetailId).andTypeEqualTo(type);
+		recordExample.createCriteria().andEvaluateEqualTo(categoryDetailId).andTypeEqualTo(type).andUserIdEqualTo(userId);
 		List<DcPraiseRecord> list = dcPraiseRecordMapper.selectByExample(recordExample);
 		if(CollectionUtils.isEmpty(list)) {
 			DcPraiseRecord record = new DcPraiseRecord();
