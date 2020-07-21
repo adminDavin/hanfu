@@ -271,11 +271,18 @@ public class DcLoginController {
 	}
 	
 	@RequestMapping(path = "/deleteAdmin", method = RequestMethod.GET)
-	@ApiOperation(value = "删除后台登陆的人（地产", notes = "添加")
+	@ApiOperation(value = "删除后台登陆的人（地产", notes = "删除")
 	public ResponseEntity<JSONObject> deleteAdmin(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		dcAdminMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody(null));
+	}
+	
+	@RequestMapping(path = "/selectAdmin", method = RequestMethod.GET)
+	@ApiOperation(value = "查询后台登陆的人（地产", notes = "查询")
+	public ResponseEntity<JSONObject> selectAdmin() throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		return builder.body(ResponseUtils.getResponseBody(dcAdminMapper.selectByExample(null)));
 	}
 	
 	@RequestMapping(path = "/adminLogin", method = RequestMethod.POST)
