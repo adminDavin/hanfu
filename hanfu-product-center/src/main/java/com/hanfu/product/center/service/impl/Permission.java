@@ -15,6 +15,7 @@ import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,6 +66,14 @@ public class Permission implements PermissionService {
                     List<RoleJurisdiction> roles =  roleJurisdictionMapper.selectByExample(roleJurisdictionExample);
                     Set<Integer> Jid = roles.stream().map(j->j.getJurisdictionId()).collect(Collectors.toSet());
                     System.out.println(Jid);
+                    if (Jid.size()==0){
+                        try {
+                            response.sendError(403);
+                            return false;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     JurisdictionExample jurisdictionExample = new JurisdictionExample();
                     jurisdictionExample.createCriteria().andIdIn(Lists.newArrayList(Jid)).andIsDeletedEqualTo((short) 0);
                     List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
