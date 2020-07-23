@@ -350,5 +350,8 @@
 		<!-- <table schema="user_center" tableName="hf_announcement" domainObjectName="HfAnnouncement">
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
+			<table schema="user_center" tableName="hf_activity" domainObjectName="HfActivity">
+			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
+			sqlStatement="mysql" identity="true"/> </table>
 	</context>
 </generatorConfiguration>

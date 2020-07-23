@@ -45,6 +45,8 @@ public class ProductActivityRequest extends CommonRequest {
     }
 	@ApiModelProperty(required = true, value = "活动名称")
     private String activityName;
+	@ApiModelProperty(required = true, value = "活动描述")
+	private String activityDesc;
 	@ApiModelProperty(required = true, value = "活动类型")
 	private String activityType;
 	@ApiModelProperty(required = false, value = "开始时间")
@@ -74,6 +76,12 @@ public class ProductActivityRequest extends CommonRequest {
 	}
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	public String getActivityDesc() {
+		return activityDesc;
+	}
+	public void setActivityDesc(String activityDesc) {
+		this.activityDesc = activityDesc;
 	}
 	
 }
