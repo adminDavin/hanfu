@@ -166,7 +166,7 @@ public class DcCategoryController {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    Thumbnails.of(fileInfo.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+		    Thumbnails.of(fileInfo.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.63).toOutputStream(os);
 			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			if (hfCategory.getFileId() == null) {
 				DcFileDesc fileDesc = new DcFileDesc();
