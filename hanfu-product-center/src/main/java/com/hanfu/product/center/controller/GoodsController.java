@@ -162,6 +162,9 @@ public class GoodsController {
 	
 	@Autowired
 	private HfStoneRespMapper hfStoneRespMapper;
+	
+	@Autowired
+	private HfIconMapper hfIconMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -2198,27 +2201,81 @@ public class GoodsController {
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
 	
-	public static void main(String[] args) {
-		Integer index = 0;
-		String s = "298213123133.21123";
-		String[] ss = s.split("\\.");
-		String s1 = ss[0];
-		String s2 = "";
-		if(ss.length == 2) {
-			s2 = ss[1];
+	@ApiOperation(value = "添加图标绑定链接", notes = "添加图标绑定链接")
+	@RequestMapping(value = "/addIconAndUrl", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfIcon icon = new HfIcon();
+		if(file != null) {
+			String arr[];
+			FileMangeService fileMangeService = new FileMangeService();
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+			FileDesc fileDesc = new FileDesc();
+			fileDesc.setFileName(file.getName());
+			fileDesc.setGroupName(arr[0]);
+			fileDesc.setRemoteFilename(arr[1]);
+			fileDesc.setUserId(-1);
+			fileDesc.setCreateTime(LocalDateTime.now());
+			fileDesc.setModifyTime(LocalDateTime.now());
+			fileDesc.setIsDeleted((short) 0);
+			fileDescMapper.insert(fileDesc);
+			icon.setFileId(fileDesc.getId());
 		}
-		StringBuilder srr = new StringBuilder();
-		for (int i = 0; i < s1.length(); i++) {
-			srr.append(s1.charAt(i));
-			index++;
-			if(index%3 == 0) {
-				srr.append(",");
-			}
-		}
-//		srr.deleteCharAt(srr.length()-1);
-		srr.replace(srr.length()-1, srr.length(), ".");
-		srr.append(s2);
-		System.out.println(index);
-		System.out.println(srr);
+		
+		icon.setIconName(iconName);
+		icon.setUrl(url);
+		icon.setCreateTime(LocalDateTime.now());
+		icon.setModifyTime(LocalDateTime.now());
+		icon.setIsDeleted((byte) 0);
+		hfIconMapper.insert(icon);
+		return builder.body(ResponseUtils.getResponseBody(icon.getId()));
 	}
+	
+	@ApiOperation(value = "删除图标绑定链接", notes = "删除图标绑定链接")
+	@RequestMapping(value = "/deleteIconAndUrl", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> deleteIconAndUrl(Integer id) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		hfIconMapper.deleteByPrimaryKey(id);
+		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
+	@ApiOperation(value = "修改图标绑定链接", notes = "修改图标绑定链接")
+	@RequestMapping(value = "/updateIconAndUrl", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> updateIconAndUrl(Integer id, MultipartFile file, String iconName, String url) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfIcon hfIcon = hfIconMapper.selectByPrimaryKey(id);
+		if(file != null) {
+			String arr[];
+			FileMangeService fileMangeService = new FileMangeService();
+			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+			if(hfIcon.getFileId() != null) {
+				FileDesc fileDesc = new FileDesc();
+				fileDesc.setFileName(file.getName());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDesc.setUserId(-1);
+				fileDesc.setCreateTime(LocalDateTime.now());
+				fileDesc.setModifyTime(LocalDateTime.now());
+				fileDesc.setIsDeleted((short) 0);
+				fileDescMapper.insert(fileDesc);
+				hfIcon.setFileId(fileDesc.getId());
+			}else {
+				FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfIcon.getFileId());
+				fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
+				fileDesc.setGroupName(arr[0]);
+				fileDesc.setRemoteFilename(arr[1]);
+				fileDescMapper.updateByPrimaryKey(fileDesc);
+			}
+			
+		}
+		if(!StringUtils.isEmpty(iconName)) {
+			hfIcon.setIconName(iconName);
+		}
+		if(!StringUtils.isEmpty(url)) {
+			hfIcon.setUrl(url);
+		}
+		hfIconMapper.updateByPrimaryKey(hfIcon);
+		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
 }

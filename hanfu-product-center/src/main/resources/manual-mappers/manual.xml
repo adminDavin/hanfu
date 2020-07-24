@@ -62,6 +62,8 @@
 			property="activityName" />
 		<result column="activity_type" jdbcType="VARCHAR"
 			property="activityType" />
+		<result column="activity_desc" jdbcType="VARCHAR"
+			property="activityDesc" />
 		<result column="file_id" jdbcType="INTEGER" property="fileId" />
 		<result column="last_modifier" jdbcType="VARCHAR"
 			property="lastModifier" />
