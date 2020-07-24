@@ -2280,7 +2280,7 @@ public class GoodsController {
 	}
 	
 	@ApiOperation(value = "查询图标绑定链接", notes = "查询图标绑定链接")
-	@RequestMapping(value = "/selectIconAndUrl", method = RequestMethod.POST)
+	@RequestMapping(value = "/selectIconAndUrl", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectIconAndUrl(Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfIconExample example = new HfIconExample();
