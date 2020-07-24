@@ -9,6 +9,7 @@ public class ProductActivityInfo {
 	private Integer id;
 	private String activityName;
 	private String activityType;
+	private String activityDesc;
 	private Integer fileId;
 	private List<HfProductDisplay> productList;
 	private String lastModifier;
@@ -116,5 +117,11 @@ public class ProductActivityInfo {
 
 	public void setBossId(Integer bossId) {
 		this.bossId = bossId;
+	}
+	public String getActivityDesc() {
+		return activityDesc;
+	}
+	public void setActivityDesc(String activityDesc) {
+		this.activityDesc = activityDesc;
 	}
 }
