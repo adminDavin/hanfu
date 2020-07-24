@@ -81,4 +81,10 @@ public class HfProductDaoImpl implements HfProductDao {
     	List<HomePageInfo> result = sqlSessionTemplate.selectList("selectProductCount", goodsId);
     	return result;
     }
+    
+    @Override
+    public List<HfProductDisplay> selectProductByCategoryId(List<Integer> cagetoryId) {
+    	List<HfProductDisplay> result = sqlSessionTemplate.selectList("selectProductByCategoryId", cagetoryId);
+        return result;
+    }
 }
