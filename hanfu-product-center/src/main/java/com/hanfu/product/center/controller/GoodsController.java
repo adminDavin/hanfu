@@ -2203,7 +2203,7 @@ public class GoodsController {
 	
 	@ApiOperation(value = "添加图标绑定链接", notes = "添加图标绑定链接")
 	@RequestMapping(value = "/addIconAndUrl", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url) throws Exception {
+	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url, Integer bossId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfIcon icon = new HfIcon();
 		if(file != null) {
@@ -2223,6 +2223,7 @@ public class GoodsController {
 		}
 		
 		icon.setIconName(iconName);
+		icon.setBossId(bossId);
 		icon.setUrl(url);
 		icon.setCreateTime(LocalDateTime.now());
 		icon.setModifyTime(LocalDateTime.now());
@@ -2276,6 +2277,16 @@ public class GoodsController {
 		}
 		hfIconMapper.updateByPrimaryKey(hfIcon);
 		return builder.body(ResponseUtils.getResponseBody(id));
+	}
+	
+	@ApiOperation(value = "查询图标绑定链接", notes = "查询图标绑定链接")
+	@RequestMapping(value = "/selectIconAndUrl", method = RequestMethod.POST)
+	public ResponseEntity<JSONObject> selectIconAndUrl(Integer bossId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfIconExample example = new HfIconExample();
+		example.createCriteria().andBossIdEqualTo(bossId);
+		List<HfIcon> list = hfIconMapper.selectByExample(example);
+		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 	
 }
