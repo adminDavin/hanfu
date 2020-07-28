@@ -1,6 +1,7 @@
 package com.hanfu.dichan.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
@@ -300,6 +301,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         dcUserExample.createCriteria().andIdDeletedEqualTo((byte) 0);
         PageHelper.startPage(pageNum, pageSize);
         List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
+        Long total = ((Page)dcUsers).getTotal();
         List<Map<String,String>> mapList = new ArrayList<>();
         dcUsers.forEach(dcUser -> {
             Map<String,String> map = new HashMap<>();
@@ -309,6 +311,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             mapList.add(map);
         });
         PageInfo<Map<String,String>> page = new PageInfo<Map<String,String>>(mapList);
+        page.setTotal(total);
         return builder.body(ResponseUtils.getResponseBody(page));
     }
     @ApiOperation(value = "删除用户", notes = "删除用户")
