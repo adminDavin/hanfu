@@ -333,8 +333,20 @@
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="hf_icon"
+		<!-- <table schema="user_center" tableName="hf_icon"
 			domainObjectName="HfIcon">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table> -->
+		<!-- <table schema="user_center" tableName="hf_focus_people"
+			domainObjectName="HfFocusPeople">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+				identity="true" />
+		</table> -->
+		<table schema="user_center" tableName="hf_evaluate_collect"
+			domainObjectName="HfEvaluateCollect">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />

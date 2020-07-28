@@ -237,7 +237,9 @@ public class DcCategoryController {
 		categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
 				.andIsDeletedEqualTo((short) 0);
 		if (parentCategoryId == -1) {
-			categoryExample.createCriteria().andProjectIdEqualTo(projectId);
+			categoryExample.clear();
+			categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
+			.andIsDeletedEqualTo((short) 0).andProjectIdEqualTo(projectId);
 		}
 		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
 		System.out.println(list.toString());

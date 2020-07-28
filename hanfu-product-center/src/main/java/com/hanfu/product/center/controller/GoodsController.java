@@ -165,6 +165,12 @@ public class GoodsController {
 	
 	@Autowired
 	private HfIconMapper hfIconMapper;
+	
+	@Autowired
+	private HfFocusPeopleMapper hfFocusPeopleMapper;
+	
+	@Autowired
+	private HfEvaluateCollectMapper hfEvaluateCollectMapper;
 
 	@ApiOperation(value = "获取商品实体id获取物品列表", notes = "即某商品在店铺内的所有规格")
 	@RequestMapping(value = "/byInstanceId", method = RequestMethod.GET)
@@ -2287,6 +2293,189 @@ public class GoodsController {
 		example.createCriteria().andBossIdEqualTo(bossId);
 		List<HfIcon> list = hfIconMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
+	}
+	
+	@ApiOperation(value = "关注或取消关注他人", notes = "关注他人")
+	@RequestMapping(value = "/focusPeople", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> focusPeople(Integer myUserId, Integer userId, String type) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfFocusPeopleExample example = new HfFocusPeopleExample();
+		example.createCriteria().andMyUserIdEqualTo(myUserId).andUserIdEqualTo(userId).andTypeEqualTo(type);
+		List<HfFocusPeople> list = hfFocusPeopleMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(list)) {
+			HfFocusPeople people = new HfFocusPeople();
+			people.setMyUserId(myUserId);
+			people.setUserId(userId);
+			people.setType(type);
+			people.setCreateTime(LocalDateTime.now());
+			people.setModifyTime(LocalDateTime.now());
+			people.setIsDeleted((byte) 1);
+			hfFocusPeopleMapper.insert(people);
+		}else {
+			HfFocusPeople people = list.get(0);
+			if(people.getIsDeleted() == 1) {
+				people.setIsDeleted((byte) 0);
+				hfFocusPeopleMapper.updateByPrimaryKey(people);
+				return builder.body(ResponseUtils.getResponseBody(people.getId()));
+			}else {
+				people.setIsDeleted((byte) 1);
+				hfFocusPeopleMapper.updateByPrimaryKey(people);
+				return builder.body(ResponseUtils.getResponseBody(people.getId()));
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody("走外圈"));
+	}
+	
+	@ApiOperation(value = "我的关注", notes = "我的关注")
+	@RequestMapping(value = "/myFocus", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> myFocus(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
+		EvaluatePictureExample pictrueExample = new EvaluatePictureExample();
+		List<Integer> fileId = new ArrayList<Integer>();
+		List<Evaluate> result = new ArrayList<Evaluate>();
+		List<EvaluatePicture> pictrues = new ArrayList<EvaluatePicture>();
+		HfFocusPeopleExample example = new HfFocusPeopleExample();
+		example.createCriteria().andMyUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
+		List<HfFocusPeople> list = hfFocusPeopleMapper.selectByExample(example);
+		List<Integer> uIds = list.stream().map(HfFocusPeople::getUserId).collect(Collectors.toList());
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
+		evaluateExample.createCriteria().andUserIdIn(uIds).andTypeEqualTo("discover").andParentEvaluateIdEqualTo(-1);
+		List<HfEvaluate> evaluates = hfEvaluateMapper.selectByExample(evaluateExample);
+		for (int i = 0; i < evaluates.size(); i++) {
+			pictrueExample.clear();
+// 			productExample.clear();
+			HfEvaluate d = evaluates.get(i);
+			Evaluate display = new Evaluate();
+			display.setComment(d.getEvaluate());
+//			display.setDiscoverDesc(d.getDiscoverDesc());
+//			display.setDiscoverHeadline(d.getDiscoverHeadline());
+			if(userId != null) {
+				recordExample.clear();
+				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("discover");
+				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+					display.setIsPraise(1);
+				} else {
+					display.setIsPraise(0);
+				}
+			}
+			display.setId(d.getId());
+			display.setType(d.getType());
+			display.setTypeContent(d.getTypeContent());
+			display.setUserId(d.getUserId());
+			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
+					JSONObject.class, d.getUserId());
+			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+					JSONObject.class, d.getUserId());
+			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
+			display.setUsername(js1.getJSONObject("data").getString("nickName"));
+			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+			}
+			display.setTime(d.getCreateTime());
+			pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
+			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
+			fileId = pictrues.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
+			display.setFileId(fileId);
+			display.setComment_count(d.getCommentCount());
+			display.setPraise(d.getPraise());
+			display.setTransmitCount(d.getTransmit());
+			result.add(display);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
+	}
+	
+	
+	@ApiOperation(value = "收藏发现", notes = "收藏发现")
+	@RequestMapping(value = "/collectDiscover", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> collectDiscover(Integer userId, Integer discoverId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfEvaluateCollectExample example = new HfEvaluateCollectExample();
+		example.createCriteria().andUserIdEqualTo(userId).andEvaluateIdEqualTo(discoverId);
+		List<HfEvaluateCollect> list = hfEvaluateCollectMapper.selectByExample(example);
+		if(CollectionUtils.isEmpty(list)) {
+			HfEvaluateCollect collect = new HfEvaluateCollect();
+			collect.setUserId(userId);
+			collect.setEvaluateId(discoverId);
+			collect.setCreateTime(LocalDateTime.now());
+			collect.setModifyTime(LocalDateTime.now());
+			collect.setIsDeleted((byte) 1);
+			hfEvaluateCollectMapper.insert(collect);
+		}else {
+			HfEvaluateCollect collect = list.get(0);
+			if(collect.getIsDeleted() == 1) {
+				collect.setIsDeleted((byte) 0);
+				hfEvaluateCollectMapper.updateByPrimaryKey(collect);
+				return builder.body(ResponseUtils.getResponseBody(collect.getId()));
+			}else {
+				collect.setIsDeleted((byte) 1);
+				hfEvaluateCollectMapper.updateByPrimaryKey(collect);
+				return builder.body(ResponseUtils.getResponseBody(collect.getId()));
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody("走外圈"));
+	}
+	
+	
+	@ApiOperation(value = "我的收藏", notes = "我的收藏")
+	@RequestMapping(value = "/myCollect", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> myCollect(Integer userId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
+		EvaluatePictureExample pictrueExample = new EvaluatePictureExample();
+		List<Integer> fileId = new ArrayList<Integer>();
+		List<Evaluate> result = new ArrayList<Evaluate>();
+		List<EvaluatePicture> pictrues = new ArrayList<EvaluatePicture>();
+		HfEvaluateCollectExample example = new HfEvaluateCollectExample();
+		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
+		List<HfEvaluateCollect> list = hfEvaluateCollectMapper.selectByExample(example);
+		List<Integer> disId = list.stream().map(HfEvaluateCollect::getEvaluateId).collect(Collectors.toList());
+		HfEvaluateExample evaluateExample = new HfEvaluateExample();
+		evaluateExample.createCriteria().andIdIn(disId).andTypeEqualTo("discover").andParentEvaluateIdEqualTo(-1);
+		List<HfEvaluate> evaluates = hfEvaluateMapper.selectByExample(evaluateExample);
+		for (int i = 0; i < evaluates.size(); i++) {
+			pictrueExample.clear();
+// 			productExample.clear();
+			HfEvaluate d = evaluates.get(i);
+			Evaluate display = new Evaluate();
+			display.setComment(d.getEvaluate());
+//			display.setDiscoverDesc(d.getDiscoverDesc());
+//			display.setDiscoverHeadline(d.getDiscoverHeadline());
+			if(userId != null) {
+				recordExample.clear();
+				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
+						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("discover");
+				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+					display.setIsPraise(1);
+				} else {
+					display.setIsPraise(0);
+				}
+			}
+			display.setId(d.getId());
+			display.setType(d.getType());
+			display.setTypeContent(d.getTypeContent());
+			display.setUserId(d.getUserId());
+			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
+					JSONObject.class, d.getUserId());
+			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+					JSONObject.class, d.getUserId());
+			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
+			display.setUsername(js1.getJSONObject("data").getString("nickName"));
+			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+			}
+			display.setTime(d.getCreateTime());
+			pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
+			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
+			fileId = pictrues.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
+			display.setFileId(fileId);
+			display.setComment_count(d.getCommentCount());
+			display.setPraise(d.getPraise());
+			display.setTransmitCount(d.getTransmit());
+			result.add(display);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 }
