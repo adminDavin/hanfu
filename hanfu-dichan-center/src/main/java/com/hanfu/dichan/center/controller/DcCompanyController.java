@@ -61,7 +61,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         String arr[];
         FileMangeService fileMangeService = new FileMangeService();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if(file.getSize()/1024 >= 200) {
+        if(file.getSize()/1024 >= 350) {
         	Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
         	arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
         }else {

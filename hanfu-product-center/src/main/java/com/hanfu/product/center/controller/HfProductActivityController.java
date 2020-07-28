@@ -116,6 +116,7 @@ public class HfProductActivityController {
         }
 
         hfActivity.setActivityName(request.getActivityName());
+        hfActivity.setActivityDesc(request.getActivityDesc());
         hfActivity.setActivityType(request.getActivityType());
         
         if (request.getStartTime() != null) {
@@ -229,7 +230,7 @@ public class HfProductActivityController {
     @ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
     @RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
-                                                            Date startTime, Date endTime) throws Exception {
+                                                            Date startTime, Date endTime, String activityDesc) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity activity = hfActivityMapper.selectByPrimaryKey(id);
         if (activity != null) {
@@ -273,6 +274,9 @@ public class HfProductActivityController {
             }
             if (!StringUtils.isEmpty(activityName)) {
                 activity.setActivityName(activityName);
+            }
+            if (!StringUtils.isEmpty(activityDesc)) {
+            	activity.setActivityDesc(activityDesc);
             }
             activity.setModifyTime(LocalDateTime.now());
             hfActivityMapper.updateByPrimaryKey(activity);
