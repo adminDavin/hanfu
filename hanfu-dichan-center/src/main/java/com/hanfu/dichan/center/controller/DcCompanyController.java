@@ -1,6 +1,8 @@
 package com.hanfu.dichan.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
 import com.hanfu.dichan.center.dao.DcCategoryDetailMapper;
 import com.hanfu.dichan.center.dao.DcCategoryMapper;
@@ -286,10 +288,17 @@ private DcGeneralFileMapper dcGeneralFileMapper;
     }
     @ApiOperation(value = "获取用户", notes = "获取用户")
     @RequestMapping(value = "/selectUser", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> selectUser() throws Exception {
+    public ResponseEntity<JSONObject> selectUser(Integer pageNum, Integer pageSize) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (pageNum == null) {
+            pageNum = 0;
+        }
+        if (pageSize == null) {
+            pageSize = 0;
+        }
         DcUserExample dcUserExample = new DcUserExample();
         dcUserExample.createCriteria().andIdDeletedEqualTo((byte) 0);
+        PageHelper.startPage(pageNum, pageSize);
         List<DcUser> dcUsers = dcUserMapper.selectByExample(dcUserExample);
         List<Map<String,String>> mapList = new ArrayList<>();
         dcUsers.forEach(dcUser -> {
@@ -299,7 +308,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
             map.put("name",dcUser.getRealName());
             mapList.add(map);
         });
-        return builder.body(ResponseUtils.getResponseBody(mapList));
+        PageInfo<Map<String,String>> page = new PageInfo<Map<String,String>>(mapList);
+        return builder.body(ResponseUtils.getResponseBody(page));
     }
     @ApiOperation(value = "删除用户", notes = "删除用户")
     @RequestMapping(value = "/deletedUser", method = RequestMethod.POST)
