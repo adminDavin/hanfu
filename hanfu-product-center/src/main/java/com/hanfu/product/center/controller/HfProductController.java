@@ -180,7 +180,7 @@ public class HfProductController {
 	public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "quantity") Integer quantity,HttpServletRequest request)
 			throws JSONException {
     	Integer bossId = null;
-    	if("boss".equals(request.getServletContext().getAttribute("getServletContextType"))) {
+    	if("boss".equals(request.getServletContext().getAttribute("getServletContextType"))||"user".equals(request.getServletContext().getAttribute("getServletContextType"))) {
 			bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
     	}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
