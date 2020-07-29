@@ -7,12 +7,12 @@
 		<artifactId>hanfu-system</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.hanfu.dichan.center</groupId>
-	<artifactId>hanfu-dichan-center</artifactId>
+	<groupId>com.hanfu.shejiao.center</groupId>
+	<artifactId>hanfu-shejiao-center</artifactId>
 	<version>0.0.1</version>
 
 	<build>
-		<finalName>hanfu-dichan-center</finalName>
+		<finalName>hanfu-shejiao-center</finalName>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
 
@@ -20,7 +20,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.hanfu.dichan.center.Application</mainClass>
+					<mainClass>com.hanfu.shejiao.center.Application</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
