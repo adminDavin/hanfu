@@ -181,7 +181,8 @@ public class HfProductController {
 			throws JSONException {
     	Integer bossId = null;
     	if("boss".equals(request.getServletContext().getAttribute("getServletContextType"))||"user".equals(request.getServletContext().getAttribute("getServletContextType"))) {
-			bossId = (Integer) request.getServletContext().getAttribute("getServletContext");
+			String bossId1 = (String) request.getServletContext().getAttribute("getServletContext");
+    		bossId = Integer.valueOf(bossId1);
     	}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfStoneExample example = new HfStoneExample();
