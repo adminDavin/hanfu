@@ -34,11 +34,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.config.WxLoginConfig;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
+import com.hanfu.user.center.dao.HfUserBalanceMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
 import com.hanfu.user.center.model.HfAuth;
 import com.hanfu.user.center.model.HfAuthExample;
 import com.hanfu.user.center.model.HfUser;
+import com.hanfu.user.center.model.HfUserBalance;
 import com.hanfu.user.center.model.HfUserExample;
 import com.hanfu.user.center.request.UserInfoRequest;
 import com.hanfu.user.center.response.handler.UserNotExistException;
@@ -73,6 +75,9 @@ public class HfUserController {
 
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private HfUserBalanceMapper hfUserBalanceMapper;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "用户登录", notes = "用户登录")
@@ -226,6 +231,14 @@ public class HfUserController {
             hfUser.setNickName(userInfo.getString("nickName"));
             hfUser.setBossId(bossId);
             hfUserMapper.insert(hfUser);
+            HfUserBalance balance = new HfUserBalance();
+            balance.setUserId(hfUser.getId());
+            balance.setBalanceType("rechargeAmount");
+            balance.setHfBalance(0);
+            balance.setCreateTime(LocalDateTime.now());
+            balance.setModifyTime(LocalDateTime.now());
+            balance.setIsDeleted((short) 0);
+            hfUserBalanceMapper.insert(balance);
         } else {
             hfUser = list.get(0);
         }

@@ -361,13 +361,14 @@ public class KingWordsController {
 	
 	@RequestMapping(path = "/agreeMessageApply", method = RequestMethod.POST)
 	@ApiOperation(value = "同意申请的消息", notes = "同意申请的消息")
-	public ResponseEntity<JSONObject> agreeMessageApply(Integer applyId) throws Exception {
+	public ResponseEntity<JSONObject> agreeMessageApply(Integer applyId, String templateId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageApply apply = hfMessageApplyMapper.selectByPrimaryKey(applyId);
 		apply.setStatus(2);
 		hfMessageApplyMapper.updateByPrimaryKey(apply);
 		HfMessageInstance instance = hfMessageInstanceMapper.selectByPrimaryKey(apply.getMessageInstanceId());
 		instance.setStatus(2);
+		instance.setTemplateId(templateId);
 		hfMessageInstanceMapper.updateByPrimaryKey(instance);
 		return builder.body(ResponseUtils.getResponseBody(instance.getId()));
 	}

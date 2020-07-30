@@ -445,14 +445,14 @@ public class PaymentOrderController {
 							LocalDateTime.now());
 				}else {
 					hfOrderDao.updateHfOrderStatus(hfOrder1.getOrderCode(), OrderStatus.PROCESS.getOrderStatus(), LocalDateTime.now());
-//					PayOrder order = payOrderMapper.selectByPrimaryKey(hfOrder1.getPayOrderId());
-//					MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-//					map.add("orderId", hfOrder1.getOrderCode().substring(0, 7));
-//					map.add("total", String.valueOf(hfOrder1.getAmount()));
-//					map.add("userId", String.valueOf(hfOrder1.getUserId()));
-//					map.add("type", "orderCreate");
-//					map.add("bossId", order.getBossId());
-//					restTemplate.postForObject(itemUrl4,map,JSONObject.class);
+					PayOrder order = payOrderMapper.selectByPrimaryKey(hfOrder1.getPayOrderId());
+					MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+					map.add("orderId", hfOrder1.getOrderCode().substring(0, 7));
+					map.add("total", String.valueOf(hfOrder1.getAmount()));
+					map.add("userId", String.valueOf(hfOrder1.getUserId()));
+					map.add("type", "orderCreate");
+					map.add("bossId", order.getBossId());
+					restTemplate.postForObject(itemUrl4,map,JSONObject.class);
 					HfOrderDetail hfOrderDetail = new HfOrderDetail();
 					hfOrderDetail.setHfStatus(OrderStatus.PROCESS.getOrderStatus());
 					System.out.println(OrderStatus.PROCESS.getOrderStatus());
