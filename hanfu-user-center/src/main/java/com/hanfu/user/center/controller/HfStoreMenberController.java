@@ -149,7 +149,9 @@ public class HfStoreMenberController {
                 }else {
                     storeUser.setIsCancel(0);
                 }
-                storeUser.setStoreRoleName(hfStoreReleMapper.selectByPrimaryKey(hfStoreMenber1.getStoreRole()).getRoleName());
+                if (hfStoreReleMapper.selectByPrimaryKey(hfStoreMenber1.getStoreRole()).getRoleName()!=null){
+                    storeUser.setStoreRoleName(hfStoreReleMapper.selectByPrimaryKey(hfStoreMenber1.getStoreRole()).getRoleName());
+                }
                 storeUsers.add(storeUser);
             };
 //        });

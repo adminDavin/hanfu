@@ -326,7 +326,11 @@ public class HfAuthController {
 				roles1.forEach(roles2 -> {
 					roleL.add(roles2.getId());
 				});
+			}else {
+				response.sendError(403);
+				return builder.body(ResponseUtils.getResponseBody("无权限"));
 			}
+			System.out.println("RoleL"+roleL);
 			RoleModelExample roleModelExample = new RoleModelExample();
 			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleL));
 			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
