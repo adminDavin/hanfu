@@ -328,6 +328,9 @@ public class DcLoginController {
 			return builder.body(ResponseUtils.getResponseBody("您不是此公司的管理人"));
 		}
 		String token = list.get(0).getId() + UUID.randomUUID().toString().replaceAll("-", "");
-		return builder.body(ResponseUtils.getResponseBody(token));
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("token", token);
+		map.put("info", list);
+		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 }
