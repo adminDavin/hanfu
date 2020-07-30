@@ -140,5 +140,5 @@ public class SjLoginController {
 		sjUserMapper.updateByPrimaryKey(user);
 		return builder.body(ResponseUtils.getResponseBody(user.getId()));
 	}
-
+	
 }

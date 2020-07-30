@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Properties;
 
-@MapperScans({@MapperScan("com.hanfu.dichan.center.dao")})
+@MapperScans({@MapperScan("com.hanfu.shejiao.center.dao")})
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableScheduling
-@EnableDubbo(scanBasePackages = "com.hanfu.dichan.center.service.impl")
+@EnableDubbo(scanBasePackages = "com.hanfu.shejiao.center.service.impl")
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
