@@ -125,7 +125,7 @@ public class DcCategoryController {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+		    Thumbnails.of(file.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
 			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			DcFileDesc fileDesc = new DcFileDesc();
 			fileDesc.setFileName(file.getName());
@@ -165,9 +165,9 @@ public class DcCategoryController {
 		if (fileInfo != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    Thumbnails.of(fileInfo.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.63).toOutputStream(os);
-			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
+//			ByteArrayOutputStream os = new ByteArrayOutputStream();
+//		    Thumbnails.of(fileInfo.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.63).toOutputStream(os);
+			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
 			if (hfCategory.getFileId() == null) {
 				DcFileDesc fileDesc = new DcFileDesc();
 				fileDesc.setFileName(fileInfo.getName());
