@@ -327,7 +327,7 @@ public class DcLoginController {
 			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
 			return builder.body(ResponseUtils.getResponseBody("您不是此公司的管理人"));
 		}
-		return builder.body(ResponseUtils.getResponseBody(list));
+		String token = list.get(0).getId() + UUID.randomUUID().toString().replaceAll("-", "");
+		return builder.body(ResponseUtils.getResponseBody(token));
 	}
-	
 }
