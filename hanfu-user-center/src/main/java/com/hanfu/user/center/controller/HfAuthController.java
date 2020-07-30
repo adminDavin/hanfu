@@ -328,7 +328,7 @@ public class HfAuthController {
 					roleL.add(roles2.getId());
 				});
 			}else {
-				response.sendError(403);
+				response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
 				return builder.body(ResponseUtils.getResponseBody("无权限"));
 			}
 			System.out.println("RoleL2"+roleL);
