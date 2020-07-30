@@ -291,7 +291,7 @@ public class HfAuthController {
 	public ResponseEntity<JSONObject> token(HttpServletRequest request, HttpServletResponse response,
 												   @RequestParam(name = "userId", required = false) Integer userId,
 												   @RequestParam(name = "type", required = false) String type,Integer merId) throws Exception {
-
+		System.out.println("token");
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Encrypt encrypt = new Encrypt();
 		String token = encrypt.getToken(true, userId, type,merId);
@@ -322,6 +322,7 @@ public class HfAuthController {
 			roles = roles.stream().filter(a->a.getMachId().equals(merId)).collect(Collectors.toList());
 			roles = roles.stream().filter(a->a.getRoleCode().equals(a.getRoleType())).collect(Collectors.toList());
 			Set<Integer> roleL = roles.stream().map(a->a.getId()).collect(Collectors.toSet());
+			System.out.println("RoleL1"+roleL);
 			if (roles1.size()!=0){
 				roles1.forEach(roles2 -> {
 					roleL.add(roles2.getId());
@@ -330,7 +331,7 @@ public class HfAuthController {
 				response.sendError(403);
 				return builder.body(ResponseUtils.getResponseBody("无权限"));
 			}
-			System.out.println("RoleL"+roleL);
+			System.out.println("RoleL2"+roleL);
 			RoleModelExample roleModelExample = new RoleModelExample();
 			roleModelExample.createCriteria().andRoleIdIn(Lists.newArrayList(roleL));
 			List<RoleModel> roleModels = roleModelMapper.selectByExample(roleModelExample);
