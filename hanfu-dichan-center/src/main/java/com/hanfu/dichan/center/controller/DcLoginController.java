@@ -302,7 +302,7 @@ public class DcLoginController {
 	public ResponseEntity<JSONObject> adminLogin(@RequestParam String phone, String passwd,
 			HttpServletResponse httpServletResponse) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Jedis jedis = jedisPool.getResource();
+//		Jedis jedis = jedisPool.getResource();
 		if (passwd == null) {
 			return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
 		}
@@ -310,9 +310,9 @@ public class DcLoginController {
 		if (!String.valueOf(passwd).equals(redisTemplate.opsForValue().get(phone + "dichan"))) {
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
-		if (jedis != null) {
-			jedis.close();
-		}
+//		if (jedis != null) {
+//			jedis.close();
+//		}
 		DcUserExample example = new DcUserExample();
 		example.createCriteria().andPhoneEqualTo(phone).andIdDeletedEqualTo((byte) 0);
 		List<DcUser> list = dcUserMapper.selectByExample(example);
@@ -327,7 +327,10 @@ public class DcLoginController {
 			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
 			return builder.body(ResponseUtils.getResponseBody("您不是此公司的管理人"));
 		}
-		return builder.body(ResponseUtils.getResponseBody(list));
+		String token = list.get(0).getId() + UUID.randomUUID().toString().replaceAll("-", "");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("token", token);
+		map.put("info", list);
+		return builder.body(ResponseUtils.getResponseBody(map));
 	}
-	
 }

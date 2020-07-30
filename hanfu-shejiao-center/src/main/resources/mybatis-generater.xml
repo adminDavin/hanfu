@@ -28,7 +28,7 @@
 		</javaTypeResolver>
 
 		<javaModelGenerator
-			targetPackage="com.hanfu.dichan.center.model"
+			targetPackage="com.hanfu.shejiao.center.model"
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -40,59 +40,22 @@
 		</sqlMapGenerator>
 
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.hanfu.dichan.center.dao"
+			targetPackage="com.hanfu.shejiao.center.dao"
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		
-		<!-- <table schema="user_center" tableName="dc_category_detail"
-		domainObjectName="DcCategoryDetail">
+		<!-- <table schema="user_center" tableName="sj_user"
+		domainObjectName="SjUser">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table> -->
-		<!-- <table schema="user_center" tableName="dc_project"
-		domainObjectName="DcProject">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		<table schema="user_center" tableName="dc_rich_text"
-		domainObjectName="DcRichText">
+		<table schema="user_center" tableName="sj_file_desc"
+		domainObjectName="SjFileDesc">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table>
-		<!--<table schema="user_center" tableName="dc_admin"
-		domainObjectName="DcAdmin">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		<!-- <table schema="user_center" tableName="dc_evaluate"
-		domainObjectName="DcEvaluate">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		<!-- <table schema="user_center" tableName="dc_evaluate_picture"
-		domainObjectName="DcEvaluatePicture">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		<!-- <table schema="user_center" tableName="dc_general_file"
-		domainObjectName="DcGeneralFile">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		<!-- <table schema="user_center" tableName="dc_category"
-		domainObjectName="DcCategory">
-		<property name="useActualColumnNames" value="false"/>
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true"/> 
-		</table> -->
-		
 	</context>
 </generatorConfiguration>
