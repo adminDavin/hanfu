@@ -246,10 +246,10 @@ public class DcLoginController {
 		DcUserExample example = new DcUserExample();
 		example.createCriteria().andPhoneEqualTo(phone).andIdDeletedEqualTo((byte) 0);
 		List<DcUser> list = dcUserMapper.selectByExample(example);
-//		if (list.size() == 0) {
-//			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
-//			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
-//		}
+		if (list.size() == 0) {
+			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
+		}
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
