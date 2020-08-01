@@ -13,6 +13,7 @@ public class Catrgory implements Serializable{
 	private Integer fileId;
 	private Integer categoryDetailId;
 	private Integer type;
+	private String parentNameStr;
 	public boolean isHasChildren() {
 		return hasChildren;
 	}
@@ -49,5 +50,10 @@ public class Catrgory implements Serializable{
 	public void setType(Integer type) {
 		this.type = type;
 	}
-	
+	public String getParentNameStr() {
+		return parentNameStr;
+	}
+	public void setParentNameStr(String parentNameStr) {
+		this.parentNameStr = parentNameStr;
+	}
 }
