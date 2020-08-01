@@ -20,7 +20,7 @@ public class HfGoodsDisplayInfo implements Serializable {
     private Integer priceId;
     private Integer priceModeId;
     private List<Integer> fileIds;
-    private Integer sellPrice;
+    private String sellPrice;
     private short isUsePriceMode;
     private Integer linePrice;
     private Integer stoneId;
@@ -92,13 +92,13 @@ public class HfGoodsDisplayInfo implements Serializable {
     public void setPriceModeId(Integer priceModeId) {
         this.priceModeId = priceModeId;
     }
-    public Integer getSellPrice() {
-        return sellPrice;
-    }
-    public void setSellPrice(Integer sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-    public short getIsUsePriceMode() {
+    public String getSellPrice() {
+		return sellPrice;
+	}
+	public void setSellPrice(String sellPrice) {
+		this.sellPrice = sellPrice;
+	}
+	public short getIsUsePriceMode() {
         return isUsePriceMode;
     }
     public void setIsUsePriceMode(short isUsePriceMode) {

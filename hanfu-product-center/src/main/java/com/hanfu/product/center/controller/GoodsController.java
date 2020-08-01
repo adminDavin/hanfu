@@ -1217,7 +1217,7 @@ public class GoodsController {
 		List<HfGoodsSpecDisplay> goodsSpec = hfGoodsDisplayDao.selectHfGoodsSpec(goodsId);
 		hfGoods.setHfGoodsSpecs(goodsSpec);
 		if (quantity > 0) {
-			hfGoods.setSellPrice(hfGoods.getSellPrice() * quantity);
+			hfGoods.setSellPrice(String.valueOf(Double.valueOf(hfGoods.getSellPrice()) * quantity));
 		}
 		return builder.body(ResponseUtils.getResponseBody(hfGoods));
 	}
@@ -1258,7 +1258,7 @@ public class GoodsController {
 								s = s.replaceAll("0+?$", "");// 去掉多余的0
 								s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
 							}
-							hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+							hfGoodsDisplay.get(i).setSellPrice(s);
 						} else {
 							if (list.get(0).getDiscountRatio() != null) {
 								if (list.get(0).getDiscountRatio() != 0) {
@@ -1267,8 +1267,9 @@ public class GoodsController {
 									if (null != s && s.indexOf(".") > 0) {
 										s = s.replaceAll("0+?$", "");// 去掉多余的0
 										s = s.replaceAll("[.]$", "");// 如最后一位是.则去掉
+										System.out.println("ssssssssssssss" + s);
 									}
-									hfGoodsDisplay.get(i).setSellPrice(Integer.valueOf(s));
+									hfGoodsDisplay.get(i).setSellPrice(s);
 								}
 							}
 						}
@@ -1300,7 +1301,7 @@ public class GoodsController {
 
 		hfGoodsDisplay.forEach(item -> item.setFileIds(hfGoodsPictureMap.get(item.getId())));
 		if (quantity > 0) {
-			hfGoodsDisplay.forEach(item -> item.setSellPrice(item.getSellPrice() * quantity));
+			hfGoodsDisplay.forEach(item -> item.setSellPrice(String.valueOf(Double.valueOf(item.getSellPrice())* quantity)));
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplay));

@@ -66,7 +66,8 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         	Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
         	arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
         }else {
-        	arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
+        	Thumbnails.of(file.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(1).toOutputStream(os);
+        	arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf("-1"));
         }
         DcFileDesc fileDesc = new DcFileDesc();
         fileDesc.setFileName(file.getName());

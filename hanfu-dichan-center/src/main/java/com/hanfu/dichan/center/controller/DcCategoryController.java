@@ -93,16 +93,16 @@ public class DcCategoryController {
 
 	@Autowired
 	private DcGeneralFileMapper dcGeneralFileMapper;
-	
+
 	@Autowired
 	private DcCategoryDetailMapper dcCategoryDetailMapper;
-	
+
 	@Autowired
 	private DcPraiseRecordMapper dcPraiseRecordMapper;
-	
+
 	@Autowired
 	private DcEvaluateMapper dcEvaluateMapper;
-	
+
 	@Autowired
 	private DcUserMapper dcUserMapper;
 
@@ -121,11 +121,11 @@ public class DcCategoryController {
 		category.setCreateTime(LocalDateTime.now());
 		category.setModifyTime(LocalDateTime.now());
 		category.setIsDeleted((short) 0);
-		if(file != null) {
+		if (file != null) {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    Thumbnails.of(file.getInputStream()).scale(0.8f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
+			Thumbnails.of(file.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.6).toOutputStream(os);
 			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			DcFileDesc fileDesc = new DcFileDesc();
 			fileDesc.setFileName(file.getName());
@@ -166,7 +166,8 @@ public class DcCategoryController {
 			FileMangeService fileMangeService = new FileMangeService();
 			String arr[];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    Thumbnails.of(fileInfo.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.63).toOutputStream(os);
+			Thumbnails.of(fileInfo.getInputStream()).scale(1f).outputFormat("jpg").outputQuality(0.63)
+					.toOutputStream(os);
 			arr = fileMangeService.uploadFile(os.toByteArray(), String.valueOf(request.getUserId()));
 			if (hfCategory.getFileId() == null) {
 				DcFileDesc fileDesc = new DcFileDesc();
@@ -239,7 +240,7 @@ public class DcCategoryController {
 		if (parentCategoryId == -1) {
 			categoryExample.clear();
 			categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
-			.andIsDeletedEqualTo((short) 0).andProjectIdEqualTo(projectId);
+					.andIsDeletedEqualTo((short) 0).andProjectIdEqualTo(projectId);
 		}
 		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
 		System.out.println(list.toString());
@@ -258,9 +259,9 @@ public class DcCategoryController {
 			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
 			if (CollectionUtils.isEmpty(dcCategories)) {
 				catrgory.setHasChildren(false);
-				if(dcCategory.getCategoryDetailId() == null) {
+				if (dcCategory.getCategoryDetailId() == null) {
 					catrgory.setType(3);
-				}else {
+				} else {
 					catrgory.setType(4);
 				}
 			}
@@ -290,8 +291,16 @@ public class DcCategoryController {
 		h.setProjectId(projectId);
 		List<DcCategory> list = manualDao.findCategoryByInfo(h);
 		for (int i = 0; i < list.size(); i++) {
+			StringBuilder stringBuilder = new StringBuilder();
 			DcCategory dcCategory = list.get(i);
+			DcCategory dcy = dcCategory;
+			while (dcy.getParentCategoryId() != -1) {
+				dcy = dcCategoryMapper.selectByPrimaryKey(dcy.getParentCategoryId());
+				stringBuilder.append(dcy.getHfName()).append(">");
+			}
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);
 			Catrgory catrgory = new Catrgory();
+			catrgory.setParentNameStr(stringBuilder.toString());
 			catrgory.setCategoryId(dcCategory.getId());
 			catrgory.setCategoryName(dcCategory.getHfName());
 			catrgory.setFileId(dcCategory.getFileId());
@@ -304,9 +313,9 @@ public class DcCategoryController {
 			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
 			if (CollectionUtils.isEmpty(dcCategories)) {
 				catrgory.setHasChildren(false);
-				if(dcCategory.getCategoryDetailId() == null) {
+				if (dcCategory.getCategoryDetailId() == null) {
 					catrgory.setType(3);
-				}else {
+				} else {
 					catrgory.setType(4);
 				}
 			}
@@ -358,7 +367,7 @@ public class DcCategoryController {
 		DcCategoryDetailExample example = new DcCategoryDetailExample();
 		example.createCriteria().andCategoryIdEqualTo(id);
 		List<DcCategoryDetail> list = dcCategoryDetailMapper.selectByExample(example);
-		if(CollectionUtils.isEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			DcCategoryDetail detail = new DcCategoryDetail();
 			detail.setCategoryId(id);
 			detail.setComment(0);
@@ -368,7 +377,7 @@ public class DcCategoryController {
 			detail.setIsDeleted((byte) 0);
 			dcCategoryDetailMapper.insert(detail);
 			categoryDetailId = detail.getId();
-		}else {
+		} else {
 			DcCategoryDetail detail = list.get(0);
 			categoryDetailId = detail.getId();
 		}
@@ -435,15 +444,17 @@ public class DcCategoryController {
 		List<DcGeneralFile> files = dcGeneralFileMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(files));
 	}
-	
+
 	@ApiOperation(value = "给类目详情点赞", notes = "给类目详情点赞")
 	@RequestMapping(value = "/categoryDetailPraise", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> categoryDetailPraise(Integer categoryDetailId, Integer userId, String type) throws Exception {
+	public ResponseEntity<JSONObject> categoryDetailPraise(Integer categoryDetailId, Integer userId, String type)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcPraiseRecordExample recordExample = new DcPraiseRecordExample();
-		recordExample.createCriteria().andEvaluateEqualTo(categoryDetailId).andTypeEqualTo(type).andUserIdEqualTo(userId);
+		recordExample.createCriteria().andEvaluateEqualTo(categoryDetailId).andTypeEqualTo(type)
+				.andUserIdEqualTo(userId);
 		List<DcPraiseRecord> list = dcPraiseRecordMapper.selectByExample(recordExample);
-		if(CollectionUtils.isEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			DcPraiseRecord record = new DcPraiseRecord();
 			record.setType(type);
 			record.setUserId(userId);
@@ -452,24 +463,24 @@ public class DcCategoryController {
 			record.setModifyTime(LocalDateTime.now());
 			record.setIsDeleted((byte) 1);
 			dcPraiseRecordMapper.insert(record);
-			if("categoryDetail".equals(type)) {
-				updateCatrgotyDetailPraise(1,categoryDetailId);
+			if ("categoryDetail".equals(type)) {
+				updateCatrgotyDetailPraise(1, categoryDetailId);
 			}
-		}else {
+		} else {
 			System.out.println("else");
 			DcPraiseRecord record = list.get(0);
-			if(record.getIsDeleted() == 0) {
+			if (record.getIsDeleted() == 0) {
 				System.out.println("deleted=====0");
 				record.setIsDeleted((byte) 1);
 				dcPraiseRecordMapper.updateByPrimaryKey(record);
-				if("categoryDetail".equals(type)) {
-					updateCatrgotyDetailPraise(1,categoryDetailId);
+				if ("categoryDetail".equals(type)) {
+					updateCatrgotyDetailPraise(1, categoryDetailId);
 				}
-			}else {
+			} else {
 				record.setIsDeleted((byte) 0);
 				dcPraiseRecordMapper.updateByPrimaryKey(record);
-				if("categoryDetail".equals(type)) {
-					updateCatrgotyDetailPraise(0,categoryDetailId);
+				if ("categoryDetail".equals(type)) {
+					updateCatrgotyDetailPraise(0, categoryDetailId);
 				}
 			}
 //			if(record.getIsDeleted() == 1) {
@@ -478,20 +489,20 @@ public class DcCategoryController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
-	
+
 	public void updateCatrgotyDetailPraise(Integer result, Integer categoryDetailId) {
-		if(result == 0) {
+		if (result == 0) {
 			DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
-			categoryDetail.setPraise(categoryDetail.getPraise()-1);
+			categoryDetail.setPraise(categoryDetail.getPraise() - 1);
 			dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
 		}
-		if(result == 1) {
+		if (result == 1) {
 			DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
-			categoryDetail.setPraise(categoryDetail.getPraise()+1);
+			categoryDetail.setPraise(categoryDetail.getPraise() + 1);
 			dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
 		}
 	}
-	
+
 	@ApiOperation(value = "查看点赞数量和是否点赞", notes = "查看点赞数量和是否点赞")
 	@RequestMapping(value = "/findPraise", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findPraise(Integer categoryDetailId, Integer userId) throws Exception {
@@ -500,22 +511,21 @@ public class DcCategoryController {
 		DcCategoryDetail detail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
 		DcPraiseRecordExample example = new DcPraiseRecordExample();
 		example.createCriteria().andTypeEqualTo("categoryDetail").andEvaluateEqualTo(categoryDetailId)
-		.andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
+				.andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
 		map.put("count", detail.getPraise());
-		if(CollectionUtils.isEmpty(dcPraiseRecordMapper.selectByExample(example))) {
+		if (CollectionUtils.isEmpty(dcPraiseRecordMapper.selectByExample(example))) {
 			map.put("isPraise", 2);
-		}else {
+		} else {
 			map.put("isPraise", 3);
 		}
-		
+
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
-	
-	
+
 	@ApiOperation(value = "给类目详情评论", notes = "给类目详情评论")
 	@RequestMapping(value = "/categoryDetailComment", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> categoryDetailComment(Integer categoryDetailId, Integer userId, String type
-			,String typeContent, Integer parentCommtentId, String comment) throws Exception {
+	public ResponseEntity<JSONObject> categoryDetailComment(Integer categoryDetailId, Integer userId, String type,
+			String typeContent, Integer parentCommtentId, String comment) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		DcEvaluate evaluate = new DcEvaluate();
 		evaluate.setType("categoryDetail");
@@ -526,11 +536,11 @@ public class DcCategoryController {
 		evaluate.setEvaluate(comment);
 		dcEvaluateMapper.insert(evaluate);
 		DcCategoryDetail categoryDetail = dcCategoryDetailMapper.selectByPrimaryKey(categoryDetailId);
-		categoryDetail.setComment(categoryDetail.getComment()+1);
+		categoryDetail.setComment(categoryDetail.getComment() + 1);
 		dcCategoryDetailMapper.updateByPrimaryKey(categoryDetail);
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
-	
+
 	@ApiOperation(value = "查询详情评论", notes = "查询详情评论")
 	@RequestMapping(value = "/findcategoryDetailComment", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findcategoryDetailComment(Integer categoryDetailId) throws Exception {

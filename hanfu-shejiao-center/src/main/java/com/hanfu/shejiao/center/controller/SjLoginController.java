@@ -141,4 +141,14 @@ public class SjLoginController {
 		return builder.body(ResponseUtils.getResponseBody(user.getId()));
 	}
 	
+	@RequestMapping(path = "/adminLogin", method = RequestMethod.POST)
+	@ApiOperation(value = "cs", notes = "cs")
+	public ResponseEntity<JSONObject> adminLogin(String username, String password) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		System.out.println("username" + username);
+		if("sunwangda".equals(username) && "123456".equals(password)) {
+			return builder.body(ResponseUtils.getResponseBody(1));
+		}
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
 }

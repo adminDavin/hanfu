@@ -538,7 +538,7 @@ public class HfProductController {
 				HfGoods goods = hfGoodsMapper.selectByPrimaryKey(hfStoneResp.getGoodId());
 				HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
 				HfGoodsDisplayInfo displayInfo = new HfGoodsDisplayInfo();
-				displayInfo.setSellPrice(hfPrice.getSellPrice());
+				displayInfo.setSellPrice(String.valueOf(hfPrice.getSellPrice()));
 				displayInfo.setId(goods.getId());
 				displayInfo.setLinePrice(hfPrice.getLinePrice());
 				infos.add(displayInfo);
