@@ -2,12 +2,12 @@ package com.hanfu.payment.center.config;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.payment.center.dao.AccountMapper;
+import com.hanfu.payment.center.dao.HfStoneMapper;
 import com.hanfu.payment.center.dao.PayBossMapper;
 import com.hanfu.payment.center.model.Account;
 import com.hanfu.payment.center.model.AccountExample;
 import com.hanfu.payment.center.model.PayBoss;
 import com.hanfu.payment.center.model.PayBossExample;
-import com.hanfu.user.center.dao.HfStoneMapper;
 import com.hanfu.user.center.model.HfStone;
 import com.hanfu.user.center.service.impl.Permission;
 import com.hanfu.user.center.utils.Decrypt;
