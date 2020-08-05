@@ -452,7 +452,7 @@ public class HfOrderController {
                 map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
                 map.add("orderCode", orderCode);
                 HttpEntity<Object> requestEntity = new HttpEntity<>(map, headers);
-                restTemplate.getForObject(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}",payment.class,requestEntity);
+                restTemplate.getForObject(REST_URL_PREFIX + "/hf-payment/refund?requestEntity={requestEntity}",payment.class,requestEntity);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
