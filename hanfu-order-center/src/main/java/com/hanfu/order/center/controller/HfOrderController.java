@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +82,8 @@ public class HfOrderController {
     private String ORDER_URL;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
+    @Resource
+    HttpServletRequest requests
     @Autowired
     private HfOrderMapper hfOrderMapper;
 
@@ -438,7 +441,16 @@ public class HfOrderController {
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
+                HttpHeaders headers = new HttpHeaders();
+                String token = (String) requests.getServletContext().getAttribute("token");
+                headers.add("token",token);
+                MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+                map.add("payOrderId", payOrderId);
+                map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+                map.add("orderCode", orderCode);
+                HttpEntity<Object> requestEntity = new HttpEntity<>(map, headers);
+                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/" ,payment.class,requestEntity);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
