@@ -83,7 +83,7 @@ public class HfOrderController {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
-    HttpServletRequest requests
+    HttpServletRequest requests;
     @Autowired
     private HfOrderMapper hfOrderMapper;
 
