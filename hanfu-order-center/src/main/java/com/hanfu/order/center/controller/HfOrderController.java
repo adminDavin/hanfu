@@ -446,13 +446,13 @@ public class HfOrderController {
                 String token = (String) requests.getServletContext().getAttribute("token");
                 System.out.println("woshishishi"+token);
                 headers.add("token",token);
-                MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-
-                map.add("payOrderId", payOrderId);
-                map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
-                map.add("orderCode", orderCode);
+//                MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+//
+//                map.add("payOrderId", payOrderId);
+//                map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+//                map.add("orderCode", orderCode);
                 HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
-                restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund?requestEntity={requestEntity}", HttpMethod.GET,requestEntity,payment.class,map);
+                restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", HttpMethod.GET,requestEntity,payment.class,payOrderId,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
