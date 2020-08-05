@@ -444,6 +444,7 @@ public class HfOrderController {
 //            Map map = (Map) payment;
                 HttpHeaders headers = new HttpHeaders();
                 String token = (String) requests.getServletContext().getAttribute("token");
+                System.out.println("woshishishi"+token);
                 headers.add("token",token);
                 MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
