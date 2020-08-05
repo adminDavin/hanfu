@@ -34,6 +34,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
@@ -450,7 +451,7 @@ public class HfOrderController {
                 map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
                 map.add("orderCode", orderCode);
                 HttpEntity<Object> requestEntity = new HttpEntity<>(map, headers);
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/" ,payment.class,requestEntity);
+                restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund/", HttpMethod.GET ,requestEntity,payment.class);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -1005,7 +1006,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
             paramMap.add("stoneId",hfOrder.getStoneId());
             JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
             JSONObject data=entity.getJSONObject("data");
-            if ((Integer)JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state")==3){
+            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
             Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
             //hfOrder.getId()
             List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
