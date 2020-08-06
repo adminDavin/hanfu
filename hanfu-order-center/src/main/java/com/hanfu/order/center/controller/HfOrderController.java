@@ -988,48 +988,48 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
     });
     //
-    HfOrderExample hfOrderExample2 = new HfOrderExample();
-    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
-    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
-    HfOrders2.forEach(hfOrder -> {
-        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
-        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
-        if (hfOrderDetailList.size()!=0){
-            //
-            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
-            paramMap.add("orderId",hfOrder.getId());
-            paramMap.add("stoneId",hfOrder.getStoneId());
-            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
-            JSONObject data=entity.getJSONObject("data");
-            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
-            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
-            //hfOrder.getId()
-            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
-            ZoneId zoneId = ZoneId.systemDefault();
-            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
-            Date date = Date.from(zdt.toInstant());
-            Date date1 = new Date();
-            Date date2 = new Date();
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                date1 = f.parse(f.format(new Date())); //这是获取当前时间
-                System.out.println("当前时间"+date1);
-                date2 = f.parse(f.format(date));
-                System.out.println(date2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if ((date1.getTime()-date2.getTime())>259200000){//3t
-                try {
-                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            }
-        }
-    });
+//    HfOrderExample hfOrderExample2 = new HfOrderExample();
+//    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
+//    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
+//    HfOrders2.forEach(hfOrder -> {
+//        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+//        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
+//        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+//        if (hfOrderDetailList.size()!=0){
+//            //
+//            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+//            paramMap.add("orderId",hfOrder.getId());
+//            paramMap.add("stoneId",hfOrder.getStoneId());
+//            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
+//            JSONObject data=entity.getJSONObject("data");
+//            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
+//            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
+//            //hfOrder.getId()
+//            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
+//            Date date = Date.from(zdt.toInstant());
+//            Date date1 = new Date();
+//            Date date2 = new Date();
+//            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+//                System.out.println("当前时间"+date1);
+//                date2 = f.parse(f.format(date));
+//                System.out.println(date2);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            if ((date1.getTime()-date2.getTime())>259200000){//3t
+//                try {
+//                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            }
+//        }
+//    });
 
     }
     public static void main(String[] args) {
