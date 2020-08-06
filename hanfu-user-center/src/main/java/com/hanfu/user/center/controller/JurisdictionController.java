@@ -484,7 +484,6 @@ public class JurisdictionController {
 	@RequestMapping(value = "/findAdminHasModelAndJus", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		Map<Object, Object> map = new HashMap<Object, Object>();
 		List<Map> result = new ArrayList<Map>();
 		Integer[] a = {0};
 		AccountRolesExample example = new AccountRolesExample();
@@ -506,6 +505,8 @@ public class JurisdictionController {
 		JurisdictionExample example5 = new JurisdictionExample();
 		List<Jurisdiction> list2 = new ArrayList<Jurisdiction>();
 		for (int i = 0; i < list.size(); i++) {
+			Map<Object, Object> map = new HashMap<Object, Object>();
+			map.clear();
 			HfModule hfModule = list.get(i);
 			example5.clear();
 			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
