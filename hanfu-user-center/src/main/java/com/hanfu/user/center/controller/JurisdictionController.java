@@ -105,7 +105,8 @@ public class JurisdictionController {
 			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
 	@Transactional
-	public ResponseEntity<JSONObject> addDepartment(String DepartmentName,HttpServletRequest request, Integer userId) throws JSONException {
+	public ResponseEntity<JSONObject> addDepartment(String DepartmentName, HttpServletRequest request, Integer userId)
+			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Department department = new Department();
 		department.setCreateDate(LocalDateTime.now());
@@ -130,7 +131,7 @@ public class JurisdictionController {
 		departmentMapper.insertSelective(department);
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 	@ApiOperation(value = "", notes = "")
 	@RequestMapping(value = "/getDepartment", method = RequestMethod.POST)
 	@ApiImplicitParams({
@@ -144,20 +145,22 @@ public class JurisdictionController {
 			System.out.println("request.getServletContext().getAttribute得到全局数据："
 					+ request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext") != null) {
-				example.createCriteria().andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+				example.createCriteria()
+						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
 				example.createCriteria().andDepartmentTypeEqualTo("boss");
 			}
 		}
 		if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
 			if (request.getServletContext().getAttribute("getServletContext") != null) {
-				example.createCriteria().andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+				example.createCriteria()
+						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
 				example.createCriteria().andDepartmentTypeEqualTo("stone");
 			}
 		}
 		List<Department> list = departmentMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
-	
+
 //	@ApiOperation(value = "", notes = "")
 //	@RequestMapping(value = "/addUserDepartment", method = RequestMethod.POST)
 //	@ApiImplicitParams({
@@ -190,7 +193,8 @@ public class JurisdictionController {
 				List<String> str = new ArrayList<String>();
 				str.add("stone");
 				str.add("warehouse");
-				accountExample.createCriteria().andAccountTypeIn(str).andAccountRoleEqualTo("Super Admin").andIsDeletedEqualTo(0);
+				accountExample.createCriteria().andAccountTypeIn(str).andAccountRoleEqualTo("Super Admin")
+						.andIsDeletedEqualTo(0);
 				List<Account> a = accountMapper.selectByExample(accountExample);
 				account.addAll(a);
 			}
@@ -222,28 +226,31 @@ public class JurisdictionController {
 	@ApiOperation(value = "添加角色", notes = "添加角色")
 	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addRole(HttpServletRequest request, String roleName, Integer userId,
-			String roleCode, Integer accountId)
-			throws JSONException {
+			String roleCode, Integer accountId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Roles roles = new Roles();
-        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-                roles.setRoleCode("boss");
-                roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
-            }
-        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	roles.setRoleCode("stone");
-                roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
-            }
-        }
+		if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				roles.setRoleCode("boss");
+				roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		} else if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				roles.setRoleCode("stone");
+				roles.setMachId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		}
 
 //		roles.setRoleType("boss");
 //		roles.setMachId(1);
-		
-        roles.setRoleType(roleCode);
+
+		roles.setRoleType(roleCode);
 		roles.setRoleName(roleName);
 		roles.setCreateDate(LocalDateTime.now());
 		roles.setModifyDate(LocalDateTime.now());
@@ -266,92 +273,105 @@ public class JurisdictionController {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		RolesExample rolesExample = new RolesExample();
 
-        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-                rolesExample.createCriteria().andRoleCodeEqualTo("boss").andIsDeletedEqualTo(0).andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
-            }
-        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-                rolesExample.createCriteria().andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0).andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
-            }
-        } else {
-            rolesExample.createCriteria().andIsDeletedEqualTo(0);
-        }
+		if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				rolesExample.createCriteria().andRoleCodeEqualTo("boss").andIsDeletedEqualTo(0)
+						.andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		} else if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				rolesExample.createCriteria().andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0)
+						.andMachIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+			}
+		} else {
+			rolesExample.createCriteria().andIsDeletedEqualTo(0);
+		}
 		List<Roles> roles = rolesMapper.selectByExample(rolesExample);
 
 		return builder.body(ResponseUtils.getResponseBody(roles));
 	}
-	
+
 	@RequestMapping(value = "/selectRoleCode", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectRoleCode(HttpServletRequest request) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-                List<String> str = RoleCodeEnum.getRoleCode("boss");
-                return builder.body(ResponseUtils.getResponseBody(str));
-            }
-        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	List<String> str = new ArrayList<String>();
-            	str.add("stone");
-                return builder.body(ResponseUtils.getResponseBody(str));
-            }
-        } 
-        return builder.body(ResponseUtils.getResponseBody(null));
+		if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				List<String> str = RoleCodeEnum.getRoleCode("boss");
+				return builder.body(ResponseUtils.getResponseBody(str));
+			}
+		} else if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				List<String> str = new ArrayList<String>();
+				str.add("stone");
+				return builder.body(ResponseUtils.getResponseBody(str));
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-	
+
 	@ApiOperation(value = "获取列表（店铺或仓库）", notes = "获取列表（店铺或仓库）")
 	@RequestMapping(value = "/getListWaOrStore", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> getListWaOrStore(HttpServletRequest request,String type) throws JSONException {
+	public ResponseEntity<JSONObject> getListWaOrStore(HttpServletRequest request, String type) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	if(RoleCodeEnum.STONE.getRoleCodeType().equals(type)) {
-            		HfStoneExample example = new HfStoneExample();
-                	example.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"));
-                    List<HfStone> str = hfStoneMapper.selectByExample(example);
-                    return builder.body(ResponseUtils.getResponseBody(str));
-            	}
-            	if(RoleCodeEnum.WAREHOUSE.getRoleCodeType().equals(type)) {
-            		JSONObject jsonObject = restTemplate.getForObject(REST_URL_PREFIX+"/wareHouse/listWareHouse", JSONObject.class, (Integer)request.getServletContext().getAttribute("getServletContext"));
-            		System.out.println(jsonObject.toString());
-            	}
-            }
-        }else if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("stone")){
-            System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-            if (request.getServletContext().getAttribute("getServletContext")!=null){
-            	List<String> str = new ArrayList<String>();
-            	str.add("stone");
-                return builder.body(ResponseUtils.getResponseBody(str));
-            }
-        } 
-        return builder.body(ResponseUtils.getResponseBody(null));
+		if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				if (RoleCodeEnum.STONE.getRoleCodeType().equals(type)) {
+					HfStoneExample example = new HfStoneExample();
+					example.createCriteria()
+							.andBossIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+					List<HfStone> str = hfStoneMapper.selectByExample(example);
+					return builder.body(ResponseUtils.getResponseBody(str));
+				}
+				if (RoleCodeEnum.WAREHOUSE.getRoleCodeType().equals(type)) {
+					JSONObject jsonObject = restTemplate.getForObject(REST_URL_PREFIX + "/wareHouse/listWareHouse",
+							JSONObject.class, (Integer) request.getServletContext().getAttribute("getServletContext"));
+					System.out.println(jsonObject.toString());
+				}
+			}
+		} else if (request.getServletContext().getAttribute("getServletContextType") != null
+				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+			System.out.println("request.getServletContext().getAttribute得到全局数据："
+					+ request.getServletContext().getAttribute("getServletContext"));
+			if (request.getServletContext().getAttribute("getServletContext") != null) {
+				List<String> str = new ArrayList<String>();
+				str.add("stone");
+				return builder.body(ResponseUtils.getResponseBody(str));
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(null));
 	}
-	
-	
-	
-	
+
 	@ApiOperation(value = "查询当前账号角色", notes = "查询当前账号角色")
 	@RequestMapping(value = "/selectAccountRole", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectAccountRole(Integer id, String type) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		
+
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id).andIsDeletedEqualTo((short) 0);
 		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
 		List<Roles> result = null;
 		List<AccountRolesType> results = new ArrayList<AccountRolesType>();
-		if(!CollectionUtils.isEmpty(list)) {
+		if (!CollectionUtils.isEmpty(list)) {
 			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 			RolesExample rolesExample = new RolesExample();
 			rolesExample.createCriteria().andIdIn(roleId);
 			result = rolesMapper.selectByExample(rolesExample);
-			if(!CollectionUtils.isEmpty(result)) {
+			if (!CollectionUtils.isEmpty(result)) {
 				Map<String, List<Roles>> map = result.stream().collect(Collectors.groupingBy(Roles::getRoleType));
 				Set<Entry<String, List<Roles>>> entry = map.entrySet();
 				for (Entry<String, List<Roles>> item : entry) {
@@ -362,7 +382,7 @@ public class JurisdictionController {
 				}
 			}
 		}
-		if(type != null) {
+		if (type != null) {
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}
 		return builder.body(ResponseUtils.getResponseBody(results));
@@ -407,9 +427,9 @@ public class JurisdictionController {
 				roleJurisdiction.setRoleId(roleId);
 				roleJurisdiction.setJurisdictionId(jurId);
 				roleJurisdictionMapper.insertSelective(roleJurisdiction);
-			}else {
+			} else {
 				RoleJurisdiction roleJurisdiction = list.get(0);
-				if(roleJurisdiction.getIsDeleted() == (short) 1) {
+				if (roleJurisdiction.getIsDeleted() == (short) 1) {
 					roleJurisdiction.setIsDeleted((short) 0);
 					roleJurisdictionMapper.updateByPrimaryKey(roleJurisdiction);
 				}
@@ -417,7 +437,7 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 	@ApiOperation(value = "角色删除权限", notes = "角色删除权限")
 	@RequestMapping(value = "/roleDeleteJurisdiction", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> roleDeleteJurisdiction(Integer roleId, Integer[] JurisdictionIds)
@@ -435,7 +455,7 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 	@ApiOperation(value = "角色添加模块", notes = "角色添加模块")
 	@RequestMapping(value = "/roleAddModel", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> roleAddModel(Integer roleId, Integer[] modelId) throws JSONException {
@@ -452,9 +472,9 @@ public class JurisdictionController {
 				model.setModifyTime(LocalDateTime.now());
 				model.setIsDeleted((byte) 0);
 				roleModelMapper.insert(model);
-			}else {
+			} else {
 				RoleModel model = list.get(0);
-				if(model.getIsDeleted() == (byte) 1) {
+				if (model.getIsDeleted() == (byte) 1) {
 					model.setIsDeleted((byte) 0);
 					roleModelMapper.updateByPrimaryKey(model);
 				}
@@ -462,7 +482,7 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 	@ApiOperation(value = "角色删除模块", notes = "角色删除模块")
 	@RequestMapping(value = "/roleDeleteModel", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> roleDeleteModel(Integer roleId, Integer[] modelId) throws JSONException {
@@ -479,13 +499,13 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 	@ApiOperation(value = "查询当前账号拥有的模块和权限", notes = "查询当前用户拥有的模块")
 	@RequestMapping(value = "/findAdminHasModelAndJus", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<Map> result = new ArrayList<Map>();
-		Integer[] a = {0};
+		Integer[] a = { 0 };
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id);
 		List<AccountRoles> roles = accountRolesMapper.selectByExample(example);
@@ -493,18 +513,21 @@ public class JurisdictionController {
 		RoleModelExample example2 = new RoleModelExample();
 		example2.createCriteria().andRoleIdIn(roleId);
 		List<RoleModel> models = roleModelMapper.selectByExample(example2);
-		List<Integer> modelId = models.size()==0 ?Lists.newArrayList(a):models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
+		List<Integer> modelId = models.size() == 0 ? Lists.newArrayList(a)
+				: models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 		HfModuleExample example3 = new HfModuleExample();
 		example3.createCriteria().andIdIn(modelId);
 		List<HfModule> list = hfModuleMapper.selectByExample(example3);
 		RoleJurisdictionExample example4 = new RoleJurisdictionExample();
 		example4.createCriteria().andRoleIdIn(roleId);
 		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example4);
-		List<Integer> jurisdictionId = jurisdictions.size()==0 ? Lists.newArrayList(a):jurisdictions.stream()
-				.map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+		List<Integer> jurisdictionId = jurisdictions.size() == 0 ? Lists.newArrayList(a)
+				: jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
 		JurisdictionExample example5 = new JurisdictionExample();
 		List<Jurisdiction> list2 = new ArrayList<Jurisdiction>();
+		Integer index = 0;
 		for (int i = 0; i < list.size(); i++) {
+			index++;
 			Map<Object, Object> map = new HashMap<Object, Object>();
 			map.clear();
 			HfModule hfModule = list.get(i);
@@ -518,10 +541,10 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
+
 	@ApiOperation(value = "查询当前账号拥有的模块", notes = "查询当前用户拥有的模块")
 	@RequestMapping(value = "/findAdminHasModel", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findAdminHasModel(Integer id,Integer rId) throws JSONException {
+	public ResponseEntity<JSONObject> findAdminHasModel(Integer id, Integer rId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id);
@@ -533,30 +556,71 @@ public class JurisdictionController {
 		List<Integer> modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 		HfModuleExample example3 = new HfModuleExample();
 		example3.createCriteria().andIdIn(modelId);
-		if(rId == null) {
+		if (rId == null) {
 			List<HfModule> result = hfModuleMapper.selectByExample(example3);
 			return builder.body(ResponseUtils.getResponseBody(result));
-		}else {
+		} else {
 			example2.clear();
 			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((byte) 0);
 			models = roleModelMapper.selectByExample(example2);
 			modelId = models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 			example3.clear();
-			if(!CollectionUtils.isEmpty(modelId)) {
+			if (!CollectionUtils.isEmpty(modelId)) {
 				example3.createCriteria().andIdIn(modelId);
 				List<HfModule> result = hfModuleMapper.selectByExample(example3);
 				return builder.body(ResponseUtils.getResponseBody(result));
-			}else {
+			} else {
 				return builder.body(ResponseUtils.getResponseBody(null));
 			}
-			
+
+		}
+
+	}
+
+	@ApiOperation(value = "查询当前角色拥有模块和权限", notes = "查询当前角色拥有模块和权限")
+	@RequestMapping(value = "/findRoleModelAndJ", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> findRoleModelAndJ(Integer rId) throws JSONException {
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		List<String> str = new ArrayList<String>();
+		RoleModelExample example = new RoleModelExample();
+		example.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((byte) 0);
+		List<RoleModel> list = roleModelMapper.selectByExample(example);
+		if(!list.isEmpty()) {
+			List<Integer> modelId = list.stream().map(RoleModel::getModelId).collect(Collectors.toList());
+			HfModuleExample hfModuleExample = new HfModuleExample();
+			if(!modelId.isEmpty()) {
+				hfModuleExample.createCriteria().andIdIn(modelId).andIsDeletedEqualTo((byte) 0);
+				List<HfModule> modules = hfModuleMapper.selectByExample(hfModuleExample);
+				for (int i = 0; i < modules.size(); i++) {
+					HfModule module = modules.get(i);
+					str.add(module.getHfModel());
+				}
+			}
+		}
+		RoleJurisdictionExample example2 = new RoleJurisdictionExample();
+		example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((short) 0);
+		List<RoleJurisdiction> list2 = roleJurisdictionMapper.selectByExample(example2);
+		if(!list2.isEmpty()) {
+			List<Integer> juslId = list2.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+			JurisdictionExample jurisdictionExample = new JurisdictionExample();
+			if(!juslId.isEmpty()) {
+				jurisdictionExample.createCriteria().andIdIn(juslId).andIsDeletedEqualTo((short) 0);
+				List<Jurisdiction> jurisdictions = jurisdictionMapper.selectByExample(jurisdictionExample);
+				for (int i = 0; i < jurisdictions.size(); i++) {
+					Jurisdiction jurisdiction = jurisdictions.get(i);
+					str.add(jurisdiction.getJurisdictionName());
+				}
+			}
 		}
 		
+		return builder.body(ResponseUtils.getResponseBody(str));
+
 	}
-	
+
 	@ApiOperation(value = "查询当前账号在某模块拥有的权限", notes = "查询当前账号在某模块拥有的权限")
 	@RequestMapping(value = "/findAdminHasJusInModel", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findAdminHasJusInModel(Integer id,Integer modelId,Integer rId) throws JSONException {
+	public ResponseEntity<JSONObject> findAdminHasJusInModel(Integer id, Integer modelId, Integer rId)
+			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id);
@@ -565,23 +629,25 @@ public class JurisdictionController {
 		RoleJurisdictionExample example2 = new RoleJurisdictionExample();
 		example2.createCriteria().andRoleIdIn(roleId);
 		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example2);
-		List<Integer> jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+		List<Integer> jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId)
+				.collect(Collectors.toList());
 		JurisdictionExample example3 = new JurisdictionExample();
 		example3.createCriteria().andIdIn(jurisdictionId).andModelIdEqualTo(modelId);
-		if(rId == null) {
+		if (rId == null) {
 			List<Jurisdiction> result = jurisdictionMapper.selectByExample(example3);
 			return builder.body(ResponseUtils.getResponseBody(result));
-		}else {
+		} else {
 			example2.clear();
 			example2.createCriteria().andRoleIdEqualTo(rId).andIsDeletedEqualTo((short) 0);
 			jurisdictions = roleJurisdictionMapper.selectByExample(example2);
-			jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+			jurisdictionId = jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId)
+					.collect(Collectors.toList());
 			example3.clear();
 			example3.createCriteria().andIdIn(jurisdictionId).andModelIdEqualTo(modelId);
 			List<Jurisdiction> result = jurisdictionMapper.selectByExample(example3);
 			return builder.body(ResponseUtils.getResponseBody(result));
 		}
-		
+
 	}
 
 	@ApiOperation(value = "给用户绑定角色", notes = "给用户绑定角色")
@@ -600,9 +666,9 @@ public class JurisdictionController {
 				role.setModifyTime(LocalDateTime.now());
 				role.setIsDeleted((short) 0);
 				accountRolesMapper.insert(role);
-			}else {
+			} else {
 				AccountRoles role = list.get(0);
-				if(role.getIsDeleted() == (short) 1) {
+				if (role.getIsDeleted() == (short) 1) {
 					role.setIsDeleted((short) 0);
 					accountRolesMapper.updateByPrimaryKey(role);
 				}
@@ -623,7 +689,7 @@ public class JurisdictionController {
 				AccountRoles role = list.get(0);
 				role.setIsDeleted((short) 1);
 				accountRolesMapper.updateByPrimaryKey(role);
-			} 
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
@@ -631,7 +697,7 @@ public class JurisdictionController {
 	@ApiOperation(value = "我们添加平台账号", notes = "我们添加平台账号")
 	@RequestMapping(value = "/addAdminByUs", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> addAdminByUs(String accountCode, String accountType, Integer merchantId,
-			String roleName,Integer[] modelId,Integer jurisdictonId[]) throws JSONException {
+			String roleName, Integer[] modelId, Integer jurisdictonId[]) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountExample accountExample = new AccountExample();
 		accountExample.createCriteria().andAccountCodeEqualTo(accountCode).andAccountTypeEqualTo(accountType)
@@ -657,20 +723,20 @@ public class JurisdictionController {
 				.andRoleNameEqualTo(roleName);
 		List<Roles> list = rolesMapper.selectByExample(rolesExample);
 		Integer roleId = null;
-    	if(!CollectionUtils.isEmpty(list)) {
-    		roleId = list.get(0).getId();
-    	}else {
-    		Roles roles = new Roles();
-    		roles.setRoleName(roleName);
-    		roles.setRoleCode("sass");
-    		roles.setRoleType("boss");
-    		roles.setMachId(merchantId);
-    		roles.setCreateDate(LocalDateTime.now());
-    		roles.setModifyDate(LocalDateTime.now());
-    		roles.setIsDeleted(0);
-    		rolesMapper.insert(roles);
-    		roleId = roles.getId();
-    	}
+		if (!CollectionUtils.isEmpty(list)) {
+			roleId = list.get(0).getId();
+		} else {
+			Roles roles = new Roles();
+			roles.setRoleName(roleName);
+			roles.setRoleCode("sass");
+			roles.setRoleType("boss");
+			roles.setMachId(merchantId);
+			roles.setCreateDate(LocalDateTime.now());
+			roles.setModifyDate(LocalDateTime.now());
+			roles.setIsDeleted(0);
+			rolesMapper.insert(roles);
+			roleId = roles.getId();
+		}
 
 		AccountRolesExample accountRolesExample = new AccountRolesExample();
 		accountRolesExample.createCriteria().andRolesIdEqualTo(1).andAccountIdEqualTo(account.getId());
@@ -721,5 +787,5 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
-	
+
 }
