@@ -52,6 +52,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -484,6 +485,7 @@ public class JurisdictionController {
 	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<Object, Object> map = new HashMap<Object, Object>();
+		List<Map> result = new ArrayList<Map>();
 		Integer[] a = {0};
 		AccountRolesExample example = new AccountRolesExample();
 		example.createCriteria().andAccountIdEqualTo(id);
@@ -508,9 +510,12 @@ public class JurisdictionController {
 			example5.clear();
 			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
 			list2 = jurisdictionMapper.selectByExample(example5);
-			map.put(hfModule, list2);
+			map.put("label", hfModule.getHfModel());
+			map.put("fid", hfModule.getId());
+			map.put("children", list2);
+			result.add(map);
 		}
-		return builder.body(ResponseUtils.getResponseBody(map));
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 	
 	@ApiOperation(value = "查询当前账号拥有的模块", notes = "查询当前用户拥有的模块")
@@ -715,4 +720,5 @@ public class JurisdictionController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(0));
 	}
+	
 }

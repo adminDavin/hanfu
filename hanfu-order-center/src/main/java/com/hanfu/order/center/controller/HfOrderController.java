@@ -434,7 +434,6 @@ public class HfOrderController {
 
                 HfOrderExample hfOrderExample1 = new HfOrderExample();
                 hfOrderExample1.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode);
-
                 payment payment = new payment();
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
