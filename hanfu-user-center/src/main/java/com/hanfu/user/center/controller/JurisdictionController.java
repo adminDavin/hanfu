@@ -511,9 +511,9 @@ public class JurisdictionController {
 			example5.clear();
 			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
 			list2 = jurisdictionMapper.selectByExample(example5);
-			map.put("label", hfModule.getHfModel());
-			map.put("fid", hfModule.getId());
-			map.put("children", list2);
+			map.put("jurisdictionName", hfModule.getHfModel());
+			map.put("id", hfModule.getId());
+			map.put("list", list2);
 			result.add(map);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
