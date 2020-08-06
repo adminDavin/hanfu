@@ -117,7 +117,7 @@ public class PaymentOrderController {
 	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-		miniProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("getServletContext")));
+		miniProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
 		System.out.println("machid"+miniProgramConfig.getMchID());
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
         PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
@@ -203,7 +203,7 @@ public class PaymentOrderController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("getServletContext"));
+		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		if (orderCode!=null){
 			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
@@ -591,7 +591,7 @@ public class PaymentOrderController {
 	@RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
 	public void refund(HttpServletRequest request, HttpServletResponse response) throws Exception {
 //		MiniProgramConfig config = new MiniProgramConfig();
-		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("getServletContext"));
+		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
 		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
 		String line = null;
 		StringBuilder sb = new StringBuilder();

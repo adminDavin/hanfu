@@ -17,8 +17,8 @@ import java.util.Map;
 public class KdniaoTrackQueryAPI {
 
 
-    private String EBusinessID = "1608906";
-    private String AppKey = "c767ea43-cbc0-4e7b-85b4-82a40c8510eb";
+    private String EBusinessID = "1661820";
+    private String AppKey = "00fdd701-2bdf-460c-88ff-c5f42b32892f";
     private String ReqURL = "http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
 
     public String getOrderTracesByJson(String expCode, String expNo) throws Exception {

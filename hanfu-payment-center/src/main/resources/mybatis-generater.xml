@@ -140,8 +140,8 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="pay_boss"
-               domainObjectName="PayBoss">
+        <table schema="user_center" tableName="hf_stone"
+               domainObjectName="HfStone">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

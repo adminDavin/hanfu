@@ -327,9 +327,6 @@ public class HfAuthController {
 				roles1.forEach(roles2 -> {
 					roleL.add(roles2.getId());
 				});
-			}else {
-				response.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
-				return builder.body(ResponseUtils.getResponseBody("无权限"));
 			}
 			System.out.println("RoleL2"+roleL);
 			RoleModelExample roleModelExample = new RoleModelExample();

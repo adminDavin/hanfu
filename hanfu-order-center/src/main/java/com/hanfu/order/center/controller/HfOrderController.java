@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +83,8 @@ public class HfOrderController {
     private String ORDER_URL;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-
+    @Resource
+    HttpServletRequest requests;
     @Autowired
     private HfOrderMapper hfOrderMapper;
 
@@ -197,7 +201,7 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> queryOrder(String orderStatus, Integer userId, String orderType,String orderCode,String productName,
                                                  String paymentName,String today,String yesterday,String sevenDays,String month,
-                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request) throws JSONException {
+                                                 @RequestParam(value = "stateTime",required = false) Date stateTime,@RequestParam(value = "endTime",required = false) Date endTime,HttpServletRequest request,Integer stoneId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //        if (pageNum == null) {
 //            pageNum = 0;
@@ -211,7 +215,6 @@ public class HfOrderController {
             params.put("stateTime",stateTime);
             params.put("endTime",endTime);
         }
-        Integer stoneId = null;
         Integer bossId = null;
         System.out.println("我是session:"+request.getSession().getAttribute("getServletContextType"));
         System.out.println("我是request:"+request.getAttribute("getServletContextType"));
@@ -394,18 +397,13 @@ public class HfOrderController {
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
-                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("transport").andHfStatusNotEqualTo("complete").andHfStatusNotEqualTo("evaluate");
-                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
-                if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
-                    hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
                     HfOrderExample hfOrderExample = new HfOrderExample();
                     hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                     hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
-                }
-                return builder.body(ResponseUtils.getResponseBody("0"));
+
+                return builder.body(ResponseUtils.getResponseBody("0运送中"));
             }
         }
         //-----cancel
@@ -438,7 +436,17 @@ public class HfOrderController {
                 payment.setOutTradeNo(orderCode);
                 payment.setUserId(hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
 //            Map map = (Map) payment;
-                restTemplate.getForEntity(REST_URL_PREFIX + "/hf-payment/refund/?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", payment.class, payOrderId, hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
+                HttpHeaders headers = new HttpHeaders();
+                String token = (String) requests.getServletContext().getAttribute("token");
+                System.out.println("woshishishi"+token);
+                headers.add("token",token);
+//                MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+//
+//                map.add("payOrderId", payOrderId);
+//                map.add("userId", hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId());
+//                map.add("orderCode", orderCode);
+                HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
+                restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", HttpMethod.GET,requestEntity,payment.class,payOrderId,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -979,48 +987,48 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
     });
     //
-    HfOrderExample hfOrderExample2 = new HfOrderExample();
-    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
-    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
-    HfOrders2.forEach(hfOrder -> {
-        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
-        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
-        if (hfOrderDetailList.size()!=0){
-            //
-            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
-            paramMap.add("orderId",hfOrder.getId());
-            paramMap.add("stoneId",hfOrder.getStoneId());
-            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
-            JSONObject data=entity.getJSONObject("data");
-            if ((Integer)JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state")==3){
-            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
-            //hfOrder.getId()
-            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
-            ZoneId zoneId = ZoneId.systemDefault();
-            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
-            Date date = Date.from(zdt.toInstant());
-            Date date1 = new Date();
-            Date date2 = new Date();
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                date1 = f.parse(f.format(new Date())); //这是获取当前时间
-                System.out.println("当前时间"+date1);
-                date2 = f.parse(f.format(date));
-                System.out.println(date2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if ((date1.getTime()-date2.getTime())>259200000){//3t
-                try {
-                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            }
-        }
-    });
+//    HfOrderExample hfOrderExample2 = new HfOrderExample();
+//    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
+//    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
+//    HfOrders2.forEach(hfOrder -> {
+//        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+//        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
+//        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+//        if (hfOrderDetailList.size()!=0){
+//            //
+//            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+//            paramMap.add("orderId",hfOrder.getId());
+//            paramMap.add("stoneId",hfOrder.getStoneId());
+//            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
+//            JSONObject data=entity.getJSONObject("data");
+//            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
+//            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
+//            //hfOrder.getId()
+//            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
+//            Date date = Date.from(zdt.toInstant());
+//            Date date1 = new Date();
+//            Date date2 = new Date();
+//            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+//                System.out.println("当前时间"+date1);
+//                date2 = f.parse(f.format(date));
+//                System.out.println(date2);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            if ((date1.getTime()-date2.getTime())>259200000){//3t
+//                try {
+//                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            }
+//        }
+//    });
 
     }
     public static void main(String[] args) {

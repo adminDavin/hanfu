@@ -2,11 +2,9 @@ package com.hanfu.payment.center.config;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hanfu.payment.center.dao.AccountMapper;
+import com.hanfu.payment.center.dao.HfStoneMapper;
 import com.hanfu.payment.center.dao.PayBossMapper;
-import com.hanfu.payment.center.model.Account;
-import com.hanfu.payment.center.model.AccountExample;
-import com.hanfu.payment.center.model.PayBoss;
-import com.hanfu.payment.center.model.PayBossExample;
+import com.hanfu.payment.center.model.*;
 import com.hanfu.user.center.service.impl.Permission;
 import com.hanfu.user.center.utils.Decrypt;
 import org.slf4j.Logger;
@@ -32,6 +30,8 @@ public class MyInterceptor implements HandlerInterceptor {
     private PayBossMapper payBossMapper;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
@@ -45,6 +45,8 @@ public class MyInterceptor implements HandlerInterceptor {
 //        }
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
         Object token= request.getHeader("token");
+        System.out.println("------------------");
+        System.out.println(token+"我是wdtk");
         Integer userId=1;
         Integer AccId = 1;
         if (token!=null){
@@ -79,16 +81,6 @@ public class MyInterceptor implements HandlerInterceptor {
         logger.info("request请求地址path[{}] uri[{}]", request.getServletPath(),request.getRequestURI());
 
         if (permissionService.hasPermission(request,response,handler,userId)==true) {
-            //把变量放在request请求域中，仅可以被这次请求，即同一个requerst使用
-//            request.setAttribute("getAttribute", "getAttribute");
-//            PayBossExample payBossExample = new PayBossExample();
-//            payBossExample.createCriteria().andUserIdEqualTo(970).andIsDeletedEqualTo((byte) 0);
-//            List<PayBoss> payBosss=payBossMapper.selectByExample(payBossExample);
-            //放在全局的ServletContext中，每一个web应用拥有一个ServletContext，是全局对象，具体请百度
-            //把变量放在这里面，在之后什么地方都可以访问
-//            request.getServletContext().setAttribute("getServletContext", payBosss.get(0).getBossId());
-            //把自己的变量放在头部
-//            reflectSetHeader(request, "header", "header");
             if (token!=null){
                 Decrypt decrypt = new Decrypt();
                 DecodedJWT jwt = decrypt.deToken((String) token);
@@ -101,6 +93,12 @@ public class MyInterceptor implements HandlerInterceptor {
                 }
                 request.getServletContext().setAttribute("getServletContext", accounts.get(0).getMerchantId());
                 request.getServletContext().setAttribute("getServletContextType", type);
+                if (type.equals("boss")){
+                    request.getServletContext().setAttribute("bossId", accounts.get(0).getMerchantId());
+                } else if (type.equals("stone")) {
+                    HfStone hfStone = hfStoneMapper.selectByPrimaryKey(accounts.get(0).getMerchantId());
+                    request.getServletContext().setAttribute("bossId", hfStone.getBossId());
+                }
             }
             return true;
         }
@@ -127,6 +125,7 @@ public class MyInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         request.getServletContext().removeAttribute("getServletContext");
         request.getServletContext().removeAttribute("getServletContextType");
+        request.getServletContext().removeAttribute("bossId");
         logger.info("整个请求都处理完咯，DispatcherServlet也渲染了对应的视图咯，此时我可以做一些清理的工作了");
     }
 }
