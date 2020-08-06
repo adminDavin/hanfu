@@ -398,13 +398,12 @@ public class HfOrderController {
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
                     HfOrder hfOrder = new HfOrder();
-                    hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
                     HfOrderExample hfOrderExample = new HfOrderExample();
                     hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                     hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
 
-                return builder.body(ResponseUtils.getResponseBody("0"));
+                return builder.body(ResponseUtils.getResponseBody("0运送中"));
             }
         }
         //-----cancel
