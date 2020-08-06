@@ -397,17 +397,13 @@ public class HfOrderController {
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id).andStoneIdEqualTo(stoneId);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
-                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
-                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("transport").andHfStatusNotEqualTo("complete").andHfStatusNotEqualTo("evaluate");
-                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
-                if (hfOrderDetail1.size()==0){
                     HfOrder hfOrder = new HfOrder();
                     hfOrder.setId(Id);
                     hfOrder.setOrderStatus(targetOrderStatus);
                     HfOrderExample hfOrderExample = new HfOrderExample();
                     hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                     hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
-                }
+
                 return builder.body(ResponseUtils.getResponseBody("0"));
             }
         }
