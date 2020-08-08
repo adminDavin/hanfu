@@ -385,17 +385,20 @@ public class JurisdictionController {
 		}
 		if (type != null) {
 			if("boss".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
+				result = rolesMapper.selectByExample(rolesExample);
 				return builder.body(ResponseUtils.getResponseBody(result));
 			}
 			if("stone".equals(type)) {
 				rolesExample.clear();
-				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("stone");
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
 				result = rolesMapper.selectByExample(rolesExample);
 				return builder.body(ResponseUtils.getResponseBody(result));
 			}
 			if("warehouse".equals(type)) {
 				rolesExample.clear();
-				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("warehouse");
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
 				result = rolesMapper.selectByExample(rolesExample);
 				return builder.body(ResponseUtils.getResponseBody(result));
 			}
