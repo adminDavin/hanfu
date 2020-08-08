@@ -391,11 +391,13 @@ public class JurisdictionController {
 				rolesExample.clear();
 				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("stone");
 				result = rolesMapper.selectByExample(rolesExample);
+				return builder.body(ResponseUtils.getResponseBody(result));
 			}
 			if("warehouse".equals(type)) {
 				rolesExample.clear();
 				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("warehouse");
 				result = rolesMapper.selectByExample(rolesExample);
+				return builder.body(ResponseUtils.getResponseBody(result));
 			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(results));
