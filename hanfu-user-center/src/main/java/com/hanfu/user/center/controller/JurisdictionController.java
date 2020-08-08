@@ -366,9 +366,10 @@ public class JurisdictionController {
 		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
 		List<Roles> result = null;
 		List<AccountRolesType> results = new ArrayList<AccountRolesType>();
+		List<Integer> roleId = new ArrayList<Integer>();
+		RolesExample rolesExample = new RolesExample();
 		if (!CollectionUtils.isEmpty(list)) {
-			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
-			RolesExample rolesExample = new RolesExample();
+			roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 			rolesExample.createCriteria().andIdIn(roleId);
 			result = rolesMapper.selectByExample(rolesExample);
 			if (!CollectionUtils.isEmpty(result)) {
@@ -383,7 +384,19 @@ public class JurisdictionController {
 			}
 		}
 		if (type != null) {
-			return builder.body(ResponseUtils.getResponseBody(result));
+			if("boss".equals(type)) {
+				return builder.body(ResponseUtils.getResponseBody(result));
+			}
+			if("stone".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("stone");
+				result = rolesMapper.selectByExample(rolesExample);
+			}
+			if("warehouse".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo("warehouse");
+				result = rolesMapper.selectByExample(rolesExample);
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(results));
 	}
