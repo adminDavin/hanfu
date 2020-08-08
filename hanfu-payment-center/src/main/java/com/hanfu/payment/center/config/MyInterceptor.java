@@ -56,7 +56,7 @@ public class MyInterceptor implements HandlerInterceptor {
             if (jwt.getClaim("Type").asString().equals("user")){
                 Object bossId= request.getHeader("bossId");
                 System.out.println(bossId+"我是boss");
-                request.getServletContext().setAttribute("getServletContext", bossId);
+                request.getServletContext().setAttribute("bossId", bossId);
                 return true;
             }
             //
