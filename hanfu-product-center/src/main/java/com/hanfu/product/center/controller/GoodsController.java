@@ -158,12 +158,6 @@ public class GoodsController {
 	private EvaluateUserRecordMapper evaluateUserRecordMapper;
 	
 	@Autowired
-	private HfInStorageMapper hfInStorageMapper;
-	
-	@Autowired
-	private HfStoneRespMapper hfStoneRespMapper;
-	
-	@Autowired
 	private HfIconMapper hfIconMapper;
 	
 	@Autowired
@@ -557,34 +551,6 @@ public class GoodsController {
 		if (goods == null) {
 			throw new Exception("物品不存在");
 		}
-		if(goods.getStoneId() != null) {
-			HfStoneRespExample example = new HfStoneRespExample();
-			example.createCriteria().andStoneIdEqualTo(goods.getStoneId()).andGoodIdEqualTo(goods.getId());
-			List<HfStoneResp> list = hfStoneRespMapper.selectByExample(example);
-			if(CollectionUtils.isEmpty(list)) {
-				HfStoneResp stoneResp = new HfStoneResp();
-				stoneResp.setGoodId(goods.getId());
-				stoneResp.setProductId(goods.getProductId());
-				ProductInstanceExample instanceExample = new ProductInstanceExample();
-				instanceExample.createCriteria().andStoneIdEqualTo(goods.getStoneId()).andProductIdEqualTo(goods.getProductId());
-				List<ProductInstance> instances = productInstanceMapper.selectByExample(instanceExample);
-				stoneResp.setInstanceId(instances.get(0).getId());
-				stoneResp.setStoneId(goods.getStoneId());
-				stoneResp.setQuantity(request.getQuantity());
-				stoneResp.setCreateTime(LocalDateTime.now());
-				stoneResp.setModifyTime(LocalDateTime.now());
-				stoneResp.setIsDeleted((byte) 0);
-				stoneResp.setType("1");
-				hfStoneRespMapper.insert(stoneResp);
-			}else {
-				HfStoneResp stoneResp = list.get(0);
-				stoneResp.setQuantity(request.getQuantity());
-				stoneResp.setModifyTime(LocalDateTime.now());
-				hfStoneRespMapper.updateByPrimaryKey(stoneResp);
-			}
-			
-		}
-		
 		HfRespExample example = new HfRespExample();
 		example.createCriteria().andGoogsIdEqualTo(goods.getId());
 		List<HfResp> item = hfRespMapper.selectByExample(example);
@@ -627,7 +593,7 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
 			resp.setIsDeleted((short) 0);
-//			resp.setWarehouseId(request.getWareHouseId());
+			resp.setWarehouseId(request.getWareHouseId());
 			hfRespMapper.insert(resp);
 			goods.setRespId(resp.getId());
 			goods.setModifyTime(LocalDateTime.now());

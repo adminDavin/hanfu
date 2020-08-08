@@ -3,6 +3,7 @@ package com.hanfu.product.center.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.hanfu.product.center.dao.*;
 import com.hanfu.product.center.manual.dao.HfProductDao;
@@ -102,8 +103,6 @@ public class ProductController {
 	private HfMemberDao hfMemberDao;
 	@Autowired
 	private ManualDao manualDao;
-	@Autowired
-	private HfStoneRespMapper hfStoneRespMapper;
 	@Autowired
 	private HfPriceMapper hfPriceMapper;
 
@@ -822,30 +821,12 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		if(productId.getStoneId() == null) {
 			return builder.body(ResponseUtils.getResponseBody(hfProductDao.selectProductGoods(productId)));
 		}
-//		ProductInstanceExample example = new ProductInstanceExample();
-//		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
-//		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
-//		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
-//		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
-//				.collect(Collectors.toList());
-		List<ProductGoods> result = new ArrayList<ProductGoods>();
-		HfStoneRespExample example = new HfStoneRespExample();
+		ProductInstanceExample example = new ProductInstanceExample();
 		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
-		List<HfStoneResp> list = hfStoneRespMapper.selectByExample(example);
-		for (int i = 0; i < list.size(); i++) {
-			HfStoneResp resp = list.get(i);
-			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(resp.getGoodId());
-			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(goods.getPriceId());
-			ProductGoods productGoods = new ProductGoods();
-			productGoods.setGoodsName(goods.getHfName());
-			productGoods.setGoodsDesc(goods.getGoodsDesc());
-			productGoods.setSellPrice(hfPrice.getSellPrice());
-			productGoods.setQuantity(resp.getQuantity());
-			productGoods.setCreateTime(goods.getCreateTime());
-			productGoods.setModifyTime(goods.getModifyTime());
-			productGoods.setType(resp.getType());
-			result.add(productGoods);
-		}
+		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
+		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
+		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
+				.collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
