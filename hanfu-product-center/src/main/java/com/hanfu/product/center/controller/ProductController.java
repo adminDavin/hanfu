@@ -259,6 +259,17 @@ public class ProductController {
 		}
         return builder.body(ResponseUtils.getResponseBody(result));
     }
+	
+	@ApiOperation(value = "简单获取所有类目app", notes = "简单获取所有类目app")
+	@RequestMapping(value = "/getCategoryAll", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> getCategoryAll(Integer bossId) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		HfCategoryExample example = new HfCategoryExample();
+		example.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo((short) 0);
+		List<HfCategory> list = hfCategoryMapper.selectByExample(example);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
+	
 	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_INSERT)
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)

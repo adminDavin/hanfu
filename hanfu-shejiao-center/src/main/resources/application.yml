@@ -37,6 +37,21 @@ spring:
       pool:
         max-active: 1000
         max-idle: 4
+        
+#微信支付配置
+tenpayconfig:
+  #商户APPID
+  appId: wx2641aaa105c07dd4
+  #商户号
+  mchId: 1574620741
+  #商户的key(API密匙)
+  key: tjsichuang0827abcdef199509abcdef
+  #API支付请求地址
+  payUrl: https://api.mch.weixin.qq.com/pay/unifiedorder
+  #API查询请求地址
+  queryUrl: https://api.mch.weixin.qq.com/pay/orderquery
+  #package
+  packageValue: Sign=WXPay
 
 #
 #info:
