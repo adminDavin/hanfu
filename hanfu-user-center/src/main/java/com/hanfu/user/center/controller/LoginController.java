@@ -105,9 +105,9 @@ public class LoginController extends HfUserController {
         return builder.body(ResponseUtils.getResponseBody(map));
     }
     
-    @RequestMapping(path = "/wechart", method = RequestMethod.GET)
+    @RequestMapping(path = "/loginPhone", method = RequestMethod.GET)
     @ApiOperation(value = "手机号验证码登录", notes = "手机号验证码登录")
-    public ResponseEntity<JSONObject> wxLogin(String authKey, String passwd, Integer bossId, HttpServletResponse response) throws Exception {
+    public ResponseEntity<JSONObject> loginPhone(String authKey, String passwd, Integer bossId, HttpServletResponse response) throws Exception {
     	Integer userId = null;
     	Map<String, Object> map = new HashMap<String, Object>();
     	Jedis jedis = jedisPool.getResource();
