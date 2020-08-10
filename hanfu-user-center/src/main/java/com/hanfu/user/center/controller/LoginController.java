@@ -1,5 +1,6 @@
 package com.hanfu.user.center.controller;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,8 @@ import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 @RestController
 @Api
@@ -44,7 +47,10 @@ import io.swagger.annotations.ApiOperation;
 public class LoginController extends HfUserController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
+    @Autowired
+	JedisPool jedisPool;
+    
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -96,6 +102,64 @@ public class LoginController extends HfUserController {
         map.put("user", hfUser);
         map.put("token", token);
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        return builder.body(ResponseUtils.getResponseBody(map));
+    }
+    
+    @RequestMapping(path = "/wechart", method = RequestMethod.GET)
+    @ApiOperation(value = "手机号验证码登录", notes = "手机号验证码登录")
+    public ResponseEntity<JSONObject> wxLogin(String authKey, String passwd, Integer bossId, HttpServletResponse response) throws Exception {
+    	Integer userId = null;
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	Jedis jedis = jedisPool.getResource();
+		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		if (passwd == null) {
+			return builder.body(ResponseUtils.getResponseBody("还未填写验证码"));
+		}
+		if (!String.valueOf(passwd).equals(jedis.get(authKey))) {
+			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+		}
+		if(jedis != null) {
+			jedis.close();
+		}
+		HfUser user = new HfUser();
+		HfAuthExample example = new HfAuthExample();
+		example.createCriteria().andAuthKeyEqualTo(authKey);
+		List<HfAuth> list = hfAuthMapper.selectByExample(example);
+		if (list.isEmpty()) {
+//			user.setSourceType(authType);
+			user.setPhone(authKey);
+			user.setUserStatus("0".getBytes()[0]);
+			user.setLastAuthTime(LocalDateTime.now());
+			user.setCreateDate(LocalDateTime.now());
+			user.setModifyDate(LocalDateTime.now());
+			user.setIdDeleted((byte) 0);
+			user.setOwnInvitationCode(create());
+			hfUserMapper.insert(user);
+			HfAuth auth = new HfAuth();
+			auth.setAuthKey(authKey);
+//			auth.setAuthType(authType);
+			auth.setUserId(user.getId());
+			auth.setAuthStatus((byte) 0);
+			auth.setIdDeleted((byte) 0);
+			auth.setEncodeType("0");
+			auth.setCreateDate(LocalDateTime.now());
+			auth.setModifyDate(LocalDateTime.now());
+			auth.setIdDeleted((byte) 0);
+			hfAuthMapper.insert(auth);
+			userId = user.getId();
+		} else {
+			userId = list.get(0).getUserId();
+			user = hfUserMapper.selectByPrimaryKey(userId);
+		}
+        Encrypt encrypt = new Encrypt();
+        String token = encrypt.getToken(true, userId, "user",bossId);
+        System.out.println(token);
+        response.addHeader("token", token);
+
+//        map.put("skey", skey);
+        map.put("userId", userId);
+        map.put("user", user);
+        map.put("token", token);
         return builder.body(ResponseUtils.getResponseBody(map));
     }
     
