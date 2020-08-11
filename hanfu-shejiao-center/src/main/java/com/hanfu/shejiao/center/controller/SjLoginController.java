@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.sl.usermodel.ObjectMetaData.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,6 +181,7 @@ public class SjLoginController {
 	public ResponseEntity<JSONObject> cscs(String payType, String outTradeNo, BigDecimal totalAmount) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Map<String, String> map = payRequest(payType,outTradeNo,totalAmount);
+//		final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 	

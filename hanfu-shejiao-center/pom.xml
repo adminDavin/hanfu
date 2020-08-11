@@ -257,11 +257,17 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.7</version>
 		</dependency>
-		
+
 		<dependency>
-    		<groupId>com.thoughtworks.xstream</groupId>
-    		<artifactId>xstream</artifactId>
-    		<version>1.4.7</version>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>wx-java</artifactId>
+			<version>3.8.8.B</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 </project>
