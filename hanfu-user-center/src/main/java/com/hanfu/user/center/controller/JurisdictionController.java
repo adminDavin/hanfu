@@ -547,29 +547,28 @@ public class JurisdictionController {
 			}
 		}
 		List<HfModule> list = hfModuleMapper.selectByExample(example3);
-		return builder.body(ResponseUtils.getResponseBody(list));
-//		RoleJurisdictionExample example4 = new RoleJurisdictionExample();
-//		example4.createCriteria().andRoleIdIn(roleId);
-//		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example4);
-//		List<Integer> jurisdictionId = jurisdictions.size() == 0 ? Lists.newArrayList(a)
-//				: jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
-//		JurisdictionExample example5 = new JurisdictionExample();
-//		List<Jurisdiction> list2 = new ArrayList<Jurisdiction>();
-//		Integer index = 0;
-//		for (int i = 0; i < list.size(); i++) {
-//			index++;
-//			Map<Object, Object> map = new HashMap<Object, Object>();
-//			map.clear();
-//			HfModule hfModule = list.get(i);
-//			example5.clear();
-//			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
-//			list2 = jurisdictionMapper.selectByExample(example5);
-//			map.put("jurisdictionName", hfModule.getHfModel());
-//			map.put("id", hfModule.getId());
-//			map.put("list", list2);
-//			result.add(map);
-//		}
-//		return builder.body(ResponseUtils.getResponseBody(result));
+		RoleJurisdictionExample example4 = new RoleJurisdictionExample();
+		example4.createCriteria().andRoleIdIn(roleId);
+		List<RoleJurisdiction> jurisdictions = roleJurisdictionMapper.selectByExample(example4);
+		List<Integer> jurisdictionId = jurisdictions.size() == 0 ? Lists.newArrayList(a)
+				: jurisdictions.stream().map(RoleJurisdiction::getJurisdictionId).collect(Collectors.toList());
+		JurisdictionExample example5 = new JurisdictionExample();
+		List<Jurisdiction> list2 = new ArrayList<Jurisdiction>();
+		Integer index = 0;
+		for (int i = 0; i < list.size(); i++) {
+			index++;
+			Map<Object, Object> map = new HashMap<Object, Object>();
+			map.clear();
+			HfModule hfModule = list.get(i);
+			example5.clear();
+			example5.createCriteria().andModelIdEqualTo(hfModule.getId()).andIdIn(jurisdictionId);
+			list2 = jurisdictionMapper.selectByExample(example5);
+			map.put("jurisdictionName", hfModule.getHfModel());
+			map.put("id", hfModule.getId());
+			map.put("list", list2);
+			result.add(map);
+		}
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "查询当前账号拥有的模块", notes = "查询当前用户拥有的模块")
