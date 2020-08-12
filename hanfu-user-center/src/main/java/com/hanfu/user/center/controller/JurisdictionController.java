@@ -366,9 +366,10 @@ public class JurisdictionController {
 		List<AccountRoles> list = accountRolesMapper.selectByExample(example);
 		List<Roles> result = null;
 		List<AccountRolesType> results = new ArrayList<AccountRolesType>();
+		List<Integer> roleId = new ArrayList<Integer>();
+		RolesExample rolesExample = new RolesExample();
 		if (!CollectionUtils.isEmpty(list)) {
-			List<Integer> roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
-			RolesExample rolesExample = new RolesExample();
+			roleId = list.stream().map(AccountRoles::getRolesId).collect(Collectors.toList());
 			rolesExample.createCriteria().andIdIn(roleId);
 			result = rolesMapper.selectByExample(rolesExample);
 			if (!CollectionUtils.isEmpty(result)) {
@@ -383,7 +384,24 @@ public class JurisdictionController {
 			}
 		}
 		if (type != null) {
-			return builder.body(ResponseUtils.getResponseBody(result));
+			if("boss".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
+				result = rolesMapper.selectByExample(rolesExample);
+				return builder.body(ResponseUtils.getResponseBody(result));
+			}
+			if("stone".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
+				result = rolesMapper.selectByExample(rolesExample);
+				return builder.body(ResponseUtils.getResponseBody(result));
+			}
+			if("warehouse".equals(type)) {
+				rolesExample.clear();
+				rolesExample.createCriteria().andIdIn(roleId).andRoleTypeEqualTo(type);
+				result = rolesMapper.selectByExample(rolesExample);
+				return builder.body(ResponseUtils.getResponseBody(result));
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(results));
 	}
@@ -502,7 +520,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "查询当前账号拥有的模块和权限", notes = "查询当前用户拥有的模块")
 	@RequestMapping(value = "/findAdminHasModelAndJus", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id) throws JSONException {
+	public ResponseEntity<JSONObject> findAdminHasModelAndJus(Integer id,String roleType) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<Map> result = new ArrayList<Map>();
 		Integer[] a = { 0 };
@@ -517,6 +535,17 @@ public class JurisdictionController {
 				: models.stream().map(RoleModel::getModelId).collect(Collectors.toList());
 		HfModuleExample example3 = new HfModuleExample();
 		example3.createCriteria().andIdIn(modelId);
+		if(roleType != null) {
+			if("stone".equals(roleType)) {
+				example3.clear();
+				example3.createCriteria().andModelCodeNotEqualTo("warehouse").andIdIn(modelId);
+				System.out.println("stonestonestonestonestone");
+			}
+			if("warehouse".equals(roleType)) {
+				example3.clear();
+				example3.createCriteria().andModelCodeNotEqualTo("stone").andIdIn(modelId);
+			}
+		}
 		List<HfModule> list = hfModuleMapper.selectByExample(example3);
 		RoleJurisdictionExample example4 = new RoleJurisdictionExample();
 		example4.createCriteria().andRoleIdIn(roleId);

@@ -80,7 +80,7 @@
 		<foreach collection="list" item="categoryId" index="index" open="(" close=")" separator=",">
 			#{categoryId}
 		</foreach>
-		and r.is_deleted = 0
+		and p.is_deleted = 0
 		ORDER BY RAND()
 	</select>
 	<select id="selectProductByProductId" resultMap="ProductDispaly">
