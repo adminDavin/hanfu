@@ -24,20 +24,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.hanfu.inner.model.product.center.Product;
-import com.hanfu.inner.sdk.product.center.ProductService;
+//import com.hanfu.inner.sdk.product.center.ProductService;
 import com.hanfu.order.center.manual.model.OrderInfo;
 
 @Component
 public class MyPrint implements Printable {
-    @Autowired
-    private ProductService productService;
+//    @Autowired
+//    private ProductService productService;
     private static MyPrint myPrint;
 
     @PostConstruct
     //通过@PostConstruct实现初始化bean之前进行的操作
     public void init() {
         myPrint = this;
-        myPrint.productService = this.productService;
+//        myPrint.productService = this.productService;
     }
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

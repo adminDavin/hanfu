@@ -6,7 +6,7 @@
         <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
         <result column="amount" jdbcType="INTEGER" property="amount"/>
         <result column="hf_remark" jdbcType="VARCHAR" property="hfRemark"/>
-        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="order_status" jdbcType="VARCHAR" property="orderStatus"/>
         <result column="order_type" jdbcType="VARCHAR" property="orderType"/>
         <result column="pay_status" jdbcType="INTEGER" property="payStatus"/>
@@ -63,7 +63,7 @@
     </select>
 
     <select id="selectHfOrder" resultMap="BaseResultMap">
-        select o.id, o.order_code, o.amount, o.hf_remark, o.modify_time, o.order_status, o.order_type, o.pay_status,
+        select o.id, o.order_code, o.amount, o.hf_remark, o.create_time, o.order_status, o.order_type, o.pay_status,
         o.stone_id, o.distributor_id, o.payment_name, o.stone_id, o.payment_type, o.user_id,
         u.nick_name,u.phone,
         a.origin_address_id address_id, a.address, a.detail address_detail, a.contact, a.phone, a.hf_desc address_desc,o.pay_order_id

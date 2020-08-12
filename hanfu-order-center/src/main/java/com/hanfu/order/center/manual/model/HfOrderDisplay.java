@@ -14,7 +14,7 @@ public class HfOrderDisplay {
     private Integer amount;
     private String hfRemark;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime modifyTime;
+    private LocalDateTime createTime;
     private String orderStatus;
     private String orderType;
     private Integer payStatus;
