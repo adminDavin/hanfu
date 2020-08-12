@@ -185,6 +185,12 @@ public class SjLoginController {
 		return builder.body(ResponseUtils.getResponseBody(map));
 	}
 	
+	@RequestMapping(path = "/aaaa", method = RequestMethod.GET)
+	@ApiOperation(value = "aaaa", notes = "aaaa")
+	public void aaaa(String res) throws Exception {
+		System.out.println("resresres"+res);
+	}
+	
 	
 	 /** 
      * @Description: 支付请求
