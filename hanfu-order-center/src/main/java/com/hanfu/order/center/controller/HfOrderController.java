@@ -354,8 +354,9 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId,Integer payOrderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        String sta = "cancel";
+        String sta = "";
         if (targetOrderStatus.equals("controversial")){
+            sta = targetOrderStatus;
             redisTemplate.opsForValue().set(orderCode+"controversial", originOrderStatus);
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
             hfOrderDetail.setHfStatus(targetOrderStatus);
@@ -371,6 +372,7 @@ public class HfOrderController {
         }
         //----
         if (targetOrderStatus.equals("process")){
+            sta = targetOrderStatus;
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
             hfOrderDetail.setHfStatus(targetOrderStatus);
             HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -385,6 +387,7 @@ public class HfOrderController {
         }
 //---//修改成  ||targetOrderStatus.equals("cancel")
         if (targetOrderStatus.equals("transport")){
+            sta = targetOrderStatus;
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
             List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
@@ -393,6 +396,7 @@ public class HfOrderController {
                     return builder.body(ResponseUtils.getResponseBody("In spelling"));
                 }
             } else if (targetOrderStatus.equals("transport")){
+
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -409,6 +413,7 @@ public class HfOrderController {
         }
         //-----cancel
         if (targetOrderStatus.equals("cancel")){
+            sta = targetOrderStatus;
             HfActivityCountExample hfActivityCountExample = new HfActivityCountExample();
             hfActivityCountExample.createCriteria().andOrderIdEqualTo(Id).andIsDeletedEqualTo((byte) 0);
             List<HfActivityCount> hfActivityCountList= hfActivityCountMapper.selectByExample(hfActivityCountExample);
@@ -419,6 +424,7 @@ public class HfOrderController {
                 }
             }
             if (originOrderStatus.equals("process")||originOrderStatus.equals("complete")||originOrderStatus.equals("transport")||originOrderStatus.equals("controversial")) {
+                sta = targetOrderStatus;
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -449,6 +455,7 @@ public class HfOrderController {
                 HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
                 restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", HttpMethod.GET,requestEntity,payment.class,payOrderId,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
+                sta = targetOrderStatus;
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -464,6 +471,7 @@ public class HfOrderController {
             }
             //----evaluate
             if (targetOrderStatus.equals("evaluate")){
+                sta = targetOrderStatus;
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -486,6 +494,7 @@ public class HfOrderController {
             }
             //--complete
             if (targetOrderStatus.equals("complete")){
+                sta = targetOrderStatus;
                 HfOrderDetail hfOrderDetail3 = new HfOrderDetail();
                 hfOrderDetail3.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample3 = new HfOrderDetailExample();
