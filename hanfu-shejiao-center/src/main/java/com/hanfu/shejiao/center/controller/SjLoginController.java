@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -200,8 +201,7 @@ public class SjLoginController {
      * @Date: 2019/7/28 
      */
     public Map<String, String> payRequest(String payType, String outTradeNo, BigDecimal totalAmount) throws Exception {
-        Map<String, String> map = new HashMap<String, String>();
-        
+        Map<String, String> map = new LinkedHashMap<String, String>();
         switch (PayTypeEnum.valueOf(payType)) {
             case TENPAY://财付通
                 SortedMap<String, Object> paramsMap = new TreeMap<String, Object>();
