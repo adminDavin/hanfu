@@ -182,7 +182,9 @@ public class SjLoginController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		String payType = "TENPAY";
 		String outTradeNo = UUID.randomUUID().toString().replaceAll("-", "");
-		BigDecimal decimal = new BigDecimal(0.01);
+		BigDecimal decimal = new BigDecimal("0.01");
+		System.out.println(outTradeNo);
+		System.out.println(decimal);
 		Map<String, String> map = payRequest(payType,outTradeNo,decimal);
 //		final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
 		return builder.body(ResponseUtils.getResponseBody(map));
