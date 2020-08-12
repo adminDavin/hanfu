@@ -84,17 +84,14 @@ public class HfOrderDisplay {
     public void setHfRemark(String hfRemark) {
         this.hfRemark = hfRemark;
     }
-    public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
+
     public Integer getFileId() {
         return fileId;
     }
     public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
+
     }
     public String getOrderStatus() {
         return orderStatus;
@@ -285,6 +282,14 @@ public class HfOrderDisplay {
 
     public void setPayOrderId(Integer payOrderId) {
         this.payOrderId = payOrderId;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 }
 
