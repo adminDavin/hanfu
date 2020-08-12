@@ -354,6 +354,7 @@ public class HfOrderController {
                     type = "Integer")})
     public ResponseEntity<JSONObject> updateStatus(Integer Id,String orderCode,String originOrderStatus,String targetOrderStatus,Integer stoneId,Integer payOrderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        String sta = "cancel";
         if (targetOrderStatus.equals("controversial")){
             redisTemplate.opsForValue().set(orderCode+"controversial", originOrderStatus);
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
@@ -526,6 +527,7 @@ public class HfOrderController {
             }
         if (targetOrderStatus.equals("reject")){
             targetOrderStatus= (String) redisTemplate.opsForValue().get(orderCode+"controversial");
+            sta = targetOrderStatus;
             HfOrderDetail hfOrderDetail = new HfOrderDetail();
             hfOrderDetail.setHfStatus(targetOrderStatus);
             HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -541,7 +543,7 @@ public class HfOrderController {
 
 
 
-        return builder.body(ResponseUtils.getResponseBody("0"));
+        return builder.body(ResponseUtils.getResponseBody(sta));
     }
     @Transactional(rollbackFor=Exception.class)
     @ApiOperation(value = "创建订单", notes = "创建订单")
