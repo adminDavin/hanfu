@@ -178,13 +178,8 @@ public class SjLoginController {
 	
 	@RequestMapping(path = "/cscs", method = RequestMethod.GET)
 	@ApiOperation(value = "cscs", notes = "cscs")
-	public ResponseEntity<JSONObject> cscs() throws Exception {
+	public ResponseEntity<JSONObject> cscs(String payType, String outTradeNo, BigDecimal decimal) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		String payType = "TENPAY";
-		String outTradeNo = UUID.randomUUID().toString().replaceAll("-", "");
-		BigDecimal decimal = new BigDecimal("1");
-		System.out.println(outTradeNo);
-		System.out.println(decimal);
 		Map<String, String> map = payRequest(payType,outTradeNo,decimal);
 //		final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
 		return builder.body(ResponseUtils.getResponseBody(map));
