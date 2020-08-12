@@ -92,7 +92,7 @@ public class HfOrderDisplay {
         this.fileId = fileId;
     }
 
-    }
+
     public String getOrderStatus() {
         return orderStatus;
     }
