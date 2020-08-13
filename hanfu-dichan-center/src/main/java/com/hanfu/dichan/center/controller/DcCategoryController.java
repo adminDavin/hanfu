@@ -137,7 +137,11 @@ public class DcCategoryController {
 			dcFileDescMapper.insert(fileDesc);
 			category.setFileId(fileDesc.getId());
 		}
-		return builder.body(ResponseUtils.getResponseBody(dcCategoryMapper.insert(category)));
+		dcCategoryMapper.insert(category);
+		DcCategory c = dcCategoryMapper.selectByPrimaryKey(category.getId());
+		category.setOrderId(category.getId());
+		dcCategoryMapper.updateByPrimaryKey(c);
+		return builder.body(ResponseUtils.getResponseBody(1));
 	}
 
 	@ApiOperation(value = "删除类目", notes = "删除类目")
@@ -237,10 +241,12 @@ public class DcCategoryController {
 		DcCategoryExample categoryExample = new DcCategoryExample();
 		categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
 				.andIsDeletedEqualTo((short) 0);
+		categoryExample.setOrderByClause("order_id ASC");
 		if (parentCategoryId == -1) {
 			categoryExample.clear();
 			categoryExample.createCriteria().andBossIdEqualTo(bossId).andParentCategoryIdEqualTo(parentCategoryId)
 					.andIsDeletedEqualTo((short) 0).andProjectIdEqualTo(projectId);
+			categoryExample.setOrderByClause("order_id ASC");
 		}
 		List<DcCategory> list = dcCategoryMapper.selectByExample(categoryExample);
 		System.out.println(list.toString());
@@ -562,6 +568,44 @@ public class DcCategoryController {
 		map.put("list", result);
 		map.put("count", detail.getComment());
 		return builder.body(ResponseUtils.getResponseBody(map));
+	}
+	
+	@ApiOperation(value = "更换类目顺序", notes = "更换类目顺序")
+	@RequestMapping(value = "/updateOrderCatrgory", method = RequestMethod.GET)
+	public ResponseEntity<JSONObject> updateOrderCatrgory(Integer cId, Integer order) throws Exception {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		DcCategory dcCategory = dcCategoryMapper.selectByPrimaryKey(cId);
+		DcCategoryExample example = new DcCategoryExample();
+		example.createCriteria().andParentCategoryIdEqualTo(dcCategory.getParentCategoryId());
+		example.setOrderByClause("order_id ASC");
+		List<DcCategory> list = dcCategoryMapper.selectByExample(example);
+		for (int i = 0; i < list.size(); i++) {
+			DcCategory category = list.get(i);
+			if(cId == category.getId()) {
+				DcCategory c = new DcCategory();
+				if(order == 2) {
+					if(i-1>=0) {
+						c = list.get(i-1);
+						
+					}else {
+						return builder.body(ResponseUtils.getResponseBody("已经在第一个"));
+					}
+				}else {
+					if(i+1!=list.size()) {
+						c = list.get(i+1);
+					}else {
+						return builder.body(ResponseUtils.getResponseBody("已经在最后一个"));
+					}
+				}
+				Integer row = category.getOrderId();
+				category.setOrderId(c.getOrderId());
+				c.setOrderId(row);
+				dcCategoryMapper.updateByPrimaryKey(category);
+				dcCategoryMapper.updateByPrimaryKey(c);
+				return builder.body(ResponseUtils.getResponseBody("交换完成"));
+			}
+		}
+		return builder.body(ResponseUtils.getResponseBody(1));
 	}
 
 	@InitBinder

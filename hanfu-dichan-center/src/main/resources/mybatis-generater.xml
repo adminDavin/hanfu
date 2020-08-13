@@ -57,12 +57,12 @@
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table> -->
-		<table schema="user_center" tableName="dc_rich_text"
+		<!-- <table schema="user_center" tableName="dc_rich_text"
 		domainObjectName="DcRichText">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table>
+		</table> -->
 		<!--<table schema="user_center" tableName="dc_admin"
 		domainObjectName="DcAdmin">
 		<property name="useActualColumnNames" value="false"/>
@@ -87,12 +87,12 @@
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
 		</table> -->
-		<!-- <table schema="user_center" tableName="dc_category"
+		<table schema="user_center" tableName="dc_category"
 		domainObjectName="DcCategory">
 		<property name="useActualColumnNames" value="false"/>
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true"/> 
-		</table> -->
+		</table>
 		
 	</context>
 </generatorConfiguration>
