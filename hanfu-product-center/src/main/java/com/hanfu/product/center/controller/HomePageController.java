@@ -987,9 +987,12 @@ public class HomePageController {
 				concernInfo.setCreateTime(stone.getCreateTime());
 				concernInfo.setStoneDesc(stone.getHfDesc());
 				concernInfo.setConcernCount(stone.getConcernCount());
-				pictureExample.createCriteria().andStoneIdEqualTo(stone.getId());
+				pictureExample.createCriteria().andStoneIdEqualTo(stone.getId()).andTypeEqualTo("avatar");
 				pictures = hfStonePictureMapper.selectByExample(pictureExample);
-				picturesId = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
+//				picturesId = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
+				if(pictures.size() != 0) {
+					concernInfo.setAvatarId(pictures.get(0).getFileId());
+				}
 				concernInfo.setFileId(picturesId);
 				concernInfos.add(concernInfo);
 			}

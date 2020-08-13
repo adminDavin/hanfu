@@ -199,6 +199,19 @@ public class StoneController {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
 			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(0));
+			HfStonePictureExample hfStonePictureExample = new HfStonePictureExample();
+			type = StonePictureTypeEnum.getStonePictureTypeEnum(type).getStonePictureType();
+			hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andTypeEqualTo(type);
+            List<HfStonePicture> hfStonePictures= hfStonePictureMapper.selectByExample(hfStonePictureExample);
+			if (hfStonePictures.size()!=0&&!"background".equals(type)){
+			    HfStonePicture picture = hfStonePictures.get(0);
+			    FileDesc desc = fileDescMapper.selectByPrimaryKey(picture.getFileId());
+			    fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+			    desc.setGroupName(arr[0]);
+			    desc.setRemoteFilename(arr[1]);
+			    fileDescMapper.updateByPrimaryKey(desc);
+			    return builder.body(ResponseUtils.getResponseBody(stone.getId()));
+            }
 			FileDesc fileDesc = new FileDesc();
 			fileDesc.setFileName(file.getName());
 			fileDesc.setGroupName(arr[0]);
@@ -207,16 +220,6 @@ public class StoneController {
 			fileDesc.setModifyTime(LocalDateTime.now());
 			fileDesc.setIsDeleted((short) 0);
 			fileDescMapper.insert(fileDesc);
-			HfStonePictureExample hfStonePictureExample = new HfStonePictureExample();
-			hfStonePictureExample.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andTypeEqualTo("avatar");
-            List<HfStonePicture> hfStonePictures= hfStonePictureMapper.selectByExample(hfStonePictureExample);
-			if (hfStonePictures.size()!=0&&type==null){
-			    HfStonePicture hfStonePicture = new HfStonePicture();
-			    hfStonePicture.setIsDeleted((byte) 1);
-                HfStonePictureExample hfStonePictureExample1 = new HfStonePictureExample();
-                hfStonePictureExample1.createCriteria().andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((byte) 0).andTypeEqualTo("avatar");
-                hfStonePictureMapper.updateByExampleSelective(hfStonePicture,hfStonePictureExample1);
-            }
             HfStonePicture picture = new HfStonePicture();
 			picture.setStoneId(stoneId);
 			picture.setType(StonePictureTypeEnum.getStonePictureTypeEnum(type).getStonePictureType());

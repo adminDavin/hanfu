@@ -16,6 +16,7 @@ public class StoneConcernInfo implements Serializable{
 	private String name;
 	private Integer stoneId;
 	private String stoneDesc;
+	private Integer avatarId;
 	private List<Integer> fileId;
 	private Integer backgroundId;
 	private Integer concernCount;
@@ -38,6 +39,12 @@ public class StoneConcernInfo implements Serializable{
 	}
 	public void setStoneDesc(String stoneDesc) {
 		this.stoneDesc = stoneDesc;
+	}
+	public Integer getAvatarId() {
+		return avatarId;
+	}
+	public void setAvatarId(Integer avatarId) {
+		this.avatarId = avatarId;
 	}
 	public Integer getBackgroundId() {
 		return backgroundId;
