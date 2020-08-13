@@ -272,7 +272,7 @@ public class SjLoginController {
                 SortedMap<String, Object> signMap = new TreeMap<>(map);
                 String newSign = tenPayUtils.createSign(signMap, "UTF-8");
                 //签名
-                map.put("sign", newSign);
+                map.put("sign", tenPayMap.get("sign"));
                 break;
             default:
                 break;
