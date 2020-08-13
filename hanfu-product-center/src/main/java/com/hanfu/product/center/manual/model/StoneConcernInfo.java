@@ -16,8 +16,8 @@ public class StoneConcernInfo implements Serializable{
 	private String name;
 	private Integer stoneId;
 	private String stoneDesc;
-	private Integer avatarId;
-	private List<Integer> fileId;
+	private Integer fileId;
+//	private List<Integer> fileId;
 	private Integer backgroundId;
 	private Integer concernCount;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -40,11 +40,11 @@ public class StoneConcernInfo implements Serializable{
 	public void setStoneDesc(String stoneDesc) {
 		this.stoneDesc = stoneDesc;
 	}
-	public Integer getAvatarId() {
-		return avatarId;
+	public Integer getFileId() {
+		return fileId;
 	}
-	public void setAvatarId(Integer avatarId) {
-		this.avatarId = avatarId;
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
 	}
 	public Integer getBackgroundId() {
 		return backgroundId;
@@ -58,12 +58,12 @@ public class StoneConcernInfo implements Serializable{
 	public void setConcernCount(Integer concernCount) {
 		this.concernCount = concernCount;
 	}
-	public List<Integer> getFileId() {
-		return fileId;
-	}
-	public void setFileId(List<Integer> fileId) {
-		this.fileId = fileId;
-	}
+//	public List<Integer> getFileId() {
+//		return fileId;
+//	}
+//	public void setFileId(List<Integer> fileId) {
+//		this.fileId = fileId;
+//	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

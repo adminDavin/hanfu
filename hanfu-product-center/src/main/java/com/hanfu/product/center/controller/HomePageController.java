@@ -991,9 +991,9 @@ public class HomePageController {
 				pictures = hfStonePictureMapper.selectByExample(pictureExample);
 //				picturesId = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
 				if(pictures.size() != 0) {
-					concernInfo.setAvatarId(pictures.get(0).getFileId());
+					concernInfo.setFileId(pictures.get(0).getFileId());
 				}
-				concernInfo.setFileId(picturesId);
+//				concernInfo.setFileId(picturesId);
 				concernInfos.add(concernInfo);
 			}
 			info.setStoneInfo(concernInfos);
