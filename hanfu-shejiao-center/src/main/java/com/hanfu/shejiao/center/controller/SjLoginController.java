@@ -204,7 +204,7 @@ public class SjLoginController {
      * @Date: 2019/7/28 
      */
     public Map<String, String> payRequest(String payType, String outTradeNo, BigDecimal totalAmount) throws Exception {
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         switch (PayTypeEnum.valueOf(payType)) {
             case TENPAY://财付通
                 SortedMap<String, Object> paramsMap = new TreeMap<String, Object>();
