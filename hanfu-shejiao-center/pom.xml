@@ -269,5 +269,11 @@
 			<version>3.8.8.B</version>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>net.guerlab</groupId>
+			<artifactId>sdk-alipay-starter</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		
 	</dependencies>
 </project>
