@@ -179,8 +179,11 @@ public class SjLoginController {
 	
 	@RequestMapping(path = "/cscs", method = RequestMethod.GET)
 	@ApiOperation(value = "cscs", notes = "cscs")
-	public ResponseEntity<JSONObject> cscs(String payType, String outTradeNo, BigDecimal totalAmount) throws Exception {
+	public ResponseEntity<JSONObject> cscs() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		String payType = "TENPAY";
+		String outTradeNo = UUID.randomUUID().toString().replaceAll("-", "");
+		BigDecimal totalAmount = new BigDecimal("0.01");
 		Map<String, String> map = payRequest(payType,outTradeNo,totalAmount);
 //		final IWXAPI msgApi = WXAPIFactory.createWXAPI(context, null);
 		return builder.body(ResponseUtils.getResponseBody(map));
@@ -201,7 +204,7 @@ public class SjLoginController {
      * @Date: 2019/7/28 
      */
     public Map<String, String> payRequest(String payType, String outTradeNo, BigDecimal totalAmount) throws Exception {
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         switch (PayTypeEnum.valueOf(payType)) {
             case TENPAY://财付通
                 SortedMap<String, Object> paramsMap = new TreeMap<String, Object>();
@@ -272,7 +275,7 @@ public class SjLoginController {
                 SortedMap<String, Object> signMap = new TreeMap<>(map);
                 String newSign = tenPayUtils.createSign(signMap, "UTF-8");
                 //签名
-                map.put("sign", tenPayMap.get("sign"));
+                map.put("sign", newSign);
                 break;
             default:
                 break;
