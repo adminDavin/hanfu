@@ -399,12 +399,12 @@ public class KingWordsController {
 	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
 	public ResponseEntity<JSONObject> cs() throws Exception {
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add("username", "赵云辉");
+		map.add("username", "孙旺达");
 		map.add("orderId", "e28c4a93fb7b4084");
 		map.add("total", "500");
-		map.add("userId", "974");
+		map.add("userId", "1065");
 		map.add("type", "orderCreate");
-		restTemplate.postForObject("http://localhost:8082/user/code", map, JSONObject.class);
+		restTemplate.postForObject("http://localhost:8082/user/Message", map, JSONObject.class);
 		return null;
 	}
 	
