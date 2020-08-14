@@ -30,7 +30,9 @@ public class AlipayController {
      */
    @PostMapping("/apppay")
    @ApiOperation(value = "apppay", notes = "apppay")
-   public Map pay( @RequestParam(value = "total_fee") String total_fee,@RequestParam(value = "oid") String oid) throws Exception {
+   public Map pay() throws Exception {
+	   	String total_fee = "0.01";
+	   	String oid = "1";
         return aLiservice.pay(total_fee,oid);
    }
  
