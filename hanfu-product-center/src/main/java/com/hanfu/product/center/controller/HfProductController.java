@@ -548,6 +548,7 @@ public class HfProductController {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
 		}
+		products = products.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
 		products = sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
@@ -863,7 +864,7 @@ public class HfProductController {
 	public List<HfProductDisplay> sort(Integer sort, List<HfProductDisplay> list, Integer priceDown,Integer priceUp
 			,List<Integer> categoryId){
 		if (sort != null) {
-			list = list.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
+			
 			if (sort == 1) {
 				for (int i = 0; i < list.size(); i++) {
 					Integer saleCount = 0;
