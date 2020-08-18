@@ -748,7 +748,8 @@ public class ProductController {
 			item.setCreateTime(LocalDateTime.now());
 			item.setModifyTime(LocalDateTime.now());
 			item.setIsDeleted((short) 0);
-		return builder.body(ResponseUtils.getResponseBody(productSpecMapper.insert(item)));
+			productSpecMapper.insert(item);
+		return builder.body(ResponseUtils.getResponseBody(item.getId()));
 	}
 
 	@ApiOperation(value = "删除商品规格", notes = "根据规格id删除商品的规格描述")
