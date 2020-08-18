@@ -280,6 +280,8 @@ public class ProductController {
 				request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
 			} else if (requests.getServletContext().getAttribute("getServletContextType").equals("stone")){
 				request.setStoneId((Integer) requests.getServletContext().getAttribute("getServletContext"));
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey((Integer) requests.getServletContext().getAttribute("getServletContext"));
+				request.setBossId(hfStone.getBossId());
 			}
 		}
 		Product product = new Product();
