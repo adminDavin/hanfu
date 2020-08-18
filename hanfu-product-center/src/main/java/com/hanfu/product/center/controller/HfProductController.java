@@ -406,7 +406,7 @@ public class HfProductController {
 		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea()))
 				.collect(Collectors.toList());
 
-		sort(sort, products, priceDown, priceUp, categoryId);
+		products = sort(sort, products, priceDown, priceUp, categoryId);
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
@@ -445,6 +445,7 @@ public class HfProductController {
 			PageHelper.startPage(pageNum, pageSize);
 			products = hfProductDao.selectProductByCategoryId(levelCategoryId);
 		}
+		products = products.stream().filter(p -> p.getInstanceId() != null).collect(Collectors.toList());
 		if(!CollectionUtils.isEmpty(products)) {
 		Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
 		System.out.println(stoneIds+"stoneIds");
@@ -490,7 +491,7 @@ public class HfProductController {
 		products = products.stream().filter(p -> p.getStoneId() != null && !StringUtils.isEmpty(p.getPriceArea()))
 				.collect(Collectors.toList());
 
-		sort(sort, products, priceDown, priceUp, categoryId);
+		products = sort(sort, products, priceDown, priceUp, categoryId);
 		}
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
@@ -547,7 +548,7 @@ public class HfProductController {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
 		}
-		sort(sort, products, priceDown, priceUp, categoryId);
+		products = sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
 	}
@@ -865,16 +866,21 @@ public class HfProductController {
 			if (sort == 1) {
 				for (int i = 0; i < list.size(); i++) {
 					Integer saleCount = 0;
+					System.out.println("list.get(i).getId()"+list.get(i).getId());
 					HfGoodsExample goodsExample = new HfGoodsExample();
 					goodsExample.createCriteria().andProductIdEqualTo(list.get(i).getId());
 					List<HfGoods> hfGoods = hfGoodsMapper.selectByExample(goodsExample);
-					List<Integer> goodsId = hfGoods.stream().map(HfGoods::getId).collect(Collectors.toList());
-					List<HomePageInfo> pageInfos = hfProductDao.selectProductCount(goodsId);
-					for (int j = 0; j < pageInfos.size(); j++) {
-						saleCount += pageInfos.get(j).getSalesCount();
+					if(!hfGoods.isEmpty()) {
+						List<Integer> goodsId = hfGoods.stream().map(HfGoods::getId).collect(Collectors.toList());
+						System.out.println("goodsId"+goodsId);
+						List<HomePageInfo> pageInfos = hfProductDao.selectProductCount(goodsId);
+						for (int j = 0; j < pageInfos.size(); j++) {
+							saleCount += pageInfos.get(j).getSalesCount();
+						}
+						list.get(i).setSaleCount(saleCount);
 					}
-					list.get(i).setSaleCount(saleCount);
 				}
+				list = list.stream().filter(l -> l.getSaleCount() != null && l.getDefaultGoodsId() != null).collect(Collectors.toList());
 				list.sort(new Comparator<HfProductDisplay>() {
 					@Override
 					public int compare(HfProductDisplay o1, HfProductDisplay o2) {
