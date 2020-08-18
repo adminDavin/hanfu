@@ -273,12 +273,12 @@
 		<!-- <table schema="user_center" tableName="pay_order" domainObjectName="PayOrder"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
-		<table schema="user_center" tableName="hf_user_member"
+		<!-- <table schema="user_center" tableName="hf_user_member"
 			domainObjectName="HfUserMember">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
-		</table>
+		</table> -->
 		<!-- <table schema="user_center" tableName="evaluate_picture" domainObjectName="EvaluatePicture"> 
 			<property name="useActualColumnNames" value="false"/> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true"/> </table> -->
@@ -345,8 +345,8 @@
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="hf_evaluate_collect"
-			domainObjectName="HfEvaluateCollect">
+		<table schema="user_center" tableName="hf_evaluate"
+			domainObjectName="HfEvaluate">
 			<property name="useActualColumnNames" value="false" />
 			<generatedKey column="id" sqlStatement="mysql"
 				identity="true" />
