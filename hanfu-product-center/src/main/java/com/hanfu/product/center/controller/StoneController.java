@@ -78,6 +78,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/stone")
 @Api
+@CrossOrigin
 public class StoneController {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 

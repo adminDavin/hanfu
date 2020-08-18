@@ -43,6 +43,7 @@ import com.hanfu.dichan.center.dao.DcEvaluateMapper;
 import com.hanfu.dichan.center.dao.DcFileDescMapper;
 import com.hanfu.dichan.center.dao.DcGeneralFileMapper;
 import com.hanfu.dichan.center.dao.DcPraiseRecordMapper;
+import com.hanfu.dichan.center.dao.DcRichTextMapper;
 import com.hanfu.dichan.center.dao.DcUserMapper;
 import com.hanfu.dichan.center.manual.dao.ManualDao;
 import com.hanfu.dichan.center.manual.model.Catrgory;
@@ -59,6 +60,8 @@ import com.hanfu.dichan.center.model.DcGeneralFile;
 import com.hanfu.dichan.center.model.DcGeneralFileExample;
 import com.hanfu.dichan.center.model.DcPraiseRecord;
 import com.hanfu.dichan.center.model.DcPraiseRecordExample;
+import com.hanfu.dichan.center.model.DcRichText;
+import com.hanfu.dichan.center.model.DcRichTextExample;
 import com.hanfu.dichan.center.model.DcUser;
 import com.hanfu.dichan.center.request.CategoryRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
@@ -105,6 +108,9 @@ public class DcCategoryController {
 
 	@Autowired
 	private DcUserMapper dcUserMapper;
+	
+	@Autowired
+	private DcRichTextMapper dcRichTextMapper;
 
 	@ApiOperation(value = "添加类目", notes = "添加类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -264,8 +270,12 @@ public class DcCategoryController {
 					.andIsDeletedEqualTo((short) 0);
 			List<DcCategory> dcCategories = dcCategoryMapper.selectByExample(categoryExample);
 			if (CollectionUtils.isEmpty(dcCategories)) {
+				Integer row = null;
 				catrgory.setHasChildren(false);
-				if (dcCategory.getCategoryDetailId() == null) {
+				DcRichTextExample example = new DcRichTextExample();
+				example.createCriteria().andProjectIdEqualTo(dcCategory.getId()).andTextTypeEqualTo("category");
+				List<DcRichText> texts = dcRichTextMapper.selectByExample(example);
+				if ((row=texts.size()) == 0 || StringUtils.isEmpty(texts.get(row-1).getRichText())) {
 					catrgory.setType(3);
 				} else {
 					catrgory.setType(4);
