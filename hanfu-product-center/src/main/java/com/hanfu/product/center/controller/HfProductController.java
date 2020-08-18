@@ -863,6 +863,7 @@ public class HfProductController {
 	public List<HfProductDisplay> sort(Integer sort, List<HfProductDisplay> list, Integer priceDown,Integer priceUp
 			,List<Integer> categoryId){
 		if (sort != null) {
+			list = list.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
 			if (sort == 1) {
 				for (int i = 0; i < list.size(); i++) {
 					Integer saleCount = 0;
