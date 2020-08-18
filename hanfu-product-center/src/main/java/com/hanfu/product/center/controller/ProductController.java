@@ -285,6 +285,7 @@ public class ProductController {
 		Product product = new Product();
 		product.setBossId(request.getBossId());
 		product.setBrandId(1);
+		System.out.println(request.getCategoryId()+"getLEI");
 		product.setCategoryId(request.getCategoryId()[request.getCategoryId().length-1]);
 		product.setHfName(request.getHfName());
 		

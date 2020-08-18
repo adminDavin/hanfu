@@ -127,8 +127,10 @@ public class PaymentOrderController {
 		Map<String, String> resp = null;
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
 			resp = wxPay(hfUser, payOrder);
-		} else {
+		} else if(PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.BALANCE)){
 			resp = balancePay(hfUser, payOrder);
+		} else if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPCHART)){
+//			resp = AppCHPay(hfUser, payOrder);
 		}
 		System.out.println(resp);
 		return builder.body(ResponseUtils.getResponseBody(resp));
