@@ -1858,6 +1858,7 @@ public class GoodsController {
 		hfEvaluate.setCommentCount(0);
 		hfEvaluate.setTransmit(0);
 		hfEvaluate.setUserId(userId);
+		hfEvaluate.setStoneId(stoneId);
 		hfEvaluate.setCreateTime(LocalDateTime.now());
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
@@ -2073,13 +2074,18 @@ public class GoodsController {
 
 	@RequestMapping(value = "/selectDiscover", method = RequestMethod.GET)
 	@ApiOperation(value = "根据类型查询评价", notes = "根据类型查询评价")
-	public ResponseEntity<JSONObject> selectDiscover(HttpServletRequest request, Integer userId, String type, Integer levelId ,Integer parentEvaluateId) throws JSONException {
+	public ResponseEntity<JSONObject> selectDiscover(HttpServletRequest request, Integer userId, String type, Integer levelId ,Integer parentEvaluateId ,Integer stoneId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
 		Object bossId= request.getHeader("bossId");
 		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId));
 		evaluateExample.setOrderByClause("create_time DESC");
+		if(stoneId != null) {
+			evaluateExample.clear();
+			evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId)).andStoneIdEqualTo(stoneId);
+			evaluateExample.setOrderByClause("create_time DESC");
+		}
 		List<Evaluate> result = new ArrayList<Evaluate>();
 //		List<Integer> productId = new ArrayList<Integer>();
 		List<Integer> fileId = new ArrayList<Integer>();
