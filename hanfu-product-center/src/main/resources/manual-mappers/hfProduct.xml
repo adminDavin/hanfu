@@ -117,6 +117,9 @@
 		<if test="category != null and category!= ''">
 			AND  h.hf_name like concat('%',#{category},'%')
 		</if>
+		<if test="type != null and type!= ''">
+			AND  DATE_SUB(CURDATE(), INTERVAL 14 DAY)  &lt;= date(p.create_time)
+		</if>
 		ORDER BY p.create_time DESC
 	</select>
 
