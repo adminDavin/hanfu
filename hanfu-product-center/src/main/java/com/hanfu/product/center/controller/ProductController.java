@@ -841,7 +841,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 		example.createCriteria().andProductIdEqualTo(productId.getProductId()).andStoneIdEqualTo(productId.getStoneId());
 		List<ProductInstance> list = productInstanceMapper.selectByExample(example);
 		List<ProductGoods> result = hfProductDao.selectProductGoods(productId);
-		result = result.stream().filter(r -> r.getInstanceId() == list.get(0).getId() || r.getInstanceId() == null)
+		result = result.stream().filter(r -> r.getInstanceId() == null || r.getInstanceId().equals(list.get(0).getId()))
 				.collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
