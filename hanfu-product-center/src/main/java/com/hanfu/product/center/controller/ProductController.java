@@ -1020,7 +1020,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	}
 	
 	@ApiOperation(value = "关注店铺", notes = "关注店铺")
-	@RequestMapping(value = "/addStoneConcern", method = RequestMethod.POST)
+	@RequestMapping(value = "/addStoneConcern", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> addStoneConcern(Integer userId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
