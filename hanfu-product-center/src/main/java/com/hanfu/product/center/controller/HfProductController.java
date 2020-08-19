@@ -479,7 +479,7 @@ public class HfProductController {
 				product.setEvaluateRatio(String.valueOf(
 						hfEvaluateMapper.selectByExample(evaluateExample).size() / product.getEvaluateCount()));
 			}
-
+			System.out.println("hfGoods"+hfGoods);
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
 						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));

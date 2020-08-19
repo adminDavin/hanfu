@@ -347,6 +347,8 @@ public class StoneController {
         pictures = hfStonePictureMapper.selectByExample(example);
         if(!CollectionUtils.isEmpty(pictures)) {
         	info.setBackgroundId(pictures.get(0).getFileId());
+        	List<Integer> list = pictures.stream().map(HfStonePicture::getFileId).collect(Collectors.toList());
+        	info.setBackgroundIds(list);
         }
         example.clear();
         example.createCriteria().andStoneIdEqualTo(id).andTypeEqualTo("code");

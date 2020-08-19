@@ -2,9 +2,14 @@ package com.hanfu.product.center.manual.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ * @author 123
+ *
+ */
 public class HfStoneInfo implements Serializable{
 	
 	private String stoneName;
@@ -12,6 +17,7 @@ public class HfStoneInfo implements Serializable{
 	private String address;
 	private Integer avatarId;
 	private Integer backgroundId;
+	private List<Integer> backgroundIds;
 	private Integer codeId;
 	private Integer concernCount;
 	private Integer hfStatus;
@@ -50,6 +56,12 @@ public class HfStoneInfo implements Serializable{
 	public void setBackgroundId(Integer backgroundId) {
 		this.backgroundId = backgroundId;
 	}
+	public List<Integer> getBackgroundIds() {
+		return backgroundIds;
+	}
+	public void setBackgroundIds(List<Integer> backgroundIds) {
+		this.backgroundIds = backgroundIds;
+	}
 	public Integer getCodeId() {
 		return codeId;
 	}
@@ -86,4 +98,5 @@ public class HfStoneInfo implements Serializable{
 	public void setIsConcern(Integer isConcern) {
 		this.isConcern = isConcern;
 	}
+	
 }
