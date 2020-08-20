@@ -602,6 +602,14 @@ public class HfProductController {
 		HfCategoryExample categoryExample = new HfCategoryExample();
 		categoryExample.createCriteria().andIdIn(categoryId);
 		List<HfCategory> result = hfCategoryMapper.selectByExample(categoryExample);
+		categoryId = result.stream().map(HfCategory::getParentCategoryId).collect(Collectors.toList());
+		categoryExample.clear();
+		categoryExample.createCriteria().andIdIn(categoryId);
+		result = hfCategoryMapper.selectByExample(categoryExample);
+		categoryId = result.stream().map(HfCategory::getParentCategoryId).collect(Collectors.toList());
+		categoryExample.clear();
+		categoryExample.createCriteria().andIdIn(categoryId);
+		result = hfCategoryMapper.selectByExample(categoryExample);
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
