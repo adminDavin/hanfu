@@ -518,9 +518,13 @@ public class HfAuthController {
 		if (!StringUtils.isEmpty(request.getInvitationCode())) {
 			user.setInvitationCode(request.getInvitationCode());
 		}
-
+		
 		if (!StringUtils.isEmpty(request.getPhone())) {
 			user.setPhone(request.getPhone());
+		}
+		
+		if (!StringUtils.isEmpty(request.getFileId())) {
+			user.setFileId(request.getFileId());
 		}
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());
