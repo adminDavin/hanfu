@@ -518,9 +518,19 @@ public class HfAuthController {
 		if (!StringUtils.isEmpty(request.getInvitationCode())) {
 			user.setInvitationCode(request.getInvitationCode());
 		}
-
+		
 		if (!StringUtils.isEmpty(request.getPhone())) {
 			user.setPhone(request.getPhone());
+		}
+		
+		if (!StringUtils.isEmpty(request.getFileId())) {
+			if(user.getFileId() != null) {
+				FileMangeService fileMangeService = new FileMangeService();
+				FileDesc desc = fileDescMapper.selectByPrimaryKey(user.getFileId());
+				fileMangeService.deleteFile(desc.getGroupName(), desc.getRemoteFilename());
+				fileDescMapper.deleteByPrimaryKey(user.getFileId());
+			}
+			user.setFileId(request.getFileId());
 		}
 		if (!StringUtils.isEmpty(request.getAddress())) {
 			user.setAddress(request.getAddress());

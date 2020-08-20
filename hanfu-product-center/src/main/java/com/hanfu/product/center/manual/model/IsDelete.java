@@ -6,6 +6,7 @@ public class IsDelete {
     private Integer bossId;
     private String productName;
     private String category;
+    private Integer type; //2上新
 
     public Integer getStoneId() {
         return stoneId;
@@ -46,4 +47,12 @@ public class IsDelete {
     public void setCategory(String category) {
         this.category = category;
     }
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

@@ -28,6 +28,7 @@ public class UserInfo implements Serializable {
 	@ApiParam(required = false, value = "性别")
 	private Byte sex;
 	@ApiParam(required = false, value = "出生日期")
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private LocalDateTime birthDay;
 	@ApiParam(required = false, value = "用户状态")
 	private Byte userStatus;

@@ -43,6 +43,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.product.center.manual.dao.HfGoodsDisplayDao;
 import com.hanfu.product.center.manual.dao.HfProductDao;
 import com.hanfu.product.center.manual.dao.ManualDao;
+import com.hanfu.product.center.manual.model.Categories;
+import com.hanfu.product.center.manual.model.CategoryInfo;
 import com.hanfu.product.center.manual.model.HfGoodsDisplayInfo;
 import com.hanfu.product.center.manual.model.HfProductDisplay;
 import com.hanfu.product.center.manual.model.HomePageInfo;
@@ -479,7 +481,7 @@ public class HfProductController {
 				product.setEvaluateRatio(String.valueOf(
 						hfEvaluateMapper.selectByExample(evaluateExample).size() / product.getEvaluateCount()));
 			}
-
+			System.out.println("hfGoods"+hfGoods);
 			if (Optional.ofNullable(hfGoods).isPresent()) {
 				Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
 						.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
@@ -552,6 +554,101 @@ public class HfProductController {
 		products = sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
+	}
+	
+	@ApiOperation(value = "获取一级类目通过店铺商品", notes = "获取一级类目通过店铺商品")
+	@RequestMapping(value = "/getParentCategory", method = RequestMethod.GET)
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺Id", required = false, type = "Integer") })
+	public ResponseEntity<JSONObject> getParentCategory(IsDelete isDelete,Integer parentCategoryId)
+			throws JSONException {
+		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
+		products.forEach(hfProductDisplay -> {
+			System.out.println(hfProductDisplay.getStoneId());
+		});
+		if (products.size() != 0) {
+			Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
+			System.out.println(stoneIds);
+			HfStoneExample hfStoneExample = new HfStoneExample();
+			hfStoneExample.createCriteria().andIdIn(Lists.newArrayList(stoneIds));
+			List<HfStone> stoneInfos = hfStoneMapper.selectByExample(hfStoneExample);
+			Map<Integer, String> stones = stoneInfos.stream()
+					.collect(Collectors.toMap(HfStone::getId, HfStone::getHfName));
+			products.forEach(product -> product.setStoneName(stones.get(product.getStoneId())));
+
+			List<Integer> productIds = products.stream().map(HfProductDisplay::getId).collect(Collectors.toList());
+			List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao.selectHfGoodsDisplay(productIds);
+			Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
+					.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
+							(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
+								oldList.addAll(newList);
+								return oldList;
+							}));
+			products.forEach(product -> {
+				List<HfGoodsDisplayInfo> hfGoods = hfGoodsDisplayMap.get(product.getId());
+				if (Optional.ofNullable(hfGoods).isPresent()) {
+					Optional<HfGoodsDisplayInfo> hfGood = hfGoods.stream()
+							.filter(goods -> Optional.ofNullable(goods.getSellPrice()).isPresent())
+							.min(Comparator.comparing(HfGoodsDisplayInfo::getSellPrice));
+					product.setPriceArea(hfGood.isPresent() ? String.valueOf(hfGood.get().getSellPrice()) : "异常");
+					product.setDefaultGoodsId(hfGood.isPresent() ? hfGood.get().getId() : -1);
+				}
+			});
+			if (isDelete.getBossId() != null) {
+				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
+			}
+		}
+		products = products.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
+		List<Integer> categoryId = products.stream().map(HfProductDisplay::getCategoryId).collect(Collectors.toList());
+		
+		if(parentCategoryId != null) {
+			HfCategoryExample categoryExample = new HfCategoryExample();
+			categoryExample.createCriteria().andIdIn(categoryId);
+			List<HfCategory> result = hfCategoryMapper.selectByExample(categoryExample);
+			categoryId = result.stream().map(HfCategory::getParentCategoryId).collect(Collectors.toList());
+			HfCategoryExample example = new HfCategoryExample();
+			List<CategoryInfo> hfCategories = new ArrayList<CategoryInfo>();
+			example.createCriteria().andParentCategoryIdEqualTo(parentCategoryId).andIdIn(categoryId);
+			List<HfCategory> list = hfCategoryMapper.selectByExample(example);
+			for (int i = 0; i < list.size(); i++) {
+				categoryId = products.stream().map(HfProductDisplay::getCategoryId).collect(Collectors.toList());
+				List<Categories> categoriesList = new ArrayList<Categories>();
+				HfCategory twoCategory = list.get(i);
+				CategoryInfo info = new CategoryInfo();
+				info.setTwoLevelName(twoCategory.getHfName());
+				info.setTwoLevelId(twoCategory.getId());
+				example.clear();
+				example.createCriteria().andParentCategoryIdEqualTo(twoCategory.getId()).andIdIn(categoryId);
+				List<HfCategory> list2 = hfCategoryMapper.selectByExample(example);
+				for (int j = 0; j < list2.size(); j++) {
+					Categories categories = new Categories();
+					HfCategory threeCategory = list2.get(j);
+					categories.setFileId(threeCategory.getFileId());
+					categories.setHfName(threeCategory.getHfName());
+					categories.setId(threeCategory.getId());
+					categories.setLevelId(threeCategory.getLevelId());
+					categoriesList.add(categories);
+				}
+        		info.setCategories(categoriesList);
+        		System.out.println(info);
+        		hfCategories.add(info);
+			}
+        	return builder.body(ResponseUtils.getResponseBody(hfCategories));
+        }
+		
+		HfCategoryExample categoryExample = new HfCategoryExample();
+		categoryExample.createCriteria().andIdIn(categoryId);
+		List<HfCategory> result = hfCategoryMapper.selectByExample(categoryExample);
+		categoryId = result.stream().map(HfCategory::getParentCategoryId).collect(Collectors.toList());
+		categoryExample.clear();
+		categoryExample.createCriteria().andIdIn(categoryId);
+		result = hfCategoryMapper.selectByExample(categoryExample);
+		categoryId = result.stream().map(HfCategory::getParentCategoryId).collect(Collectors.toList());
+		categoryExample.clear();
+		categoryExample.createCriteria().andIdIn(categoryId);
+		result = hfCategoryMapper.selectByExample(categoryExample);
+		return builder.body(ResponseUtils.getResponseBody(result));
 	}
 
 	@ApiOperation(value = "获取商品列表boss", notes = "获取商品列表boss")

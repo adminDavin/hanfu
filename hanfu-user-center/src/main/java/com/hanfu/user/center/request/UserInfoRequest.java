@@ -36,6 +36,8 @@ public class UserInfoRequest extends CommonRequest {
     private Integer cancelId;
     @ApiParam(required = false, value = "他人的邀请码")
     private String invitationCode;
+    @ApiParam(required = false, value = "图片id")
+    private Integer fileId;
     
     public Integer getCancelId() {
 		return cancelId;
@@ -141,5 +143,12 @@ public class UserInfoRequest extends CommonRequest {
 		this.invitationCode = invitationCode;
 	}
 
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
 
 }
