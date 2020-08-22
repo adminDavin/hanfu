@@ -572,14 +572,16 @@ public class HfOrderController {
         	hfRequestIdMapper.insert(id);
         }
         System.out.println("开始支付订单");
-        Integer bossId = null;
-        if (requests.getServletContext().getAttribute("getServletContext")!=null){
-			if (requests.getServletContext().getAttribute("getServletContextType").equals("user")){
-				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
-			}
-		}
+//        Integer bossId = null;
+//        if (requests.getServletContext().getAttribute("getServletContext")!=null){
+//			if (requests.getServletContext().getAttribute("getServletContextType").equals("user")){
+//				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
+//			}
+//		}
+        Object bossId= requests.getHeader("bossId");
+        System.out.println(bossId+"我是boss");
         PayOrder payOrder = new PayOrder();
-        payOrder.setBossId(bossId);
+        payOrder.setBossId(Integer.valueOf((String) bossId));
         payOrder.setUserId(request.getUserId());
         payOrder.setPayStatus(0);
         payOrder.setCreateTime(LocalDateTime.now());
