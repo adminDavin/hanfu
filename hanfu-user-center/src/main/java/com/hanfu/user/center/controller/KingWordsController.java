@@ -404,6 +404,7 @@ public class KingWordsController {
 		map.add("total", "500");
 		map.add("userId", "1065");
 		map.add("type", "orderCreate");
+		map.add("bossId", 1);
 		restTemplate.postForObject("http://localhost:8082/user/Message", map, JSONObject.class);
 		return null;
 	}
