@@ -574,7 +574,7 @@ public class HfOrderController {
         System.out.println("开始支付订单");
         Integer bossId = null;
         if (requests.getServletContext().getAttribute("getServletContext")!=null){
-			if (requests.getServletContext().getAttribute("getServletContextType").equals("boss")){
+			if (requests.getServletContext().getAttribute("getServletContextType").equals("user")){
 				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
 			}
 		}
