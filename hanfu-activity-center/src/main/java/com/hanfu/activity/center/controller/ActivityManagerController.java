@@ -66,6 +66,7 @@ import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
 import com.hanfu.activity.center.dao.ActivityUserExperienceMapper;
 import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
+import com.hanfu.activity.center.dao.ActivityUserMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.FileDescMapper;
 import com.hanfu.activity.center.dao.HfUserMapper;
@@ -87,8 +88,10 @@ import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityFileDesc;
+import com.hanfu.activity.center.model.ActivityFileDescExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.ActivityUser;
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
 import com.hanfu.activity.center.model.ActivityUserEvaluateExample;
 import com.hanfu.activity.center.model.ActivityUserExperience;
@@ -183,6 +186,9 @@ public class ActivityManagerController {
 
     @Autowired
     private HfUserMapper hfUserMapper;
+    
+    @Autowired
+    private ActivityUserMapper activityUserMapper;
 
     @Autowired
     private ActivityUserEvaluateMapper activityUserEvaluateMapper;
@@ -624,12 +630,12 @@ public class ActivityManagerController {
         if (activity.getIsTimingStart() == 0) {
             return builder.body(ResponseUtils.getResponseBody("活动未开始"));
         }
-        com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+        ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(request.getUserId());
         if (hfUser.getIdDeleted() == 1) {
             return builder.body(ResponseUtils.getResponseBody("今日票数已经用完"));
         }
         hfUser.setIdDeleted((byte) 1);
-        hfUserMapper.updateByPrimaryKey(hfUser);
+        activityUserMapper.updateByPrimaryKey(hfUser);
         addVoteRecords(request.getActivityId(), request.getUserId(), request.getElectedUserId(), 1, "1");
         ActivitiRuleInstanceExample example = new ActivitiRuleInstanceExample();
         example.createCriteria().andActivityIdEqualTo(request.getActivityId())
@@ -662,9 +668,9 @@ public class ActivityManagerController {
                 .andElectedUserIdEqualTo(request.getElectedUserId());
         List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example);
         if (!list.isEmpty()) {
-            com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+            ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(request.getUserId());
             hfUser.setIdDeleted((byte) 0);
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
             ActivityVoteRecords records = list.get(0);
             activityVoteRecordsMapper.deleteByPrimaryKey(records.getId());
         }
@@ -685,7 +691,7 @@ public class ActivityManagerController {
     @RequestMapping(value = "/findIsPraise", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> findIsPraise(Integer userId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+        ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(userId);
         if (hfUser.getIdDeleted() == 1) {
             return builder.body(ResponseUtils.getResponseBody("已经点过了"));
         }
@@ -914,7 +920,7 @@ public class ActivityManagerController {
             HfUser user = new HfUser();
             user.setIsElected(instance.getIsElected());
             user.setCode(instance.getRuleInstanceValue());
-            com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+            ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(instance.getUserId());
             user.setRealName(hfUser.getRealName());
             if (hfUser.getRealName() != null) {
                 user.setNickName(hfUser.getRealName());
@@ -988,7 +994,7 @@ public class ActivityManagerController {
             String arr[];
             MultipartFile fileInfo = request.getFileInfo();
             arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(request.getUserId()));
-            FileDesc fileDesc = new FileDesc();
+            ActivityFileDesc fileDesc = new ActivityFileDesc();
             fileDesc.setFileName(fileInfo.getName());
             fileDesc.setGroupName(arr[0]);
             fileDesc.setRemoteFilename(arr[1]);
@@ -996,7 +1002,7 @@ public class ActivityManagerController {
             fileDesc.setCreateTime(LocalDateTime.now());
             fileDesc.setModifyTime(LocalDateTime.now());
             fileDesc.setIsDeleted((short) 0);
-            fileDescMapper.insert(fileDesc);
+            activityFileDescMapper.insert(fileDesc);
             ActivitiRuleInstance instance = new ActivitiRuleInstance();
             instance.setFileId(fileDesc.getId());
             activitiRuleInstanceMapper.insert(instance);
@@ -1037,7 +1043,7 @@ public class ActivityManagerController {
         FileMangeService fileMangeService = new FileMangeService();
         String arr[];
         arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-        FileDesc fileDesc = new FileDesc();
+        ActivityFileDesc fileDesc = new ActivityFileDesc();
         fileDesc.setFileName(file.getName());
         fileDesc.setGroupName(arr[0]);
         fileDesc.setRemoteFilename(arr[1]);
@@ -1045,7 +1051,7 @@ public class ActivityManagerController {
         fileDesc.setCreateTime(LocalDateTime.now());
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
-        fileDescMapper.insert(fileDesc);
+        activityFileDescMapper.insert(fileDesc);
         UserInfo info = new UserInfo();
         info.setBaseInfo(baseInfo);
         info.setCreateTime(LocalDateTime.now());
@@ -1061,7 +1067,7 @@ public class ActivityManagerController {
     public ResponseEntity<JSONObject> downloadResume(@RequestParam(name = "fileId") Integer fileId,
                                                      HttpServletResponse response, Boolean isOnLine) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        ActivityFileDesc fileDesc = activityFileDescMapper.selectByPrimaryKey(fileId);
         FileMangeService fileManageService = new FileMangeService();
         byte[] file_buff = fileManageService.downloadFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
         File file = new File("src/main/resources/" + fileId + ".doc");
@@ -1101,14 +1107,14 @@ public class ActivityManagerController {
     public ResponseEntity<JSONObject> updateUserBaseInfo(MultipartFile fileInfo, ActivityUserBaseInfoRequest request)
             throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(request.getUserId());
+        ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(request.getUserId());
         if (!StringUtils.isEmpty(request.getUsername())) {
             hfUser.setRealName(request.getUsername());
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
         }
         if (!StringUtils.isEmpty(request.getPhone())) {
             hfUser.setPhone(request.getPhone());
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
         }
         ActivityUserInfoExample example = new ActivityUserInfoExample();
         example.createCriteria().andUserIdEqualTo(request.getUserId());
@@ -1221,7 +1227,7 @@ public class ActivityManagerController {
     @RequestMapping(value = "/updateUserAvatar", method = RequestMethod.POST)
     @ApiOperation(value = "更新用户头像", notes = "更新用户头像")
     public Integer updateUserAvatar(MultipartFile fileInfo, @RequestParam Integer userId) throws Exception {
-        com.hanfu.activity.center.model.HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
+        ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(userId);
         if (hfUser == null) {
             throw new Exception("此人不存在");
         }
@@ -1229,11 +1235,11 @@ public class ActivityManagerController {
         FileMangeService fileMangeService = new FileMangeService();
         String arr[];
         arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(userId));
-        FileDescExample example = new FileDescExample();
+        ActivityFileDescExample example = new ActivityFileDescExample();
         example.createCriteria().andUserIdEqualTo(userId);
-        List<FileDesc> list = fileDescMapper.selectByExample(example);
+        List<ActivityFileDesc> list = activityFileDescMapper.selectByExample(example);
         if (list.isEmpty()) {
-            FileDesc fileDesc = new FileDesc();
+            ActivityFileDesc fileDesc = new ActivityFileDesc();
             fileDesc.setFileName("用户头像");
             fileDesc.setGroupName(arr[0]);
             fileDesc.setRemoteFilename(arr[1]);
@@ -1241,20 +1247,20 @@ public class ActivityManagerController {
             fileDesc.setCreateTime(LocalDateTime.now());
             fileDesc.setModifyTime(LocalDateTime.now());
             fileDesc.setIsDeleted((short) 0);
-            fileDescMapper.insert(fileDesc);
+            activityFileDescMapper.insert(fileDesc);
             fileId = fileDesc.getId();
             hfUser.setFileId(fileId);
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
         } else {
-            FileDesc fileDesc = list.get(0);
+        	ActivityFileDesc fileDesc = list.get(0);
 //			fileMangeService.deleteFile(fileDesc.getGroupName(),fileDesc.getRemoteFilename() );
             fileDesc.setGroupName(arr[0]);
             fileDesc.setRemoteFilename(arr[1]);
             fileDesc.setModifyTime(LocalDateTime.now());
-            fileDescMapper.updateByPrimaryKey(fileDesc);
+            activityFileDescMapper.updateByPrimaryKey(fileDesc);
             fileId = fileDesc.getId();
             hfUser.setFileId(fileId);
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
         }
 
         return fileId;

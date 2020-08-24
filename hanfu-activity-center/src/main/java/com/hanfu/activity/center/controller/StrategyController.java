@@ -43,6 +43,9 @@ public class StrategyController {
 
     @Autowired
     private FileDescMapper fileDescMapper;
+    
+    @Autowired
+    private ActivityFileDescMapper activityFileDescMapper;
 
     @Autowired
     private StrategyRuleDao strategyRuleDao;
@@ -113,7 +116,7 @@ public class StrategyController {
         //TODO
         String arr[];
         arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
-        FileDesc fileDesc = new FileDesc();
+        ActivityFileDesc fileDesc = new ActivityFileDesc();
         fileDesc.setFileName("lunbotu");
         fileDesc.setGroupName(arr[0]);
         fileDesc.setRemoteFilename(arr[1]);
@@ -121,16 +124,16 @@ public class StrategyController {
         fileDesc.setCreateTime(LocalDateTime.now());
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
-        fileDescMapper.insert(fileDesc);
+        activityFileDescMapper.insert(fileDesc);
     }
 
     @ApiOperation(value = "获取轮播图", notes = "获取轮播图")
     @RequestMapping(value = "/findlunbotu", method = RequestMethod.GET)
     public ResponseEntity<JSONObject> findlunbotu() throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        FileDescExample example = new FileDescExample();
+        ActivityFileDescExample example = new ActivityFileDescExample();
         example.createCriteria().andFileNameEqualTo("lunbotu");
-        return builder.body(ResponseUtils.getResponseBody(fileDescMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(activityFileDescMapper.selectByExample(example)));
     }
 
     @ApiOperation(value = "删除图片", notes = "删除图片")
@@ -138,9 +141,9 @@ public class StrategyController {
     public ResponseEntity<JSONObject> deletelunbotu(@RequestParam Integer fileId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         FileMangeService fileMangeService = new FileMangeService();
-        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        ActivityFileDesc fileDesc = activityFileDescMapper.selectByPrimaryKey(fileId);
         fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
-        fileDescMapper.deleteByPrimaryKey(fileId);
+        activityFileDescMapper.deleteByPrimaryKey(fileId);
         return builder.body(ResponseUtils.getResponseBody(null));
     }
 

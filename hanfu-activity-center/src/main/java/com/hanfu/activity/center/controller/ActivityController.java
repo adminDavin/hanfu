@@ -58,6 +58,7 @@ import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.ActivityUser;
+import com.hanfu.activity.center.model.ActivityUserExample;
 import com.hanfu.activity.center.model.ActivityUserInfo;
 import com.hanfu.activity.center.model.ActivityUserInfoExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
@@ -548,7 +549,7 @@ public class ActivityController {
                 } else {
                     total.setVoteCount(list1.get(j).getUserTicketCount());
                 }
-                HfUser hfUser = hfUserMapper.selectByPrimaryKey(list1.get(j).getUserId());
+                ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(list1.get(j).getUserId());
                 if (hfUser != null) {
                     if (hfUser.getFileId() != null) {
                         total.setFileId(hfUser.getFileId());
@@ -592,13 +593,13 @@ public class ActivityController {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void ssgx() {
-        HfUserExample example = new HfUserExample();
+        ActivityUserExample example = new ActivityUserExample();
         example.createCriteria().andIdDeletedEqualTo((byte) 1);
-        List<HfUser> list = hfUserMapper.selectByExample(example);
+        List<ActivityUser> list = activityUserMapper.selectByExample(example);
         for (int i = 0; i < list.size(); i++) {
-            HfUser hfUser = list.get(i);
+        	ActivityUser hfUser = list.get(i);
             hfUser.setIdDeleted((byte) 0);
-            hfUserMapper.updateByPrimaryKey(hfUser);
+            activityUserMapper.updateByPrimaryKey(hfUser);
         }
         List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(null);
         for (int i = 0; i < list2.size(); i++) {
@@ -725,7 +726,7 @@ public class ActivityController {
         List<Integer> list = voteRecordsDao.distinctUserId(entity);
         for (int i = 0; i < list.size(); i++) {
             Integer electedId = list.get(i);
-            HfUser hfUser = hfUserMapper.selectByPrimaryKey(electedId);
+            ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(electedId);
             if (hfUser != null) {
                 ActivityUserInfoExample example2 = new ActivityUserInfoExample();
                 example2.createCriteria().andUserIdEqualTo(electedId);
@@ -850,7 +851,7 @@ public class ActivityController {
             for (int i = 0; i < list.size(); i++) {
                 VoteRecordsEntity entity = new VoteRecordsEntity();
                 ActivitiRuleInstance instance = list.get(i);
-                HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+                ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(instance.getUserId());
                 if (StringUtils.isEmpty(hfUser.getRealName())) {
                     entity.setEceltedName(hfUser.getNickName());
                 } else {
@@ -870,7 +871,7 @@ public class ActivityController {
             for (int i = 0; i < list.size(); i++) {
                 VoteRecordsEntity entity = new VoteRecordsEntity();
                 ActivitiRuleInstance instance = list.get(i);
-                HfUser hfUser = hfUserMapper.selectByPrimaryKey(instance.getUserId());
+                ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(instance.getUserId());
                 if (StringUtils.isEmpty(hfUser.getRealName())) {
                     entity.setEceltedName(hfUser.getNickName());
                 } else {
@@ -940,8 +941,8 @@ public class ActivityController {
             List<ActivityVoteRecords> list = activityVoteRecordsMapper.selectByExample(example2);
             for (int i = 0; i < list.size(); i++) {
                 ActivityVoteRecords records = list.get(i);
-                HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
-                HfUser electedPeson = hfUserMapper.selectByPrimaryKey(records.getElectedUserId());
+                ActivityUser votePerson = activityUserMapper.selectByPrimaryKey(records.getUserId());
+                ActivityUser electedPeson = activityUserMapper.selectByPrimaryKey(records.getElectedUserId());
                 VoteRecordsEntity entity = new VoteRecordsEntity();
                 if (votePerson != null) {
                     if (votePerson.getRealName() != null) {
@@ -989,7 +990,7 @@ public class ActivityController {
             for (int i = 0; i < list.size(); i++) {
                 VoteRecordsEntity entity = new VoteRecordsEntity();
                 ActivityVoteRecords records = list.get(i);
-                HfUser votePerson = hfUserMapper.selectByPrimaryKey(records.getUserId());
+                ActivityUser votePerson = activityUserMapper.selectByPrimaryKey(records.getUserId());
                 if (!StringUtils.isEmpty(votePerson.getRealName())) {
                     entity.setVoteRealName(votePerson.getRealName());
                 } else {
@@ -1043,7 +1044,7 @@ public class ActivityController {
                 double totalScore = 0.000;
                 List<Double> score = new ArrayList<Double>();
                 VoteRecordsEntity entity2 = new VoteRecordsEntity();
-                HfUser votePerson = hfUserMapper.selectByPrimaryKey(list.get(i));
+                ActivityUser votePerson = activityUserMapper.selectByPrimaryKey(list.get(i));
                 example.createCriteria().andActivityIdEqualTo(activityId).andElectedUserIdEqualTo(userId)
                         .andVoteTimesEqualTo(Integer.valueOf(type)).andUserIdEqualTo(votePerson.getId());
                 for (int j = 0; j < activityVoteRecordsMapper.selectByExample(example).size(); j++) {
