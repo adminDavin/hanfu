@@ -866,6 +866,7 @@ public class KingWordsController {
 			nickName = userInfo.getString("nickName");
 			avatarUrl = userInfo.getString("avatarUrl");
 		}
+		System.out.println("unionId+++++"+unionId);
 		if (!StringUtils.isEmpty(unionId)) {
 			ActivityUserExample example = new ActivityUserExample();
 			example.createCriteria().andUsernameEqualTo(unionId);
@@ -884,9 +885,9 @@ public class KingWordsController {
 					activityUserMapper.insert(hfUser);
 				} catch (Exception e) {
 					hfUser.setAddress(avatarUrl);
-					HfUserExample example2 = new HfUserExample();
+					ActivityUserExample example2 = new ActivityUserExample();
 					example2.createCriteria().andNickNameLike("未知昵称%");
-					List<HfUser> list2 = hfUserMapper.selectByExample(example2);
+					List<ActivityUser> list2 = activityUserMapper.selectByExample(example2);
 					hfUser.setNickName("未知昵称" + list2.size() + 1);
 					hfUser.setUsername(unionId);
 					hfUser.setCreateDate(LocalDateTime.now());
