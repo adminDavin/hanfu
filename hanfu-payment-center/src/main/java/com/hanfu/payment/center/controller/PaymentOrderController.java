@@ -269,6 +269,7 @@ public class PaymentOrderController {
 		}
 		PayOrder payOrder = payOrderMapper.selectByPrimaryKey(payOrderId);
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
+		System.out.println(hfOrderList.get(0).getPaymentName());
 		if (hfOrderList.get(0).getPaymentName().equals("balance") && hfOrderList.get(0).getPaymentType().equals(0)) {
 			HfUserBalanceExample hfUserBalanceExample = new HfUserBalanceExample();
 			hfUserBalanceExample.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
