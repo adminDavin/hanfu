@@ -252,6 +252,7 @@ public class PaymentOrderController {
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		if (orderCode!=null){
 			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
+			System.out.println("我是"+hfOrder+"我是");
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
 			paramMap2.add("stoneId",hfOrder.getStoneId());
 			paramMap2.add("balanceType","rechargeAmount");
