@@ -351,7 +351,7 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
-			refunds(String.valueOf(hfOrder.getAmount()/100),payOrderId,"原因");
+			refunds(String.valueOf(payOrderId),hfOrder.getAmount()/100,"原因");
 			return builder.body(ResponseUtils.getResponseBody(0));
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
