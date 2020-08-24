@@ -187,7 +187,7 @@ public class AlipayConfig {
     }
     public Integer getBossId() {
         if (bossId==null){
-            bossId=2;
+            bossId=1;
         }
         return bossId;
     }
