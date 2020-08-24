@@ -835,7 +835,7 @@ public class KingWordsController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// JSONObject rawDataJson = JSON.parseObject( rawData );
 		JSONObject SessionKeyOpenId = getSessionKeyOrOpenId(code);
-		String openid = (String) SessionKeyOpenId.get("openid");
+		String openid = SessionKeyOpenId.get("openid").toString();
 		String sessionKey = String.valueOf(SessionKeyOpenId.get("session_key"));
 		// uuid生成唯一key
 		String skey = UUID.randomUUID().toString();
