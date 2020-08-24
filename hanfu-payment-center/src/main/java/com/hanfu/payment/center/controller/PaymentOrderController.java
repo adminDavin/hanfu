@@ -252,15 +252,15 @@ public class PaymentOrderController {
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
 		System.out.println("我是"+hfOrder+"我是");
-//		if (orderCode!=null){
-//			System.out.println("我是"+hfOrder+"我是");
-//			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-//			paramMap2.add("stoneId",hfOrder.getStoneId());
-//			paramMap2.add("balanceType","rechargeAmount");
-//			paramMap2.add("money",hfOrder.getAmount());
-//			paramMap2.add("type", "-1");
-//			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
-//		}
+		if (orderCode!=null){
+			System.out.println("我是1"+hfOrder+"我是1");
+			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+			paramMap2.add("stoneId",hfOrder.getStoneId());
+			paramMap2.add("balanceType","rechargeAmount");
+			paramMap2.add("money",hfOrder.getAmount());
+			paramMap2.add("type", "-1");
+			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+		}
 		List<HfOrder> hfOrderList = new ArrayList<>();
 		if (payOrderId!=null){
 			HfOrderExample hfOrderExample = new HfOrderExample();
@@ -349,10 +349,12 @@ public class PaymentOrderController {
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(resp));
-	} else {
+	}
+	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
 			refund(hfOrder.getAmount()/100,payOrderId,"原因");
 			return builder.body(ResponseUtils.getResponseBody(0));
 		}
+		return builder.body(ResponseUtils.getResponseBody(1));
 	}
 
 	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode,Integer Amount)
