@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.common.service.FileMangeService;
 //import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.config.WxLoginConfig;
+import com.hanfu.user.center.dao.ActivityUserMapper;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfBossMapper;
@@ -129,7 +130,8 @@ public class KingWordsController {
 	private JavaMailSender javaMailSender;
 	@Autowired
 	private HfBossMapper hfBossMapper;
-
+	@Autowired
+	private ActivityUserMapper activityUserMapper;
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -865,11 +867,11 @@ public class KingWordsController {
 			avatarUrl = userInfo.getString("avatarUrl");
 		}
 		if (!StringUtils.isEmpty(unionId)) {
-			HfUserExample example = new HfUserExample();
+			ActivityUserExample example = new ActivityUserExample();
 			example.createCriteria().andUsernameEqualTo(unionId);
-			List<HfUser> list = hfUserMapper.selectByExample(example);
+			List<ActivityUser> list = activityUserMapper.selectByExample(example);
 			if (list.isEmpty()) {
-				HfUser hfUser = new HfUser();
+				ActivityUser hfUser = new ActivityUser();
 				hfUser.setAddress(avatarUrl);
 				hfUser.setNickName(nickName);
 				hfUser.setUsername(unionId);
@@ -879,7 +881,7 @@ public class KingWordsController {
 				hfUser.setCancelId(0);
 				hfUser.setUserStatus((byte) 0);
 				try {
-					hfUserMapper.insert(hfUser);
+					activityUserMapper.insert(hfUser);
 				} catch (Exception e) {
 					hfUser.setAddress(avatarUrl);
 					HfUserExample example2 = new HfUserExample();
@@ -892,15 +894,15 @@ public class KingWordsController {
 					hfUser.setIdDeleted((byte) 0);
 					hfUser.setCancelId(0);
 					hfUser.setUserStatus((byte) 0);
-					hfUserMapper.insert(hfUser);
+					activityUserMapper.insert(hfUser);
 				}
 				userId = hfUser.getId();
 			} else {
-				HfUser hfUser = list.get(0);
+				ActivityUser hfUser = list.get(0);
 				hfUser.setAddress(avatarUrl);
 				hfUser.setNickName(nickName);
 				try {
-					hfUserMapper.updateByPrimaryKey(hfUser);
+					activityUserMapper.updateByPrimaryKey(hfUser);
 				} catch (Exception e) {
 					hfUser.setAddress(avatarUrl);
 					hfUser.setNickName(list.get(0).getNickName());
@@ -910,7 +912,7 @@ public class KingWordsController {
 					hfUser.setIdDeleted((byte) 0);
 					hfUser.setCancelId(0);
 					hfUser.setUserStatus((byte) 0);
-					hfUserMapper.updateByPrimaryKey(hfUser);
+					activityUserMapper.updateByPrimaryKey(hfUser);
 				}
 				userId = hfUser.getId();
 			}
