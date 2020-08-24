@@ -249,6 +249,7 @@ public class PaymentOrderController {
 	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
+		alipayConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
 		System.out.println("我是"+hfOrder+"我是");
