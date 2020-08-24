@@ -29,7 +29,7 @@ private PayBossMapper payBossMapper;
     public String getAppID() {
 //        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
-        payBossExample.createCriteria().andBossIdEqualTo(bossId);
+        payBossExample.createCriteria().andBossIdEqualTo(bossId).andLastModifierEqualTo("wechart");
         return payBossMapper.selectByExample(payBossExample).get(0).getAppid();
 //        return "wx2641aaa105c07dd4";
     }
@@ -39,7 +39,7 @@ private PayBossMapper payBossMapper;
         // TODO Auto-generated method stub
 //        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
-        payBossExample.createCriteria().andBossIdEqualTo(bossId);
+        payBossExample.createCriteria().andBossIdEqualTo(bossId).andLastModifierEqualTo("wechart");
         return payBossMapper.selectByExample(payBossExample).get(0).getMchid();
 //        return "1574620741";
     }
@@ -49,7 +49,7 @@ private PayBossMapper payBossMapper;
         // TODO Auto-generated method stub
 //        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
-        payBossExample.createCriteria().andBossIdEqualTo(bossId);
+        payBossExample.createCriteria().andBossIdEqualTo(bossId).andLastModifierEqualTo("wechart");
         return payBossMapper.selectByExample(payBossExample).get(0).getPayKey();
 //        return "tjsichuang0827abcdef199509abcdef";
     }
@@ -59,7 +59,7 @@ private PayBossMapper payBossMapper;
         // TODO Auto-generated method stub
 //        bossId= (Integer) httpServletRequest.getServletContext().getAttribute("getServletContext");
         PayBossExample payBossExample = new PayBossExample();
-        payBossExample.createCriteria().andBossIdEqualTo(bossId);
+        payBossExample.createCriteria().andBossIdEqualTo(bossId).andLastModifierEqualTo("wechart");
         PATH_APP=payBossMapper.selectByExample(payBossExample).get(0).getApiclientCert();
         InputStream certStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(PATH_APP);
         try {
