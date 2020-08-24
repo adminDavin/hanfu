@@ -147,9 +147,9 @@ public class PaymentOrderController {
 		resp.put("data", orderStr);
 		return resp;
 	}
-	@ApiOperation(value = "退款", notes = "退款")
-	@PostMapping("/refund")
-	public ResultMap refund(@ApiParam(value = "订单号") @RequestParam String orderNo,
+//	@ApiOperation(value = "退款", notes = "退款")
+//	@PostMapping("/refund")
+	private ResultMap refunds(@ApiParam(value = "订单号") @RequestParam String orderNo,
 							@ApiParam(value = "退款金额") @RequestParam double amount,
 							@ApiParam(value = "退款原因") @RequestParam(required = false) String refundReason) {
 		return alipayService.refund(orderNo, amount, refundReason);
@@ -351,7 +351,7 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
-			refund(hfOrder.getAmount()/100,payOrderId,"原因");
+			refunds(String.valueOf(hfOrder.getAmount()/100),payOrderId,"原因");
 			return builder.body(ResponseUtils.getResponseBody(0));
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
