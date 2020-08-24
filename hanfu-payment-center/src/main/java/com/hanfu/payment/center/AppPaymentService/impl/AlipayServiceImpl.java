@@ -50,7 +50,7 @@ public class AlipayServiceImpl implements AlipayService {
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
         model.setSubject(body);
         model.setOutTradeNo(orderNo);
-        model.setTotalAmount(String.valueOf(amount));
+        model.setTotalAmount(String.valueOf(amount/100));
         model.setProductCode("QUICK_MSECURITY_PAY");
         model.setPassbackParams("公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数");
 
