@@ -2,6 +2,8 @@ package com.hanfu.user.center.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 //import com.github.pagehelper.PageHelper;
 //import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
@@ -18,12 +20,14 @@ import com.hanfu.user.center.dao.HfMessageTemplateMapper;
 import com.hanfu.user.center.dao.HfTemplateParamMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.dao.UserDao;
+import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.MessageApply;
 import com.hanfu.user.center.manual.model.MessageType;
 import com.hanfu.user.center.manual.model.MessageType.MessageContentTypeEnum;
 import com.hanfu.user.center.manual.model.MessageType.MessageTypeEnum;
 //import com.hanfu.user.center.manual.model.ActivityUserInfo;
 import com.hanfu.user.center.manual.model.UserInfo;
+import com.hanfu.user.center.manual.model.test;
 //import com.hanfu.user.center.manual.model.UserQuery;
 //import com.hanfu.user.center.manual.model.test;
 import com.hanfu.user.center.model.*;
@@ -730,45 +734,44 @@ public class KingWordsController {
 //            System.out.println(page);
 //            return builder.body(ResponseUtils.getResponseBody(page));
 //    }
-//    @RequiredPermission(PermissionConstants.ADMIN_PRODUCT_LIST)
-//    @RequestMapping(path = "/userList",  method = RequestMethod.GET)
-//    @ApiOperation(value = "用户列表", notes = "用户列表")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "time", value = "排序方式1降序2升序,3微信名降序4升序", required = false, type = "Integer")
-//    })
-//    public ResponseEntity<JSONObject> userList(Integer userId, test test) throws Exception{
-//        if (test.getPageNum()==null){
-//            test.setPageNum(0);
-//        }if (test.getPageSize()==null){
-//            test.setPageSize(0);
-//        }if(test.getTime()==null){
-//            test.setPageNum(1);
-//        }
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//        if(!StringUtils.isEmpty(userId)) {
-//            HfUserExample hfUserExample = new HfUserExample();
-//            hfUserExample.createCriteria().andIdNotEqualTo(userId);
-//            return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
-//        }
-//        PageHelper.startPage(test.getPageNum(),test.getPageSize());
-//        List<ActivityUserInfo> list = userDao.findActivityUserInfo(test);
-//        System.out.println(list);
-//        for (int i = 0; i < list.size(); i++) {
-//            ActivityUserInfo info = list.get(i);
-//            if(info != null) {
-//                if(info.getDepartmentId() != null) {
-//                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
-//                    info.setDepartmentName(departmentName);
-//                    System.out.println(departmentName);
-//                }
-//            }
-//        }
-//
-//        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
-//        System.out.println(page);
-//        return builder.body(ResponseUtils.getResponseBody(page));
-//    }
+    @RequestMapping(path = "/userList",  method = RequestMethod.GET)
+    @ApiOperation(value = "用户列表", notes = "用户列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = false, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "time", value = "排序方式1降序2升序,3微信名降序4升序", required = false, type = "Integer")
+    })
+    public ResponseEntity<JSONObject> userList(Integer userId, test test) throws Exception{
+        if (test.getPageNum()==null){
+            test.setPageNum(0);
+        }if (test.getPageSize()==null){
+            test.setPageSize(0);
+        }if(test.getTime()==null){
+            test.setPageNum(1);
+        }
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        if(!StringUtils.isEmpty(userId)) {
+            HfUserExample hfUserExample = new HfUserExample();
+            hfUserExample.createCriteria().andIdNotEqualTo(userId);
+            return builder.body(ResponseUtils.getResponseBody(hfUserMapper.selectByPrimaryKey(userId)));
+        }
+        PageHelper.startPage(test.getPageNum(),test.getPageSize());
+        List<ActivityUserInfo> list = userDao.findActivityUserInfo(test);
+        System.out.println(list);
+        for (int i = 0; i < list.size(); i++) {
+            ActivityUserInfo info = list.get(i);
+            if(info != null) {
+                if(info.getDepartmentId() != null) {
+                    String departmentName = userDao.findDepartmentName(info.getDepartmentId());
+                    info.setDepartmentName(departmentName);
+                    System.out.println(departmentName);
+                }
+            }
+        }
+
+        PageInfo<ActivityUserInfo> page = new PageInfo<ActivityUserInfo>(list);
+        System.out.println(page);
+        return builder.body(ResponseUtils.getResponseBody(page));
+    }
 //
 //
 //    @RequestMapping(path = "/userListTP", method = RequestMethod.GET)

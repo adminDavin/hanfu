@@ -167,7 +167,7 @@
         h.create_date,a.department_id,
         h.id
         FROM
-        hf_user h
+        activity_user h
         LEFT JOIN
         activity_user_info a
         ON
