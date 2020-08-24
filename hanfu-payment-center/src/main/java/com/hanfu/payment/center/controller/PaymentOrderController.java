@@ -351,9 +351,9 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
-		System.out.println("退款"+hfOrder.getAmount()/100);
+		System.out.println("退款"+(hfOrder.getAmount().doubleValue())/100);
 		System.out.println(hfOrder.getAmount());
-			refunds(String.valueOf(payOrderId),(hfOrder.getAmount()/100),"原因");
+			refunds(String.valueOf(payOrderId),((hfOrder.getAmount().doubleValue())/100),"原因");
 			return builder.body(ResponseUtils.getResponseBody(2));
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
