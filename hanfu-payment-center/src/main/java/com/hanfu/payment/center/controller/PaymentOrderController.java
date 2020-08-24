@@ -251,15 +251,15 @@ public class PaymentOrderController {
 		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
-		if (orderCode!=null){
-			System.out.println("我是"+hfOrder+"我是");
-			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-			paramMap2.add("stoneId",hfOrder.getStoneId());
-			paramMap2.add("balanceType","rechargeAmount");
-			paramMap2.add("money",hfOrder.getAmount());
-			paramMap2.add("type", "-1");
-			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
-		}
+//		if (orderCode!=null){
+//			System.out.println("我是"+hfOrder+"我是");
+//			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+//			paramMap2.add("stoneId",hfOrder.getStoneId());
+//			paramMap2.add("balanceType","rechargeAmount");
+//			paramMap2.add("money",hfOrder.getAmount());
+//			paramMap2.add("type", "-1");
+//			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+//		}
 		List<HfOrder> hfOrderList = new ArrayList<>();
 		if (payOrderId!=null){
 			HfOrderExample hfOrderExample = new HfOrderExample();
