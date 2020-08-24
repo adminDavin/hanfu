@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
     <classPathEntry
-            location="C:\Users\administor\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar"/>
+            location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar"/>
     <context id="MySQLTables" targetRuntime="MyBatis3">
         <property name="xmlFormatter"
                   value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
@@ -18,7 +18,7 @@
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://47.105.72.216:3306/user_center?serverTimezone=UTC"
+                        connectionURL="jdbc:mysql://39.98.126.20:3306/user_center?serverTimezone=UTC"
                         userId="hanfu_admin" password="Davin1234!">
         </jdbcConnection>
 
@@ -44,110 +44,122 @@
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table schema="user_center" tableName="activiti_strategy"
+        <table schema="user_center" tableName="activity_file_desc"
+               domainObjectName="ActivityFileDesc">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="activity_user"
+               domainObjectName="ActivityUser">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <!-- <table schema="user_center" tableName="activiti_strategy"
                domainObjectName="ActivitiStrategy">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="activity_strategy_instance"
+        </table> -->
+        <!-- <table schema="user_center" tableName="activity_strategy_instance"
                domainObjectName="ActivityStrategyInstance">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="activiti_rule_instance"
+        </table> -->
+        <!-- <table schema="user_center" tableName="activiti_rule_instance"
                domainObjectName="ActivitiRuleInstance">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="strategy_rule"
+        </table> -->
+        <!-- <table schema="user_center" tableName="strategy_rule"
                domainObjectName="StrategyRule">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="activity"
+        </table> -->
+       <!--  <table schema="user_center" tableName="activity"
                domainObjectName="Activity">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="strategy_rule_relate"
+        </table> -->
+        <!-- <table schema="user_center" tableName="strategy_rule_relate"
                domainObjectName="StrategyRuleRelate">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="activity_vote_records"
+        </table> -->
+        <!-- <table schema="user_center" tableName="activity_vote_records"
                domainObjectName="ActivityVoteRecords">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="hf_user_info"
+        </table> -->
+        <!-- <table schema="user_center" tableName="hf_user_info"
                domainObjectName="UserInfo">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
-        <table schema="user_center" tableName="hf_user"
+        <!-- <table schema="user_center" tableName="hf_user"
                domainObjectName="HfUser">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
-        <table schema="user_center" tableName="file_desc"
+        <!-- <table schema="user_center" tableName="file_desc"
                domainObjectName="FileDesc">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
 
-        <table schema="user_center" tableName="activity_user_evaluate"
+        <!-- <table schema="user_center" tableName="activity_user_evaluate"
                domainObjectName="ActivityUserEvaluate">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
-        <table schema="user_center" tableName="activity_evaluate_template"
+        </table> -->
+        <!-- <table schema="user_center" tableName="activity_evaluate_template"
                domainObjectName="ActivityEvaluateTemplate">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
 
-        <table schema="user_center" tableName="activity_user_info"
+        <!-- <table schema="user_center" tableName="activity_user_info"
                domainObjectName="ActivityUserInfo">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
-        <table schema="user_center" tableName="activity_user_experience"
+        <!-- <table schema="user_center" tableName="activity_user_experience"
                domainObjectName="ActivityUserExperience">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
-        <table schema="user_center" tableName="activity_compony"
+        <!-- <table schema="user_center" tableName="activity_compony"
                domainObjectName="ActivityCompony">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
 
-        <table schema="user_center" tableName="activity_department"
+        <!-- <table schema="user_center" tableName="activity_department"
                domainObjectName="ActivityDepartment">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table>
+        </table> -->
     </context>
 </generatorConfiguration>
