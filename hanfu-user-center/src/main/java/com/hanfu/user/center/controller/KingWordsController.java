@@ -840,18 +840,18 @@ public class KingWordsController {
 		// uuid生成唯一key
 		String skey = UUID.randomUUID().toString();
 		// 根据openid查询skey是否存在
-//		String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
-//		if (!StringUtils.isEmpty(skey_redis)) {
-//			// 存在 删除 skey 重新生成skey 将skey返回
-//			redisTemplate.delete(skey_redis);
-//			skey = UUID.randomUUID().toString();
-//		}
+		String skey_redis = String.valueOf(redisTemplate.opsForValue().get(openid));
+		if (!StringUtils.isEmpty(skey_redis)) {
+			// 存在 删除 skey 重新生成skey 将skey返回
+			redisTemplate.delete(skey_redis);
+			skey = UUID.randomUUID().toString();
+		}
 		// 缓存一份新的
 		JSONObject sessionObj = new JSONObject();
 		sessionObj.put("openId", openid);
 		sessionObj.put("sessionKey", sessionKey);
-//		redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
-//		redisTemplate.opsForValue().set(openid.toString(), skey);
+		redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
+		redisTemplate.opsForValue().set(openid.toString(), skey);
 		// 把新的sessionKey和oppenid返回给小程序
 		map.put("skey", skey);
 		map.put("result", "0");
