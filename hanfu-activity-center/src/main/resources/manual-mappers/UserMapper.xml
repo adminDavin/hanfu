@@ -43,7 +43,7 @@
         a1.evaluation,h1.phone,
         a1.department_id
         FROM
-        hf_user h1
+        activity_user h1
         LEFT JOIN
         activity_user_info a1
         ON
