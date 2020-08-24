@@ -58,7 +58,7 @@ public class AlipayConfig {
     /**
      * 异步地址
      */
-    private String notifyUrl;
+    private String notifyUrl = "https://www.tjsichuang.cn:1443/api/cart/hf-payment/notify";
     /**
      * 最大查询次数
      */

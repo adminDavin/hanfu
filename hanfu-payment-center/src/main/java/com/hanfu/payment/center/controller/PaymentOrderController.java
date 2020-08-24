@@ -293,7 +293,7 @@ public class PaymentOrderController {
  				detail.setIsDeleted((byte) 0);
  				hfBalanceDetailMapper.insert(detail);
 			return builder.body(ResponseUtils.getResponseBody(0));
-		} else{
+		} else if (hfOrderList.get(0).getPaymentName().equals("wechart") && hfOrderList.get(0).getPaymentType().equals(0)){
 //			MiniProgramConfig config = new MiniProgramConfig();
 		WXPay wxpay = new WXPay(miniProgramConfig);
 		Map<String, String> data = new HashMap<>();
@@ -345,7 +345,10 @@ public class PaymentOrderController {
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(resp));
-	}
+	} else {
+			refund(hfOrder.getAmount()/100,payOrderId,"原因");
+			return builder.body(ResponseUtils.getResponseBody(0));
+		}
 	}
 
 	private Map<String, String> getWxPayData(MiniProgramConfig config, String openId, String orderCode,Integer Amount)

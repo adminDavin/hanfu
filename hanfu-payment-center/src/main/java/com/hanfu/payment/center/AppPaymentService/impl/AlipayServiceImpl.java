@@ -50,6 +50,7 @@ public class AlipayServiceImpl implements AlipayService {
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
         model.setSubject(body);
         model.setOutTradeNo(orderNo);
+        System.out.println("支付:"+amount/100+"元");
         model.setTotalAmount(String.valueOf(amount/100));
         model.setProductCode("QUICK_MSECURITY_PAY");
         model.setPassbackParams("公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数");
@@ -58,13 +59,7 @@ public class AlipayServiceImpl implements AlipayService {
         AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
         ali_request.setBizModel(model);
         ali_request.setNotifyUrl(alipayConfig.getNotifyUrl());// 回调地址
-        System.out.println(model);
-        System.out.println(alipayConfig.getNotifyUrl());
         AlipayTradeAppPayResponse ali_response = alipayClient.sdkExecute(ali_request);
-        System.out.println(ali_response);
-        System.out.println("我是appid"+alipayConfig.getAppid());
-        System.out.println(alipayConfig.getAppPrivateKey());
-        System.out.println(alipayConfig.getAlipayPublicKey());
         //就是orderString 可以直接给客户端请求，无需再做处理。
         return ali_response.getBody();
     }
