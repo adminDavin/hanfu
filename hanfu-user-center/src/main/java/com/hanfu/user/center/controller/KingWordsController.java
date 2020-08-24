@@ -848,8 +848,8 @@ public class KingWordsController {
 		JSONObject sessionObj = new JSONObject();
 		sessionObj.put("openId", openid);
 		sessionObj.put("sessionKey", sessionKey);
-		redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
-		redisTemplate.opsForValue().set(openid.toString(), skey);
+//		redisTemplate.opsForValue().set(skey, sessionObj.toJSONString());
+//		redisTemplate.opsForValue().set(openid.toString(), skey);
 		// 把新的sessionKey和oppenid返回给小程序
 		map.put("skey", skey);
 		map.put("result", "0");
