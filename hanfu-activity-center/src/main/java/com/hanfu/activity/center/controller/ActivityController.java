@@ -34,6 +34,7 @@ import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityUserInfoMapper;
+import com.hanfu.activity.center.dao.ActivityUserMapper;
 import com.hanfu.activity.center.dao.ActivityVoteRecordsMapper;
 import com.hanfu.activity.center.dao.HfUserMapper;
 import com.hanfu.activity.center.dao.StrategyRuleMapper;
@@ -56,6 +57,7 @@ import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityExample;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
+import com.hanfu.activity.center.model.ActivityUser;
 import com.hanfu.activity.center.model.ActivityUserInfo;
 import com.hanfu.activity.center.model.ActivityUserInfoExample;
 import com.hanfu.activity.center.model.ActivityVoteRecords;
@@ -103,6 +105,9 @@ public class ActivityController {
 
     @Autowired
     private HfUserMapper hfUserMapper;
+    
+    @Autowired
+    private ActivityUserMapper activityUserMapper;
 
     @Autowired
     private ActivityVoteRecordsMapper activityVoteRecordsMapper;
@@ -170,7 +175,7 @@ public class ActivityController {
                 } else {
                     total.setVoteCount(list.get(j).getUserTicketCount());
                 }
-                HfUser hfUser = hfUserMapper.selectByPrimaryKey(list.get(j).getUserId());
+                ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(list.get(j).getUserId());
                 if (hfUser != null) {
                     ActivityUserInfoExample example2 = new ActivityUserInfoExample();
                     example2.createCriteria().andUserIdEqualTo(list.get(j).getUserId());
