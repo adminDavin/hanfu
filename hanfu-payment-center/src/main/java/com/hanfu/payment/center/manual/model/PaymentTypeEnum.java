@@ -4,7 +4,8 @@ package com.hanfu.payment.center.manual.model;
 public enum PaymentTypeEnum {
     WECHART(1, "wechart"),
     BALANCE(0, "balance"),
-    APPCHART(2, "appchart");
+    APPCHART(2, "appchart"),
+    APPALIPAY(3,"appalipay");
     private Integer paymentType;
     private String paymentTypeName;
     

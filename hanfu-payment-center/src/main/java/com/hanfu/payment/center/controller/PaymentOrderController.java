@@ -11,8 +11,13 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alipay.api.AlipayApiException;
+import com.hanfu.payment.center.AppPaymentService.AlipayService;
+import com.hanfu.payment.center.config.AlipayConfig;
 import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.model.*;
+import com.hanfu.payment.center.tool.ResultMap;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +26,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
@@ -45,10 +46,6 @@ import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
@@ -108,7 +105,10 @@ public class PaymentOrderController {
     private PayOrderMapper payOrderMapper;
 	@Autowired
 	private MiniProgramConfig miniProgramConfig;
-
+	@Autowired
+	private AlipayService alipayService;
+	@Autowired
+	private AlipayConfig alipayConfig;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -117,8 +117,8 @@ public class PaymentOrderController {
 	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 //		HfOrderDisplay hfOrder = hfOrderDao.selectHfOrderbyCode(outTradeNo);
-		miniProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
-		System.out.println("machid"+miniProgramConfig.getMchID());
+//		Integer.valueOf((String) req.getServletContext().getAttribute("bossId"))
+
 		HfUser hfUser = hfOrderDao.selectHfUser(userId);
         PayOrder payOrder= payOrderMapper.selectByPrimaryKey(payOrderId);
         HfOrderExample hfOrderExample = new HfOrderExample();
@@ -126,16 +126,59 @@ public class PaymentOrderController {
 
 		Map<String, String> resp = null;
 		if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.WECHART)) {
+			miniProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
 			resp = wxPay(hfUser, payOrder);
 		} else if(PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.BALANCE)){
 			resp = balancePay(hfUser, payOrder);
 		} else if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPCHART)){
 //			resp = AppCHPay(hfUser, payOrder);
+		} else if(PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPALIPAY)){
+			alipayConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
+			resp = appalipay(hfUser, payOrder);
+			System.out.println("app");
 		}
 		System.out.println(resp);
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
-
+//app支付宝支付
+	private Map<String ,String> appalipay(HfUser hfUser,PayOrder payOrder) throws AlipayApiException {
+		String orderStr = alipayService.createOrder("sbAJBJXsuJA", payOrder.getAmount(), "shihao");
+		Map<String, String> resp = new HashMap<>();
+		resp.put("data", orderStr);
+		return resp;
+	}
+	@ApiOperation(value = "退款", notes = "退款")
+	@PostMapping("/refund")
+	public ResultMap refund(@ApiParam(value = "订单号") @RequestParam String orderNo,
+							@ApiParam(value = "退款金额") @RequestParam double amount,
+							@ApiParam(value = "退款原因") @RequestParam(required = false) String refundReason) {
+		return alipayService.refund(orderNo, amount, refundReason);
+	}
+	/**
+	 * 支付异步通知
+	 * 接收到异步通知并验签通过后，一定要检查通知内容，
+	 * 包括通知中的app_id、out_trade_no、total_amount是否与请求中的一致，并根据trade_status进行后续业务处理。
+	 * https://docs.open.alipay.com/194/103296
+	 */
+	@RequestMapping("/notify")
+	public String notify(HttpServletRequest request) {
+		// 验证签名
+		boolean flag = alipayService.rsaCheckV1(request);
+		if (flag) {
+			String tradeStatus = request.getParameter("trade_status"); // 交易状态
+			String outTradeNo = request.getParameter("out_trade_no"); // 商户订单号
+			String tradeNo = request.getParameter("trade_no"); // 支付宝订单号
+			/**
+			 * 还可以从request中获取更多有用的参数，自己尝试
+			 */
+			boolean notify = alipayService.notify(tradeStatus, outTradeNo, tradeNo);
+			if(notify){
+				return "success";
+			}
+		}
+		return "fail";
+	}
+	//
 	private Map<String, String> balancePay(HfUser hfUser, PayOrder payOrder) throws Exception {
 //		MiniProgramConfig config = new MiniProgramConfig();
 //		Map<String, String> data = getWxPayData(config, hfUser.getAuthKey(), hfOrder.getOrderCode());
