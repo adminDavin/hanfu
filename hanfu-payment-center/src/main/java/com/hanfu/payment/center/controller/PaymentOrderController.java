@@ -352,6 +352,7 @@ public class PaymentOrderController {
 	}
 	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
 		System.out.println("退款"+hfOrder.getAmount()/100);
+		System.out.println(hfOrder.getAmount());
 			refunds(String.valueOf(payOrderId),(hfOrder.getAmount()/100),"原因");
 			return builder.body(ResponseUtils.getResponseBody(2));
 		}
