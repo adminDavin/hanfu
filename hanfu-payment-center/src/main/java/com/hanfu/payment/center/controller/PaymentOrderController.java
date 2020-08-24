@@ -248,13 +248,12 @@ public class PaymentOrderController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> refund( Integer userId,Integer payOrderId,String orderCode) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+		System.out.println(req.getServletContext().getAttribute("bossId"));
 		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
-		alipayConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
+		alipayConfig.setBossId(2);
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
-		System.out.println("我是"+hfOrder+"我是");
 		if (orderCode!=null){
-			System.out.println("我是1"+hfOrder+"我是1");
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
 			paramMap2.add("stoneId",hfOrder.getStoneId());
 			paramMap2.add("balanceType","rechargeAmount");
