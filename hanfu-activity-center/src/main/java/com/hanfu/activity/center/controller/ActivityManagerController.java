@@ -60,6 +60,7 @@ import com.hanfu.activity.center.dao.ActivitiRuleInstanceMapper;
 import com.hanfu.activity.center.dao.ActivitiStrategyMapper;
 import com.hanfu.activity.center.dao.ActivityDepartmentMapper;
 import com.hanfu.activity.center.dao.ActivityEvaluateTemplateMapper;
+import com.hanfu.activity.center.dao.ActivityFileDescMapper;
 import com.hanfu.activity.center.dao.ActivityMapper;
 import com.hanfu.activity.center.dao.ActivityStrategyInstanceMapper;
 import com.hanfu.activity.center.dao.ActivityUserEvaluateMapper;
@@ -85,6 +86,7 @@ import com.hanfu.activity.center.model.ActivityDepartmentExample;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplate;
 import com.hanfu.activity.center.model.ActivityEvaluateTemplateExample;
 import com.hanfu.activity.center.model.ActivityExample;
+import com.hanfu.activity.center.model.ActivityFileDesc;
 import com.hanfu.activity.center.model.ActivityStrategyInstance;
 import com.hanfu.activity.center.model.ActivityStrategyInstanceExample;
 import com.hanfu.activity.center.model.ActivityUserEvaluate;
@@ -163,6 +165,9 @@ public class ActivityManagerController {
 
     @Autowired
     private FileDescMapper fileDescMapper;
+    
+    @Autowired
+    private ActivityFileDescMapper activityFileDescMapper;
 
     @Autowired
     private UserInfoMapper userInfoMapper;
@@ -1007,7 +1012,7 @@ public class ActivityManagerController {
             @ApiImplicitParam(paramType = "query", name = "fileId", value = "文件id", required = true, type = "Integer")})
     public void getFile(@RequestParam(name = "fileId") Integer fileId, HttpServletResponse response) throws Exception {
         response.addHeader("Access-Control-Allow-Origin", "*");
-        FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(fileId);
+        ActivityFileDesc fileDesc = activityFileDescMapper.selectByPrimaryKey(fileId);
         if (fileDesc == null) {
             throw new Exception("file not exists");
         }
