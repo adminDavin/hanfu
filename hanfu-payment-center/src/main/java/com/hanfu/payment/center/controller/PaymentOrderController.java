@@ -250,8 +250,8 @@ public class PaymentOrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
+		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
 		if (orderCode!=null){
-			hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
 			System.out.println("我是"+hfOrder+"我是");
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
 			paramMap2.add("stoneId",hfOrder.getStoneId());
