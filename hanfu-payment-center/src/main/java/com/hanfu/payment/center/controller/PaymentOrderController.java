@@ -250,7 +250,7 @@ public class PaymentOrderController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		System.out.println(req.getServletContext().getAttribute("bossId"));
 		miniProgramConfig.setBossId((Integer) req.getServletContext().getAttribute("bossId"));
-		alipayConfig.setBossId(2);
+//		alipayConfig.setBossId(2);
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
 		if (orderCode!=null){
