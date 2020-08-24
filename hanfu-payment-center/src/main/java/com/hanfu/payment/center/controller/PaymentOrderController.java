@@ -142,7 +142,7 @@ public class PaymentOrderController {
 	}
 //app支付宝支付
 	private Map<String ,String> appalipay(HfUser hfUser,PayOrder payOrder) throws AlipayApiException {
-		String orderStr = alipayService.createOrder("sbAJBJXsuJA", payOrder.getAmount(), "shihao");
+		String orderStr = alipayService.createOrder(String.valueOf(payOrder.getId()), payOrder.getAmount(), "shihao");
 		Map<String, String> resp = new HashMap<>();
 		resp.put("data", orderStr);
 		return resp;
