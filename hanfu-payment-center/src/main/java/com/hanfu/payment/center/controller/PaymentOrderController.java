@@ -162,12 +162,16 @@ public class PaymentOrderController {
 	 */
 	@RequestMapping("/notify")
 	public String notify(HttpServletRequest request) {
+		System.out.println("异步回调");
 		// 验证签名
 		boolean flag = alipayService.rsaCheckV1(request);
 		if (flag) {
 			String tradeStatus = request.getParameter("trade_status"); // 交易状态
 			String outTradeNo = request.getParameter("out_trade_no"); // 商户订单号
 			String tradeNo = request.getParameter("trade_no"); // 支付宝订单号
+			System.out.println(tradeStatus);
+			System.out.println(outTradeNo);
+			System.out.println(tradeNo);
 			/**
 			 * 还可以从request中获取更多有用的参数，自己尝试
 			 */
