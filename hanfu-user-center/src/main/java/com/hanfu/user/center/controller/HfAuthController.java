@@ -721,7 +721,7 @@ public class HfAuthController {
 
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
-		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
 			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
 		}
 		hfMemberLevel.setLevel(level);
