@@ -721,16 +721,18 @@ public class HfAuthController {
 
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
-		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-		}
 		hfMemberLevel.setLevel(level);
 		hfMemberLevel.setAmount(amount);
 		hfMemberLevel.setLevelDescribe(levelDescribe);
 		hfMemberLevel.setCreateTime(LocalDateTime.now());
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevel.setIsDeleted((byte) 0);
-		hfMemberLevelMapper.insert(hfMemberLevel);
+		System.out.println(request.getServletContext().getAttribute("getServletContextType").equals("boss"));
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			hfMemberLevelMapper.insert(hfMemberLevel);
+		}
+		System.out.println(request.getServletContext().getAttribute("getServletContext"));
 		return builder.body(ResponseUtils.getResponseBody(hfMemberLevel.getId()));
 	}
 
