@@ -855,7 +855,7 @@ public class HfAuthController {
 	@ApiOperation(value = "添加会员", notes = "添加会员")
 	@RequestMapping(value = "/addUserMember", method = RequestMethod.POST)
 //	Date startTime, Date endTime, HfUserMember hfUserMember,
-	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId) throws JSONException {
+	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId, HttpServletRequest request) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
@@ -889,6 +889,7 @@ public class HfAuthController {
 				member.setCreateTime(LocalDateTime.now());
 				member.setModifyTime(LocalDateTime.now());
 				member.setIsDeleted((byte) 0);
+				member.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
 				hfUserMemberMapper.insert(member);
 			}
 		}
