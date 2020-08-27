@@ -109,6 +109,8 @@ public class PaymentOrderController {
 	private AlipayService alipayService;
 	@Autowired
 	private AlipayConfig alipayConfig;
+	@Autowired
+	private HfBossMapper hfBossMapper;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -133,16 +135,18 @@ public class PaymentOrderController {
 		} else if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPCHART)){
 //			resp = AppCHPay(hfUser, payOrder);
 		} else if(PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPALIPAY)){
-			alipayConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
-			resp = appalipay(hfUser, payOrder);
+			Integer boss = Integer.valueOf((String) req.getServletContext().getAttribute("bossId"));
+			alipayConfig.setBossId(boss);
+			resp = appalipay(hfUser, payOrder,boss);
 			System.out.println("app");
 		}
 		System.out.println(resp);
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 //app支付宝支付
-	private Map<String ,String> appalipay(HfUser hfUser,PayOrder payOrder) throws AlipayApiException {
-		String orderStr = alipayService.createOrder(String.valueOf(payOrder.getId()), payOrder.getAmount(), "shihao");
+	private Map<String ,String> appalipay(HfUser hfUser,PayOrder payOrder,Integer bossId) throws AlipayApiException {
+		HfBoss hfBoss = hfBossMapper.selectByPrimaryKey(bossId);
+		String orderStr = alipayService.createOrder(String.valueOf(payOrder.getId()), payOrder.getAmount(), hfBoss.getName());
 		Map<String, String> resp = new HashMap<>();
 		resp.put("data", orderStr);
 		return resp;
