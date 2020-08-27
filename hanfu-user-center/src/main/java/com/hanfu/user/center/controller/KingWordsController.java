@@ -803,16 +803,16 @@ public class KingWordsController {
 //        return builder.body(ResponseUtils.getResponseBody(page));
 //    }
 //
-//    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
-//    @ApiOperation(value = "删除人", notes = "删除人")
-//    public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception {
-//        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-//        HfUser hfUser = hfUserMapper.selectByPrimaryKey(userId);
-//        if (hfUser == null) {
-//            return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
-//        }
-//        return builder.body(ResponseUtils.getResponseBody(hfUserMapper.deleteByPrimaryKey(userId)));
-//    }
+    @RequestMapping(path = "/deleteUser", method = RequestMethod.GET)
+    @ApiOperation(value = "删除人", notes = "删除人")
+    public ResponseEntity<JSONObject> deleteUser(Integer userId) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        ActivityUser hfUser = activityUserMapper.selectByPrimaryKey(userId);
+        if (hfUser == null) {
+            return builder.body(ResponseUtils.getResponseBody("此用户不存在"));
+        }
+        return builder.body(ResponseUtils.getResponseBody(activityUserMapper.deleteByPrimaryKey(userId)));
+    }
 	@RequestMapping(path = "/selectList", method = RequestMethod.POST)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
 	public ResponseEntity<JSONObject> selectList(UserInfo userInfo) throws Exception {
