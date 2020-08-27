@@ -721,16 +721,18 @@ public class HfAuthController {
 
 		HfMemberLevel hfMemberLevel = new HfMemberLevel();
 		hfMemberLevel.setLevelName(name);
-		if (request.getServletContext().getAttribute("getServletContext").equals("boss")) {
-			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
-		}
 		hfMemberLevel.setLevel(level);
 		hfMemberLevel.setAmount(amount);
 		hfMemberLevel.setLevelDescribe(levelDescribe);
 		hfMemberLevel.setCreateTime(LocalDateTime.now());
 		hfMemberLevel.setModifyTime(LocalDateTime.now());
 		hfMemberLevel.setIsDeleted((byte) 0);
-		hfMemberLevelMapper.insert(hfMemberLevel);
+		System.out.println(request.getServletContext().getAttribute("getServletContextType").equals("boss"));
+		if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+			hfMemberLevel.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+			hfMemberLevelMapper.insert(hfMemberLevel);
+		}
+		System.out.println(request.getServletContext().getAttribute("getServletContext"));
 		return builder.body(ResponseUtils.getResponseBody(hfMemberLevel.getId()));
 	}
 
@@ -853,7 +855,7 @@ public class HfAuthController {
 	@ApiOperation(value = "添加会员", notes = "添加会员")
 	@RequestMapping(value = "/addUserMember", method = RequestMethod.POST)
 //	Date startTime, Date endTime, HfUserMember hfUserMember,
-	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId) throws JSONException {
+	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId, HttpServletRequest request) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfLevelDescribeExample describeExample = new HfLevelDescribeExample();
@@ -887,6 +889,7 @@ public class HfAuthController {
 				member.setCreateTime(LocalDateTime.now());
 				member.setModifyTime(LocalDateTime.now());
 				member.setIsDeleted((byte) 0);
+				member.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
 				hfUserMemberMapper.insert(member);
 			}
 		}

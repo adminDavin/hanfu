@@ -147,9 +147,9 @@ public class PaymentOrderController {
 		resp.put("data", orderStr);
 		return resp;
 	}
-//	@ApiOperation(value = "退款", notes = "退款")
-//	@PostMapping("/refund")
-	private ResultMap refunds(@ApiParam(value = "订单号") @RequestParam String orderNo,
+	@ApiOperation(value = "退款", notes = "退款")
+	@PostMapping("/refunds")
+	public ResultMap refunds(@ApiParam(value = "订单号") @RequestParam String orderNo,
 							@ApiParam(value = "退款金额") @RequestParam double amount,
 							@ApiParam(value = "退款原因") @RequestParam(required = false) String refundReason) {
 		return alipayService.refund(orderNo, amount, refundReason);
@@ -162,12 +162,16 @@ public class PaymentOrderController {
 	 */
 	@RequestMapping("/notify")
 	public String notify(HttpServletRequest request) {
+		System.out.println("异步回调");
 		// 验证签名
 		boolean flag = alipayService.rsaCheckV1(request);
 		if (flag) {
 			String tradeStatus = request.getParameter("trade_status"); // 交易状态
 			String outTradeNo = request.getParameter("out_trade_no"); // 商户订单号
 			String tradeNo = request.getParameter("trade_no"); // 支付宝订单号
+			System.out.println(tradeStatus);
+			System.out.println(outTradeNo);
+			System.out.println(tradeNo);
 			/**
 			 * 还可以从request中获取更多有用的参数，自己尝试
 			 */
@@ -351,8 +355,10 @@ public class PaymentOrderController {
 		return builder.body(ResponseUtils.getResponseBody(resp));
 	}
 	if(hfOrderList.get(0).getPaymentName().equals("appalipay") && hfOrderList.get(0).getPaymentType().equals(0)) {
-			refunds(String.valueOf(payOrderId),hfOrder.getAmount()/100,"原因");
-			return builder.body(ResponseUtils.getResponseBody(0));
+		System.out.println("退款"+(hfOrder.getAmount().doubleValue())/100);
+		System.out.println(hfOrder.getAmount());
+			refunds(String.valueOf(payOrderId),((hfOrder.getAmount().doubleValue())/100),"原因");
+			return builder.body(ResponseUtils.getResponseBody(2));
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
