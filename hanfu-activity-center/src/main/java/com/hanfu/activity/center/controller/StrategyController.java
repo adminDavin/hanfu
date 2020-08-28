@@ -417,9 +417,10 @@ public class StrategyController {
 
     @RequestMapping(path = "/addCompany", method = RequestMethod.POST)
     @ApiOperation(value = "添加公司", notes = "添加公司")
-    public ResponseEntity<JSONObject> addCompany(ActivityCompanyRequest request) throws Exception {
+    public ResponseEntity<JSONObject> addCompany(ActivityCompanyRequest request,Integer companyId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         ActivityCompony compony = new ActivityCompony();
+        compony.setCompanyId(companyId);
         compony.setCompanyName(request.getCompanyName());
         compony.setCompanyInfo(request.getCompanyInfo());
         compony.setCreateTime(LocalDateTime.now());
@@ -432,9 +433,11 @@ public class StrategyController {
 
     @RequestMapping(path = "/findCompany", method = RequestMethod.GET)
     @ApiOperation(value = "查询公司", notes = "查询公司")
-    public ResponseEntity<JSONObject> addCompany() throws Exception {
+    public ResponseEntity<JSONObject> addCompany(Integer companyId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(null)));
+        ActivityComponyExample example = new ActivityComponyExample();
+        example.createCriteria().andCompanyIdEqualTo(companyId);
+        return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(example)));
     }
 
     @RequestMapping(path = "/findDepartmentByCompany", method = RequestMethod.GET)

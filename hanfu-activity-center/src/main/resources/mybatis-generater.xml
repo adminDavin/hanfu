@@ -44,8 +44,8 @@
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table schema="user_center" tableName="activiti_strategy"
-               domainObjectName="ActivitiStrategy">
+        <table schema="user_center" tableName="activity_compony"
+               domainObjectName="ActivityCompony">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
