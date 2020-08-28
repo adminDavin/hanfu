@@ -257,6 +257,10 @@ public class ActivityManagerController {
     public ResponseEntity<JSONObject> addActivity(ActivityRequest request,Integer companyId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         Activity activity = new Activity();
+        if(companyId == null) {
+        	return builder.body(ResponseUtils.getResponseBody(-1));
+        }
+        activity.setCompanyId(companyId);
         activity.setActivityName(request.getActivityName());
         activity.setActivityDesc(request.getActivityDesc());
 //		activity.setActivityStatus(request.getActivityStatus());
