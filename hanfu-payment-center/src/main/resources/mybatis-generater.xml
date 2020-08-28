@@ -140,8 +140,20 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table> -->
-        <table schema="user_center" tableName="hf_boss"
-               domainObjectName="HfBoss">
+        <table schema="user_center" tableName="withdrawal"
+               domainObjectName="Withdrawal">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="withdrawal_audit"
+               domainObjectName="WithdrawalAudit">
+            <property name="useActualColumnNames" value="false"/>
+            <generatedKey column="id" sqlStatement="mysql"
+                          identity="true"/>
+        </table>
+        <table schema="user_center" tableName="withdrawal_method"
+               domainObjectName="WithdrawalMethod">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>

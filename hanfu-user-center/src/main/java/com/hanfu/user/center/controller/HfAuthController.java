@@ -27,9 +27,12 @@ import javax.servlet.http.HttpSession;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.pagehelper.Page;
 import com.hanfu.common.service.FileMangeService;
+import com.hanfu.user.center.Jurisdiction.dao.JurisdictionMapper;
+import com.hanfu.user.center.Jurisdiction.dao.RoleJurisdictionMapper;
 import com.hanfu.user.center.Jurisdiction.dao.RolesMapper;
-import com.hanfu.user.center.Jurisdiction.model.Roles;
-import com.hanfu.user.center.Jurisdiction.model.RolesExample;
+import com.hanfu.user.center.Jurisdiction.model.*;
+import com.hanfu.user.center.Jurisdiction.model.Jurisdiction;
+import com.hanfu.user.center.Jurisdiction.model.JurisdictionExample;
 import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.manual.model.*;
 import com.hanfu.user.center.model.*;
@@ -161,7 +164,11 @@ public class HfAuthController {
 	@Autowired
 	private HfOrderMapper hfOrderMapper;
 
+@Autowired
+private JurisdictionMapper jurisdictionMapper;
 
+@Autowired
+private RoleJurisdictionMapper roleJurisdictionMapper;
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -1985,6 +1992,42 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 		hfBossExample.createCriteria().andIdEqualTo(hfBoss.getId());
 		hfBossMapper.updateByExampleSelective(hfBoss1,hfBossExample);
 	}
+	//添加角色
+	Roles roles = new Roles();
+	roles.setCreateDate(LocalDateTime.now());
+	roles.setModifyDate(LocalDateTime.now());
+	roles.setIsDeleted(0);
+	roles.setMachId(hfBoss.getId());
+	roles.setRoleType("stone");
+	roles.setRoleCode("boss");
+	roles.setRoleName("root");
+//	roles.setLastModifier(String.valueOf(hfUser.getId()));
+	rolesMapper.insertSelective(roles);
+	HfModuleExample hfModuleExample = new HfModuleExample();
+	hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andHfModelNotEqualTo("activity").andHfModelNotEqualTo("warehouse");
+	List<HfModule> hfModuleList = hfModuleMapper.selectByExample(hfModuleExample);
+	hfModuleList.forEach(a->{
+		RoleModel roleModel = new RoleModel();
+		roleModel.setRoleId(roles.getId());
+		roleModel.setModelId(a.getId());
+		roleModel.setCreateTime(LocalDateTime.now());
+		roleModel.setModifyTime(LocalDateTime.now());
+		roleModel.setIsDeleted((byte) 0);
+		roleModelMapper.insertSelective(roleModel);
+	});
+	Set<Integer> moduleId = hfModuleList.stream().map(a->a.getId()).collect(Collectors.toSet());
+	JurisdictionExample jurisdictionExample = new JurisdictionExample();
+	jurisdictionExample.createCriteria().andModelIdIn(Lists.newArrayList(moduleId));
+	List<Jurisdiction> jurisdictionList = jurisdictionMapper.selectByExample(jurisdictionExample);
+	jurisdictionList.forEach(a->{
+		RoleJurisdiction roleJurisdiction = new RoleJurisdiction();
+		roleJurisdiction.setRoleId(roles.getId());
+		roleJurisdiction.setJurisdictionId(a.getId());
+		roleJurisdiction.setCreateTime(LocalDateTime.now());
+		roleJurisdiction.setModifyTime(LocalDateTime.now());
+		roleJurisdiction.setIsDeleted((short) 0);
+		roleJurisdictionMapper.insertSelective(roleJurisdiction);
+	});
 	return builder.body(ResponseUtils.getResponseBody("成功"));
 }
 	@ApiOperation(value = "小程序网站app列表", notes = "小程序网站app列表")

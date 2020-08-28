@@ -2,6 +2,8 @@ package com.hanfu.product.center.request;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 public class HfStoneRequest {
     @ApiModelProperty(required = true, name = "stoneId", value = "店铺id")
     private Integer stoneId;
@@ -17,6 +19,7 @@ public class HfStoneRequest {
     private Integer hfStatus;
 
     private String address;
+    private String phone;
 
     public Integer getStoneId() {
         return stoneId;
@@ -72,5 +75,13 @@ public class HfStoneRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

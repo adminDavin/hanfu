@@ -90,7 +90,9 @@ public class CreateHfOrderRequest extends CommonRequest {
     
     public static enum PaymentType {
         WECHART(1, "wechart"),
-        BALANCE(0, "balance");
+        BALANCE(0, "balance"),
+        APPCHART(2, "appchart"),
+        APPALIPAY(3,"appalipay");
         private Integer paymentType;
         private String paymentTypeName;
         

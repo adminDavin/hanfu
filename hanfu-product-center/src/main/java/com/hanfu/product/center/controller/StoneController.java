@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hanfu.product.center.dao.*;
+import com.hanfu.product.center.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,24 +48,6 @@ import com.hanfu.product.center.manual.dao.HomePageDao;
 import com.hanfu.product.center.manual.model.HfStoneInfo;
 import com.hanfu.product.center.manual.model.HomePageInfo;
 import com.hanfu.product.center.manual.model.ProductStone.StonePictureTypeEnum;
-import com.hanfu.product.center.model.FileDesc;
-import com.hanfu.product.center.model.HfGoods;
-import com.hanfu.product.center.model.HfGoodsExample;
-import com.hanfu.product.center.model.HfGoodsPictrue;
-import com.hanfu.product.center.model.HfGoodsPictrueExample;
-import com.hanfu.product.center.model.HfGoodsSpecExample;
-import com.hanfu.product.center.model.HfOrderDetail;
-import com.hanfu.product.center.model.HfOrderDetailExample;
-import com.hanfu.product.center.model.HfPriceExample;
-import com.hanfu.product.center.model.HfRespExample;
-import com.hanfu.product.center.model.HfStone;
-import com.hanfu.product.center.model.HfStoneConcernExample;
-import com.hanfu.product.center.model.HfStoneExample;
-import com.hanfu.product.center.model.HfStonePicture;
-import com.hanfu.product.center.model.HfStonePictureExample;
-import com.hanfu.product.center.model.HfUserBrowseRecord;
-import com.hanfu.product.center.model.HfUserBrowseRecordExample;
-import com.hanfu.product.center.model.Product;
 import com.hanfu.product.center.request.HfStoneRequest;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -130,7 +113,14 @@ public class StoneController {
     private HttpServletRequest request;
     @Autowired
     private HttpServletResponse response;
-    
+    @Autowired
+    private HfAuthMapper hfAuthMapper;
+    @Autowired
+    private HfUserMapper hfUserMapper;
+    @Autowired
+    private RolesMapper rolesMapper;
+    @Autowired
+    private AccountRolesMapper accountRolesMapper;
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -175,20 +165,76 @@ public class StoneController {
                 request.setBossId((Integer) requests.getServletContext().getAttribute("getServletContext"));
             }
         }
+        HfAuthExample hfAuthExample = new HfAuthExample();
+        hfAuthExample.createCriteria().andAuthKeyEqualTo(request.getPhone()).andIdDeletedEqualTo((byte) 0);
+        List<HfAuth> hfAuths = hfAuthMapper.selectByExample(hfAuthExample);
         HfStone item = new HfStone();
         item.setHfName(request.getHfName());
         item.setBossId(request.getBossId());
         item.setHfDesc(request.getHfDesc());
         item.setHfStatus(request.getHfStatus());
-        item.setUserId(request.getUserId());
+        item.setAddress(request.getAddress());
+//        item.setUserId(request.getUserId());
         item.setConcernCount(0);
         item.setCreateTime(LocalDateTime.now());
         LocalDateTime expireTime = LocalDateTime.now();
         expireTime.plusYears(10);
         item.setExpireTime(expireTime);
         item.setIsDeleted((short) 0);
-        item.setAddress(request.getAddress());
-        return builder.body(ResponseUtils.getResponseBody(hfStoneMapper.insert(item)));
+        hfStoneMapper.insert(item);
+        if (hfAuths.size()==0){
+            HfUser hfUser = new HfUser();
+            hfUser.setBossId(0);
+            hfUser.setPhone(request.getPhone());
+            hfUser.setUserStatus((byte) 48);
+            hfUser.setRealName("超级管理员");
+            hfUser.setNickName("超级管理员");
+            hfUser.setModifyDate(LocalDateTime.now());
+            hfUser.setCreateDate(LocalDateTime.now());
+            hfUser.setIdDeleted((byte) 0);
+            hfUserMapper.insertSelective(hfUser);
+            HfAuth auth = new HfAuth();
+            auth.setAuthKey(request.getPhone());
+            auth.setAuthType(String.valueOf(2));
+            auth.setUserId(hfUser.getId());
+            auth.setAuthStatus((byte) 0);
+            auth.setIdDeleted((byte) 0);
+            auth.setEncodeType("0");
+            auth.setCreateDate(LocalDateTime.now());
+            auth.setModifyDate(LocalDateTime.now());
+            auth.setIdDeleted((byte) 0);
+            hfAuthMapper.insert(auth);
+            Account account = new Account();
+            account.setUserId(hfUser.getId());
+            account.setAccountCode(request.getPhone());
+            account.setAccountType("stone");
+            account.setAccountRole("Super Admin");
+            account.setMerchantId(item.getId());
+            account.setValid(expireTime);
+            account.setIsPerpetual(1);
+            account.setCreateDate(LocalDateTime.now());
+            account.setModifyDate(LocalDateTime.now());
+            account.setIsDeleted(0);
+            account.setLastModifier(String.valueOf(request.getUserId()));
+
+            RolesExample rolesExample = new RolesExample();
+            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
+                    .andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0)
+                    .andMachIdEqualTo(request.getBossId())
+                    .andRoleNameEqualTo("root");
+            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
+            AccountRoles accountRoles = new AccountRoles();
+            accountRoles.setAccountId(account.getId());
+            accountRoles.setRolesId(rolesList.get(0).getId());
+            accountRoles.setCreateTime(LocalDateTime.now());
+            accountRoles.setModifyTime(LocalDateTime.now());
+            accountRoles.setIsDeleted((short) 0);
+            accountRolesMapper.insertSelective(accountRoles);
+
+        }
+
+//        item.setAddress(request.getAddress());
+        return builder.body(ResponseUtils.getResponseBody(0));
     }
     
     @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
@@ -290,7 +336,7 @@ public class StoneController {
         }
         if (!StringUtils.isEmpty(request.getHfName())) {
             hfStone.setHfName(request.getHfName());
-            hfStone.setAddress(request.getAddress());
+//            hfStone.setAddress(request.getAddress());
             hfStone.setHfDesc(request.getHfDesc());
             hfStone.setHfStatus(request.getHfStatus());
             hfStone.setExpireTime(LocalDateTime.now());
