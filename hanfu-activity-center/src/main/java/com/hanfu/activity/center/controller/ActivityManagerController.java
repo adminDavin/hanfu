@@ -254,7 +254,7 @@ public class ActivityManagerController {
 
     @ApiOperation(value = "3 发起活动", notes = "公司每次举行活动的添加")
     @RequestMapping(value = "/addActivity", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addActivity(ActivityRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addActivity(ActivityRequest request,Integer companyId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         Activity activity = new Activity();
         activity.setActivityName(request.getActivityName());
