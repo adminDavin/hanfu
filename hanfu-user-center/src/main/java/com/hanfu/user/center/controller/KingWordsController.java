@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import com.hanfu.common.service.FileMangeService;
 //import com.hanfu.user.center.config.PermissionConstants;
 import com.hanfu.user.center.config.WxLoginConfig;
+import com.hanfu.user.center.dao.ActivityAuthMapper;
 import com.hanfu.user.center.dao.ActivityUserMapper;
 import com.hanfu.user.center.dao.FileDescMapper;
 import com.hanfu.user.center.dao.HfAuthMapper;
@@ -136,35 +137,45 @@ public class KingWordsController {
 	private HfBossMapper hfBossMapper;
 	@Autowired
 	private ActivityUserMapper activityUserMapper;
+	@Autowired
+	private ActivityAuthMapper activityAuthMapper;
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	@ApiOperation(value = "用户登录", notes = "用户登录")
-	@ApiImplicitParams({
-			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ", required = true, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
-			@ApiImplicitParam(paramType = "query", name = "passwd", value = "密码", required = false, type = "String"), })
+	@ApiOperation(value = "投票活动用户登录", notes = "活动用户登录")
 	public ResponseEntity<JSONObject> login(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam(name = "authType") String authType, @RequestParam(name = "authKey") String authKey,
-			@RequestParam(name = "passwd") Integer passwd) throws Exception {
-		Cookie cookie = new Cookie("autologin", authKey);
-		response.addCookie(cookie);
-
+			@RequestParam(name = "authKey") String authKey,
+			@RequestParam(name = "passwd") String passwd) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfAuth hfAuth = userDao.selectAuthList(authKey);
-		if (hfAuth == null) {
-			return builder.body(ResponseUtils.getResponseBody("还未注册"));
+		if(StringUtils.isEmpty(authKey)) {
+			return builder.body(ResponseUtils.getResponseBody("手机号为null"));
 		}
-
-		if (redisTemplate.opsForValue().get(String.valueOf(hfAuth.getUserId())) == null) {
-			String token = "_" + UUID.randomUUID().toString().replaceAll("-", "");
-			redisTemplate.opsForValue().set(String.valueOf(hfAuth.getUserId()), token);
-		} else {
-			return builder.body(ResponseUtils.getResponseBody("1"));
+		ActivityAuthExample example = new ActivityAuthExample();
+		example.createCriteria().andAuthKeyEqualTo(authKey);
+		List<ActivityAuth> list = activityAuthMapper.selectByExample(example);
+		if(list.isEmpty()) {
+			return builder.body(ResponseUtils.getResponseBody(-1));
+		}else {
+			Jedis jedis = new Jedis();
+			jedis = jedisPool.getResource();
+			String code = jedis.get(authKey);
+			System.out.println("code+++++++++++"+code);
+			System.out.println("passwd+++++++++++"+passwd);
+			if(jedis!=null) {
+				jedis.close();
+			}
+			if(StringUtils.isEmpty(passwd)) {
+				return builder.body(ResponseUtils.getResponseBody("验证码为null"));
+			}else {
+				if(passwd.equals(code)) {
+					Map<String, Object> map = new HashMap<String, Object>();
+					Integer companyId = list.get(0).getCompanyId();
+					map.put("companyId", companyId);
+					return builder.body(ResponseUtils.getResponseBody(map));
+				}else {
+					return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
+				}
+			}
 		}
-		if (!passwd.equals(redisTemplate.opsForValue().get(authKey))) {
-			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
-		}
-
-		return builder.body(ResponseUtils.getResponseBody("成功"));
 	}
 
 	@RequestMapping(path = "/addTemplateParam", method = RequestMethod.POST)
