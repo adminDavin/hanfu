@@ -198,9 +198,10 @@ public class ActivityManagerController {
 
     @ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
     @RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addActivityStrategy(ActivityStrategyRequest request) throws JSONException {
+    public ResponseEntity<JSONObject> addActivityStrategy(ActivityStrategyRequest request,Integer companyId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ActivitiStrategy activitiStrategy = new ActivitiStrategy();
+        activitiStrategy.setCompanyId(companyId);
         activitiStrategy.setStrategyName(request.getStrategyName());
         activitiStrategy.setStrategyDesc(request.getStrategyDesc());
 //		activitiStrategy.setStrategyType(request.getStrategyType());
