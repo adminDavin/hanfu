@@ -121,6 +121,8 @@ public class StoneController {
     private RolesMapper rolesMapper;
     @Autowired
     private AccountRolesMapper accountRolesMapper;
+    @Autowired
+    private AccountMapper accountMapper;
     @ApiOperation(value = "获取店铺列表", notes = "根据商家或缺店铺列表")
     @RequestMapping(value = "/byBossId", method = RequestMethod.GET)
     @ApiImplicitParams({
@@ -216,7 +218,7 @@ public class StoneController {
             account.setModifyDate(LocalDateTime.now());
             account.setIsDeleted(0);
             account.setLastModifier(String.valueOf(request.getUserId()));
-
+            accountMapper.insertSelective(account);
             RolesExample rolesExample = new RolesExample();
             rolesExample.createCriteria().andRoleCodeEqualTo("boss")
                     .andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0)
@@ -230,7 +232,43 @@ public class StoneController {
             accountRoles.setModifyTime(LocalDateTime.now());
             accountRoles.setIsDeleted((short) 0);
             accountRolesMapper.insertSelective(accountRoles);
+            HfStone item1 = new HfStone();
+            item1.setId(item.getId());
+            item1.setUserId(hfUser.getId());
+            hfStoneMapper.updateByPrimaryKeySelective(item1);
+        }else {
+            Account account = new Account();
+            account.setUserId(hfAuths.get(0).getUserId());
+            account.setAccountCode(request.getPhone());
+            account.setAccountType("stone");
+            account.setAccountRole("Super Admin");
+            account.setMerchantId(item.getId());
+            account.setValid(expireTime);
+            account.setIsPerpetual(1);
+            account.setCreateDate(LocalDateTime.now());
+            account.setModifyDate(LocalDateTime.now());
+            account.setIsDeleted(0);
+            account.setLastModifier(String.valueOf(request.getUserId()));
+            accountMapper.insertSelective(account);
+            RolesExample rolesExample = new RolesExample();
+            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
+                    .andRoleTypeEqualTo("stone")
+                    .andIsDeletedEqualTo(0)
+                    .andMachIdEqualTo(request.getBossId())
+                    .andRoleNameEqualTo("root");
+            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
+            AccountRoles accountRoles = new AccountRoles();
+            accountRoles.setAccountId(account.getId());
+            accountRoles.setRolesId(rolesList.get(0).getId());
+            accountRoles.setCreateTime(LocalDateTime.now());
+            accountRoles.setModifyTime(LocalDateTime.now());
+            accountRoles.setIsDeleted((short) 0);
+            accountRolesMapper.insertSelective(accountRoles);
 
+            HfStone item1 = new HfStone();
+            item1.setId(item.getId());
+            item1.setUserId(hfAuths.get(0).getUserId());
+            hfStoneMapper.updateByPrimaryKeySelective(item1);
         }
 
 //        item.setAddress(request.getAddress());

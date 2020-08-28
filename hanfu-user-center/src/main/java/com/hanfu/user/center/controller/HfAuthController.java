@@ -2004,7 +2004,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 //	roles.setLastModifier(String.valueOf(hfUser.getId()));
 	rolesMapper.insertSelective(roles);
 	HfModuleExample hfModuleExample = new HfModuleExample();
-	hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andHfModelNotEqualTo("activity").andHfModelNotEqualTo("warehouse");
+	hfModuleExample.createCriteria().andIsDeletedEqualTo((byte) 0).andModelCodeNotEqualTo("activity").andModelCodeNotEqualTo("warehouse");
 	List<HfModule> hfModuleList = hfModuleMapper.selectByExample(hfModuleExample);
 	hfModuleList.forEach(a->{
 		RoleModel roleModel = new RoleModel();
