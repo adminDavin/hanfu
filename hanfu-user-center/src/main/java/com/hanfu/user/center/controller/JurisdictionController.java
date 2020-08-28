@@ -182,8 +182,6 @@ public class JurisdictionController {
 		List<Account> account = new ArrayList<>();
 		if (request.getServletContext().getAttribute("getServletContextType") != null
 				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-			System.out.println("request.getServletContext().getAttribute得到全局数据："
-					+ request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext") != null) {
 				accountExample.createCriteria().andAccountTypeEqualTo("boss")
 						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
@@ -200,8 +198,6 @@ public class JurisdictionController {
 			}
 		} else if (request.getServletContext().getAttribute("getServletContextType") != null
 				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
-			System.out.println("request.getServletContext().getAttribute得到全局数据："
-					+ request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext") != null) {
 				accountExample.createCriteria().andAccountTypeEqualTo("stone")
 						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
