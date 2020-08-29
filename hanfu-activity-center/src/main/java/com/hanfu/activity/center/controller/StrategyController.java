@@ -110,12 +110,12 @@ public class StrategyController {
 
     @ApiOperation(value = "增加轮播图", notes = "增加轮播图")
     @RequestMapping(value = "/addlunbotu", method = RequestMethod.POST)
-    public void addlunbotu(MultipartFile file, Integer userId) throws JSONException, IOException {
+    public void addlunbotu(MultipartFile file, Integer userId, Integer companyId) throws JSONException, IOException {
         FileMangeService fileMangeService = new FileMangeService();
         FileDescExample example = new FileDescExample();
         //TODO
         String arr[];
-        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
+        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(companyId));
         ActivityFileDesc fileDesc = new ActivityFileDesc();
         fileDesc.setFileName("lunbotu");
         fileDesc.setGroupName(arr[0]);
@@ -129,10 +129,10 @@ public class StrategyController {
 
     @ApiOperation(value = "获取轮播图", notes = "获取轮播图")
     @RequestMapping(value = "/findlunbotu", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findlunbotu() throws JSONException {
+    public ResponseEntity<JSONObject> findlunbotu(Integer companyId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ActivityFileDescExample example = new ActivityFileDescExample();
-        example.createCriteria().andFileNameEqualTo("lunbotu");
+        example.createCriteria().andFileNameEqualTo("lunbotu").andUserIdEqualTo(companyId);
         return builder.body(ResponseUtils.getResponseBody(activityFileDescMapper.selectByExample(example)));
     }
 
