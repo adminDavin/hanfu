@@ -478,6 +478,7 @@ public class HfOrderController {
             //----evaluate
             if (targetOrderStatus.equals("evaluate")){
                 sta = targetOrderStatus;
+                HfOrder hfOrder1 = hfOrderMapper.selectByPrimaryKey(Id);
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
@@ -491,7 +492,7 @@ public class HfOrderController {
 //                hfOrderDetailList.forEach(hfOrderDetail -> {
                 HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
                 MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-                paramMap2.add("stoneId",stoneId);
+                paramMap2.add("stoneId",hfOrder1.getStoneId());
                 paramMap2.add("balanceType","rechargeAmount");
                 paramMap2.add("money",hfOrderPay.getAmount());
                 paramMap2.add("type",1);
