@@ -543,5 +543,15 @@ public class StrategyController {
         List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
+    
+    @RequestMapping(path = "/findCompanyInfoByCode", method = RequestMethod.GET)
+    @ApiOperation(value = "根据公司编号查询公司信息", notes = "根据公司编号查询公司信息")
+    public ResponseEntity<JSONObject> findCompanyInfoByCode(String code) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder();
+        ActivityComponyExample example = new ActivityComponyExample();
+        example.createCriteria().andCompanyInfoEqualTo(code);
+        List<ActivityCompony> list = activityComponyMapper.selectByExample(example);
+        return builder.body(ResponseUtils.getResponseBody(list));
+    }
 
 }
