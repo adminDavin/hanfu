@@ -260,8 +260,10 @@ public class HfOrderController {
 //            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
             hfOrders.forEach(hfOrder -> {
-                HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
-                hfOrder.setStoneName(hfStone1.getHfName());
+                if (hfOrder.getStoneId()!=null){
+                    HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
+                    hfOrder.setStoneName(hfStone1.getHfName());
+                }
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
                 List<HfOrderDetail> hfOrderDetailList = hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
@@ -468,6 +470,10 @@ public class HfOrderController {
                 hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                 hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
             }
+            MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+            paramMap1.add("orderId",Id);
+            paramMap1.add("state",3);
+            restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
             }
             //----evaluate
             if (targetOrderStatus.equals("evaluate")){
@@ -478,7 +484,18 @@ public class HfOrderController {
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
-
+                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+                paramMap1.add("orderId",Id);
+                paramMap1.add("state",0);
+                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
+//                hfOrderDetailList.forEach(hfOrderDetail -> {
+                HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
+                MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+                paramMap2.add("stoneId",stoneId);
+                paramMap2.add("balanceType","rechargeAmount");
+                paramMap2.add("money",hfOrderPay.getAmount());
+                paramMap2.add("type",1);
+                restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
 //                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
 //                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
 //                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
@@ -502,17 +519,7 @@ public class HfOrderController {
                 List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample3);
 //                Integer money = hfOrderDetailList.stream().mapToInt(HfOrderDetail::getActualPrice).sum();
                 //lius
-                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
-                paramMap1.add("orderId",Id);
-                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
-//                hfOrderDetailList.forEach(hfOrderDetail -> {
-                HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
-                    MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-                    paramMap2.add("stoneId",stoneId);
-                    paramMap2.add("balanceType","rechargeAmount");
-                    paramMap2.add("money",hfOrderPay.getAmount());
-                    paramMap2.add("type",1);
-                    restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+
 //                });
 
                 //

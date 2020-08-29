@@ -146,17 +146,17 @@
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
-        <table schema="user_center" tableName="withdrawal_audit"
-               domainObjectName="WithdrawalAudit">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
-        <table schema="user_center" tableName="withdrawal_method"
-               domainObjectName="WithdrawalMethod">
-            <property name="useActualColumnNames" value="false"/>
-            <generatedKey column="id" sqlStatement="mysql"
-                          identity="true"/>
-        </table>
+        <!--<table schema="user_center" tableName="withdrawal_audit"-->
+               <!--domainObjectName="WithdrawalAudit">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
+        <!--<table schema="user_center" tableName="withdrawal_method"-->
+               <!--domainObjectName="WithdrawalMethod">-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="id" sqlStatement="mysql"-->
+                          <!--identity="true"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

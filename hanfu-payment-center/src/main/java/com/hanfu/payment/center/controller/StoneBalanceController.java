@@ -63,11 +63,11 @@ public class StoneBalanceController {
     }
     @ApiOperation(value = "改变流水状态", notes = "改变流水状态")
     @RequestMapping(value = "/updateStoneBalance", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> updateStoneBalance(Integer orderId)
+    public ResponseEntity<JSONObject> updateStoneBalance(Integer orderId,Integer state)
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         StoneChargeOff stoneChargeOff = new StoneChargeOff();
-        stoneChargeOff.setChargeOffState(0);
+        stoneChargeOff.setChargeOffState(state);
         StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
         stoneChargeOffExample.createCriteria().andOrderIdEqualTo(orderId);
         stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
