@@ -4,6 +4,7 @@ public class test {
   private   Integer pageNum;
     private  Integer pageSize;
     private  Integer time;
+    private Integer companyId;
 
     public Integer getPageNum() {
         return pageNum;
@@ -28,4 +29,12 @@ public class test {
     public void setTime(Integer time) {
         this.time = time;
     }
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
 }

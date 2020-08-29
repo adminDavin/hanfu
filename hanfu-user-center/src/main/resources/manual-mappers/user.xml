@@ -172,6 +172,10 @@
         activity_user_info a
         ON
         h.id = a.user_id
+        where 1=1
+        <if test="companyId != null and companyId != ''">
+        and h.company_id = #{companyId}
+        </if> 
         <if test="time==1">
             order by h.create_date desc
         </if>
