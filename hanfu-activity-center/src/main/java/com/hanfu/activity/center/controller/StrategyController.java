@@ -120,7 +120,7 @@ public class StrategyController {
         fileDesc.setFileName("lunbotu");
         fileDesc.setGroupName(arr[0]);
         fileDesc.setRemoteFilename(arr[1]);
-//		fileDesc.setUserId(userId);
+		fileDesc.setUserId(companyId);
         fileDesc.setCreateTime(LocalDateTime.now());
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
