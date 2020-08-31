@@ -223,13 +223,93 @@ public class WithdrawalController {
         return threadLocal.get().toString();
     }
 
-    public static void main(String[] args) {
-        Integer a= 101;
-        Integer b = (a*11)/100;
-        Double c = (Double.valueOf(a)*11)/100;
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(c);
-        System.out.println((int) Math.ceil(c));
+    @ApiOperation(value = "添加取款方法", notes = "添加取款方法")
+    @RequestMapping(value = "/AddMethod", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "withdrawalWayName", value = "取款方式名称", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "withdrawalCommission", value = "取款手续费", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "commissionType", value = "手续费类型", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "grantAccount", value = "放款账号", required = true, type = "String"),
+    })
+    public ResponseEntity<JSONObject> AddMethod(HttpServletRequest request,
+                                                String withdrawalWayName, Integer withdrawalCommission,
+                                                String commissionType, Integer bossId ,String grantAccount
+    )
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (bossId==null){
+            bossId = (Integer)request.getServletContext().getAttribute("bossId");
+        }
+        WithdrawalMethod withdrawalMethod = new WithdrawalMethod();
+        withdrawalMethod.setWithdrawalWayName(withdrawalWayName);
+        withdrawalMethod.setWithdrawalCommission(withdrawalCommission);
+        withdrawalMethod.setCommissionType(commissionType);
+        withdrawalMethod.setBossId(bossId);
+        withdrawalMethod.setGrantAccount(grantAccount);
+        withdrawalMethod.setCreateDate(LocalDateTime.now());
+        withdrawalMethod.setModifyDate(LocalDateTime.now());
+        withdrawalMethod.setIsDeleted(0);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+
+    @ApiOperation(value = "查询取款方法", notes = "查询取款方法")
+    @RequestMapping(value = "/SelectMethod", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "String"),
+    })
+    public ResponseEntity<JSONObject> SelectMethod(HttpServletRequest request, Integer bossId
+    )
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        if (bossId==null){
+            bossId = (Integer)request.getServletContext().getAttribute("bossId");
+        }
+        WithdrawalMethodExample withdrawalMethodExample = new WithdrawalMethodExample();
+        withdrawalMethodExample.createCriteria().andBossIdEqualTo(bossId).andIsDeletedEqualTo(0);
+        List<WithdrawalMethod> withdrawalMethods = withdrawalMethodMapper.selectByExample(withdrawalMethodExample);
+        return builder.body(ResponseUtils.getResponseBody(withdrawalMethods));
+    }
+
+    @ApiOperation(value = "删除取款方法", notes = "删除取款方法")
+    @RequestMapping(value = "/DeletedMethod", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "withdrawalMethodId", value = "方法id", required = true, type = "String"),
+    })
+    public ResponseEntity<JSONObject> DeletedMethod(HttpServletRequest request, Integer withdrawalMethodId
+    )
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        withdrawalMethodMapper.deleteByPrimaryKey(withdrawalMethodId);
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
+    @ApiOperation(value = "修改取款方法", notes = "修改取款方法")
+    @RequestMapping(value = "/UpdateMethod", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "withdrawalMethodId", value = "方法id", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "withdrawalWayName", value = "取款方式名称", required = true, type = "String"),
+            @ApiImplicitParam(paramType = "query", name = "withdrawalCommission", value = "取款手续费", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "commissionType", value = "手续费类型", required = true, type = "String"),
+//            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "grantAccount", value = "放款账号", required = true, type = "String"),
+    })
+    public ResponseEntity<JSONObject> UpdateMethod(HttpServletRequest request, Integer withdrawalMethodId,
+                                                   String withdrawalWayName, Integer withdrawalCommission,
+                                                   String commissionType ,String grantAccount
+    )
+            throws JSONException {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        WithdrawalMethod withdrawalMethod = new WithdrawalMethod();
+        withdrawalMethod.setIsDeleted(0);
+        withdrawalMethod.setModifyDate(LocalDateTime.now());
+
+        withdrawalMethod.setWithdrawalWayName(withdrawalWayName);
+        withdrawalMethod.setId(withdrawalMethodId);
+        withdrawalMethod.setWithdrawalCommission(withdrawalCommission);
+        withdrawalMethod.setCommissionType(commissionType);
+//        withdrawalMethod.setBossId(bossId);
+        withdrawalMethod.setGrantAccount(grantAccount);
+        withdrawalMethodMapper.updateByPrimaryKeySelective(withdrawalMethod);
+        return builder.body(ResponseUtils.getResponseBody(0));
     }
 }
