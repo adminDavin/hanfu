@@ -1,6 +1,7 @@
 package com.hanfu.payment.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hanfu.payment.center.dao.StoneBalanceMapper;
 import com.hanfu.payment.center.dao.WithdrawalAuditMapper;
 import com.hanfu.payment.center.dao.WithdrawalMapper;
 import com.hanfu.payment.center.dao.WithdrawalMethodMapper;
@@ -46,6 +47,8 @@ public class WithdrawalController {
     private WithdrawalAuditMapper withdrawalAuditMapper;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private StoneBalanceMapper stoneBalanceMapper;
 
     @ApiOperation(value = "取款申请", notes = "取款申请")
     @RequestMapping(value = "/withdrawalApply", method = RequestMethod.POST)
@@ -60,33 +63,55 @@ public class WithdrawalController {
     })
     public ResponseEntity<JSONObject> withdrawalApply(HttpServletRequest request, Integer money, String account , Integer userId, Integer stoneId, String type, String name, Integer methodId)
             throws JSONException {
+        redisTemplate.opsForValue().set(String.valueOf(userId) + "withdrawalApply", userId);
+        redisTemplate.expire(String.valueOf(userId) + "withdrawalApply", 3, TimeUnit.SECONDS);
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        Integer bossId = (Integer)request.getServletContext().getAttribute("bossId");
-        if (bossId!=null){
-
-            WithdrawalMethod withdrawalMethod = withdrawalMethodMapper.selectByPrimaryKey(methodId);
-            Integer realityMoney = 0;
-            if (withdrawalMethod.getWithdrawalCommission()!=null){
-                realityMoney = (money*withdrawalMethod.getWithdrawalCommission())/100;
+        //防止重复访问
+        if (redisTemplate.opsForValue().get(String.valueOf(userId) + "withdrawalApply")==null){
+            Integer bossId = (Integer)request.getServletContext().getAttribute("bossId");
+            if (bossId!=null){
+                StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
+                stoneBalanceExample.createCriteria().andBalanceTypeEqualTo("rechargeAmount")
+                        .andStoneIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0);
+                List<StoneBalance> stoneBalanceList = stoneBalanceMapper.selectByExample(stoneBalanceExample);
+                if (stoneBalanceList.size()==0){
+                    return builder.body(ResponseUtils.getResponseBody("失败"));
+                }
+                //检测余额
+                if (stoneBalanceList.get(0).getStoneBalance()>=money){
+                    StoneBalance stoneBalance = new StoneBalance();
+                    stoneBalance.setStoneBalance(stoneBalanceList.get(0).getStoneBalance()-money);
+                    WithdrawalMethod withdrawalMethod = withdrawalMethodMapper.selectByPrimaryKey(methodId);
+                    Integer realityMoney = 0;
+                    if (withdrawalMethod.getWithdrawalCommission()!=null){
+//                        算利率
+                        Double realityMoneys = ((Double.valueOf(money)*withdrawalMethod.getWithdrawalCommission())/100);
+//                        利息进一位
+                        Integer realityMoneyx = (int) Math.ceil(realityMoneys);
+//                        提现实际金额
+                        realityMoney = money-realityMoneyx;
+                    }
+                    Withdrawal withdrawal = new Withdrawal();
+                    withdrawal.setBossId(bossId);
+                    withdrawal.setUserId(userId);
+                    withdrawal.setStoneId(stoneId);
+                    withdrawal.setWithdrawalType(WithdrawalType.DiscoverTypeEnum.getDiscoverTypeEnum(type).getDiscoverType());
+                    withdrawal.setWithdrawalAccount(account);
+                    withdrawal.setWithdrawalName(name);
+                    withdrawal.setWithdrawalState(WithdrawalType.DiscoverStateEnum.PENDING.getDiscoverType());
+                    withdrawal.setWithdrawalMoney(money);
+                    withdrawal.setWithdrawalMark(getC(null));
+                    withdrawal.setIsDeleted(0);
+                    withdrawal.setCreateDate(LocalDateTime.now());
+                    withdrawal.setModifyDate(LocalDateTime.now());
+                    withdrawal.setMethodId(methodId);
+                    withdrawal.setRealityMoney(realityMoney);
+                    withdrawalMapper.insertSelective(withdrawal);
+                }
             }
-            Withdrawal withdrawal = new Withdrawal();
-            withdrawal.setBossId(bossId);
-            withdrawal.setUserId(userId);
-            withdrawal.setStoneId(stoneId);
-            withdrawal.setWithdrawalType(WithdrawalType.DiscoverTypeEnum.getDiscoverTypeEnum(type).getDiscoverType());
-            withdrawal.setWithdrawalAccount(account);
-            withdrawal.setWithdrawalName(name);
-            withdrawal.setWithdrawalState(WithdrawalType.DiscoverStateEnum.PENDING.getDiscoverType());
-            withdrawal.setWithdrawalMoney(money);
-            withdrawal.setWithdrawalMark(getC(null));
-            withdrawal.setIsDeleted(0);
-            withdrawal.setCreateDate(LocalDateTime.now());
-            withdrawal.setModifyDate(LocalDateTime.now());
-            withdrawal.setMethodId(methodId);
-            withdrawal.setRealityMoney(realityMoney);
-            withdrawalMapper.insertSelective(withdrawal);
+            return builder.body(ResponseUtils.getResponseBody(0));
         }
-        return builder.body(ResponseUtils.getResponseBody(0));
+        return builder.body(ResponseUtils.getResponseBody(1));
     }
     @ApiOperation(value = "取款申请列表", notes = "取款申请列表")
     @RequestMapping(value = "/withdrawalApplyList", method = RequestMethod.GET)
@@ -196,5 +221,15 @@ public class WithdrawalController {
         builder.append(atomicInteger.getAndIncrement());// 自增顺序
         threadLocal.set(builder);
         return threadLocal.get().toString();
+    }
+
+    public static void main(String[] args) {
+        Integer a= 101;
+        Integer b = (a*11)/100;
+        Double c = (Double.valueOf(a)*11)/100;
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+        System.out.println((int) Math.ceil(c));
     }
 }
