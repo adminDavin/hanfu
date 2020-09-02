@@ -803,9 +803,11 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 		describeExample.createCriteria().andLevelIdEqualTo(id);
 		List<HfLevelDescribe> describes = hfLevelDescribleMapper.selectByExample(describeExample);
 		List<Integer> prerogative = describes.stream().map(HfLevelDescribe::getId).collect(Collectors.toList());
-		HfUserPrivilegeExample privilegeExample = new HfUserPrivilegeExample();
-		privilegeExample.createCriteria().andPrivilegeIdIn(prerogative);
-		hfUserPrivilegeMapper.deleteByExample(privilegeExample);
+		if (prerogative!=null){
+			HfUserPrivilegeExample privilegeExample = new HfUserPrivilegeExample();
+			privilegeExample.createCriteria().andPrivilegeIdIn(prerogative);
+			hfUserPrivilegeMapper.deleteByExample(privilegeExample);
+		}
 		if (hfMemberLevel == null) {
 			return builder.body(ResponseUtils.getResponseBody("数据异常"));
 		}
