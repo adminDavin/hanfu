@@ -69,7 +69,7 @@ public class StoneBalanceController {
         StoneChargeOff stoneChargeOff = new StoneChargeOff();
         stoneChargeOff.setChargeOffState(state);
         StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
-        stoneChargeOffExample.createCriteria().andOrderIdEqualTo(orderId);
+        stoneChargeOffExample.createCriteria().andOrderIdEqualTo(orderId).andChargeOffTypeEqualTo("order").andIsDeletedEqualTo((byte) 0);
         stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
         return builder.body(ResponseUtils.getResponseBody(0));
     }

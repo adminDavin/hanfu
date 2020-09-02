@@ -461,7 +461,7 @@ public class PaymentOrderController {
 			StoneChargeOff stoneChargeOff = new StoneChargeOff();
 			stoneChargeOff.setChargeOffState(1);
 			StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
-			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andChargeOffTypeEqualTo("order").andIsDeletedEqualTo((byte) 0);
 			stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
 			//
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();

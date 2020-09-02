@@ -1,10 +1,7 @@
 package com.hanfu.payment.center.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hanfu.payment.center.dao.StoneBalanceMapper;
-import com.hanfu.payment.center.dao.WithdrawalAuditMapper;
-import com.hanfu.payment.center.dao.WithdrawalMapper;
-import com.hanfu.payment.center.dao.WithdrawalMethodMapper;
+import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.manual.model.WithdrawalType;
 import com.hanfu.payment.center.manual.model.Withdrawals;
 import com.hanfu.payment.center.model.*;
@@ -49,6 +46,8 @@ public class WithdrawalController {
     private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private StoneBalanceMapper stoneBalanceMapper;
+    @Autowired
+    private StoneChargeOffMapper stoneChargeOffMapper;
 
     @ApiOperation(value = "取款申请", notes = "取款申请")
     @RequestMapping(value = "/withdrawalApply", method = RequestMethod.POST)
@@ -107,6 +106,16 @@ public class WithdrawalController {
                     withdrawal.setMethodId(methodId);
                     withdrawal.setRealityMoney(realityMoney);
                     withdrawalMapper.insertSelective(withdrawal);
+                    StoneChargeOff stoneChargeOff = new StoneChargeOff();
+                    stoneChargeOff.setChargeOffType("withdraw");//withdraw提现order订单
+                    stoneChargeOff.setChargeOffState(1);//1处理中,0完成3取消
+                    stoneChargeOff.setStoneId(stoneId);
+                    stoneChargeOff.setOrderId(withdrawal.getId());
+                    stoneChargeOff.setActualPrice(money);
+                    stoneChargeOff.setCreateTime(LocalDateTime.now());
+                    stoneChargeOff.setModifyTime(LocalDateTime.now());
+                    stoneChargeOff.setIsDeleted((byte) 0);
+                    stoneChargeOffMapper.insertSelective(stoneChargeOff);
                 }
             }
             return builder.body(ResponseUtils.getResponseBody(0));
@@ -187,6 +196,8 @@ public class WithdrawalController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
         if (redisTemplate.opsForValue().get(String.valueOf(WithdrawalId) + "disposeWithdrawalApply")!=null){
+            redisTemplate.opsForValue().set(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", WithdrawalId);
+            redisTemplate.expire(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", 3, TimeUnit.SECONDS);
             WithdrawalExample withdrawalExample = new WithdrawalExample();
             withdrawalExample.createCriteria().andIdEqualTo(WithdrawalId).andWithdrawalStateEqualTo(WithdrawalType.DiscoverStateEnum.PENDING.getDiscoverType());
             List<Withdrawal> withdrawalList = withdrawalMapper.selectByExample(withdrawalExample);
@@ -203,8 +214,18 @@ public class WithdrawalController {
                 withdrawalAudit.setIsDeleted(0);
                 withdrawalAudit.setApprover(userId);
                 withdrawalAuditMapper.insertSelective(withdrawalAudit);
-                redisTemplate.opsForValue().set(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", WithdrawalId);
-                redisTemplate.expire(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", 3, TimeUnit.SECONDS);
+
+                StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
+                stoneChargeOffExample.createCriteria().andChargeOffTypeEqualTo("withdraw").andIsDeletedEqualTo((byte) 0).andOrderIdEqualTo(WithdrawalId);
+                StoneChargeOff stoneChargeOff = new StoneChargeOff();
+                if (type==WithdrawalType.DiscoverStateEnum.COMPLETE.getDiscoverType()){
+                    stoneChargeOff.setChargeOffState(0);
+                    stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
+                } else if (type==WithdrawalType.DiscoverStateEnum.CANCEL.getDiscoverType()){
+                    stoneChargeOff.setChargeOffState(3);
+                    stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
+                }
+
                 return builder.body(ResponseUtils.getResponseBody(0));
             }
         }
