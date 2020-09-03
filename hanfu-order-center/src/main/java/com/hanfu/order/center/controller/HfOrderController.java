@@ -260,8 +260,10 @@ public class HfOrderController {
 //            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
             hfOrders.forEach(hfOrder -> {
-                HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
-                hfOrder.setStoneName(hfStone1.getHfName());
+                if (hfOrder.getStoneId()!=null){
+                    HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
+                    hfOrder.setStoneName(hfStone1.getHfName());
+                }
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
                 List<HfOrderDetail> hfOrderDetailList = hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
@@ -468,17 +470,33 @@ public class HfOrderController {
                 hfOrderExample.createCriteria().andIdEqualTo(Id).andOrderCodeEqualTo(orderCode).andOrderStatusEqualTo(originOrderStatus);
                 hfOrderMapper.updateByExampleSelective(hfOrder,hfOrderExample);
             }
+            MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+            paramMap1.add("orderId",Id);
+            paramMap1.add("state",3);
+            restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
             }
             //----evaluate
             if (targetOrderStatus.equals("evaluate")){
                 sta = targetOrderStatus;
+                HfOrder hfOrder1 = hfOrderMapper.selectByPrimaryKey(Id);
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
                 HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
                 hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
 
-
+                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+                paramMap1.add("orderId",Id);
+                paramMap1.add("state",0);
+                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
+//                hfOrderDetailList.forEach(hfOrderDetail -> {
+                HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
+                MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+                paramMap2.add("stoneId",hfOrder1.getStoneId());
+                paramMap2.add("balanceType","rechargeAmount");
+                paramMap2.add("money",hfOrderPay.getAmount());
+                paramMap2.add("type",1);
+                restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
 //                HfOrderDetailExample hfOrderDetailExample1 = new HfOrderDetailExample();
 //                hfOrderDetailExample1.createCriteria().andOrderIdEqualTo(Id).andHfStatusNotEqualTo("evaluate").andHfStatusNotEqualTo("complete");
 //                List<HfOrderDetail> hfOrderDetail1= hfOrderDetailMapper.selectByExample(hfOrderDetailExample1);
@@ -502,17 +520,7 @@ public class HfOrderController {
                 List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample3);
 //                Integer money = hfOrderDetailList.stream().mapToInt(HfOrderDetail::getActualPrice).sum();
                 //lius
-                MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
-                paramMap1.add("orderId",Id);
-                restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
-//                hfOrderDetailList.forEach(hfOrderDetail -> {
-                HfOrder hfOrderPay = hfOrderMapper.selectByPrimaryKey(Id);
-                    MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-                    paramMap2.add("stoneId",stoneId);
-                    paramMap2.add("balanceType","rechargeAmount");
-                    paramMap2.add("money",hfOrderPay.getAmount());
-                    paramMap2.add("type",1);
-                    restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+
 //                });
 
                 //
@@ -937,8 +945,8 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
         return map;
 }
-//    @Scheduled(cron="0 0 24 * * ?")
-@Scheduled(cron="*/5 * * * * ? ")
+    @Scheduled(cron="0 0 24 * * ?")
+//@Scheduled(cron="*/5 * * * * ? ")
 @ApiOperation(value = "订单", notes = "订单")
 @Transactional(rollbackFor=Exception.class)
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
@@ -1000,48 +1008,48 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
     });
     //
-//    HfOrderExample hfOrderExample2 = new HfOrderExample();
-//    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
-//    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
-//    HfOrders2.forEach(hfOrder -> {
-//        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-//        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
-//        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
-//        if (hfOrderDetailList.size()!=0){
-//            //
-//            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
-//            paramMap.add("orderId",hfOrder.getId());
-//            paramMap.add("stoneId",hfOrder.getStoneId());
-//            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
-//            JSONObject data=entity.getJSONObject("data");
-//            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
-//            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
-//            //hfOrder.getId()
-//            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
-//            ZoneId zoneId = ZoneId.systemDefault();
-//            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
-//            Date date = Date.from(zdt.toInstant());
-//            Date date1 = new Date();
-//            Date date2 = new Date();
-//            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            try {
-//                date1 = f.parse(f.format(new Date())); //这是获取当前时间
-//                System.out.println("当前时间"+date1);
-//                date2 = f.parse(f.format(date));
-//                System.out.println(date2);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            if ((date1.getTime()-date2.getTime())>259200000){//3t
-//                try {
-//                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            }
-//        }
-//    });
+    HfOrderExample hfOrderExample2 = new HfOrderExample();
+    hfOrderExample2.createCriteria().andIdDeletedEqualTo((byte) 0).andOrderStatusEqualTo("transport");
+    List<HfOrder> HfOrders2 = hfOrderMapper.selectByExample(hfOrderExample2);
+    HfOrders2.forEach(hfOrder -> {
+        HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+        hfOrderDetailExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andTakingTypeEqualTo("delivery");
+        List<HfOrderDetail> hfOrderDetailList= hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+        if (hfOrderDetailList.size()!=0){
+            //
+            MultiValueMap<String, Integer> paramMap = new LinkedMultiValueMap<>();
+            paramMap.add("orderId",hfOrder.getId());
+            paramMap.add("stoneId",hfOrder.getStoneId());
+            JSONObject entity=restTemplate.getForObject(ORDER_URL+"/query/logistics?orderId={orderId}&stoneId={stoneId}",JSONObject.class,hfOrder.getId(),hfOrder.getStoneId());
+            JSONObject data=entity.getJSONObject("data");
+            if (Integer.valueOf((String) JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("state"))==3){
+            Object traces= JSON.parseObject(data.toString(),new TypeReference<Map<String,Object>>(){}).get("traces");
+            //hfOrder.getId()
+            List<Traces> list= JSON.parseArray(JSON.toJSONString(traces), Traces.class);
+            ZoneId zoneId = ZoneId.systemDefault();
+            ZonedDateTime zdt = list.get(list.size()-1).getAcceptTime().atZone(zoneId);
+            Date date = Date.from(zdt.toInstant());
+            Date date1 = new Date();
+            Date date2 = new Date();
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date1 = f.parse(f.format(new Date())); //这是获取当前时间
+                System.out.println("当前时间"+date1);
+                date2 = f.parse(f.format(date));
+                System.out.println(date2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if ((date1.getTime()-date2.getTime())>259200000){//3t
+                try {
+                    updateStatus(hfOrder.getId(),hfOrder.getOrderCode(),hfOrder.getOrderStatus(),"evaluate",hfOrder.getStoneId(),hfOrder.getPayOrderId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            }
+        }
+    });
 
     }
     public static void main(String[] args) {

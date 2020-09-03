@@ -95,6 +95,8 @@ public class PaymentOrderController {
 	private String itemUrl2;
 	@Value("${myspcloud.item4.url4}")
 	private String itemUrl4;
+	@Value("${myspcloud.item1.url1}")
+	private String itemUrl1;
 	@Autowired
 	private HfOrderDetailMapper hfOrderDetailMapper;
 	@Autowired
@@ -261,14 +263,18 @@ public class PaymentOrderController {
 //		alipayConfig.setBossId(2);
 		HfOrderDisplay hfOrder = new HfOrderDisplay();
 		hfOrder = hfOrderDao.selectHfOrderbyCode(orderCode);
-		if (orderCode!=null){
-			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
-			paramMap2.add("stoneId",hfOrder.getStoneId());
-			paramMap2.add("balanceType","rechargeAmount");
-			paramMap2.add("money",hfOrder.getAmount());
-			paramMap2.add("type", "-1");
-			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
-		}
+//		if (orderCode!=null){
+//			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
+//			paramMap2.add("stoneId",hfOrder.getStoneId());
+//			paramMap2.add("balanceType","rechargeAmount");
+//			paramMap2.add("money",hfOrder.getAmount());
+//			paramMap2.add("type", "-1");
+//			restTemplate.postForObject(itemUrl2,paramMap2,JSONObject.class);
+//		}
+		MultiValueMap<String, Object> paramMap1 = new LinkedMultiValueMap<>();
+		paramMap1.add("orderId",hfOrder.getId());
+		paramMap1.add("state",3);
+		restTemplate.postForObject(itemUrl1,paramMap1,JSONObject.class);//zhuangtai
 		List<HfOrder> hfOrderList = new ArrayList<>();
 		if (payOrderId!=null){
 			HfOrderExample hfOrderExample = new HfOrderExample();
@@ -455,7 +461,7 @@ public class PaymentOrderController {
 			StoneChargeOff stoneChargeOff = new StoneChargeOff();
 			stoneChargeOff.setChargeOffState(1);
 			StoneChargeOffExample stoneChargeOffExample = new StoneChargeOffExample();
-			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId());
+			stoneChargeOffExample.createCriteria().andOrderIdEqualTo(hfOrder.getId()).andChargeOffTypeEqualTo("order").andIsDeletedEqualTo((byte) 0);
 			stoneChargeOffMapper.updateByExampleSelective(stoneChargeOff,stoneChargeOffExample);
 			//
 			MultiValueMap<String, Object> paramMap2 = new LinkedMultiValueMap<>();
