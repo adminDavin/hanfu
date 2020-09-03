@@ -156,13 +156,13 @@ public class GoodsController {
 
 	@Autowired
 	private EvaluateUserRecordMapper evaluateUserRecordMapper;
-	
+
 	@Autowired
 	private HfIconMapper hfIconMapper;
-	
+
 	@Autowired
 	private HfFocusPeopleMapper hfFocusPeopleMapper;
-	
+
 	@Autowired
 	private HfEvaluateCollectMapper hfEvaluateCollectMapper;
 
@@ -246,19 +246,20 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo,HttpServletRequest requests) throws Exception {
+	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo, HttpServletRequest requests)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods record = new HfGoods();
 		record.setProductId(hfGoodsInfo.getProductId());
 		Product product = productMapper.selectByPrimaryKey(hfGoodsInfo.getProductId());
-		Integer bossId = 1,stoneId = 1;
+		Integer bossId = 1, stoneId = 1;
 		ServletContext sc;
-		if("boss".equals((sc = requests.getServletContext()).getAttribute("getServletContextType"))) {
-			bossId=(Integer) requests.getServletContext().getAttribute("getServletContext");
+		if ("boss".equals((sc = requests.getServletContext()).getAttribute("getServletContextType"))) {
+			bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
 		}
-		if("stone".equals(sc.getAttribute("getServletContextType"))) {
+		if ("stone".equals(sc.getAttribute("getServletContextType"))) {
 			stoneId = (Integer) requests.getServletContext().getAttribute("getServletContext");
-			bossId=hfStoneMapper.selectByPrimaryKey(stoneId).getBossId();
+			bossId = hfStoneMapper.selectByPrimaryKey(stoneId).getBossId();
 		}
 		record.setBossId(bossId);
 		record.setGoodsDesc(hfGoodsInfo.getGoodsDesc());
@@ -1267,7 +1268,8 @@ public class GoodsController {
 
 		hfGoodsDisplay.forEach(item -> item.setFileIds(hfGoodsPictureMap.get(item.getId())));
 		if (quantity > 0) {
-			hfGoodsDisplay.forEach(item -> item.setSellPrice(String.valueOf(Double.valueOf(item.getSellPrice())* quantity)));
+			hfGoodsDisplay
+					.forEach(item -> item.setSellPrice(String.valueOf(Double.valueOf(item.getSellPrice()) * quantity)));
 		}
 
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsDisplay));
@@ -1314,7 +1316,7 @@ public class GoodsController {
 			fileDescMapper.deleteByPrimaryKey(fileDesc.getId());
 		}
 	}
-	
+
 //	@ApiOperation(value = "查询待评价物品", notes = "查询待评价物品")
 //	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
 //	public ResponseEntity<JSONObject> selectEvaluateGoods(Integer userId) throws Exception {
@@ -1745,8 +1747,6 @@ public class GoodsController {
 //			outputStream.close();
 //		}
 //	}
-	
-	
 
 	@ApiOperation(value = "查询待评价物品", notes = "查询待评价物品")
 	@RequestMapping(value = "/selectEvaluateGoods", method = RequestMethod.GET)
@@ -1803,17 +1803,16 @@ public class GoodsController {
 		result = result.stream().filter(r -> r.getId() != null).collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
-	
+
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
 
 	public ResponseEntity<JSONObject> addEvaluateProduct(HttpServletRequest request, String type, String typeContent,
 			Integer orderDetailId, Integer userId, Integer goodId, Integer stoneId, Integer star, String evaluate,
-			Integer levelId,Integer parentEvaluateId,Integer... fileId) throws Exception {
+			Integer levelId, Integer parentEvaluateId, Integer... fileId) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-		
+
 		HfEvaluate hfEvaluate = new HfEvaluate();
 		if (goodId != null && stoneId != null) {
 			HfGoods goods = hfGoodsMapper.selectByPrimaryKey(goodId);
@@ -1822,7 +1821,7 @@ public class GoodsController {
 			example.createCriteria().andProductIdEqualTo(goods.getProductId()).andStoneIdEqualTo(stoneId);
 			List<ProductInstance> instance = productInstanceMapper.selectByExample(example);
 			hfEvaluate.setInstanceId(instance.get(0).getId());
-			
+
 			if (EvaluateTypeEnum.EVALUATE.getEvaluateType().equals(type)) {
 				hfEvaluate.setOrderDetailId(orderDetailId);
 				hfEvaluate.setStar(star);
@@ -1849,8 +1848,8 @@ public class GoodsController {
 		hfEvaluate.setType(EvaluateTypeEnum.getEvaluateTypeEnum(type).getEvaluateType());
 		hfEvaluate.setTypeContent(
 				EvaluateContentTypeEnum.getEvaluateContentTypeEnum(typeContent).getEvaluateContentType());
-		Object bossId= request.getHeader("bossId");
-		hfEvaluate.setBossId(Integer.valueOf((String)bossId));
+		Object bossId = request.getHeader("bossId");
+		hfEvaluate.setBossId(Integer.valueOf((String) bossId));
 		hfEvaluate.setEvaluate(evaluate);
 		hfEvaluate.setLevelId(levelId);
 		hfEvaluate.setParentEvaluateId(parentEvaluateId);
@@ -1863,12 +1862,12 @@ public class GoodsController {
 		hfEvaluate.setModifyTime(LocalDateTime.now());
 		hfEvaluate.setIsDeleted((byte) 0);
 		hfEvaluateMapper.insert(hfEvaluate);
-		if(parentEvaluateId != -1) {
+		if (parentEvaluateId != -1) {
 			HfEvaluate evaluateParent = hfEvaluateMapper.selectByPrimaryKey(parentEvaluateId);
-			evaluateParent.setCommentCount(evaluateParent.getCommentCount()+1);
+			evaluateParent.setCommentCount(evaluateParent.getCommentCount() + 1);
 			hfEvaluateMapper.updateByPrimaryKey(evaluateParent);
-		} 
-		if(fileId != null) {
+		}
+		if (fileId != null) {
 			for (Integer f : fileId) {
 				EvaluatePicture picture = new EvaluatePicture();
 				picture.setEvaluate(hfEvaluate.getId());
@@ -1925,7 +1924,7 @@ public class GoodsController {
 			HfEvaluate evaluate = result.get(i);
 			pictureExample.clear();
 			e.setUserId(evaluate.getUserId());
-			if(id == null) {
+			if (id == null) {
 				HfOrderDetail detail = hfOrderDetailMapper.selectByPrimaryKey(evaluate.getOrderDetailId());
 				e.setHfDesc(detail.getHfDesc());
 			}
@@ -1935,10 +1934,10 @@ public class GoodsController {
 					JSONObject.class, evaluate.getUserId());
 			e.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			e.setUsername(js1.getJSONObject("data").getString("nickName"));
-			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+			if (!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))) {
 				e.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
 			}
-			if(userId != null) {
+			if (userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(evaluate.getId())
 						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(type);
@@ -1948,7 +1947,7 @@ public class GoodsController {
 					e.setIsPraise(0);
 				}
 			}
-			
+
 			e.setId(evaluate.getId());
 			e.setLevelId(evaluate.getLevelId());
 			e.setParentEvaluateId(evaluate.getParentEvaluateId());
@@ -1973,7 +1972,8 @@ public class GoodsController {
 
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
 	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, String type, Integer levelId) throws Exception {
+	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, String type, Integer levelId)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
 		JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
@@ -1981,7 +1981,7 @@ public class GoodsController {
 		if ("此用户不存在".equals(js1.get("data"))) {
 			return builder.body(ResponseUtils.getResponseBody("-1"));
 		}
-		
+
 		EvaluateUserRecordExample example = new EvaluateUserRecordExample();
 		example.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(id).andTypeEqualTo(type);
 		List<EvaluateUserRecord> records = evaluateUserRecordMapper.selectByExample(example);
@@ -1990,7 +1990,7 @@ public class GoodsController {
 			if (record.getIsDeleted() == (byte) 0) {
 				System.out.println("更改点赞状态");
 				record.setIsDeleted((byte) 1);
-				evaluate.setPraise(evaluate.getPraise()+1);
+				evaluate.setPraise(evaluate.getPraise() + 1);
 				record.setModifyTime(LocalDateTime.now());
 				evaluateUserRecordMapper.updateByPrimaryKey(record);
 				hfEvaluateMapper.updateByPrimaryKey(evaluate);
@@ -1999,13 +1999,13 @@ public class GoodsController {
 			if (record.getIsDeleted() == (byte) 1) {
 				System.out.println("11111111111");
 				record.setIsDeleted((byte) 0);
-				evaluate.setPraise(evaluate.getPraise()-1);
+				evaluate.setPraise(evaluate.getPraise() - 1);
 				record.setModifyTime(LocalDateTime.now());
 				evaluateUserRecordMapper.updateByPrimaryKey(record);
 				hfEvaluateMapper.updateByPrimaryKey(evaluate);
 				return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 			}
-			
+
 		} else {
 			EvaluateUserRecord record = new EvaluateUserRecord();
 			record.setUserId(userId);
@@ -2074,16 +2074,19 @@ public class GoodsController {
 
 	@RequestMapping(value = "/selectDiscover", method = RequestMethod.GET)
 	@ApiOperation(value = "根据类型查询评价", notes = "根据类型查询评价")
-	public ResponseEntity<JSONObject> selectDiscover(HttpServletRequest request, Integer userId, String type, Integer levelId ,Integer parentEvaluateId ,Integer stoneId) throws JSONException {
+	public ResponseEntity<JSONObject> selectDiscover(HttpServletRequest request, Integer userId, String type,
+			Integer levelId, Integer parentEvaluateId, Integer stoneId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		EvaluateUserRecordExample recordExample = new EvaluateUserRecordExample();
 		HfEvaluateExample evaluateExample = new HfEvaluateExample();
-		Object bossId= request.getHeader("bossId");
-		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId));
+		Object bossId = request.getHeader("bossId");
+		evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId)
+				.andBossIdEqualTo(Integer.valueOf((String) bossId));
 		evaluateExample.setOrderByClause("create_time DESC");
-		if(stoneId != null) {
+		if (stoneId != null) {
 			evaluateExample.clear();
-			evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId).andBossIdEqualTo(Integer.valueOf((String)bossId)).andStoneIdEqualTo(stoneId);
+			evaluateExample.createCriteria().andTypeEqualTo(type).andParentEvaluateIdEqualTo(parentEvaluateId)
+					.andBossIdEqualTo(Integer.valueOf((String) bossId)).andStoneIdEqualTo(stoneId);
 			evaluateExample.setOrderByClause("create_time DESC");
 		}
 		List<Evaluate> result = new ArrayList<Evaluate>();
@@ -2103,7 +2106,7 @@ public class GoodsController {
 			display.setComment(d.getEvaluate());
 //			display.setDiscoverDesc(d.getDiscoverDesc());
 //			display.setDiscoverHeadline(d.getDiscoverHeadline());
-			if(userId != null) {
+			if (userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
 						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo(type);
@@ -2123,7 +2126,7 @@ public class GoodsController {
 					JSONObject.class, d.getUserId());
 			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			display.setUsername(js1.getJSONObject("data").getString("nickName"));
-			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+			if (!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))) {
 				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
 			}
 			display.setTime(d.getCreateTime());
@@ -2169,23 +2172,24 @@ public class GoodsController {
 			outputStream.close();
 		}
 	}
-	
+
 	@ApiOperation(value = "转发", notes = "转发")
 	@RequestMapping(value = "/transmit", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> transmit(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
-		evaluate.setTransmit(evaluate.getTransmit()+1);
+		evaluate.setTransmit(evaluate.getTransmit() + 1);
 		hfEvaluateMapper.updateByPrimaryKey(evaluate);
 		return builder.body(ResponseUtils.getResponseBody(evaluate.getId()));
 	}
-	
+
 	@ApiOperation(value = "添加图标绑定链接", notes = "添加图标绑定链接")
 	@RequestMapping(value = "/addIconAndUrl", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url, Integer bossId) throws Exception {
+	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url, Integer bossId)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfIcon icon = new HfIcon();
-		if(file != null) {
+		if (file != null) {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
 			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
@@ -2200,7 +2204,7 @@ public class GoodsController {
 			fileDescMapper.insert(fileDesc);
 			icon.setFileId(fileDesc.getId());
 		}
-		
+
 		icon.setIconName(iconName);
 		icon.setBossId(bossId);
 		icon.setUrl(url);
@@ -2210,7 +2214,7 @@ public class GoodsController {
 		hfIconMapper.insert(icon);
 		return builder.body(ResponseUtils.getResponseBody(icon.getId()));
 	}
-	
+
 	@ApiOperation(value = "删除图标绑定链接", notes = "删除图标绑定链接")
 	@RequestMapping(value = "/deleteIconAndUrl", method = RequestMethod.POST)
 	public ResponseEntity<JSONObject> deleteIconAndUrl(Integer id) throws Exception {
@@ -2218,17 +2222,18 @@ public class GoodsController {
 		hfIconMapper.deleteByPrimaryKey(id);
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
-	
+
 	@ApiOperation(value = "修改图标绑定链接", notes = "修改图标绑定链接")
 	@RequestMapping(value = "/updateIconAndUrl", method = RequestMethod.POST)
-	public ResponseEntity<JSONObject> updateIconAndUrl(Integer id, MultipartFile file, String iconName, String url) throws Exception {
+	public ResponseEntity<JSONObject> updateIconAndUrl(Integer id, MultipartFile file, String iconName, String url)
+			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfIcon hfIcon = hfIconMapper.selectByPrimaryKey(id);
-		if(file != null) {
+		if (file != null) {
 			String arr[];
 			FileMangeService fileMangeService = new FileMangeService();
 			arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf("-1"));
-			if(hfIcon.getFileId() != null) {
+			if (hfIcon.getFileId() != null) {
 				FileDesc fileDesc = new FileDesc();
 				fileDesc.setFileName(file.getName());
 				fileDesc.setGroupName(arr[0]);
@@ -2239,25 +2244,25 @@ public class GoodsController {
 				fileDesc.setIsDeleted((short) 0);
 				fileDescMapper.insert(fileDesc);
 				hfIcon.setFileId(fileDesc.getId());
-			}else {
+			} else {
 				FileDesc fileDesc = fileDescMapper.selectByPrimaryKey(hfIcon.getFileId());
 				fileMangeService.deleteFile(fileDesc.getGroupName(), fileDesc.getRemoteFilename());
 				fileDesc.setGroupName(arr[0]);
 				fileDesc.setRemoteFilename(arr[1]);
 				fileDescMapper.updateByPrimaryKey(fileDesc);
 			}
-			
+
 		}
-		if(!StringUtils.isEmpty(iconName)) {
+		if (!StringUtils.isEmpty(iconName)) {
 			hfIcon.setIconName(iconName);
 		}
-		if(!StringUtils.isEmpty(url)) {
+		if (!StringUtils.isEmpty(url)) {
 			hfIcon.setUrl(url);
 		}
 		hfIconMapper.updateByPrimaryKey(hfIcon);
 		return builder.body(ResponseUtils.getResponseBody(id));
 	}
-	
+
 	@ApiOperation(value = "查询图标绑定链接", notes = "查询图标绑定链接")
 	@RequestMapping(value = "/selectIconAndUrl", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> selectIconAndUrl(Integer bossId) throws Exception {
@@ -2267,7 +2272,7 @@ public class GoodsController {
 		List<HfIcon> list = hfIconMapper.selectByExample(example);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
-	
+
 	@ApiOperation(value = "关注或取消关注他人", notes = "关注他人")
 	@RequestMapping(value = "/focusPeople", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> focusPeople(Integer myUserId, Integer userId, String type) throws Exception {
@@ -2275,7 +2280,7 @@ public class GoodsController {
 		HfFocusPeopleExample example = new HfFocusPeopleExample();
 		example.createCriteria().andMyUserIdEqualTo(myUserId).andUserIdEqualTo(userId).andTypeEqualTo(type);
 		List<HfFocusPeople> list = hfFocusPeopleMapper.selectByExample(example);
-		if(CollectionUtils.isEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			HfFocusPeople people = new HfFocusPeople();
 			people.setMyUserId(myUserId);
 			people.setUserId(userId);
@@ -2284,21 +2289,21 @@ public class GoodsController {
 			people.setModifyTime(LocalDateTime.now());
 			people.setIsDeleted((byte) 1);
 			hfFocusPeopleMapper.insert(people);
-		}else {
+			return builder.body(ResponseUtils.getResponseBody(people.getId()));
+		} else {
 			HfFocusPeople people = list.get(0);
-			if(people.getIsDeleted() == 1) {
+			if (people.getIsDeleted() == 1) {
 				people.setIsDeleted((byte) 0);
 				hfFocusPeopleMapper.updateByPrimaryKey(people);
 				return builder.body(ResponseUtils.getResponseBody(people.getId()));
-			}else {
+			} else {
 				people.setIsDeleted((byte) 1);
 				hfFocusPeopleMapper.updateByPrimaryKey(people);
 				return builder.body(ResponseUtils.getResponseBody(people.getId()));
 			}
 		}
-		return builder.body(ResponseUtils.getResponseBody("走外圈"));
 	}
-	
+
 	@ApiOperation(value = "我的关注", notes = "我的关注")
 	@RequestMapping(value = "/myFocus", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> myFocus(Integer userId) throws Exception {
@@ -2323,7 +2328,7 @@ public class GoodsController {
 			display.setComment(d.getEvaluate());
 //			display.setDiscoverDesc(d.getDiscoverDesc());
 //			display.setDiscoverHeadline(d.getDiscoverHeadline());
-			if(userId != null) {
+			if (userId != null) {
 				recordExample.clear();
 				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
 						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("discover");
@@ -2343,7 +2348,7 @@ public class GoodsController {
 					JSONObject.class, d.getUserId());
 			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
 			display.setUsername(js1.getJSONObject("data").getString("nickName"));
-			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
+			if (!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))) {
 				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
 			}
 			display.setTime(d.getCreateTime());
@@ -2358,8 +2363,7 @@ public class GoodsController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
-	
+
 	@ApiOperation(value = "收藏发现", notes = "收藏发现")
 	@RequestMapping(value = "/collectDiscover", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> collectDiscover(Integer userId, Integer discoverId) throws Exception {
@@ -2367,7 +2371,7 @@ public class GoodsController {
 		HfEvaluateCollectExample example = new HfEvaluateCollectExample();
 		example.createCriteria().andUserIdEqualTo(userId).andEvaluateIdEqualTo(discoverId);
 		List<HfEvaluateCollect> list = hfEvaluateCollectMapper.selectByExample(example);
-		if(CollectionUtils.isEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			HfEvaluateCollect collect = new HfEvaluateCollect();
 			collect.setUserId(userId);
 			collect.setEvaluateId(discoverId);
@@ -2375,22 +2379,21 @@ public class GoodsController {
 			collect.setModifyTime(LocalDateTime.now());
 			collect.setIsDeleted((byte) 1);
 			hfEvaluateCollectMapper.insert(collect);
-		}else {
+			return builder.body(ResponseUtils.getResponseBody(1));
+		} else {
 			HfEvaluateCollect collect = list.get(0);
-			if(collect.getIsDeleted() == 1) {
+			if (collect.getIsDeleted() == 1) {
 				collect.setIsDeleted((byte) 0);
 				hfEvaluateCollectMapper.updateByPrimaryKey(collect);
 				return builder.body(ResponseUtils.getResponseBody(collect.getId()));
-			}else {
+			} else {
 				collect.setIsDeleted((byte) 1);
 				hfEvaluateCollectMapper.updateByPrimaryKey(collect);
 				return builder.body(ResponseUtils.getResponseBody(collect.getId()));
 			}
 		}
-		return builder.body(ResponseUtils.getResponseBody("走外圈"));
 	}
-	
-	
+
 	@ApiOperation(value = "我的收藏", notes = "我的收藏")
 	@RequestMapping(value = "/myCollect", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> myCollect(Integer userId) throws Exception {
@@ -2403,52 +2406,54 @@ public class GoodsController {
 		HfEvaluateCollectExample example = new HfEvaluateCollectExample();
 		example.createCriteria().andUserIdEqualTo(userId).andIsDeletedEqualTo((byte) 1);
 		List<HfEvaluateCollect> list = hfEvaluateCollectMapper.selectByExample(example);
-		List<Integer> disId = list.stream().map(HfEvaluateCollect::getEvaluateId).collect(Collectors.toList());
-		HfEvaluateExample evaluateExample = new HfEvaluateExample();
-		evaluateExample.createCriteria().andIdIn(disId).andTypeEqualTo("discover").andParentEvaluateIdEqualTo(-1);
-		List<HfEvaluate> evaluates = hfEvaluateMapper.selectByExample(evaluateExample);
-		for (int i = 0; i < evaluates.size(); i++) {
-			pictrueExample.clear();
-// 			productExample.clear();
-			HfEvaluate d = evaluates.get(i);
-			Evaluate display = new Evaluate();
-			display.setComment(d.getEvaluate());
-//			display.setDiscoverDesc(d.getDiscoverDesc());
-//			display.setDiscoverHeadline(d.getDiscoverHeadline());
-			if(userId != null) {
-				recordExample.clear();
-				recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
-						.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("discover");
-				if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
-					display.setIsPraise(1);
-				} else {
-					display.setIsPraise(0);
+		if (!list.isEmpty()) {
+			List<Integer> disId = list.stream().map(HfEvaluateCollect::getEvaluateId).collect(Collectors.toList());
+			HfEvaluateExample evaluateExample = new HfEvaluateExample();
+			evaluateExample.createCriteria().andIdIn(disId).andTypeEqualTo("discover").andParentEvaluateIdEqualTo(-1);
+			List<HfEvaluate> evaluates = hfEvaluateMapper.selectByExample(evaluateExample);
+			for (int i = 0; i < evaluates.size(); i++) {
+				pictrueExample.clear();
+//	 			productExample.clear();
+				HfEvaluate d = evaluates.get(i);
+				Evaluate display = new Evaluate();
+				display.setComment(d.getEvaluate());
+//				display.setDiscoverDesc(d.getDiscoverDesc());
+//				display.setDiscoverHeadline(d.getDiscoverHeadline());
+				if (userId != null) {
+					recordExample.clear();
+					recordExample.createCriteria().andUserIdEqualTo(userId).andEvaluateEqualTo(d.getId())
+							.andIsDeletedEqualTo((byte) 1).andTypeEqualTo("discover");
+					if (!evaluateUserRecordMapper.selectByExample(recordExample).isEmpty()) {
+						display.setIsPraise(1);
+					} else {
+						display.setIsPraise(0);
+					}
 				}
+				display.setId(d.getId());
+				display.setType(d.getType());
+				display.setTypeContent(d.getTypeContent());
+				display.setUserId(d.getUserId());
+				JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
+						JSONObject.class, d.getUserId());
+				JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
+						JSONObject.class, d.getUserId());
+				display.setLevelName(js.getJSONObject("data").getString("prerogative"));
+				display.setUsername(js1.getJSONObject("data").getString("nickName"));
+				if (!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))) {
+					display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
+				}
+				display.setTime(d.getCreateTime());
+				pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
+				pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
+				fileId = pictrues.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
+				display.setFileId(fileId);
+				display.setComment_count(d.getCommentCount());
+				display.setPraise(d.getPraise());
+				display.setTransmitCount(d.getTransmit());
+				result.add(display);
 			}
-			display.setId(d.getId());
-			display.setType(d.getType());
-			display.setTypeContent(d.getTypeContent());
-			display.setUserId(d.getUserId());
-			JSONObject js = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findInfoByUserId?userId={userId}",
-					JSONObject.class, d.getUserId());
-			JSONObject js1 = restTemplate.getForObject(REST_URL_PREFIX + "hf-auth/findUserDetails?userId={userId}",
-					JSONObject.class, d.getUserId());
-			display.setLevelName(js.getJSONObject("data").getString("prerogative"));
-			display.setUsername(js1.getJSONObject("data").getString("nickName"));
-			if(!StringUtils.isEmpty(js1.getJSONObject("data").getString("fileId"))){
-				display.setAvatar(Integer.valueOf(js1.getJSONObject("data").getString("fileId")));
-			}
-			display.setTime(d.getCreateTime());
-			pictrueExample.createCriteria().andEvaluateEqualTo(d.getId());
-			pictrues = evaluatePictureMapper.selectByExample(pictrueExample);
-			fileId = pictrues.stream().map(EvaluatePicture::getFileId).collect(Collectors.toList());
-			display.setFileId(fileId);
-			display.setComment_count(d.getCommentCount());
-			display.setPraise(d.getPraise());
-			display.setTransmitCount(d.getTransmit());
-			result.add(display);
 		}
 		return builder.body(ResponseUtils.getResponseBody(result));
 	}
-	
+
 }
