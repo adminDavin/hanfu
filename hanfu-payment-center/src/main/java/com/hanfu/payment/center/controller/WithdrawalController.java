@@ -202,9 +202,9 @@ public class WithdrawalController {
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
-        if (redisTemplate.opsForValue().get(String.valueOf(WithdrawalId) + "disposeWithdrawalApply")!=null){
-            redisTemplate.opsForValue().set(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", WithdrawalId);
-            redisTemplate.expire(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", 3, TimeUnit.SECONDS);
+//        if (redisTemplate.opsForValue().get(String.valueOf(WithdrawalId) + "disposeWithdrawalApply")!=null){
+//            redisTemplate.opsForValue().set(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", WithdrawalId);
+//            redisTemplate.expire(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", 3, TimeUnit.SECONDS);
             WithdrawalExample withdrawalExample = new WithdrawalExample();
             withdrawalExample.createCriteria().andIdEqualTo(WithdrawalId).andWithdrawalStateEqualTo(WithdrawalType.DiscoverStateEnum.PENDING.getDiscoverType());
             List<Withdrawal> withdrawalList = withdrawalMapper.selectByExample(withdrawalExample);
@@ -235,7 +235,7 @@ public class WithdrawalController {
 
                 return builder.body(ResponseUtils.getResponseBody(0));
             }
-        }
+//        }
         return builder.body(ResponseUtils.getResponseBody(1));
     }
 
