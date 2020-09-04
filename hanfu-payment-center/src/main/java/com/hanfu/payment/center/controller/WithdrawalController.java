@@ -48,7 +48,8 @@ public class WithdrawalController {
     private StoneBalanceMapper stoneBalanceMapper;
     @Autowired
     private StoneChargeOffMapper stoneChargeOffMapper;
-
+    @Autowired
+    private HfStoneMapper hfStoneMapper;
     @ApiOperation(value = "取款申请", notes = "取款申请")
     @RequestMapping(value = "/withdrawalApply", method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -140,6 +141,7 @@ public class WithdrawalController {
             withdrawalList = withdrawalMapper.selectByExample(withdrawalExample);
 
             withdrawalList.forEach(a->{
+                HfStone hfStone = hfStoneMapper.selectByPrimaryKey(a.getStoneId());
                 WithdrawalMethod withdrawalMethod = withdrawalMethodMapper.selectByPrimaryKey(a.getMethodId());
                 Withdrawals withdrawals = new Withdrawals();
                         if(a.getCreateDate()!=null){
@@ -177,6 +179,12 @@ public class WithdrawalController {
                         }
                         if (!StringUtils.isEmpty(withdrawalMethod.getCommissionType())){
                             withdrawals.setCommissionType(withdrawalMethod.getCommissionType());
+                        }
+                        if (!StringUtils.isEmpty(hfStone.getHfName())){
+                            withdrawals.setStoneName(hfStone.getHfName());
+                        }
+                        if (!StringUtils.isEmpty(hfStone.getId())){
+                            withdrawals.setStoneId(hfStone.getId());
                         }
                 withdrawalsList.add(withdrawals);
             });

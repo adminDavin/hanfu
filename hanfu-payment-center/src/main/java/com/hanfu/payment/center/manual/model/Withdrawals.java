@@ -52,6 +52,18 @@ public class Withdrawals {
      */
     private String phone;
 
+    /**
+     * 取款店铺
+     * @return
+     */
+    private String stoneName;
+
+    /**
+     * 取款店铺id
+     * @return
+     */
+    private Integer stoneId;
+
     public Integer getId() {
         return id;
     }
@@ -146,5 +158,21 @@ public class Withdrawals {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getStoneName() {
+        return stoneName;
+    }
+
+    public void setStoneName(String stoneName) {
+        this.stoneName = stoneName;
+    }
+
+    public Integer getStoneId() {
+        return stoneId;
+    }
+
+    public void setStoneId(Integer stoneId) {
+        this.stoneId = stoneId;
     }
 }
