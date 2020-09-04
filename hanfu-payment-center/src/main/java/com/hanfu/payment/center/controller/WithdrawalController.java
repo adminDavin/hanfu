@@ -279,6 +279,7 @@ public class WithdrawalController {
         withdrawalMethod.setCreateDate(LocalDateTime.now());
         withdrawalMethod.setModifyDate(LocalDateTime.now());
         withdrawalMethod.setIsDeleted(0);
+        withdrawalMethodMapper.insertSelective(withdrawalMethod);
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
