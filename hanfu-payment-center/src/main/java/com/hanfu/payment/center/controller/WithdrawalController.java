@@ -136,8 +136,7 @@ public class WithdrawalController {
             WithdrawalExample withdrawalExample = new WithdrawalExample();
             withdrawalExample.createCriteria()
                     .andBossIdEqualTo(bossId)
-                    .andIsDeletedEqualTo(0)
-                    .andWithdrawalStateEqualTo(WithdrawalType.DiscoverStateEnum.PENDING.getDiscoverType());
+                    .andIsDeletedEqualTo(0);
             withdrawalList = withdrawalMapper.selectByExample(withdrawalExample);
 
             withdrawalList.forEach(a->{
