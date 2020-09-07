@@ -63,12 +63,13 @@ public class WithdrawalController {
     })
     public ResponseEntity<JSONObject> withdrawalApply(HttpServletRequest request, Integer money, String account , Integer userId, Integer stoneId, String type, String name, Integer methodId)
             throws JSONException {
-//        redisTemplate.opsForValue().set(String.valueOf(userId) + "withdrawalApply", userId);
-//        redisTemplate.expire(String.valueOf(userId) + "withdrawalApply", 3, TimeUnit.SECONDS);
+
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         //防止重复访问
 //        if (redisTemplate.opsForValue().get(String.valueOf(userId) + "withdrawalApply")==null){
-            Integer bossId = (Integer)request.getServletContext().getAttribute("bossId");
+//        redisTemplate.opsForValue().set(String.valueOf(userId) + "withdrawalApply", userId);
+//        redisTemplate.expire(String.valueOf(userId) + "withdrawalApply", 3, TimeUnit.SECONDS);
+        Integer bossId = (Integer)request.getServletContext().getAttribute("bossId");
             if (bossId!=null){
                 StoneBalanceExample stoneBalanceExample = new StoneBalanceExample();
                 stoneBalanceExample.createCriteria().andBalanceTypeEqualTo("rechargeAmount")
@@ -202,7 +203,7 @@ public class WithdrawalController {
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
-//        if (redisTemplate.opsForValue().get(String.valueOf(WithdrawalId) + "disposeWithdrawalApply")!=null){
+//        if (redisTemplate.opsForValue().get(String.valueOf(WithdrawalId) + "disposeWithdrawalApply")==null){
 //            redisTemplate.opsForValue().set(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", WithdrawalId);
 //            redisTemplate.expire(String.valueOf(WithdrawalId) + "disposeWithdrawalApply", 3, TimeUnit.SECONDS);
             WithdrawalExample withdrawalExample = new WithdrawalExample();
