@@ -945,8 +945,8 @@ private Map<String,String> chock(List<CreatesOrder> list){
         }
         return map;
 }
-    @Scheduled(cron="0 0 24 * * ?")
-//@Scheduled(cron="*/5 * * * * ? ")
+//    @Scheduled(cron="cron = 0 0 0 * * ?")
+@Scheduled(cron="0 0 1 * * ?")
 @ApiOperation(value = "订单", notes = "订单")
 @Transactional(rollbackFor=Exception.class)
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
