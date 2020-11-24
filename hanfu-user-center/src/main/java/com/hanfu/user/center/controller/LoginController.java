@@ -137,7 +137,7 @@ public class LoginController extends HfUserController {
 			hfUserMapper.insert(user);
 			HfAuth auth = new HfAuth();
 			auth.setAuthKey(authKey);
-//			auth.setAuthType(authType);
+			auth.setAuthType(String.valueOf(2));
 			auth.setUserId(user.getId());
 			auth.setAuthStatus((byte) 0);
 			auth.setIdDeleted((byte) 0);
