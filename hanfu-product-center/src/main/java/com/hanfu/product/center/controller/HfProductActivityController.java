@@ -809,7 +809,8 @@ public class HfProductActivityController {
                 hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.get(0).getActivityId()).andProductIdEqualTo(hfActivityGroup.get(0).getProductId());
                 List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
                 Product product = productMapper.selectByPrimaryKey(hfActivityGroup.get(0).getProductId());
-                if (product.getId() == productId) {
+
+                if (product.getId().equals(productId)) {
                     //时间
                     Date date1 = new Date();
                     Date date2 = new Date();
@@ -827,6 +828,10 @@ public class HfProductActivityController {
                         e.printStackTrace();
                     }
                     long hours = (date1.getTime() - date4.getTime()) / (1000 * 60 * 60);
+                    System.out.println(date1.getTime());
+                    System.out.println(date2.getTime());
+                    System.out.println(date3.getTime());
+                    System.out.println(hours);
                     if (date1.getTime() > date2.getTime() && date1.getTime() < date3.getTime() && hours < 24) {
 //				long hours = (date3.getTime()-date1.getTime()) / (1000 * 60 * 60);
 //				long minutes = ((date3.getTime()-date1.getTime())-hours*(1000 * 60 * 60 ))/(1000* 60);
