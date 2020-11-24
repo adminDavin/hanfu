@@ -219,19 +219,19 @@ public class StoneController {
             account.setIsDeleted(0);
             account.setLastModifier(String.valueOf(request.getUserId()));
             accountMapper.insertSelective(account);
-            RolesExample rolesExample = new RolesExample();
-            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
-                    .andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0)
-                    .andMachIdEqualTo(request.getBossId())
-                    .andRoleNameEqualTo("root");
-            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
-            AccountRoles accountRoles = new AccountRoles();
-            accountRoles.setAccountId(account.getId());
-            accountRoles.setRolesId(rolesList.get(0).getId());
-            accountRoles.setCreateTime(LocalDateTime.now());
-            accountRoles.setModifyTime(LocalDateTime.now());
-            accountRoles.setIsDeleted((short) 0);
-            accountRolesMapper.insertSelective(accountRoles);
+//            RolesExample rolesExample = new RolesExample();
+//            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
+//                    .andRoleTypeEqualTo("stone").andIsDeletedEqualTo(0)
+//                    .andMachIdEqualTo(request.getBossId());
+//                    .andRoleNameEqualTo("root");
+//            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
+//            AccountRoles accountRoles = new AccountRoles();
+//            accountRoles.setAccountId(account.getId());
+//            accountRoles.setRolesId(rolesList.get(0).getId());
+//            accountRoles.setCreateTime(LocalDateTime.now());
+//            accountRoles.setModifyTime(LocalDateTime.now());
+//            accountRoles.setIsDeleted((short) 0);
+//            accountRolesMapper.insertSelective(accountRoles);
             HfStone item1 = new HfStone();
             item1.setId(item.getId());
             item1.setUserId(hfUser.getId());
@@ -250,20 +250,20 @@ public class StoneController {
             account.setIsDeleted(0);
             account.setLastModifier(String.valueOf(request.getUserId()));
             accountMapper.insertSelective(account);
-            RolesExample rolesExample = new RolesExample();
-            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
-                    .andRoleTypeEqualTo("stone")
-                    .andIsDeletedEqualTo(0)
-                    .andMachIdEqualTo(request.getBossId())
-                    .andRoleNameEqualTo("root");
-            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
-            AccountRoles accountRoles = new AccountRoles();
-            accountRoles.setAccountId(account.getId());
-            accountRoles.setRolesId(rolesList.get(0).getId());
-            accountRoles.setCreateTime(LocalDateTime.now());
-            accountRoles.setModifyTime(LocalDateTime.now());
-            accountRoles.setIsDeleted((short) 0);
-            accountRolesMapper.insertSelective(accountRoles);
+//            RolesExample rolesExample = new RolesExample();
+//            rolesExample.createCriteria().andRoleCodeEqualTo("boss")
+//                    .andRoleTypeEqualTo("stone")
+//                    .andIsDeletedEqualTo(0)
+//                    .andMachIdEqualTo(request.getBossId());
+//                    .andRoleNameEqualTo("root");
+//            List<Roles> rolesList =  rolesMapper.selectByExample(rolesExample);
+//            AccountRoles accountRoles = new AccountRoles();
+//            accountRoles.setAccountId(account.getId());
+//            accountRoles.setRolesId(rolesList.get(0).getId());
+//            accountRoles.setCreateTime(LocalDateTime.now());
+//            accountRoles.setModifyTime(LocalDateTime.now());
+//            accountRoles.setIsDeleted((short) 0);
+//            accountRolesMapper.insertSelective(accountRoles);
 
             HfStone item1 = new HfStone();
             item1.setId(item.getId());
