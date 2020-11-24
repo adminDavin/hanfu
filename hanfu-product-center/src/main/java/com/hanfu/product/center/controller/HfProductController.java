@@ -911,6 +911,7 @@ public class HfProductController {
 			HfActivityProduct hfactivityProduct = products.get(j);
 			HfProductDisplay display = new HfProductDisplay();
 			Product product = productMapper.selectByPrimaryKey(hfactivityProduct.getProductId());
+			System.out.println("goods"+hfactivityProduct.getProductId());
 			List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
 					.selectHfGoodsDisplay(hfactivityProduct.getProductId());
 			ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());

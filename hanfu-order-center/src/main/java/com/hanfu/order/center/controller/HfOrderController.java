@@ -711,6 +711,11 @@ public class HfOrderController {
             hfOrder.setPayStatus(PaymentStatus.UNPAID.getPaymentStatus());
             hfOrder.setPayOrderId(payOrder.getId());
             hfOrderMapper.insertSelective(hfOrder);
+            if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
+                if (TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
+                    hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
+                }
+            }
             //流水
             //流水
             System.out.println("开始流水");
@@ -879,12 +884,6 @@ public class HfOrderController {
 //        CreateHfOrderRequest request1 = new CreateHfOrderRequest();
         detail.setTakingType(TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).getTakingType());
         hfOrderDetailMapper.insertSelective(detail);
-        if (java.util.Optional.ofNullable(request.getUserAddressId()).isPresent()) {
-            if (TakingTypeEnum.getTakingTypeEnum(request.getTakingType()).equals(TakingTypeEnum.DELIVERY)) {
-                hfOrderDao.insertOrderAddress(request.getUserAddressId(), hfOrder.getId());
-            }
-        }
-
     }
 
     private Map money(Integer goodsId,Integer[] disconuntId,Integer activityId,Integer num,Integer actualPrice,Integer instanceId){
