@@ -130,13 +130,27 @@ public class HfGoodsDisplayInfo implements Serializable {
 	public void setInstanceId(Integer instanceId) {
 		this.instanceId = instanceId;
 	}
-	@Override
-	public String toString() {
-		return "HfGoodsDisplayInfo [id=" + id + ", goodsName=" + goodsName + ", productId=" + productId + ", goodsDesc="
-				+ goodsDesc + ", modifyTime=" + modifyTime + ", warehouseId=" + warehouseId + ", quantity=" + quantity
-				+ ", respStatus=" + respStatus + ", priceId=" + priceId + ", priceModeId=" + priceModeId + ", fileIds="
-				+ fileIds + ", sellPrice=" + sellPrice + ", isUsePriceMode=" + isUsePriceMode + ", linePrice="
-				+ linePrice + ", hfGoodsSpecs=" + hfGoodsSpecs + "]";
-	}
-    
+
+    @Override
+    public String toString() {
+        return "HfGoodsDisplayInfo{" +
+                "id=" + id +
+                ", goodsName='" + goodsName + '\'' +
+                ", productId=" + productId +
+                ", goodsDesc='" + goodsDesc + '\'' +
+                ", modifyTime=" + modifyTime +
+                ", warehouseId=" + warehouseId +
+                ", quantity=" + quantity +
+                ", respStatus=" + respStatus +
+                ", priceId=" + priceId +
+                ", priceModeId=" + priceModeId +
+                ", fileIds=" + fileIds +
+                ", sellPrice='" + sellPrice + '\'' +
+                ", isUsePriceMode=" + isUsePriceMode +
+                ", linePrice=" + linePrice +
+                ", stoneId=" + stoneId +
+                ", instanceId=" + instanceId +
+                ", hfGoodsSpecs=" + hfGoodsSpecs +
+                '}';
+    }
 }

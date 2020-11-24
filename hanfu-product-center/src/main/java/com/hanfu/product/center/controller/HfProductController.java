@@ -911,9 +911,11 @@ public class HfProductController {
 			HfActivityProduct hfactivityProduct = products.get(j);
 			HfProductDisplay display = new HfProductDisplay();
 			Product product = productMapper.selectByPrimaryKey(hfactivityProduct.getProductId());
-			System.out.println("goods"+hfactivityProduct.getProductId());
+//			System.out.println("goods"+hfactivityProduct.getProductId());
 			List<HfGoodsDisplayInfo> hfGoodsDisplay = hfGoodsDisplayDao
 					.selectHfGoodsDisplay(hfactivityProduct.getProductId());
+			System.out.println("good:"+hfGoodsDisplay);
+			System.out.println("good:"+hfactivityProduct.getInstanceId());
 			ProductInstance instance = productInstanceMapper.selectByPrimaryKey(hfactivityProduct.getInstanceId());
 			HfStone hfStone = hfStoneMapper.selectByPrimaryKey(instance.getStoneId());
 			display.setStoneName(hfStone.getHfName());
@@ -921,8 +923,9 @@ public class HfProductController {
 			display.setInstanceId(hfactivityProduct.getInstanceId());
 
 			hfGoodsDisplay = hfGoodsDisplay.stream()
-					.filter(h -> h.getInstanceId() == null || h.getInstanceId() == hfactivityProduct.getInstanceId())
+					.filter(h -> h.getInstanceId() == null || h.getInstanceId().equals(hfactivityProduct.getInstanceId()))
 					.collect(Collectors.toList());
+			System.out.println(hfGoodsDisplay);
 			Map<Integer, List<HfGoodsDisplayInfo>> hfGoodsDisplayMap = hfGoodsDisplay.stream()
 					.collect(Collectors.toMap(HfGoodsDisplayInfo::getProductId, item -> Lists.newArrayList(item),
 							(List<HfGoodsDisplayInfo> oldList, List<HfGoodsDisplayInfo> newList) -> {
