@@ -111,9 +111,6 @@ public class GoodsController {
 	private HfStoneMapper hfStoneMapper;
 
 	@Autowired
-	private WarehouseMapper warehouseMapper;
-
-	@Autowired
 	private GoodsService goodsService;
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
@@ -399,35 +396,17 @@ public class GoodsController {
 			;
 		}
 		hfGoods.setModifyTime(LocalDateTime.now());
-//		if(hfGoods.getPriceId()==null || hfGoods.getRespId() == null) {
 		GoodsPriceInfo goodsPriceInfo = new GoodsPriceInfo();
 		goodsPriceInfo.setHfGoodsId(hfGoods.getId());
 		goodsPriceInfo.setSellPrice(hfGoodsDisplay.getSellPrice());
 		goodsPriceInfo.setQuantity(hfGoodsDisplay.getQuantity());
-		goodsPriceInfo.setWareHouseId(hfGoodsDisplay.getWarehouseId());
-		// goodsPriceInfo.setUsername(hfGoodsDisplay.getUsername());
-		if (hfGoodsDisplay.getSellPrice() != null || hfGoodsDisplay.getQuantity() != null
-				|| hfGoodsDisplay.getWarehouseId() != null) {
-			setGoodsPrice(goodsPriceInfo);
+		if (hfGoodsDisplay.getSellPrice()==null){
+			hfGoodsDisplay.setSellPrice(1);
 		}
-//		}else {
-//			HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-//			if(!StringUtils.isEmpty(hfGoodsDisplay.getSellPrice())) {
-//				hfPrice.setSellPrice(hfGoodsDisplay.getSellPrice());
-//				hfPriceMapper.updateByPrimaryKey(hfPrice);
-//			}
-//			HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-//			if(!StringUtils.isEmpty(hfGoodsDisplay.getQuantity())) {
-//				hfResp.setQuantity(hfGoodsDisplay.getQuantity());
-//				hfRespMapper.updateByPrimaryKey(hfResp);
-//			}
-//		}
-//		HfResp hfResp = new HfResp();
-//		HfGoodsSpec goodsSpec = new HfGoodsSpec();
-//		goodsSpec.setHfValue(hfGoodsDisplay.getSpecValue());
-//		goodsSpec.setGoodsId(hfGoodsDisplay.getId());
-		// goodsSpec.setHfSpecId(String.valueOf(hfGoodsDisplay.getProductSpecId()));
-//		hfRespMapper.insert(hfResp);
+		if (hfGoodsDisplay.getQuantity()==null){
+			hfGoodsDisplay.setQuantity(1);
+		}
+			setGoodsPrice(goodsPriceInfo);
 		return builder.body(ResponseUtils.getResponseBody(hfGoodsMapper.updateByPrimaryKey(hfGoods)));
 	}
 
@@ -594,7 +573,6 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
 			resp.setIsDeleted((short) 0);
-			resp.setWarehouseId(request.getWareHouseId());
 			hfRespMapper.insert(resp);
 			goods.setRespId(resp.getId());
 			goods.setModifyTime(LocalDateTime.now());
@@ -610,9 +588,6 @@ public class GoodsController {
 			resp.setModifyTime(LocalDateTime.now());
 			if (!StringUtils.isEmpty(request.getUsername())) {
 				resp.setLastModifier(request.getUsername());
-			}
-			if (!StringUtils.isEmpty(request.getWareHouseId())) {
-				resp.setWarehouseId(request.getWareHouseId());
 			}
 			hfRespMapper.updateByPrimaryKey(resp);
 			respId = resp.getId();
@@ -638,13 +613,6 @@ public class GoodsController {
 			resp.setHfStatus(1);
 			resp.setQuantity(request.getQuantity());
 			resp.setHfDesc(request.getRespDesc());
-			if (!StringUtils.isEmpty(request.getWareHouseId())) {
-				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
-				if (warehouse == null) {
-					throw new Exception("仓库不存在");
-				}
-				resp.setWarehouseId(request.getWareHouseId());
-			}
 			resp.setCreateTime(LocalDateTime.now());
 			resp.setModifyTime(LocalDateTime.now());
 			resp.setLastModifier(request.getUsername());
@@ -658,13 +626,6 @@ public class GoodsController {
 			}
 			if (!StringUtils.isEmpty(request.getRespDesc())) {
 				resp.setHfDesc(request.getRespDesc());
-			}
-			if (!StringUtils.isEmpty(request.getWareHouseId())) {
-				Warehouse warehouse = warehouseMapper.selectByPrimaryKey(request.getWareHouseId());
-				if (warehouse == null) {
-					throw new Exception("仓库不存在");
-				}
-				resp.setWarehouseId(request.getWareHouseId());
 			}
 			resp.setModifyTime(LocalDateTime.now());
 			if (!StringUtils.isEmpty(request.getUsername())) {
