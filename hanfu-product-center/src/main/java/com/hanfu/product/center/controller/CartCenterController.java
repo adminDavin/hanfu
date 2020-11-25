@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -190,6 +191,7 @@ public class CartCenterController {
 
     @RequestMapping(path = "/settlemen", method = RequestMethod.POST)
     @ApiOperation(value = "结算", notes = "结算")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> Settlemen(Integer userId, JSONObject productMessage) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         redisTemplate.opsForValue().set(userId.toString(), productMessage);
@@ -199,6 +201,7 @@ public class CartCenterController {
 
     @RequestMapping(path = "/selSettlemen", method = RequestMethod.POST)
     @ApiOperation(value = "查看结算", notes = "查看结算")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> selSettlemen(Integer userId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         return builder.body(ResponseUtils.getResponseBody(redisTemplate.opsForValue().get(userId.toString())));

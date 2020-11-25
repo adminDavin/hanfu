@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -67,6 +68,7 @@ public class discountCouponController {
 	@RequiredPermission(PermissionConstants.ADMIN_DISCOUNT_INSERT)
 	@ApiOperation(value = "添加优惠券", notes = "添加优惠券")
 	@RequestMapping(value = "/addDiscountCoupon", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> getGoodsSpecs(HttpServletRequest request, Date startTime, Date stopTime,
@@ -213,6 +215,7 @@ public class discountCouponController {
 
 	@ApiOperation(value = "编辑优惠券", notes = "编辑优惠券")
 	@RequestMapping(value = "/updateDiscountCoupon", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> updateDiscountCoupon(Date startTime, Date stopTime, DiscountCoupon discountCoupon,
@@ -280,6 +283,7 @@ public class discountCouponController {
 
 	@ApiOperation(value = "优惠券图片", notes = "优惠券图片")
 	@RequestMapping(value = "/discountCouponMap", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> discountCouponMap(MultipartFile fileInfo, Integer discountCouponId)
@@ -306,6 +310,7 @@ public class discountCouponController {
 
 	@ApiOperation(value = "删除优惠券图片", notes = "删除优惠券图片")
 	@RequestMapping(value = "/deletedMap", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> deletedMap(Integer discountCouponId, Integer fileId) throws Exception {

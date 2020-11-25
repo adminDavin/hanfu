@@ -30,6 +30,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -106,6 +107,7 @@ public class HfProductActivityController {
     @RequiredPermission(PermissionConstants.ADMIN_ACTIVITY_INSERT)
     @ApiOperation(value = "添加活动", notes = "添加活动（秒杀，团购，精选，分销）")
     @RequestMapping(value = "/addProdcutActivity", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addProdcutActivity(HttpServletRequest requests, ProductActivityRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfActivity hfActivity = new HfActivity();
@@ -211,6 +213,7 @@ public class HfProductActivityController {
     @RequiredPermission(PermissionConstants.ADMIN_ACTIVITY_DELETE)
     @ApiOperation(value = "删除活动", notes = "删除活动")
     @RequestMapping(value = "/deleteProdcutActivity", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteProdcutActivity(Integer id) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         hfActivityMapper.deleteByPrimaryKey(id);
@@ -229,6 +232,7 @@ public class HfProductActivityController {
     
     @ApiOperation(value = "修改活动相关信息", notes = "修改活动相关信息")
     @RequestMapping(value = "/updateProdcutActivity", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateProdcutActivity(String activityName, Integer id, MultipartFile fileInfo,
                                                             Date startTime, Date endTime, String activityDesc) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -286,6 +290,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "给活动绑定商品", notes = "给活动绑定商品")
     @RequestMapping(value = "/intoActivityProduct", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "活动id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "productId", value = "商品id", required = true, type = "Integer"),
@@ -346,6 +351,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "给活动删除商品", notes = "给活动删除商品")
     @RequestMapping(value = "/deleteActivityProduct", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteActivityProduct(Integer id) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         hfActivityProductMapper.deleteByPrimaryKey(id);
@@ -441,6 +447,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "完善活动商品信息", notes = "完善活动商品信息")
     @RequestMapping(value = "/updateActivityProduct", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateActivityProduct(Integer id, ProductActivityInfoRequest request)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -559,6 +566,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "开团", notes = "开团")
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addGroup(Integer activityId, Integer goodsId, Integer userId, Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfOrderExample hfOrderExample = new HfOrderExample();
@@ -650,6 +658,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "进团", notes = "进团")
     @RequestMapping(value = "/entranceGroup", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> entranceGroup(Integer hfActivityGroupId, Integer userId, Integer goodsId,Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfOrderExample hfOrderExample = new HfOrderExample();
@@ -916,6 +925,7 @@ public class HfProductActivityController {
 
     @ApiOperation(value = "分销计算", notes = "分销计算")
     @RequestMapping(value = "/distributionActivityCalculate", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> distributionActivityCalculate(Integer orderId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfOrder hfOrder = hfOrderMapper.selectByPrimaryKey(orderId);

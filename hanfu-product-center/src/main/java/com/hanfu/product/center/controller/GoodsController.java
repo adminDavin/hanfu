@@ -243,6 +243,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品", notes = "添加物品")
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> createGood(HfGoodsInfo hfGoodsInfo, HttpServletRequest requests)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -353,7 +354,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")
 	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
-
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateGood(@RequestParam("fileInfo1") MultipartFile[] fileInfo1,
 			HfGoodsDisplay hfGoodsDisplay) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -412,6 +413,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品规格", notes = "添加物品规格")
 	@RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addGoodsSpec(GoodsSpecRequest request) throws Exception {
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(request.getGoodsId());
 		if (hfGoods == null) {
@@ -433,6 +435,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "更新物品图片", notes = "更新物品图片")
 	@RequestMapping(value = "/updatePictrue", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateGoodsPictrue(MultipartFile fileInfo1, GoodsSpecRequest request, int fileID)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -473,6 +476,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "更新物品规格", notes = "更新物品规格")
 	@RequestMapping(value = "/spec/update", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateGoodsSpec(GoodsSpecRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
@@ -525,6 +529,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "设置物品价格", notes = "设置物品价格")
 	@RequestMapping(value = "/setPrice", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> setGoodsPrice(GoodsPriceInfo request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getHfGoodsId());
@@ -597,6 +602,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "设置物品数量", notes = "设置物品数量")
 	@RequestMapping(value = "/setGoodsQuantity", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> setGoodsQuantity(RespInfo request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfGoods goods = hfGoodsMapper.selectByPrimaryKey(request.getHfGoodsId());
@@ -652,6 +658,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加物品图片", notes = "添加物品图片")
 	@PostMapping(value = "/addPicture")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addGoodsPicture(MultipartFile fileInfo1, GoodsPictrueRequest request)
 			throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -1767,7 +1774,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加评价", notes = "添加评价")
 	@RequestMapping(value = "/addEvaluateProduct", method = RequestMethod.POST)
-
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addEvaluateProduct(HttpServletRequest request, String type, String typeContent,
 			Integer orderDetailId, Integer userId, Integer goodId, Integer stoneId, Integer star, String evaluate,
 			Integer levelId, Integer parentEvaluateId, Integer... fileId) throws Exception {
@@ -1933,6 +1940,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "给评价点赞", notes = "给评价点赞")
 	@RequestMapping(value = "/addEvaluatePraise", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addEvaluatePraise(Integer id, Integer userId, String type, Integer levelId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -2016,6 +2024,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "上传图片", notes = "上传图片")
 	@RequestMapping(value = "/fileUpLoad", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> fileUpLoad(MultipartFile file) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		String arr[];
@@ -2136,6 +2145,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "转发", notes = "转发")
 	@RequestMapping(value = "/transmit", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> transmit(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfEvaluate evaluate = hfEvaluateMapper.selectByPrimaryKey(id);
@@ -2146,6 +2156,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "添加图标绑定链接", notes = "添加图标绑定链接")
 	@RequestMapping(value = "/addIconAndUrl", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addIconAndUrl(MultipartFile file, String iconName, String url, Integer bossId)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -2178,6 +2189,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "删除图标绑定链接", notes = "删除图标绑定链接")
 	@RequestMapping(value = "/deleteIconAndUrl", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> deleteIconAndUrl(Integer id) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		hfIconMapper.deleteByPrimaryKey(id);
@@ -2186,6 +2198,7 @@ public class GoodsController {
 
 	@ApiOperation(value = "修改图标绑定链接", notes = "修改图标绑定链接")
 	@RequestMapping(value = "/updateIconAndUrl", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateIconAndUrl(Integer id, MultipartFile file, String iconName, String url)
 			throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

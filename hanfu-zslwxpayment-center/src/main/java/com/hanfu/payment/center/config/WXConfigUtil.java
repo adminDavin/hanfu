@@ -12,7 +12,7 @@ public class WXConfigUtil implements WXPayConfig {
     private static WXConfigUtil INSTANCE;
 
 
-    public static final String APP_ID = "wx2641aaa105c07dd4";//应用AppID
+    public static final String APP_ID = "wx25eebf24f781cd35";//应用AppID
     public static final String KEY = "tjsichuang0827abcdef199509abcdef";//商户密钥
     public static final String MCH_ID = "1574620741";//商户号
 

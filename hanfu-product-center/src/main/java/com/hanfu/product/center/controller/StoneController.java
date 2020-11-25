@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -160,6 +161,7 @@ public class StoneController {
 
     @ApiOperation(value = "添加商铺", notes = "添加一个新的商铺")
     @RequestMapping(value = "/addStone", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addProductInfo(HttpServletRequest requests,HfStoneRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         if (requests.getServletContext().getAttribute("getServletContextType")!=null){
@@ -277,6 +279,7 @@ public class StoneController {
     
     @ApiOperation(value = "添加商铺图片", notes = "添加商铺图片")
     @RequestMapping(value = "/addStonePicture", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addStonePicture(String type, Integer stoneId,MultipartFile file) throws JSONException, IOException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
@@ -367,6 +370,7 @@ public class StoneController {
 
     @ApiOperation(value = "修改商铺", notes = "修改商铺")
     @RequestMapping(value = "/updateStone", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateStone(MultipartFile fileInfo, HfStoneRequest request) throws Exception {
         HfStone hfStone = hfStoneMapper.selectByPrimaryKey(request.getStoneId());
         if (hfStone == null) {
@@ -739,6 +743,7 @@ public class StoneController {
    
     @ApiOperation(value = "店铺二维码", notes = "店铺二维码")
     @RequestMapping(value = "/StoneCode", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> StoneCode(Integer stoneId) throws JSONException, IOException, FormatException, ChecksumException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfStone stone = hfStoneMapper.selectByPrimaryKey(stoneId);
