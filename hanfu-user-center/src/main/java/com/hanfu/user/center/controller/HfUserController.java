@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -80,6 +81,7 @@ public class HfUserController {
     private HfUserBalanceMapper hfUserBalanceMapper;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiOperation(value = "用户登录", notes = "用户登录")
 //    @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式,  1:用户登录, 2:手机号登录 ",
@@ -119,6 +121,7 @@ public class HfUserController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser user = hfUserMapper.selectByPrimaryKey(request.getUserId());
@@ -161,6 +164,7 @@ public class HfUserController {
 
     @RequestMapping(value = "/update/wechart", method = RequestMethod.GET)
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateWechartPhone(@RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "appName", required = false) String appName,
             @RequestParam(value = "encryptedData", required = false) String encryptedData,

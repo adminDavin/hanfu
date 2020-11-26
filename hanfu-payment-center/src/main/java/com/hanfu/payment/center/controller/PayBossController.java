@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,7 @@ private PayBossMapper payBossMapper;
 
     @ApiOperation(value = "证书上传", notes = "证书上传")
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public String payment(MultipartFile uploadFile, HttpServletRequest request, PayBoss payBoss)
             throws JSONException, IOException {
         if(uploadFile.isEmpty()){

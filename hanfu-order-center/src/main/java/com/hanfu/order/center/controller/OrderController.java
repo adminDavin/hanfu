@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -192,6 +193,7 @@ public class OrderController {
 
 	@ApiOperation(value = "修改订单状态", notes = "修改订单状态")
 	@RequestMapping(value = "/updatestatus", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "orderId", value = "订单id", required = true, type = "Integer"),
 		@ApiImplicitParam(paramType = "query", name = "id", value = "状态id", required = true, type = "Integer")
@@ -208,6 +210,7 @@ public class OrderController {
 	@SuppressWarnings("rawtypes")
 	@ApiOperation(value = "修改订单", notes = "修改订单")
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 		@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer")})
 	public ResponseEntity<JSONObject> updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics)
@@ -293,6 +296,7 @@ public class OrderController {
 	} 
 	
 	@ApiOperation(value = "填写物流信息", notes = "填写物流信息")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@RequestMapping(value = "/insertLogistics", method = RequestMethod.GET)
 	public ResponseEntity<JSONObject> insertLogistics(HfOrderLogisticsRequest request)
 			throws Exception {

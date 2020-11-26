@@ -14,6 +14,7 @@ import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,6 +74,7 @@ public class HfGoodsController {
 
     @ApiOperation(value = "校检库存", notes = "校检库存")
     @RequestMapping(value = "/checkResp", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> checkResp(Integer GoodsNum,Integer goodsId,Integer activityId,Integer[] discountCouponId,Integer actualPrice,Integer instanceId)
             throws JSONException {
         if (activityId==null){
@@ -237,6 +239,7 @@ if (actualPrice!=null){
     }
     @ApiOperation(value = "校检库存2", notes = "校检库存2")
     @RequestMapping(value = "/checkResp2", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> checkResp(String goodsList,Integer activityId,Integer[] discountCouponId,Integer actualPrice,Integer instanceId,Integer stoneId,Integer bossId)
             throws JSONException {
         Amount amount = new Amount();
@@ -316,6 +319,7 @@ if (actualPrice!=null){
     }
     @ApiOperation(value = "平台优惠券", notes = "平台优惠券")
     @RequestMapping(value = "/checkRespBoss", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> checkRespBoss(Integer[] discountCouponId,Integer actualPrice)
             throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

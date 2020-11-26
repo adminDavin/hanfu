@@ -104,7 +104,7 @@ public class JurisdictionController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
-	@Transactional
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addDepartment(String DepartmentName, HttpServletRequest request, Integer userId)
 			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -137,7 +137,7 @@ public class JurisdictionController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "DepartmentName", value = "部门名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户", required = false, type = "Integer") })
-	@Transactional
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> getDepartment(HttpServletRequest request) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		DepartmentExample example = new DepartmentExample();
@@ -221,6 +221,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "添加角色", notes = "添加角色")
 	@RequestMapping(value = "/addRole", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addRole(HttpServletRequest request, String roleName, Integer userId,
 			String roleCode, Integer accountId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -265,6 +266,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "角色查询", notes = "角色查询")
 	@RequestMapping(value = "/selectRole", method = RequestMethod.GET)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> selectRole(HttpServletRequest request) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		RolesExample rolesExample = new RolesExample();
@@ -294,6 +296,7 @@ public class JurisdictionController {
 	}
 
 	@RequestMapping(value = "/selectRoleCode", method = RequestMethod.GET)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> selectRoleCode(HttpServletRequest request) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (request.getServletContext().getAttribute("getServletContextType") != null
@@ -426,6 +429,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "角色添加权限", notes = "角色添加权限")
 	@RequestMapping(value = "/roleAddJurisdiction", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> roleAddJurisdiction(Integer roleId, Integer[] JurisdictionIds)
 			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -454,6 +458,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "角色删除权限", notes = "角色删除权限")
 	@RequestMapping(value = "/roleDeleteJurisdiction", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> roleDeleteJurisdiction(Integer roleId, Integer[] JurisdictionIds)
 			throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -499,6 +504,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "角色删除模块", notes = "角色删除模块")
 	@RequestMapping(value = "/roleDeleteModel", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> roleDeleteModel(Integer roleId, Integer[] modelId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		for (Integer item : modelId) {
@@ -677,6 +683,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "给用户绑定角色", notes = "给用户绑定角色")
 	@RequestMapping(value = "/addUserRole", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addUserRole(Integer roleId[], Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		for (Integer item : roleId) {
@@ -704,6 +711,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "删除用户角色", notes = "删除用户角色")
 	@RequestMapping(value = "/deleteUserRole", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> deleteUserRole(Integer roleId[], Integer id) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		for (Integer item : roleId) {
@@ -721,6 +729,7 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "我们添加平台账号", notes = "我们添加平台账号")
 	@RequestMapping(value = "/addAdminByUs", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addAdminByUs(String accountCode, String accountType, Integer merchantId,
 			String roleName, Integer[] modelId, Integer jurisdictonId[]) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();

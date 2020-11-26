@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -40,6 +41,7 @@ public class HfStoreMenberController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "店铺添加成员", notes = "店铺添加成员")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> add(HttpServletRequest request,hfStoreMenber hfStoreMenbers,@RequestParam(value = "ids")List<Integer> ids) throws Exception {
@@ -160,6 +162,7 @@ public class HfStoreMenberController {
 
     @RequestMapping(value = "/deleted", method = RequestMethod.GET)
     @ApiOperation(value = "店铺成员删除", notes = "店铺成员删除")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
@@ -181,6 +184,7 @@ public class HfStoreMenberController {
     }
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     @ApiOperation(value = "店铺成员修改", notes = "店铺成员修改")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
@@ -285,6 +289,7 @@ public class HfStoreMenberController {
     }
     @RequestMapping(value = "/addRole", method = RequestMethod.POST)
     @ApiOperation(value = "添加店铺角色", notes = "添加店铺角色")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> addRole(HttpServletRequest request,HfStoreRele hfStoreRele) throws Exception {
@@ -307,6 +312,7 @@ public class HfStoreMenberController {
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deletedRole(HttpServletRequest request,Integer StoreId,Integer StoreRoleId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
@@ -327,6 +333,7 @@ public class HfStoreMenberController {
             @ApiImplicitParam(paramType = "query", name = "StoreId", value = "店铺id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "StoreRoleId", value = "店铺角色id", required = true, type = "Integer")
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateRole(HttpServletRequest request,Integer StoreId,Integer StoreRoleId,Integer userId) throws Exception {
         if (request.getServletContext().getAttribute("getServletContextType").equals("stone")){
             System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));

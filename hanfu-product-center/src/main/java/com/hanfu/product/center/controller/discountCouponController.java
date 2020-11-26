@@ -372,22 +372,29 @@ public class discountCouponController {
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "scope", value = "优惠券范围", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
-	public ResponseEntity<JSONObject> couponHall(HttpServletRequest request, Integer scope, Integer userId)
+	public ResponseEntity<JSONObject> couponHall(HttpServletRequest request, Integer scope, Integer userId
+	,Integer bossId , Integer storeId)
 			throws Exception {
-		Integer bossId = 1;
-		if (request.getServletContext().getAttribute("getServletContextType") != null) {
-			if (request.getServletContext().getAttribute("getServletContextType").equals("user")) {
-				bossId = Integer.valueOf((String) request.getServletContext().getAttribute("getServletContext"));
-
-			}
-		}
+//		Integer bossId = 1;
+//		if (request.getServletContext().getAttribute("getServletContextType") != null) {
+//			if (request.getServletContext().getAttribute("getServletContextType").equals("user")) {
+//				bossId = Integer.valueOf((String) request.getServletContext().getAttribute("getServletContext"));
+//
+//			}
+//		}
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfUserCouponsExample example = new HfUserCouponsExample();
 		List<DiscountCoupon> list = new ArrayList<DiscountCoupon>();
 		DiscountCouponExample coupons = new DiscountCouponExample();
 		if (scope == 0) {
-			coupons.createCriteria().andScopeEqualTo("allUser").andIdDeletedEqualTo((byte) 0)
-					.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now()).andBossIdEqualTo(bossId);
+			DiscountCouponExample.Criteria criteria = coupons.createCriteria().andScopeEqualTo("allUser").andIdDeletedEqualTo((byte) 0)
+					.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
+			if (bossId!=null){
+				criteria.andBossIdEqualTo(bossId);
+			}
+			if (storeId != null){
+				criteria.andStoneIdEqualTo(storeId);
+			}
 			list = discountCouponMapper.selectByExample(coupons);
 			for (int i = 0; i < list.size(); i++) {
 				List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();
@@ -402,8 +409,14 @@ public class discountCouponController {
 			}
 		}
 		if (scope == 1) {
-			coupons.createCriteria().andScopeEqualTo("vipUser").andIdDeletedEqualTo((byte) 0)
+			DiscountCouponExample.Criteria criteria = coupons.createCriteria().andScopeEqualTo("vipUser").andIdDeletedEqualTo((byte) 0)
 					.andStopTimeGreaterThanOrEqualTo(LocalDateTime.now());
+			if (bossId!=null){
+				criteria.andBossIdEqualTo(bossId);
+			}
+			if (storeId != null){
+				criteria.andStoneIdEqualTo(storeId);
+			}
 			list = discountCouponMapper.selectByExample(coupons);
 			for (int i = 0; i < list.size(); i++) {
 				List<HfUserCoupons> userCoupons = new ArrayList<HfUserCoupons>();

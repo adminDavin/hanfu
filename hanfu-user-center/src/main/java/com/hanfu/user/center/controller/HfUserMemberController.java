@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,7 @@ public class HfUserMemberController {
 		@ApiImplicitParam(paramType = "query", name = "number", value = "会员月数", required = true, type = "Integer"),
 		@ApiImplicitParam(paramType = "query", name = "total", value = "充值的金额", required = true, type = "Integer")
 	})
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> rechargeMember(@RequestParam(required = true, defaultValue = "") Integer userId,
 			@RequestParam(required = true, defaultValue = "") Integer money,
 			@RequestParam(required = true, defaultValue = "") Integer number,
@@ -119,6 +121,7 @@ public class HfUserMemberController {
 		@ApiImplicitParam(paramType = "query", name = "number", value = "会员月数", required = true, type = "Integer"),
 		@ApiImplicitParam(paramType = "query", name = "total", value = "充值的金额", required = true, type = "Integer")
 	})
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> buyMember(@RequestParam(required = true, defaultValue = "") Integer userId,
 			@RequestParam(required = true, defaultValue = "") Integer money,
 			@RequestParam(required = true, defaultValue = "") Integer number,
@@ -180,6 +183,7 @@ public class HfUserMemberController {
 		@ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
 		@ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
 	})
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> setbuyMember(@RequestParam(required = true,defaultValue = "") Integer total,
 			@RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -203,6 +207,7 @@ public class HfUserMemberController {
 		@ApiImplicitParam(paramType = "query", name = "total", value = "金额", required = true, type = "Integer"),
 		@ApiImplicitParam(paramType = "query", name = "number", value = "金额对应的月份", required = true, type = "Integer")
 	})
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> setrechargeMember(@RequestParam(required = true,defaultValue = "") Integer total,
 			@RequestParam(required = true,defaultValue = "") Integer number) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();

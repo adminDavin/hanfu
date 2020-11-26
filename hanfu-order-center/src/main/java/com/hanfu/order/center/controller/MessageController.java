@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,6 +60,7 @@ public class MessageController {
 
     @ApiOperation(value = "添加消息", notes = "添加消息")
     @RequestMapping(value = "/addMessage", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer")
@@ -73,6 +75,7 @@ public class MessageController {
 
     @ApiOperation(value = "删除消息", notes = "删除消息")
     @RequestMapping(value = "/deleteMessage", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")
     })
@@ -86,6 +89,7 @@ public class MessageController {
 
     @ApiOperation(value = "修改消息", notes = "修改消息")
     @RequestMapping(value = "/updateMessage", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "message", value = "消息", required = true, type = "String")
@@ -101,6 +105,7 @@ public class MessageController {
 
     @ApiOperation(value = "添加评价", notes = "添加评价")
     @RequestMapping(value = "/insertReply", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = false, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = false, type = "Integer"),
@@ -140,6 +145,7 @@ public class MessageController {
 
     @ApiOperation(value = "查看评价", notes = "查看评价")
     @RequestMapping(value = "/SeekReply", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户Id", required = true, type = "Integer"),
@@ -157,6 +163,7 @@ public class MessageController {
 
     @ApiOperation(value = "评价回复", notes = "评价回复")
     @RequestMapping(value = "/queryReply", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "evaluate", value = "评价", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "orderId", value = "订单Id", required = true, type = "Integer"),

@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +71,7 @@ public class DiscoverController {
 
 	@RequestMapping(value = "/addDiscover", method = RequestMethod.POST)
 	@ApiOperation(value = "添加发现", notes = "添加发现")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addDiscover(DiscoverDisplay discoverDisplay) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Discover discover = new Discover();
@@ -171,6 +173,7 @@ public class DiscoverController {
 
 	@RequestMapping(value = "/addPictrue", method = RequestMethod.POST)
 	@ApiOperation(value = "添加发现图片", notes = "添加发现图片")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addPictrue(Integer discoverId, MultipartFile multipartFile, String fileDescs)
 			throws JSONException, IOException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -202,6 +205,7 @@ public class DiscoverController {
 
 	@RequestMapping(value = "/delleteDiscover", method = RequestMethod.POST)
 	@ApiOperation(value = "删除发现", notes = "删除发现")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> delleteDiscover(Integer discoverId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Discover discover = new Discover();

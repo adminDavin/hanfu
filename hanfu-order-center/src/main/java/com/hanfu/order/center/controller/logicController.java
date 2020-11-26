@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -73,6 +74,7 @@ public class logicController {
 
     @ResponseBody
     @RequestMapping(value = "/testCancel", method = RequestMethod.GET)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiOperation(value = "核销逻辑", notes = "核销逻辑")
     public ResponseEntity<JSONObject> testCancel(
             @RequestParam(value = "userId", required = true) Integer userId,
@@ -222,6 +224,7 @@ public class logicController {
      */
     @GetMapping(value = "/activity/create/activity-code")
     @ApiOperation("生成活动详情二维码")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public void getCode(HttpServletResponse response, Integer orderId, Integer stoneId) throws Exception {
         //uuid生成不重复主键
 //        String uuid1=UUID.randomUUID().toString();

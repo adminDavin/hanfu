@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,6 +72,7 @@ public class SeniorityController {
     private HfGoodsPictrueMapper hfGoodsPictrueMapper;
     @ApiOperation(value = "添加排行相关信息", notes = "添加排行相关信息")
     @RequestMapping(value = "/addSeniorityInfo", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfSeniority hfSeniority = new HfSeniority();
@@ -102,6 +104,7 @@ public class SeniorityController {
 
     @ApiOperation(value = "修改排行相关信息", notes = "修改排行相关信息")
     @RequestMapping(value = "/updateSeniorityInfo", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateSeniorityInfo(HfSeniorityRequest request,MultipartFile fileInfo) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfSeniority hfSeniority = hfSeniorityMapper.selectByPrimaryKey(request.getId());
@@ -166,6 +169,7 @@ public class SeniorityController {
 
     @RequestMapping(value = "/updateSeniorityPicture", method = RequestMethod.POST)
     @ApiOperation(value = "更新类目图片", notes = "更新类目图片")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public Integer updateCategoryPicture(MultipartFile fileInfo, @RequestParam(required = false) String uuid ,@RequestParam String type) throws Exception {
         FileMangeService fileMangeService = new FileMangeService();
         String arr[];
@@ -211,6 +215,7 @@ public class SeniorityController {
 
     @ApiOperation(value = "给排行添加内容", notes = "给排行添加内容")
     @RequestMapping(value = "/addSeniorityContent", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addSeniorityContent(@RequestParam Integer seniorityId,@RequestParam Integer goodsId) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         SeniorityInstanceExample example = new SeniorityInstanceExample();

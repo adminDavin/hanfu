@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
@@ -52,6 +53,7 @@ public class WithdrawalController {
     private HfStoneMapper hfStoneMapper;
     @ApiOperation(value = "取款申请", notes = "取款申请")
     @RequestMapping(value = "/withdrawalApply", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "money", value = "申请金额", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "account", value = "申请账号", required = true, type = "String"),
@@ -195,6 +197,7 @@ public class WithdrawalController {
 
     @ApiOperation(value = "处理取款申请", notes = "处理取款申请")
     @RequestMapping(value = "/disposeWithdrawalApply", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "WithdrawalId", value = "取款申请id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "type", value = "处理类型", required = true, type = "String"),
@@ -254,6 +257,7 @@ public class WithdrawalController {
 
     @ApiOperation(value = "添加取款方法", notes = "添加取款方法")
     @RequestMapping(value = "/AddMethod", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "withdrawalWayName", value = "取款方式名称", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "withdrawalCommission", value = "取款手续费", required = true, type = "Integer"),
@@ -303,6 +307,7 @@ public class WithdrawalController {
 
     @ApiOperation(value = "删除取款方法", notes = "删除取款方法")
     @RequestMapping(value = "/DeletedMethod", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "withdrawalMethodId", value = "方法id", required = true, type = "String"),
     })
@@ -315,6 +320,7 @@ public class WithdrawalController {
     }
     @ApiOperation(value = "修改取款方法", notes = "修改取款方法")
     @RequestMapping(value = "/UpdateMethod", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "withdrawalMethodId", value = "方法id", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "withdrawalWayName", value = "取款方式名称", required = true, type = "String"),

@@ -124,6 +124,7 @@ public class HfOrderController {
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> creatOrder(CreateHfOrderRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfRequestIdExample idExample = new HfRequestIdExample();
@@ -562,7 +563,7 @@ public class HfOrderController {
 
         return builder.body(ResponseUtils.getResponseBody(sta));
     }
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request, HttpServletRequest requests) throws JSONException {
@@ -947,7 +948,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
 //    @Scheduled(cron="cron = 0 0 0 * * ?")
 @Scheduled(cron="0 0 1 * * ?")
 @ApiOperation(value = "订单", notes = "订单")
-@Transactional(rollbackFor=Exception.class)
+@Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)
     public void TimeGroup()
             throws Exception {

@@ -44,6 +44,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -180,6 +181,7 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/addTemplateParam", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板参数", notes = "添加信息模板参数")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addTemplateParam(String type, String param, String name) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfTemplateParamExample example = new HfTemplateParamExample();
@@ -218,6 +220,7 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/getMessageType", method = RequestMethod.POST)
 	@ApiOperation(value = "查询消息类型", notes = "查询消息类型")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> getMessageType() throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		List<String> str = new ArrayList<String>();
@@ -378,6 +381,7 @@ public class KingWordsController {
 	
 	@RequestMapping(path = "/agreeMessageApply", method = RequestMethod.POST)
 	@ApiOperation(value = "同意申请的消息", notes = "同意申请的消息")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> agreeMessageApply(Integer applyId, String templateId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageApply apply = hfMessageApplyMapper.selectByPrimaryKey(applyId);
@@ -392,6 +396,7 @@ public class KingWordsController {
 	
 	@RequestMapping(path = "/refuseMessageApply", method = RequestMethod.POST)
 	@ApiOperation(value = "拒绝申请的消息", notes = "拒绝申请的消息")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> refuseMessageApply(Integer applyId, String refuseReason) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfMessageApply apply = hfMessageApplyMapper.selectByPrimaryKey(applyId);
@@ -429,6 +434,7 @@ public class KingWordsController {
 	
 	@RequestMapping(path = "/code", method = RequestMethod.POST)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> code(@RequestParam String phone) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (!StringUtils.isEmpty(phone)) {
@@ -455,6 +461,7 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/Message", method = RequestMethod.POST)
 	@ApiOperation(value = "发送验证码", notes = "发送验证码")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> Message(@RequestParam Map<String, String> map) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		String s = map.get("bossId");
@@ -512,6 +519,7 @@ public class KingWordsController {
 
 	@RequestMapping(path = "/addTemplateMessage", method = RequestMethod.POST)
 	@ApiOperation(value = "添加信息模板", notes = "添加信息模板")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addTemplateMessage(Integer bossId, Integer type, String content,
 			String contentType, String messageType, String subject) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -607,6 +615,7 @@ public class KingWordsController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	@ApiOperation(value = "用户注册", notes = "用户注册")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "authType", value = "鉴权方式. 2  手机号码注册", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "authKey", value = "鉴权key", required = false, type = "String"),
@@ -826,6 +835,7 @@ public class KingWordsController {
     }
 	@RequestMapping(path = "/selectList", method = RequestMethod.POST)
 	@ApiOperation(value = "用户列表", notes = "用户列表")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> selectList(UserInfo userInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		if (!StringUtils.isEmpty(userInfo.getTime())) {

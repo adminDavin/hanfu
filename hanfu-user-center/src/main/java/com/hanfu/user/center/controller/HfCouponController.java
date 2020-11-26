@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,7 @@ public class HfCouponController {
             @ApiImplicitParam(paramType = "query", name = "total", value = "优惠券到达多少价格才能用", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "body", value = "优惠券说明", required = true, type = "String"),
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> insertCoupon(@RequestParam(required = true,defaultValue = "") Integer money,
                                                    @RequestParam(required = true,defaultValue = "") Integer total,
                                                    @RequestParam(required = true,defaultValue = "") String body) throws JSONException {
@@ -66,6 +68,7 @@ public class HfCouponController {
             @ApiImplicitParam(paramType = "query", name = "total", value = "优惠券到达多少价格才能用", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "body", value = "优惠券说明", required = true, type = "String"),
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateCoupon(@RequestParam(required = true,defaultValue = "") Integer id,
                                                    @RequestParam(required = true,defaultValue = "") Integer money,
                                                    @RequestParam(required = true,defaultValue = "") Integer total,
@@ -80,6 +83,7 @@ public class HfCouponController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "优惠券ID", required = true, type = "Integer"),
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteCoupon(@RequestParam(required = true,defaultValue = "") Integer id) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         hfCouponService.deleteCoupon(id);
@@ -103,6 +107,7 @@ public class HfCouponController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户ID", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券ID", required = true, type = "Integer"),
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> receiveCoupon(@RequestParam(required = true,defaultValue = "") Integer userId,
                                                     @RequestParam(required = true,defaultValue = "") Integer couponId) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -118,6 +123,7 @@ public class HfCouponController {
             @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券ID", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "total", value = "当前商品价格", required = true, type = "Integer")
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> useCoupon(@RequestParam(required = true,defaultValue = "") Integer userId,
                                                 @RequestParam(required = true,defaultValue = "") Integer couponId,
                                                 @RequestParam(required = true,defaultValue = "") Integer total) throws JSONException {
@@ -144,6 +150,7 @@ public class HfCouponController {
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户ID", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "couponId", value = "优惠券ID", required = true, type = "Integer")
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteUserCoupon(@RequestParam(required = true,defaultValue = "") Integer id,
                                                        @RequestParam(required = true,defaultValue = "") Integer userId,
                                                        @RequestParam(required = true,defaultValue = "") Integer couponId) throws JSONException {

@@ -13,12 +13,14 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @MapperScans({@MapperScan("com.hanfu.payment.center.manual.dao"), @MapperScan("com.hanfu.payment.center.dao")})
 @EnableAutoConfiguration
 @EnableDubbo(scanBasePackages = "com.hanfu.payment.center.service.impl")
 @ComponentScan("com.hanfu.payment.center")
+@EnableTransactionManagement
 @tk.mybatis.spring.annotation.MapperScan(value = "com.hanfu.payment.center.dao")
 public class Application {
     public static void main(String[] args) {

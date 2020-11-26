@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -94,6 +95,7 @@ public class CancelController {
 
     @RequestMapping(value = "/deleteEmpty", method = RequestMethod.GET)
     @ApiOperation(value = "清空", notes = "清空")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParam(paramType = "query", name = "id", value = "核销id", required = true, type = "Integer")
     public ResponseEntity<JSONObject> deleteEmpty(int id) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -154,6 +156,7 @@ public class CancelController {
 
     @RequestMapping(value = "/addCancel", method = RequestMethod.POST)
     @ApiOperation(value = "商品添加核销员", notes = "商品添加核销员")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> addCancel(Integer productId,Integer[] cancelId) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
@@ -217,6 +220,7 @@ public class CancelController {
 
     @RequestMapping(value = "/deleteCancel", method = RequestMethod.GET)
     @ApiOperation(value = "删除核销员", notes = "删除核销员")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParam(paramType = "query", name = "id", value = "核销id", required = true, type = "Integer")
     public ResponseEntity<JSONObject> deleteCancel(int id) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -241,6 +245,7 @@ public class CancelController {
 
     @RequestMapping(value = "/deleteBatchCancel", method = RequestMethod.GET)
     @ApiOperation(value = "批量删除核销员", notes = "批量删除核销员")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteBatchCancel(@RequestParam("id") List id) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
         System.out.println(id);
@@ -269,6 +274,7 @@ public class CancelController {
 
     @RequestMapping(value = "/insertCancel", method = RequestMethod.GET)
     @ApiOperation(value = "增加核销员", notes = "增加核销员")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
@@ -306,6 +312,7 @@ public class CancelController {
 
     @RequestMapping(value = "/updateCancelUser", method = RequestMethod.GET)
     @ApiOperation(value = "根据核销id修改核销员信息", notes = "根据核销id修改核销员信息")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "Id", value = "核销id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),
@@ -338,6 +345,7 @@ public class CancelController {
 
     @RequestMapping(value = "/updateCancel", method = RequestMethod.POST)
     @ApiOperation(value = "修改核销员信息", notes = "修改核销员信息")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "UserId", value = "用戶id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "site", value = "核销地点", required = false, type = "String"),

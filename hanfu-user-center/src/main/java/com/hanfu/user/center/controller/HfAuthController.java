@@ -295,6 +295,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
 	@ApiOperation(value = "token获取", notes = "token获取")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> token(HttpServletRequest request, HttpServletResponse response,
 												   @RequestParam(name = "userId", required = false) Integer userId,
 												   @RequestParam(name = "type", required = false) String type,Integer merId) throws Exception {
@@ -366,6 +367,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@RequestMapping(value = "/tokentest", method = RequestMethod.POST)
 	@ApiOperation(value = "token获取", notes = "token获取")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> tokentest(HttpServletRequest request, HttpServletResponse response,
 											String token) throws Exception {
 
@@ -382,6 +384,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@RequestMapping(value = "/addAdminUser", method = RequestMethod.POST)
 	@ApiOperation(value = "添加管理后台用户", notes = "添加管理后台用户")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "phone", value = "手机号", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "name", value = "用户名", required = false, type = "String"), })
@@ -515,6 +518,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> update(UserInfoRequest request) throws Exception {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -708,6 +712,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "添加用户会员等级", notes = "添加用户会员等级")
 	@RequestMapping(value = "/addUserMemberLevel", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "level", value = "等级", required = false, type = "Integer"),
@@ -745,6 +750,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "修改用户会员等级", notes = "修改用户会员等级")
 	@RequestMapping(value = "/updateUserMemberLevel", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "name", value = "等级名称", required = false, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "id", value = "等级id", required = true, type = "Integer"),
@@ -864,6 +870,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "添加会员", notes = "添加会员")
 	@RequestMapping(value = "/addUserMember", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //	Date startTime, Date endTime, HfUserMember hfUserMember,
 	public ResponseEntity<JSONObject> addUserMember(Integer levelId, Integer[] userId, HttpServletRequest request) throws JSONException {
 
@@ -909,6 +916,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "修改会员信息", notes = "修改会员信息")
 	@RequestMapping(value = "/updateUserMember", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 //	Date startTime, Date endTime, 
 	public ResponseEntity<JSONObject> updateUserMember(HfUserMember hfUserMember, Integer levelId)
 			throws JSONException {
@@ -1035,6 +1043,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "填写等级描述", notes = "填写等级描述")
 	@RequestMapping(value = "/addMemberLevelDescribe", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "levelId", value = "等级id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = true, type = "String"),
@@ -1086,6 +1095,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "更新等级描述", notes = "更新等级描述")
 	@RequestMapping(value = "/updateMemberLevelDescribe", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "id", value = "id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "levelDescribe", value = "特权描述", required = false, type = "String"),
@@ -1324,6 +1334,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 
 	@ApiOperation(value = "账号添加权限", notes = "账号添加权限")
 	@RequestMapping(value = "/addJurisdiction", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer")
@@ -1361,6 +1372,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	
 	@ApiOperation(value = "添加超级账号", notes = "添加超级账号")
 	@RequestMapping(value = "/addSup", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "LastUser", value = "添加人id", required = true, type = "Integer"),
 //			@ApiImplicitParam(paramType = "query", name = "userId", value = "被添加人id", required = true, type = "Integer"),
@@ -1545,6 +1557,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@ApiOperation(value = "新增sass账号", notes = "新增sass账号")
 	@RequestMapping(value = "/AddSass", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> AddSass(Account account,HttpServletResponse response) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfAuthExample hfAuthExample = new HfAuthExample();
@@ -1620,6 +1633,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@ApiOperation(value = "修改密码", notes = "修改密码")
 	@RequestMapping(value = "/updatePasswd", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updatePasswd(Integer AccountId,String oldPaddWord,String newPassWord) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		String encodeStr = DigestUtils.md5Hex(oldPaddWord);
@@ -1638,6 +1652,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@ApiOperation(value = "操作账号", notes = "操作账号")
 	@RequestMapping(value = "/deletedSass", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> deletedSass(Integer AccountId,Integer isDeleted) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Account account = new Account();
@@ -1655,6 +1670,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 //	}
 	@ApiOperation(value = "sass登陆", notes = "sass登陆")
 	@RequestMapping(value = "/LoginSass", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> LoginSass(Integer loginType,String username,String password, @RequestParam(name = "authKey", required = false) String authKey,
 												@RequestParam(name = "passwd", required = false) Integer passwd) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
@@ -1753,6 +1769,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	}
 	@ApiOperation(value = "修改手机号", notes = "修改手机号")
 	@RequestMapping(value = "/updatePhone", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updatePhone(String authKey,String passwd,Integer accountId) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		Jedis jedis = jedisPool.getResource();
@@ -1868,7 +1885,7 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 //
 //		return builder.body(ResponseUtils.getResponseBody("成功"));
 //	}
-@Transactional(rollbackFor=Exception.class)
+@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 @ApiOperation(value = "添加小程序", notes = "添加小程序")
 @RequestMapping(value = "/AddApplet", method = RequestMethod.POST)
 public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime, int isPerpetual, HttpServletResponse response, String phone, Integer accountId, String domain) throws JSONException, NoSuchAlgorithmException {
@@ -2102,6 +2119,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 
 	@ApiOperation(value = "小程序编辑", notes = "小程序编辑")
 	@RequestMapping(value = "/updateApp", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateApp(Integer bossId,String name,@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")LocalDateTime expireTime,int isPerpetual,String type,String domain) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();
@@ -2117,6 +2135,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 
 	@ApiOperation(value = "修改版权", notes = "修改版权")
 	@RequestMapping(value = "/updateCopyright", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateCopyright(Integer bossId, String type, MultipartFile multipartFile ,String Copyright) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		try {
@@ -2147,6 +2166,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 
 	@ApiOperation(value = "操作", notes = "回收1,恢复0,删除2")
 	@RequestMapping(value = "/deleted", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> deleted(Integer bossId, String type,int isDeleted) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();
@@ -2159,6 +2179,7 @@ public ResponseEntity<JSONObject> AddApplet(String type, String name, @RequestPa
 
 	@ApiOperation(value = "小程序迁移", notes = "小程序迁移")
 	@RequestMapping(value = "/migration", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> migration(Integer bossId,String type,Integer accountId) throws JSONException, NoSuchAlgorithmException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		HfBossDetails hfBossDetails = new HfBossDetails();

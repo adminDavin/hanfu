@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -48,6 +49,7 @@ public class GroupController {
     //    添加团购商品
     @ApiOperation(value = "添加团购商品", notes = "添加团购商品")
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
 //            @ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
@@ -74,6 +76,7 @@ public class GroupController {
     //团购商品
     @ApiOperation(value = "购买团购商品", notes = "购买团购商品")
     @RequestMapping(value = "/shopping", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
@@ -194,6 +197,7 @@ public class GroupController {
     //    添加团购商品
     @ApiOperation(value = "修改团购商品", notes = "修改团购商品")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "goodsId", value = "商品id", required = false, type = "Integer"),
@@ -296,6 +300,7 @@ public class GroupController {
 // 自己开团
     @ApiOperation(value = "开团 团购商品", notes = "开团 团购商品")
     @RequestMapping(value = "/openGroup", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "groupId", value = "团购表id", required = false, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = false, type = "Integer"),
@@ -366,6 +371,7 @@ public class GroupController {
             @ApiImplicitParam(paramType = "query", name = "addressId", value = "用户地址id", required = false, type = "Integer"),
 
     })
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public  Object  joinGroup(Integer id,Integer userId,String hfDesc,Integer addressId) throws ParseException {
         GroupOpen groupOpen = groupOpenService.selectByPrimaryKey(id);
         List <Integer>  urId =groupOpenService.selectAllUserId(groupOpen.getGroupId());

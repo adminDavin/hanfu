@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +67,7 @@ public class HfUserAddressController {
     @CrossOrigin
     @RequestMapping(value = "/addAddress", method = RequestMethod.POST)
     @ApiOperation(value = "添加用戶地址", notes = "添加用戶地址")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> add(UserAddressRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         HfUser hfUser = new HfUser();
@@ -93,6 +95,7 @@ public class HfUserAddressController {
 
     @RequestMapping(value = "/deleteAddress", method = RequestMethod.GET)
     @ApiOperation(value = "删除用戶地址", notes = "删除用戶地址")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", value = "地址id", required = true, type = "Integer")})
     public ResponseEntity<JSONObject> delete(@RequestParam(name = "id") Integer id) throws Exception {
@@ -104,6 +107,7 @@ public class HfUserAddressController {
 
     @RequestMapping(value = "/updateAddress", method = RequestMethod.POST)
     @ApiOperation(value = "更新用戶地址", notes = "更改用戶地址")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> update(UserAddressRequest request) throws Exception {
         HfUserAddresse hfUserAddresse = hfUserAddresseMapper.selectByPrimaryKey(request.getId());
         if (hfUserAddresse == null) {

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -120,6 +121,7 @@ public class PaymentOrderController {
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> payment(Integer userId,Integer payOrderId) throws Exception {
@@ -259,6 +261,7 @@ public class PaymentOrderController {
 
 	@ApiOperation(value = "退款订单", notes = "")
 	@RequestMapping(value = "/refund", method = RequestMethod.GET)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "orderCode"),
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })

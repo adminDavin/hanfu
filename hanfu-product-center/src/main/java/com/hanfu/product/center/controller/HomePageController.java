@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -1006,6 +1007,7 @@ public class HomePageController {
 	
 	@ApiOperation(value = "添加公告", notes = "添加公告")
 	@RequestMapping(value = "/addAnnouncement", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> addAnnouncement(HttpServletRequest request,String content) throws Exception {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -37,6 +38,7 @@ public class StoneBalanceController {
     private StoneBalanceMapper stoneBalanceMapper;
     @ApiOperation(value = "余额流水", notes = "余额流水")
     @RequestMapping(value = "/addStoneBalance", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "stoneId", value = "店铺id", required = true, type = "Integer"),
             @ApiImplicitParam(paramType = "query", name = "state", value = "流水状态", required = true, type = "Integer"),
@@ -63,6 +65,7 @@ public class StoneBalanceController {
     }
     @ApiOperation(value = "改变流水状态", notes = "改变流水状态")
     @RequestMapping(value = "/updateStoneBalance", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> updateStoneBalance(Integer orderId,Integer state)
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -75,6 +78,7 @@ public class StoneBalanceController {
     }
     @ApiOperation(value = "店铺余额变化", notes = "店铺余额变化")
     @RequestMapping(value = "/upStoneBalance", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> upStoneBalance(Integer stoneId,String balanceType,Integer money,Integer type)//type -1 减余额
             throws JSONException {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,6 +110,7 @@ public class HfUserAddressManager {
 
     @RequestMapping(value = "/updateAddress", method = RequestMethod.POST)
     @ApiOperation(value = "更新用戶地址", notes = "更改用戶地址")
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> update(UserAddressRequest request) throws Exception {
         HfUserAddresse hfUserAddresse = hfUserAddresseMapper.selectByPrimaryKey(request.getId());
         if (hfUserAddresse == null) {

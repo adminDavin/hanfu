@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -273,6 +274,7 @@ public class ProductController {
 	@RequiredPermission(PermissionConstants.ADMIN_PRODUCT_INSERT)
 	@ApiOperation(value = "添加商品", notes = "根据商家录入的商品")
 	@RequestMapping(value = "/addproduct", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProduct(HttpServletRequest requests,ProductRequest request, Integer cancelId) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		if (requests.getServletContext().getAttribute("getServletContext")!=null&&requests.getServletContext().getAttribute("getServletContextType")!=null){
@@ -380,6 +382,7 @@ public class ProductController {
 	@RequiredPermission(PermissionConstants.ADMIN_CATRGORY_INSERT)
 	@ApiOperation(value = "添加类目", notes = "添加系统支持的商品类目")
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> AddCategory(CategoryRequest request,MultipartFile fileInfo,HttpServletRequest requests) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		HfCategory category = new HfCategory();
@@ -420,6 +423,7 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品图片", notes = "添加商品图片")
 	@RequestMapping(value = "/addProductPictrue", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductPictrue(MultipartFile fileInfo,Integer productId, Integer userId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(productId);
@@ -458,6 +462,7 @@ public class ProductController {
 	
 	@ApiOperation(value = "删除商品图片", notes = "删除商品图片")
 	@RequestMapping(value = "/deleteProductPictrue", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductPictrue(Integer fileId,Integer productId) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(productId);
@@ -492,6 +497,7 @@ public class ProductController {
 	}
 	@ApiOperation(value = "编辑类目", notes = "编辑类目")
 	@RequestMapping(value = "/updateCategory", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateCategory(CategoryRequest request, @RequestParam Integer catrgoryId,MultipartFile fileInfo) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
@@ -652,6 +658,7 @@ public class ProductController {
 
 	@ApiOperation(value = "修改商品列表", notes = "根据商品修改商品列表")
 	@RequestMapping(value = "/updateProductId", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updateProductId(ProductRequest request) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		Product product = productMapper.selectByPrimaryKey(request.getId());
@@ -682,6 +689,7 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品属性", notes = "为某一个商品添加属性")
 	@RequestMapping(value = "/addAttribute", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductInfo(ProductInfoRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductInfo item = new ProductInfo();
@@ -737,6 +745,7 @@ public class ProductController {
 
 	@ApiOperation(value = "添加商品规格", notes = "为某一个商品添加规格")
 	@RequestMapping(value = "/addSpecify", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductSpec(ProductSpecRequest request) throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		ProductSpec item = new ProductSpec();
@@ -812,6 +821,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "修改商品规格", notes = "修改商品规格")
 	@RequestMapping(value = "/updatespec", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> updatespec(Integer productSpecId,String specName,Integer categorySpecId,Integer productId,String specUnit,String specValue)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -859,6 +869,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "添加商品介绍图", notes = "添加商品介绍图")
 	@RequestMapping(value = "/addProductIntroducePictrue", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductIntroducePictrue(MultipartFile fileInfo,Integer productId,String introduceDesc,Integer userId)
 			throws JSONException, IOException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -935,6 +946,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "店铺添加商品", notes = "店铺添加商品")
 	@RequestMapping(value = "/addStoneProduct", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId,Integer userId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -966,6 +978,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 
 	@ApiOperation(value = "店铺删除商品", notes = "店铺删除商品")
 	@RequestMapping(value = "/deletedStoneProduct", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> deletedStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -979,6 +992,7 @@ public ResponseEntity<JSONObject> racking(Integer[] productId,Short frames)
 	
 	@ApiOperation(value = "添加商品收藏", notes = "添加商品收藏")
 	@RequestMapping(value = "/addProductCollect", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
 	public ResponseEntity<JSONObject> addProductCollect(Integer userId,Integer productId,Integer stoneId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
