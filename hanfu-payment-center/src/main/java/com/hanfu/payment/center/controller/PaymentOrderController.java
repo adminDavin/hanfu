@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alipay.api.AlipayApiException;
 import com.hanfu.payment.center.AppPaymentService.AlipayService;
 import com.hanfu.payment.center.config.AlipayConfig;
+import com.hanfu.payment.center.config.AppProgramConfig;
 import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.model.*;
 import com.hanfu.payment.center.tool.ResultMap;
@@ -113,6 +114,9 @@ public class PaymentOrderController {
 	private AlipayConfig alipayConfig;
 	@Autowired
 	private HfBossMapper hfBossMapper;
+	//app微信支付
+	@Autowired
+	private AppProgramConfig appProgramConfig;
 
 	@ApiOperation(value = "支付订单", notes = "")
 	@RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -136,6 +140,8 @@ public class PaymentOrderController {
 			resp = balancePay(hfUser, payOrder);
 		} else if (PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPCHART)){
 //			resp = AppCHPay(hfUser, payOrder);
+			appProgramConfig.setBossId(Integer.valueOf((String) req.getServletContext().getAttribute("bossId")));
+			resp = wxAppPay(hfUser, payOrder);
 		} else if(PaymentTypeEnum.getPaymentTypeEnum(hfOrderMapper.selectByExample(hfOrderExample).get(0).getPaymentName()).equals(PaymentTypeEnum.APPALIPAY)){
 			Integer boss = Integer.valueOf((String) req.getServletContext().getAttribute("bossId"));
 			alipayConfig.setBossId(boss);
@@ -369,6 +375,57 @@ public class PaymentOrderController {
 		System.out.println(hfOrder.getAmount());
 			refunds(String.valueOf(payOrderId),((hfOrder.getAmount().doubleValue())/100),"原因");
 			return builder.body(ResponseUtils.getResponseBody(2));
+		}
+		//微信app退款
+		if (hfOrderList.get(0).getPaymentName().equals("appchart") && hfOrderList.get(0).getPaymentType().equals(0)){
+			WXPay wxpay = new WXPay(miniProgramConfig);
+			Map<String, String> data = new HashMap<>();
+			data.put("appid", miniProgramConfig.getAppID());
+			data.put("mch_id", miniProgramConfig.getMchID());
+			data.put("device_info", req.getRemoteHost());
+			data.put("fee_type", "CNY");
+			data.put("total_fee", String.valueOf(payOrder.getAmount()));
+
+			data.put("spbill_create_ip", req.getRemoteAddr());
+			data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+
+			data.put("out_trade_no", String.valueOf(payOrder.getId()));
+			data.put("op_user_id", miniProgramConfig.getMchID());
+			data.put("refund_fee_type", "CNY");
+			if (hfOrder!=null){
+				System.out.println(hfOrder.getAmount());
+				data.put("refund_fee", String.valueOf(hfOrder.getAmount()));
+			}else {
+				System.out.println(payOrder.getAmount());
+				data.put("refund_fee", String.valueOf(payOrder.getAmount()));
+			}
+
+			data.put("out_refund_no", UUID.randomUUID().toString().replaceAll("-", ""));
+			String sign = WXPayUtil.generateSignature(data, miniProgramConfig.getKey());
+			data.put("sign", sign);
+			logger.info(JSONObject.toJSONString(data));
+
+			Map<String, String> resp = wxpay.refund(data);
+			logger.info(JSONObject.toJSONString(resp));
+			if ("SUCCESS".equals(resp.get("return_code"))) {
+				LocalDateTime current = LocalDateTime.now();
+
+				HfTansactionFlow t = new HfTansactionFlow();
+				t.setAppId(miniProgramConfig.getAppID());
+				t.setCreateDate(current);
+				t.setDeviceInfo(req.getRemoteHost());
+				t.setFeeType(data.get("refund_fee_type"));
+				t.setMchId(miniProgramConfig.getMchID());
+				t.setModifyDate(current);
+				t.setOpenId(hfUser.getAuthKey());
+				t.setOutTradeNo(data.get("out_trade_no"));
+				t.setSpbillCreateIp(req.getRemoteAddr());
+				t.setTotalFee(data.get("refund_fee"));
+				t.setOutRefundNo(data.get("out_refund_no"));
+				t.setTransactionType("rerundOrder");
+				t.setHfStatus(TansactionFlowStatusEnum.COMPLETE.getStatus());
+				t.setUserId(hfUser.getUserId());
+			}
 		}
 		return builder.body(ResponseUtils.getResponseBody(1));
 	}
@@ -655,7 +712,69 @@ public class PaymentOrderController {
 //			return 1;
 //		}
 //	}
+//微信app支付
+private Map<String, String> wxAppPay(HfUser hfUser, PayOrder payOrder) throws Exception {
+//	MiniProgramConfig miniProgramConfig = new MiniProgramConfig();
+	Map<String, String> data = getWxPayData1(appProgramConfig, String.valueOf(payOrder.getId()),payOrder.getAmount());
+//        logger.info(JSONObject.toJSONString(data));
+	WXPay wxpay = new WXPay(appProgramConfig);
+	Map<String, String> resp = wxpay.unifiedOrder(data);
+	System.out.println(resp);
+//        logger.info(JSONObject.toJSONString(resp));
+	if ("SUCCESS".equals(resp.get("return_code"))) {
+		System.out.println(1);
+		resp.put("appid", resp.get("appid"));
+		resp.put("noncestr", resp.get("nonce_str"));
+		if ("SUCCESS".equals(resp.get("result_code"))) {//resultCode 为SUCCESS，才会返回prepay_id和trade_type
+			System.out.println(2);
+			Map<String, String> reData = new HashMap<>();
+			reData.put("appId", appProgramConfig.getAppID());
+			reData.put("nonceStr", resp.get("nonce_str"));
+			reData.put("package", "Sign=WXPay");
+//                reData.put("signType", "MD5");
+			reData.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
+			reData.put("partnerid", resp.get("mch_id"));
+			reData.put("prepayid", resp.get("prepay_id"));
+			String sign = WXPayUtil.generateSignature(reData, appProgramConfig.getKey());// 二次签名
+			System.out.println(sign);
+			resp.put("sign",sign.substring(0, 30)); //签名
+			resp.put("trade_type", resp.get("trade_type"));//获取预支付交易回话标志
+			resp.put("package","Sign=WXPay");
+			resp.put("partnerid", resp.get("mch_id"));
+			resp.put("prepayid", resp.get("prepay_id"));
+			resp.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
+			recordTransactionFlow(hfUser, payOrder, data, reData);
+			return resp;
+		} else {
+			//此时返回没有预付订单的数据
+			return resp;
+		}
+	} else {
+		throw new Exception(resp.get("return_msg"));
+	}
 
+}
+	private Map<String, String> getWxPayData1(AppProgramConfig config, String orderCode,Integer Amount)
+			throws Exception {
+		Map<String, String> data = new HashMap<>();
+		data.put("appid", config.getAppID());
+		data.put("mch_id", config.getMchID());
+		data.put("body", "订单支付");
+		data.put("out_trade_no", orderCode);
+		data.put("device_info", req.getRemoteHost());
+		data.put("fee_type", "CNY");
+		data.put("total_fee", String.valueOf(Amount));
+		data.put("spbill_create_ip", req.getRemoteAddr());
+		data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+		data.put("trade_type", "APP");
+//        data.put("signType", "MD5");
+//        data.put("openid", openId);
+		String sign = WXPayUtil.generateSignature(data, config.getKey());
+		System.out.println(sign);
+		data.put("sign", sign);
+//        logger.info(JSONObject.toJSONString(data));
+		return data;
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "訂單支付后處理", notes = "訂單支付后處理")
 	@RequestMapping(value = "/handleWxpay", method = RequestMethod.GET)
