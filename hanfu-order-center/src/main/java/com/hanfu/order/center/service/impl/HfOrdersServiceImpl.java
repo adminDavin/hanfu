@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.hanfu.order.center.manual.dao.HfOrderDao;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,8 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	OrderDao orderDao;
 	@Autowired
 	HfOrderStatusMapper hfOrderStatusMapper;
+	@Autowired
+	private HfOrderDao hfOrderDao;
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Override
@@ -198,5 +201,10 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 		list.add(hfOrderLogistic);
 		list.add(hfOrders);
 		return list;
+	}
+
+	@Override
+	public int addResp(Integer respId, Integer quantity) {
+		return hfOrderDao.addResp(respId,quantity);
 	}
 }

@@ -22,6 +22,7 @@ import com.hanfu.order.center.cancel.model.Product;
 import com.hanfu.order.center.dao.*;
 import com.hanfu.order.center.manual.model.*;
 import com.hanfu.order.center.model.*;
+import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.payment.center.request.HfStoneRequest;
 import io.swagger.annotations.*;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
@@ -121,6 +122,8 @@ public class HfOrderController {
     private PayOrderMapper payOrderMapper;
     @Autowired
     private DiscountCouponMapper discountCouponMapper;
+    @Autowired
+    private HfOrdersService hfOrdersService;
 
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -458,11 +461,18 @@ public class HfOrderController {
                 HttpEntity<Object> requestEntity = new HttpEntity<>(null, headers);
                 restTemplate.exchange(REST_URL_PREFIX + "/hf-payment/refund?payOrderId={payOrderId}&userId={userId}&orderCode={orderCode}", HttpMethod.GET,requestEntity,payment.class,payOrderId,hfOrderMapper.selectByExample(hfOrderExample1).get(0).getUserId(),orderCode);
             }else {
+                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
+                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                List<HfOrderDetail> hfOrderDetailList = hfOrderDetailMapper.selectByExample(hfOrderDetailExample);
+                hfOrderDetailList.forEach(hfOrderDetail -> {
+                    HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(hfOrderDetail.getGoodsId());
+                    hfOrdersService.addResp(hfGoods.getRespId(),hfOrderDetail.getQuantity());
+                });
                 sta = targetOrderStatus;
                 HfOrderDetail hfOrderDetail = new HfOrderDetail();
                 hfOrderDetail.setHfStatus(targetOrderStatus);
-                HfOrderDetailExample hfOrderDetailExample = new HfOrderDetailExample();
-                hfOrderDetailExample.createCriteria().andOrderIdEqualTo(Id);
+                hfOrderDetail.setModifyTime(LocalDateTime.now());
+
                 hfOrderDetailMapper.updateByExampleSelective(hfOrderDetail,hfOrderDetailExample);
                 HfOrder hfOrder = new HfOrder();
                 hfOrder.setId(Id);

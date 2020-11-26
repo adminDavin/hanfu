@@ -14,5 +14,5 @@ public interface HfOrdersService {
 
     @SuppressWarnings("rawtypes")
     List updateOrder(HfOrdersDetailRequest request, HfOrdersRequest hfOrder, HfOrderLogisticsRequest hfOrderLogistics) throws Exception;
-
+    int addResp(Integer respId,Integer quantity);
 }

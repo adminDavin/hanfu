@@ -118,4 +118,8 @@
     <select id="selectHfOrderStatistics" resultMap="HfOrderStatisticsResultMap">
     select order_status, count(1) quantity from hf_order where user_id=965 and id_deleted=0 group by order_status;
     </select>
+    <update id="addResp">
+            update hf_resp set quantity = quantity + #{quantity}
+     where id = #{respId}
+    </update>
 </mapper>

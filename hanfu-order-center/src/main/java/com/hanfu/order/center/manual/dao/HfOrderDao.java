@@ -14,6 +14,15 @@ public interface HfOrderDao {
     List<com.hanfu.order.center.manual.model.HfOrderDisplay> selectHfOrder(Map<String, Object> params);
     List<HfGoodsDisplay> selectGoodsInfo(Set<Integer> goodsIds);
     List<HfOrderStatistics> selectHfOrderStatistics(Integer userId);
+    //增加库存
+
+    /**
+     *
+     * @param respId 库存id
+     * @param quantity 数量id
+     * @return
+     */
+    int addResp(Integer respId,Integer quantity);
 
 
 }

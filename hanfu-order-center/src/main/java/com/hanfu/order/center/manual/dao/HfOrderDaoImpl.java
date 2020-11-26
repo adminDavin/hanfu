@@ -43,4 +43,12 @@ public class HfOrderDaoImpl implements HfOrderDao {
         return sqlSessionTemplate.selectList("selectHfOrderStatistics", userId);
     }
 
+    @Override
+    public int addResp(Integer respId, Integer quantity) {
+        Map<String, Integer> params = new HashMap<>();
+        params.put("respId", respId);
+        params.put("quantity", quantity);
+        return sqlSessionTemplate.update("addResp", params);
+    }
+
 }
