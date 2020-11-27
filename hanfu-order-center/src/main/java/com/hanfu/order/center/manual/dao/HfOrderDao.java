@@ -19,10 +19,18 @@ public interface HfOrderDao {
     /**
      *
      * @param respId 库存id
-     * @param quantity 数量id
+     * @param quantity 数量
      * @return
      */
     int addResp(Integer respId,Integer quantity);
+    //减少库存
 
+    /**
+     *
+     * @param respId 库存id
+     * @param quantity 数量
+     * @return
+     */
+    int minusResp(Integer respId,Integer quantity);
 
 }

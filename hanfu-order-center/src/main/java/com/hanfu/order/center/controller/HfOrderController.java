@@ -39,6 +39,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -59,6 +60,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @CrossOrigin
 @RestController
@@ -576,7 +578,7 @@ public class HfOrderController {
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @ApiOperation(value = "创建订单", notes = "创建订单")
     @RequestMapping(value = "/Ordercreate", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request, HttpServletRequest requests) throws JSONException {
+    public ResponseEntity<JSONObject> Ordercreate(CreateOrderRequest request, HttpServletRequest requests, HttpServletResponse response) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfRequestIdExample idExample = new HfRequestIdExample();
         idExample.createCriteria().andRequestIdEqualTo(request.getRequestId());
@@ -591,12 +593,25 @@ public class HfOrderController {
         	hfRequestIdMapper.insert(id);
         }
         System.out.println("开始支付订单");
-//        Integer bossId = null;
-//        if (requests.getServletContext().getAttribute("getServletContext")!=null){
-//			if (requests.getServletContext().getAttribute("getServletContextType").equals("user")){
-//				bossId = (Integer) requests.getServletContext().getAttribute("getServletContext");
-//			}
-//		}
+        JSONArray jsonArray= JSONArray.parseArray(request.getGoodsList());
+//        JSONObject jsonObject1= JSON.parseObject(request.getGoodsList());
+//        CreatesOrder createsOrder1 = JSONArray.toJavaObject(jsonObject1,CreatesOrder.class);
+        //转list
+        List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
+        synchronized (this) {
+            if (chock(list).size()!=0){
+                return builder.body(ResponseUtils.getResponseBody(chock(list)));
+            }
+                for (CreatesOrder l:list){
+                HfGoods hfGoods = hfGoodMapper.selectByPrimaryKey(l.getGoodsId());
+                if (hfOrdersService.minusResp(hfGoods.getRespId(),l.getQuantity())<=0){
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();//手动回滚
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "库存不足");
+                    return builder.body(ResponseUtils.getResponseBody(1));
+                }
+            }
+        }
+
         Object bossId= requests.getHeader("bossId");
         System.out.println(bossId+"我是boss");
         PayOrder payOrder = new PayOrder();
@@ -636,14 +651,7 @@ public class HfOrderController {
             return builder.body(ResponseUtils.getResponseBody(payOrder));
         }
         Integer moneys = 0;
-        JSONArray jsonArray= JSONArray.parseArray(request.getGoodsList());
-//        JSONObject jsonObject1= JSON.parseObject(request.getGoodsList());
-//        CreatesOrder createsOrder1 = JSONArray.toJavaObject(jsonObject1,CreatesOrder.class);
-        //转list
-        List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
-        if (chock(list).size()!=0){
-            return builder.body(ResponseUtils.getResponseBody(chock(list)));
-        }
+
         //优惠券
         List<DiscountCoupon> discountCouponList=new ArrayList<>();
         List<DiscountCoupon> discountCouponListBoss = new ArrayList<>();

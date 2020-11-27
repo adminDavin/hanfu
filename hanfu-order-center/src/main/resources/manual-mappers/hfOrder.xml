@@ -122,4 +122,8 @@
             update hf_resp set quantity = quantity + #{quantity}
      where id = #{respId}
     </update>
+    <update id="minusResp">
+            update hf_resp set quantity = quantity - #{quantity}
+     where id = #{respId} and quantity - #{quantity}>=0
+    </update>
 </mapper>

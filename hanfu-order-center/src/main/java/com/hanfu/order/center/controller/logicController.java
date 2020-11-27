@@ -6,19 +6,29 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.hanfu.order.center.cancel.dao.*;
 import com.hanfu.order.center.cancel.model.*;
+import com.hanfu.order.center.dao.HfRespMapper;
 import com.hanfu.order.center.model.HfOrderDetailExample;
 import com.hanfu.order.center.model.HfOrderExample;
+import com.hanfu.order.center.model.HfOrderStatus;
+import com.hanfu.order.center.model.HfResp;
+import com.hanfu.order.center.service.HfOrdersService;
 import com.hanfu.order.center.tool.PageTool;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.csource.common.MyException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -64,6 +74,8 @@ public class logicController {
     private String ORDER_URL;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private HfOrdersService hfOrdersService;
     //转换时间格式
     @InitBinder
     public void initBinder(WebDataBinder binder, WebRequest request) {
@@ -295,5 +307,22 @@ public class logicController {
 //                BitMatrix bitMatrix = com.hanfu.cancel.controller.QRCodeUtils.createCode(content);
         //以流的形式输出到前端
         MatrixToImageWriter.writeToStream(bitMatrix, "jpg", stream);
+    }
+    @ApiOperation(value = "修改订单状态", notes = "修改订单状态")
+    @RequestMapping(value = "/updatestatus", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class, Exception.class})
+    public ResponseEntity<JSONObject> deleteOrder(HttpServletResponse response,Integer num)
+            throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Integer[] a= {139,140};
+
+        for (Integer b:a){
+            if (hfOrdersService.minusResp(b,num) <= 0){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                response.sendError(HttpStatus.FORBIDDEN.value(), "库存不足");
+                return builder.body(ResponseUtils.getResponseBody(1));
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
     }
 }

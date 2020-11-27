@@ -207,4 +207,9 @@ public class HfOrdersServiceImpl implements HfOrdersService {
 	public int addResp(Integer respId, Integer quantity) {
 		return hfOrderDao.addResp(respId,quantity);
 	}
+
+	@Override
+	public int minusResp(Integer respId, Integer quantity) {
+		return hfOrderDao.minusResp(respId, quantity);
+	}
 }
