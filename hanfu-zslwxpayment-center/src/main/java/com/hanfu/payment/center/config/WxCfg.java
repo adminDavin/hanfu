@@ -12,15 +12,15 @@ public class WxCfg {
 //    @Value("${wx.appType}")
     private String appType = "APP";//App支付交易类型
 //    @Value("${wx.appNotifyUrl}")
-    private String appNotifyUrl = "https://www.tjsichuang.cn:1443/api/cart/hf-payment/complete";//App回调地址
+    private String appNotifyUrl = "https://swcloud.tjsichuang.cn:1445/api/cart/hf-payment/complete";//App回调地址
 //    @Value("${wx.h5Type}")
     private String h5Type = "MWEB";//H5支付交易类型
 //    @Value("${wx.h5NotifyUrl}")
-    private String h5NotifyUrl = "https://www.tjsichuang.cn:1443/api/cart/hf-payment/complete";//H5回调地址
+    private String h5NotifyUrl = "https://swcloud.tjsichuang.cn:1445/api/cart/hf-payment/complete";//H5回调地址
 //    @Value("${wx.ip}")
     private String ip = "39.100.237.144";//服务器ip
 //    @Value("${wx.redirect_url}")
-    private String redirect_url = "https://www.tjsichuang.cn:1443/api/cart/hf-payment/complete";//跳转地址
+    private String redirect_url = "https://swcloud.tjsichuang.cn:1445/api/cart/hf-payment/complete";//跳转地址
 
 
     public String getAppNotifyUrl() {

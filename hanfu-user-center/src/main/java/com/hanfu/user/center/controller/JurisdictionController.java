@@ -97,7 +97,7 @@ public class JurisdictionController {
 	private HfStoneMapper hfStoneMapper;
 	@Autowired
 	private RestTemplate restTemplate;
-	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/product/";
+	private static final String REST_URL_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/product/";
 
 	@ApiOperation(value = "", notes = "")
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)

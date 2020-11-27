@@ -73,15 +73,15 @@ spring:
 #      enabled: false
 myspcloud:
   item:
-    url: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/addStoneBalance
+    url: https://swcloud.tjsichuang.cn:1445/api/cart/StoneBalance/addStoneBalance
   item1:
-    url1: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/updateStoneBalance
+    url1: https://swcloud.tjsichuang.cn:1445/api/cart/StoneBalance/updateStoneBalance
   item2:
-    url2: https://www.tjsichuang.cn:1443/api/cart/StoneBalance/upStoneBalance
+    url2: https://swcloud.tjsichuang.cn:1445/api/cart/StoneBalance/upStoneBalance
   item3:
-    url3: https://www.tjsichuang.cn:1443/api/product/hfProductActivity/distributionActivityCalculate
+    url3: https://swcloud.tjsichuang.cn:1445/api/product/hfProductActivity/distributionActivityCalculate
   item4:
-    url4: https://www.tjsichuang.cn:1443/api/user/user/Message
+    url4: https://swcloud.tjsichuang.cn:1445/api/user/user/Message
 logging:
   file: ./logs/payment-center.log
 

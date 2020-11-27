@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 @CrossOrigin
 public class DiscoverController {
 
-	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+	private static final String REST_URL_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/user/";
 	private static final String LOCK = "lock";
 	@Autowired
     RestTemplate restTemplate;

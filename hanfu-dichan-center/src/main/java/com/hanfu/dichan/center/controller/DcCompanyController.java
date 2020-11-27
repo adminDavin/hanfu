@@ -78,7 +78,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
         dcFileDescMapper.insert(fileDesc);
-        String a = "https://www.tjsichuang.cn:1443/api/dichan/category/getPicture?id=";
+        String a = "https://swcloud.tjsichuang.cn:1445/api/dichan/category/getPicture?id=";
         return builder.body(ResponseUtils.getResponseBody(a+fileDesc.getId()));
     }
     @ApiOperation(value = "添加富文本", notes = "添加富文本")
@@ -198,7 +198,7 @@ private DcGeneralFileMapper dcGeneralFileMapper;
         List<DcGeneralFile> generalFiles = dcGeneralFileMapper.selectByExample(dcGeneralFileExample);
         List<String> fileList = new ArrayList<>();
         generalFiles.forEach(dcGeneralFile -> {
-            fileList.add("https://www.tjsichuang.cn:1443/api/dichan/category/getPicture?id="+dcGeneralFile.getFileId());
+            fileList.add("https://swcloud.tjsichuang.cn:1445/api/dichan/category/getPicture?id="+dcGeneralFile.getFileId());
         });
         return builder.body(ResponseUtils.getResponseBody(fileList));
     }

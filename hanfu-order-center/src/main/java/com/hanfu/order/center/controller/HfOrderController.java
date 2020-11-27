@@ -67,9 +67,9 @@ import javax.servlet.http.HttpServletRequest;
 public class HfOrderController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/cart/";
-    private static final String REST_URL_CHECK = "https://www.tjsichuang.cn:1443/api/product/";
-    private static final String REST_URL_CHECK1 = "https://www.tjsichuang.cn:1443/api/product/";
+    private static final String REST_URL_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/cart/";
+    private static final String REST_URL_CHECK = "https://swcloud.tjsichuang.cn:1445/api/product/";
+    private static final String REST_URL_CHECK1 = "https://swcloud.tjsichuang.cn:1445/api/product/";
 //    private static final String REST_URL_CHECK1 = "http://localhost:9095/";
 //    private static final String REST_URL_CHECK = "http://localhost:9095/";
     @Autowired
@@ -956,7 +956,7 @@ private Map<String,String> chock(List<CreatesOrder> list){
         return map;
 }
 //    @Scheduled(cron="cron = 0 0 0 * * ?")
-@Scheduled(cron="0 0 1 * * ?")
+@Scheduled(cron="0/5 * * * * ?")
 @ApiOperation(value = "订单", notes = "订单")
 @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     @RequestMapping(value = "/TimeOrder", method = RequestMethod.GET)

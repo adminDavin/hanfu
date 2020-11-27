@@ -15,7 +15,7 @@ public class AlipayConfig {
     public  String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoIra0CTOxpCiV/o0CVY95WP3qYfnerdVDvBf8i/aSB548aIMetSA9j/scf1p/gQ0IkWol3XFekGq0WgZJ6HE/gNma2ampTsJp0Otp46g1S98Dwbew1Mx1PhEGE/Knk0xfAT8y+NPGwzwu9fIckhKEMsR8ZsawggYj5P4VLM1ag/0cUU5OnSRKc19TUYXgAm4Y3G4UwwFBrQdRaCnhlEZydzKMsKh1xc3iOJJf9aYtJa/5CK8Br6NTmYim2FYAQe3wrZtxz/WLLJyebpyaPSUfsS3rK4geUlApLIMsuoVX4BjuTkyEZ3LLqoo+NJbhErb+qVuO7dDnqz7uk3DZia6NwIDAQAB";
  
     // 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-    public  String notify_url = "https://www.tjsichuang.cn:1443/api/shejiao/alipay/alipayNotify";
+    public  String notify_url = "https://swcloud.tjsichuang.cn:1445/api/shejiao/alipay/alipayNotify";
  
     // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     // public  String return_url = "";

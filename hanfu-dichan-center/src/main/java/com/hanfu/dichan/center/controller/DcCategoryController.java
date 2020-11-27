@@ -80,7 +80,7 @@ public class DcCategoryController {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+	private static final String REST_URL_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/user/";
 
 	@Autowired
 	private RestTemplate restTemplate;

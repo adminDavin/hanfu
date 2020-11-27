@@ -70,9 +70,9 @@ public class GoodsController {
 
 	private static final String LOCK = "lock";
 
-	private static final String REST_URL_PREFIX = "https://www.tjsichuang.cn:1443/api/user/";
+	private static final String REST_URL_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/user/";
 
-	private static final String MODIFY_ORDER_PREFIX = "https://www.tjsichuang.cn:1443/api/order/";
+	private static final String MODIFY_ORDER_PREFIX = "https://swcloud.tjsichuang.cn:1445/api/order/";
 
 	@Autowired
 	RestTemplate restTemplate;

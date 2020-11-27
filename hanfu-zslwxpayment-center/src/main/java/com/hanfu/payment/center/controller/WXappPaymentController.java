@@ -101,7 +101,7 @@ public class WXappPaymentController {
         data.put("fee_type", "CNY");
         data.put("total_fee", String.valueOf(Amount));
         data.put("spbill_create_ip", req.getRemoteAddr());
-        data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+        data.put("notify_url", "https://swcloud.tjsichuang.cn:1445/api/payment/hf-payment/handleWxpay");
         data.put("trade_type", "APP");
 //        data.put("signType", "MD5");
 //        data.put("openid", openId);
@@ -127,7 +127,7 @@ public class WXappPaymentController {
             data.put("total_fee", String.valueOf(1));
 
             data.put("spbill_create_ip", req.getRemoteAddr());
-            data.put("notify_url", "https://www.tjsichuang.cn:1443/api/payment/hf-payment/handleWxpay");
+            data.put("notify_url", "https://swcloud.tjsichuang.cn:1445/api/payment/hf-payment/handleWxpay");
 
             data.put("out_trade_no", String.valueOf(id));
             data.put("op_user_id", miniProgramConfig.getMchID());
