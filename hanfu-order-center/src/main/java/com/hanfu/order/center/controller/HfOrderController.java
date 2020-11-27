@@ -599,6 +599,7 @@ public class HfOrderController {
         //转list
         List<CreatesOrder> list = JSONObject.parseArray(jsonArray.toJSONString(), CreatesOrder.class);
         synchronized (this) {
+            System.out.println("扣减库存");
             if (chock(list).size()!=0){
                 return builder.body(ResponseUtils.getResponseBody(chock(list)));
             }
