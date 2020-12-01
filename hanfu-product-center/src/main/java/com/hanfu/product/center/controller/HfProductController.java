@@ -130,6 +130,11 @@ public class HfProductController {
     private HttpServletResponse response;
     @Autowired
     private HfRespMapper hfRespMapper;
+    @Autowired
+    private ProductSpecMapper productSpecMapper;
+    @Autowired
+    private  ProductIntroducePictrueMapper productIntroducePictrueMapper;
+
 
 //	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 //	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -346,6 +351,32 @@ public class HfProductController {
             Product product = productMapper.selectByPrimaryKey(productId);
             product.setId(null);
             productMapper.insertSelective(product);
+            //商品规格
+            ProductSpecExample productSpecExample = new ProductSpecExample();
+            productSpecExample.createCriteria().andProductIdEqualTo(product.getId())
+                    .andIsDeletedEqualTo((short) 0);
+            List<ProductSpec> productSpecs = productSpecMapper.selectByExample(productSpecExample);
+            productSpecs.forEach(productSpec -> {
+                productSpec.setId(null);
+                productSpec.setProductId(product.getId());
+                productSpec.setCreateTime(LocalDateTime.now());
+                productSpec.setModifyTime(LocalDateTime.now());
+                productSpecMapper.insertSelective(productSpec);
+            });
+            //商品图片
+            ProductIntroducePictrueExample productIntroducePictrueExample = new ProductIntroducePictrueExample();
+            productIntroducePictrueExample.createCriteria()
+                    .andIsDeletedEqualTo((short) 0)
+                    .andProductIdEqualTo(product.getId());
+            List<ProductIntroducePictrue> productIntroducePictrues =
+            productIntroducePictrueMapper.selectByExample(productIntroducePictrueExample);
+            productIntroducePictrues.forEach(productIntroducePictrue -> {
+                productIntroducePictrue.setId(null);
+                productIntroducePictrue.setProductId(product.getId());
+                productIntroducePictrue.setCreateTime(LocalDateTime.now());
+                productIntroducePictrue.setModifyTime(LocalDateTime.now());
+                productIntroducePictrueMapper.insertSelective(productIntroducePictrue);
+            });
 
             ProductInstanceExample productInstanceExample = new ProductInstanceExample();
             productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
