@@ -4,6 +4,7 @@ public class IsDelete {
     private Integer stoneId;
     private Short isDelete;
     private Integer bossId;
+    private Integer isBoss;//是否只查boss 0是
     private String productName;
     private String category;
     private Integer type; //2上新
@@ -55,4 +56,12 @@ public class IsDelete {
 	public void setType(Integer type) {
 		this.type = type;
 	}
+
+    public Integer getIsBoss() {
+        return isBoss;
+    }
+
+    public void setIsBoss(Integer isBoss) {
+        this.isBoss = isBoss;
+    }
 }

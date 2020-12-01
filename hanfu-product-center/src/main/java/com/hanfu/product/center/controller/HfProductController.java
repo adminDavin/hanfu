@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -127,6 +128,8 @@ public class HfProductController {
 
     @Autowired
     private HttpServletResponse response;
+    @Autowired
+    private HfRespMapper hfRespMapper;
 
 //	@ApiOperation(value = "商品列表", notes = "根据商品id删除商品列表")
 //	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
@@ -329,7 +332,78 @@ public class HfProductController {
 		}
 		return builder.body(ResponseUtils.getResponseBody(product));
 	}
+    @ApiOperation(value = "店铺添加商品", notes = "店铺添加商品")
+    @RequestMapping(value = "/addStoneProduct", method = RequestMethod.POST)
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
+    public ResponseEntity<JSONObject> addStoneProduct(@RequestParam(name = "productIds")Integer[] productIds,Integer stoneId,Integer userId)
+            throws JSONException {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        HfStoneExample hfStoneExample = new HfStoneExample();
+        hfStoneExample.createCriteria().andIdEqualTo(stoneId).andIsDeletedEqualTo((short) 0);
+        List<HfStone> hfStones= hfStoneMapper.selectByExample(hfStoneExample);
+        for (Integer productId : productIds){
+            //添加商品
+            Product product = productMapper.selectByPrimaryKey(productId);
+            product.setId(null);
+            productMapper.insertSelective(product);
 
+            ProductInstanceExample productInstanceExample = new ProductInstanceExample();
+            productInstanceExample.createCriteria().andStoneIdEqualTo(stoneId).andProductIdEqualTo(productId);
+            productInstanceMapper.selectByExample(productInstanceExample);
+            if (productInstanceMapper.selectByExample(productInstanceExample).size()==0){
+                ProductInstance productInstance = new ProductInstance();
+                productInstance.setCreateTime(LocalDateTime.now());
+                productInstance.setModifyTime(LocalDateTime.now());
+                productInstance.setLastModifier(String.valueOf(userId));
+                productInstance.setIsDeleted((short) 0);
+                productInstance.setStoneId(stoneId);
+                productInstance.setEvaluateCount(0);
+                productInstance.setProductId(product.getId());
+                productInstance.setBossId(hfStones.get(0).getBossId());
+                productInstance.setCategoryId(31);
+                productInstance.setBrandId(1);
+                productInstanceMapper.insertSelective(productInstance);
+                //添加物品
+                HfGoodsExample hfGoodsExample = new HfGoodsExample();
+                hfGoodsExample.createCriteria().andProductIdEqualTo(product.getId())
+                        .andIsDeletedEqualTo((short) 0);
+
+                List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(hfGoodsExample);
+                hfGoodsList.forEach(hfGoods -> {
+                    hfGoods.setId(null);
+                    hfGoods.setInstanceId(productInstance.getId());
+                    hfGoods.setCreateTime(LocalDateTime.now());
+                    hfGoods.setModifyTime(LocalDateTime.now());
+                    HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
+                    hfPrice.setId(null);
+                    hfPriceMapper.insertSelective(hfPrice);
+                    hfGoods.setPriceId(hfPrice.getId());
+                    HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
+                    hfResp.setId(null);
+                    hfRespMapper.insert(hfResp);
+                    hfGoods.setRespId(hfResp.getId());
+                    hfGoodsMapper.insertSelective(hfGoods);
+                    hfPrice.setGoogsId(hfGoods.getId());
+                    hfPriceMapper.updateByPrimaryKeySelective(hfPrice);
+                    hfResp.setGoogsId(hfGoods.getId());
+                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                    HfGoodsPictrueExample hfGoodsPictrueExample = new HfGoodsPictrueExample();
+                    hfGoodsPictrueExample.createCriteria().andGoodsIdEqualTo(hfGoods.getId())
+                            .andIsDeletedEqualTo((short) 0);
+                    List<HfGoodsPictrue> hfGoodsPictrues =
+                            hfGoodsPictrueMapper.selectByExample(hfGoodsPictrueExample);
+                    hfGoodsPictrues.forEach(hfGoodsPictrue -> {
+                        hfGoodsPictrue.setId(null);
+                        hfGoodsPictrue.setCreateTime(LocalDateTime.now());
+                        hfGoodsPictrue.setModifyTime(LocalDateTime.now());
+                        hfGoodsPictrueMapper.insertSelective(hfGoodsPictrue);
+                    });
+                });
+            }
+
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 	@ApiOperation(value = "获取商品信息", notes = "获取商品信息")
 	@RequestMapping(value = "/getProductInfo", method = RequestMethod.GET)
 	@ApiImplicitParams({
@@ -673,9 +747,9 @@ public class HfProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
-		products.forEach(hfProductDisplay -> {
-			System.out.println(hfProductDisplay.getStoneId());
-		});
+		if (isDelete.getIsBoss() != null && isDelete.getIsBoss() == 0){
+			products = products.stream().filter(a->a.getStoneId()==null).collect(Collectors.toList());
+		}
 		if (products.size() != 0) {
 			Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
 			System.out.println(stoneIds);
