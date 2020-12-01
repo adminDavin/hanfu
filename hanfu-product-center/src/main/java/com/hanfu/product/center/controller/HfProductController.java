@@ -627,9 +627,6 @@ public class HfProductController {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		PageHelper.startPage(pageNum, pageSize);
 		List<HfProductDisplay> products = hfProductDao.selectProductByStoneId(isDelete);
-		products.forEach(hfProductDisplay -> {
-			System.out.println(hfProductDisplay.getStoneId());
-		});
 		if (products.size() != 0) {
 			Set<Integer> stoneIds = products.stream().map(HfProductDisplay::getStoneId).collect(Collectors.toSet());
 			System.out.println(stoneIds);
@@ -662,7 +659,7 @@ public class HfProductController {
 				products = products.stream().filter(p -> p.getStoneId() == null).collect(Collectors.toList());
 			}
 		}
-		products = products.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
+//		products = products.stream().filter(l -> l.getPriceArea() != null).collect(Collectors.toList());
 		products = sort(sort, products, priceDown, priceUp, categoryId);
 		PageInfo<HfProductDisplay> page = new PageInfo<HfProductDisplay>(products);
 		return builder.body(ResponseUtils.getResponseBody(page));
