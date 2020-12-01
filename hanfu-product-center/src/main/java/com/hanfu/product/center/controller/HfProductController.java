@@ -353,7 +353,7 @@ public class HfProductController {
             productMapper.insertSelective(product);
             //商品规格
             ProductSpecExample productSpecExample = new ProductSpecExample();
-            productSpecExample.createCriteria().andProductIdEqualTo(product.getId())
+            productSpecExample.createCriteria().andProductIdEqualTo(productId)
                     .andIsDeletedEqualTo((short) 0);
             List<ProductSpec> productSpecs = productSpecMapper.selectByExample(productSpecExample);
             productSpecs.forEach(productSpec -> {
@@ -367,7 +367,7 @@ public class HfProductController {
             ProductIntroducePictrueExample productIntroducePictrueExample = new ProductIntroducePictrueExample();
             productIntroducePictrueExample.createCriteria()
                     .andIsDeletedEqualTo((short) 0)
-                    .andProductIdEqualTo(product.getId());
+                    .andProductIdEqualTo(productId);
             List<ProductIntroducePictrue> productIntroducePictrues =
             productIntroducePictrueMapper.selectByExample(productIntroducePictrueExample);
             productIntroducePictrues.forEach(productIntroducePictrue -> {
@@ -396,30 +396,37 @@ public class HfProductController {
                 productInstanceMapper.insertSelective(productInstance);
                 //添加物品
                 HfGoodsExample hfGoodsExample = new HfGoodsExample();
-                hfGoodsExample.createCriteria().andProductIdEqualTo(product.getId())
+                hfGoodsExample.createCriteria().andProductIdEqualTo(productId)
                         .andIsDeletedEqualTo((short) 0);
 
                 List<HfGoods> hfGoodsList = hfGoodsMapper.selectByExample(hfGoodsExample);
+                System.out.println(hfGoodsList);
                 hfGoodsList.forEach(hfGoods -> {
+                    Integer yGoodsId = hfGoods.getId();
                     hfGoods.setId(null);
+                    hfGoods.setProductId(product.getId());
                     hfGoods.setInstanceId(productInstance.getId());
                     hfGoods.setCreateTime(LocalDateTime.now());
                     hfGoods.setModifyTime(LocalDateTime.now());
                     HfPrice hfPrice = hfPriceMapper.selectByPrimaryKey(hfGoods.getPriceId());
-                    hfPrice.setId(null);
-                    hfPriceMapper.insertSelective(hfPrice);
-                    hfGoods.setPriceId(hfPrice.getId());
+                    if (hfPrice!=null){
+                        hfPrice.setId(null);
+                        hfPriceMapper.insertSelective(hfPrice);
+                        hfGoods.setPriceId(hfPrice.getId());
+                        hfPriceMapper.updateByPrimaryKeySelective(hfPrice);
+                    }
                     HfResp hfResp = hfRespMapper.selectByPrimaryKey(hfGoods.getRespId());
-                    hfResp.setId(null);
-                    hfRespMapper.insert(hfResp);
-                    hfGoods.setRespId(hfResp.getId());
-                    hfGoodsMapper.insertSelective(hfGoods);
-                    hfPrice.setGoogsId(hfGoods.getId());
-                    hfPriceMapper.updateByPrimaryKeySelective(hfPrice);
-                    hfResp.setGoogsId(hfGoods.getId());
-                    hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                    if (hfResp!=null){
+                        hfResp.setId(null);
+                        hfRespMapper.insert(hfResp);
+                        hfGoods.setRespId(hfResp.getId());
+                        hfGoodsMapper.insertSelective(hfGoods);
+                        hfPrice.setGoogsId(hfGoods.getId());
+                        hfResp.setGoogsId(hfGoods.getId());
+                        hfRespMapper.updateByPrimaryKeySelective(hfResp);
+                    }
                     HfGoodsPictrueExample hfGoodsPictrueExample = new HfGoodsPictrueExample();
-                    hfGoodsPictrueExample.createCriteria().andGoodsIdEqualTo(hfGoods.getId())
+                    hfGoodsPictrueExample.createCriteria().andGoodsIdEqualTo(yGoodsId)
                             .andIsDeletedEqualTo((short) 0);
                     List<HfGoodsPictrue> hfGoodsPictrues =
                             hfGoodsPictrueMapper.selectByExample(hfGoodsPictrueExample);
