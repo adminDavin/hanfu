@@ -317,7 +317,9 @@ public class HfOrderController {
                     hfActivityProductExample.createCriteria().andActivityIdEqualTo(hfActivityGroup.getActivityId()).andProductIdEqualTo(hfActivityGroup.getProductId());
                     List<HfActivityProduct> hfActivityProduct = hfActivityProductMapper.selectByExample(hfActivityProductExample);
                     hfOrder.setActivityState(hfActivityCount.get(0).getState());
-                    hfOrder.setNowSum(hfActivityProduct.get(0).getGroupNum());
+                    if (hfActivityProduct.size() !=0){
+                        hfOrder.setNowSum(hfActivityProduct.get(0).getGroupNum());
+                    }
                     hfOrder.setGroupSum(hfActivityCount1.size());
                     hfOrder.setActivity("group");
 

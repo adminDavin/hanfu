@@ -136,15 +136,15 @@ public class discountCouponController {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		System.out.println("request.getServletContext().getAttribute得到全局数据："
 				+ request.getServletContext().getAttribute("getServletContext"));
-		if (request.getServletContext().getAttribute("getServletContextType") != null) {
-			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-				bossId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
-				stoneId = null;
-			} else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
-				stoneId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
-				bossId = null;
-			}
-		}
+//		if (request.getServletContext().getAttribute("getServletContextType") != null) {
+//			if (request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
+//				bossId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
+//				stoneId = null;
+//			} else if (request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
+//				stoneId = ((Integer) request.getServletContext().getAttribute("getServletContext"));
+//				bossId = null;
+//			}
+//		}
 //        else {
 //            response.sendError(HttpStatus.FORBIDDEN.value(), "无权限");
 //        }

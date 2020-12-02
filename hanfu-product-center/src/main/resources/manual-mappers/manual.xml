@@ -120,13 +120,13 @@
 	</select>
 
 	<select id="select" resultMap="HfUser">
-		select * from hf_user where id = #{userId}
+		select * from hf_user where id = #{userId} and id_deleted = 0
 	</select>
 
 	<select id="selectProductActivityList"
 		resultMap="ProductActivityInfo">
 		select * from hf_activity where activity_type = #{activityType}
-		and 1=1
+		and is_deleted = 0
 		<if test="activityName != null and activityName != ''">
 			and activity_name like concat("%",#{activityName},"%")
 		</if>
