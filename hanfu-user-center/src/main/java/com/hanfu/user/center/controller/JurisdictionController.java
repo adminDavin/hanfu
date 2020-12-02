@@ -176,39 +176,30 @@ public class JurisdictionController {
 
 	@ApiOperation(value = "账号查询", notes = "账号查询")
 	@RequestMapping(value = "/selectAccount", method = RequestMethod.GET)
-	public ResponseEntity<JSONObject> selectAccount(HttpServletRequest request) throws JSONException {
+	public ResponseEntity<JSONObject> selectAccount(HttpServletRequest request,Integer bossId, Integer storeId) throws JSONException {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
 		AccountExample accountExample = new AccountExample();
 		List<Account> account = new ArrayList<>();
-		if (request.getServletContext().getAttribute("getServletContextType") != null
-				&& request.getServletContext().getAttribute("getServletContextType").equals("boss")) {
-			if (request.getServletContext().getAttribute("getServletContext") != null) {
+			if (bossId != null) {
 				accountExample.createCriteria().andAccountTypeEqualTo("boss")
-						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
+						.andMerchantIdEqualTo(bossId)
 						.andIsDeletedEqualTo(0);
-				System.out.println("我是boss"+request.getServletContext().getAttribute("getServletContext"));
 				account = accountMapper.selectByExample(accountExample);
-				accountExample.clear();
-				List<String> str = new ArrayList<String>();
-				str.add("stone");
-				str.add("warehouse");
-				accountExample.createCriteria().andAccountTypeIn(str).andAccountRoleEqualTo("Super Admin")
-						.andIsDeletedEqualTo(0);
-				List<Account> a = accountMapper.selectByExample(accountExample);
-				account.addAll(a);
-			}
-		} else if (request.getServletContext().getAttribute("getServletContextType") != null
-				&& request.getServletContext().getAttribute("getServletContextType").equals("stone")) {
-			if (request.getServletContext().getAttribute("getServletContext") != null) {
+//				accountExample.clear();
+//				List<String> str = new ArrayList<String>();
+//				str.add("stone");
+//				str.add("warehouse");
+//				accountExample.createCriteria().andAccountTypeIn(str).andAccountRoleEqualTo("Super Admin")
+//						.andIsDeletedEqualTo(0);
+//				List<Account> a = accountMapper.selectByExample(accountExample);
+//				account.addAll(a);
+			} else if (storeId != null) {
 				accountExample.createCriteria().andAccountTypeEqualTo("stone")
-						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
+						.andMerchantIdEqualTo(storeId)
 						.andIsDeletedEqualTo(0);
-				System.out.println("我是stone"+request.getServletContext().getAttribute("getServletContext"));
 				account = accountMapper.selectByExample(accountExample);
-			}
-		} else {
+			} else {
 			accountExample.createCriteria().andIsDeletedEqualTo(0);
-			System.out.println("什么也不是");
 			account = accountMapper.selectByExample(accountExample);
 		}
 		account.forEach(account1 -> {
