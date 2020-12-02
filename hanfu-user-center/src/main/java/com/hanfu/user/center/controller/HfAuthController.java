@@ -1383,21 +1383,22 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	public ResponseEntity<JSONObject> addSup(HttpServletRequest request,String type,Integer LastUser,Integer BSid,String authType,String authKey,Integer merchantId) throws JSONException {
 		Account account = new Account();
 		List<Account> accounts= new ArrayList<>();
-		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				AccountExample accountExample = new AccountExample();
-//				System.out.println(LastUser);
-//				System.out.println(request.getServletContext().getAttribute("getServletContext"));
-//				System.out.println(request.getServletContext().getAttribute("getServletContextType"));
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
-				accounts= accountMapper.selectByExample(accountExample);
-				System.out.println(accounts);
-				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
-					account.setAccountRole("Super Admin");
-				}
-			}
-		} else 	if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
+//		if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("boss")){
+//			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+//			if (request.getServletContext().getAttribute("getServletContext")!=null){
+//				AccountExample accountExample = new AccountExample();
+////				System.out.println(LastUser);
+////				System.out.println(request.getServletContext().getAttribute("getServletContext"));
+////				System.out.println(request.getServletContext().getAttribute("getServletContextType"));
+//				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
+//				accounts= accountMapper.selectByExample(accountExample);
+//				System.out.println(accounts);
+//				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("stone")){
+//					account.setAccountRole("Super Admin");
+//				}
+//			}
+//		} else
+			if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
 			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
 			if (request.getServletContext().getAttribute("getServletContext")!=null){
 				AccountExample accountExample = new AccountExample();

@@ -186,6 +186,7 @@ public class JurisdictionController {
 				accountExample.createCriteria().andAccountTypeEqualTo("boss")
 						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
 						.andIsDeletedEqualTo(0);
+				System.out.println("我是boss"+request.getServletContext().getAttribute("getServletContext"));
 				account = accountMapper.selectByExample(accountExample);
 				accountExample.clear();
 				List<String> str = new ArrayList<String>();
@@ -202,10 +203,12 @@ public class JurisdictionController {
 				accountExample.createCriteria().andAccountTypeEqualTo("stone")
 						.andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"))
 						.andIsDeletedEqualTo(0);
+				System.out.println("我是stone"+request.getServletContext().getAttribute("getServletContext"));
 				account = accountMapper.selectByExample(accountExample);
 			}
 		} else {
 			accountExample.createCriteria().andIsDeletedEqualTo(0);
+			System.out.println("什么也不是");
 			account = accountMapper.selectByExample(accountExample);
 		}
 		account.forEach(account1 -> {
