@@ -361,7 +361,7 @@ public class WithdrawalController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String sign1 = MD5.MD5Encode("638da426ccf508f8452b120b940225e43a21d6ece91331112991b9bf73421df5987");
         System.out.println(sign1);
-        String s=WithdrawalController.sendGet("http://120.79.157.192:6160/unicomAync/queryBalance.do?userId="+"638"+"&sign="+sign1, "");
+        String s=WithdrawalController.sendGet("http://120.79.157.192:6160/unicomAync/queryBalance.do", "userId="+"638"+"&sign="+sign1);
         System.out.println(s);
 
         return builder.body(ResponseUtils.getResponseBody(0));
@@ -384,7 +384,7 @@ public class WithdrawalController {
             URLConnection connection = realUrl.openConnection();
 
             // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("Accept", "application/json;charset=UTF-8");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 
