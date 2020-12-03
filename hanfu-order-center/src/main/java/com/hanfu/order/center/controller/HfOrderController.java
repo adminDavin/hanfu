@@ -266,6 +266,8 @@ public class HfOrderController {
 //            Map<Integer, HfGoodsDisplay> hfGoodsDisplayMap = goodses.stream().collect(Collectors.toMap(HfGoodsDisplay::getId, apple1 -> apple1));
             
             hfOrders.forEach(hfOrder -> {
+                PayOrder payOrder = payOrderMapper.selectByPrimaryKey(hfOrder.getPayOrderId());
+                hfOrder.setAmount(payOrder.getAmount());
                 if (hfOrder.getStoneId()!=null){
                     HfStone hfStone1= hfStoneMapper.selectByPrimaryKey(hfOrder.getStoneId());
                     hfOrder.setStoneName(hfStone1.getHfName());
