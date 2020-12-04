@@ -1,5 +1,8 @@
 package com.hanfu.payment.center.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.payment.center.dao.*;
 import com.hanfu.payment.center.manual.model.WithdrawalType;
@@ -26,7 +29,9 @@ import tk.mybatis.mapper.entity.Example;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Instant;
@@ -361,9 +366,10 @@ public class WithdrawalController {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         String sign1 = MD5.MD5Encode("638da426ccf508f8452b120b940225e43a21d6ece91331112991b9bf73421df5987");
         System.out.println(sign1);
-        String s=WithdrawalController.sendGet("http://120.79.157.192:6160/unicomAync/queryBalance.do", "userId="+"638"+"&sign="+sign1);
+        String s=WithdrawalController.sendPost("http://120.79.157.192:6160/unicomAync/queryBalance.do", "userId="+"638"+"&sign="+sign1);
         System.out.println(s);
-
+        HashMap hashMap = JSON.parseObject(s, HashMap.class);
+        System.out.println(hashMap.get("status"));
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 
@@ -423,5 +429,67 @@ public class WithdrawalController {
         }
         return result;
     }
+    /**
+     * 向指定 URL 发送POST方法的请求
+     *
+     * @param url：发送请求的 URL
+     * @param param：请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return String[result]：所代表远程资源的响应结果
+     */
+    public static String sendPost(String url, String param) {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
 
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+
+            // 发送请求参数
+            out.print(param);
+
+            // flush输出流的缓冲
+            out.flush();
+
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            System.out.println("发送 POST 请求出现异常！"+e);
+            e.printStackTrace();
+        }
+
+        //使用finally块来关闭输出流、输入流
+        finally{
+            try{
+                if(out!=null){
+                    out.close();
+                }
+                if(in!=null){
+                    in.close();
+                }
+            }
+            catch(IOException ex){
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
 }
