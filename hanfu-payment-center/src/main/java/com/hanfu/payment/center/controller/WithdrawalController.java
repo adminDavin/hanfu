@@ -447,7 +447,8 @@ public class WithdrawalController {
             URLConnection conn = realUrl.openConnection();
 
             // 设置通用的请求属性
-            conn.setRequestProperty("accept", "*/*");
+//            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("Accept", "application/json;charset=UTF-8");
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 

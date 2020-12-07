@@ -6,7 +6,7 @@
 <generatorConfiguration>
 
 	<classPathEntry
-		location="D:\eclipse\eclipse(1)\m2\repository\mysql\mysql-connector-java\8.0.19\mysql-connector-java-8.0.19.jar" />
+		location="C:\Users\MACHENIKE\.m2\repository\mysql\mysql-connector-java\8.0.17\mysql-connector-java-8.0.17.jar" />
 	<context id="MySQLTables" targetRuntime="MyBatis3">
 		<property name="xmlFormatter"
 			value="org.mybatis.generator.api.dom.DefaultXmlFormatter" />
@@ -57,12 +57,12 @@
 		<generatedKey column="id" sqlStatement="mysql"
 		identity="true" />
 		</table> -->
-		<table schema="user_center" tableName="activity_user"
-		domainObjectName="ActivityUser">
-		<property name="useActualColumnNames" value="false" />
-		<generatedKey column="id" sqlStatement="mysql"
-		identity="true" />
-		</table>
+		<!--<table schema="user_center" tableName="activity_user"-->
+		<!--domainObjectName="ActivityUser">-->
+		<!--<property name="useActualColumnNames" value="false" />-->
+		<!--<generatedKey column="id" sqlStatement="mysql"-->
+		<!--identity="true" />-->
+		<!--</table>-->
 		<!--<table schema="user_center" tableName="hf_user" domainObjectName="HfUser"> -->
 		<!--<property name="useActualColumnNames" value="false"/> -->
 		<!--<generatedKey column="id" sqlStatement="mysql" identity="true"/> -->
@@ -134,12 +134,12 @@
 		<!-- <table schema="user_center" tableName="hf_level_describe" domainObjectName="HfLevelDescrible"> 
 			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true" /> </table> -->
-		<table schema="user_center" tableName="hf_message_instance"
-			domainObjectName="HfMessageInstance">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-				identity="true" />
-		</table>
+		<!--<table schema="user_center" tableName="hf_message_instance"-->
+			<!--domainObjectName="HfMessageInstance">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+				<!--identity="true" />-->
+		<!--</table>-->
 		<!-- <table schema="user_center" tableName="hf_message_apply"
 			domainObjectName="HfMessageApply">
 			<property name="useActualColumnNames" value="false" />
@@ -194,9 +194,39 @@
 			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
 			sqlStatement="mysql" identity="true" /> </table> -->
 
-		<!-- <table schema="user_center" tableName="account_type_model" domainObjectName="AccountTypeModel"> 
-			<property name="useActualColumnNames" value="false" /> <generatedKey column="id" 
+		<!-- <table schema="user_center" tableName="account_type_model" domainObjectName="AccountTypeModel">
+			<property name="useActualColumnNames" value="false" /> <generatedKey column="id"
 			sqlStatement="mysql" identity="true" /> </table> -->
 		<!--******************************************************************* -->
+		<!--<table schema="user_center" tableName="hf_vip"-->
+		<!--domainObjectName="HfVip">-->
+		<!--<property name="useActualColumnNames" value="false" />-->
+		<!--<generatedKey column="id" sqlStatement="mysql"-->
+		<!--identity="true" />-->
+		<!--</table>-->
+		<!--<table schema="user_center" tableName="hf_vip_order"-->
+			   <!--domainObjectName="HfVipOrder">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+		<!--<table schema="user_center" tableName="hf_vip_privilege"-->
+			   <!--domainObjectName="HfVipPrivilege">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+		<!--<table schema="user_center" tableName="hf_vip_user"-->
+			   <!--domainObjectName="HfVipUser">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
+		<table schema="user_center" tableName="pay_order"
+			   domainObjectName="PayOrder">
+			<property name="useActualColumnNames" value="false"/>
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true"/>
+		</table>
 	</context>
 </generatorConfiguration>
