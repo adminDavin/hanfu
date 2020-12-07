@@ -3,6 +3,7 @@ package com.hanfu.user.center.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.manual.model.VipOrder;
+import com.hanfu.user.center.manual.model.VipOrders;
 import com.hanfu.user.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -295,6 +297,7 @@ public class HfVipController {
             hfVipOrder.setCreateTime(LocalDateTime.now());
             hfVipOrder.setModifyTime(LocalDateTime.now());
             hfVipOrder.setIsDeleted((byte) 0);
+            hfVipOrder.setPayOrderId(payOrder.getId());
             hfVipOrderMapper.insertSelective(hfVipOrder);
             return builder.body(ResponseUtils.getResponseBody(payOrder));
         }
@@ -320,6 +323,22 @@ public class HfVipController {
         if (bossId!=null){
             criteria.andBossIdEqualTo(bossId);
         }
-        return builder.body(ResponseUtils.getResponseBody("失败"));
+        List<HfVipOrder> hfVipOrders = hfVipOrderMapper.selectByExample(hfVipOrderExample);
+        hfVipOrders.forEach(hfVipOrder -> {
+            VipOrders vipOrders = new VipOrders();
+            vipOrders.setVipOrderId(hfVipOrder.getId());
+            vipOrders.setUserId(hfVipOrder.getUserId());
+            vipOrders.setBossId(hfVipOrder.getBossId());
+            vipOrders.setVipId(hfVipOrder.getVipId());
+            vipOrders.setOrderCode(hfVipOrder.getOrderCode());
+            vipOrders.setAmount(hfVipOrder.getAmount());
+            vipOrders.setPayName(hfVipOrder.getPaymentName());
+            vipOrders.setCreateTime(hfVipOrder.getCreateTime());
+            HfVip hfVip = hfVipMapper.selectByPrimaryKey(hfVipOrder.getVipId());
+            vipOrders.setVipName(hfVip.getVipName());
+            vipOrders.setLabel(hfVip.getLable());
+            vipOrders.setFile(hfVip.getFileId());
+        });
+        return builder.body(ResponseUtils.getResponseBody(hfVipOrders));
     }
 }
