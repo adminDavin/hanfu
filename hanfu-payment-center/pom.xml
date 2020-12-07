@@ -58,11 +58,11 @@
 	</build>
 
 	<dependencies>
-		<!--<dependency>-->
-			<!--<artifactId>hanfu-web-utils</artifactId>-->
-			<!--<groupId>com.hanfu.utils</groupId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<artifactId>hanfu-web-utils</artifactId>
+			<groupId>com.hanfu.utils</groupId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
@@ -195,11 +195,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.hanfu.user.center</groupId>-->
-			<!--<artifactId>hanfu-user-center</artifactId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.hanfu.user.center</groupId>
+			<artifactId>hanfu-user-center</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<!--微信支付-->
 		<dependency>
 			<groupId>com.github.wxpay</groupId>
