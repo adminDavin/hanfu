@@ -43,7 +43,7 @@ import java.util.*;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/hf-payment/")
+@RequestMapping("/vip-payment/")
 @Api
 public class PaymentVipOrderController {
     @Autowired
