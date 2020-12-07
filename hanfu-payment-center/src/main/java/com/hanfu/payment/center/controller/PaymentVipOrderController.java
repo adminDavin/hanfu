@@ -309,13 +309,10 @@ public class PaymentVipOrderController {
     @ApiOperation(value = "完成支付", notes = "")
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
     @ApiImplicitParams({
-//			@ApiImplicitParam(paramType = "query", name = "outTradeNo", value = "订单id", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "transactionType", value = "订单id", required = true, type = "String"),
-            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "level", value = "会员等级", required = true, type = "Integer")})
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer")})
     public synchronized ResponseEntity<JSONObject> completePaymentAfter(
-            @RequestParam("transactionType") String transactionType, @RequestParam("userId") Integer userId,
-            @RequestParam(required = false) Integer level, Integer payOrderId)
+            @RequestParam("userId") Integer userId,
+             Integer payOrderId)
             throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         HfVipOrderExample hfVipOrderExample = new HfVipOrderExample();
