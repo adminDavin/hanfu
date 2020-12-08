@@ -169,6 +169,11 @@ private JurisdictionMapper jurisdictionMapper;
 
 @Autowired
 private RoleJurisdictionMapper roleJurisdictionMapper;
+
+@Autowired
+private HfVipUserMapper hfVipUserMapper;
+@Autowired
+private HfVipMapper hfVipMapper;
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ApiOperation(value = "用户登录", notes = "用户登录")
 	@ApiImplicitParams({
@@ -1216,9 +1221,9 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 	public ResponseEntity<JSONObject> findInfoByUserId(Integer userId) throws JSONException {
 
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
-		HfUserMemberExample example = new HfUserMemberExample();
-		example.createCriteria().andUserIdEqualTo(userId);
-		List<HfUserMember> member = hfUserMemberMapper.selectByExample(example);
+//		HfUserMemberExample example = new HfUserMemberExample();
+//		example.createCriteria().andUserIdEqualTo(userId);
+//		List<HfUserMember> member = hfUserMemberMapper.selectByExample(example);
 		HfUserBalanceExample example2 = new HfUserBalanceExample();
 		example2.createCriteria().andUserIdEqualTo(userId).andBalanceTypeEqualTo("rechargeAmount");
 		List<HfUserBalance> balance = hfUserBalanceMapper.selectByExample(example2);
@@ -1269,12 +1274,27 @@ private RoleJurisdictionMapper roleJurisdictionMapper;
 		} else {
 			info.setSurplus(balance.get(0).getHfBalance());
 		}
-		if (member.isEmpty()) {
+		HfVipUserExample hfVipUserExample = new HfVipUserExample();
+		hfVipUserExample.createCriteria().andUserIdEqualTo(userId)
+				.andIsDeletedEqualTo((byte) 0)
+				.andEndTimeGreaterThanOrEqualTo(LocalDateTime.now());
+		List<HfVipUser> hfVipUsers =
+		hfVipUserMapper.selectByExample(hfVipUserExample);
+		if (hfVipUsers.size()==0) {
 			info.setPrerogative("普通用户");
 		} else {
-			HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.get(0).getLevelId());
-			info.setPrerogative(level.getLevelName());
+//			HfMemberLevel level = hfMemberLevelMapper.selectByPrimaryKey(member.get(0).getLevelId());
+//			info.setPrerogative(level.getLevelName());
+			if (hfVipUsers.get(0).getVipId()!=null){
+				HfVip hfVip =hfVipMapper.selectByPrimaryKey(hfVipUsers.get(0).getVipId());
+				info.setLabel(hfVip.getLable());
+			}
+			info.setStartTime(hfVipUsers.get(0).getStartTime());
+			info.setEndTime(hfVipUsers.get(0).getEndTime());
+			HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfVipUsers.get(0).getUserId());
+			info.setUserName(hfUser.getNickName());
 			info.setMember(1);
+
 		}
 		return builder.body(ResponseUtils.getResponseBody(info));
 	}

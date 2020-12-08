@@ -1,5 +1,7 @@
 package com.hanfu.user.center.manual.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +14,9 @@ import java.time.LocalDateTime;
  */
 public class VipUser {
     private Integer vipUserId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime endTime;
     private Integer day;
     private String userName;

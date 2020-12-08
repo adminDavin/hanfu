@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanfu.user.center.manual.dao.HfVipDao">
+
+
+    <!-- 购买会员 已经过期的 重新设置时间 -->
+    <update id="minusDay">
+        update hf_vip_user set vip_day = vip_day-#{vipDay} WHERE vip_day-#{vipDay}>=0 and id = #{hfVipUserId}
+    </update>
+
+</mapper>

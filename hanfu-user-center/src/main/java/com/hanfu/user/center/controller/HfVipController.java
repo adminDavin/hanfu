@@ -6,6 +6,7 @@ import com.hanfu.user.center.manual.model.VipOrder;
 import com.hanfu.user.center.manual.model.VipOrders;
 import com.hanfu.user.center.manual.model.VipUser;
 import com.hanfu.user.center.model.*;
+import com.hanfu.user.center.service.HfVipService;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,8 @@ public class HfVipController {
     private PayOrderMapper payOrderMapper;
     @Autowired
     private HfUserMapper hfUserMapper;
+    @Autowired
+    private HfVipService hfVipService;
     @ApiOperation(value = "添加会员卡",notes = "添加会员卡")
     @RequestMapping(value = "/addVipCard",method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -377,7 +381,7 @@ public class HfVipController {
     @ApiOperation(value = "删除会员",notes = "删除会员")
     @RequestMapping(value = "/deleteVip",method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "会员用户id", value = "userVipId", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userVipId", value = "会员用户id", required = true, type = "Integer"),
     })
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public ResponseEntity<JSONObject> deleteVip(
@@ -394,8 +398,8 @@ public class HfVipController {
     @ApiOperation(value = "修改会员",notes = "修改会员")
     @RequestMapping(value = "/updateVip",method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "会员用户id", value = "userVipId", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "修改会员天数", value = "day", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userVipId", value = "会员用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "day", value = "修改会员天数", required = true, type = "Integer"),
     })
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public synchronized ResponseEntity<JSONObject> updateVip(
@@ -413,9 +417,9 @@ public class HfVipController {
     @ApiOperation(value = "添加会员",notes = "添加会员")
     @RequestMapping(value = "/addVip",method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", name = "用户id", value = "userId", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "会员天数", value = "day", required = true, type = "Integer"),
-            @ApiImplicitParam(paramType = "query", name = "boss", value = "bossId", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "day", value = "会员天数", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "bossId", value = "boss", required = true, type = "Integer"),
     })
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
     public synchronized ResponseEntity<JSONObject> addVip(
@@ -469,5 +473,19 @@ public class HfVipController {
         String enddate = format.format(currdate);
         LocalDateTime ldt = LocalDateTime.parse(enddate,df);
         return ldt;
+    }
+        @Scheduled(cron = "0 0 0 * * ?")
+//@Scheduled(cron = "0/10 * * * * ?")
+    public void taskClear() {
+            HfVipUserExample hfVipUserExample = new HfVipUserExample();
+            hfVipUserExample.createCriteria().andIsDeletedEqualTo((byte) 0)
+                    .andVipDayGreaterThanOrEqualTo(0);
+            List<HfVipUser> hfVipUsers =
+                    hfVipUserMapper.selectByExample(hfVipUserExample);
+            if (hfVipUsers.size() != 0){
+                hfVipUsers.forEach(hfVipUser -> {
+                    hfVipService.minusDay(hfVipUser.getId(),1);
+                });
+            }
     }
 }

@@ -1,6 +1,10 @@
 package com.hanfu.user.center.manual.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PurseInfo implements Serializable{
@@ -19,6 +23,12 @@ public class PurseInfo implements Serializable{
 	private Integer collectCount;
 	private Integer concernCount;
 	private Integer browseCount;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private LocalDateTime startTime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private LocalDateTime endTime;
+	private String label;
+	private String userName;
 	private List<UserOrderInfo> order;
 	
 	public String getPrerogative() {
@@ -77,5 +87,41 @@ public class PurseInfo implements Serializable{
 	}
 	public void setOrder(List<UserOrderInfo> order) {
 		this.order = order;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public LocalDateTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(LocalDateTime endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

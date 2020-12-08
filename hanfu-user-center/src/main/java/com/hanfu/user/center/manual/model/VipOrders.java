@@ -1,5 +1,7 @@
 package com.hanfu.user.center.manual.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
 
 /**
@@ -18,6 +20,7 @@ public class VipOrders {
     private String orderCode;
     private Integer amount;
     private String payName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     private String vipName;
