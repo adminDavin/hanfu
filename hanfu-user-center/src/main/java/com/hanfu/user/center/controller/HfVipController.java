@@ -360,6 +360,7 @@ public class HfVipController {
                 .andEndTimeGreaterThanOrEqualTo(LocalDateTime.now());
         List<HfVipUser> hfVipUsers =
         hfVipUserMapper.selectByExample(hfVipUserExample);
+        List<VipUser> vipUsers = new ArrayList<>();
         hfVipUsers.forEach(hfVipUser -> {
             VipUser vipUser = new VipUser();
             vipUser.setVipUserId(hfVipUser.getId());
@@ -369,8 +370,9 @@ public class HfVipController {
             vipUser.setUserId(hfVipUser.getUserId());
             HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfVipUser.getUserId());
             vipUser.setUserName(hfUser.getNickName());
+            vipUsers.add(vipUser);
         });
-        return builder.body(ResponseUtils.getResponseBody(hfVipUsers));
+        return builder.body(ResponseUtils.getResponseBody(vipUsers));
     }
     @ApiOperation(value = "删除会员",notes = "删除会员")
     @RequestMapping(value = "/deleteVip",method = RequestMethod.POST)
