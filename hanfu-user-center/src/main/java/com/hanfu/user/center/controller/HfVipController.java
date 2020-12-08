@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.dao.*;
 import com.hanfu.user.center.manual.model.VipOrder;
 import com.hanfu.user.center.manual.model.VipOrders;
+import com.hanfu.user.center.manual.model.VipUser;
 import com.hanfu.user.center.model.*;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
@@ -48,6 +49,8 @@ public class HfVipController {
     private HfVipOrderMapper hfVipOrderMapper;
     @Autowired
     private PayOrderMapper payOrderMapper;
+    @Autowired
+    private HfUserMapper hfUserMapper;
     @ApiOperation(value = "添加会员卡",notes = "添加会员卡")
     @RequestMapping(value = "/addVipCard",method = RequestMethod.POST)
     @ApiImplicitParams({
@@ -355,7 +358,19 @@ public class HfVipController {
         hfVipUserExample.createCriteria().andIsDeletedEqualTo((byte) 0)
                 .andBossIdEqualTo(bossId)
                 .andEndTimeGreaterThanOrEqualTo(LocalDateTime.now());
-        return builder.body(ResponseUtils.getResponseBody(hfVipUserMapper.selectByExample(hfVipUserExample)));
+        List<HfVipUser> hfVipUsers =
+        hfVipUserMapper.selectByExample(hfVipUserExample);
+        hfVipUsers.forEach(hfVipUser -> {
+            VipUser vipUser = new VipUser();
+            vipUser.setVipUserId(hfVipUser.getId());
+            vipUser.setDay(hfVipUser.getVipDay());
+            vipUser.setStartTime(hfVipUser.getStartTime());
+            vipUser.setEndTime(hfVipUser.getEndTime());
+            vipUser.setUserId(hfVipUser.getUserId());
+            HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfVipUser.getUserId());
+            vipUser.setUserName(hfUser.getNickName());
+        });
+        return builder.body(ResponseUtils.getResponseBody(hfVipUsers));
     }
     @ApiOperation(value = "删除会员",notes = "删除会员")
     @RequestMapping(value = "/deleteVip",method = RequestMethod.POST)
