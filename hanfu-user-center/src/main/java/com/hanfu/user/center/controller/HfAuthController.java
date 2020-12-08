@@ -645,7 +645,34 @@ private HfVipMapper hfVipMapper;
 		bossInfo.setPhone(hfUser.getPhone());
 		return builder.body(ResponseUtils.getResponseBody(bossInfo));
 	}
+	@RequestMapping(value = "/uudatefindBossInfo", method = RequestMethod.GET)
+	@ApiOperation(value = "修改商家基本信息", notes = "修改商家基本信息")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "name", value = "商家名称", required = true, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "capital", value = "注册资本", required = true, type = "Integer"),
+			@ApiImplicitParam(paramType = "query", name = "phone", value = "手机号", required = true, type = "String"),
+			@ApiImplicitParam(paramType = "query", name = "scope", value = "经营范围", required = true, type = "String")
+	})
+	public ResponseEntity<JSONObject> uudatefindBossInfo(HttpServletRequest request,
+														 String name,
+														 Integer capital,
+														 String scope,
+														 String phone,
+														 Integer bossId) throws Exception {
 
+		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder();
+		HfBoss hfBoss = hfBossMapper.selectByPrimaryKey(bossId);
+		hfBoss.setName(name);
+		hfBoss.setId(bossId);
+		hfBoss.setRegisteredCapital(capital);
+		hfBoss.setBusinessScope(scope);
+		hfBossMapper.updateByPrimaryKeySelective(hfBoss);
+		HfUser hfUser = hfUserMapper.selectByPrimaryKey(hfBoss.getUserId());
+		hfUser.setPhone(phone);
+		hfUserMapper.updateByPrimaryKeySelective(hfUser);
+		return builder.body(ResponseUtils.getResponseBody(0));
+	}
 	@RequestMapping(value = "/selectStoneAdmin", method = RequestMethod.GET)
 	@ApiOperation(value = "店铺管理员列表", notes = "店铺管理员列表根据商家id")
 	@ApiImplicitParams({

@@ -63,6 +63,8 @@ public class discountCouponController {
 	private HfBossMapper hfBossMapper;
 	@Autowired
 	private HfStoneMapper hfStoneMapper;
+	@Autowired
+	private HfVipUserMapper hfVipUserMapper;
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@RequiredPermission(PermissionConstants.ADMIN_DISCOUNT_INSERT)
@@ -610,10 +612,15 @@ public class discountCouponController {
 			@ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer") })
 	public ResponseEntity<JSONObject> addCouponForUser(Integer couponId, Integer userId) throws Exception {
 		ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-
-		Integer result = hfMemberDao.selectIsMember(userId);
+	HfVipUserExample hfVipUserExample = new HfVipUserExample();
+		hfVipUserExample.createCriteria().andUserIdEqualTo(userId)
+				.andIsDeletedEqualTo((byte) 0)
+				.andEndTimeGreaterThanOrEqualTo(LocalDateTime.now());
+		List<HfVipUser> hfVipUsers =
+				hfVipUserMapper.selectByExample(hfVipUserExample);
+//		Integer result = hfMemberDao.selectIsMember(userId);
 		DiscountCoupon discountCoupon = discountCouponMapper.selectByPrimaryKey(couponId);
-		if (result == 0 && "vipUser".equals(discountCoupon.getScope())) {
+		if (hfVipUsers.size() == 0 && "vipUser".equals(discountCoupon.getScope())) {
 			return builder.body(ResponseUtils.getResponseBody(-1));
 		}
 
