@@ -645,7 +645,7 @@ private HfVipMapper hfVipMapper;
 		bossInfo.setPhone(hfUser.getPhone());
 		return builder.body(ResponseUtils.getResponseBody(bossInfo));
 	}
-	@RequestMapping(value = "/uudatefindBossInfo", method = RequestMethod.GET)
+	@RequestMapping(value = "/updatefindBossInfo", method = RequestMethod.POST)
 	@ApiOperation(value = "修改商家基本信息", notes = "修改商家基本信息")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "bossId", value = "商家id", required = true, type = "Integer"),
@@ -654,7 +654,7 @@ private HfVipMapper hfVipMapper;
 			@ApiImplicitParam(paramType = "query", name = "phone", value = "手机号", required = true, type = "String"),
 			@ApiImplicitParam(paramType = "query", name = "scope", value = "经营范围", required = true, type = "String")
 	})
-	public ResponseEntity<JSONObject> uudatefindBossInfo(HttpServletRequest request,
+	public ResponseEntity<JSONObject> updatefindBossInfo(HttpServletRequest request,
 														 String name,
 														 Integer capital,
 														 String scope,
