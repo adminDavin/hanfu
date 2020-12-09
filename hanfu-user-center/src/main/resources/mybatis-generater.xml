@@ -204,12 +204,12 @@
 		<!--<generatedKey column="id" sqlStatement="mysql"-->
 		<!--identity="true" />-->
 		<!--</table>-->
-		<table schema="user_center" tableName="hf_vip_order"
-			   domainObjectName="HfVipOrder">
-			<property name="useActualColumnNames" value="false" />
-			<generatedKey column="id" sqlStatement="mysql"
-						  identity="true" />
-		</table>
+		<!--<table schema="user_center" tableName="hf_vip_order"-->
+			   <!--domainObjectName="HfVipOrder">-->
+			<!--<property name="useActualColumnNames" value="false" />-->
+			<!--<generatedKey column="id" sqlStatement="mysql"-->
+						  <!--identity="true" />-->
+		<!--</table>-->
 		<!--<table schema="user_center" tableName="hf_vip_privilege"-->
 			   <!--domainObjectName="HfVipPrivilege">-->
 			<!--<property name="useActualColumnNames" value="false" />-->
@@ -228,5 +228,11 @@
 			<!--<generatedKey column="id" sqlStatement="mysql"-->
 						  <!--identity="true"/>-->
 		<!--</table>-->
+		<table schema="user_center" tableName="hf_message"
+			   domainObjectName="HfMessage">
+			<property name="useActualColumnNames" value="false" />
+			<generatedKey column="id" sqlStatement="mysql"
+						  identity="true" />
+		</table>
 	</context>
 </generatorConfiguration>
