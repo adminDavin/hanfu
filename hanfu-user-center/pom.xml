@@ -84,16 +84,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.hanfu.common</groupId>-->
-			<!--<artifactId>hanfu-common</artifactId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<artifactId>hanfu-web-utils</artifactId>-->
-			<!--<groupId>com.hanfu.utils</groupId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.hanfu.common</groupId>
+			<artifactId>hanfu-common</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>hanfu-web-utils</artifactId>
+			<groupId>com.hanfu.utils</groupId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -103,16 +103,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.hanfu.common</groupId>-->
-			<!--<artifactId>hanfu-common</artifactId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<artifactId>hanfu-web-utils</artifactId>-->
-			<!--<groupId>com.hanfu.utils</groupId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.hanfu.common</groupId>
+			<artifactId>hanfu-common</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<artifactId>hanfu-web-utils</artifactId>
+			<groupId>com.hanfu.utils</groupId>
+			<version>0.0.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -221,11 +221,11 @@
 			<artifactId>dubbo-spring-boot-autoconfigure</artifactId>
 			<version>2.7.3</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.hanfu.inner.sdk</groupId>-->
-			<!--<artifactId>hanfu-inner-sdk</artifactId>-->
-			<!--<version>0.0.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.hanfu.inner.sdk</groupId>
+			<artifactId>hanfu-inner-sdk</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
