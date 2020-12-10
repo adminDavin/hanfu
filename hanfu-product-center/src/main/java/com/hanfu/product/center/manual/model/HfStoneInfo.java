@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class HfStoneInfo implements Serializable{
 	
 	private String stoneName;
+	private Integer storeUserId;
 	private String stoneDesc;
 	private String address;
 	private Integer avatarId;
@@ -98,5 +99,12 @@ public class HfStoneInfo implements Serializable{
 	public void setIsConcern(Integer isConcern) {
 		this.isConcern = isConcern;
 	}
-	
+
+	public Integer getStoreUserId() {
+		return storeUserId;
+	}
+
+	public void setStoreUserId(Integer storeUserId) {
+		this.storeUserId = storeUserId;
+	}
 }

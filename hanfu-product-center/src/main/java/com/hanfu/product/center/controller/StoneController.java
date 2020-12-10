@@ -417,6 +417,7 @@ public class StoneController {
         }
         HfStone hfStone = hfStoneMapper.selectByPrimaryKey(id);
         HfStoneInfo info = new HfStoneInfo();
+        info.setStoreUserId(hfStone.getUserId());
         info.setStoneName(hfStone.getHfName());
         info.setStoneDesc(hfStone.getHfDesc());
         info.setAddress(hfStone.getAddress());
