@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 public class ChatWindow {
     private Integer userId;//建立人id
     private String userName;//建立人姓名
-    private String userFile;//头像
-    private String byUserFile;//被建立人头像
+    private Integer userFile;//头像
+    private Integer byUserFile;//被建立人头像
     private String byUserName;//被建立人姓名
     private Integer byUserId;//被建立人id
     private Integer unread;//未读条数
@@ -73,19 +73,19 @@ public class ChatWindow {
         this.modifyTime = modifyTime;
     }
 
-    public String getUserFile() {
+    public Integer getUserFile() {
         return userFile;
     }
 
-    public void setUserFile(String userFile) {
+    public void setUserFile(Integer userFile) {
         this.userFile = userFile;
     }
 
-    public String getByUserFile() {
+    public Integer getByUserFile() {
         return byUserFile;
     }
 
-    public void setByUserFile(String byUserFile) {
+    public void setByUserFile(Integer byUserFile) {
         this.byUserFile = byUserFile;
     }
 

@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.hanfu.user.center.config.WebSocketTest;
 import com.hanfu.user.center.dao.HfMessageMapper;
+import com.hanfu.user.center.dao.HfUserMapper;
 import com.hanfu.user.center.manual.model.ChatWindow;
 import com.hanfu.user.center.manual.model.MiniMessage;
 import com.hanfu.user.center.model.HfMessage;
 import com.hanfu.user.center.model.HfMessageExample;
+import com.hanfu.user.center.model.HfUser;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import io.swagger.annotations.Api;
@@ -58,6 +60,8 @@ public class ChatController {
     private HfMessageMapper hfMessageMapper;
     @Autowired
     private WebSocketTest webSocketTest;
+    @Autowired
+    private HfUserMapper hfUserMapper;
     @ApiOperation(value = "发送公告消息", notes = "发送公告消息")
     @RequestMapping(value = "/announcement", method = RequestMethod.POST)
     public ResponseEntity<JSONObject> announcement(String message) throws Exception {
@@ -185,60 +189,60 @@ public class ChatController {
 //    @Autowired
 //    private SecondUserMapper secondUserMapper;
 
-//    /**
-//     * 建立聊天窗口
-//     */
-//    @ApiOperation(value = "建立聊天窗口", notes = "建立聊天窗口")
-//    @RequestMapping(value = "/addChatWindow", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
-//    })
-//    public ResponseEntity<JSONObject> addChatWindow(
-//            @RequestParam(value = "userId", required = false) Integer userId,
-//            @RequestParam(value = "ByUserId", required = false) Integer byUserId
-//    ) throws Exception {
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        List<ChatWindow> chatWindows = new ArrayList<>();
-//        SecondUser secondUser = secondUserMapper.selectByPrimaryKey(userId);
-//        SecondUser bySecondUser = secondUserMapper.selectByPrimaryKey(byUserId);
-//        ChatWindow chatWindow = new ChatWindow();
-//        chatWindow.setUserId(userId);
-//        chatWindow.setUserName(secondUser.getNickName());
-//        chatWindow.setUserFile(secondUser.getFile());
-//        chatWindow.setByUserId(byUserId);
-//        chatWindow.setByUserName(bySecondUser.getNickName());
-//        chatWindow.setByUserFile(bySecondUser.getFile());
-//        chatWindow.setCreateTime(LocalDateTime.now());
-//        chatWindow.setModifyTime(LocalDateTime.now());
-//        Object object =
-//                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
-//        if (object!=null){
-//            System.out.println(chatWindows);
-//            chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
-//            //被建立用户id
-//            Set<Integer> byUser = chatWindows.stream().map(ChatWindow::getByUserId).collect(Collectors.toSet());
-//            chatWindows.forEach(chatWindow1 ->{
-//                if (chatWindow1.getByUserId().equals(byUserId)){
-//                    chatWindow1.setModifyTime(LocalDateTime.now());
-//                }
-//            });
-//            //存在
-//            boolean result =
-//            byUser.contains(byUserId);
-//            if (!result){
-//                chatWindows.add(chatWindow);
-//            }
-//            String json = JSONObject.toJSONString(chatWindows);
-//            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
-//        } else {
-//            chatWindows.add(chatWindow);
-//            String json = JSONObject.toJSONString(chatWindows);
-//            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
-//        }
-//
-//        return builder.body(ResponseUtils.getResponseBody(0));
-//    }
+    /**
+     * 建立聊天窗口
+     */
+    @ApiOperation(value = "建立聊天窗口", notes = "建立聊天窗口")
+    @RequestMapping(value = "/addChatWindow", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> addChatWindow(
+            @RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "ByUserId", required = false) Integer byUserId
+    ) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<ChatWindow> chatWindows = new ArrayList<>();
+        HfUser secondUser = hfUserMapper.selectByPrimaryKey(userId);
+        HfUser bySecondUser = hfUserMapper.selectByPrimaryKey(byUserId);
+        ChatWindow chatWindow = new ChatWindow();
+        chatWindow.setUserId(userId);
+        chatWindow.setUserName(secondUser.getNickName());
+        chatWindow.setUserFile(secondUser.getFileId());
+        chatWindow.setByUserId(byUserId);
+        chatWindow.setByUserName(bySecondUser.getNickName());
+        chatWindow.setByUserFile(bySecondUser.getFileId());
+        chatWindow.setCreateTime(LocalDateTime.now());
+        chatWindow.setModifyTime(LocalDateTime.now());
+        Object object =
+                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+        if (object!=null){
+            System.out.println(chatWindows);
+            chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
+            //被建立用户id
+            Set<Integer> byUser = chatWindows.stream().map(ChatWindow::getByUserId).collect(Collectors.toSet());
+            chatWindows.forEach(chatWindow1 ->{
+                if (chatWindow1.getByUserId().equals(byUserId)){
+                    chatWindow1.setModifyTime(LocalDateTime.now());
+                }
+            });
+            //存在
+            boolean result =
+            byUser.contains(byUserId);
+            if (!result){
+                chatWindows.add(chatWindow);
+            }
+            String json = JSONObject.toJSONString(chatWindows);
+            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
+        } else {
+            chatWindows.add(chatWindow);
+            String json = JSONObject.toJSONString(chatWindows);
+            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
+        }
+
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 //    /**
 //     * 设置未读
 //     */
@@ -293,65 +297,65 @@ public class ChatController {
     /**
      * 删除聊天窗口
      */
-//    @ApiOperation(value = "删除聊天窗口", notes = "删除聊天窗口")
-//    @RequestMapping(value = "/delChatWindow", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
-//    })
-//    public ResponseEntity<JSONObject> delChatWindow(
-//            @RequestParam(value = "userId", required = false) Integer userId,
-//            @RequestParam(value = "ByUserId", required = false) Integer ByUserId
-//    ) throws Exception {
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        System.out.println(userId);
-//        System.out.println(ByUserId);
-//        List<ChatWindow> chatWindows = new ArrayList<>();
-//        Object object =
-//                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
-//        chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
-//        //        redisTemplate.delete(String.valueOf(userId)+"window");
-//        for (int i=0;i<chatWindows.size();i++){
-//            if (chatWindows.get(i).getUserId().equals(userId) && chatWindows.get(i).getByUserId().equals(ByUserId)){
-//                chatWindows.remove(i);
-//
-//                String json = JSONObject.toJSONString(chatWindows);
-//                System.out.println(json);
-//                redisTemplate.opsForValue().set(String.valueOf(userId)+"window",json);
-//            }
-//        }
-//        return builder.body(ResponseUtils.getResponseBody(0));
-//    }
+    @ApiOperation(value = "删除聊天窗口", notes = "删除聊天窗口")
+    @RequestMapping(value = "/delChatWindow", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> delChatWindow(
+            @RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "ByUserId", required = false) Integer ByUserId
+    ) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        System.out.println(userId);
+        System.out.println(ByUserId);
+        List<ChatWindow> chatWindows = new ArrayList<>();
+        Object object =
+                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+        chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
+        //        redisTemplate.delete(String.valueOf(userId)+"window");
+        for (int i=0;i<chatWindows.size();i++){
+            if (chatWindows.get(i).getUserId().equals(userId) && chatWindows.get(i).getByUserId().equals(ByUserId)){
+                chatWindows.remove(i);
+
+                String json = JSONObject.toJSONString(chatWindows);
+                System.out.println(json);
+                redisTemplate.opsForValue().set(String.valueOf(userId)+"window",json);
+            }
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
     /**
      * 查询聊天窗口
      */
-//    @ApiOperation(value = "查询聊天窗口", notes = "查询聊天窗口")
-//    @RequestMapping(value = "/selChatWindow", method = RequestMethod.GET)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-//    })
-//    public ResponseEntity<JSONObject> selChatWindow(
-//            @RequestParam(value = "userId", required = false) Integer userId
-//    ) throws Exception {
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        Object object =
-//        redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
-//        System.out.println(object);
-//        List<ChatWindow> chatWindows = new ArrayList<>();
-//        if (object!=null){
-//            chatWindows =
-//                    JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
-//        }
-//        List<ChatWindow> latestItem = chatWindows.stream().sorted(Comparator.comparing(ChatWindow::getModifyTime).reversed()).collect(Collectors.toList());
-//        latestItem.forEach(latestItem1->{
-//            LocalDateTime time = latestItem1.getModifyTime();
-//            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//            String createTime = dateTimeFormatter.format(time);
-//            LocalDateTime localDateTime = LocalDateTime.parse(createTime,dateTimeFormatter);
-//            latestItem1.setModifyTime(localDateTime);
-//        });
-//        return builder.body(ResponseUtils.getResponseBody(latestItem));
-//    }
+    @ApiOperation(value = "查询聊天窗口", notes = "查询聊天窗口")
+    @RequestMapping(value = "/selChatWindow", method = RequestMethod.GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> selChatWindow(
+            @RequestParam(value = "userId", required = false) Integer userId
+    ) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        Object object =
+        redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+        System.out.println(object);
+        List<ChatWindow> chatWindows = new ArrayList<>();
+        if (object!=null){
+            chatWindows =
+                    JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
+        }
+        List<ChatWindow> latestItem = chatWindows.stream().sorted(Comparator.comparing(ChatWindow::getModifyTime).reversed()).collect(Collectors.toList());
+        latestItem.forEach(latestItem1->{
+            LocalDateTime time = latestItem1.getModifyTime();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String createTime = dateTimeFormatter.format(time);
+            LocalDateTime localDateTime = LocalDateTime.parse(createTime,dateTimeFormatter);
+            latestItem1.setModifyTime(localDateTime);
+        });
+        return builder.body(ResponseUtils.getResponseBody(latestItem));
+    }
 
 
     public static void main(String[] args) {
