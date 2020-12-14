@@ -196,10 +196,14 @@ public class ChatController {
     @RequestMapping(value = "/addChatWindow", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "userName", value = "用户", required = true, type = "String"),
             @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "ByUserName", value = "收消息用户", required = true, type = "String"),
     })
     public ResponseEntity<JSONObject> addChatWindow(
             @RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "userId", required = false) String userName,
+            @RequestParam(value = "userId", required = false) String ByUserName,
             @RequestParam(value = "ByUserId", required = false) Integer byUserId
     ) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
@@ -208,10 +212,10 @@ public class ChatController {
         HfUser bySecondUser = hfUserMapper.selectByPrimaryKey(byUserId);
         ChatWindow chatWindow = new ChatWindow();
         chatWindow.setUserId(userId);
-        chatWindow.setUserName(secondUser.getNickName());
+        chatWindow.setUserName(userName);
         chatWindow.setUserFile(secondUser.getFileId());
         chatWindow.setByUserId(byUserId);
-        chatWindow.setByUserName(bySecondUser.getNickName());
+        chatWindow.setByUserName(ByUserName);
         chatWindow.setByUserFile(bySecondUser.getFileId());
         chatWindow.setCreateTime(LocalDateTime.now());
         chatWindow.setModifyTime(LocalDateTime.now());
