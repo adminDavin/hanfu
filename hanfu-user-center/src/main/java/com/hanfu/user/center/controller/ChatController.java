@@ -247,57 +247,59 @@ public class ChatController {
 
         return builder.body(ResponseUtils.getResponseBody(0));
     }
-//    /**
-//     * 设置未读
-//     */
-//    @ApiOperation(value = "设置未读", notes = "设置未读")
-//    @RequestMapping(value = "/setUnread", method = RequestMethod.POST)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
-//            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
-//    })
-//    public ResponseEntity<JSONObject> setUnread(
-//            @RequestParam(value = "userId", required = false) Integer userId,
-//            @RequestParam(value = "Unread", required = false) Integer Unread,
-//            @RequestParam(value = "ByUserId", required = false) Integer byUserId
-//    ) throws Exception {
-//        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-//        List<ChatWindow> chatWindows = new ArrayList<>();
-//        SecondUser secondUser = secondUserMapper.selectByPrimaryKey(userId);
-//        SecondUser bySecondUser = secondUserMapper.selectByPrimaryKey(byUserId);
-//        ChatWindow chatWindow = new ChatWindow();
-//
-//        chatWindow.setUserId(userId);
-//        chatWindow.setUserName(secondUser.getNickName());
-//        chatWindow.setUserFile(secondUser.getFile());
-//        chatWindow.setByUserId(byUserId);
-//        chatWindow.setByUserName(bySecondUser.getNickName());
-//        chatWindow.setByUserFile(bySecondUser.getFile());
-//        chatWindow.setModifyTime(LocalDateTime.now());
-//        System.out.println(chatWindows);
-//        Object object =
-//                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
-//        chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
-//        //被建立用户id
-//        Set<Integer> byUser = chatWindows.stream().map(ChatWindow::getByUserId).collect(Collectors.toSet());
-//        chatWindows.forEach(chatWindow1 ->{
-//            if (chatWindow1.getByUserId().equals(byUserId)){
-//                chatWindow1.setUnread(Unread);
-//                chatWindow1.setModifyTime(LocalDateTime.now());
-//            }
-//        });
-//        //存在
-//        boolean result =
-//                byUser.contains(byUserId);
-//        if (!result){
-//            chatWindows.add(chatWindow);
-//        }
-//        String json = JSONObject.toJSONString(chatWindows);
-//        redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
-//
-//
-//        return builder.body(ResponseUtils.getResponseBody(0));
-//    }
+    /**
+     * 设置未读
+     */
+    @ApiOperation(value = "设置未读", notes = "设置未读")
+    @RequestMapping(value = "/setUnread", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "userId", value = "用户id", required = true, type = "Integer"),
+            @ApiImplicitParam(paramType = "query", name = "ByUserId", value = "收消息用户id", required = true, type = "Integer"),
+    })
+    public ResponseEntity<JSONObject> setUnread(
+            @RequestParam(value = "userId", required = false) Integer userId,
+            @RequestParam(value = "Unread", required = false) Integer Unread,
+            @RequestParam(value = "userName", required = false) String userName,
+            @RequestParam(value = "ByUserName", required = false) String ByUserName,
+            @RequestParam(value = "ByUserId", required = false) Integer byUserId
+    ) throws Exception {
+        ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
+        List<ChatWindow> chatWindows = new ArrayList<>();
+        HfUser secondUser = hfUserMapper.selectByPrimaryKey(userId);
+        HfUser bySecondUser = hfUserMapper.selectByPrimaryKey(byUserId);
+        ChatWindow chatWindow = new ChatWindow();
+
+        chatWindow.setUserId(userId);
+        chatWindow.setUserName(userName);
+        chatWindow.setUserFile(secondUser.getFileId());
+        chatWindow.setByUserId(byUserId);
+        chatWindow.setByUserName(ByUserName);
+        chatWindow.setByUserFile(bySecondUser.getFileId());
+        chatWindow.setModifyTime(LocalDateTime.now());
+        System.out.println(chatWindows);
+        Object object =
+                redisTemplate.opsForValue().get(String.valueOf(userId)+"windowSass");
+        chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
+        //被建立用户id
+        Set<Integer> byUser = chatWindows.stream().map(ChatWindow::getByUserId).collect(Collectors.toSet());
+        chatWindows.forEach(chatWindow1 ->{
+            if (chatWindow1.getByUserId().equals(byUserId)){
+                chatWindow1.setUnread(Unread);
+                chatWindow1.setModifyTime(LocalDateTime.now());
+            }
+        });
+        //存在
+        boolean result =
+                byUser.contains(byUserId);
+        if (!result){
+            chatWindows.add(chatWindow);
+        }
+        String json = JSONObject.toJSONString(chatWindows);
+        redisTemplate.opsForValue().set(String.valueOf(userId)+"windowSass", json);
+
+
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
     /**
      * 删除聊天窗口
      */
