@@ -220,7 +220,7 @@ public class ChatController {
         chatWindow.setCreateTime(LocalDateTime.now());
         chatWindow.setModifyTime(LocalDateTime.now());
         Object object =
-                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+                redisTemplate.opsForValue().get(String.valueOf(userId)+"windowSass");
         if (object!=null){
             System.out.println(chatWindows);
             chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
@@ -238,11 +238,11 @@ public class ChatController {
                 chatWindows.add(chatWindow);
             }
             String json = JSONObject.toJSONString(chatWindows);
-            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
+            redisTemplate.opsForValue().set(String.valueOf(userId)+"windowSass", json);
         } else {
             chatWindows.add(chatWindow);
             String json = JSONObject.toJSONString(chatWindows);
-            redisTemplate.opsForValue().set(String.valueOf(userId)+"window", json);
+            redisTemplate.opsForValue().set(String.valueOf(userId)+"windowSass", json);
         }
 
         return builder.body(ResponseUtils.getResponseBody(0));
@@ -316,7 +316,7 @@ public class ChatController {
         System.out.println(ByUserId);
         List<ChatWindow> chatWindows = new ArrayList<>();
         Object object =
-                redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+                redisTemplate.opsForValue().get(String.valueOf(userId)+"windowSass");
         chatWindows = JSON.parseObject(String.valueOf(object), new TypeReference<List<ChatWindow>>(){});
         //        redisTemplate.delete(String.valueOf(userId)+"window");
         for (int i=0;i<chatWindows.size();i++){
@@ -325,7 +325,7 @@ public class ChatController {
 
                 String json = JSONObject.toJSONString(chatWindows);
                 System.out.println(json);
-                redisTemplate.opsForValue().set(String.valueOf(userId)+"window",json);
+                redisTemplate.opsForValue().set(String.valueOf(userId)+"windowSass",json);
             }
         }
         return builder.body(ResponseUtils.getResponseBody(0));
@@ -343,7 +343,7 @@ public class ChatController {
     ) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         Object object =
-        redisTemplate.opsForValue().get(String.valueOf(userId)+"window");
+        redisTemplate.opsForValue().get(String.valueOf(userId)+"windowSass");
         System.out.println(object);
         List<ChatWindow> chatWindows = new ArrayList<>();
         if (object!=null){
