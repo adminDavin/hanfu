@@ -202,19 +202,19 @@ public class ChatController {
     })
     public ResponseEntity<JSONObject> addChatWindow(
             @RequestParam(value = "userId", required = false) Integer userId,
-            @RequestParam(value = "userId", required = false) String userName,
-            @RequestParam(value = "userId", required = false) String ByUserName,
-            @RequestParam(value = "ByUserId", required = false) Integer byUserId
+            @RequestParam(value = "userName", required = false) String userName,
+            @RequestParam(value = "ByUserName", required = false) String ByUserName,
+            @RequestParam(value = "ByUserId", required = false) Integer ByUserId
     ) throws Exception {
         ResponseEntity.BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         List<ChatWindow> chatWindows = new ArrayList<>();
         HfUser secondUser = hfUserMapper.selectByPrimaryKey(userId);
-        HfUser bySecondUser = hfUserMapper.selectByPrimaryKey(byUserId);
+        HfUser bySecondUser = hfUserMapper.selectByPrimaryKey(ByUserId);
         ChatWindow chatWindow = new ChatWindow();
         chatWindow.setUserId(userId);
         chatWindow.setUserName(userName);
         chatWindow.setUserFile(secondUser.getFileId());
-        chatWindow.setByUserId(byUserId);
+        chatWindow.setByUserId(ByUserId);
         chatWindow.setByUserName(ByUserName);
         chatWindow.setByUserFile(bySecondUser.getFileId());
         chatWindow.setCreateTime(LocalDateTime.now());
@@ -227,13 +227,13 @@ public class ChatController {
             //被建立用户id
             Set<Integer> byUser = chatWindows.stream().map(ChatWindow::getByUserId).collect(Collectors.toSet());
             chatWindows.forEach(chatWindow1 ->{
-                if (chatWindow1.getByUserId().equals(byUserId)){
+                if (chatWindow1.getByUserId().equals(ByUserId)){
                     chatWindow1.setModifyTime(LocalDateTime.now());
                 }
             });
             //存在
             boolean result =
-            byUser.contains(byUserId);
+            byUser.contains(ByUserId);
             if (!result){
                 chatWindows.add(chatWindow);
             }
