@@ -238,6 +238,7 @@ public class DcLoginController {
 		}
 		System.out.println(redisTemplate.opsForValue().get(phone + "dichan"));
 		if (!String.valueOf(passwd).equals(redisTemplate.opsForValue().get(phone + "dichan"))) {
+			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "验证码不正确");
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
 //		if (jedis != null) {
@@ -250,6 +251,15 @@ public class DcLoginController {
 //			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
 //			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
 //		}
+		DcUser dcUser = new DcUser();
+		dcUser.setId(0);
+		dcUser.setIdDeleted((byte) 0);
+		dcUser.setRealName("00");
+		dcUser.setPhone("0");
+		dcUser.setAddress("0");
+		dcUser.setBossId(0);
+		dcUser.setUsername(String.valueOf(0));
+		list.add(dcUser);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
@@ -308,6 +318,7 @@ public class DcLoginController {
 		}
 		System.out.println(redisTemplate.opsForValue().get(phone + "dichan"));
 		if (!String.valueOf(passwd).equals(redisTemplate.opsForValue().get(phone + "dichan"))) {
+			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "验证码不正确");
 			return builder.body(ResponseUtils.getResponseBody("验证码不正确"));
 		}
 //		if (jedis != null) {

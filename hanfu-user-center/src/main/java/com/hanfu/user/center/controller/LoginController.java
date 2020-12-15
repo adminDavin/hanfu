@@ -11,11 +11,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hanfu.user.center.model.*;
 import com.hanfu.user.center.utils.Encrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,9 +30,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.hanfu.user.center.config.WxLoginConfig;
 import com.hanfu.user.center.dao.HfAuthMapper;
 import com.hanfu.user.center.dao.HfUserMapper;
-import com.hanfu.user.center.model.HfAuth;
-import com.hanfu.user.center.model.HfAuthExample;
-import com.hanfu.user.center.model.HfUser;
 import com.hanfu.utils.response.handler.ResponseEntity;
 import com.hanfu.utils.response.handler.ResponseUtils;
 import com.hanfu.utils.response.handler.ResponseEntity.BodyBuilder;
@@ -162,5 +161,14 @@ public class LoginController extends HfUserController {
         map.put("token", token);
         return builder.body(ResponseUtils.getResponseBody(map));
     }
-    
+    @RequestMapping(path = "/getTemplateParam", method = RequestMethod.GET)
+    @ApiOperation(value = "查询类型参数", notes = "查询类型参数")
+    public ResponseEntity<JSONObject> getTemplateParam(String type,HttpServletResponse httpServletResponse) throws Exception {
+        BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.UNAUTHORIZED);
+        if (type.equals("e")){
+            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
+        }
+        return builder.body(ResponseUtils.getResponseBody(0));
+    }
 }
