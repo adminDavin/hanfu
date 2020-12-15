@@ -1445,17 +1445,17 @@ private HfVipMapper hfVipMapper;
 //				}
 //			}
 //		} else
-			if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
-			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
-			if (request.getServletContext().getAttribute("getServletContext")!=null){
-				AccountExample accountExample = new AccountExample();
-				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
-				accounts= accountMapper.selectByExample(accountExample);
-				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("boss")){
-					account.setAccountRole("Super Admin");
-				}
-			}
-		}
+//			if (request.getServletContext().getAttribute("getServletContextType")!=null&&request.getServletContext().getAttribute("getServletContextType").equals("sass")){
+//			System.out.println("request.getServletContext().getAttribute得到全局数据："+request.getServletContext().getAttribute("getServletContext"));
+//			if (request.getServletContext().getAttribute("getServletContext")!=null){
+//				AccountExample accountExample = new AccountExample();
+//				accountExample.createCriteria().andUserIdEqualTo(LastUser).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext")).andAccountTypeEqualTo((String) request.getServletContext().getAttribute("getServletContextType"));
+//				accounts= accountMapper.selectByExample(accountExample);
+//				if (accounts.get(0).getAccountRole().equals("Super Admin")&&type.equals("boss")){
+//					account.setAccountRole("Super Admin");
+//				}
+//			}
+//		}
 		BodyBuilder builder = ResponseUtils.getBodyBuilder();
 
 		HfAuthExample example = new HfAuthExample();
@@ -1465,9 +1465,9 @@ private HfVipMapper hfVipMapper;
 		if (list.isEmpty()) {
 			HfUser user = new HfUser();
 			if (type.equals("boss")){
-				user.setBossId((Integer) request.getServletContext().getAttribute("getServletContext"));
+				user.setBossId(merchantId);
 			}else if (type.equals("stone")){
-				HfStone hfStone = hfStoneMapper.selectByPrimaryKey((Integer) request.getServletContext().getAttribute("getServletContext"));
+				HfStone hfStone = hfStoneMapper.selectByPrimaryKey(merchantId);
 				user.setBossId(hfStone.getBossId());
 			}
 			user.setSourceType(authType);
@@ -1495,12 +1495,12 @@ private HfVipMapper hfVipMapper;
 			userId = list.get(0).getUserId();
 		}
 		AccountExample accountExample = new AccountExample();
-		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo((Integer) request.getServletContext().getAttribute("getServletContext"));
+		accountExample.createCriteria().andUserIdEqualTo(userId).andAccountTypeEqualTo(type).andMerchantIdEqualTo(merchantId);
 		if (0 == accountMapper.selectByExample(accountExample).size()){
 			account.setAccountCode(authKey);
 			account.setAccountType(type);
 			if("boss".equals(type)) {
-				account.setMerchantId((Integer) request.getServletContext().getAttribute("getServletContext"));
+				account.setMerchantId(merchantId);
 			}else {
 				account.setMerchantId(merchantId);
 			}
