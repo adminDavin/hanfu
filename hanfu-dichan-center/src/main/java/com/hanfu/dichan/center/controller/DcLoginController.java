@@ -247,19 +247,19 @@ public class DcLoginController {
 		DcUserExample example = new DcUserExample();
 		example.createCriteria().andPhoneEqualTo(phone).andIdDeletedEqualTo((byte) 0);
 		List<DcUser> list = dcUserMapper.selectByExample(example);
-//		if (list.size() == 0) {
-//			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
-//			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
-//		}
-		DcUser dcUser = new DcUser();
-		dcUser.setId(0);
-		dcUser.setIdDeleted((byte) 0);
-		dcUser.setRealName("00");
-		dcUser.setPhone("0");
-		dcUser.setAddress("0");
-		dcUser.setBossId(0);
-		dcUser.setUsername(String.valueOf(0));
-		list.add(dcUser);
+		if (list.size() == 0) {
+			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
+			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
+		}
+//		DcUser dcUser = new DcUser();
+//		dcUser.setId(0);
+//		dcUser.setIdDeleted((byte) 0);
+//		dcUser.setRealName("00");
+//		dcUser.setPhone("0");
+//		dcUser.setAddress("0");
+//		dcUser.setBossId(0);
+//		dcUser.setUsername(String.valueOf(0));
+//		list.add(dcUser);
 		return builder.body(ResponseUtils.getResponseBody(list));
 	}
 
