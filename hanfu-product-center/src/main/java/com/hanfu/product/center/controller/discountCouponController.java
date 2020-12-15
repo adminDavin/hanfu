@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,9 +159,20 @@ public class discountCouponController {
 			discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
 		} else if (stoneId != null) {
 			DiscountCouponExample discountCouponExample = new DiscountCouponExample();
-			discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdEqualTo(stoneId);
-			discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
-			discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+			if (stoneId == 0){
+				HfStoneExample hfStoneExample = new HfStoneExample();
+				hfStoneExample.createCriteria().andBossIdEqualTo((Integer)request.getServletContext().getAttribute("getServletContext"))
+						.andIsDeletedEqualTo((short) 0);
+				List<HfStone> hfStones = hfStoneMapper.selectByExample(hfStoneExample);
+				Set<Integer> stones = hfStones.stream().map(HfStone::getId).collect(Collectors.toSet());
+				discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdIn(Lists.newArrayList(stones));
+				discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
+				discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+			}else {
+				discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0).andStoneIdEqualTo(stoneId);
+				discountCouponExample.setOrderByClause("use_state ASC,'modify_time' DESC");
+				discountCoupons = discountCouponMapper.selectByExample(discountCouponExample);
+			}
 		} else {
 			DiscountCouponExample discountCouponExample = new DiscountCouponExample();
 			discountCouponExample.createCriteria().andIdDeletedEqualTo((byte) 0);
