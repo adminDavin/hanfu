@@ -125,7 +125,7 @@ public class LoginController extends HfUserController {
 		example.createCriteria().andAuthKeyEqualTo(authKey);
 		List<HfAuth> list = hfAuthMapper.selectByExample(example);
 		if (list.isEmpty()) {
-//			user.setSourceType(authType);
+//			user.setSourceType("1");//1app登录的用户
 			user.setPhone(authKey);
 			user.setUserStatus("0".getBytes()[0]);
 			user.setLastAuthTime(LocalDateTime.now());
@@ -140,7 +140,7 @@ public class LoginController extends HfUserController {
 			auth.setUserId(user.getId());
 			auth.setAuthStatus((byte) 0);
 			auth.setIdDeleted((byte) 0);
-			auth.setEncodeType("0");
+			auth.setEncodeType("1");//1app登录的用户
 			auth.setCreateDate(LocalDateTime.now());
 			auth.setModifyDate(LocalDateTime.now());
 			auth.setIdDeleted((byte) 0);
@@ -165,10 +165,8 @@ public class LoginController extends HfUserController {
     @ApiOperation(value = "查询类型参数", notes = "查询类型参数")
     public ResponseEntity<JSONObject> getTemplateParam(String type,HttpServletResponse httpServletResponse) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.UNAUTHORIZED);
-        if (type.equals("e")){
-            httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "无权限");
-			return builder.body(ResponseUtils.getResponseBody("您不是此公司的人"));
-        }
+        redisTemplate.opsForValue().set("aaa",type);
+        System.out.println(redisTemplate.opsForValue().get("aaa"));
         return builder.body(ResponseUtils.getResponseBody(0));
     }
 }

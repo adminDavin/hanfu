@@ -42,6 +42,8 @@
 			property="instanceId" />
 		<result column="evaluateCount" jdbcType="INTEGER"
 			property="evaluate_count" />
+		<result column="boss_id" jdbcType="INTEGER"
+				property="bossId" />
 	</resultMap>
 	
 	<resultMap type="com.hanfu.product.center.manual.model.HomePageInfo" id="HomePageInfo">
@@ -54,7 +56,7 @@
 	<select id="selectProductForRotation" resultMap="ProductDispaly">
 		SELECT p.is_deleted, p.id, p.hf_name, product_desc, p.category_id,
 		p.file_id, h.hf_name category_name, i.stone_id, p.brand_id,
-		p.last_modifier, p.modify_time
+		p.last_modifier, p.modify_time, p.boss_id
 		FROM product p
 		LEFT JOIN hf_category h ON p.category_id = h.id
 		left JOIN product_instance i on p.id=i.product_id

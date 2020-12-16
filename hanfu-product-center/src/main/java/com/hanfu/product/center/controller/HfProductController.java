@@ -184,7 +184,7 @@ public class HfProductController {
 	@RequestMapping(value = "/getProductsForRotation", method = RequestMethod.GET)
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", name = "quantity", value = "获取商品的数量限制", required = false, type = "Integer") })
-	public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "quantity") Integer quantity)
+	public ResponseEntity<JSONObject> getProductsForRotation(@RequestParam(name = "quantity") Integer quantity,Integer bossId)
 			throws JSONException {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 		List<HfProductDisplay> products = hfProductDao.selectProductForRotation(quantity);
@@ -221,6 +221,7 @@ public class HfProductController {
 			}
 		});
 		products = products.stream().filter(p -> p.getInstanceId() != null).collect(Collectors.toList());
+		products = products.stream().filter(p -> p.getBossId() == bossId).collect(Collectors.toList());
 		return builder.body(ResponseUtils.getResponseBody(products));
 	}
 
