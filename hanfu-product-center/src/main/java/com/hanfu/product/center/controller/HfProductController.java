@@ -422,10 +422,16 @@ public class HfProductController {
                         hfRespMapper.insert(hfResp);
                         hfGoods.setRespId(hfResp.getId());
                         hfGoodsMapper.insertSelective(hfGoods);
-                        hfPrice.setGoogsId(hfGoods.getId());
+//                        hfPrice.setGoogsId(hfGoods.getId());
                         hfResp.setGoogsId(hfGoods.getId());
                         hfRespMapper.updateByPrimaryKeySelective(hfResp);
                     }
+					//价ge
+					if (hfPrice != null) {
+						hfPrice.setGoogsId(hfGoods.getId());
+						hfPriceMapper.updateByPrimaryKeySelective(hfPrice);
+					}
+
                     HfGoodsPictrueExample hfGoodsPictrueExample = new HfGoodsPictrueExample();
                     hfGoodsPictrueExample.createCriteria().andGoodsIdEqualTo(yGoodsId)
                             .andIsDeletedEqualTo((short) 0);

@@ -126,7 +126,8 @@ public class LoginController extends HfUserController {
 		List<HfAuth> list = hfAuthMapper.selectByExample(example);
 		if (list.isEmpty()) {
 //			user.setSourceType("1");//1app登录的用户
-			user.setPhone(authKey+"-"+bossId);
+			user.setPhone(authKey);
+            user.setBossId(bossId);
 			user.setUserStatus("0".getBytes()[0]);
 			user.setLastAuthTime(LocalDateTime.now());
 			user.setCreateDate(LocalDateTime.now());
