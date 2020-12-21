@@ -44,18 +44,18 @@
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table schema="user_center" tableName="activity_compony"
-               domainObjectName="ActivityCompony">
+        <table schema="user_center" tableName="activity_file_desc"
+               domainObjectName="ActivityFileDesc">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
         </table>
-        <!-- <table schema="user_center" tableName="activity_user"
+        <table schema="user_center" tableName="activity_user"
                domainObjectName="ActivityUser">
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="id" sqlStatement="mysql"
                           identity="true"/>
-        </table> -->
+        </table>
         <!-- <table schema="user_center" tableName="activiti_strategy"
                domainObjectName="ActivitiStrategy">
             <property name="useActualColumnNames" value="false"/>

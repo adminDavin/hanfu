@@ -198,10 +198,9 @@ public class ActivityManagerController {
 
     @ApiOperation(value = "1、制定活动策略", notes = "制定活动策略")
     @RequestMapping(value = "/addActivityStrategy", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addActivityStrategy(ActivityStrategyRequest request,Integer companyId) throws JSONException {
+    public ResponseEntity<JSONObject> addActivityStrategy(ActivityStrategyRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ActivitiStrategy activitiStrategy = new ActivitiStrategy();
-        activitiStrategy.setCompanyId(companyId);
         activitiStrategy.setStrategyName(request.getStrategyName());
         activitiStrategy.setStrategyDesc(request.getStrategyDesc());
 //		activitiStrategy.setStrategyType(request.getStrategyType());
@@ -255,13 +254,9 @@ public class ActivityManagerController {
 
     @ApiOperation(value = "3 发起活动", notes = "公司每次举行活动的添加")
     @RequestMapping(value = "/addActivity", method = RequestMethod.POST)
-    public ResponseEntity<JSONObject> addActivity(ActivityRequest request,Integer companyId) throws JSONException {
+    public ResponseEntity<JSONObject> addActivity(ActivityRequest request) throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         Activity activity = new Activity();
-        if(companyId == null) {
-        	return builder.body(ResponseUtils.getResponseBody(-1));
-        }
-        activity.setCompanyId(companyId);
         activity.setActivityName(request.getActivityName());
         activity.setActivityDesc(request.getActivityDesc());
 //		activity.setActivityStatus(request.getActivityStatus());

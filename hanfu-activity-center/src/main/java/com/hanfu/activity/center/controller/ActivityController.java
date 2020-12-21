@@ -297,11 +297,9 @@ public class ActivityController {
 
     @ApiOperation(value = "查询活动", notes = "公司每次举行活动的获取")
     @RequestMapping(value = "/listActivity", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> listWareHouse(Integer companyId) throws JSONException {
+    public ResponseEntity<JSONObject> listWareHouse() throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ActivityExample example = new ActivityExample();
-        example.createCriteria().andCompanyIdEqualTo(companyId);
-        List<Activity> list = activityMapper.selectByExample(example);
+        List<Activity> list = activityMapper.selectByExample(null);
         String type = "";
         List<ActivityInfo> activityInfos = new ArrayList<ActivityInfo>(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -371,11 +369,9 @@ public class ActivityController {
 
     @ApiOperation(value = "查询活动策略", notes = "公司每次举行活动的活动策略")
     @RequestMapping(value = "/listActivityStrategy", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> listActivityStrategy(Integer companyId) throws JSONException {
+    public ResponseEntity<JSONObject> listActivityStrategy() throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
-        ActivitiStrategyExample example = new ActivitiStrategyExample();
-        example.createCriteria().andCompanyIdEqualTo(companyId);
-        return builder.body(ResponseUtils.getResponseBody(activitiStrategyMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(activitiStrategyMapper.selectByExample(null)));
     }
 
     @ApiOperation(value = "删除活动策略", notes = "公司每次举行活动策略的删除")

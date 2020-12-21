@@ -110,17 +110,17 @@ public class StrategyController {
 
     @ApiOperation(value = "增加轮播图", notes = "增加轮播图")
     @RequestMapping(value = "/addlunbotu", method = RequestMethod.POST)
-    public void addlunbotu(MultipartFile file, Integer userId, Integer companyId) throws JSONException, IOException {
+    public void addlunbotu(MultipartFile file, Integer userId) throws JSONException, IOException {
         FileMangeService fileMangeService = new FileMangeService();
         FileDescExample example = new FileDescExample();
         //TODO
         String arr[];
-        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(companyId));
+        arr = fileMangeService.uploadFile(file.getBytes(), String.valueOf(userId));
         ActivityFileDesc fileDesc = new ActivityFileDesc();
         fileDesc.setFileName("lunbotu");
         fileDesc.setGroupName(arr[0]);
         fileDesc.setRemoteFilename(arr[1]);
-		fileDesc.setUserId(companyId);
+//		fileDesc.setUserId(userId);
         fileDesc.setCreateTime(LocalDateTime.now());
         fileDesc.setModifyTime(LocalDateTime.now());
         fileDesc.setIsDeleted((short) 0);
@@ -129,10 +129,10 @@ public class StrategyController {
 
     @ApiOperation(value = "获取轮播图", notes = "获取轮播图")
     @RequestMapping(value = "/findlunbotu", method = RequestMethod.GET)
-    public ResponseEntity<JSONObject> findlunbotu(Integer companyId) throws JSONException {
+    public ResponseEntity<JSONObject> findlunbotu() throws JSONException {
         BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
         ActivityFileDescExample example = new ActivityFileDescExample();
-        example.createCriteria().andFileNameEqualTo("lunbotu").andUserIdEqualTo(companyId);
+        example.createCriteria().andFileNameEqualTo("lunbotu");
         return builder.body(ResponseUtils.getResponseBody(activityFileDescMapper.selectByExample(example)));
     }
 
@@ -417,10 +417,9 @@ public class StrategyController {
 
     @RequestMapping(path = "/addCompany", method = RequestMethod.POST)
     @ApiOperation(value = "添加公司", notes = "添加公司")
-    public ResponseEntity<JSONObject> addCompany(ActivityCompanyRequest request,Integer companyId) throws Exception {
+    public ResponseEntity<JSONObject> addCompany(ActivityCompanyRequest request) throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
         ActivityCompony compony = new ActivityCompony();
-        compony.setCompanyId(companyId);
         compony.setCompanyName(request.getCompanyName());
         compony.setCompanyInfo(request.getCompanyInfo());
         compony.setCreateTime(LocalDateTime.now());
@@ -433,11 +432,9 @@ public class StrategyController {
 
     @RequestMapping(path = "/findCompany", method = RequestMethod.GET)
     @ApiOperation(value = "查询公司", notes = "查询公司")
-    public ResponseEntity<JSONObject> addCompany(Integer companyId) throws Exception {
+    public ResponseEntity<JSONObject> addCompany() throws Exception {
         BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        ActivityComponyExample example = new ActivityComponyExample();
-        example.createCriteria().andCompanyIdEqualTo(companyId);
-        return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(example)));
+        return builder.body(ResponseUtils.getResponseBody(activityComponyMapper.selectByExample(null)));
     }
 
     @RequestMapping(path = "/findDepartmentByCompany", method = RequestMethod.GET)
@@ -541,16 +538,6 @@ public class StrategyController {
         ActivityDepartmentExample example = new ActivityDepartmentExample();
         example.createCriteria().andComponyIdEqualTo(companyId);
         List<ActivityDepartment> list = activityDepartmentMapper.selectByExample(example);
-        return builder.body(ResponseUtils.getResponseBody(list));
-    }
-    
-    @RequestMapping(path = "/findCompanyInfoByCode", method = RequestMethod.GET)
-    @ApiOperation(value = "根据公司编号查询公司信息", notes = "根据公司编号查询公司信息")
-    public ResponseEntity<JSONObject> findCompanyInfoByCode(String code) throws Exception {
-        BodyBuilder builder = ResponseUtils.getBodyBuilder();
-        ActivityComponyExample example = new ActivityComponyExample();
-        example.createCriteria().andCompanyInfoEqualTo(code);
-        List<ActivityCompony> list = activityComponyMapper.selectByExample(example);
         return builder.body(ResponseUtils.getResponseBody(list));
     }
 
