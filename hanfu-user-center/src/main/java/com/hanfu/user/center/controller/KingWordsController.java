@@ -1015,7 +1015,7 @@ public class KingWordsController {
 //		JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost( requestUrl,requestUrlParam ));
 //		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx16159fcc93b0400c&secret=859242012b822205f8f3128b400909cc&js_code="
 //				+ code + "&grant_type=authorization_code";
-		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx2641aaa105c07dd4&secret=859242012b822205f8f3128b400909cc&js_code="
+		String requestUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wx2641aaa105c07dd4&secret=fb26dde971b62de61c4573b12bd5f5da&js_code="
 				+ code + "&grant_type=authorization_code";
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(requestUrl);
