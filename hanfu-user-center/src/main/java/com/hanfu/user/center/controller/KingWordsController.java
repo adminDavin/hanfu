@@ -887,8 +887,8 @@ public class KingWordsController {
 		String nickName = "";
 		String avatarUrl = "";
 		if (userInfo != null) {
-			if (userInfo.get("unionId") != null) {
-				unionId = (String) userInfo.get("unionId");
+			if (userInfo.get("openId") != null) {
+				unionId = (String) userInfo.get("openId");
 			}
 			nickName = userInfo.getString("nickName");
 			avatarUrl = userInfo.getString("avatarUrl");
@@ -916,7 +916,7 @@ public class KingWordsController {
 					example2.createCriteria().andNickNameLike("未知昵称%");
 					List<ActivityUser> list2 = activityUserMapper.selectByExample(example2);
 					hfUser.setNickName("未知昵称" + list2.size() + 1);
-					hfUser.setUsername(unionId);
+					hfUser.setUsername(openid);
 					hfUser.setCreateDate(LocalDateTime.now());
 					hfUser.setModifyDate(LocalDateTime.now());
 					hfUser.setIdDeleted((byte) 0);
