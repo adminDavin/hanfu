@@ -593,46 +593,28 @@ public class ActivityManagerController {
         example4.createCriteria().andActivityIdEqualTo(request.getActivityId())
                 .andElectedUserIdEqualTo(request.getElectedUserId()).andVoteTimesEqualTo(0);
         List<ActivityVoteRecords> list2 = activityVoteRecordsMapper.selectByExample(example4);
-        for (int i = 0; i < list2.size(); i++){
-            example3.clear();
-            example3.createCriteria().andParentTemplateIdEqualTo(list2.get(i).getActivityId())
-                    .andIsDeletedEqualTo((short) ((int) list2.get(i).getVoteTimes()));
-            List<ActivityEvaluateTemplate> activityEvaluateTemplates = activityEvaluateTemplateMapper.selectByExample(example3);
-            deedScore = Double.valueOf(list2.get(i).getRemarks()) * Double.valueOf(activityEvaluateTemplates.get(0).getEvaluateWeight())+deedScore;
-            System.out.println(deedScore);
+
+        for (int i = 0; i < list2.size(); i++) {
+            ActivityVoteRecords records = list2.get(i);
+            deedScore = Double.valueOf(records.getRemarks()) + deedScore;
         }
-//        for (int i = 0; i < list2.size(); i++) {
-//            ActivityVoteRecords records = list2.get(i);
-//            deedScore = Double.valueOf(records.getRemarks()) + deedScore;
-//        }
         if (list2.isEmpty()) {
             deedScore = 0.00;
         } else {
-//            deedScore = (deedScore / list2.size()) * 0.5;
-            deedScore = (deedScore) * 0.5;
+            deedScore = (deedScore / list2.size()) * 0.5;
         }
         example4.clear();
         example4.createCriteria().andActivityIdEqualTo(request.getActivityId())
                 .andElectedUserIdEqualTo(request.getElectedUserId()).andVoteTimesEqualTo(1);
         list2 = activityVoteRecordsMapper.selectByExample(example4);
-        for (int i = 0; i < list2.size(); i++){
-            example3.clear();
-            example3.createCriteria().andParentTemplateIdEqualTo(list2.get(i).getActivityId())
-                    .andIsDeletedEqualTo((short) ((int) list2.get(i).getVoteTimes()));
-            List<ActivityEvaluateTemplate> activityEvaluateTemplates = activityEvaluateTemplateMapper.selectByExample(example3);
-
-            reportScore = Double.valueOf(list2.get(i).getRemarks()) * Double.valueOf(activityEvaluateTemplates.get(0).getEvaluateWeight())+reportScore;
-            System.out.println(reportScore);
+        for (int i = 0; i < list2.size(); i++) {
+            ActivityVoteRecords records = list2.get(i);
+            reportScore = Double.valueOf(records.getRemarks()) + reportScore;
         }
-//        for (int i = 0; i < list2.size(); i++) {
-//            ActivityVoteRecords records = list2.get(i);
-//            reportScore = Double.valueOf(records.getRemarks()) + reportScore;
-//        }
         if (list2.isEmpty()) {
             reportScore = 0.00;
         } else {
-//            reportScore = (reportScore / list2.size()) * 0.5;
-            reportScore = (reportScore) * 0.5;
+            reportScore = (reportScore / list2.size()) * 0.5;
         }
         DecimalFormat df = new DecimalFormat("0.000");
         userElect.setRemarks(String.valueOf(df.format(deedScore + reportScore)));
