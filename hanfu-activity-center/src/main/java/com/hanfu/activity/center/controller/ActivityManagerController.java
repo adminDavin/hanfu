@@ -599,6 +599,7 @@ public class ActivityManagerController {
                     .andIsDeletedEqualTo((short) ((int) list2.get(i).getVoteTimes()));
             List<ActivityEvaluateTemplate> activityEvaluateTemplates = activityEvaluateTemplateMapper.selectByExample(example3);
             deedScore = Double.valueOf(list2.get(i).getRemarks()) * Double.valueOf(activityEvaluateTemplates.get(0).getEvaluateWeight())+deedScore;
+            System.out.println(deedScore);
         }
 //        for (int i = 0; i < list2.size(); i++) {
 //            ActivityVoteRecords records = list2.get(i);
@@ -619,7 +620,9 @@ public class ActivityManagerController {
             example3.createCriteria().andParentTemplateIdEqualTo(list2.get(i).getActivityId())
                     .andIsDeletedEqualTo((short) ((int) list2.get(i).getVoteTimes()));
             List<ActivityEvaluateTemplate> activityEvaluateTemplates = activityEvaluateTemplateMapper.selectByExample(example3);
+
             reportScore = Double.valueOf(list2.get(i).getRemarks()) * Double.valueOf(activityEvaluateTemplates.get(0).getEvaluateWeight())+reportScore;
+            System.out.println(reportScore);
         }
 //        for (int i = 0; i < list2.size(); i++) {
 //            ActivityVoteRecords records = list2.get(i);
