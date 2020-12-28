@@ -355,36 +355,37 @@ public class GoodsController {
 	@ApiOperation(value = "编辑物品", notes = "编辑物品")
 	@RequestMapping(value = "/updategood", method = RequestMethod.POST)
 	@Transactional(rollbackFor = {RuntimeException.class, Error.class})
-	public ResponseEntity<JSONObject> updateGood(@RequestParam("fileInfo1") MultipartFile[] fileInfo1,
+	public ResponseEntity<JSONObject> updateGood(
+//			@RequestParam("fileInfo1") MultipartFile[] fileInfo1,
 			HfGoodsDisplay hfGoodsDisplay) throws Exception {
 		BodyBuilder builder = ResponseUtils.getBodyBuilder(HttpStatus.OK);
 
-		List<HfGoodsPictrue> pictures = Lists.newArrayList();
-		FileMangeService fileMangeService = new FileMangeService();
-		String arr[];
-		for (MultipartFile fileInfo : fileInfo1) {
-			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsDisplay.getUserId()));
-			FileDesc fileDesc = new FileDesc();
-			fileDesc.setFileName(fileInfo.getName());
-			fileDesc.setGroupName(arr[0]);
-			fileDesc.setRemoteFilename(arr[1]);
-			fileDesc.setUserId(hfGoodsDisplay.getUserId());
-			fileDesc.setCreateTime(LocalDateTime.now());
-			fileDesc.setModifyTime(LocalDateTime.now());
-			fileDesc.setIsDeleted((short) 0);
-			fileDescMapper.insert(fileDesc);
-			HfGoodsPictrue picture = new HfGoodsPictrue();
-			picture.setFileId(fileDesc.getId());
-			picture.setGoodsId(hfGoodsDisplay.getId());
-			picture.setHfName(fileInfo.getName());
-			picture.setSpecDesc(hfGoodsDisplay.getPrictureDesc());
-			picture.setCreateTime(LocalDateTime.now());
-			picture.setModifyTime(LocalDateTime.now());
-			picture.setLastModifier(hfGoodsDisplay.getUsername());
-			picture.setIsDeleted((short) 0);
-			hfGoodsPictrueMapper.insert(picture);
-			pictures.add(picture);
-		}
+//		List<HfGoodsPictrue> pictures = Lists.newArrayList();
+//		FileMangeService fileMangeService = new FileMangeService();
+//		String arr[];
+//		for (MultipartFile fileInfo : fileInfo1) {
+//			arr = fileMangeService.uploadFile(fileInfo.getBytes(), String.valueOf(hfGoodsDisplay.getUserId()));
+//			FileDesc fileDesc = new FileDesc();
+//			fileDesc.setFileName(fileInfo.getName());
+//			fileDesc.setGroupName(arr[0]);
+//			fileDesc.setRemoteFilename(arr[1]);
+//			fileDesc.setUserId(hfGoodsDisplay.getUserId());
+//			fileDesc.setCreateTime(LocalDateTime.now());
+//			fileDesc.setModifyTime(LocalDateTime.now());
+//			fileDesc.setIsDeleted((short) 0);
+//			fileDescMapper.insert(fileDesc);
+//			HfGoodsPictrue picture = new HfGoodsPictrue();
+//			picture.setFileId(fileDesc.getId());
+//			picture.setGoodsId(hfGoodsDisplay.getId());
+//			picture.setHfName(fileInfo.getName());
+//			picture.setSpecDesc(hfGoodsDisplay.getPrictureDesc());
+//			picture.setCreateTime(LocalDateTime.now());
+//			picture.setModifyTime(LocalDateTime.now());
+//			picture.setLastModifier(hfGoodsDisplay.getUsername());
+//			picture.setIsDeleted((short) 0);
+//			hfGoodsPictrueMapper.insert(picture);
+//			pictures.add(picture);
+//		}
 		HfGoods hfGoods = hfGoodsMapper.selectByPrimaryKey(hfGoodsDisplay.getId());
 		if (hfGoods == null) {
 			throw new Exception("物品不存在");
