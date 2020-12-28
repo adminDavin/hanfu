@@ -238,9 +238,9 @@ public class StrategyController {
             if (template.getId() != request.getId()) {
                 count = count + Double.valueOf(template.getEvaluateWeight());
             }
-            if (count + Double.valueOf(request.getEvaluateWeight()) > 1) {
-                return "false";
-            }
+        }
+        if (count > 1) {
+            return "false";
         }
         if (!StringUtils.isEmpty(request.getEvaluateContent())) {
             activityEvaluateTemplate.setEvaluateContent(request.getEvaluateContent());
