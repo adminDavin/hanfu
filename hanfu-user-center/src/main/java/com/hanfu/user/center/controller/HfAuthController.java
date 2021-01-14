@@ -1625,6 +1625,7 @@ private HfVipMapper hfVipMapper;
 				return builder.body(ResponseUtils.getResponseBody("用户名存在"));
 			}
 			String encodeStr = DigestUtils.md5Hex(account.getPassword());
+			account.setAccountType("sass");
 			account.setMerchantId(0);
 			account.setPassword(encodeStr);
 			account.setUserId(hfAuths.get(0).getUserId());
