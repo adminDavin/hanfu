@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hanfu.seckill.center.dao.HfOrderStatusMapper" >
+  <resultMap id="BaseResultMap" type="com.hanfu.seckill.center.model.HfOrderStatus" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="hf_name" property="hfName" jdbcType="VARCHAR" />
+    <result column="hf_status" property="hfStatus" jdbcType="INTEGER" />
+    <result column="hf_desc" property="hfDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="is_deleted" property="isDeleted" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, hf_name, hf_status, hf_desc, create_time, modify_time, is_deleted
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from hf_order_status
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+</mapper>
